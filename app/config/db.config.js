@@ -14,7 +14,7 @@ const sequelize = new Sequelize(env.database, env.username, env.password, {
     idle: env.pool.idle
   }
 });
- 
+
 const db = {};
  
 db.Sequelize = Sequelize;
@@ -33,6 +33,13 @@ db.service = require('../model/service.model.js')(sequelize, Sequelize);
 db.size = require('../model/size.model.js')(sequelize, Sequelize);
 db.event = require('../model/event.model.js')(sequelize, Sequelize);
 db.serviceDetail = require('../model/serviceDetail.model.js')(sequelize, Sequelize);
+db.parking = require('../model/parking.model.js')(sequelize, Sequelize);
+db.slot = require('../model/slot.model.js')(sequelize, Sequelize);
+db.vendor = require('../model/vendor.model')(sequelize,Sequelize);
+db.assets = require('../model/asset.model')(sequelize,Sequelize);
+db.assetsType = require('../model/assetType.model')(sequelize,Sequelize);
+db.test = require('../model/test.model')(sequelize,Sequelize);
+db.flatDetail = require('../model/flatDetail.model')(sequelize,Sequelize);
 
  
 db.role.belongsToMany(db.user, { through: 'user_roles', foreignKey: 'roleId', otherKey: 'userId'});
@@ -47,15 +54,26 @@ db.state.belongsTo(db.country,{foreignKey: 'countryId'});
 db.state.belongsTo(db.user,{foreignKey: 'userId'});
 db.city.belongsTo(db.user,{foreignKey: 'userId'});
 db.city.belongsTo(db.state,{foreignKey: 'stateId'});
+db.city.belongsTo(db.country,{foreignKey:'countryId'})
 db.location.belongsTo(db.country,{foreignKey: 'countryId'});
 db.location.belongsTo(db.state,{foreignKey: 'stateId'});
 db.location.belongsTo(db.city,{foreignKey: 'cityId'});
 db.location.belongsTo(db.user,{foreignKey: 'userId'});
 db.flat.belongsTo(db.size,{foreignKey:'sizeId'});
 db.flat.belongsTo(db.society,{foreignKey:'societyId'});
-db.event.belongsTo(db.user,{foreignKey:'eventOrganiser'});
-db.event.belongsTo(db.user,{foreignKey:'userId'});
+db.event.belongsTo(db.user,{foreignKey:'eventOrganiser',as:'organiser'});
+db.event.belongsTo(db.user,{foreignKey:'userId',as:'loggedIn'});
 db.service.belongsTo(db.serviceDetail,{foreignKey:'serviceDetailId'});
-
+db.slot.belongsTo(db.parking,{foreignKey:'parkingId'});
+db.vendor.belongsTo(db.user,{foreignKey:'userId'});
+db.vendor.belongsTo(db.service,{foreignKey:'serviceId'});
+db.assets.belongsTo(db.user,{foreignKey:'userId'});
+db.assetsType.belongsTo(db.user,{foreignKey:'userId'});
+db.assetsType.belongsTo(db.assets,{foreignKey:'assetId'});
+db.flatDetail.belongsTo(db.tower,{foreignKey:'towerId'});
+db.flatDetail.belongsTo(db.flat,{foreignKey:'flatId'});
+db.flatDetail.belongsTo(db.user,{foreignKey:'userId'});
+db.user.belongsTo(db.tower,{foreignKey:'towerId'});
+db.user.belongsTo(db.flatDetail,{foreignKey:'flatDetailId',constraints: false});
 
 module.exports = db;
