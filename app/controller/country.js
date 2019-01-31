@@ -5,13 +5,15 @@ const Country = db.country;
 
 exports.create = (req,res) => {
     console.log("creating country");
-
+    console.log("body",req.body)
+    let body = req.body;
+    body.userId = req.userId;
     Country.create({
-        countryName:req.body.countryName,
-        code:req.body.code,
-        currency:req.body.currency,
-        phoneCode:req.body.phoneCode,
-        userId:req.body.userId
+        countryName:body.countryName,
+        code:body.code,
+        currency:body.currency,
+        phoneCode:body.phoneCode,
+        userId:body.userId
     }).then(country =>{
         res.status(200).json({message:"Country added successfully!",country:country});
     }).catch(err => {
@@ -20,8 +22,7 @@ exports.create = (req,res) => {
 }
 
 exports.get = (req, res) => {
-    console.log("----------------- Country.findAll()");
-    Country.findAll()
+    Country.findAll({where:{isActive:true}})
       .then(country => {
         res.json(country);
       });

@@ -41,6 +41,19 @@ exports.getById = (req,res) => {
 })
 }
 
+exports.getCountry = (req,res) => {
+    State.findAll({
+       where: {countryId: req.params.id},
+   }).then(state => {
+    res.status(200).json(state);
+}).catch(err => {
+    res.status(500).json({
+        "description": "Can not state Page",
+        "error": err
+    });
+})
+}
+
 exports.update = (req,res) => {
     const id = req.params.id;
     if(!id){

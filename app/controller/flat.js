@@ -6,8 +6,8 @@ const Society = db.society;
 const Size = db.size;
 
 exports.create = (req,res) => {
-    console.log("creating flat");
-
+console.log("creating flat");
+console.log("req.body==>",req.body)
     Flat.create({
         flatType:req.body.flatType,
         coverArea:req.body.coverArea,
@@ -17,6 +17,7 @@ exports.create = (req,res) => {
     }).then(flat =>{
         res.json({message:"Flat added successfully!",flat:flat});
     }).catch(err => {
+        // console.log("error===>",err)
     res.status(500).send("Fail! Error -> " + err);
 })
 }
@@ -31,8 +32,7 @@ exports.get = (req, res) => {
             attributes: ['societyId', 'societyName']},	
             {model:Size,
              attributes: ['sizeId', 'sizeType']},
-    ]
-        
+    ]  
     })
       .then(flat => {
         res.json(flat);

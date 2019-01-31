@@ -1,21 +1,15 @@
 module.exports = (sequelize, Sequelize) => {
-    const EventTable = sequelize.define('event_master', {
-        eventId: {
+    const Vendor = sequelize.define('vendor_master', {
+        vendorId: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        eventName: {
+        vendorName: {
             type: Sequelize.STRING
         },
-        eventType: {
+        description: {
             type: Sequelize.STRING
-        },
-        startDate: {
-            type:Sequelize.STRING
-        },
-        endDate: {
-            type:Sequelize.STRING
         },
         isActive: {
             type: Sequelize.BOOLEAN,
@@ -33,5 +27,5 @@ module.exports = (sequelize, Sequelize) => {
         freezeTableName: true
     });
 
-    return EventTable;
+    return Vendor;
 }

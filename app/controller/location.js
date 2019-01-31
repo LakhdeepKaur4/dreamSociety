@@ -5,13 +5,13 @@ const Location = db.location;
 
 exports.create = (req,res) => {
     console.log("creating city");
-
+    let body = req.body;
+    body.userId = req.userId;
     Location.create({
-        locationName:req.body.locationName,
-        countryId:req.body.countryId,
-        stateId:req.body.stateId,
-        cityId:req.body.cityId,
-        userId:req.body.userId
+        locationName:body.locationName,
+        countryId:body.countryId,
+        stateId:body.stateId,
+        cityId:body.cityId,
     }).then(location =>{
         res.json({message:"Location added successfully!",location:location});
     }).catch(err => {
@@ -20,20 +20,19 @@ exports.create = (req,res) => {
 }
 
 exports.get = (req, res) => {
-    Location.findAll()
+    Location.findAll({where:{isActive:true}})
       .then(location => {
         res.json(location);
       });
     }
 
 exports.getById = (req,res) => {
-    Location.findOne({
-       where: {id: req.userId},
+    Location.findAll({
+       where: {cityId: req.params.id},
    }).then(location => {
-    res.status(200).json({
-        "description": "Location Content Page",
-        "location": location
-    });
+    res.status(200).json(
+       location
+    );
 }).catch(err => {
     res.status(500).json({
         "description": "Can not Location Page",

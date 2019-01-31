@@ -23,10 +23,32 @@ module.exports = (sequelize, Sequelize) => {
 		password: {
 			type: Sequelize.STRING
 		},
+		familyMember: {
+			type: Sequelize.STRING
+		},
+		parking: {
+			type: Sequelize.STRING
+		},
+		floor: {
+			type: Sequelize.STRING
+		},
+		QRCode:{
+			type:Sequelize.STRING,
+			defaultValue: "QRCODE"
+			
+		},
 		isActive: {
 			type: Sequelize.BOOLEAN,
 			defaultValue: true
 		},
+		createdAt: {
+            allowNull: false,
+            type: Sequelize.DATE
+        },
+        updatedAt: {
+            defaultValue: null,
+            type: Sequelize.DATE
+        }
 	}, {
 		freezeTableName: true
 	});

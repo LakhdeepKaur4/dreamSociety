@@ -1,18 +1,21 @@
 module.exports = (sequelize, Sequelize) => {
-	const Society = sequelize.define('society_master', {
-		societyId: {
+	const FlatDetail = sequelize.define('flat_detail_master', {
+		flatDetailId: {
 			type: Sequelize.INTEGER,
 			autoIncrement: true,
 			primaryKey: true
 		},
-		societyName: {
+		flatNo: {
+			type: Sequelize.STRING
+		},
+		floor: {
 			type: Sequelize.STRING
 		},
 		isActive: {
 			type: Sequelize.BOOLEAN,
 			defaultValue: true
-		},
-		createdAt: {
+        },
+        createdAt: {
             allowNull: false,
             type: Sequelize.DATE
         },
@@ -24,5 +27,5 @@ module.exports = (sequelize, Sequelize) => {
 		freezeTableName: true
 	});
 
-	return Society;
+	return FlatDetail;
 }

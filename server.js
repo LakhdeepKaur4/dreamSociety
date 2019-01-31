@@ -25,25 +25,34 @@ var cors = require('cors');
 app.use(cors());
 var bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
 app.use(bodyParser.json());
- 
+
 require('./app/router/router.js')(app);
 
 const db = require('./app/config/db.config.js');
 
 const Role = db.role;
 var PORT = process.env.PORT || 8081;
-  
+
 // force: true will drop the table if it already exists
-db.sequelize.sync({force: false}).then(() => {
-  console.log('Drop and Resync with { force: false }');
-//   initial();
+db.sequelize.sync({
+	force: false,
+}).then(() => {
+	console.log('Drop and Resync with { force: false }');
+	//   initial();
 });
 
-app.use(function(req, res, next) {
+
+
+app.use(function (req, res, next) {
 	console.log("p-------------------");
-next();
+	if (req.method === "OPTIONS") {
+		return next();
+	  }
+	next();
 });
 
 // app.use(function(req, res, next) {
@@ -61,21 +70,21 @@ next();
 // 	res.setHeader('Access-Control-Allow-Credentials', true);
 // 	next();
 //   });
- 
+
 
 
 // require('./app/route/project.route.js')(app);
- 
+
 // Create a Server
 var server = app.listen(PORT, function () {
-//   var host = server.address().address
-//   var port = server.address().port
- 
-  console.log("App listening at ",PORT)
+	//   var host = server.address().address
+	//   var port = server.address().port
+
+	console.log("App listening at ", PORT)
 })
 
 
-function initial(){
+function initial() {
 	Role.create({
 		id: 1,
 		roleName: "SUPER_ADMIN"
@@ -84,7 +93,7 @@ function initial(){
 		id: 2,
 		roleName: "ADMIN"
 	});
-	
+
 	Role.create({
 		id: 3,
 		roleName: "SOCIETY_MEMBER_OWNER"

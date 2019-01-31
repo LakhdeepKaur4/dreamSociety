@@ -1,22 +1,16 @@
 module.exports = (sequelize, Sequelize) => {
-	const Country = sequelize.define('country_master', {
-	  countryId:{
+	const Assets = sequelize.define('asset_master', {
+	assetId:{
 			type: Sequelize.INTEGER,
 			autoIncrement:true,
 			primaryKey:true
 		},
-	  countryName: {
+	  assetName: {
 		  type: Sequelize.STRING
-		},
-		code: {
-		  type: Sequelize.STRING
-		},
-		currency:{
-			type: Sequelize.STRING
-		},
-		phoneCode:{
-			type: Sequelize.STRING
-		},
+      },
+      description:{
+        type: Sequelize.STRING
+      },
 		isActive:{
 			type:Sequelize.BOOLEAN,
 			defaultValue: true
@@ -33,5 +27,5 @@ module.exports = (sequelize, Sequelize) => {
     freezeTableName: true
 });
 	
-	return Country;
+	return Assets;
 }

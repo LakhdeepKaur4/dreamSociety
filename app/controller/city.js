@@ -25,13 +25,12 @@ exports.get = (req, res) => {
     }
 
 exports.getById = (req,res) => {
-   City.findOne({
-       where: {id: req.userId},
+   City.findAll({
+       where: {stateId: req.params.id},
    }).then(city => {
-    res.status(200).json({
-        "description": "City Content Page",
-        "city": city
-    });
+    res.status(200).json(
+         city
+     );
 }).catch(err => {
     res.status(500).json({
         "description": "Can not city Page",

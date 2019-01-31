@@ -1,13 +1,13 @@
 module.exports = (sequelize, Sequelize) => {
-	const Location = sequelize.define('location_master', {
-		locationId:{
+	const Slots = sequelize.define('slot_master', {
+	slotId:{
 			type: Sequelize.INTEGER,
 			autoIncrement:true,
 			primaryKey:true
 		},
-	  locationName: {
+	  slots: {
 		  type: Sequelize.STRING
-	  },
+	   },
 		isActive:{
 			type:Sequelize.BOOLEAN,
 			defaultValue: true
@@ -24,5 +24,5 @@ module.exports = (sequelize, Sequelize) => {
     freezeTableName: true
 });
 	
-	return Location;
+	return Slots;
 }

@@ -10,7 +10,6 @@ const User = db.user;
 
 exports.create = (req,res) => {
 console.log("creating society");
-console.log("Society====>",req.body)
     Society.create({
         societyName:req.body.societyName,
         cityId:req.body.cityId,

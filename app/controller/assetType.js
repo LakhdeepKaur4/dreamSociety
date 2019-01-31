@@ -1,22 +1,19 @@
 const db = require('../config/db.config.js');
-const config = require('../config/config.js');
 const httpStatus = require('http-status')
 
-const Event = db.event;
-const User = db.user;
-const Role = db.role;
-const Op = db.Sequelize.Op;
+const AssetsType = db.assetsType;
+const Assets = db.assets;
 
 exports.create = async (req, res, next) => {
     try {
-        console.log("creating event");
+        console.log("userId==>",req.userId)
         let body = req.body;
         body.userId = req.userId;
-        console.log("body===>",body)
-        const event = await Event.create(body);
+        console.log("body==>",req.body)
+        const assetsType = await AssetsType.create(body);
         return res.status(httpStatus.CREATED).json({
-            message: "Event successfully created",
-            event
+            message: "AssetsType successfully created",
+            assetsType
         });
     } catch (error) {
         console.log("error==>",error);
@@ -26,15 +23,13 @@ exports.create = async (req, res, next) => {
 
 exports.get = async(req,res,next) => {
     try{
-        const event = await Event.findAll({where:{isActive:true},include: [{
-           model:User,
-           as:'organiser',
-           attributes:['userId','userName'],
-        }]});
-        if(event){
+        const assetsType = await AssetsType.findAll({where:{isActive:true},
+        include:[{model:Assets,attributes:['assetId','assetName']}]
+        });
+        if(assetsType){
             return res.status(httpStatus.CREATED).json({
-                message: "Event Content Page",
-                event:event
+                message: "AssetsType Content Page",
+                assetsType:assetsType
             });
         }
     }catch(error){
@@ -46,22 +41,21 @@ exports.get = async(req,res,next) => {
 exports.update = async(req,res,next) => {
     try{
         const id = req.params.id;
-        console.log("id==>",id)
         if(!id){
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
         }
         const update = req.body;
-         console.log("update==>",update)
+
         if(!update){
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
         }
-        const updatedEvent = await Event.find({where:{eventId:id}}).then(event => {
-            return event.updateAttributes(update)
+        const updatedAssetsType = await AssetsType.find({where:{assetTypeId:id}}).then(assetsType => {
+            return assetsType.updateAttributes(update)
           })
-        if(updatedEvent){
+        if(updatedAssetsType){
             return res.status(httpStatus.OK).json({
-                message: "Event Updated Page",
-                event:updatedEvent
+                message: "AssetsType Updated Page",
+                assetsType:updatedAssetsType
             });
         }
     }catch(error){
@@ -80,36 +74,16 @@ exports.delete = async(req,res,next) => {
         if(!update){
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
         }
-        const updatedEvent = await Event.find({where:{eventId:id}}).then(event => {
-            return event.updateAttributes(update)
+        const updatedAssetsType = await AssetsType.find({where:{assetTypeId:id}}).then(assetsType => {
+            return assetsType.updateAttributes(update)
           })
-        if(updatedEvent){
+        if(updatedAssetsType){
             return res.status(httpStatus.OK).json({
-                message: "Event deleted successfully",
-                event:updatedEvent
+                message: "AssetsType deleted successfully",
+                assetsType:updatedAssetsType
             });
         }
     }catch(error){
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-    }
-}
-
-exports.getEventOrganiser = async(req,res,next) => {
-    try{
-        const user= await User.findAll({attributes: ['userId', 'userName'],	include: [{
-            model: Role,
-            where:{roleName:'ADMIN'},
-			attributes: ['id', 'roleName'],
-			},
-		]});
-        // console.log("user==>",user)
-        return res.status(httpStatus.OK).json({
-            message: "Event Organiser Detail",
-            event:user
-        });
-
-    }catch(error){
-        console.log("error===>",error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }

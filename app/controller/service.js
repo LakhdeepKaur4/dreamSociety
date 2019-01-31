@@ -2,17 +2,18 @@ const db = require('../config/db.config.js');
 const config = require('../config/config.js');
 
 const Service = db.service;
+const ServiceDetail = db.serviceDetail;
 
 exports.create = (req,res) => {
     let body = req.body;
     console.log("req.body===>",req.body)
     console.log("creating service");
-    if(!body.serviceName || !body.serviceId, !body.service_detail){
+    if(!body.serviceName && !body.serviceDetailId){
       return res.status(422).json({message:"Parameters Missing"})
     }
     Service.create({
         serviceName:req.body.serviceName,
-        serviceDetailId:req.body.serviceDetailId
+        serviceDetailId:req.body.serviceDetailId,
     }).then(service =>{
         // console.log("service==>",service)
         res.json({message:"Service added successfully!",service:service});
@@ -23,7 +24,14 @@ exports.create = (req,res) => {
 }
 
 exports.get = (req, res) => {
-    Service.findAll()
+    Service.findAll({
+        where:{
+            isActive:true
+        },	include: [{
+			model: ServiceDetail,
+			attributes: ['serviceDetailId','service_detail'],
+		}]
+    })
       .then(service => {
         res.json(service);
       });
