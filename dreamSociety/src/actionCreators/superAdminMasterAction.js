@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
-import _ from 'lodash';
 
 import{URN,ADD_USER,UPDATE_USER,GET_ROLES,GET_USERS,DELETE_USER} from '../actions/index';
 

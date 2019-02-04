@@ -4,11 +4,13 @@ import { bindActionCreators } from 'redux';
 import { fetchParking} from '../../actionCreators/parkingAction';
 import { Table, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 
 class ParkingMaster extends Component {
     state = {
-        menuVisible: false
+        menuVisible: false,
+        search:''
     }
     componentDidMount() {
         this.props.fetchParking()
@@ -19,10 +21,14 @@ class ParkingMaster extends Component {
             .then(() => this.props.fetchParking())
     }
 
+    searchOnChange = (e) => {
+        this.setState({search:e.target.value})
+    }
+
     renderParking({ parking }) {
         console.log(parking);
         if (parking) {
-            return parking.slot.map((item) => {
+            return parking.slot.filter(this.searchFilter(this.state.search)).map((item) => {
                 console.log(item)
                 return (
                     <tr key={item.parking_master.parkingName}>
@@ -41,6 +47,13 @@ class ParkingMaster extends Component {
             })
         }
     }
+
+    searchFilter(search){
+        return function(x){
+            return x.parking_master.parkingName.toLowerCase().includes(search.toLowerCase()) || !search;
+        }
+    }
+
     render() {
         return (
             <div>
@@ -91,11 +104,14 @@ class ParkingMaster extends Component {
                                 {/* <Image src='//unsplash.it/800/480' /> */}
                                 <h1 style={{ color: 'black' }}>Add Parking</h1>
                                 <div>
-                                    <div>
-                                        <Link to='/superDashboard/add_parking/new'>Add Parking</Link>
-                                    </div>
-                                    <h3>Parking details</h3>
+                                    
                                     <div className="container">
+                                        <div>
+                                            <Link to='/superDashboard/add_parking/new'>Add Parking</Link>
+                                        </div>
+                                        <h3>Parking details</h3>
+                                        <SearchFilter type="text" value={this.state.search}
+                                            onChange={this.searchOnChange} />
                                         <Table>
                                             <thead>
                                                 <tr>

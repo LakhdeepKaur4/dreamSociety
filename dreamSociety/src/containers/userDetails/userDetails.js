@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 class userDetails extends Component {
 
@@ -20,7 +21,8 @@ class userDetails extends Component {
             menuVisible: false
         },
         editUserModal: false,
-        dropdownOpen: false
+        dropdownOpen: false,
+        search:''
     }
 
     componentDidMount() {
@@ -63,26 +65,25 @@ class userDetails extends Component {
     deleteUser(userId) {
         let { isActive } = this.state.editUserData
         console.log(userId)
-        // axios.put(`${url}` + userId, { isActive }, { headers: authHeader() }).then((response) => {
-        //     this.refreshData()
-        //     this.setState({
-        //         editUserData: { isActive: false }
-        //     })
-        //     console.log(response)
-        // })
         this.props.deleteUser(userId, isActive)
         .then(() => this.setState({isActive: false}))
     }
-    // deleteUser(id){
-    //     this.props.deleteUsers(id)
-    //     .then(() => this.setState({isActive: false}))
-    // }
+
+    searchFilter(search){
+        return function(x){
+            if(x){
+                return x.firstName.toLowerCase().includes(search.toLowerCase()) || x.lastName.toLowerCase().includes(search.toLowerCase()) || x.email.toLowerCase().includes(search.toLowerCase()) || !search;
+            }
+        }
+    }
+
+    
 
     fetchUsers({ user }) {
-        if (user) {
+        if(user) {
             let currentRole;
             console.log(user)
-            return user.map((item) => {
+            return user.filter(this.searchFilter(this.state.search)).map((item) => {
                 return (
                     <tr key={item.userId}>
                         <td>{item.roles.map((i) => {
@@ -102,6 +103,7 @@ class userDetails extends Component {
                 )
             })
         }
+        return <tr><td><span style={{fontSize:'24px',fontWeight:'bold'}}>...Loading. Please Wait!</span></td></tr>
     }
 
     fetchRoles({ userRole }) {
@@ -118,6 +120,10 @@ class userDetails extends Component {
                 })
             )
         }
+    }
+
+    searchOnChange = (e) => {
+        this.setState({search:e.target.value})
     }
 
     render() {
@@ -167,7 +173,7 @@ class userDetails extends Component {
                         <Sidebar.Pusher dimmed={this.state.menuVisible}>
                             <Segment basic style={{overFlow:'scroll'}}>
                                 <div className="container">
-
+                                    
                                     <h1>Users List</h1>
                                     <Link to="/superDashboard/registration">Add Users</Link>
                                     <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
@@ -249,6 +255,8 @@ class userDetails extends Component {
                                             <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
                                         </ModalFooter>
                                     </Modal>
+                                    <SearchFilter type="text" value={this.state.search}
+                                        onChange={this.searchOnChange} />
                                     <Table>
 
                                         <thead>
@@ -260,7 +268,6 @@ class userDetails extends Component {
                                                 <th>Email</th>
                                                 <th>Contact No.</th>
                                                 <th>Actions</th>
-
                                             </tr>
                                         </thead>
                                         <tbody>
