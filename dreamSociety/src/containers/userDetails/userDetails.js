@@ -76,8 +76,7 @@ class userDetails extends Component {
             }
         }
     }
-
-    
+ 
 
     fetchUsers({ user }) {
         if(user) {
@@ -173,8 +172,6 @@ class userDetails extends Component {
                         <Sidebar.Pusher dimmed={this.state.menuVisible}>
                             <Segment basic style={{overFlow:'scroll'}}>
                                 <div className="container">
-                                    
-                                    <h1>Users List</h1>
                                     <Link to="/superDashboard/registration">Add Users</Link>
                                     <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                                         <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit User</ModalHeader>
