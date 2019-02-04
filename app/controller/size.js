@@ -16,7 +16,7 @@ exports.create = (req,res) => {
 }
 
 exports.get = (req, res) => {
-    Size.findAll()
+    Size.findAll({where:{isActive:false}})
       .then(size => {
         res.json(size);
       });
