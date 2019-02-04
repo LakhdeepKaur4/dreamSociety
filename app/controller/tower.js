@@ -56,19 +56,29 @@ exports.update = (req,res) => {
       });
 }
 
-exports.delete = (req,res) => {
-    console.log("---delete----");
-    const id = req.params.id;  
-    console.log("Tower id",id);
-    if(!id){
-        res.json("Please enter id");
+exports.delete = async(req,res,next) => {
+    try{
+        const id = req.params.id;
+    
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+        }
+        const update = req.body;
+        if(!update){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
+        }
+        const updatedTower = await Tower.find({where:{towerId:id}}).then(tower => {
+            return tower.updateAttributes(update)
+          })
+        if(updatedTower){
+            return res.status(httpStatus.OK).json({
+                message: "Tower deleted successfully",
+                tower:updatedTower
+            });
+        }
+    }catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
-    Tower.destroy({
-      where: { towerId: id }
-    })
-      .then(deletedTower => {
-        res.json({message:"Tower deleted successfully!",deletedTower:deletedTower});
-      });
 }
 
 

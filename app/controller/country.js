@@ -78,7 +78,7 @@ exports.delete = async(req,res,next) => {
         if(updatedCountry){
             return res.status(httpStatus.OK).json({
                 message: "Country deleted successfully",
-                event:updatedCountry
+                country:updatedCountry
             });
         }
     }catch(error){

@@ -55,16 +55,28 @@ exports.update = (req,res) => {
       });
 }
 
-exports.delete = (req,res) => {
-    const id = req.params.id;
-    if(!id){
-        res.json("Please enter id");
+exports.delete = async(req,res,next) => {
+    try{
+        const id = req.params.id;
+    
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+        }
+        const update = req.body;
+        if(!update){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
+        }
+        const updatedSize = await Size.find({where:{sizeId:id}}).then(size => {
+            return size.updateAttributes(update)
+          })
+        if(updatedSize){
+            return res.status(httpStatus.OK).json({
+                message: "Size deleted successfully",
+                event:updatedSize
+            });
+        }
+    }catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
-    Size.destroy({
-      where: { sizeId: id }
-    })
-      .then(deletedSize => {
-        res.json({message:"Size deleted successfully!",deletedSize:deletedSize});
-      });
 }
 

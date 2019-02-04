@@ -58,17 +58,28 @@ exports.update = (req,res) => {
       });
 }
 
-exports.delete = (req,res) => {
-    const id = req.params.id;
-    if(!id){
-        res.json("Please enter id");
+exports.delete = async(req,res,next) => {
+    try{
+        const id = req.params.id;
+    
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+        }
+        const update = req.body;
+        if(!update){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
+        }
+        const updatedLocation = await City.find({where:{locationId:id}}).then(location => {
+            return location.updateAttributes(update)
+          })
+        if(updatedLocation){
+            return res.status(httpStatus.OK).json({
+                message: "Location deleted successfully",
+                location:updatedLocation
+            });
+        }
+    }catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
-    Location.destroy({
-      where: { locationId: id }
-    })
-      .then(deletedLocation => {
-        res.json({message:"Location deleted successfully!",deletedLocation:deletedLocation});
-      });
 }
-
 
