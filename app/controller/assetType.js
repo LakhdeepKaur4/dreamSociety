@@ -49,7 +49,7 @@ exports.update = async(req,res,next) => {
         if(!update){
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
         }
-        const updatedAssetsType = await AssetsType.find({where:{assetTypeId:id}}).then(assetsType => {
+        const updatedAssetsType = await AssetsType.find({where:{assetTypeId:id}, include:[{model:Assets,attributes:['assetId','assetName']}]},).then(assetsType => {
             return assetsType.updateAttributes(update)
           })
         if(updatedAssetsType){

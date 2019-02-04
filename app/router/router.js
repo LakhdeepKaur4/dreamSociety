@@ -24,7 +24,6 @@ module.exports = function(app) {
 	const flatDetailController = require('../controller/flatDetail');
 	
 	
-
 	app.get('/', userController.start);
 
 	app.post('/api/auth/signup', [verifySignUp.checkDuplicateEmail,verifySignUp.checkRolesExisted,verifySignUp.checkDuplicateUserName], userController.signup);
@@ -67,7 +66,7 @@ module.exports = function(app) {
 
 	app.put('/api/country/:id',[authJwt.verifyToken],  countryController.update);
 
-	app.delete('/api/country/:id',[authJwt.verifyToken], countryController.delete);
+	app.put('/api/country/:id',[authJwt.verifyToken], countryController.delete);
 
 	app.post('/api/state', [authJwt.verifyToken],stateController.create);
 
@@ -77,7 +76,7 @@ module.exports = function(app) {
 
 	app.put('/api/state/:id', [authJwt.verifyToken], stateController.update);
 
-	app.delete('/api/state/:id',[authJwt.verifyToken], stateController.delete);
+	app.put('/api/state/:id',[authJwt.verifyToken], stateController.delete);
 
 	app.post('/api/location',[authJwt.verifyToken], locationController.create);
 
@@ -87,7 +86,7 @@ module.exports = function(app) {
 
 	app.put('/api/location/:id',[authJwt.verifyToken], locationController.update);
 
-	app.delete('/api/location/:id', [authJwt.verifyToken],locationController.delete);
+	app.put('/api/location/:id', [authJwt.verifyToken],locationController.delete);
 
 	app.post('/api/society', [authJwt.verifyToken],societyController.create);
 
@@ -97,7 +96,7 @@ module.exports = function(app) {
 
 	app.put('/api/society/:id', [authJwt.verifyToken],societyController.update);
 
-	app.delete('/api/society/:id', [authJwt.verifyToken],societyController.delete);
+	app.put('/api/society/:id', [authJwt.verifyToken],societyController.delete);
 
 	app.post('/api/tower', [authJwt.verifyToken],towerController.create);
 
@@ -127,7 +126,7 @@ module.exports = function(app) {
 
 	app.put('/api/service/:id',[authJwt.verifyToken], serviceController.update);
 
-	app.delete('/api/service/:id',[authJwt.verifyToken], serviceController.delete);
+	app.put('/api/service/:id',[authJwt.verifyToken], serviceController.delete);
 
 	app.post('/api/size',[authJwt.verifyToken],  sizeController.create);
 
@@ -137,7 +136,7 @@ module.exports = function(app) {
 
 	app.put('/api/size/:id',[authJwt.verifyToken], sizeController.update);
 
-	app.delete('/api/size/:id',[authJwt.verifyToken], sizeController.delete);
+	app.put('/api/size/:id',[authJwt.verifyToken], sizeController.delete);
 
 	app.post('/api/event', [authJwt.verifyToken],eventController.create);
 

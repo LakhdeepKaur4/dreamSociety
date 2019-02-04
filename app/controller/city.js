@@ -8,8 +8,8 @@ exports.create = (req,res) => {
 
     City.create({
         cityName:req.body.cityName,
+        countryId:req.body.countryId,
         stateId:req.body.stateId,
-        userId:req.body.userId
     }).then(city =>{
         res.json({message:"City added successfully!",city:city});
     }).catch(err => {
@@ -44,7 +44,7 @@ exports.update = (req,res) => {
     if(!id){
         res.json("Please enter id");
     }
-    const updates = req.body.updates;
+    const updates = req.body;
     City.find({
         where: { cityId: id }
       })
