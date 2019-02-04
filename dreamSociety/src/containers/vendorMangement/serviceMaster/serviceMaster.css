@@ -1,0 +1,35 @@
+
+
+.btn-primary {
+    color: #fff;
+    background-color: cadetblue;
+    border-color: cadetblue;
+    
+}
+
+.form{
+    margin:0 auto;
+    background: #f3f3f3;
+    padding: 20px;
+    border-radius: 20px;
+    width: 600px;
+}
+
+.button{
+    background-color: gray;
+    color: white;
+}   
+
+.btn{
+    color:white;
+    background-color: cadetblue;
+    margin-left: 50px;
+    border-color: cadetblue;
+}
+
+.btn-danger{
+    background-color: #E32020;
+    border-color: #E32020;
+
+}
+

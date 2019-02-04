@@ -1,0 +1,13 @@
+.flatMaster{
+    width: 600px;
+    margin: 0 auto;
+    padding: 30px;
+    border: 1px solid #80bdff;
+    border-radius: 20px;
+    scroll-snap-type: initial;
+    background:#f3f3f3;
+
+}
+.flatMaster.input{
+    width:50px;
+}
