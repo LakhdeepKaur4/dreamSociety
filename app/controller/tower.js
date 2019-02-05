@@ -17,7 +17,7 @@ exports.create = (req,res) => {
 }
 
 exports.get = (req, res) => {
-    Tower.findAll()
+    Tower.findAll({isActive:true})
       .then(tower => {
         res.json(tower);
       });
