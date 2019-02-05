@@ -107,7 +107,7 @@ class TowerMaster extends Component {
                                         </FormGroup>
                                         <FormGroup>
                                             <Button color="success" className="mr-2">Submit</Button>
-                                            <Button color="primary" to="/superDashboard/display-tower">Tower details</Button>
+                                            <Link color="primary" to="/superDashboard/display-tower">Tower details</Link>
                                         </FormGroup>
                                     </Form>
                                 </div>

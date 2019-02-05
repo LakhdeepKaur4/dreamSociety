@@ -200,6 +200,7 @@ class EventMaster extends Component {
                     <button
                       className="btn btn-primary"
                     > Submit</button>
+                      <Link color="primary" to="/superDashboard/display-event">event details</Link>
                   </form>
                 </div>
               </Segment>

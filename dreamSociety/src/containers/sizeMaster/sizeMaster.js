@@ -95,6 +95,7 @@ class SizeMaster extends Component {
                                         </FormGroup>
                                         <FormGroup>
                                             <Button type="submit" color="success">Submit</Button>
+                                            <Link color="primary" to="/superDashboard/display-size">Size details</Link>
                                         </FormGroup>
                                     </Form>
                                 </div>
