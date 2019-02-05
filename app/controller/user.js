@@ -127,7 +127,7 @@ exports.signin = (req, res) => {
 	}).then(user => {
 	    if (!user) {
 			console.log("------user-------");
-			return res.status(httpStatus.OK).send({
+			return res.status(httpStatus.UNAUTHORIZED).send({
 				status: 401,
 				auth: false,
 				user: user,
@@ -138,7 +138,7 @@ exports.signin = (req, res) => {
 		var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
 		console.log("isvalid===>",passwordIsValid)
 		if (!passwordIsValid) {
-			return res.status(httpStatus.OK).send({
+			return res.status(httpStatus.UNAUTHORIZED).send({
 				status: 401,
 				auth: false,
 				user: user,
@@ -146,7 +146,6 @@ exports.signin = (req, res) => {
 				
 			});
 		}
-
 		var token = jwt.sign({
 			id: user.userId
 		}, config.secret, {
