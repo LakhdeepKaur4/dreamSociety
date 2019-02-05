@@ -54,7 +54,9 @@ module.exports = function(app) {
 
 	app.get('/api/city/:id', [authJwt.verifyToken], cityController.getById);
 
-	app.put('/api/city/delete/:id',[authJwt.verifyToken], cityController.update);
+	app.put('/api/city/:id',[authJwt.verifyToken], cityController.update);
+
+	app.put('/api/city/delete/:id',[authJwt.verifyToken], cityController.delete);
 
 	app.delete('/api/city/:id',[authJwt.verifyToken], cityController.delete);
 
