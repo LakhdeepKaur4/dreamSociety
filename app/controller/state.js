@@ -19,7 +19,7 @@ exports.create = (req,res) => {
 }
 
 exports.get = (req, res) => {
-    State.findAll()
+    State.findAll({isActive:true})
       .then(state => {
         res.json(state);
       });
