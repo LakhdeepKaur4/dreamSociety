@@ -17,12 +17,20 @@ exports.create = (req,res) => {
 })
 }
 
-exports.get = (req, res) => {
-    City.findAll()
-      .then(cities => {
-        res.json(cities);
-      });
-    }
+exports.create = (req,res) => {
+    console.log("creating city");
+
+    City.create({
+        cityName:req.body.cityName,
+        cityId:req.body.cityId,
+        stateId:req.body.stateId,
+    }).then(city =>{
+        res.json({message:"City added successfully!",city:city});
+    }).catch(err => {
+    res.status(500).send("Fail! Error -> " + err);
+})
+}
+
 
 exports.getById = (req,res) => {
    City.findAll({

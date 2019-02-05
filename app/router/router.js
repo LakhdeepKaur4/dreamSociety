@@ -106,7 +106,7 @@ module.exports = function(app) {
 
 	app.put('/api/tower/:id',[authJwt.verifyToken], towerController.update);
 
-	app.delete('/api/tower/:id',[authJwt.verifyToken], towerController.delete);
+	// app.delete('/api/tower/:id',[authJwt.verifyToken], towerController.delete);
 
 	app.post('/api/flat',[authJwt.verifyToken],  flatController.create);
 
@@ -136,7 +136,7 @@ module.exports = function(app) {
 
 	app.put('/api/size/:id',[authJwt.verifyToken], sizeController.update);
 
-	app.put('/api/size/:id',[authJwt.verifyToken], sizeController.delete);
+	// app.put('/api/size/:id',[authJwt.verifyToken], sizeController.delete);
 
 	app.post('/api/event', [authJwt.verifyToken],eventController.create);
 
