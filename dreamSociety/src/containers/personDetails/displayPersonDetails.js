@@ -6,6 +6,8 @@ import {authHeader} from '../../helper/authHeader';
 import {URN} from '../../actions/index';     
 import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';                
 import {viewPerson} from '../../actionCreators/personDetailsMasterAction';
+import SearchFilter from '../../components/searchFilter/searchFilter'
+
 class displayPersonDetails extends Component{
 
 
@@ -27,6 +29,7 @@ class displayPersonDetails extends Component{
             isActive:false
         },
         editPersonModal:false,
+        search:''
     }
     }
 componentDidMount(){
@@ -56,13 +59,22 @@ deletePerson(userId){
         this.setState({editPersonData:{isActive:false}})
     })
 }
+searchFilter(search){
+        return function(x){
+            return x.userName.toLowerCase().includes(search.toLowerCase()) || !search;
+        }
+    }
+
+    searchOnChange =(e)=>{
+        this.setState({search:e.target.value})        
+    }
 person({person1}){
    console.log(person1);
 
             if(person1){
                 console.log("xyz",person1)
                 return(
-                    person1.map((item)=>{
+                    person1.filter(this.searchFilter(this.state.search)).map((item)=>{
                      console.log(item.roles,"ancdd")
                      console.log(item.roles.id)
                         return(
@@ -90,7 +102,7 @@ person({person1}){
             }
 }
 
-
+  
     render(){
         return(
             <div>
@@ -188,6 +200,7 @@ person({person1}){
                 <Button color="secondary" >Cancel</Button>
         </ModalFooter>
 </Modal>
+<SearchFilter type ="text"   value={this.state.search}  onChange ={this.searchOnChange} />
          <thead>
              <tr>
                  <th>UserName</th>
@@ -220,7 +233,7 @@ function mapStateToProps(state){
  return{
      personDetails:state.personDetails,
      role:state.role
- }   
+  }   
     
 }
 

@@ -9,7 +9,7 @@ import { Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, L
 import { URN } from '../../actions';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-
+import  SearchFilter from '../../components/searchFilter/searchFilter';
 class DisplayEventMaster extends Component {
         state = {
                 editEventData: {
@@ -24,7 +24,8 @@ class DisplayEventMaster extends Component {
                         isActive: false
                 },
                 editEventModal: false,
-                menuVisible: false
+                menuVisible: false,
+                search:''
         }
         componentDidMount() {
                 this.props.ViewEvent();
@@ -83,6 +84,12 @@ class DisplayEventMaster extends Component {
                 })
         }
 
+
+        searchFilter(search){
+                return function(x){
+                    return x.eventType.toLowerCase().includes(search.toLowerCase()) || !search;
+                }
+            }
         getEvent({ events }) {
                 console.log("events rocks", events);
 
@@ -99,12 +106,16 @@ class DisplayEventMaster extends Component {
                         )
                 }
         }
-
+        searchOnChange =(e)=>{
+                //  this.setState({})
+                this.setState({search:e.target.value})
+                }
+              
         displayEvent({ getEvent }) {
                 console.log(getEvent);
                 if (getEvent) {
                         return (
-                                getEvent.event.map((item) => {
+                                getEvent.event.filter(this.searchFilter(this.state.search)).map((item) => {
                                         return (
                                                 <tr key={item.eventId}>
                                                         <td>{item.eventType}</td>
@@ -260,6 +271,7 @@ class DisplayEventMaster extends Component {
                                                                                         <Button color="secondary" onClick={this.toggleEditEventModal.bind(this)}>Cancel</Button>
                                                                                 </ModalFooter>
                                                                         </Modal>
+                                                                        <SearchFilter type="text" value ={this.state.search}   onChange={this.searchOnChange}  />
                                                                         <thead>
                                                                                 <tr>
                                                                                         <th>Event Type</th>
