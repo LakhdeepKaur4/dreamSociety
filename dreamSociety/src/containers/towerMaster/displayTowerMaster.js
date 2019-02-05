@@ -20,7 +20,8 @@ class DisplayTowerMaster extends Component {
     editTowerData: {
 
       towerId: [],
-      towerName: []
+      towerName: [],
+      isActive:false
     },
     editTowerModal: false,
     menuVisible: false
@@ -49,11 +50,12 @@ class DisplayTowerMaster extends Component {
   deleteTower(towerId) {
     console.log(towerId);
 
+  let {isActive} =this.state.editTowerData;
+    axios.put(
+      `${URN}/tower/delete` + towerId, {isActive},{ headers: authHeader() }).then((response) => {
+       this.refreshdata()
 
-    axios.delete(
-      `${URN}/tower/` + towerId, { headers: authHeader() }).then((response) => {
-
-        this.setState(this.refreshdata());
+        this.setState({editTowerData:{isActive:false}});
 
       })
   }
@@ -191,7 +193,7 @@ class DisplayTowerMaster extends Component {
                   </ModalFooter>
                 </Modal>
 
-                <table className="table table-striped" style={{ marginTop: 20 }}>
+                <table >
                   <thead>
                     <tr>
 

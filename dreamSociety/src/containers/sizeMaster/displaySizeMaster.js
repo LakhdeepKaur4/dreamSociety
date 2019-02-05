@@ -15,7 +15,8 @@ class DisplaySizeMaster extends Component {
     editSizeData: {
       id: "",
       sizeId: [],
-      sizeType: []
+      sizeType: [],
+      isActive:false
     },
     editSizeModal: false,
     menuVisible: false
@@ -76,10 +77,11 @@ class DisplaySizeMaster extends Component {
 
   deleteSize(sizeId) {
     console.log('sisxcdasd', sizeId);
-
-    axios.put(`${URN}/size/` + sizeId, { headers: authHeader() }).then((response) => {
+        let {isActive } =this.state.editSizeData
+    axios.put(`${URN}/size/` + sizeId,{isActive}, { headers: authHeader() }).then((response) => {
       console.log(response.data);
-      this.setState(this.refreshData())
+      this.refreshData()
+      this.setState({editSizeData:{isActive:false}})
     })
       .catch((err) => {
         console.log(err);
@@ -186,7 +188,7 @@ class DisplaySizeMaster extends Component {
                     </ModalFooter>
                   </Modal>
 
-                  <table className="table table-striped" style={{ marginTop: 20 }}>
+                  <table >
                     <thead>
                       <tr>
 
