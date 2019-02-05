@@ -1,7 +1,10 @@
 const db = require('../config/db.config.js');
 const config = require('../config/config.js');
+const httpStatus = require('http-status');
 
 const City = db.city;
+const Country = db.country;
+const State = db.state;
 
 exports.create = (req,res) => {
     console.log("creating city");
@@ -17,25 +20,22 @@ exports.create = (req,res) => {
 })
 }
 
-exports.create = (req,res) => {
-    console.log("creating city");
-
-    City.create({
-        cityName:req.body.cityName,
-        cityId:req.body.cityId,
-        stateId:req.body.stateId,
-    }).then(city =>{
-        res.json({message:"City added successfully!",city:city});
-    }).catch(err => {
-    res.status(500).send("Fail! Error -> " + err);
-})
-}
-
+exports.get = (req, res) => {
+    console.log("getting city==>")
+    City.findAll({where:{isActive:true},
+        include:[{model:State,attributes:['stateId','stateName']},
+        {model:Country,attributes:['countryId','countryName']}  ]
+        })
+      .then(cities => {
+        res.json(cities);
+      });
+    }
 
 exports.getById = (req,res) => {
    City.findAll({
        where: {stateId: req.params.id},
-   }).then(city => {
+   },
+   ).then(city => {
     res.status(200).json(
          city
      );

@@ -106,7 +106,7 @@ module.exports = function(app) {
 
 	app.put('/api/tower/:id',[authJwt.verifyToken], towerController.update);
 
-	// app.delete('/api/tower/:id',[authJwt.verifyToken], towerController.delete);
+	app.put('/api/tower/delete/:id',[authJwt.verifyToken], towerController.delete);
 
 	app.post('/api/flat',[authJwt.verifyToken],  flatController.create);
 

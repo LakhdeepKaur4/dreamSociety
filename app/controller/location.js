@@ -20,7 +20,12 @@ exports.create = (req,res) => {
 }
 
 exports.get = (req, res) => {
-    Location.findAll({where:{isActive:true}})
+    Location.findAll({where:{isActive:true},
+        include:[{model:State,attributes:['stateId','stateName']},
+        {model:Country,attributes:['countryId','countryName']},
+        {model:City,attributes:['cityId','cityName']},
+    ]
+    })
       .then(location => {
         res.json(location);
       });
