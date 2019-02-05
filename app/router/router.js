@@ -54,7 +54,7 @@ module.exports = function(app) {
 
 	app.get('/api/city/:id', [authJwt.verifyToken], cityController.getById);
 
-	app.put('/api/city/:id',[authJwt.verifyToken], cityController.update);
+	app.put('/api/city/delete/:id',[authJwt.verifyToken], cityController.update);
 
 	app.delete('/api/city/:id',[authJwt.verifyToken], cityController.delete);
 
@@ -66,7 +66,7 @@ module.exports = function(app) {
 
 	app.put('/api/country/:id',[authJwt.verifyToken],  countryController.update);
 
-	app.put('/api/country/:id',[authJwt.verifyToken], countryController.delete);
+	app.put('/api/country/delete/:id',[authJwt.verifyToken], countryController.delete);
 
 	app.post('/api/state', [authJwt.verifyToken],stateController.create);
 
@@ -76,7 +76,7 @@ module.exports = function(app) {
 
 	app.put('/api/state/:id', [authJwt.verifyToken], stateController.update);
 
-	app.put('/api/state/:id',[authJwt.verifyToken], stateController.delete);
+	app.put('/api/state/delete/:id',[authJwt.verifyToken], stateController.delete);
 
 	app.post('/api/location',[authJwt.verifyToken], locationController.create);
 
@@ -86,7 +86,7 @@ module.exports = function(app) {
 
 	app.put('/api/location/:id',[authJwt.verifyToken], locationController.update);
 
-	app.put('/api/location/:id', [authJwt.verifyToken],locationController.delete);
+	app.put('/api/location/delete:id', [authJwt.verifyToken],locationController.delete);
 
 	app.post('/api/society', [authJwt.verifyToken],societyController.create);
 
@@ -96,7 +96,7 @@ module.exports = function(app) {
 
 	app.put('/api/society/:id', [authJwt.verifyToken],societyController.update);
 
-	app.put('/api/society/:id', [authJwt.verifyToken],societyController.delete);
+	app.put('/api/society/delete/:id', [authJwt.verifyToken],societyController.delete);
 
 	app.post('/api/tower', [authJwt.verifyToken],towerController.create);
 
