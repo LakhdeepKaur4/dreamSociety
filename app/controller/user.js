@@ -65,7 +65,7 @@ exports.signup = (req, res) => {
 			}
 		}).then(roles => {
 			user.setRoles(roles).then(() => {
-				res.status(httpStatus.CREATED).json("User registered successfully!");
+				res.status(httpStatus.CREATED).json({message:"User registered successfully!"});
 			});
 		}).catch(err => {
 			res.status(httpStatus.INTERNAL_SERVER_ERROR).send("Error -> " + err);
