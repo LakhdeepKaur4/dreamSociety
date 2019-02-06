@@ -26,14 +26,11 @@ import DisplayEventMaster from './containers/eventMaster/displayEventMaster';
 import DisplaySizeMaster from './containers/sizeMaster/displaySizeMaster';
 import FlatMaster from './containers/flatMaster/flatMaster';
 import FlatMasterDetails from './containers/flatMaster/flatMasterDetails';
-<<<<<<< HEAD
 import countryMaster from './containers/countryMaster/countryMaster';
 import countryMasterDetails from './containers/countryMaster/countryMasterDetails';
 import stateMaster from './containers/stateMaster/stateMaster';
 import stateMasterDetails from './containers/stateMaster/stateMasterDetails';
 
-=======
->>>>>>> d26a64827c308000926d01d2a39d9519a72ea262
 import PersonDetails from './containers/personDetails/personDetails';
 import serviceMaster from './containers/vendorMangement/serviceMaster/serviceMaster';
 import displayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
@@ -47,11 +44,8 @@ import AssetsTypeSubList from './containers/assetsTypeSubMaster/assetsTypeSubLis
 import flatDetailMaster from './containers/flatDetailMaster/flatDetailMaster';
 import flatDetails from './containers/flatDetailMaster/flatDetails';
 // import locationMaster from './containers/locationMaster/locationMaster';
-<<<<<<< HEAD
 // import locationDetails from './containers/locationMaster/locationDetails';
-=======
 import locationDetails from './containers/locationMaster/locationDetails';
->>>>>>> d26a64827c308000926d01d2a39d9519a72ea262
 
 
 class App extends Component {
@@ -106,11 +100,8 @@ class App extends Component {
             <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
             <Route path ='/superdashboard/flatDetails' component ={flatDetails}/>
             {/* <Route path ='/superdashboard/locationMaster' component ={locationMaster}/>  */}
-<<<<<<< HEAD
             {/* <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>   */}
-=======
             <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>  
->>>>>>> d26a64827c308000926d01d2a39d9519a72ea262
           </Switch>
         </div>
       </BrowserRouter>

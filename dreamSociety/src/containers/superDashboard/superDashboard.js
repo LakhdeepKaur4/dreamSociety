@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './superDashboard.css';
 import Logo from '../../assets/2.jpg';
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
+import {bindActionCreators} from 'redux';
+import {userLogout} from '../../actionCreators/loginAction';
+import {connect} from 'react-redux';
 
  class Dashboard extends Component {
   constructor(props) {
