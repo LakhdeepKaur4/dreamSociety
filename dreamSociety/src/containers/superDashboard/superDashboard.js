@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './superDashboard.css';
 import Logo from '../../assets/2.jpg';
+import {userLogout} from '../../actionCreators/loginAction';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+import {connect} from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-
-export default class Dashboard extends Component {
+ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = { menuVisible: false, editUserModal: false, };
@@ -19,6 +21,9 @@ export default class Dashboard extends Component {
     });
   }
 
+  logout=()=>{
+    this.props.userLogout();   
+}
   editUser() {
     this.setState({
       editUserModal: !this.state.editUserModal
@@ -50,7 +55,7 @@ export default class Dashboard extends Component {
           </ul>
           <form className="form-inline mt-2 mt-md-0">
             <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
-              onClick={this.editUser}>Logout</button>
+              onClick={this.logout}>Logout</button>
           </form>
         </div>
       </nav>
@@ -69,6 +74,8 @@ export default class Dashboard extends Component {
             <Menu.Item><Icon name="user" /><Link to="/superDashboard/flatmaster">Flat Master</Link></Menu.Item>
             <Menu.Item><Icon name="user" /><Link to="/superDashboard/sizemaster">Size Master</Link></Menu.Item>
             <Menu.Item><Icon name="user" /><Link to="/superDashboard/cityMaster">City Master</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashBoard/assetsMaster">Assets Master</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashBoard/assetsTypeSubMaster">Assets Type Sub Master</Link></Menu.Item>
           </Sidebar>
           <Sidebar.Pusher dimmed={this.state.menuVisible}>
             <Segment basic style={{ backgroundImage: `url(${Logo})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '600px' }}>
@@ -85,3 +92,8 @@ export default class Dashboard extends Component {
 }
 
 
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({userLogout},dispatch);
+  }
+
+  export default (connect(null,mapDispatchToProps)(Dashboard))

@@ -16,6 +16,10 @@ import flatDetailMasterReducer from './flatDetailMasterReducer/flatDetailMasterR
 import locationMasterReducer from './locationMasterReducer/locationMasterReducer';
 import cityMasterReducer from './cityMasterReducer/cityMasterReducer';
 
+import AssetsReducer from './assetsReducer/assetsReducer';
+import AssetsTypeReducer from './assetsReducer/assetsTypeReducer'
+import   flatDetailMasterReducer from './flatDetailMasterReducer/flatDetailMasterReducer';
+import   locationMasterReducer from './locationMasterReducer/locationMasterReducer';
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -33,6 +37,8 @@ const rootReducer = combineReducers({
     vendorMasterReducer,
     societyReducer,
     personDetails,
+    AssetsReducer,
+    AssetsTypeReducer,
     flatDetailMasterReducer,
     locationMasterReducer
 })
