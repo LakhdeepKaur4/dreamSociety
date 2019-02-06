@@ -10,6 +10,7 @@ import { URN } from '../../../actions/index';
 import { Link } from 'react-router-dom';
 import './vendorMaster.css';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+import SearchFilter from '../../../components/searchFilter/searchFilter';
 
 class displayVendorMaster extends Component {
 
@@ -25,7 +26,8 @@ class displayVendorMaster extends Component {
             isActive: false,
             menuVisible: false
         },
-        editVendorModal: false
+        editVendorModal: false,
+        search:''
 
     }
 
@@ -52,6 +54,16 @@ class displayVendorMaster extends Component {
             editVendorData: { vendorId, vendorName, serviceName, serviceId, description }, editVendorModal: !this.state.editVendorModal
         });
 
+    }
+
+    searchFilter(search){
+        return function(x){
+            return x.vendorName.toLowerCase().includes(search.toLowerCase()) || !search;
+        }
+    }
+
+    searchOnChange = (e) => {
+        this.setState({search:e.target.value})
     }
 
     getDropdown = ({ item }) => {
@@ -217,6 +229,8 @@ class displayVendorMaster extends Component {
 
 
                                 </Modal>
+                                <SearchFilter  type="text" value={this.state.search}
+                                            onChange={this.searchOnChange} />
                                 <table className="table table-bordered">
                                     <thead>
                                         <tr>

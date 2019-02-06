@@ -35,8 +35,11 @@ import displayServices from './containers/vendorMangement/serviceMaster/displayS
 import vendorMaster from './containers/vendorMangement/vendorMaster/vendorMaster';
 import displayVendorMaster from './containers/vendorMangement/vendorMaster/displayVendorMaster';
 import displayPersonDetails from './containers/personDetails/displayPersonDetails';
-// import flatDetailMaster from './containers/FlatDetailMaster/flatDetailMaster';
-// import flatDetails from './containers/FlatDetailMaster/flatDetails';
+import flatDetailMaster from './containers/flatDetailMaster/flatDetailMaster';
+import flatDetails from './containers/flatDetailMaster/flatDetails';
+import locationMaster from './containers/locationMaster/locationMaster';
+import locationDetails from './containers/locationMaster/locationDetails';
+
 
 class App extends Component {
   render() {
@@ -75,8 +78,10 @@ class App extends Component {
             <Route path= '/superDashboard/displayVendorMaster' component={displayVendorMaster}/>
             <Route path ='/superDashboard/displayServices'component ={displayServices}/>
             <Route path ='/superDashBoard/displayPerson' component={displayPersonDetails}/>
-            {/* <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
-            <Route path ='/superdashboard/flatDetails' component ={flatDetails}/> */}
+            <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
+            <Route path ='/superdashboard/flatDetails' component ={flatDetails}/>
+            <Route path ='/superdashboard/locationMaster' component ={locationMaster}/> 
+            <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>  
           </Switch>
         </div>
       </BrowserRouter>

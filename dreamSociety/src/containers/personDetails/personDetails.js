@@ -130,7 +130,7 @@ Email
         </div  >  
 <div   className="form-group">
     <label>Tower</label>
-    <select  name="towerId" value="this.state.towerId"       className="form-control" onChange ={(e)=>{this.setState({towerId:e.target.value})}}>
+    <select  name="towerId" value="this.state.towerId" className="form-control" onChange ={(e)=>{this.setState({towerId:e.target.value})}}>
     {this.Tower(this.props.personDetails)}
     </select>
 </div>

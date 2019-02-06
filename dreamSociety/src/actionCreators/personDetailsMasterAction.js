@@ -45,12 +45,15 @@ export function getTower(){
              payload:request
          }
      }
-
      export function viewPerson(){
-         const request = axios.get(`{URN}/auth/signup`,{headers:authHeader()})
-         .then()
-         return{
-             type:GET_PERSON,
-             payload:request
-         }
-     }
+         
+        const request = axios.get(`${URN}/user`,{headers:authHeader()})
+        .then(response=>response.data)
+        console.log(request,"res");
+        return{
+            type:GET_PERSON,
+            payload:request
+           
+        }
+ 
+    }
