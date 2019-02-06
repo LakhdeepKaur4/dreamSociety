@@ -68,11 +68,11 @@ exports.signup = (req, res) => {
 				res.status(httpStatus.CREATED).json({message:"User registered successfully!"});
 			});
 		}).catch(err => {
-			res.status(httpStatus.INTERNAL_SERVER_ERROR).send("Error -> " + err);
+			res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message: err});
 		});
 	}).catch(err => {
 		console.log("err==>",err)
-		res.status(httpStatus.INTERNAL_SERVER_ERROR).send("Fail! Error -> " + err);
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message:err});
 	})
 }
 
@@ -95,7 +95,7 @@ exports.update= (req, res) => {
 				});
 			})
 		.then(updatedUser => {
-			res.json({
+			res.status(httpStatus.OK).json({
 				message: "User updated successfully!",
 				updatedUser: updatedUser
 			});
@@ -163,7 +163,7 @@ exports.signin = (req, res) => {
 
 	}).catch(err => {
 		console.log()
-		res.status(500).send('Error -> ' + err);
+		res.status(500).json({message:err});
 	});
 }
 
@@ -188,7 +188,7 @@ exports.get = (req, res) => {
 		});
 	}catch(error){
 		console.log("error--->",error)
-		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({error:error})
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message:error})
 	}
 }
 
@@ -359,7 +359,7 @@ exports.role = async (req, res, next) => {
 			res.status(200).json(role);
 		}
 	} catch (error) {
-		res.status(500).json(error)
+		res.status(500).json({message:error})
 	}
 }
 
@@ -380,7 +380,7 @@ exports.roleTest = async (req, res, next) => {
 		},
 		});
 		if (role) {
-			return res.status(200).json(role);
+			return res.status(httpStatus.OK).json(role);
 		}
 	}
 	if(roleId == 2){
@@ -393,7 +393,7 @@ exports.roleTest = async (req, res, next) => {
 		},
 		});
 		if (role) {
-			return res.status(200).json(role);
+			return res.status(httpStatus.OK).json(role);
 		}
 	}
 
@@ -407,11 +407,11 @@ exports.roleTest = async (req, res, next) => {
 		},
 		});
 		if (role) {
-			return res.status(200).json(role);
+			return res.status(httpStatus.OK).json(role);
 		}
 	}
 	} catch (error) {
-		res.status(500).json(error)
+		res.status(httpStatus.OK).json(error)
 	}
 }
 
@@ -511,9 +511,6 @@ exports.signupCopy = (req, res) => {
 	})
 }
 
-exports.addPerson = async (req,res,next) => {
-
-}
 
 exports.encryptData = async(req,res,next) =>{
 try{
@@ -535,21 +532,4 @@ const test = await Test.create({name:encrypted});
 	console.log("eroor===>",error)
 	res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
 }
-}
-
-exports.schedule = async(req,res,next) =>{
-	try{
-		// var j = schedule.scheduleJob('*/1 * * * * ', function(){
-		// 	console.log('The answer to life, the universe, and everything!');
-		//   });
-		// let i =1
-		// var interval = setInterval(function(str1, str2) {
-		// 	console.log(str1 + " " + str2 + " "+ `${i}`);
-		//   }, 5000, "Hello.", "How are you?");
-		  
-		//   clearInterval(interval);
-		  
-	}catch(error){
-		res.send(error)
-	}
 }
