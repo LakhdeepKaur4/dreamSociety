@@ -5,8 +5,10 @@ import axios from 'axios';
 import {authHeader} from '../../helper/authHeader';
 import {URN} from '../../actions/index';     
 import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';                
-import {viewPerson} from '../../actionCreators/personDetailsMasterAction';
+import {viewPerson,getFlat,getTower,getRoles} from '../../actionCreators/personDetailsMasterAction';
 import SearchFilter from '../../components/searchFilter/searchFilter'
+import MenuBar   from '../../components/superAdminDashboardUI/menuBar/menuBar';
+import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 
 class displayPersonDetails extends Component{
 
@@ -19,10 +21,10 @@ class displayPersonDetails extends Component{
             email:'',
           
             towerId:[],
-        
+             roleName:'',
             flatDetailId:'',    
-          roles:'',
-        
+          roles:[],
+        id:'',
            
             familyMember:'',
             parking:'',  
@@ -34,28 +36,82 @@ class displayPersonDetails extends Component{
     }
 componentDidMount(){
      this.props.viewPerson()
+     this.props.getTower()
+     this.props.getRoles()
 
     console.log(this.props.viewPerson(),"abc")
 }
 
+OnKeyPresshandler(event) {
+        const pattern = /[a-zA-Z]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
+    
+OnKeyPressNumber(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    
+
+getRole({roles}){
+        console.log(roles,'sdfasfsdf')
+        if(roles){
+            return(
+                roles.map((item)=>{
+                    return(
+                    <option key={item.id} value={item.roleName}>{item.roleName} </option>
+                    )
+                })
+            )
+        }
+    
+    }
+refreshData(){
+        
+        this.props.viewPerson()
+}
 toggleEditPersonModal(){
+        
     this.setState({
-    editPersonModal:!this.editPersonModal
+    editPersonModal:!this.state.editPersonModal
 })
 }
-editPerson(userName,email,towerId, towerName,flatDetailId,roles,familyMember,parking  ) {
-    console.log('i m in edit ',userName,email,towerId,flatDetailId,roles,familyMember,parking );
+editPerson(userId,userName,roleName,email,towerId,id,roles,familyMember,parking,flatDetailId  ) {
+    console.log('i m in edit ',userName,email,towerId,id,roles,familyMember,parking );
     this.setState({
-            editPersonData: { userName,email,towerId,flatDetailId,roles,familyMember,parking,towerName },
+            editPersonData: { userId,userName,email,towerId,id,familyMember,parking,flatDetailId},
             editPersonModal: !this.state.editPersonModal
     })
 }
+updatePerson = ( ) => {
+        let {  userId,userName,email,towerId,id,roles,familyMember,parking,roleName,flatDetailId } = this.state.editPersonData;
+        console.log('dfdsf', userName,email,towerId,id,roles,familyMember,parking );
+
+        axios.put(`${URN}/user/` +userId, {userId,userName,email,towerId,id,roles,familyMember,parking,roleName,flatDetailId},
+                { headers: authHeader() }).then((response) => {
+
+                        this.refreshData();
+                })
+        this.setState({
+                editPersonModal: false, editPersonData: { userName:'',email:'',towerId:'',id:'',roles:'',familyMember:'',parking:'',roleName:'',flatDetailId:''  }
+        })
+}
+
+
+
 
 deletePerson(userId){
     let {isActive} = this.state.editPersonData;
-    axios.put(`${URN}/user/delete`+userId,{isActive},{headers:authHeader()}).then((response)=>
+    axios.put(`${URN}/user/delete/`+userId,{isActive},{headers:authHeader()}).then((response)=>
     {
+            this.refreshData();
         this.setState({editPersonData:{isActive:false}})
     })
 }
@@ -68,31 +124,47 @@ searchFilter(search){
     searchOnChange =(e)=>{
         this.setState({search:e.target.value})        
     }
+
+    getTower({get}){
+        console.log('abcd',get)
+        if(get){
+            return(
+      get.map((item)=>{
+          return(
+    
+          <option key={item.towerId} value={item.towerId}> {item.towerName} </option>
+      )
+      })
+      )
+      }
+    }
 person({person1}){
    console.log(person1);
 
             if(person1){
                 console.log("xyz",person1)
+                let currentRole;
                 return(
                     person1.filter(this.searchFilter(this.state.search)).map((item)=>{
                      console.log(item.roles,"ancdd")
-                     console.log(item.roles.id)
+                   
                         return(
                             <tr key={item.userId}>
                             <td>{item.userName}</td>
                             <td>{item.email}</td>
-                            {/* <td>{item.tower_master.towerName}</td> */}
+                            <td>{item.tower_master.towerName}</td>
                             
-                            <td>{item.roles.roleName}</td>
-                            <td>{item.flatName}</td>
+                            <td>{item.roles.map((i)=>{currentRole =i.roleName
+                        return  currentRole})}</td>
+                            {/* <td>{item.flatName}</td> */}
                             <td>{item.familyMember}</td>
                             <td>{item.parking}</td>
                         
                             <td>
 
-<button className="btn btn-primary"   onClick={  this.editPerson.bind(this,item.userName,item.email,item.towerId,item.flatDetailId,item.roles,item.familyMember,item.parking )}> Edit</button>
+<button className="btn btn-primary"   onClick={  this.editPerson.bind(this,item.userId,item.userName,  currentRole,item.email,item.towerId,item.flatDetailId,item.roles,item.familyMember,item.parking)}> Edit</button>
 
-<button className="btn btn-danger" >Delete</button>
+<button className="btn btn-danger" onClick ={this.deletePerson.bind(this, item.userId)}>Delete</button>
 </td>  
                         </tr>
 
@@ -104,9 +176,16 @@ person({person1}){
 
   
     render(){
-        return(
-            <div>
-                 <h3>Display Event Details</h3>
+        return( 
+                <div>
+                <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
+                <div style={{ margin: '48px auto' }}>
+                    <SideBar onClick={() => this.setState({ menuVisible: false })}
+                     visible={this.state.menuVisible}>
+                   <div>
+
+               
+                 <h3>Display Person Details</h3>
 
 <Modal isOpen={this.state.editPersonModal} toggle={this.toggleEditPersonModal.bind(this)}>
         <ModalHeader toggle={this.toggleEditPersonModal.bind(this)}>Edit  Event Details</ModalHeader>
@@ -122,6 +201,7 @@ person({person1}){
                                         editPersonData
                                 })
                         }}
+                        onKeyPress ={this.OnKeyPresshandler} required
                         />
                 </FormGroup> 
                 <FormGroup>
@@ -133,12 +213,13 @@ person({person1}){
                                         editPersonData
                                 })
                         }}
+                       
                         />
                 </FormGroup>
 
                 <FormGroup>
                         <Label> Tower Name</Label>
-                        <select  value={this.state.editPersonData.towerId} onChange={(e) => {
+                        <select    id="towerId"  value={this.state.editPersonData.towerId} onChange={(e) => {
                                 let { editPersonData } = this.state
                                 editPersonData.towerId = e.target.value;
                                 this.setState({
@@ -146,6 +227,7 @@ person({person1}){
                                 })
                         }}
                         >
+                        {this.getTower(this.props.personDetails)}      
                         </select>
                 </FormGroup>
                 {/* <FormGroup>
@@ -163,15 +245,34 @@ person({person1}){
                 
                 <FormGroup>
                         <Label> Roles</Label>
-                        <Input type="text"  value={this.state.editPersonData.id} onChange={(e) => {
+                        
+                        <select   value={this.state.editPersonData.roleName}   onChange={(e) => {
+                               
                                 let { editPersonData } = this.state
-                                editPersonData.roleName = e.target.value;
+                                editPersonData.roleName= e.target.value;
+                                this.setState({
+                                        editPersonData
+                                })
+                        }}
+                        
+                        >
+        
+                              {this.getRole(this.props.personDetails)}
+
+                        </select>
+                </FormGroup>
+{/* 
+                <FormGroup>
+                        <Label> Floor</Label>
+                        <Input type="text"  value={this.state.editPersonData.floor} onChange={(e) => {
+                                let { editPersonData } = this.state
+                                editPersonData.floor = e.target.value;
                                 this.setState({
                                         editPersonData
                                 })
                         }}
                         />
-                </FormGroup>
+                </FormGroup> */}
                 <FormGroup>
                         <Label> Number of family Members</Label>
                         <Input type="text"  value={this.state.editPersonData.familyMember} onChange={(e) => {
@@ -181,6 +282,7 @@ person({person1}){
                                         editPersonData
                                 })
                         }}
+                        onKeyPress={this.onkePressNumber}
                         />
                 </FormGroup>
                 <FormGroup>
@@ -192,15 +294,17 @@ person({person1}){
                                         editPersonData
                                 })
                         }}
+                        onKeyPress ={this.onKeyPressNumber}
                         />
                 </FormGroup>
         </ModalBody>
         <ModalFooter>
-                <Button color="primary" >Update Details</Button>
-                <Button color="secondary" >Cancel</Button>
+                <Button color="primary"onClick={this.updatePerson} >Update Details</Button>
+                <Button color="secondary" onClick={this.toggleEditPersonModal.bind(this)}>Cancel</Button>
         </ModalFooter>
 </Modal>
 <SearchFilter type ="text"   value={this.state.search}  onChange ={this.searchOnChange} />
+<Table>
          <thead>
              <tr>
                  <th>UserName</th>
@@ -219,7 +323,13 @@ person({person1}){
 {this.person(this.props.personDetails)}
 
             </tbody>
+        </Table>
+        
             </div>
+            </SideBar>
+            </div>
+            </div>
+           
         )
     }
 
@@ -238,7 +348,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch){
- return bindActionCreators({viewPerson},dispatch)   
+ return bindActionCreators({viewPerson,getFlat,getRoles,getTower},dispatch)   
 }
 
 

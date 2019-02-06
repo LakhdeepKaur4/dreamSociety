@@ -11,42 +11,42 @@ export function login(username, password) {
             password:  password
         }
       })
-      .then(handleResponse)
-      .then((data)=>{
-           if(data.status === 200) {
-            localStorage.setItem('token', data.accessToken);
-            localStorage.setItem('user-type',data.userType);
-            localStorage.setItem('firstName',data.firstName)
-            // localStorage.setItem('firstname',data.user.firstName)
-            console.log('==============', localStorage.getItem('token'));
-            console.log('==============', localStorage.getItem('user-type'));
-            console.log('================',data.firstName)
+    //   .then(handleResponse)
+    //   .then((data)=>{
+    //        if(data.status === 200) {
+    //         localStorage.setItem('token', data.accessToken);
+    //         localStorage.setItem('user-type',data.userType);
+    //         localStorage.setItem('firstName',data.firstName)
+    //         // localStorage.setItem('firstname',data.user.firstName)
+    //         console.log('==============', localStorage.getItem('token'));
+    //         console.log('==============', localStorage.getItem('user-type'));
+    //         console.log('================',data.firstName)
 
-            switch(data.userType) {
-                case 'SUPER_ADMIN':
-                return  this.history.push('/superDashboard');
-                case 'ADMIN':
-                return this.history.push('/adminDashboard');
-                case 'SOCIETY_MEMBER_OWNER':
-                return this.history.push('/ownerDashboard');
-                case 'SOCIETY_MEMBER_TENENT':
-                return this.history.push('/tenantDashboard');
-                case 'VENDOR':
-                return this.history.push('/vendorDashboard')
-                default :
-                return null;
-            }
-          }
+    //         switch(data.userType) {
+    //             case 'SUPER_ADMIN':
+    //             return  this.history.push('/superDashboard');
+    //             case 'ADMIN':
+    //             return this.history.push('/adminDashboard');
+    //             case 'SOCIETY_MEMBER_OWNER':
+    //             return this.history.push('/ownerDashboard');
+    //             case 'SOCIETY_MEMBER_TENENT':
+    //             return this.history.push('/tenantDashboard');
+    //             case 'VENDOR':
+    //             return this.history.push('/vendorDashboard')
+    //             default :
+    //             return null;
+    //         }
+    //       }
         //   else if(data.status === 401){
         //       console.log("Welckljxdljdlkfjs")
        
         //   }
               
-        } 
-      ) 
-      .catch(error=>{
-        return Promise.reject(error);
-      })          
+    //     } 
+    //   ) 
+    //   .catch(error=>{
+    //     return Promise.reject(error);
+    //   })          
     return {
         type: USER_LOGIN,
         payload: request

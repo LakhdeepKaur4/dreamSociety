@@ -6,8 +6,7 @@ import Logo from '../../assets/2.jpg';
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 
-
-export default class Dashboard extends Component {
+ class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.state = { menuVisible: false, editUserModal: false, };
@@ -20,6 +19,9 @@ export default class Dashboard extends Component {
     });
   }
 
+  logout=()=>{
+    this.props.userLogout();   
+}
   editUser() {
     this.setState({
       editUserModal: !this.state.editUserModal
@@ -43,3 +45,8 @@ export default class Dashboard extends Component {
 }
 
 
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({userLogout},dispatch);
+  }
+
+  export default (connect(null,mapDispatchToProps)(Dashboard))

@@ -26,23 +26,32 @@ import DisplayEventMaster from './containers/eventMaster/displayEventMaster';
 import DisplaySizeMaster from './containers/sizeMaster/displaySizeMaster';
 import FlatMaster from './containers/flatMaster/flatMaster';
 import FlatMasterDetails from './containers/flatMaster/flatMasterDetails';
+<<<<<<< HEAD
 import countryMaster from './containers/countryMaster/countryMaster';
 import countryMasterDetails from './containers/countryMaster/countryMasterDetails';
 import stateMaster from './containers/stateMaster/stateMaster';
 import stateMasterDetails from './containers/stateMaster/stateMasterDetails';
 
+=======
+>>>>>>> d26a64827c308000926d01d2a39d9519a72ea262
 import PersonDetails from './containers/personDetails/personDetails';
-// import AssetManagement from './containers/Asset/Asset_Management';
-// import AssetManagementDetails from './containers/Asset/Asset-Management-Details';
 import serviceMaster from './containers/vendorMangement/serviceMaster/serviceMaster';
 import displayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
 import vendorMaster from './containers/vendorMangement/vendorMaster/vendorMaster';
 import displayVendorMaster from './containers/vendorMangement/vendorMaster/displayVendorMaster';
 import displayPersonDetails from './containers/personDetails/displayPersonDetails';
+import AssetTypeMaster from './containers/assetsTypeMaster/assetsTypeMaster';
+import AssetList from './containers/assetsTypeMaster/assetsList';
+import AssetsTypeSubMaster from './containers/assetsTypeSubMaster/assetsTypeSubMaster';
+import AssetsTypeSubList from './containers/assetsTypeSubMaster/assetsTypeSubList'
 import flatDetailMaster from './containers/flatDetailMaster/flatDetailMaster';
 import flatDetails from './containers/flatDetailMaster/flatDetails';
 // import locationMaster from './containers/locationMaster/locationMaster';
+<<<<<<< HEAD
 // import locationDetails from './containers/locationMaster/locationDetails';
+=======
+import locationDetails from './containers/locationMaster/locationDetails';
+>>>>>>> d26a64827c308000926d01d2a39d9519a72ea262
 
 
 class App extends Component {
@@ -88,10 +97,20 @@ class App extends Component {
             <Route path= '/superDashboard/displayVendorMaster' component={displayVendorMaster}/>
             <Route path ='/superDashboard/displayServices'component ={displayServices}/>
             <Route path ='/superDashBoard/displayPerson' component={displayPersonDetails}/>
+            <Route path ='/superDashBoard/assetsMaster' exact component={AssetTypeMaster}/>
+            <Route path ='/superDashBoard/assetsMaster/assetsList' component={AssetList}/>
+            <Route path ='/superDashBoard/assetsTypeSubMaster' exact component={AssetsTypeSubMaster}/>
+            <Route path ='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubList}/>
+            {/* <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
+            <Route path ='/superdashboard/flatDetails' component ={flatDetails}/> */}
             <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
             <Route path ='/superdashboard/flatDetails' component ={flatDetails}/>
             {/* <Route path ='/superdashboard/locationMaster' component ={locationMaster}/>  */}
+<<<<<<< HEAD
             {/* <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>   */}
+=======
+            <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>  
+>>>>>>> d26a64827c308000926d01d2a39d9519a72ea262
           </Switch>
         </div>
       </BrowserRouter>

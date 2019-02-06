@@ -27,3 +27,7 @@
 .bg_img{
     background-image: url('../../assets/2.jpg');
 }
+
+.error{
+    color: red;
+}
