@@ -47,7 +47,7 @@ export const getCity = stateId => {
 
 
 export const addCity=(values)=>{
-    console.log(values);
+    // console.log(values);
    const request = axios.post(`${URN}/city` , values , {headers:authHeader()})
     .then(response => response.data)
 
@@ -93,13 +93,8 @@ export const deleteCity=(cityId)=>{
 
  export const updateCity=(cityId, countryId, stateId, cityName)=>{
      console.log('==updateCity====',cityId, countryId, stateId, cityName)
-    const data={
-        countryId,
-        stateId,
-        cityName
-
-    }
-    const request = axios.put(`${URN}/city/${cityId}` ,data, {headers:authHeader()})
+    
+    const request = axios.put(`${URN}/city/`+ cityId ,{countryId, stateId, cityName}, {headers:authHeader()})
      .then(response => response.data)
  
      // .then(getDetails())

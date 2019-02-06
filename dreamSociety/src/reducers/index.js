@@ -12,12 +12,10 @@ import SizeDetails from './sizeReducer/sizeReducer';
 import societyReducer from './societyReducer/societyReducer';
 import parkingDetail from './parkingReducer/parkingReducer';
 import personDetails from './personReducer/personReducer';
-<<<<<<< Updated upstream
-import   flatDetailMasterReducer from './flatDetailMasterReducer/flatDetailMasterReducer';
-import   locationMasterReducer from './locationMasterReducer/locationMasterReducer';
-=======
+import flatDetailMasterReducer from './flatDetailMasterReducer/flatDetailMasterReducer';
+import locationMasterReducer from './locationMasterReducer/locationMasterReducer';
 import cityMasterReducer from './cityMasterReducer/cityMasterReducer';
->>>>>>> Stashed changes
+
 
 const rootReducer = combineReducers({
     loginReducer,

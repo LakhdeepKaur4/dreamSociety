@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import{Link} from 'react-router-dom';
+import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
+import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import {getCountry,getState,getCity, addCity,detailCity} from './../../actionCreators/cityMasterAction';
 import _ from 'underscore';
 
@@ -25,6 +27,7 @@ class CityMaster extends Component {
             countryId:'',
             stateId:'',
             
+            menuVisible: false,
          }
         // this.onChangeCountry=this.onChangeCountry.bind(this);
         this.cityName=this.cityName.bind(this);
@@ -173,19 +176,21 @@ class CityMaster extends Component {
     handleSubmit=(e)=>{
         e.preventDefault();
 
-
-        
         this.props.addCity(this.state);
         console.log("submitted", this.state)
       
-
         this.setState({
           state:{
             cityName:'',
             countryId:'',
             stateId:'',
+
+            menuVisible: false,
+            
            
           }
+
+
         });
         console.log("cityid", this.state.stateId)
     }
@@ -194,12 +199,13 @@ class CityMaster extends Component {
 
     render() {
          console.log(this.props.cityMasterReducer)
-        //  console.log(this.state.countryData)
-
-        //  console.log(this.state.countryId)
+        
   
         return (
             <div>
+                <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
+              <div style={{ marginTop: '52px' }}>
+              <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}>
                 {/* <Link to='/superDashboard/cityMasterDetail'>City Details</Link> */}
                 <form className="ui form" onSubmit={this.handleSubmit}>
                     <div className="field">
@@ -244,6 +250,8 @@ class CityMaster extends Component {
                     </div>
                 </form>
                 <div>
+                </div>
+                </SideBar>
                 </div>
             </div>
         );

@@ -61,6 +61,7 @@ export default class Dashboard extends Component {
             <Menu.Item><Icon name="user" />Admin Register</Menu.Item>
             <Menu.Item><Icon name="user" />Society Member Owner Register</Menu.Item>
             <Menu.Item><Icon name="user" />Society Member Tenant Register</Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashboard/societyManagement">Society Management</Link></Menu.Item>
             <Menu.Item><Icon name="user" /><Link to="/vendorDashboard">Vendor</Link></Menu.Item>
             <Menu.Item><Icon name="user" /><Link to="/superDashboard/add_parking/new">Parking Master</Link></Menu.Item>
             <Menu.Item><Icon name="user" /><Link to="/superDashboard/towermaster">Tower Master</Link></Menu.Item>

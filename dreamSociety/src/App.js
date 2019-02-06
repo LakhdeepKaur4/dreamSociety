@@ -37,13 +37,15 @@ import displayVendorMaster from './containers/vendorMangement/vendorMaster/displ
 import displayPersonDetails from './containers/personDetails/displayPersonDetails';
 import flatDetailMaster from './containers/flatDetailMaster/flatDetailMaster';
 import flatDetails from './containers/flatDetailMaster/flatDetails';
-import locationMaster from './containers/locationMaster/locationMaster';
-import locationDetails from './containers/locationMaster/locationDetails';
+
+
 
 // import flatDetailMaster from './containers/FlatDetailMaster/flatDetailMaster';
 // import flatDetails from './containers/FlatDetailMaster/flatDetails';
 import CityMaster from './containers/cityMaster/cityMaster';
 import CityMasterDetail from './containers/cityMaster/cityMasterDetail';
+import locationDetails from './containers/locationMaster/locationDetails';
+// import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
 
 class App extends Component {
   render() {
@@ -72,6 +74,7 @@ class App extends Component {
             <Route path='/superDashboard/flatmaster' exact component= {FlatMaster}/>
             <Route path ='/superDashboard/flatmaster/flatmasterdetails' component ={FlatMasterDetails}/>
             <Route path ='/superDashboard/societyManagement' component={SocietyManagement}/>
+            {/* <Route path ='/superDashboard/societyManagementDetail' component={SocietyManagementDetail}/> */}
             <Route path ='/superDashboard/display-event'component ={DisplayEventMaster}/>
             {/* <Route path ='/superDashboard/assetmanagement'component ={AssetManagement}/> */}
             {/* <Route path ='/superDashboard/assetmanagement/assetmanagementdetails'component ={AssetManagementDetails}/> */}
@@ -84,7 +87,7 @@ class App extends Component {
             <Route path ='/superDashBoard/displayPerson' component={displayPersonDetails}/>
             <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
             <Route path ='/superdashboard/flatDetails' component ={flatDetails}/>
-            <Route path ='/superdashboard/locationMaster' component ={locationMaster}/> 
+            {/* <Route path ='/superdashboard/locationMaster' component ={locationMaster}/>  */}
             <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>  
             {/* <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
             <Route path ='/superdashboard/flatDetails' component ={flatDetails}/> */}

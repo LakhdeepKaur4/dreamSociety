@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { detailCity, deleteCity, updateCity } from './../../actionCreators/cityMasterAction';
+import {getCountry,getState, detailCity, deleteCity, updateCity } from './../../actionCreators/cityMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
@@ -16,7 +16,7 @@ class CityMasterDetail extends Component {
                 stateName: '',
                 stateId: '',
                 cityName: '',
-                cityId: '',
+                cityId: ''
                 
             },
                 menuVisible: false,
@@ -30,9 +30,10 @@ class CityMasterDetail extends Component {
         this.setState({ [name]: value });
     }
 
-    toggle = (countryName, stateName, cityName) => {
-
+    toggle = (cityId,countryName, stateName, cityName) => {
+     console.log('toggle')
         this.setState({
+            cityId,
             countryName,
             stateName,
             cityName,
@@ -53,28 +54,33 @@ class CityMasterDetail extends Component {
 
     componentDidMount() {
         this.refreshData();
+        this.props.getCountry()
     }
 
     refreshData() {
         this.props.detailCity()
     }
 
-    updateCityDetail = () => {
-        const { cityId, countryId, stateId, cityName } = this.state.editCityData;
-        console.log("========================cityid===========",cityId);
-        this.props.updateCity(cityId, countryId, stateId, cityName)
-        this.setState({
-            modal: false, editCityData: { cityId: '', countryId: '', stateId: '', cityName: '' }
-        })
-    }
+    // updateCityDetail = () => {
+    //     const { cityId, countryId, stateId, cityName } = this.state.editCityData;
+    //     console.log("========================cityid===========",cityId);
+    //     this.props.updateCity(cityId, countryId, stateId, cityName)
+    //     this.setState({
+    //         modal: false, editCityData: { cityId: '', countryId: '', stateId: '', cityName: ''}
+    //     })
+    // }
 
 
     editCityType = () => {
-        const { cityId, countryId, stateId, cityName } = this.state
-        this.props.updateCity(cityId, countryId, stateId, cityName)
-            .then(() => this.props.detailCity())
+        const {cityId, countryId, stateId, cityName}=this.state
+       console.log('=======editCityType=====',cityId, countryId, stateId, cityName)
         // this.props.fetchAssets();
-        this.setState({ modal: !this.state.modal })
+        this.props.updateCity(cityId, countryId, stateId, cityName)
+        .then(()=> this.props.detailCity())
+        this.setState({
+            editCityData:{cityId, countryId, stateId, cityName},
+             modal: !this.state.modal
+             })
         // .then(()=>this.props.fetchAssets())
         // this.props.fetchAssets();
 
@@ -116,14 +122,14 @@ class CityMasterDetail extends Component {
         console.log('=========getCity=========', city)
         if (city) {
             return city.filter(this.searchFilter(this.state.search)).map((item) => {
-
+                    // console.log(item)
                 return (
                     <tr key={item.cityId}>
                         <td>{item.country_master.countryName}</td> 
                         <td>{item.state_master.stateName}</td>
                         <td>{item.cityName}</td>
                         <td>
-                            <button className="btn btn-success" onClick={this.toggle.bind(this, item.country_master.countryName, item.state_master.stateName, item.cityName)} >Edit</button>
+                            <button className="btn btn-success" onClick={this.toggle.bind(this,item.cityId, item.country_master.countryName, item.state_master.stateName, item.cityName)} >Edit</button>
                         </td>
                         <td>
                             <button className="btn btn-danger" onClick={this.deleteCityName.bind(this, item.cityId)} >Delete</button>
@@ -137,15 +143,15 @@ class CityMasterDetail extends Component {
         }
     }
 
-    fetchCountry({ city }) {
-        if (city) {
-            console.log(city)
+    fetchCountry({ countryResult }) {
+        if (countryResult) {
+            console.log(countryResult)
             return (
-                city.map((item) => {
-                    console.log(this.state)
+                countryResult.map((item) => {
+                    // console.log(this.state)
                     return (
-                        <option value={item.country_master.countryId} key={item.cityId}>
-                            {item.country_master.countryName}
+                        <option value={item.countryId} key={item.countryId}>
+                            {item.countryName}
                         </option>
                     )
                 })
@@ -158,7 +164,7 @@ class CityMasterDetail extends Component {
             console.log(city)
             return (
                 city.map((item) => {
-                    console.log(this.state)
+                    // console.log(this.state)
                     return (
                         <option value={item.state_master.stateId} key={item.cityId}>
                             {item.state_master.stateName}
@@ -173,10 +179,17 @@ class CityMasterDetail extends Component {
 
     render() {
         return (
-            <div className="container">
+           <div> 
+              <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
+              <div style={{ marginTop: '52px' }}>
+              <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}>
+            <div className="container" >
+            <div>
                 <h3>City details</h3>
                 <SearchFilter type="text" value={this.state.search}
                     onChange={this.searchOnChange} />
+            </div>
+            
                 <table className="table table-striped">
                     <thead>
                         <tr>
@@ -231,13 +244,16 @@ class CityMasterDetail extends Component {
 
                     </ModalBody>
                     <ModalFooter>
-                        {/* <Button color="primary" onClick={this.updateCityDetail}>Update City</Button> */}
-                        <Button color="primary">Update City</Button>
+                        <Button color="primary" onClick={this.editCityType}>Update City</Button>
+                        {/* <Button color="primary">Update City</Button> */}
                         <Button color="secondary" onClick={this.toggleModal.bind(this)}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
 
 
+            </div>
+              </SideBar>
+            </div>
             </div>
         );
     }
@@ -252,7 +268,7 @@ function mapStatToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ detailCity, deleteCity, updateCity }, dispatch)
+    return bindActionCreators({getCountry,getState, detailCity, deleteCity, updateCity }, dispatch)
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(CityMasterDetail);
