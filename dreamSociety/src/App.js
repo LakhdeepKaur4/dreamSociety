@@ -119,6 +119,8 @@ class App extends Component {
             <Route path ='/superDashboard/cityMasterDetail' component={CityMasterDetail}/>
             
 
+            {/* <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>   */}
+            <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>  
           </Switch>
         </div>
       </BrowserRouter>

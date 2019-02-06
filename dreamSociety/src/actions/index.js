@@ -71,7 +71,6 @@ export const DETAIL_SOCIETY='detail_society';
 export const DELETE_SOCIETY='get_society';
 export const UPDATE_SOCIETY='update_society';
 export const GET_LOCATION='get_location';
-<<<<<<< HEAD
 export const ADD_COUNTRY='add-country';
 export const GET_COUNTRY_DETAILS='get-country';
 export const UPDATE_COUNTRY='update-country';
@@ -80,5 +79,3 @@ export const ADD_STATE='add-state';
 export const  GET_COUNTRY_DETAILS1='get-country-details1';
 export const DELETE_DETAILS ='delete-details';
 export const UPDATE_DETAILS='update-details';
-=======
->>>>>>> d26a64827c308000926d01d2a39d9519a72ea262

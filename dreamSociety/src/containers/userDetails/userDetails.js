@@ -48,7 +48,7 @@ class userDetails extends Component {
     updateUser = () => {
         let { userId, roleName, firstName, lastName, userName, email, contact } = this.state.editUserData;
         
-        this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact)
+        this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact).then(() => this.refreshData())
         this.setState({
             editUserModal: false, editUserData: { userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' }
         });
@@ -72,12 +72,15 @@ class userDetails extends Component {
             
             if(x){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return  x.firstName.toLowerCase().includes(search.toLowerCase()) ||
-                 x.lastName.toLowerCase().includes(search.toLowerCase()) || 
-                 x.userName.toLowerCase().includes(search.toLowerCase()) || 
-                 x.email.toLowerCase().includes(search.toLowerCase()) ||
-                 currentRole[0].toLowerCase().includes(search.toLowerCase()) || 
+                return  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                 x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
+                 x.userName.toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
+                 x.email.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                 currentRole[0].toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
                  !search;
+            }
+            else {
+                return <div>Not Found</div>
             }
         }
     }
