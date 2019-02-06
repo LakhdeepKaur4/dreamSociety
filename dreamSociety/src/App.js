@@ -26,6 +26,11 @@ import DisplayEventMaster from './containers/eventMaster/displayEventMaster';
 import DisplaySizeMaster from './containers/sizeMaster/displaySizeMaster';
 import FlatMaster from './containers/flatMaster/flatMaster';
 import FlatMasterDetails from './containers/flatMaster/flatMasterDetails';
+import countryMaster from './containers/countryMaster/countryMaster';
+import countryMasterDetails from './containers/countryMaster/countryMasterDetails';
+import stateMaster from './containers/stateMaster/stateMaster';
+import stateMasterDetails from './containers/stateMaster/stateMasterDetails';
+
 import PersonDetails from './containers/personDetails/personDetails';
 import serviceMaster from './containers/vendorMangement/serviceMaster/serviceMaster';
 import displayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
@@ -39,6 +44,7 @@ import AssetsTypeSubList from './containers/assetsTypeSubMaster/assetsTypeSubLis
 import flatDetailMaster from './containers/flatDetailMaster/flatDetailMaster';
 import flatDetails from './containers/flatDetailMaster/flatDetails';
 // import locationMaster from './containers/locationMaster/locationMaster';
+// import locationDetails from './containers/locationMaster/locationDetails';
 import locationDetails from './containers/locationMaster/locationDetails';
 
 
@@ -76,6 +82,12 @@ class App extends Component {
             <Route path ='/superDashboard/event' component ={EventMaster}/>
             <Route path='/superDashboard/flatmaster' exact component= {FlatMaster}/>
             <Route path ='/superDashboard/flatmaster/flatmasterdetails' component ={FlatMasterDetails}/>
+            <Route path='/superDashboard/countryMaster' exact component= {countryMaster}/>
+            <Route path='/superDashboard/countryMaster/countryMasterDetails' exact component= {countryMasterDetails}/>
+            <Route path='/superDashboard/statemaster' exact component= {stateMaster}/>
+            <Route path='/superDashboard/statemaster/statemasterdetails' exact component= {stateMasterDetails}/>
+
+
             <Route path ='/superDashboard/societyManagement' component={SocietyManagement}/>
             {/* <Route path ='/superDashboard/societyManagementDetail' component={SocietyManagementDetail}/> */}
             <Route path ='/superDashboard/display-event'component ={DisplayEventMaster}/>
@@ -97,12 +109,16 @@ class App extends Component {
             <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
             <Route path ='/superdashboard/flatDetails' component ={flatDetails}/>
             {/* <Route path ='/superdashboard/locationMaster' component ={locationMaster}/>  */}
+
+            {/* <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>   */}
+
             <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>  
             {/* <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
             <Route path ='/superdashboard/flatDetails' component ={flatDetails}/> */}
             <Route path ='/superDashboard/cityMaster' component={CityMaster}/>
             <Route path ='/superDashboard/cityMasterDetail' component={CityMasterDetail}/>
             
+
           </Switch>
         </div>
       </BrowserRouter>
