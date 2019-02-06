@@ -10,6 +10,7 @@ exports.create = (req,res) => {
     console.log("creating city");
 
     City.create({
+        countryId:req.body.countryId,
         cityName:req.body.cityName,
         cityId:req.body.cityId,
         stateId:req.body.stateId,

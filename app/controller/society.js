@@ -25,7 +25,9 @@ console.log("creating society");
 }
 
 exports.get = (req, res) => {
-    Society.findAll({
+    Society.findAll(
+        {where :{isActive:true}},
+        {
         include:[
             {model:City,
             attributes: ['cityId', 'cityName']},	

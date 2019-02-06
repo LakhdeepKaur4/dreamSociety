@@ -2,6 +2,7 @@ const db = require('../config/db.config.js');
 const config = require('../config/config.js');
 
 const State = db.state;
+const Country = db.country;
 
 exports.create = (req,res) => {
     console.log("creating state");
@@ -19,7 +20,9 @@ exports.create = (req,res) => {
 }
 
 exports.get = (req, res) => {
-    State.findAll({isActive:true})
+    State.findAll({where:{isActive:true},
+        include:[{model:Country,attributes: ['countryId', 'countryName']}]
+    })
       .then(state => {
         res.json(state);
       });
