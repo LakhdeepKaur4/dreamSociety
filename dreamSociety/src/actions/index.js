@@ -36,6 +36,15 @@ export const GET_FLAT ='get_flat'
 export const ADD_PERSON ='add_person';
 export const GET_PERSON ='get_person';
 export const UPDATE_USER = 'UPDATE_USER';
+export const ADD_ASSETS='add_assets';
+export const GET_ASSETS='get_assets';
+export const DELETE_ASSETS='delete_assets';
+export const UDATE_ASSETS='update_assets';
+export const REMOVE_ASSETS='remove_assets';
+export const GET_ASSETS_SUB='get_assets_sub';
+export const REMOVE_ASSETS_SUB='remove_assets_sub';
+export const UPDATE_ASSETS_SUB='update_assets_sub';
+export const ADD_ASSETS_TYPE='add_assets_type';
 export const GET_TOWER_NAME='get_tower_name';
 export const GET_FLAT_TYPE ='get_flat_type';
 export const ADD_FLAT_DETAILS= 'add_flat_details';
@@ -46,3 +55,14 @@ export const GET_CITY_NAME='get_city_name';
 export const ADD_LOCATION_DETAILS ='add_location_name';
 export const GET_LOCATION_NAME ='get_location_name';
 export const GET_LOCATION='get_location';
+<<<<<<< HEAD
+export const ADD_COUNTRY='add-country';
+export const GET_COUNTRY_DETAILS='get-country';
+export const UPDATE_COUNTRY='update-country';
+export const DELETE_COUNTRY='delete-country';
+export const ADD_STATE='add-state';
+export const  GET_COUNTRY_DETAILS1='get-country-details1';
+export const DELETE_DETAILS ='delete-details';
+export const UPDATE_DETAILS='update-details';
+=======
+>>>>>>> d26a64827c308000926d01d2a39d9519a72ea262

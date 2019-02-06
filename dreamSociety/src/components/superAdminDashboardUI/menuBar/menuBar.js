@@ -1,8 +1,18 @@
 import React, { Component } from 'react';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import {connect} from 'react-redux';
+import { bindActionCreators } from 'redux';
+import {userLogout} from '../../../actionCreators/loginAction';
 
 class MenuBar extends Component {
+    logout=()=>{
+        console.log('99999999999999')
+        this.props.userLogout(); 
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');    
+    }
+
     render(){
         return (
             <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
@@ -28,7 +38,7 @@ class MenuBar extends Component {
                         </ul>
                         <form className="form-inline mt-2 mt-md-0">
                             <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
-                                >Logout</button>
+                              onClick={this.logout}  >Logout</button>
                         </form>
                     </div>
                 </nav>
@@ -36,4 +46,7 @@ class MenuBar extends Component {
     }
 }
 
-export default MenuBar;
+function mapDispatchToProps(dispatch){
+    return bindActionCreators({userLogout},dispatch);
+    }
+    export default (connect(null,mapDispatchToProps)(MenuBar))
