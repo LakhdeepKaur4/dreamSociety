@@ -8,7 +8,6 @@ import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 class userDetails extends Component {
-
     state = {
         editUserData: {
             userId: "",
@@ -52,9 +51,7 @@ class userDetails extends Component {
         this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact)
         this.setState({
             editUserModal: false, editUserData: { userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' }
-        })
-        
-
+        });
     }
 
     editUser(userId, roleName, firstName, lastName, userName, email, contact) {
@@ -89,7 +86,6 @@ class userDetails extends Component {
     fetchUsers({ user }) {
         if(user) {
             let currentRole;
-            console.log(user)
             return user.filter(this.searchFilter(this.state.search)).map((item) => {
                 return (
                     <tr key={item.userId}>
@@ -115,7 +111,6 @@ class userDetails extends Component {
 
     fetchRoles({ userRole }) {
         if (userRole) {
-            console.log(userRole)
             return (
                 userRole.map((item) => {
                     console.log(this.state)
@@ -239,20 +234,16 @@ class userDetails extends Component {
                                 <tbody>
                                     {this.fetchUsers(this.props.userDetail)}
                                 </tbody>
-
                             </Table>
                         </div>
                     </SideBar>
                 </div>
-
-
             </div>
         )
     }
 }
 
 function mapStateToProps(state) {
-    console.log(state);
     return {
         userDetail: state.userDetail
     }

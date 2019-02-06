@@ -7,7 +7,6 @@ import { addUser, getRoles } from '../../actionCreators/superAdminMasterAction'
 import './userRegistration.css';
 import { withRouter } from 'react-router-dom';
 import Logo from '../../assets/2.jpg';
-import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 import { Form, FormGroup, Input, Button, Label } from 'reactstrap';
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
@@ -28,6 +27,7 @@ class Registration extends Component {
             passwordConfirmation: "",
             isSubmit: false,
             menuVisible: false,
+            message:'',
             errors: {}
         };
         this.onChange = this.onChange.bind(this);
@@ -105,9 +105,13 @@ class Registration extends Component {
 
         // const isValid = this.validate();
         if (isValid) {
-            this.setState({ isSubmit: true })
             this.props.addUser({ ...this.state })
-                .then(() => this.props.history.push('/superDashboard/user_details'));
+            .then((users) => {
+                if(users){
+                    console.log(users)
+                }
+            })
+            .then(() => this.props.history.push('/superDashboard/user_details'));
             this.setState({
                 roleName: [],
                 roles: "",
@@ -125,7 +129,6 @@ class Registration extends Component {
 
     fetchRoles({ userRole }) {
         if (userRole) {
-            console.log(userRole)
             return (
                 userRole.map((item) => {
                     console.log(this.state)
@@ -147,6 +150,9 @@ class Registration extends Component {
                     style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px',
                     backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}
                     visible={this.state.menuVisible}>
+                <div>
+                    {this.state.message}
+                </div>
                <div style={{ width: '600px', padding: '20px 20px', borderRadius: '20px', margin: '0 auto', background: '#f3f3f3', position: 'relative' }}>
                                 <Form onSubmit={this.submit}>
                                     <FormGroup>
@@ -157,7 +163,7 @@ class Registration extends Component {
                                         </Input>
 
 
-                                        <span>{this.state.errors.roles}</span>
+                                        <span className='error'>{this.state.errors.roles}</span>
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>FirstName</Label>
@@ -166,7 +172,7 @@ class Registration extends Component {
                                             value={this.state.firstName}
                                             onChange={this.onChange}
                                             onKeyPress={this.OnKeyPressUserhandler} />
-                                        <span>{this.state.errors.firstName}</span>
+                                        <span className='error'>{this.state.errors.firstName}</span>
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>LastName</Label>
@@ -175,7 +181,7 @@ class Registration extends Component {
                                             value={this.state.lastName}
                                             onChange={this.onChange}
                                             onKeyPress={this.OnKeyPressUserhandler} />
-                                        <span>{this.state.errors.lastName}</span>
+                                        <span className='error'>{this.state.errors.lastName}</span>
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Username</Label>
@@ -183,7 +189,7 @@ class Registration extends Component {
                                             type="text"
                                             value={this.state.userName}
                                             onChange={this.onChange} />
-                                        <span>{this.state.errors.userName}</span>
+                                        <span className='error'>{this.state.errors.userName}</span>
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Email</Label>
@@ -191,7 +197,7 @@ class Registration extends Component {
                                             type="email"
                                             value={this.state.email}
                                             onChange={this.onChange} />
-                                        <span>{this.state.errors.email}</span>
+                                        <span className='error'>{this.state.errors.email}</span>
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Contact No.</Label>
@@ -202,7 +208,7 @@ class Registration extends Component {
                                             onKeyPress={this.OnKeyPresshandlerPhone}
                                             maxLength='10'
                                             minLength='10' />
-                                        <span>{this.state.errors.contact}</span>
+                                        <span className='error'>{this.state.errors.contact}</span>
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Password</Label>
@@ -211,7 +217,7 @@ class Registration extends Component {
                                             value={this.state.password}
                                             onChange={this.onChange}
                                             onKeyPress={this.OnKeyPressPasswordhandler} />
-                                        <span>{this.state.errors.password}</span>
+                                        <span className='error'>{this.state.errors.password}</span>
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Confirm Password</Label>
@@ -220,7 +226,7 @@ class Registration extends Component {
                                             value={this.state.passwordConfirmation}
                                             onChange={this.onChange}
                                             onKeyPress={this.OnKeyPressPasswordhandler} />
-                                        <span>{this.state.errors.passwordConfirmation}</span>
+                                        <span className='error'>{this.state.errors.passwordConfirmation}</span>
                                     </FormGroup>
 
                                     <Button color="primary" className="mr-2">Add User</Button>
@@ -236,7 +242,6 @@ class Registration extends Component {
 }
 
 function mapStateToProps(state) {
-    console.log(state);
     return {
         userDetail: state.userDetail
     }

@@ -9,16 +9,22 @@ import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, L
 import { Link } from 'react-router-dom';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 import {URN} from '../../actions/index'
+import SearchFilter from '../../components/searchFilter/searchFilter';
 
 class DisplaySizeMaster extends Component {
   state = {
+    
     editSizeData: {
+
       id: "",
       sizeId: [],
-      sizeType: []
+      sizeType: [],
+      isActive:false
     },
+
     editSizeModal: false,
-    menuVisible: false
+    menuVisible: false,
+    search:''
   }
 
   componentDidMount() {
@@ -30,6 +36,12 @@ class DisplaySizeMaster extends Component {
   refreshData() {
     this.props.displaySize();
   }
+
+   
+  searchOnChange = (e) => {
+    this.setState({search:e.target.value})
+}
+
 
   OnKeyPresshandle(event) {
     const pattern = /^[0-9]$/;
@@ -76,20 +88,27 @@ class DisplaySizeMaster extends Component {
 
   deleteSize(sizeId) {
     console.log('sisxcdasd', sizeId);
-
-    axios.put(`${URN}/size/` + sizeId, { headers: authHeader() }).then((response) => {
+        let {isActive } =this.state.editSizeData
+    axios.put(`${URN}/size/` + sizeId,{isActive}, { headers: authHeader() }).then((response) => {
       console.log(response.data);
-      this.setState(this.refreshData())
+      this.refreshData()
+      this.setState({editSizeData:{isActive:false}})
     })
       .catch((err) => {
         console.log(err);
       })
   }
+  
+  searchFilter(search){
+    return function(x){
+        return x.sizeType.toLowerCase().includes(search.toLowerCase()) || !search;
+    }
+}
 
   TowerMasterDetails({ getSize }) {
     console.log("getSize ", getSize);
     if (getSize) {
-      return getSize.map((item) => {
+      return getSize.filter(this.searchFilter(this.state.search)).map((item) => {
         return (
           <tr key={item.sizeId}>
 
@@ -109,6 +128,8 @@ class DisplaySizeMaster extends Component {
     return <div>...loading</div>
   }
 
+
+  
 
   render() {
 
@@ -185,12 +206,13 @@ class DisplaySizeMaster extends Component {
                       <Button color="secondary" onClick={this.toggleEditSizeModal.bind(this)}>Cancel</Button>
                     </ModalFooter>
                   </Modal>
-
-                  <table className="table table-striped" style={{ marginTop: 20 }}>
+                  <SearchFilter type="text" value={this.state.search}
+                                onChange={this.searchOnChange} />
+                  <table >
                     <thead>
                       <tr>
 
-                        <th>Size  Details</th>
+                        <th>Size Details</th>
 
 
                       </tr>

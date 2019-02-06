@@ -36,6 +36,12 @@ import AssetTypeMaster from './containers/assetsTypeMaster/assetsTypeMaster';
 import AssetList from './containers/assetsTypeMaster/assetsList';
 import AssetsTypeSubMaster from './containers/assetsTypeSubMaster/assetsTypeSubMaster';
 import AssetsTypeSubList from './containers/assetsTypeSubMaster/assetsTypeSubList'
+import flatDetailMaster from './containers/flatDetailMaster/flatDetailMaster';
+import flatDetails from './containers/flatDetailMaster/flatDetails';
+import locationMaster from './containers/locationMaster/locationMaster';
+import locationDetails from './containers/locationMaster/locationDetails';
+
+
 class App extends Component {
   render() {
     return (
@@ -79,6 +85,10 @@ class App extends Component {
             <Route path ='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubList}/>
             {/* <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
             <Route path ='/superdashboard/flatDetails' component ={flatDetails}/> */}
+            <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
+            <Route path ='/superdashboard/flatDetails' component ={flatDetails}/>
+            <Route path ='/superdashboard/locationMaster' component ={locationMaster}/> 
+            <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>  
           </Switch>
         </div>
       </BrowserRouter>

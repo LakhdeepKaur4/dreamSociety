@@ -98,7 +98,7 @@ class Parking extends Component {
                                                 <option  value=''>--Select--</option>
                                                 {this.getParking(this.props.parkingDetail)}
                                             </Input>
-                                            <span>{this.state.errors.parkingId}</span>
+                                            <span className='error'>{this.state.errors.parkingId}</span>
                                         </FormGroup>
                                         <FormGroup>
                                             <Label>Parking</Label>
@@ -110,7 +110,7 @@ class Parking extends Component {
                                                 maxLength='2'
                                                 minLength='1'
                                             />
-                                            <span>{this.state.errors.numberOfSlots}</span>
+                                            <span className='error'>{this.state.errors.numberOfSlots}</span>
                                         </FormGroup>
                                         <Button color="success" className="mr-2">Add</Button>
                                         <Link to="/superDashboard/parking_master" color="primary">Parking Details</Link>

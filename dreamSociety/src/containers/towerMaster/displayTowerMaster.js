@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { authHeader } from '../../helper/authHeader';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import {URN} from  '../../actions/index'
+import SearchFilter from '../../components/searchFilter/searchFilter'
 
 class DisplayTowerMaster extends Component {
   constructor(props) {
@@ -20,10 +21,12 @@ class DisplayTowerMaster extends Component {
     editTowerData: {
 
       towerId: [],
-      towerName: []
+      towerName: [],
+      isActive:false
     },
     editTowerModal: false,
-    menuVisible: false
+    menuVisible: false,
+    search:''
   }
 
   componentDidMount() {
@@ -49,11 +52,12 @@ class DisplayTowerMaster extends Component {
   deleteTower(towerId) {
     console.log(towerId);
 
+  let {isActive} =this.state.editTowerData;
+    axios.put(
+      `${URN}/tower/delete/` + towerId, {isActive},{ headers: authHeader() }).then((response) => {
+       this.refreshdata()
 
-    axios.delete(
-      `${URN}/tower/` + towerId, { headers: authHeader() }).then((response) => {
-
-        this.setState(this.refreshdata());
+        this.setState({editTowerData:{isActive:false}});
 
       })
   }
@@ -88,12 +92,17 @@ class DisplayTowerMaster extends Component {
       editTowerData: { id, towerId, towerName }, editTowerModal: !this.state.editTowerModal
     })
   }
+  searchFilter(search){
+    return function(x){
+        return x.towerName.toLowerCase().includes(search.toLowerCase()) || !search;
+    }
+}
 
 
   TowerMasterDetails({ tower }) {
 
     if (tower) {
-      return tower.map((item) => {
+      return tower.filter(this.searchFilter(this.state.search)).map((item) => {
         return (
 
           <tr key={item.towerId}>
@@ -111,6 +120,11 @@ class DisplayTowerMaster extends Component {
     }
   }
 
+
+  searchOnChange =(e)=>{
+  //  this.setState({})
+  this.setState({search:e.target.value})
+  }
 
   render() {
 
@@ -190,8 +204,8 @@ class DisplayTowerMaster extends Component {
                     <Button color="secondary" onClick={this.toggleEditTowerModal.bind(this)}>Cancel</Button>
                   </ModalFooter>
                 </Modal>
-
-                <table className="table table-striped" style={{ marginTop: 20 }}>
+  <SearchFilter type="text" value ={this.state.search}   onChange={this.searchOnChange}  />
+                <table >
                   <thead>
                     <tr>
 
