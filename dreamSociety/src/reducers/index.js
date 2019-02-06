@@ -12,7 +12,8 @@ import SizeDetails from './sizeReducer/sizeReducer';
 import societyReducer from './societyReducer/societyReducer';
 import parkingDetail from './parkingReducer/parkingReducer';
 import personDetails from './personReducer/personReducer';
-
+import AssetsReducer from './assetsReducer/assetsReducer';
+import AssetsTypeReducer from './assetsReducer/assetsTypeReducer'
 const rootReducer = combineReducers({
     loginReducer,
     userDetail,
@@ -27,6 +28,8 @@ const rootReducer = combineReducers({
     displayServiceMasterReducer,
     vendorMasterReducer,
     societyReducer,
-    personDetails
+    personDetails,
+    AssetsReducer,
+    AssetsTypeReducer
 })
 export default rootReducer;

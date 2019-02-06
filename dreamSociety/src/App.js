@@ -26,18 +26,16 @@ import DisplayEventMaster from './containers/eventMaster/displayEventMaster';
 import DisplaySizeMaster from './containers/sizeMaster/displaySizeMaster';
 import FlatMaster from './containers/flatMaster/flatMaster';
 import FlatMasterDetails from './containers/flatMaster/flatMasterDetails';
-
 import PersonDetails from './containers/personDetails/personDetails';
-// import AssetManagement from './containers/Asset/Asset_Management';
-// import AssetManagementDetails from './containers/Asset/Asset-Management-Details';
 import serviceMaster from './containers/vendorMangement/serviceMaster/serviceMaster';
 import displayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
 import vendorMaster from './containers/vendorMangement/vendorMaster/vendorMaster';
 import displayVendorMaster from './containers/vendorMangement/vendorMaster/displayVendorMaster';
 import displayPersonDetails from './containers/personDetails/displayPersonDetails';
-// import flatDetailMaster from './containers/FlatDetailMaster/flatDetailMaster';
-// import flatDetails from './containers/FlatDetailMaster/flatDetails';
-
+import AssetTypeMaster from './containers/assetsTypeMaster/assetsTypeMaster';
+import AssetList from './containers/assetsTypeMaster/assetsList';
+import AssetsTypeSubMaster from './containers/assetsTypeSubMaster/assetsTypeSubMaster';
+import AssetsTypeSubList from './containers/assetsTypeSubMaster/assetsTypeSubList'
 class App extends Component {
   render() {
     return (
@@ -75,6 +73,10 @@ class App extends Component {
             <Route path= '/superDashboard/displayVendorMaster' component={displayVendorMaster}/>
             <Route path ='/superDashboard/displayServices'component ={displayServices}/>
             <Route path ='/superDashBoard/displayPerson' component={displayPersonDetails}/>
+            <Route path ='/superDashBoard/assetsMaster' exact component={AssetTypeMaster}/>
+            <Route path ='/superDashBoard/assetsMaster/assetsList' component={AssetList}/>
+            <Route path ='/superDashBoard/assetsTypeSubMaster' exact component={AssetsTypeSubMaster}/>
+            <Route path ='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubList}/>
             {/* <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
             <Route path ='/superdashboard/flatDetails' component ={flatDetails}/> */}
           </Switch>
