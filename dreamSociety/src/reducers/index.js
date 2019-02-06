@@ -14,6 +14,7 @@ import parkingDetail from './parkingReducer/parkingReducer';
 import personDetails from './personReducer/personReducer';
 import   flatDetailMasterReducer from './flatDetailMasterReducer/flatDetailMasterReducer';
 import   locationMasterReducer from './locationMasterReducer/locationMasterReducer';
+import countryDetails from './countryReducers/countryReducer';
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
     societyReducer,
     personDetails,
     flatDetailMasterReducer,
-    locationMasterReducer
+    locationMasterReducer,
+    countryDetails
 })
 export default rootReducer;
