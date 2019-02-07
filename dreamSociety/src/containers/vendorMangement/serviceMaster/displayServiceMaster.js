@@ -103,7 +103,7 @@ class displayServices extends Component {
     getDropdown1 = ({ detail }) => {
         if (detail) {
             return detail.service.map((item) => {
-                console.log(item)
+                console.log("itemmm",item)
                 return (
                     <option key={item.serviceDetailId} value={item.serviceDetailId}>
                         {item.service_detail}</option>
@@ -122,7 +122,7 @@ class displayServices extends Component {
 
     renderList = ({ item }) => {
 
-        console.log(item);
+        console.log("itemmm2222222222",item);
         if (item) {
             return item.filter(this.searchFilter(this.state.search)).map((item) => {
                 return (

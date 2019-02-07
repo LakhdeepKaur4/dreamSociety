@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import {connect} from 'react-redux';
-import { bindActionCreators } from 'redux';
-import {userLogout} from '../../../actionCreators/loginAction';
 
 class MenuBar extends Component {
     logout=()=>{
-        console.log('99999999999999')
-        this.props.userLogout(); 
         localStorage.removeItem('token');
-        localStorage.removeItem('user-type');    
+        localStorage.removeItem('user-type');  
+        return this.history.go('/')
     }
 
     render(){
@@ -46,7 +42,5 @@ class MenuBar extends Component {
     }
 }
 
-function mapDispatchToProps(dispatch){
-    return bindActionCreators({userLogout},dispatch);
-    }
-    export default (connect(null,mapDispatchToProps)(MenuBar))
+
+ export default MenuBar;

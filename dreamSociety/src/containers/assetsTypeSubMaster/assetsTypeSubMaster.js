@@ -28,8 +28,9 @@ class AssetsTypeSubMaster extends Component {
     }
     onSubmit = (e) => {
         e.preventDefault();
-        const { assetsSubType, description, assetId } = this.state
-        this.props.addAssetsSubType(assetsSubType, description, assetId)
+        const { assetsSubType, description,assetId } = this.state
+        this.props.addAssetsSubType(assetsSubType, description,assetId)
+        .then(()=>this.props.history.push('/superDashBoard/assetsTypeSubMaster/assetsTypeSubList'));
     }
 
     getAssetsName = ({ AssetsList }) => {

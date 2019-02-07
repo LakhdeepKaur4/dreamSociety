@@ -8,6 +8,8 @@ import Logo from '../../../assets/2.jpg';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 import UI from '../../../components/newUI/vendorDashboardInside';
 
+import SideBar from '../../../components/superAdminDashboardUI/sideBar/sideBar';
+import MenuBar from '../../../components/superAdminDashboardUI/menuBar/menuBar'
 
 
 class serviceMaster extends Component {

@@ -34,6 +34,24 @@ class flatDetailMaster extends Component{
         this.props.addFlatDetails();
     }
 
+
+    OnKeyPresshandlerPhone(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    OnKeyPressUserhandler(event) {
+        const pattern = /[a-zA-Z_ ]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+
     onSubmit=(event)=> {
         console.log("jkj",this.state)
         event.preventDefault();
@@ -73,10 +91,10 @@ class flatDetailMaster extends Component{
         }
     }
 
-    getDropdown1=({type})=>{
-        console.log(type,"abc")
-        if(type){
-            return type.map((items)=>{
+    getDropdown1=({flattype})=>{
+        console.log(flattype,"abc")
+        if(flattype){
+            return flattype.map((items)=>{
                 return(
                     <option key={items.flatId} value={items.flatId}>
                     {items.flatType}
@@ -96,7 +114,7 @@ class flatDetailMaster extends Component{
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group col-md-6">
                         <label>Flat No</label>
-                        <input className ="form-control" type="text" name="flatNo" onChange={this.handleChange} value={this.state.flatNo} required></input>
+                        <input className ="form-control" type="text" name="flatNo" maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.handleChange} value={this.state.flatNo} required></input>
                     </div>
                     <div className="form-group  col-md-6">
                         <label>Flat Type</label>
@@ -107,7 +125,7 @@ class flatDetailMaster extends Component{
                     </div>
                     <div className="form-group  col-md-6">    
                         <label>Floor</label>
-                        <input className ="form-control" type="text" name="floor" onChange={this.handleChange}  value={this.state.floor} required></input>
+                        <input className ="form-control" type="text" name="floor" maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  value={this.state.floor} required></input>
                     </div>
                     <div className="form-group  col-md-6">    
                         <label>Tower Name</label>

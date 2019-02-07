@@ -35,24 +35,19 @@ class Login extends Component {
     submit = (e) => {
         e.preventDefault();
         const { username, password } = this.state
-        if (username !== null && password !== null) {
-            this.props.login(username, password)
-                // .then(response=>{
-                //     console.log('response',response)
-                // }) 
-                .then((loginData) => {
-                    console.log(loginData)
-                    if (loginData.payload.data.status === 200) {
-                        console.log('loginData.payload.data.userType', loginData.payload.data.user.roles[0].roleName)
-                        this.setState({
-                            message: loginData.payload.data.message
-                        })
-                        localStorage.setItem('token', loginData.payload.data.accessToken);
-                        localStorage.setItem('user-type', loginData.payload.data.userType);
-                        localStorage.setItem('firstName', loginData.payload.data.firstName);
-
-
-                        switch (loginData.payload.data.user.roles[0].roleName) {
+        if (username!==null && password!==null ) {
+            this.props.login(username,password) 
+           .then((loginData)=>{
+            if(loginData.payload.data.status===200){
+                this.setState({
+                    message:loginData.payload.data.message
+                })
+                localStorage.setItem('token',loginData.payload.data.accessToken);
+                localStorage.setItem('user-type',loginData.payload.data.userType);
+                localStorage.setItem('firstName',loginData.payload.data.firstName);
+        
+                
+                        switch(loginData.payload.data.user.roles[0].roleName) {
                             case 'SUPER_ADMIN':
                                 return this.props.history.push('/superDashboard');
                             case 'ADMIN':
@@ -82,32 +77,31 @@ class Login extends Component {
     onChangeHandler = (e) => {
         const { name, value } = e.target;
         this.setState({ [name]: value });
-        // console.log(this.state)
-        if (this.state.message.length > 0) {
-            this.setState({
-                message: ''
-            })
-        }
-    }
-
-    handleResponse = (response) => {
-        if (response.payload.data.status === 200) {
-            var data = {
-                accessToken: response.payload.data.accessToken,
-                userType: response.payload.data.user.roles[0].roleName,
-                auth: response.payload.data.auth,
-                status: response.payload.data.status,
-                firstName: response.payload.data.user.firstName
-            }
-        }
-        else if (response.payload.data.status === 401) {
-            var data = {
-                error: response.payload.data.message
-            }
-            return <Redirect to='/'></Redirect>
-        }
-        return data;
-
+        if(this.state.message.length>0){
+          this.setState({
+              message:''
+          })
+      }
+  }
+  
+  handleResponse=(response)=> {
+      if(response.payload.data.status===200){
+      var data={
+               accessToken:response.payload.data.accessToken,
+               userType:response.payload.data.user.roles[0].roleName,
+               auth:response.payload.data.auth,
+               status:response.payload.data.status,
+               firstName:response.payload.data.user.firstName
+              }
+          }
+          else if(response.payload.data.status===401){
+             var data={
+                 error:response.payload.data.message
+             }
+          return <Redirect to='/'></Redirect>
+          }
+      return data;
+  
     }
 
 
@@ -201,8 +195,7 @@ class Login extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    console.log(state)
+  function mapStateToProps(state) {
     return {
         loginReducer: state.loginReducer
     }
