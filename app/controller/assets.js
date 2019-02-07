@@ -23,8 +23,17 @@ exports.create = async (req, res, next) => {
 
 exports.get = async(req,res,next) => {
     try{
-
-        const assets = await Assets.findAll({where:{isActive:true}});
+        let limit = 10;
+        let offset = 0;
+        let page = req.params.page;
+        offset = limit * (page - 1);
+        // const data = await Assets.findAndCountAll();
+        // let pages = Math.ceil(data.count / limit);
+        
+        const assets = await Assets.findAll({where:{isActive:true}, 
+            limit: limit,
+            offset: offset,
+            $sort: { id: 1 }});
         if(assets){
             return res.status(httpStatus.CREATED).json({
                 message: "Assets Content Page",

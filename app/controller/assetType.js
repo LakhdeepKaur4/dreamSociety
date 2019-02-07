@@ -23,7 +23,13 @@ exports.create = async (req, res, next) => {
 
 exports.get = async(req,res,next) => {
     try{
+        let limit = 10;
+        let offset = 0;
+        let page = req.params.page;
+        offset = limit * (page - 1);
         const assetsType = await AssetsType.findAll({where:{isActive:true},
+            limit: limit,
+            offset: offset,
         include:[{model:Assets,attributes:['assetId','assetName']}]
         });
         if(assetsType){

@@ -178,7 +178,7 @@ module.exports = function(app) {
 
 	app.post('/api/assets', [authJwt.verifyToken], assetsController.create);
 
-	app.get('/api/assets', [authJwt.verifyToken], assetsController.get);
+	app.get('/api/assets/:page', [authJwt.verifyToken], assetsController.get);
 
 	app.put('/api/assets/:id', [authJwt.verifyToken], assetsController.update);
 
