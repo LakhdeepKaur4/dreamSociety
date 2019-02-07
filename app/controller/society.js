@@ -63,9 +63,9 @@ exports.getById = (req,res) => {
         {model:State,
         attributes: ['stateId', 'stateName']},
         {model:User,
-        attributes: ['userId', 'userId']},
+        attributes: ['userId', 'userName']},
         {model:location,
-        attributes: ['locationId', 'locationId']}, 
+        attributes: ['locationId', 'locationName']}, 
 ]
 }).then(society => {
     res.status(200).json({
