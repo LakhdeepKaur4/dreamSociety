@@ -114,7 +114,7 @@ class vendorMaster extends Component {
                                     <form onSubmit={this.onSubmit}>
                                         <div>
                                             <label>Vendor Name</label>
-                                            <input type="text" className="form-control" name="vendorName" value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
+                                            <input type="text" className="form-control" name="vendorName" maxLength={10} value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
                                         </div>
                                         <div>
                                             <label>Service Type</label>

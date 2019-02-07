@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -78,7 +77,6 @@ class Registration extends Component {
         else {
             this.setState({ [e.target.name]: e.target.value.trim('') });
         }
-        console.log(this.state)
     }
 
     submit(e) {
@@ -106,11 +104,6 @@ class Registration extends Component {
         // const isValid = this.validate();
         if (isValid) {
             this.props.addUser({ ...this.state })
-            .then((users) => {
-                if(users){
-                    console.log(users)
-                }
-            })
             .then(() => this.props.history.push('/superDashboard/user_details'));
             this.setState({
                 roleName: [],
@@ -131,7 +124,6 @@ class Registration extends Component {
         if (userRole) {
             return (
                 userRole.map((item) => {
-                    console.log(this.state)
                     return (
                         <option value={item.roleName} key={item.id}>
                             {item.roleName}
@@ -141,6 +133,11 @@ class Registration extends Component {
             )
         }
     }
+
+    routeToUserDetails = () => {
+        this.props.history.push('/superDashboard/user_details');
+    }
+
     render() {
         return (<div>
             <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
@@ -230,7 +227,7 @@ class Registration extends Component {
                                     </FormGroup>
 
                                     <Button color="primary" className="mr-2">Add User</Button>
-                                    <Link to="/superDashboard/user_details" color="primary">User Details</Link>
+                                    <Button onClick={this.routeToUserDetails} color="primary">User Details</Button>
                                 </Form>
                             </div>
                </SideBar>

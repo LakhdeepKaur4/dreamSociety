@@ -10,7 +10,7 @@ export default function(state={},action){
 
         case GET_FLAT_TYPE:
             return{
-                ...state, type:action.payload
+                ...state, flattype:action.payload
             }
 
         case ADD_FLAT_DETAILS:
