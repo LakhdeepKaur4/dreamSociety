@@ -180,6 +180,8 @@ module.exports = function(app) {
 
 	app.get('/api/assets', [authJwt.verifyToken], assetsController.get);
 
+	app.get('/api/assets/:page', [authJwt.verifyToken], assetsController.getAssetsByPageNumber);
+
 	app.put('/api/assets/:id', [authJwt.verifyToken], assetsController.update);
 
 	app.put('/api/assets/delete/:id', [authJwt.verifyToken], assetsController.delete);
@@ -187,6 +189,8 @@ module.exports = function(app) {
 	app.post('/api/assetsType', [authJwt.verifyToken], assetsTypeController.create);
 
 	app.get('/api/assetsType/', [authJwt.verifyToken], assetsTypeController.get);
+
+	app.get('/api/assetsType/:page', [authJwt.verifyToken], assetsTypeController.getAssetsTypeByPageNumber);
 
 	app.put('/api/assetsType/:id', [authJwt.verifyToken], assetsTypeController.update);
 

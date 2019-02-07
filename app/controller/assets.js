@@ -47,6 +47,31 @@ exports.get = async(req,res,next) => {
     }
 }
 
+exports.getAssetsByPageNumber = async(req,res,next) => {
+    try{
+        let limit = 10;
+        let offset = 0;
+        let page = req.params.page;
+        offset = limit * (page - 1);
+        const data = await Assets.findAndCountAll();
+        // let pages = Math.ceil(data.count / limit);
+        
+        const assets = await Assets.findAll({where:{isActive:true}, 
+            limit: limit,
+            offset: offset,
+        });
+        if(assets){
+            return res.status(httpStatus.CREATED).json({
+                message: "Assets Content Page",
+                assets:assets
+            });
+        }
+    }catch(error){
+        console.log("error==>",error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
 exports.update = async(req,res,next) => {
     try{
         const id = req.params.id;
