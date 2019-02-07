@@ -6,6 +6,7 @@ import { addVendorMaster } from '../../../actionCreators/vendorMasterAction';
 import { Link } from 'react-router-dom';
 import Logo from '../../../assets/2.jpg';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+import UI from '../../../components/newUI/vendorDashboardInside';
 
 
 class vendorMaster extends Component {
@@ -17,7 +18,7 @@ class vendorMaster extends Component {
             serviceId: '',
             description: '',
             menuVisible: false
-         }
+        }
         this.handleChange = this.handleChange.bind(this);
 
     }
@@ -73,7 +74,7 @@ class vendorMaster extends Component {
     render() {
         return (
             <div>
-                <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
+                {/* <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
                     <Menu.Item onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} >
                         <Icon name="sidebar" style={{ color: 'white', cursor: 'pointer' }} />
 
@@ -107,41 +108,43 @@ class vendorMaster extends Component {
                             <Menu.Item><Icon name="user" /><Link to="/superDashboard/vendorMaster">Vendor Master</Link></Menu.Item>
                         </Sidebar>
                         <Sidebar.Pusher dimmed={this.state.menuVisible}>
-                            <Segment basic style={{ backgroundImage: `url(${Logo})`, padding: '55px 0', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '600px' }}>
-                                {/* <Header as="h3">Application Content</Header> */}
-                                {/* <Image src='//unsplash.it/800/480' /> */}
-                                <div className="form1 col-8">
-                                    <form onSubmit={this.onSubmit}>
-                                        <div>
-                                            <label>Vendor Name</label>
-                                            <input type="text" className="form-control" name="vendorName" value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
-                                        </div>
-                                        <div>
-                                            <label>Service Type</label>
-                                            <select className="form-control" value={this.state.serviceId} onChange={(e) => {
-                                                this.setState({ serviceId: e.target.value })
-                                            }} required>
-                                                <option>--SELECT--</option>
-                                                {this.getDropDowm(this.props.displayServiceMasterReducer)}
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label>Description</label>
-                                            <input className="form-control" value={this.state.description} onChange={this.handleChange} type="text" name="description" required></input>
-                                        </div>
-                                        <div className="mt-4">
-                                        <button type="submit" className="btn btn-primary mr-2" value="submit">Submit</button>
-                                    
-                                    <Link to='/superDashboard/displayVendorMaster'>
-                                        <button className="btn">Show Details</button>
-                                    </Link>
-                                    </div>
-                                    </form>
-                                </div>
-                            </Segment>
+                            <Segment basic style={{ backgroundImage: `url(${Logo})`, padding: '55px 0', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '600px' }}> */}
+                <UI>
+                    {/* <Header as="h3">Application Content</Header> */}
+                    {/* <Image src='//unsplash.it/800/480' /> */}
+                    <div className="form1 col-8">
+                        <form onSubmit={this.onSubmit}>
+                            <div>
+                                <label>Vendor Name</label>
+                                <input type="text" className="form-control" name="vendorName" value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
+                            </div>
+                            <div>
+                                <label>Service Type</label>
+                                <select className="form-control" value={this.state.serviceId} onChange={(e) => {
+                                    this.setState({ serviceId: e.target.value })
+                                }} required>
+                                    <option>--SELECT--</option>
+                                    {this.getDropDowm(this.props.displayServiceMasterReducer)}
+                                </select>
+                            </div>
+                            <div>
+                                <label>Description</label>
+                                <input className="form-control" value={this.state.description} onChange={this.handleChange} type="text" name="description" required></input>
+                            </div>
+                            <div className="mt-4">
+                                <button type="submit" className="btn btn-primary mr-2" value="submit">Submit</button>
+
+                                <Link to='/superDashboard/displayVendorMaster'>
+                                    <button className="btn">Show Details</button>
+                                </Link>
+                            </div>
+                        </form>
+                    </div>
+                </UI>
+                {/* </Segment>
                         </Sidebar.Pusher>
                     </Sidebar.Pushable>
-                </div>
+                </div> */}
 
             </div>
 

@@ -10,6 +10,8 @@ import { URN } from '../../../actions/index';
 import { Link } from 'react-router-dom';
 import './vendorMaster.css';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+import SearchFilter from '../../../components/searchFilter/searchFilter';
+import UI from '../../../components/newUI/vendorDashboardInside';
 
 class displayVendorMaster extends Component {
 
@@ -25,7 +27,8 @@ class displayVendorMaster extends Component {
             isActive: false,
             menuVisible: false
         },
-        editVendorModal: false
+        editVendorModal: false,
+        search: ''
 
     }
 
@@ -52,6 +55,16 @@ class displayVendorMaster extends Component {
             editVendorData: { vendorId, vendorName, serviceName, serviceId, description }, editVendorModal: !this.state.editVendorModal
         });
 
+    }
+
+    searchFilter(search) {
+        return function (x) {
+            return x.vendorName.toLowerCase().includes(search.toLowerCase()) || !search;
+        }
+    }
+
+    searchOnChange = (e) => {
+        this.setState({ search: e.target.value })
     }
 
     getDropdown = ({ item }) => {
@@ -130,7 +143,7 @@ class displayVendorMaster extends Component {
     render() {
         return (
             <div>
-                <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
+                {/* <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
                     <Menu.Item onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} >
                         <Icon name="sidebar" style={{ color: 'white', cursor: 'pointer' }} />
 
@@ -164,79 +177,83 @@ class displayVendorMaster extends Component {
                             <Menu.Item><Icon name="user" /><Link to="/superDashboard/vendorMaster">Vendor Master</Link></Menu.Item>
                         </Sidebar>
                         <Sidebar.Pusher dimmed={this.state.menuVisible}>
-                            <Segment basic>
-                                {/* <Header as="h3">Application Content</Header> */}
-                                {/* <Image src='//unsplash.it/800/480' /> */}
-                                <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
-                                    <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}>Edit a Vendor</ModalHeader>
-                                    <ModalBody>
-                                        <FormGroup>
-                                            <Label for="vendorName">Vendor Name</Label>
-                                            <Input id="vendorName" value={this.state.editVendorData.vendorName} onChange={(e) => {
-                                                let { editVendorData } = this.state;
+                            <Segment basic> */}
+                <UI>
+                    {/* <Header as="h3">Application Content</Header> */}
+                    {/* <Image src='//unsplash.it/800/480' /> */}
+                    <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
+                        <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}>Edit a Vendor</ModalHeader>
+                        <ModalBody>
+                            <FormGroup>
+                                <Label for="vendorName">Vendor Name</Label>
+                                <Input id="vendorName" value={this.state.editVendorData.vendorName} onChange={(e) => {
+                                    let { editVendorData } = this.state;
 
-                                                editVendorData.vendorName = e.target.value;
+                                    editVendorData.vendorName = e.target.value;
 
-                                                this.setState({ editVendorData });
-                                            }} />
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <Label for="serviceName">Service Name</Label>
+                                    this.setState({ editVendorData });
+                                }} />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="serviceName">Service Name</Label>
 
-                                            <Input type="select" id="serviceName" value={this.state.editVendorData.serviceId} onChange={(e) => {
-                                                let { editVendorData } = this.state;
+                                <Input type="select" id="serviceName" value={this.state.editVendorData.serviceId} onChange={(e) => {
+                                    let { editVendorData } = this.state;
 
-                                                editVendorData.serviceId = e.target.value;
+                                    editVendorData.serviceId = e.target.value;
 
-                                                this.setState({ editVendorData })
-                                            }}>
-                                                {/* <option  value={this.state.editVendorData.serviceName}>
+                                    this.setState({ editVendorData })
+                                }}>
+                                    {/* <option  value={this.state.editVendorData.serviceName}>
                                      {this.state.editVendorData.serviceName}
                                     </option>
                                      */}
-                                                <option disabled>--Select--</option>
-                                                {this.getDropdown(this.props.displayServiceMasterReducer)}
-                                            </Input>
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <Label for="description">Description</Label>
-                                            <Input id="description" value={this.state.editVendorData.description} onChange={(e) => {
-                                                let { editVendorData } = this.state;
+                                    <option disabled>--Select--</option>
+                                    {this.getDropdown(this.props.displayServiceMasterReducer)}
+                                </Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label for="description">Description</Label>
+                                <Input id="description" value={this.state.editVendorData.description} onChange={(e) => {
+                                    let { editVendorData } = this.state;
 
-                                                editVendorData.description = e.target.value;
+                                    editVendorData.description = e.target.value;
 
-                                                this.setState({ editVendorData });
-                                            }} />
-                                        </FormGroup>
-                                    </ModalBody>
+                                    this.setState({ editVendorData });
+                                }} />
+                            </FormGroup>
+                        </ModalBody>
 
-                                    <ModalFooter>
-                                        <Button color="primary" onClick={this.updateServices.bind(this)}>Update </Button>
-                                        <Button color="secondary" onClick={this.toggleEditVendorModal.bind(this)}>Cancel</Button>
-                                    </ModalFooter>
+                        <ModalFooter>
+                            <Button color="primary" onClick={this.updateServices.bind(this)}>Update </Button>
+                            <Button color="secondary" onClick={this.toggleEditVendorModal.bind(this)}>Cancel</Button>
+                        </ModalFooter>
 
 
-                                </Modal>
-                                <table className="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Vendor Name</th>
-                                            <th>Service Type</th>
-                                            <th>Description</th>
-                                        </tr>
-                                    </thead>
+                    </Modal>
+                    <SearchFilter type="text" value={this.state.search}
+                        onChange={this.searchOnChange} />
+                    <table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Vendor Name</th>
+                                <th>Service Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
 
-                                    <tbody>
-                                        {this.renderList(this.props.vendorMasterReducer)}
-                                    </tbody>
-                                </table>
-                                <Link to="/superDashboard/vendorMaster">
-                                    <button className="button" type="button">Add Vendor</button>
-                                </Link>
-                            </Segment>
+                        <tbody>
+                            {this.renderList(this.props.vendorMasterReducer)}
+                        </tbody>
+                    </table>
+                    <Link to="/superDashboard/vendorMaster">
+                        <button className="button" type="button">Add Vendor</button>
+                    </Link>
+                </UI>
+                {/* </Segment>
                         </Sidebar.Pusher>
                     </Sidebar.Pushable>
-                </div>
+                </div> */}
 
             </div>
         )

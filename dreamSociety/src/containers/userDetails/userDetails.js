@@ -8,9 +8,8 @@ import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import '../../r-css/w3.css';
-import Demo from '../demo';
+import UI from '../../components/newUI/superAdminDashboard';
 class userDetails extends Component {
-
     state = {
         editUserData: {
             userId: "",
@@ -51,12 +50,10 @@ class userDetails extends Component {
     updateUser = () => {
         let { userId, roleName, firstName, lastName, userName, email, contact } = this.state.editUserData;
         
-        this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact)
+        this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact).then(() => this.refreshData())
         this.setState({
             editUserModal: false, editUserData: { userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' }
-        })
-        
-
+        });
     }
 
     editUser(userId, roleName, firstName, lastName, userName, email, contact) {
@@ -77,12 +74,16 @@ class userDetails extends Component {
             
             if(x){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return  x.firstName.toLowerCase().includes(search.toLowerCase()) ||
-                 x.lastName.toLowerCase().includes(search.toLowerCase()) || 
-                 x.userName.toLowerCase().includes(search.toLowerCase()) || 
-                 x.email.toLowerCase().includes(search.toLowerCase()) ||
-                 currentRole[0].toLowerCase().includes(search.toLowerCase()) || 
+                return  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                 x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
+                 x.userName.toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
+                 x.email.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                 currentRole[0].toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                 x.contact.toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
                  !search;
+            }
+            else {
+                return <div>Not Found</div>
             }
         }
     }
@@ -91,7 +92,6 @@ class userDetails extends Component {
     fetchUsers({ user }) {
         if(user) {
             let currentRole;
-            console.log(user)
             return user.filter(this.searchFilter(this.state.search)).map((item) => {
                 return (
                     <tr key={item.userId}>
@@ -119,7 +119,6 @@ class userDetails extends Component {
 
     fetchRoles({ userRole }) {
         if (userRole) {
-            console.log(userRole)
             return (
                 userRole.map((item) => {
                     console.log(this.state)
@@ -149,7 +148,7 @@ class userDetails extends Component {
                 <div style={{ marginTop: '48px' }}>
                     <SideBar id='sidebar' onScroll={this.windowScroll} onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}> */}
-                     <Demo>
+                     <UI>
                     <div className="w3-container w3-margin-top">
                             <Link to="/superDashboard/registration">Add Users</Link>
                             <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
@@ -254,18 +253,15 @@ class userDetails extends Component {
                             </table>
                             </div>
                         </div>
-                        </Demo>
+                        </UI>
                     {/* </SideBar> */}
                 
-
-
-            </div>
+</div>
         )
     }
 }
 
 function mapStateToProps(state) {
-    console.log(state);
     return {
         userDetail: state.userDetail
     }

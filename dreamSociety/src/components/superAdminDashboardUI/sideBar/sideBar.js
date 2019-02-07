@@ -13,12 +13,21 @@ class sideBar extends Component {
                             <Menu.Item><Icon name="user" />Admin Register</Menu.Item>
                             <Menu.Item><Icon name="user" />Society Member Owner Register</Menu.Item>
                             <Menu.Item><Icon name="user" />Society Member Tenant Register</Menu.Item>
+                            <Menu.Item><Icon name="user" /><Link to="/superDashboard/societyManagement">Society Management</Link></Menu.Item>
                             <Menu.Item><Icon name="user" /><Link to="/vendorDashboard">Vendor</Link></Menu.Item>
                             <Menu.Item><Icon name="user" /><Link to="/superDashboard/add_parking/new">Parking Master</Link></Menu.Item>
                             <Menu.Item><Icon name="user" /><Link to="/superDashboard/towermaster">Tower Master</Link></Menu.Item>
                             <Menu.Item><Icon name="user" /><Link to="/superDashboard/event">Event Master</Link></Menu.Item>
                             <Menu.Item><Icon name="user" /><Link to="/superDashboard/flatmaster">Flat Master</Link></Menu.Item>
                             <Menu.Item><Icon name="user" /><Link to="/superDashboard/sizemaster">Size Master</Link></Menu.Item>
+
+                            <Menu.Item><Icon name="user" /><Link to="/superDashboard/cityMaster">City Master</Link></Menu.Item>
+
+                            <Menu.Item><Icon name="user" /><Link to="/superDashboard/countrymaster">Country Master</Link></Menu.Item>
+                            <Menu.Item><Icon name="user" /><Link to="/superDashboard/statemaster">State Master</Link></Menu.Item>
+                            <Menu.Item><Icon name="user" /><Link to="/superDashBoard/assetsMaster">Assets Master</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashBoard/assetsTypeSubMaster">Assets Type Sub Master</Link></Menu.Item>
+
                         </Sidebar>
                         <Sidebar.Pusher dimmed={this.props.visible} >
                             <Segment style={this.props.style}  basic>

@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { fetchParking} from '../../actionCreators/parkingAction';
+import { fetchParking } from '../../actionCreators/parkingAction';
 import { Table, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
+import UI from '../../components/newUI/superAdminDashboard';
+
 
 class ParkingMaster extends Component {
     state = {
         menuVisible: false,
-        search:''
+        search: ''
     }
     componentDidMount() {
         this.props.fetchParking()
@@ -23,7 +25,7 @@ class ParkingMaster extends Component {
     }
 
     searchOnChange = (e) => {
-        this.setState({search:e.target.value})
+        this.setState({ search: e.target.value })
     }
 
     renderParking({ parking }) {
@@ -49,8 +51,8 @@ class ParkingMaster extends Component {
         }
     }
 
-    searchFilter(search){
-        return function(x){
+    searchFilter(search) {
+        return function (x) {
             return x.parking_master.parkingName.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
@@ -58,36 +60,38 @@ class ParkingMaster extends Component {
     render() {
         return (
             <div>
-                <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
+                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
                 <div style={{ margin: '48px auto' }}>
                     <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}>
+                     visible={this.state.menuVisible}> */}
+                <UI>
                     <h1 style={{ color: 'black' }}>Add Parking</h1>
-                                <div>
-                                    
-                                    <div className="container">
-                                        <div>
-                                            <Link to='/superDashboard/add_parking/new'>Add Parking</Link>
-                                        </div>
-                                        <h3>Parking details</h3>
-                                        <SearchFilter type="text" value={this.state.search}
-                                            onChange={this.searchOnChange} />
-                                        <Table>
-                                            <thead>
-                                                <tr>
-                                                    <th>Basement</th>
-                                                    <th>No. of Parking</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {this.renderParking(this.props.parkingDetail)}
-                                            </tbody>
-                                        </Table>
-                                    </div>
-                                </div>
-                    </SideBar>
-                </div>
+                    <div>
+
+                        <div className="container">
+                            <div>
+                                <Link to='/superDashboard/add_parking/new'>Add Parking</Link>
+                            </div>
+                            <h3>Parking details</h3>
+                            <SearchFilter type="text" value={this.state.search}
+                                onChange={this.searchOnChange} />
+                            <Table>
+                                <thead>
+                                    <tr>
+                                        <th>Basement</th>
+                                        <th>No. of Parking</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.renderParking(this.props.parkingDetail)}
+                                </tbody>
+                            </Table>
+                        </div>
+                    </div>
+                </UI>
+                {/* </SideBar>
+                </div> */}
             </div>
         )
     }

@@ -14,7 +14,7 @@ export default  function(state=[],action){
         case ADD_PERSON:
             return{...state,person:action.payload}
             case GET_PERSON:
-            return{...state,getPerson:action.payload}
+            return{...state,person1:action.payload}
         default :
          return state
     }

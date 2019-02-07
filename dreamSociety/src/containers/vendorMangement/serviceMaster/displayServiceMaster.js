@@ -4,11 +4,16 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { authHeader } from '../../../helper/authHeader';
 import { bindActionCreators } from 'redux';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label, Table } from 'reactstrap';
 import { URN } from '../../../actions/index';
 import './serviceMaster.css';
 import { Link } from 'react-router-dom';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+import SearchFilter from '../../../components/searchFilter/searchFilter';
+import SideBar from '../../../components/superAdminDashboardUI/sideBar/sideBar';
+import MenuBar from '../../../components/superAdminDashboardUI/menuBar/menuBar';
+import UI from '../../../components/newUI/vendorDashboardInside';
+
 
 
 class displayServices extends Component {
@@ -25,7 +30,8 @@ class displayServices extends Component {
             isActive: false
         },
         menuVisible: false,
-        editServiceModal: false
+        editServiceModal: false,
+        search: ''
 
     }
 
@@ -52,6 +58,12 @@ class displayServices extends Component {
             this.setState({ editServiceData: { isActive: false } })
 
         })
+    }
+
+    searchFilter(search) {
+        return function (x) {
+            return x.serviceName.toLowerCase().includes(search.toLowerCase()) || !search;
+        }
     }
 
     toggleEditServiceModal() {
@@ -104,11 +116,15 @@ class displayServices extends Component {
         }
     }
 
+    searchOnChange = (e) => {
+        this.setState({ search: e.target.value })
+    }
+
     renderList = ({ item }) => {
 
         console.log(item);
         if (item) {
-            return item.map((item) => {
+            return item.filter(this.searchFilter(this.state.search)).map((item) => {
                 return (
 
                     <tr key={item.serviceId}>
@@ -135,11 +151,11 @@ class displayServices extends Component {
         return (
 
             <div>
-                <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
-                    <Menu.Item onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} >
+                {/* <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
+                    <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} >
                         <Icon name="sidebar" style={{ color: 'white', cursor: 'pointer' }} />
 
-                    </Menu.Item>
+                    </MenuBar>
                     <i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa">&#xf1ad;</i> <Link className="navbar-brand" to="#">DRE@M SOCIETY</Link>
                     <div className="navbar-collapse collapse" id="navbarCollapse" style={{ marginLeft: '20%' }}>
                         <ul className="navbar-nav mr-auto">
@@ -169,66 +185,69 @@ class displayServices extends Component {
                             <Menu.Item><Icon name="user" /><Link to="/superDashboard/vendorMaster">Vendor Master</Link></Menu.Item>
                         </Sidebar>
                         <Sidebar.Pusher dimmed={this.state.menuVisible}>
-                            <Segment basic >
-                                {/* <Header as="h3">Application Content</Header> */}
-                                {/* <Image src='//unsplash.it/800/480' /> */}
-                                <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)}>
-                                    <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Edit a Service</ModalHeader>
-                                    <ModalBody>
-                                        <FormGroup>
-                                            <Label for="serviceName">Service Type</Label>
-                                            <Input id="serviceName" value={this.state.editServiceData.serviceName} onChange={(e) => {
-                                                let { editServiceData } = this.state;
+                            <Segment basic > */}
+                <UI>
+                    {/* <Header as="h3">Application Content</Header> */}
+                    {/* <Image src='//unsplash.it/800/480' /> */}
+                    <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)}>
+                        <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Edit a Service</ModalHeader>
+                        <ModalBody>
+                            <FormGroup>
+                                <Label for="serviceName">Service Type</Label>
+                                <Input id="serviceName" value={this.state.editServiceData.serviceName} onChange={(e) => {
+                                    let { editServiceData } = this.state;
 
-                                                editServiceData.serviceName = e.target.value;
+                                    editServiceData.serviceName = e.target.value;
 
-                                                this.setState({ editServiceData });
-                                            }} />
-                                        </FormGroup>
+                                    this.setState({ editServiceData });
+                                }} />
+                            </FormGroup>
 
-                                        <FormGroup>
-                                            <Label for="service_detail">Service Details</Label>
+                            <FormGroup>
+                                <Label for="service_detail">Service Details</Label>
 
-                                            <select value={this.state.editServiceData.serviceDetailId} onChange={(e) => {
-                                                let { editServiceData } = this.state;
-                                                editServiceData.serviceDetailId = e.target.value;
-                                                this.setState({ editServiceData })
-                                            }}>
-                                                <option disabled>--SELECT--</option>
-                                                {/* <option value={this.state.editServiceData.service_detail}>
+                                <select value={this.state.editServiceData.serviceDetailId} onChange={(e) => {
+                                    let { editServiceData } = this.state;
+                                    editServiceData.serviceDetailId = e.target.value;
+                                    this.setState({ editServiceData })
+                                }}>
+                                    <option disabled>--SELECT--</option>
+                                    {/* <option value={this.state.editServiceData.service_detail}>
                       {this.state.editServiceData.service_detail}
                         </option> */}
-                                                {this.getDropdown1(this.props.serviceMasterReducer)}
+                                    {this.getDropdown1(this.props.serviceMasterReducer)}
 
-                                            </select>
-                                        </FormGroup>
-                                    </ModalBody>
+                                </select>
+                            </FormGroup>
+                        </ModalBody>
 
-                                    <ModalFooter>
-                                        <Button color="primary" onClick={this.updateServices.bind(this)}>Update </Button>
-                                        <Button color="secondary" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button>
-                                    </ModalFooter>
-                                </Modal>
+                        <ModalFooter>
+                            <Button color="primary" onClick={this.updateServices.bind(this)}>Update </Button>
+                            <Button color="secondary" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button>
+                        </ModalFooter>
+                    </Modal>
+                    <SearchFilter type="text" value={this.state.search}
+                        onChange={this.searchOnChange} />
+                    <Table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Service Type</th>
+                                <th>Service Details</th>
+                            </tr>
+                        </thead>
 
-                                <table className="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Service Type</th>
-                                            <th>Service Details</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        {this.renderList(this.props.displayServiceMasterReducer)}
-                                    </tbody>
-                                </table>
-                                <Link to="/superDashboard/serviceMaster">
-                                    <button className="button" type="button">Add Services</button>
-                                </Link>
-                            </Segment>
+                        <tbody>
+                            {this.renderList(this.props.displayServiceMasterReducer)}
+                        </tbody>
+                    </Table>
+                    <Link to="/superDashboard/serviceMaster">
+                        <button className="button" type="button">Add Services</button>
+                    </Link>
+                </UI>
+                {/* </Segment>
                         </Sidebar.Pusher>
                     </Sidebar.Pushable>
-                </div>
+                </div> */}
 
             </div>
         )

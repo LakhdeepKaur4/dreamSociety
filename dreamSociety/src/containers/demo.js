@@ -5,7 +5,29 @@ import $ from 'jquery';
 import './demo.css';
 
 class Demo extends Component {
+    componentDidMount(){
+        $(document).ready(function () {
 
+            $('#sidebarCollapse').on('click', function () {
+                // $("#sidebar").toggle().animate();
+                // $('#sidebar').toggleClass('inactive active');
+                if ($('#sidebar').hasClass('active')) {
+                    $('#sidebar').removeClass('active').addClass('inactive');
+                } else {
+                    $('#sidebar').removeClass('inactive').addClass('active');
+                }
+            });
+        
+            $('#body').on('click', function () {
+                if ($('#sidebar').hasClass('active')) {
+                    $('#sidebar').removeClass('active').addClass('inactive');
+                }
+        
+            });
+        
+        
+        });
+    }
 
     render() {
         return (
@@ -75,26 +97,6 @@ class Demo extends Component {
         )
     }
 }
-$(document).ready(function () {
 
-    $('#sidebarCollapse').on('click', function () {
-        // $("#sidebar").toggle().animate();
-        // $('#sidebar').toggleClass('inactive active');
-        if ($('#sidebar').hasClass('active')) {
-            $('#sidebar').removeClass('active').addClass('inactive');
-        } else {
-            $('#sidebar').removeClass('inactive').addClass('active');
-        }
-    });
-
-    $('#body').on('click', function () {
-        if ($('#sidebar').hasClass('active')) {
-            $('#sidebar').removeClass('active').addClass('inactive');
-        }
-
-    });
-
-
-});
 
 export default Demo;

@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './vendorDashboard.css';
 import Logo from '../../assets/2.jpg';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+import UI from '../../components/newUI/vendorDashboard';
 
 
 export default class Dashboard extends Component {
@@ -27,7 +28,7 @@ export default class Dashboard extends Component {
   
   render() {
     return (<div>
-      <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
+      {/* <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
         <Menu.Item onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} >
           <Icon name="sidebar" style={{ color: 'white', cursor: 'pointer' }} />
 
@@ -64,10 +65,12 @@ export default class Dashboard extends Component {
             <Segment basic style={{ backgroundImage: `url(${Logo})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '600px' }}>
               {/* <Header as="h3">Application Content</Header> */}
               {/* <Image src='//unsplash.it/800/480' /> */}
-            </Segment>
+            {/* </Segment>
           </Sidebar.Pusher>
-        </Sidebar.Pushable>
-      </div>
+        </Sidebar.Pushable> */}
+      {/* </div> */}
+
+      <UI></UI>
 
     </div>
     );

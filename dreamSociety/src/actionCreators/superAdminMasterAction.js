@@ -12,9 +12,17 @@ export function addUser(values) {
                         'x-access-token': authHeader()
                     },
                     body: JSON.stringify(values) })
-                    .then(response => response.data)
-                    .then(result => result)
-                    .catch(error=> error);
+                    .then(response => {console.log(response.status)
+                        if(response.status === 201){
+                            return response.data
+                        }
+                        else if(response.status === 400){
+                            return console.log('something went wrong')
+                        }
+                    })
+                    .catch(error=> {
+                        console.log('There has been a problem with your fetch operation: ', 
+                        error)});
                     return {
                         type: ADD_USER,
                         payload: request
@@ -45,7 +53,6 @@ export function updateUser(userId, roleName, firstName, lastName, userName, emai
     const request = axios.put(`${URN}/user/`+ userId, {
             userId, roleName, firstName, lastName, userName, email, contact
         }, { headers: authHeader() })
-        .then(() => this.getUsers())
     .then((response =>response.data))
 
     return {
