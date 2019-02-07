@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
 import { Link } from 'react-router-dom';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+import './sidebar.css';
 
 class sideBar extends Component {
     render(){
         return(
             <div>
                 <Sidebar.Pushable onClick={this.props.onClick} as={Segment} attached="bottom">
-                        <Sidebar width='thin' as={Menu} animation="uncover" visible={this.props.visible} icon="labeled" vertical inverted>
+                        <Sidebar id={this.props.onScroll} width='thin' as={Menu} animation="uncover" visible={this.props.visible} icon="labeled" vertical inverted>
                             <Menu.Item><Icon name="user" /><Link to="/superDashboard/registration">Super Admin Register</Link></Menu.Item>
                             <Menu.Item><Icon name="user" />Admin Register</Menu.Item>
                             <Menu.Item><Icon name="user" />Society Member Owner Register</Menu.Item>

@@ -90,7 +90,7 @@ class Parking extends Component {
                         backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}
                         visible={this.state.menuVisible }>
                     <h1>Add Parking</h1>
-                                <div className="form">
+                                <div className="form col-8">
                                     <Form onSubmit={this.submit}>
                                         <FormGroup>
                                             <Label>Parking Name</Label>

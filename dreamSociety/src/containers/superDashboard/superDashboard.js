@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './superDashboard.css';
 import Logo from '../../assets/2.jpg';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+import Demo from '../demo';
 
 
 export default class Dashboard extends Component {
@@ -24,10 +25,10 @@ export default class Dashboard extends Component {
       editUserModal: !this.state.editUserModal
     });
   }
-  
+
   render() {
     return (<div>
-      <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
+      {/* <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
         <Menu.Item onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} >
           <Icon name="sidebar" style={{ color: 'white', cursor: 'pointer' }} />
 
@@ -43,7 +44,7 @@ export default class Dashboard extends Component {
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="#">About Us</Link>
-            </li>
+            </li> 
             <li className="nav-item">
               <Link className="nav-link" to="#">Contact Us</Link>
             </li>
@@ -53,8 +54,13 @@ export default class Dashboard extends Component {
               onClick={this.editUser}>Logout</button>
           </form>
         </div>
-      </nav>
-      <div style={{ margin: '48px auto' }}>
+      </nav> */}
+      <Demo >
+        <form>
+          snjbdkjsadkjsadkjashdjsaa: <input type="text" />
+        </form>
+      </Demo>
+      {/* <div style={{ margin: '48px auto' }}>
         <Sidebar.Pushable as={Segment} attached="bottom">
           <Sidebar width='thin' as={Menu} animation="uncover" visible={this.state.menuVisible} icon="labeled" vertical inverted>
             <Menu.Item><Icon name="user" /><Link to="/superDashboard/registration">Super Admin Register</Link></Menu.Item>
@@ -71,11 +77,8 @@ export default class Dashboard extends Component {
           <Sidebar.Pusher dimmed={this.state.menuVisible}>
             <Segment basic style={{ backgroundImage: `url(${Logo})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '600px' }}>
               {/* <Header as="h3">Application Content</Header> */}
-              {/* <Image src='//unsplash.it/800/480' /> */}
-            </Segment>
-          </Sidebar.Pusher>
-        </Sidebar.Pushable>
-      </div>
+      {/* <Image src='//unsplash.it/800/480' /> */}
+
 
     </div>
     );

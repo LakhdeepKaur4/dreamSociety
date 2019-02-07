@@ -7,6 +7,7 @@ import Parking from './components/parking/parking';
 import Login from './containers/login/login'; 
 // import QR from './containers/QR/QR Code';
 import UserDetails from './containers/userDetails/userDetails';
+import Demo from './containers/demo';
 import Registration from './containers/userRegistration/userRegistration';
 import AdminDashboard from './containers/adminDashboard/adminDashboard';
 import OwnerDashboard from './containers/ownerDashboard/ownerDashboard';
@@ -75,6 +76,7 @@ class App extends Component {
             <Route path= '/superDashboard/displayVendorMaster' component={displayVendorMaster}/>
             <Route path ='/superDashboard/displayServices'component ={displayServices}/>
             <Route path ='/superDashBoard/displayPerson' component={displayPersonDetails}/>
+            <Route path='/superDashBoard/demo' component={Demo} />
             {/* <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
             <Route path ='/superdashboard/flatDetails' component ={flatDetails}/> */}
           </Switch>

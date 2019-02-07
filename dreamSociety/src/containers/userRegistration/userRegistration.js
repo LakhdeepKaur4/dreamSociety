@@ -11,6 +11,7 @@ import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 import { Form, FormGroup, Input, Button, Label } from 'reactstrap';
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
+import '../../r-css/w3.css';
 
 
 class Registration extends Component {
@@ -147,7 +148,7 @@ class Registration extends Component {
                     style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px',
                     backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}
                     visible={this.state.menuVisible}>
-               <div style={{ width: '600px', padding: '20px 20px', borderRadius: '20px', margin: '0 auto', background: '#f3f3f3', position: 'relative' }}>
+               <div style={{ width: '600px', padding: '20px 20px', borderRadius: '20px', margin: '0 auto', background: '#f3f3f3', position: 'relative' }} className="col-8">
                                 <Form onSubmit={this.submit}>
                                     <FormGroup>
                                         <Label>User Type</Label>

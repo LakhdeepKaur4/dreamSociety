@@ -7,6 +7,8 @@ import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import '../../r-css/w3.css';
+import Demo from '../demo';
 class userDetails extends Component {
 
     state = {
@@ -103,8 +105,10 @@ class userDetails extends Component {
                         <td>{item.email}</td>
                         <td>{item.contact}</td>
                         <td>
-                            <Button color="success" size="sm" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email, item.contact)}>Edit</Button>
-                            <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
+                            <div className="w3-row">
+                            <Button color="success" size="sm" className="w3-btn w3-col l6 mr-1 mb-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email, item.contact)}>Edit</Button>
+                            <Button color="danger" size="sm" className="w3-btn w3-col l6" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
+                            </div>
                         </td>
                     </tr>
                 )
@@ -133,14 +137,20 @@ class userDetails extends Component {
         this.setState({search:e.target.value})
     }
 
+    windowScroll = () => {
+        let x = document.getElementById('sidebar');
+        x.style.position = 'fixed';
+    }
+
     render() {
         return (
             <div>
-                <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
+                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
                 <div style={{ marginTop: '48px' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}>
-                    <div className="container">
+                    <SideBar id='sidebar' onScroll={this.windowScroll} onClick={() => this.setState({ menuVisible: false })}
+                     visible={this.state.menuVisible}> */}
+                     <Demo>
+                    <div className="w3-container w3-margin-top">
                             <Link to="/superDashboard/registration">Add Users</Link>
                             <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                                 <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit User</ModalHeader>
@@ -223,7 +233,8 @@ class userDetails extends Component {
                             </Modal>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                            <Table>
+                            <div className="w3-responsive">
+                            <table className="w3-table w3-striped"> 
 
                                 <thead>
                                     <tr>
@@ -240,10 +251,12 @@ class userDetails extends Component {
                                     {this.fetchUsers(this.props.userDetail)}
                                 </tbody>
 
-                            </Table>
+                            </table>
+                            </div>
                         </div>
-                    </SideBar>
-                </div>
+                        </Demo>
+                    {/* </SideBar> */}
+                
 
 
             </div>

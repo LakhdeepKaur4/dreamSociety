@@ -126,7 +126,7 @@ class serviceMaster extends Component {
                         <Segment basic style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '600px' }}>
                             {/* <Header as="h3">Application Content</Header> */}
                             {/* <Image src='//unsplash.it/800/480' /> */}
-                            <div className="form">
+                            <div className="form col-8">
                                 <form onSubmit={this.onSubmit}>
                                     <div>
                                         <label>Service Type</label>
@@ -139,11 +139,12 @@ class serviceMaster extends Component {
                                             {this.getDropdown(this.props.serviceMasterReducer)}
                                         </select>
                                     </div>
-
-                                    <button type="submit" className="btn btn-primary" value="submit">Submit</button>
+                                    <div className="mt-4">
+                                    <button type="submit" className="btn btn-primary mr-2" value="submit">Submit</button>
                                     <Link to='/superDashboard/displayServices'>
                                         <button className="btn">Show Details</button>
                                     </Link>
+                                    </div>
                                 </form>
                             </div>
                         </Segment>

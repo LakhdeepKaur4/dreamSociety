@@ -110,7 +110,7 @@ class vendorMaster extends Component {
                             <Segment basic style={{ backgroundImage: `url(${Logo})`, padding: '55px 0', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '600px' }}>
                                 {/* <Header as="h3">Application Content</Header> */}
                                 {/* <Image src='//unsplash.it/800/480' /> */}
-                                <div className="form1">
+                                <div className="form1 col-8">
                                     <form onSubmit={this.onSubmit}>
                                         <div>
                                             <label>Vendor Name</label>
@@ -129,12 +129,14 @@ class vendorMaster extends Component {
                                             <label>Description</label>
                                             <input className="form-control" value={this.state.description} onChange={this.handleChange} type="text" name="description" required></input>
                                         </div>
-
-                                        <button type="submit" className="btn btn-primary" value="submit">Submit</button>
-                                    </form>
+                                        <div className="mt-4">
+                                        <button type="submit" className="btn btn-primary mr-2" value="submit">Submit</button>
+                                    
                                     <Link to='/superDashboard/displayVendorMaster'>
-                                        <button className="btn1">Show Details</button>
+                                        <button className="btn">Show Details</button>
                                     </Link>
+                                    </div>
+                                    </form>
                                 </div>
                             </Segment>
                         </Sidebar.Pusher>

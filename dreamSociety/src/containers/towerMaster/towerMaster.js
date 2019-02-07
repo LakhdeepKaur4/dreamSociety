@@ -99,7 +99,7 @@ class TowerMaster extends Component {
                             <Segment basic style={{ backgroundImage: `url(${Logo})`,padding:'55px 0', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '600px' }}>
                                 {/* <Header as="h3">Application Content</Header> */}
                                 {/* <Image src='//unsplash.it/800/480' /> */}
-                                <div className="form">
+                                <div className="form col-8">
                                     <Form onSubmit={this.onSubmit}>
                                         <FormGroup>
                                             <Label>Tower Name</Label>
