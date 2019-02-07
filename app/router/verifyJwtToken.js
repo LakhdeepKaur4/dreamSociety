@@ -8,7 +8,7 @@ verifyToken = (req, res, next) => {
 	let token = req.headers['x-access-token'];
 	
 	if (!token){
-		return res.status(403).send({ 
+		return res.status(403).json({ 
 			auth: false,
 			message: 'No token provided.' 
 		});
@@ -16,7 +16,7 @@ verifyToken = (req, res, next) => {
 
 	jwt.verify(token, config.secret, (err, decoded) => {
 		if (err){
-			return res.status(500).send({ 
+			return res.status(500).json({ 
 					auth: false, 
 					message: 'Fail to Authentication. Error -> ' + err 
 				});

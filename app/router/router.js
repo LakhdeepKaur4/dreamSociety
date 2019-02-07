@@ -203,6 +203,4 @@ module.exports = function(app) {
 	app.put('/api/flatDetail/:id', [authJwt.verifyToken],flatDetailController.update);
 
 	app.put('/api/flatDetail/delete/:id', [authJwt.verifyToken],flatDetailController.delete);
-
-	app.get('/api/schedule',userController.schedule);
 }

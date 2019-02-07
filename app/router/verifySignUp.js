@@ -12,7 +12,7 @@ checkDuplicateEmail = (req, res, next) => {
 		} 
 	}).then(user => {
 		if(user){
-		return res.status(400).json({message:"Fail -> email is already taken!"});
+		return res.status(400).json({status:400,message:"Fail -> email is already taken!"});
 		}
 		
 		// -> Check Email is already in use
@@ -22,7 +22,7 @@ checkDuplicateEmail = (req, res, next) => {
 			} 
 		}).then(user => {
 			if(user){
-				res.status(400).json({message:"Fail -> Email is already in use!"});
+				res.status(400).json({status:400,message:"Fail -> Email is already in use!"});
 				return;
 			}
 				
@@ -51,8 +51,7 @@ checkDuplicateUserName = (req, res, next) => {
 			if(user){
 				res.status(400).json({message:"Fail -> Username is already in use!"});
 				return;
-			}
-				
+			}	
 			next();
 		});
 	});

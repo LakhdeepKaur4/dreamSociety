@@ -68,11 +68,15 @@ exports.signup = (req, res) => {
 				res.status(httpStatus.CREATED).json({message:"User registered successfully!"});
 			});
 		}).catch(err => {
-			res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message: err});
+			res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+				status:500,
+				message: err});
 		});
 	}).catch(err => {
 		console.log("err==>",err)
-		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message:err});
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+			status:500,
+			message:err});
 	})
 }
 
@@ -163,7 +167,7 @@ exports.signin = (req, res) => {
 
 	}).catch(err => {
 		console.log()
-		res.status(500).json({message:err});
+		res.status(500).json({"message":err});
 	});
 }
 
@@ -188,7 +192,7 @@ exports.get = (req, res) => {
 		});
 	}catch(error){
 		console.log("error--->",error)
-		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message:error})
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({"message":error})
 	}
 }
 
@@ -504,10 +508,10 @@ exports.signupCopy = (req, res) => {
 				res.status(httpStatus.CREATED).json("User registered successfully!");
 			});
 		}).catch(err => {
-			res.status(httpStatus.INTERNAL_SERVER_ERROR).send("Error -> " + err);
+			res.status(httpStatus.INTERNAL_SERVER_ERROR).json("Error -> " + err);
 		});
 	}).catch(err => {
-		res.status(httpStatus.INTERNAL_SERVER_ERROR).send("Fail! Error -> " + err);
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).json("Fail! Error -> " + err);
 	})
 }
 

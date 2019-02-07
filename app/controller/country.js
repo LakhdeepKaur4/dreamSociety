@@ -17,7 +17,7 @@ exports.create = (req,res) => {
     }).then(country =>{
         res.status(200).json({message:"Country added successfully!",country:country});
     }).catch(err => {
-    res.status(500).send("Fail! Error -> " + err);
+    res.status(500).json("Fail! Error -> " + err);
 })
 }
 

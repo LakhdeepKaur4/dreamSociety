@@ -38,7 +38,7 @@ exports.get = (req, res) => {
             {model:User,
             attributes: ['userId', 'userId']},
             {model:location,
-            attributes: ['locationId', 'locationId']}, 
+            attributes: ['locationId', 'locationName']}, 
     ]
     })
       .then(society => {
@@ -54,7 +54,7 @@ exports.get = (req, res) => {
 exports.getById = (req,res) => {
     console.log("society===>",req.params.id)
      Society.findOne({
-    where: {societyId: req.params.id},
+    where: {locationId: req.params.id},
     include:[
         {model:City,
         attributes: ['cityId', 'cityName']},
