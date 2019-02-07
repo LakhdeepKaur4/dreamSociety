@@ -26,20 +26,19 @@ console.log("creating society");
 
 exports.get = (req, res) => {
     Society.findAll(
-        {where :{isActive:true}},
-        {
+        {where :{isActive:true},
         include:[
-            {model:City,
-            attributes: ['cityId', 'cityName']},	
-            {model:Country,
-             attributes: ['countryId', 'countryName']},
-            {model:State,
-            attributes: ['stateId', 'stateName']},
-            {model:User,
-            attributes: ['userId', 'userId']},
-            {model:location,
-            attributes: ['locationId', 'locationName']}, 
-    ]
+          {model:City,
+          attributes: ['cityId', 'cityName']},
+          {model:Country,
+           attributes: ['countryId', 'countryName']},
+          {model:State,
+          attributes: ['stateId', 'stateName']},
+          {model:User,
+          attributes: ['userId', 'userName']},
+          {model:location,
+          attributes: ['locationId', 'locationName']}, 
+  ]
     })
       .then(society => {
           if(society){

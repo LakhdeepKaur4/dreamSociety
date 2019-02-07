@@ -7,13 +7,16 @@ const Size = db.size;
 
 exports.create = (req,res) => {
 console.log("creating flat");
+let body = req.body;
+body.userId = req.userId;
 console.log("req.body==>",req.body)
     Flat.create({
         flatType:req.body.flatType,
         coverArea:req.body.coverArea,
         flatSuperArea:req.body.flatSuperArea,
         societyId:req.body.societyId,
-        sizeId:req.body.sizeId
+        sizeId:req.body.sizeId,
+        userId:req.userId
     }).then(flat =>{
         res.json({message:"Flat added successfully!",flat:flat});
     }).catch(err => {

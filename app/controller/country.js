@@ -6,14 +6,12 @@ const Country = db.country;
 exports.create = (req,res) => {
     console.log("creating country");
     console.log("body",req.body)
-    let body = req.body;
-    body.userId = req.userId;
     Country.create({
         countryName:body.countryName,
         code:body.code,
         currency:body.currency,
         phoneCode:body.phoneCode,
-        userId:body.userId
+        userId:req.userId
     }).then(country =>{
         res.status(200).json({message:"Country added successfully!",country:country});
     }).catch(err => {

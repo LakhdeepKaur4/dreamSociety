@@ -8,7 +8,6 @@ exports.create = async (req, res, next) => {
         console.log("creating assets");
         console.log("userId==>",req.userId)
         let body = req.body;
-        console.log("body===>",body)
         body.userId = req.userId;
         const assets = await Assets.create(body);
         return res.status(httpStatus.CREATED).json({
@@ -30,11 +29,7 @@ exports.get = async(req,res,next) => {
         // const data = await Assets.findAndCountAll();
         // let pages = Math.ceil(data.count / limit);
         
-        const assets = await Assets.findAll({where:{isActive:true}, 
-            // limit: limit,
-            // offset: offset,
-            // $sort: { id: 1 }
-        });
+        const assets = await Assets.findAll({where:{isActive:true}});
         if(assets){
             return res.status(httpStatus.CREATED).json({
                 message: "Assets Content Page",
@@ -55,7 +50,6 @@ exports.getAssetsByPageNumber = async(req,res,next) => {
         offset = limit * (page - 1);
         const data = await Assets.findAndCountAll();
         // let pages = Math.ceil(data.count / limit);
-        
         const assets = await Assets.findAll({where:{isActive:true}, 
             limit: limit,
             offset: offset,

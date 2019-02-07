@@ -8,13 +8,12 @@ const City = db.city;
 
 exports.create = (req,res) => {
     console.log("creating city");
-    let body = req.body;
-    body.userId = req.userId;
     Location.create({
         locationName:body.locationName,
         countryId:body.countryId,
         stateId:body.stateId,
         cityId:body.cityId,
+        userId:req.userId
     }).then(location =>{
         res.json({message:"Location added successfully!",location:location});
     }).catch(err => {
