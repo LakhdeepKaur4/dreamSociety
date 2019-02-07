@@ -35,14 +35,9 @@ class Login extends Component {
         e.preventDefault(); 
         const { username, password } = this.state
         if (username!==null && password!==null ) {
-            this.props.login(username,password)
-            // .then(response=>{
-            //     console.log('response',response)
-           // }) 
+            this.props.login(username,password) 
            .then((loginData)=>{
-            console.log(loginData)
             if(loginData.payload.data.status===200){
-                console.log('loginData.payload.data.userType',loginData.payload.data.user.roles[0].roleName)
                 this.setState({
                     message:loginData.payload.data.message
                 })
@@ -81,7 +76,6 @@ class Login extends Component {
     onChangeHandler=(e)=>{
         const { name, value } = e.target;
         this.setState({ [name]: value });
-        // console.log(this.state)
         if(this.state.message.length>0){
           this.setState({
               message:''
@@ -126,10 +120,6 @@ class Login extends Component {
     render() {
       return (<div>
         <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
-        {/* <Menu.Item onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} >
-            <Icon name="sidebar" style={{color:'white',cursor:'pointer'}} />
-            
-          </Menu.Item>   */}
         <i style={{fontSize:'24px', color: 'skyblue',cursor:'pointer'}} className="fa">&#xf1ad;</i> <Link className="navbar-brand" to="#">DRE@M SOCIETY</Link>
         <div className="navbar-collapse collapse" id="navbarCollapse" style={{marginLeft: '20%'}}>
           <ul className="navbar-nav mr-auto">
@@ -162,8 +152,6 @@ class Login extends Component {
         </Sidebar>
          <Sidebar.Pusher dimmed={this.state.menuVisible}>
               <Segment basic>
-                {/* <Header as="h3">Application Content</Header> */}
-                {/* <Image src='//unsplash.it/800/480' /> */}
                 <img src={Logo} alt="society" />
               </Segment>
          </Sidebar.Pusher>
@@ -176,11 +164,11 @@ class Login extends Component {
                         <div style={{'color':'red'}}>{this.state.message}</div>
                             <FormGroup>
                                 <Label>Username</Label>
-                                <Input name="username" type="text" value={this.state.username} onChange={this.onChangeHandler}></Input>
+                                <Input name="username" type="text" value={this.state.username} onChange={this.onChangeHandler} required></Input>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Password</Label>
-                                <Input name="password" type="password" value={this.state.password} onChange={this.onChangeHandler}></Input>
+                                <Input name="password" type="password" value={this.state.password} onChange={this.onChangeHandler} required></Input>
                             </FormGroup>
                             <FormGroup>
                             <Button color="primary" >Login</Button>{' '}
@@ -199,7 +187,6 @@ class Login extends Component {
   }
 
   function mapStateToProps(state) {
-      console.log(state)
     return {
         loginReducer:state.loginReducer
     }

@@ -28,7 +28,7 @@ class AssetsTypeMaster extends Component {
         e.preventDefault();
         const { assets, description } = this.state
         this.props.addAssets(assets, description)
-
+       .then(()=>this.props.history.push('/superDashBoard/assetsMaster/assetsList'))
     }
 
     render() {

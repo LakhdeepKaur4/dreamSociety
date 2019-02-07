@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchAssets, updateAssetsSub, removeAssetsSub } from '../../actionCreators/assetsSubAction';
+import { fetchAssets, updateAssetsSub, removeAssetsSub, getAssets } from '../../actionCreators/assetsSubAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-
+import Pagination from "react-js-pagination";
 class AssetsTypeSubList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [],
+            pageData: [],
             activePage: 0,
             assetTypeId: '',
             assetType: '',
             description: '',
             modal: false,
             menuVisible: false,
-            search:''
+            search:'',
+            pageCount: 1,
+            activePage: 1
         };
     }
     onChangeHandler = (event) => {
@@ -41,7 +43,7 @@ class AssetsTypeSubList extends Component {
         this.setState({ modal: !this.state.modal })
     }
     componentWillMount() {
-        this.props.fetchAssets();
+        this.props.fetchAssets()
     }
 
 
@@ -66,13 +68,14 @@ class AssetsTypeSubList extends Component {
     searchFilter(search){
         return function(x){
             return x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||
+            x.asset_master.assetName.toUpperCase().includes(search.toUpperCase()) ||
             x.description.toLowerCase().includes(search.toLowerCase()) ||!search;
         }
     }
 
-    renderListAssets = ({ getAssetsType }) => {
+    renderListAssets = ({ getAssetsType }) => {    
+  
         if (getAssetsType) {
-
             return getAssetsType.assetsType.filter(this.searchFilter(this.state.search)).map((item) => {
                 {
                     return (
@@ -89,6 +92,7 @@ class AssetsTypeSubList extends Component {
                 }
             })
         }
+        
     }
 
 
@@ -133,6 +137,14 @@ class AssetsTypeSubList extends Component {
                     </ModalFooter>
                 </Modal>
                 </SideBar>
+                <Pagination
+                          activePage={this.state.activePage}
+                          itemsCountPerPage={100}
+                          totalItemsCount={2000}
+                          pageRangeDisplayed={5}
+                          className="pagination justify-content-center"
+                          onChange={this.handlePageChange(this.props.ListOfAssets)}
+                        />
             </div>
         );
     }
