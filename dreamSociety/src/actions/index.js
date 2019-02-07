@@ -57,6 +57,7 @@ export const GET_STATE_NAME='get_state_name';
 export const GET_CITY_NAME='get_city_name';
 export const ADD_LOCATION_DETAILS ='add_location_name';
 export const GET_LOCATION_NAME ='get_location_name';
+<<<<<<< Updated upstream
 export const GET_LOCATION_DETAIL='get_location_detail';
 export const COUNTRY_DETAIL='country_detail';
 export const STATE_DETAIL='state_detail';
@@ -79,3 +80,8 @@ export const ADD_STATE='add-state';
 export const  GET_COUNTRY_DETAILS1='get-country-details1';
 export const DELETE_DETAILS ='delete-details';
 export const UPDATE_DETAILS='update-details';
+=======
+export const GET_LOCATION='get_location';
+export const GET_STATE='get_state';
+export const GET_CITY='get_city';
+>>>>>>> Stashed changes

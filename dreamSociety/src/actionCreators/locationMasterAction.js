@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN, GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME,ADD_LOCATION_DETAILS,GET_LOCATION_NAME,GET_LOCATION} from '../actions/index';
+import {URN, GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME,ADD_LOCATION_DETAILS,GET_CITY,GET_LOCATION_NAME,GET_LOCATION,GET_STATE} from '../actions/index';
 
 
 
@@ -12,6 +12,25 @@ export  function getCountryName(){
           payload: request
         } 
     }
+
+    
+export  function getState(){
+    const request  = fetch(`${URN}/state`,  {headers:authHeader()},{method: 'GET'})
+    .then(response => response.json())
+    return{
+          type: GET_STATE,
+          payload: request
+        } 
+    }
+
+    export  function getCity(){
+        const request  = fetch(`${URN}/city`,  {headers:authHeader()},{method: 'GET'})
+        .then(response => response.json())
+        return{
+              type: GET_CITY,
+              payload: request
+            } 
+        }
 
 export function getStateName(countryId){
     const request =fetch(`${URN}/getState/${countryId}`,{headers:authHeader()},{method:'GET'})

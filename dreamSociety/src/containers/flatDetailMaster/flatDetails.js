@@ -6,6 +6,7 @@ import {Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Lab
 import  axios from 'axios';
 import {authHeader} from '../../helper/authHeader';
 import {URN} from '../../actions/index';
+import SearchFilter from '../../components/searchFilter/searchFilter';
 
 
 class flatDetails extends Component{
@@ -21,7 +22,8 @@ class flatDetails extends Component{
             towerName:'',
             isActive: false
     },
-    editFlatModal: false
+    editFlatModal: false,
+    search:''
 }
 
 
@@ -41,26 +43,40 @@ refreshData(){
 }
 
   
-edit(flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName){console.log("ttttttttt",towerName)
+edit(flatNo,flatType,floor,towerName, flatId,flatDetailId){console.log("ttttttttt",flatType)
     this.setState({
         editFlatData:{
-            flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName},editFlatModal: !this.state.editFlatModal
+            flatNo,flatType,floor,towerName,flatId,flatDetailId},editFlatModal: !this.state.editFlatModal
     })
 
+}
+
+searchFilter(search){
+    return function(x){
+        return x.floor.toLowerCase().includes(search.toLowerCase()) || !search;
+    }
+}
+
+
+
+
+searchOnChange = (e) => {
+    this.setState({search:e.target.value})
 }
 
 
 updateDetails(){
     let { flatNo,flatId,flatType,floor,towerId,towerName} = this.state.editFlatData;
-    
+    console.log(flatId,flatType,"priya");
     axios.put(`${URN}/flatDetail/` + this.state.editFlatData.flatDetailId, {
         flatNo,flatId,flatType,floor,towerId,towerName
     },{headers:authHeader()}).then((response) => {
       this.refreshData();
-           
+           console.log(response.data)
       this.setState({
         editFlatModal: false, editFlatData: {flatDetailId:'', flatNo:'',flatId:'',flatType:'',floor:'',towerId:'',towerName:''}
       })
+      console.log(flatType)
     });
 }  
 
@@ -80,28 +96,25 @@ toggleEditFlatModal(){
     });
 }
 
-getDropdown1 =({type})=>{
-    console.log('hhhhhhhhhhhhhhhhhh',type)
-    if(type){
-        return type.map((item)=>{
-            console.log('hhhhhhhhhhhhhhhhhh',item.flatType)
+
+getDropDown1=({flattype})=>{
+    if(flattype){
+        return flattype.map((item)=>{
             return(
-                <option key={item.flatId} value={item.flatType}>
-                {item.flatType}
+                <option key={item.flatId} value={item.flatId}>
+                    {item.flatType}
                 </option>
             )
         })
     }
 }
 
-
-getDropdown2 =({name})=>{
-    console.log(name)
+getDropDown2=({name})=>{
     if(name){
         return name.map((item)=>{
             return(
                 <option key={item.towerId} value={item.towerId}>
-                {item.towerName}
+                    {item.towerName}
                 </option>
             )
         })
@@ -115,7 +128,7 @@ push=()=>{
 renderList =({details})=>{
     
     if(details){
-        return details.flatDetail.map((item,j) =>{
+        return details.flatDetail.filter(this.searchFilter(this.state.search)).map((item,j) =>{
         
             return(
                    
@@ -127,7 +140,7 @@ renderList =({details})=>{
                             <td>{item.tower_master.towerName}</td>
                             
                                 <td>
-                                   <button className="btn btn-primary" onClick={this.edit.bind(this,item.flatDetailId,item.flatNo,item.flatId,item.flat_master.flatType,item.floor,item.towerId,item.tower_master.towerName)} >Edit</button>
+                                   <button className="btn btn-primary" onClick={this.edit.bind(this,item.flatNo, item.flat_master.flatType,item.floor,item.tower_master.towerName,item.flat_master.flatId, item.flatDetailId)} >Edit</button>
                                 </td>
                                  <td>
                                    <button className="btn btn-danger" onClick={this.delete.bind(this, item.flatDetailId)}>Delete</button>
@@ -158,20 +171,17 @@ render(){
 
                         <FormGroup>
                             <Label for="flatType">Flat Type</Label>
-                            <Input type="select"  id="flatType" value={this.state.editFlatData.flatId}  onChange={(e)=>{
-                                let {editFlatData}=this.state;
+                            <Input type="select" value={this.state.editFlatData.flatId} onChange={(e)=>{
+                               let {editFlatData}=this.state;
 
-                                editFlatData.flatId=e.target.value;
+                               editFlatData.flatId=e.target.value;
 
-                                this.setState({editFlatData})
-                                }}
-                                
-                                >
-                               <option disabled>--Select--</option>
-                               {this.getDropdown1(this.props.flatDetailMasterReducer)}
-                             </Input>   
-      
-                          
+                               this.setState({editFlatData});
+                            }}>
+                                <option>{this.state.editFlatData.flatType}</option>
+                                <option disabled>--SELECT--</option>
+                                {this.getDropDown1(this.props.flatDetailMasterReducer)}
+                            </Input>                  
                         </FormGroup>
                         <FormGroup>
                             <Label for="floor">Floor</Label>
@@ -184,17 +194,18 @@ render(){
                                  }} />
                         </FormGroup>
                         <FormGroup>
-                            <Label for="towerName">Tower Name</Label>
-                            <Input type="select"  id="towerName" value={this.state.editFlatData.towerId} onChange={(e)=>{
-                                let {editFlatData}=this.state;
+                            <Label>Tower Name</Label>
+                            <Input type="select" value={this.state.editFlatData.towerId} onChange={(e)=>{
+                                let{editFlatData}=this.state;
 
                                 editFlatData.towerId=e.target.value;
 
-                                this.setState({editFlatData})
-                                }}>
-                               <option disabled>--Select--</option>
-                               {this.getDropdown2(this.props.flatDetailMasterReducer)}
-                             </Input>  
+                                this.setState({editFlatData});
+                            }}>
+                            <option>{this.state.editFlatData.towerName}</option>
+                            <option disabled>--SELECT--</option>
+                            {this.getDropDown2(this.props.flatDetailMasterReducer)}
+                           </Input>
                         </FormGroup>
 
                     </ModalBody>
@@ -204,7 +215,8 @@ render(){
                     </ModalFooter>
              </Modal>
    
-            
+             <SearchFilter type="text" value={this.state.search}
+                                            onChange={this.searchOnChange} />
             <table className="table table-bordered">
                     <thead>
                     <tr>
