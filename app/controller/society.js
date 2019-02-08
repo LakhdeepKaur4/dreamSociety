@@ -98,18 +98,29 @@ exports.update = (req,res) => {
 }
 
 
-exports.delete = (req,res) => {
-    const id = req.params.id;
-    console.log("id==>",id)
-    if(!id){
-        res.json("Please enter id");
-    }
-    Society.destroy({
-      where: { societyId: id }
-    })
-      .then(deletedSociety => {
-        res.json({message:"Society deleted successfully!",deletedSociety:deletedSociety});
-      });
+exports.delete = async(req,res,next) => {
+  try{
+      const id = req.params.id;
+  
+      if(!id){
+          return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+      }
+      const update = req.body;
+      if(!update){
+          return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
+      }
+      const updatedSociety = await Society.find({where:{societyId:id}}).then(society => {
+          return society.updateAttributes(update)
+        })
+      if(updatedSociety){
+          return res.status(httpStatus.OK).json({
+              message: "Society deleted successfully",
+              society:updatedSociety
+          });
+      }
+  }catch(error){
+      res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  }
 }
 
  
