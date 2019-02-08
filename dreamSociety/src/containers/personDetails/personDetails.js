@@ -129,17 +129,7 @@ Tower({get}){
   }
 }
 
-render(){
-    return(
 
-    
-       <UI>
-  
-        <div className="person" >
-            <form  onSubmit ={this.submit}>
-        <div   className="form-group">
-<label>
-Username
 
     logout=()=>{
         localStorage.removeItem('token');
@@ -211,6 +201,7 @@ Email
          
              </div>
              </UI>
+             </div>
     )
 }
 }
