@@ -126,7 +126,7 @@ class Parking extends Component {
                         <div>{!this.state.loading && this.state.errors ? formData : 
                             <div style={{textAlign:'center'}}>
                                 <Spinner />
-                                <span style={{fontSize:'20px'}}>Parking is getting created!Pleae wait...</span>
+                                <span style={{fontSize:'20px'}}>Parking is getting created!Please wait...</span>
                             </div>}
                         </div>
                         </Form>

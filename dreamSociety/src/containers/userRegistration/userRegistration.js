@@ -61,6 +61,14 @@ class Registration extends Component {
         }
     }
 
+    emailValid(event){
+        const pattern = /^[a-zA-Z0-9@.]+$/
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
     OnKeyPressPasswordhandler(event) {
         const pattern = /^[a-zA-Z0-9]+$/;
         let inputChar = String.fromCharCode(event.charCode);
@@ -160,7 +168,9 @@ class Registration extends Component {
                     type="text"
                     value={this.state.firstName}
                     onChange={this.onChange}
-                    onKeyPress={this.OnKeyPressUserhandler} />
+                    onKeyPress={this.OnKeyPressUserhandler}
+                    maxLength='15'
+                    minLength='3' />
                 <span className='error'>{this.state.errors.firstName}</span>
             </FormGroup>
             <FormGroup>
@@ -169,7 +179,9 @@ class Registration extends Component {
                     type="text"
                     value={this.state.lastName}
                     onChange={this.onChange}
-                    onKeyPress={this.OnKeyPressUserhandler} />
+                    onKeyPress={this.OnKeyPressUserhandler}
+                    maxLength='15'
+                    minLength='3'  />
                 <span className='error'>{this.state.errors.lastName}</span>
             </FormGroup>
             <FormGroup>
@@ -177,7 +189,9 @@ class Registration extends Component {
                 <Input name="userName"
                     type="text"
                     value={this.state.userName}
-                    onChange={this.onChange} />
+                    onChange={this.onChange}
+                    maxLength='10'
+                    minLength='3'  />
                 <span className='error'>{this.state.errors.userName}</span>
             </FormGroup>
             <FormGroup>
@@ -185,7 +199,10 @@ class Registration extends Component {
                 <Input name="email"
                     type="email"
                     value={this.state.email}
-                    onChange={this.onChange} />
+                    onChange={this.onChange}
+                    maxLength='15'
+                    minLength='10'
+                    onKeyPress={this.emailValid}  />
                 <span className='error'>{this.state.errors.email}</span>
             </FormGroup>
             <FormGroup>
@@ -205,7 +222,8 @@ class Registration extends Component {
                     type="password"
                     value={this.state.password}
                     onChange={this.onChange}
-                    onKeyPress={this.OnKeyPressPasswordhandler} />
+                    onKeyPress={this.OnKeyPressPasswordhandler}
+                    maxLength='15' />
                 <span className='error'>{this.state.errors.password}</span>
             </FormGroup>
             <FormGroup>
@@ -222,13 +240,6 @@ class Registration extends Component {
             <Button onClick={this.routeToUserDetails} color="primary">User Details</Button>
         </div>
         return (<div>
-            {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-            <div style={{ marginTop: '48px' }}>
-               <SideBar
-                    onClick={() => this.setState({ menuVisible: false })}
-                    style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px',
-                    backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}
-                    visible={this.state.menuVisible}> */}
             <UI>
                 <div>
                     {this.state.message}
@@ -238,7 +249,7 @@ class Registration extends Component {
                     <div>{!this.state.loading && this.state.errors ? formData : 
                         <div style={{textAlign:'center'}}>
                             <Spinner />
-                            <span style={{fontSize:'20px'}}>User is getting registered!Pleae wait...</span>
+                            <span style={{fontSize:'20px'}}>User is getting registered!Please wait...</span>
                         </div>}
                     </div>
                     </Form>
