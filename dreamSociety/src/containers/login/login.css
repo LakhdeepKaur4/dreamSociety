@@ -16,3 +16,7 @@
 #login{
     position: relative;
 }
+
+body{
+    height: 100%;
+}

@@ -1,3 +1,4 @@
+
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
@@ -18,7 +19,6 @@ export const FETCH_DETAILS='fetch_details';
 export const GET_COUNTRY='get_country';
 export const GET_STATE='get_state';
 export const GET_CITY='get_city';
-export const GET_LOCATION='get_location';
 export const FETCH_DROP='fetch_drop';
 export const FETCH_SIZE_DROP='fetch_size_drop';
 export const ADD_DETAILS='add_details';
@@ -57,7 +57,6 @@ export const GET_STATE_NAME='get_state_name';
 export const GET_CITY_NAME='get_city_name';
 export const ADD_LOCATION_DETAILS ='add_location_name';
 export const GET_LOCATION_NAME ='get_location_name';
-<<<<<<< Updated upstream
 export const GET_LOCATION_DETAIL='get_location_detail';
 export const COUNTRY_DETAIL='country_detail';
 export const STATE_DETAIL='state_detail';
@@ -71,6 +70,7 @@ export const POST_SOCIETY='post_society';
 export const DETAIL_SOCIETY='detail_society';
 export const DELETE_SOCIETY='get_society';
 export const UPDATE_SOCIETY='update_society';
+export const GET_LOCATION='get_location';
 export const ADD_COUNTRY='add-country';
 export const GET_COUNTRY_DETAILS='get-country';
 export const UPDATE_COUNTRY='update-country';
@@ -79,8 +79,3 @@ export const ADD_STATE='add-state';
 export const  GET_COUNTRY_DETAILS1='get-country-details1';
 export const DELETE_DETAILS ='delete-details';
 export const UPDATE_DETAILS='update-details';
-=======
-export const GET_LOCATION='get_location';
-export const GET_STATE='get_state';
-export const GET_CITY='get_city';
->>>>>>> Stashed changes

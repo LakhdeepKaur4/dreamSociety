@@ -159,8 +159,8 @@ class Login extends Component {
               <Segment basic> */}
                 {/* <Header as="h3">Application Content</Header> */}
                 {/* <Image src='//unsplash.it/800/480' /> */}
-                <UI>
-                    <img src={Logo} alt="society" />
+                <UI onClick={this.editUser}>
+                    {/* <img src={Logo} alt="society" style={{width: "100%", height: "100%"}} /> */}
                 </UI>
                 {/* </Segment>
          </Sidebar.Pusher>
