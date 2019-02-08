@@ -11,8 +11,7 @@ import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, La
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-
-
+import UI from '../../components/newUI/superAdminDashboard';
 class flatMasterDetails extends Component {
 
    
