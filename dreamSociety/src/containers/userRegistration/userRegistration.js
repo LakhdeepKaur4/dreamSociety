@@ -200,7 +200,7 @@ class Registration extends Component {
                     type="email"
                     value={this.state.email}
                     onChange={this.onChange}
-                    maxLength='15'
+                    maxLength='30'
                     minLength='10'
                     onKeyPress={this.emailValid}  />
                 <span className='error'>{this.state.errors.email}</span>
