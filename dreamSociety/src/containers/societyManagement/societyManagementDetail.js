@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import { getCountry, getState, getCity, getLocation, getSociety, detailSociety, deleteSociety, updateSociety } from './../../actionCreators/societyMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 
@@ -190,9 +188,6 @@ class SocietyManagementDetail extends Component {
         return (
             <div>
                 <UI>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} />
-                <div style={{ marginTop: '52px' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}> */}
                         <div className="container" >
                             <Link to='/superDashboard/societyManagement'>
                                 <button className="ui submit button" type="submit" style={{ backgroundColor: 'lightblue', marginTop: '25px' }}>Add Society</button>
@@ -285,8 +280,6 @@ class SocietyManagementDetail extends Component {
                 </Modal>
                </div>
                </UI>
-               {/* </SideBar>
-            </div> */}
          </div>
         );
     }

@@ -4,8 +4,6 @@ import { Link } from 'react-router-dom';
 import { getCountry, getState, getCity, detailCity, deleteCity, updateCity } from './../../actionCreators/cityMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 class CityMasterDetail extends Component {
@@ -161,18 +159,6 @@ class CityMasterDetail extends Component {
         return (
             <div>
                  <UI>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} />
-                <div style={{ marginTop: '52px' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}>
-                        <div className="container" >
-                            <Link to='/superDashboard/cityMaster'>
-                                <button className="ui submit button" type="submit" style={{ backgroundColor: 'lightblue', marginTop: '25px' }}>Add City</button>
-                            </Link>
-                            <div style={{ marginTop: '40px' }}>
-                                <h3>City details</h3>
-                                <SearchFilter type="text" value={this.state.search}
-                                    onChange={this.searchOnChange} />
-                            </div> */}
                             <div className="container" >
                             <Link to='/superDashboard/cityMaster'>
                                 <button className="ui submit button" type="submit" style={{ backgroundColor: 'lightblue', marginTop: '25px' }}>Add City</button>
@@ -254,7 +240,7 @@ class CityMasterDetail extends Component {
 
 
 function mapStatToProps(state) {
-    // console.log('citymaster list', state.cityMasterReducer)
+
     return {
         cityMasterReducer: state.cityMasterReducer
     }

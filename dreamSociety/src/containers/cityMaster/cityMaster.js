@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import{Link} from 'react-router-dom';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import {getCountry,getState,getCity, addCity,detailCity} from './../../actionCreators/cityMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import _ from 'underscore';
@@ -180,7 +178,14 @@ class CityMaster extends Component {
         console.log("cityid", this.state.stateId)
     }
 
-
+    
+    OnKeyPressUserhandler(event) {
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     render() {
          console.log(this.props.cityMasterReducer)
@@ -189,10 +194,6 @@ class CityMaster extends Component {
         return (
             <div>
                 <UI>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-              <div style={{ marginTop: '52px' }}>
-              <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}>
-                <div style={{ marginTop: '40px' }}> */}
                 <form className="ui form" onSubmit={this.handleSubmit}>
                     <div className="field">
                         <label><h4>Country Name</h4></label>
@@ -216,7 +217,9 @@ class CityMaster extends Component {
                  
                   <div className="form-group">
                         <label htmlFor='cityName'><h4>City Name</h4></label>
-                        <input type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}/>
+                        <input type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler}
+                    maxLength='30'
+                    minLength='3'/>
                     </div>
                     <div>
                     <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Submit</button>
@@ -229,8 +232,7 @@ class CityMaster extends Component {
                 <div>
                 </div>
                 </UI>
-                {/* </SideBar>
-                </div> */}
+
             </div>
         );
     }

@@ -15,8 +15,7 @@ import SuperDashboard from './containers/superDashboard/superDashboard';
 import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
 import VendorDashboard from './containers/vendorDashboard/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
-// import ParkingMaster from './containers/ParkingMaster/ParkingMaster';
-// import Parking from './components/Parking/Parking';
+
 
 import SocietyManagement from './containers/societyManagement/societyMangement';
 import TowerMaster from './containers/towerMaster/towerMaster';
@@ -45,10 +44,6 @@ import AssetsTypeSubList from './containers/assetsTypeSubMaster/assetsTypeSubLis
 import flatDetailMaster from './containers/flatDetailMaster/flatDetailMaster';
 import flatDetails from './containers/flatDetailMaster/flatDetails';
 
-
-
-// import flatDetailMaster from './containers/FlatDetailMaster/flatDetailMaster';
-// import flatDetails from './containers/FlatDetailMaster/flatDetails';
 import CityMaster from './containers/cityMaster/cityMaster';
 import CityMasterDetail from './containers/cityMaster/cityMasterDetail';
 import locationDetails from './containers/locationMaster/locationDetails';
@@ -69,7 +64,7 @@ class App extends Component {
             <Route path='/ownerDashboard' component={OwnerDashboard} />
             <Route path='/tenantDashboard' component={TenantDashboard} />
             <Route path='/vendorDashboard' component={VendorDashboard} />
-            {/* <Route path ='/superDashboard/QR' exact component={QR}/> */}
+
             <Route path='/superDashboard/registration' component={Registration} />
             <Route path={'/superDashboard/user_details'} component={UserDetails} />
             <Route path='/superDashboard/parking_master' component={ParkingMaster} />
@@ -89,8 +84,6 @@ class App extends Component {
             <Route path='/superDashboard/societyManagement' component={SocietyManagement} />
             <Route path ='/superDashboard/societyManagementDetail' component={SocietyManagementDetail}/>
             <Route path='/superDashboard/display-event' component={DisplayEventMaster} />
-            {/* <Route path ='/superDashboard/assetmanagement'component ={AssetManagement}/> */}
-            {/* <Route path ='/superDashboard/assetmanagement/assetmanagementdetails'component ={AssetManagementDetails}/> */}
             <Route path='/superDashboard/add_parking/new' component={Parking} />
             <Route path='/superDashboard/serviceMaster' component={serviceMaster} />
             <Route path='/superDashboard/personDetails' component={PersonDetails} />
@@ -103,22 +96,17 @@ class App extends Component {
             <Route path='/superDashBoard/assetsMaster/assetsList' component={AssetList} />
             <Route path='/superDashBoard/assetsTypeSubMaster' exact component={AssetsTypeSubMaster} />
             <Route path='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubList} />
-            {/* <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
-            <Route path ='/superdashboard/flatDetails' component ={flatDetails}/> */}
+      
             <Route path='/superdashboard/flatDetailMaster' component={flatDetailMaster} />
             <Route path='/superdashboard/flatDetails' component={flatDetails} />
-            {/* <Route path ='/superdashboard/locationMaster' component ={locationMaster}/>  */}
-
-            {/* <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>   */}
-
+  
             <Route path='/superdashboard/locationDetails' component={locationDetails} />
-            {/* <Route path ='/superdashboard/flatDetailMaster' component ={flatDetailMaster}/>
-            <Route path ='/superdashboard/flatDetails' component ={flatDetails}/> */}
+      
             <Route path='/superDashboard/cityMaster' component={CityMaster} />
             <Route path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
 
 
-            {/* <Route path ='/superdashboard/locationDetails' component ={locationDetails}/>   */}
+        
             <Route path='/superdashboard/locationDetails' component={locationDetails} />
           </Switch>
         </div>

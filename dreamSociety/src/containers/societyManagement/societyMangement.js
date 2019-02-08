@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import{Link} from 'react-router-dom';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import {getCountry,getState,getCity,getLocation,postSociety,getSociety} from '../../actionCreators/societyMasterAction';
 import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -243,7 +241,7 @@ class SocietyMangement extends Component {
 
     
 
-
+    
 
     render() {
          console.log(this.props.societyReducer)
@@ -251,9 +249,6 @@ class SocietyMangement extends Component {
         return (
            <div>
                <UI>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ marginTop: '52px' }}>
-                <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}> */}
             <div>
                 <form className="ui form" onSubmit={this.handleSubmit}>
                     <div className="field">
@@ -293,7 +288,9 @@ class SocietyMangement extends Component {
                     </div>
                     <div className="field">
                         <label htmlFor="societyName"><h4>Society Name</h4></label>
-                        <input type="text" name="societyName" value={this.state.societyName} onChange={this.onChange}/>
+                        <input type="text" name="societyName" value={this.state.societyName} onChange={this.onChange}
+                    maxLength='30'
+                    minLength='3'/>
                     </div>
 
                     <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Submit</button>
@@ -306,8 +303,6 @@ class SocietyMangement extends Component {
                 </div>
             </div>
             </UI>
-            {/* </SideBar>
-            </div> */}
             </div> 
         );
     }
