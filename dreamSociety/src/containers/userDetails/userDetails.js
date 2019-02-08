@@ -3,12 +3,12 @@ import { getUsers, getRoles, addUser, updateUser, deleteUser } from '../../actio
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import '../../r-css/w3.css';
 import UI from '../../components/newUI/superAdminDashboard';
+import Spinner from '../../components/spinner/spinner';
+
 class userDetails extends Component {
     state = {
         editUserData: {
@@ -19,9 +19,9 @@ class userDetails extends Component {
             userName: "",
             email: "",
             contact: "",
+            loading:false,
             isActive: false,
         },
-        menuVisible: false,
         editUserModal: false,
         dropdownOpen: false,
         search:''
@@ -48,12 +48,15 @@ class userDetails extends Component {
     }
 
     updateUser = () => {
-        let { userId, roleName, firstName, lastName, userName, email, contact } = this.state.editUserData;
+        if(this.props.userDetail.user){
+            let { userId, roleName, firstName, lastName, userName, email, contact } = this.state.editUserData;
         
-        this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact).then(() => this.refreshData())
-        this.setState({
-            editUserModal: false, editUserData: { userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' }
-        });
+            this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact).then(() => this.refreshData())
+            this.setState({
+                editUserModal: false, editUserData: { userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' }
+            });
+        }
+        return this.setState({loading:true})
     }
 
     editUser(userId, roleName, firstName, lastName, userName, email, contact) {
@@ -64,14 +67,12 @@ class userDetails extends Component {
 
     deleteUser(userId) {
         let { isActive } = this.state.editUserData
-        console.log(userId)
         this.props.deleteUser(userId, isActive)
         .then(() => this.setState({isActive: false}))
     }
 
     searchFilter(search){
         return function(x){
-            
             if(x){
                 let currentRole = x.roles.map((i) => i.roleName);
                 return  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
@@ -79,11 +80,8 @@ class userDetails extends Component {
                  x.userName.toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
                  x.email.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  currentRole[0].toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                 x.contact.toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
+                 x.contact.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||  
                  !search;
-            }
-            else {
-                return <div>Not Found</div>
             }
         }
     }
@@ -142,13 +140,26 @@ class userDetails extends Component {
     }
 
     render() {
+        const tableData = <Table>
+
+            <thead>
+                <tr>
+                    <th>Roles</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Contact No.</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {this.fetchUsers(this.props.userDetail)}
+            </tbody>
+        </Table>
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ marginTop: '48px' }}>
-                    <SideBar id='sidebar' onScroll={this.windowScroll} onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
-                     <UI>
+                <UI>
                     <div className="w3-container w3-margin-top">
                             <Link to="/superDashboard/registration">Add Users</Link>
                             <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
@@ -232,26 +243,7 @@ class userDetails extends Component {
                             </Modal>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                            <div className="w3-responsive">
-                            <table className="w3-table w3-striped"> 
-
-                                <thead>
-                                    <tr>
-                                        <th>Roles</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Username</th>
-                                        <th>Email</th>
-                                        <th>Contact No.</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.fetchUsers(this.props.userDetail)}
-                                </tbody>
-
-                            </table>
-                            </div>
+                            {this.props.userDetail.user ? tableData: <Spinner />}
                         </div>
                         </UI>
                     {/* </SideBar> */}
