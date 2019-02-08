@@ -114,6 +114,7 @@ class vendorMaster extends Component {
                     {/* <Image src='//unsplash.it/800/480' /> */}
                     <div className="form1 col-8">
                         <form onSubmit={this.onSubmit}>
+                        <div style={{textAlign: 'center',fontWeight: 'bold' }}><label>Vendor Master</label></div>
                             <div>
                                 <label>Vendor Name</label>
                                 <input type="text" className="form-control" name="vendorName" value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>

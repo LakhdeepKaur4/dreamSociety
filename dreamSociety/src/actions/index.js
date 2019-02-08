@@ -79,3 +79,4 @@ export const ADD_STATE='add-state';
 export const  GET_COUNTRY_DETAILS1='get-country-details1';
 export const DELETE_DETAILS ='delete-details';
 export const UPDATE_DETAILS='update-details';
+export const UPDATE_LOCATION='update_location';

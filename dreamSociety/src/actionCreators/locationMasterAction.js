@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN, GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME,ADD_LOCATION_DETAILS,GET_CITY,GET_LOCATION_NAME,GET_LOCATION,GET_STATE} from '../actions/index';
+import {URN, GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME,ADD_LOCATION_DETAILS,GET_LOCATION_NAME,GET_LOCATION,UPDATE_LOCATION} from '../actions/index';
 
 
 
@@ -14,23 +14,7 @@ export  function getCountryName(){
     }
 
     
-export  function getState(){
-    const request  = fetch(`${URN}/state`,  {headers:authHeader()},{method: 'GET'})
-    .then(response => response.json())
-    return{
-          type: GET_STATE,
-          payload: request
-        } 
-    }
 
-    export  function getCity(){
-        const request  = fetch(`${URN}/city`,  {headers:authHeader()},{method: 'GET'})
-        .then(response => response.json())
-        return{
-              type: GET_CITY,
-              payload: request
-            } 
-        }
 
 export function getStateName(countryId){
     const request =fetch(`${URN}/getState/${countryId}`,{headers:authHeader()},{method:'GET'})
@@ -51,7 +35,7 @@ export function getCityName(stateId){
 }  
 
 export function getLocationName(cityId){
-    console.log("cityId",cityId)
+
     const request =fetch(`${URN}/location/${cityId}`,{headers:authHeader()},{method:'GET'})
     .then(response =>response.json())
     return{
@@ -61,7 +45,7 @@ export function getLocationName(cityId){
 }
 
 export function addLocationDetails(values){
-    console.log('values',values)
+    
 
     const request = axios.post(`${URN}/location`,values,{headers:authHeader()})
     .then()
@@ -79,3 +63,15 @@ export  function getLocation(){
           payload: request
         } 
     }
+
+    
+export function updateLocation(locationId,countryId,countryName,stateId,stateName,cityId,cityName,locationName){
+    console.log("+++++++++++++++++++++++++++++++",locationId,countryId,countryName,stateId,stateName,cityId,cityName,locationName)
+
+    const request = axios.put(`${URN}/location/`+locationId,{countryId,countryName,stateId,stateName,cityId,cityName,locationName},{headers:authHeader()})
+    .then()
+    return{
+        type:UPDATE_LOCATION,
+        payload:request
+    }
+}
