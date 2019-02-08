@@ -5,14 +5,14 @@ import { fetchParking } from '../../actionCreators/parkingAction';
 import { Table, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import UI from '../../components/newUI/superAdminDashboard';
+import Spinner from '../../components/spinner/spinner';
 
 
 class ParkingMaster extends Component {
     state = {
         menuVisible: false,
+        loading:false,
         search: ''
     }
     componentDidMount() {
@@ -51,21 +51,31 @@ class ParkingMaster extends Component {
         }
     }
 
-    searchFilter(search) {
-        return function (x) {
-            return x.parking_master.parkingName.toLowerCase().includes(search.toLowerCase()) || !search;
+    searchFilter(search){
+        return function(x){
+            const slots = x.count.toString()
+            return x.parking_master.parkingName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+            slots.includes(search)||
+           !search;
         }
     }
 
     render() {
+        const tableData = <Table>
+                            <thead>
+                                <tr>
+                                    <th>Basement</th>
+                                    <th>No. of Parking</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.renderParking(this.props.parkingDetail)}
+                            </tbody>
+                        </Table>
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
                 <UI>
-                    <h1 style={{ color: 'black' }}>Add Parking</h1>
                     <div>
 
                         <div className="container">
@@ -75,18 +85,7 @@ class ParkingMaster extends Component {
                             <h3>Parking details</h3>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                            <Table>
-                                <thead>
-                                    <tr>
-                                        <th>Basement</th>
-                                        <th>No. of Parking</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.renderParking(this.props.parkingDetail)}
-                                </tbody>
-                            </Table>
+                            {this.props.parkingDetail.parking ? tableData : <Spinner />}
                         </div>
                     </div>
                 </UI>

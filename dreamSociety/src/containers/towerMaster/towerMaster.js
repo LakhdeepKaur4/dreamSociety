@@ -4,14 +4,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Logo from '../../assets/2.jpg';
 import { FormGroup, Form, Label, Input, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
+import  {Link} from 'react-router-dom';
 import UI from '../../components/newUI/superAdminDashboard';
 
-
 import './towerMaster.css'
-import sideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
+
 
 
 class TowerMaster extends Component {
@@ -58,29 +55,21 @@ class TowerMaster extends Component {
 
     render() {
         return (
-            <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
-                <UI>
-                    <div className="form">
-                        <Form onSubmit={this.onSubmit}>
-                            <FormGroup>
-                                <Label>Tower Name</Label>
-                                <Input type="text" className="form-control" placeholder="tower Name" name="towerName" value={this.state.name} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange} required />
-                            </FormGroup>
-                            <FormGroup>
-                                <Button color="success" className="mr-2">Submit</Button>
-                                <Link color="primary" to="/superDashboard/display-tower">Tower details</Link>
-                            </FormGroup>
-                        </Form>
-                    </div>
-                </UI>
-                {/* </SideBar>
-                                </div> */}
-            </div>
-
+           <UI>
+                                <div className="form">
+                                    <Form onSubmit={this.onSubmit}>
+                                        <FormGroup>
+                                            <Label>Tower Name</Label>
+                                            <Input type="text" className="form-control" placeholder="tower Name" name="towerName"  maxLength ={10} value={this.state.name} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange} required />
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <Button color="success" className="mr-2">Submit</Button>
+                                            <Link color="primary" to="/superDashboard/display-tower">Tower details</Link>
+                                        </FormGroup>
+                                    </Form>
+                               
+                            </div>
+</UI>
 
 
         );

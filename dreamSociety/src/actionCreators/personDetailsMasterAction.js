@@ -1,5 +1,5 @@
 import axios from 'axios'; 
-import {URN, GET_TOWER,GET_FLAT, GET_ROLES ,ADD_PERSON,GET_PERSON} from '../actions';
+import {URN, GET_TOWER,GET_FLAT, GET_ROLES ,ADD_PERSON,GET_PERSON,DELETE_PERSON,UPDATE_PERSON1} from '../actions';
 import { authHeader } from '../helper/authHeader';
 
 
@@ -56,4 +56,25 @@ export function getTower(){
            
         }
  
+    }
+
+    export function deletePerson(userId,isActive){
+        const request= axios.put(`${URN}/user/delete/`+userId,{isActive},{headers:authHeader()}).then()
+        return{
+            type:DELETE_PERSON,
+            payload:request
+        }
+    }
+
+    export function updatePerson( userId,userName,email,towerId,familyMember,parking,roleName){
+       
+       console.log('shubhu',userId,userName,email)
+        const request=axios.put(`${URN}/user/` +userId, { userId,userName,email,towerId,familyMember,parking,roleName},
+        { headers: authHeader() }).then((response)=>{
+
+        })
+        return{
+            type:UPDATE_PERSON1,
+            payload :request
+        }
     }

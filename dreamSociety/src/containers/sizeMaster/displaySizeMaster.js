@@ -1,31 +1,30 @@
 import React, { Component } from 'react';
-import { displaySize } from '../../actionCreators/sizeMasterAction';
+import { displaySize,deleteSize,updateSize} from '../../actionCreators/sizeMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import axios from 'axios';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { authHeader } from '../../helper/authHeader';
-import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import { URN } from '../../actions/index'
+
+import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+
+import UI  from '../../components/newUI/superAdminDashboard';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import UI from '../../components/newUI/superAdminDashboard';
+import {Link} from 'react-router-dom';
 
 class DisplaySizeMaster extends Component {
   state = {
-
+    
     editSizeData: {
 
       id: "",
       sizeId: [],
       sizeType: [],
-      isActive: false
+      isActive:false
     },
 
     editSizeModal: false,
     menuVisible: false,
-    search: ''
+    search:''
   }
 
   componentDidMount() {
@@ -38,10 +37,10 @@ class DisplaySizeMaster extends Component {
     this.props.displaySize();
   }
 
-
+   
   searchOnChange = (e) => {
-    this.setState({ search: e.target.value })
-  }
+    this.setState({search:e.target.value})
+}
 
 
   OnKeyPresshandle(event) {
@@ -61,24 +60,19 @@ class DisplaySizeMaster extends Component {
   }
   updateSize() {
     let { sizeId, sizeType } = this.state.editSizeData;
-    console.log('dfdsfd', sizeId, sizeType);
-    console.log(sizeId)
+ 
+    this.props.updateSize(sizeId,sizeType).then(()=>{this.refreshData()})
 
-    axios.put(`${URN}/size/` + this.state.editSizeData.sizeId, {
-      sizeType
-    }, { headers: authHeader() }).then((response) => {
-
-      this.refreshData();
-
+    
       this.setState({
         editSizeModal: false, editSizeData: { sizeType: '' }
       })
-    });
   }
 
 
   editSize(id, sizeId, sizeType) {
     console.log('ghrehj');
+
     this.setState({
       editSizeData: { id, sizeId, sizeType }, editSizeModal: !this.state.editSizeModal
     })
@@ -88,23 +82,19 @@ class DisplaySizeMaster extends Component {
 
 
   deleteSize(sizeId) {
-    console.log('sisxcdasd', sizeId);
-    let { isActive } = this.state.editSizeData
-    axios.put(`${URN}/size/` + sizeId, { isActive }, { headers: authHeader() }).then((response) => {
-      console.log(response.data);
-      this.refreshData()
-      this.setState({ editSizeData: { isActive: false } })
-    })
-      .catch((err) => {
-        console.log(err);
-      })
+ 
+        let {isActive } =this.state.editSizeData;    
+       this.props.deleteSize(sizeId,isActive).then(()=>{this.refreshData()})
+      this.setState({editSizeData:{isActive:false}})
+  
+      
   }
-
-  searchFilter(search) {
-    return function (x) {
-      return x.sizeType.toLowerCase().includes(search.toLowerCase()) || !search;
+  
+  searchFilter(search){
+    return function(x){
+        return x.sizeType.toLowerCase().includes(search.toLowerCase()) || !search;
     }
-  }
+}
 
   TowerMasterDetails({ getSize }) {
     console.log("getSize ", getSize);
@@ -130,68 +120,64 @@ class DisplaySizeMaster extends Component {
   }
 
 
-
+  
 
   render() {
 
 
     return (
+     
+
       <div>
-        {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
         <UI>
+      <Link to="/superDashboard/sizemaster">Size Master</Link>
+                  <h3 align="center"> Size List</h3>
 
-          <div>
-
-            <h3 align="center"> Size List</h3>
-
-            <Modal isOpen={this.state.editSizeModal} toggle={this.toggleEditSizeModal.bind(this)}>
-              <ModalHeader toggle={this.toggleEditSizeModal.bind(this)}>Edit  Size Details</ModalHeader>
-              <ModalBody>
+                  <Modal isOpen={this.state.editSizeModal} toggle={this.toggleEditSizeModal.bind(this)}>
+                    <ModalHeader toggle={this.toggleEditSizeModal.bind(this)}>Edit  Size Details</ModalHeader>
+                    <ModalBody>
 
 
-                <FormGroup>
-                  <Label for="lastName"> Size Type</Label>
-                  <Input id="sizeType" value={this.state.editSizeData.sizeType} onChange={(e) => {
-                    let { editSizeData } = this.state;
+                      <FormGroup>
+                        <Label for="lastName"> Size Type</Label>
+                        <Input id="sizeType" value={this.state.editSizeData.sizeType} onChange={(e) => {
+                          let { editSizeData } = this.state;
 
-                    editSizeData.sizeType = e.target.value;
+                          editSizeData.sizeType = e.target.value;
 
-                    this.setState({ editSizeData });
-                  }} />
-                </FormGroup>
-
-
-              </ModalBody>
-              <ModalFooter>
-                <Button color="primary" onClick={this.updateSize.bind(this)}>Update Size Details</Button>{' '}
-                <Button color="secondary" onClick={this.toggleEditSizeModal.bind(this)}>Cancel</Button>
-              </ModalFooter>
-            </Modal>
-            <SearchFilter type="text" value={this.state.search}
-              onChange={this.searchOnChange} />
-            <Table >
-              <thead>
-                <tr>
-
-                  <th>Size Details</th>
+                          this.setState({ editSizeData });
+                        }} 
+                        maxLength ={20}
+                        onkeyPress={this.OnKeyPresshandle}/>
+                      </FormGroup>
 
 
-                </tr>
-              </thead>
-              <tbody>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color="primary" onClick={this.updateSize.bind(this)}>Update Size Details</Button>{' '}
+                      <Button color="secondary" onClick={this.toggleEditSizeModal.bind(this)}>Cancel</Button>
+                    </ModalFooter>
+                  </Modal>
+                  <SearchFilter type="text" value={this.state.search}
+                                onChange={this.searchOnChange} />
+                  <Table >
+                    <thead>
+                      <tr>
 
-                <td> {this.TowerMasterDetails(this.props.SizeDetails)}</td>
+                        <th>Size Details</th>
 
-              </tbody>
-            </Table>
-          </div>
-        </UI>
-        {/* </SideBar>
- </div> */}
-      </div>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      
+                        <td> {this.TowerMasterDetails(this.props.SizeDetails)}</td>
+                      
+                    </tbody>
+                  </Table>
+                  </UI>
+                </div>
+ 
 
     );
   }
@@ -207,7 +193,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ displaySize }, dispatch)
+  return bindActionCreators({ displaySize,deleteSize,updateSize }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplaySizeMaster)

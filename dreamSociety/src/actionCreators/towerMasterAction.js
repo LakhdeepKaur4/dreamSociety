@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader'
 import axios from 'axios';
-import {URN,ADD_TOWER,GET_TOWER}  from '../actions/index' 
+import {URN,ADD_TOWER,GET_TOWER,UPDATE_TOWER,DELETE_TOWER}  from '../actions/index' 
 
 
 export  default function AddTower(values){
@@ -23,4 +23,24 @@ return{
       type: GET_TOWER,
       payload: request
 }
+}
+
+export function deleteTower(towerId,isActive){
+    const request=  axios.put(
+        `${URN}/tower/delete/` + towerId, {isActive},{ headers: authHeader() }).then()
+    return {
+        type: DELETE_TOWER,
+        payload:request
+    }
+}
+
+export function updateTower(towerId,towerName){
+    const request =
+    axios.put(`${URN}/tower/` +towerId, {
+      towerName
+    }, { headers: authHeader() }).then() 
+    return{
+        type:UPDATE_TOWER,
+        payload:request
+    }
 }
