@@ -19,6 +19,7 @@ class CityMaster extends Component {
             stateName:'',
             countryId:'',
             stateId:'',
+            errors: {},
             
             menuVisible: false,
          }
@@ -157,6 +158,15 @@ class CityMaster extends Component {
     }
 
     handleSubmit=(e)=>{
+
+      
+        let errors = {};
+        if (!this.state.cityName) {
+            errors.cityName = "User type can't be empty. Please select"
+        }
+        if (this.state.cityName === '') errors.cityName = "Can't be empty";
+        else if (this.state.cityName.length < 3) errors.cityName = "City Name can't be less than four";
+
         e.preventDefault();
 
         this.props.addCity(this.state)
@@ -167,6 +177,7 @@ class CityMaster extends Component {
             cityName:'',
             countryId:'',
             stateId:'',
+            errors:{},
 
             menuVisible: false,
             
@@ -220,6 +231,8 @@ class CityMaster extends Component {
                         <input type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler}
                     maxLength='30'
                     minLength='3'/>
+                    
+                  <span className='error'>{this.state.errors.cityName}</span>
                     </div>
                     <div>
                     <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Submit</button>
