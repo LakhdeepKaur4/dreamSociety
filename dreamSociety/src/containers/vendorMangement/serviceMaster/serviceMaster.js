@@ -5,11 +5,9 @@ import { addServiceType, getServiceDetail } from '../../../actionCreators/servic
 import './serviceMaster.css';
 import { Link } from 'react-router-dom';
 import Logo from '../../../assets/2.jpg';
-import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+import { Segment, Menu, Icon, Sidebar, Label } from 'semantic-ui-react';
 import UI from '../../../components/newUI/vendorDashboardInside';
 
-import SideBar from '../../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../../components/superAdminDashboardUI/menuBar/menuBar'
 
 
 class serviceMaster extends Component {
@@ -132,6 +130,7 @@ class serviceMaster extends Component {
                 {/* <Image src='//unsplash.it/800/480' /> */}
                 <div className="form col-8">
                     <form onSubmit={this.onSubmit}>
+                    <div style={{textAlign: 'center',fontWeight: 'bold' }}><label>Service Master</label></div>
                         <div>
                             <label>Service Type</label>
                             <input type="text" className="form-control" name="serviceName" value={this.state.serviceName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>

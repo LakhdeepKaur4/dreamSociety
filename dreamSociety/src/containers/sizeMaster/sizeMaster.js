@@ -3,13 +3,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { AddSize } from '../../actionCreators/sizeMasterAction';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Logo from '../../assets/2.jpg';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
+import UI from '../../components/newUI/superAdminDashboard';
+
 import { Link } from 'react-router-dom';
 import './sizeMaster.css';
 import { Form, FormGroup, Input, Button, Label } from 'reactstrap';
-import UI from '../../components/newUI/superAdminDashboard';
 
 class SizeMaster extends Component {
     constructor(props) {
@@ -26,7 +24,14 @@ class SizeMaster extends Component {
     onChange(e) {
         this.setState({ [e.target.name]: e.target.value });
     }
+ onkeyPresshandle(event){
+    const pattern = /^[0-9]$/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      event.preventDefault();
 
+    }
+ }
 
     submit(e) {
         e.preventDefault();
@@ -45,35 +50,23 @@ class SizeMaster extends Component {
 
     render() {
         return (
-            <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-            <div style={{ margin: '48px auto' }}>
-                <SideBar onClick={() => this.setState({ menuVisible: false })}
-                 visible={this.state.menuVisible}> */}
-                <UI>
-                    <div style={{ margin: '48px auto' }}>
+            
+                   <UI>
+                                                       <div className="form">
+                                    <Form onSubmit={this.submit}>
+                                        <FormGroup>
+                                            <Label> Size Type</Label>
+                                            <Input type="text" className="form-control" onKeyPress ={this.onkeyPresshandle}   maxLength={20}  placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange} />
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <Button type="submit" color="success">Submit</Button>
+                                            <Link color="primary" to="/superDashboard/display-size">Size details</Link>
+                                        </FormGroup>
+                                    </Form>
+                                </div>
 
-                        <div className="form">
-                            <Form onSubmit={this.submit}>
-                                <FormGroup>
-                                    <Label> Size Type</Label>
-                                    <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Button type="submit" color="success">Submit</Button>
-                                    <Link color="primary" to="/superDashboard/display-size">Size details</Link>
-                                </FormGroup>
-                            </Form>
-                        </div>
-
-                    </div>
-                </UI>
-                {/* </SideBar>
-</div> */}
-
-
-            </div>
-
+</UI>
+           
         )
 
     }

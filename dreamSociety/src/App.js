@@ -43,9 +43,9 @@ import AssetsTypeSubMaster from './containers/assetsTypeSubMaster/assetsTypeSubM
 import AssetsTypeSubList from './containers/assetsTypeSubMaster/assetsTypeSubList'
 import flatDetailMaster from './containers/flatDetailMaster/flatDetailMaster';
 import flatDetails from './containers/flatDetailMaster/flatDetails';
-
 import CityMaster from './containers/cityMaster/cityMaster';
 import CityMasterDetail from './containers/cityMaster/cityMasterDetail';
+import locationMaster from './containers/locationMaster/locationMaster';
 import locationDetails from './containers/locationMaster/locationDetails';
 import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
 
@@ -104,6 +104,7 @@ class App extends Component {
       
             <Route path='/superDashboard/cityMaster' component={CityMaster} />
             <Route path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
+            <Route path='/superDashboard/locationMaster' component={locationMaster}/>
 
 
         

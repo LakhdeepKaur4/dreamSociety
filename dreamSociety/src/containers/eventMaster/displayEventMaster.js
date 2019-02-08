@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { ViewEvent, GetEventOrganiser } from '../../actionCreators/eventMasterAction';
+import { ViewEvent, GetEventOrganiser,deleteEvent,updateEvent} from '../../actionCreators/eventMasterAction';
 import { bindActionCreators } from 'redux';
-import axios from 'axios';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import { authHeader } from '../../helper/authHeader'
-import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
-import { URN } from '../../actions';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import SearchFilter from '../../components/searchFilter/searchFilter';
+
+import {  Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
+import  SearchFilter from '../../components/searchFilter/searchFilter';
+import {Link } from 'react-router-dom';
 class DisplayEventMaster extends Component {
         state = {
                 editEventData: {
@@ -26,7 +24,7 @@ class DisplayEventMaster extends Component {
                 },
                 editEventModal: false,
                 menuVisible: false,
-                search: ''
+                search:''
         }
         componentDidMount() {
                 this.props.ViewEvent();
@@ -55,15 +53,14 @@ class DisplayEventMaster extends Component {
                 })
         }
 
-        updateEvent = () => {
-                let { eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId } = this.state.editEventData;
-                console.log('dfdsf', eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId);
-
-                axios.put(`${URN}/event/` + eventId, { userId, eventType, eventName, eventOrganiser, startDate, endDate },
-                        { headers: authHeader() }).then((response) => {
-
-                                this.refreshData();
-                        })
+        updateEvent = (  ) => {
+      
+ let {eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId}=this.state.editEventData;
+                     this.props.updateEvent( eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId ).then(()=>{this.refreshData()})
+                       
+            
+                                
+                     
                 this.setState({
                         editEventModal: false, editEventData: { eventId: '', eventType: '', eventName: '', eventOrganiser: '', startDate: '', endDate: '', userId: '', userName: '' }
                 })
@@ -73,24 +70,26 @@ class DisplayEventMaster extends Component {
                 const pattern = /[a-zA-Z]/;
                 let inputChar = String.fromCharCode(event.charCode);
                 if (!pattern.test(inputChar)) {
-                        event.preventDefault();
+                    event.preventDefault();
                 }
-        }
+            }
         deleteEvent(eventId) {
                 let { isActive } = this.state.editEventData;
-                axios.put(`${URN}/event/delete/` + eventId, { isActive }, { headers: authHeader() }).then((response) => {
-                        this.refreshData()
-                        this.setState({ editEventData: { isActive: false } })
+             
 
-                })
+                this.props.deleteEvent(eventId,isActive).then(()=>{this.refreshData()})
+                this.setState({ editEventData: { isActive: false } })
+             
+             
+             
         }
 
 
-        searchFilter(search) {
-                return function (x) {
-                        return x.eventType.toLowerCase().includes(search.toLowerCase()) || !search;
+        searchFilter(search){
+                return function(x){
+                    return x.eventType.toLowerCase().includes(search.toLowerCase()) || !search;
                 }
-        }
+            }
         getEvent({ events }) {
                 console.log("events rocks", events);
 
@@ -107,11 +106,11 @@ class DisplayEventMaster extends Component {
                         )
                 }
         }
-        searchOnChange = (e) => {
+        searchOnChange =(e)=>{
                 //  this.setState({})
-                this.setState({ search: e.target.value })
-        }
-
+                this.setState({search:e.target.value})
+                }
+              
         displayEvent({ getEvent }) {
                 console.log(getEvent);
                 if (getEvent) {
@@ -148,114 +147,109 @@ class DisplayEventMaster extends Component {
         render() {
 
                 return (
-                        <div>
-                                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
-                                <UI>
-                                        <div>
-                                                <h3>Display Event Details</h3>
+                   <div>
+                           <UI>
+                              <Link to="/superDashboard/event">Event master</Link>
+                                                                        <h3>Display Event Details</h3>
 
-                                                <Modal isOpen={this.state.editEventModal} toggle={this.toggleEditEventModal.bind(this)}>
-                                                        <ModalHeader toggle={this.toggleEditEventModal.bind(this)}>Edit  Event Details</ModalHeader>
-                                                        <ModalBody>
+                                                                        <Modal isOpen={this.state.editEventModal} toggle={this.toggleEditEventModal.bind(this)}>
+                                                                                <ModalHeader toggle={this.toggleEditEventModal.bind(this)}>Edit  Event Details</ModalHeader>
+                                                                                <ModalBody>
 
 
-                                                                <FormGroup>
-                                                                        <Label for="eventType"> Event Type</Label>
-                                                                        <Input id="eventType" value={this.state.editEventData.eventType}
-                                                                                onChange={(e) => {
-                                                                                        let { editEventData } = this.state;
+                                                                                        <FormGroup>
+                                                                                                <Label for="eventType"> Event Type</Label>
+                                                                                                <Input id="eventType" value={this.state.editEventData.eventType}
+                                                                                                        onChange={(e) => {
+                                                                                                                let { editEventData } = this.state;
 
-                                                                                        editEventData.eventType = e.target.value;
+                                                                                                                editEventData.eventType = e.target.value;
 
-                                                                                        this.setState({ editEventData });
-                                                                                }}
+                                                                                                                this.setState({ editEventData });
+                                                                                                        }}
+                                                                                                        maxLength={20}
+                                                                                                        onKeyPress ={this.OnKeyPresshandler}
+                                                                                                        required
+                                                                                                />
+                                                                                        </FormGroup>
 
-                                                                                onKeyPress={this.OnKeyPresshandler}
-                                                                                required
-                                                                        />
-                                                                </FormGroup>
+                                                                                        <FormGroup>
+                                                                                                <Label for="eventName"> Event Name</Label>
+                                                                                                <Input id="eventName" value={this.state.editEventData.eventName} onChange={(e) => {
+                                                                                                        let { editEventData } = this.state;
+                                                                                                        editEventData.eventName = e.target.value;
+                                                                                                        this.setState({ editEventData });
+                                                                                                }}
+                                                                                                onKeyPress={this.OnKeyPresshandler}
+                                                                                                maxLength ={20}
+                                                                                                required />
+                                                                                        </FormGroup>
+                                                                                        <FormGroup>
+                                                                                                <Label >Event Organiser</Label>
+                                                                                                <select value={this.state.editEventData.eventOrganiser} onChange={(e) => {
+                                                                                                        let { editEventData } = this.state;
+                                                                                                        editEventData.eventOrganiser = e.target.value;
+                                                                                                        console.log('vghvghyghfgh', this.state.editEventData.eventOrganiser);
 
-                                                                <FormGroup>
-                                                                        <Label for="eventName"> Event Name</Label>
-                                                                        <Input id="eventName" value={this.state.editEventData.eventName} onChange={(e) => {
-                                                                                let { editEventData } = this.state;
-                                                                                editEventData.eventName = e.target.value;
-                                                                                this.setState({ editEventData });
-                                                                        }}
-                                                                                onKeyPress={this.OnKeyPresshandler}
-                                                                                required />
-                                                                </FormGroup>
-                                                                <FormGroup>
-                                                                        <Label >Event Organiser</Label>
-                                                                        <select value={this.state.editEventData.eventOrganiser} onChange={(e) => {
-                                                                                let { editEventData } = this.state;
-                                                                                editEventData.eventOrganiser = e.target.value;
-                                                                                console.log('vghvghyghfgh', this.state.editEventData.eventOrganiser);
+                                                                                                        this.setState({ editEventData })
 
-                                                                                this.setState({ editEventData })
+                                                                                                }}  required >
+                                                                                                        <option value={this.state.editEventData.userName}>{this.state.editEventData.userName}</option>
 
-                                                                        }} required >
-                                                                                <option value={this.state.editEventData.userName}>{this.state.editEventData.userName}</option>
+                                                                                                        <option disabled> Select an Event Organiser</option>
 
-                                                                                <option disabled> Select an Event Organiser</option>
-
-                                                                                {this.getEvent(this.props.EventDetails)}
-                                                                        </select>
-                                                                </FormGroup>
-                                                                <FormGroup>
-                                                                        <Label> Event Start Date</Label>
-                                                                        <Input type="date" id="startDate" value={this.state.editEventData.startDate} onChange={(e) => {
-                                                                                let { editEventData } = this.state
-                                                                                editEventData.startDate = e.target.value;
-                                                                                this.setState({ editEventData })
-                                                                        }} />
-                                                                </FormGroup>
-                                                                <FormGroup>
-                                                                        <Label>Event End Date</Label>
-                                                                        <Input type="date" id="endDate" value={this.state.editEventData.endDate} onChange={(e) => {
-                                                                                let { editEventData } = this.state
-                                                                                editEventData.endDate = e.target.value;
-                                                                                this.setState({
-                                                                                        editEventData
-                                                                                })
-                                                                        }}
-                                                                        />
-                                                                </FormGroup>
+                                                                                                        {this.getEvent(this.props.EventDetails)}
+                                                                                                </select>
+                                                                                        </FormGroup>
+                                                                                        <FormGroup>
+                                                                                                <Label> Event Start Date</Label>
+                                                                                                <Input type="date" id="startDate" value={this.state.editEventData.startDate} onChange={(e) => {
+                                                                                                        let { editEventData } = this.state
+                                                                                                        editEventData.startDate = e.target.value;
+                                                                                                        this.setState({ editEventData })
+                                                                                                }} />
+                                                                                        </FormGroup>
+                                                                                        <FormGroup>
+                                                                                                <Label>Event End Date</Label>
+                                                                                                <Input type="date" id="endDate" value={this.state.editEventData.endDate} onChange={(e) => {
+                                                                                                        let { editEventData } = this.state
+                                                                                                        editEventData.endDate = e.target.value;
+                                                                                                        this.setState({
+                                                                                                                editEventData
+                                                                                                        })
+                                                                                                }}
+                                                                                                />
+                                                                                        </FormGroup>
 
 
-                                                        </ModalBody>
-                                                        <ModalFooter>
-                                                                <Button color="primary" onClick={this.updateEvent}>Update Details</Button>
-                                                                <Button color="secondary" onClick={this.toggleEditEventModal.bind(this)}>Cancel</Button>
-                                                        </ModalFooter>
-                                                </Modal>
-                                                <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-                                                <Table>
-                                                        <thead>
-                                                                <tr>
-                                                                        <th>Event Type</th>
-                                                                        <th>Event Name</th>
-                                                                        <th>Event Organiser</th>
-                                                                        <th>Event Start Date</th>
-                                                                        <th>Event End Date</th>
+                                                                                </ModalBody>
+                                                                                <ModalFooter>
+                                                                                        <Button color="primary" onClick={this.updateEvent}>Update Details</Button>
+                                                                                        <Button color="secondary" onClick={this.toggleEditEventModal.bind(this)}>Cancel</Button>
+                                                                                </ModalFooter>
+                                                                        </Modal>
+                                                                        <SearchFilter type="text" value ={this.state.search}   onChange={this.searchOnChange}  />
+                                                                        <Table>
+                                                                        <thead>
+                                                                                <tr>
+                                                                                        <th>Event Type</th>
+                                                                                        <th>Event Name</th>
+                                                                                        <th>Event Organiser</th>
+                                                                                        <th>Event Start Date</th>
+                                                                                        <th>Event End Date</th>
 
-                                                                </tr>
-                                                        </thead>
-                                                        <tbody>
+                                                                                </tr>
+                                                                        </thead>
+                                                                        <tbody>
 
-                                                                {this.displayEvent(this.props.EventDetails)}
+                                                                                {this.displayEvent(this.props.EventDetails)}
 
-                                                        </tbody>
-                                                </Table>
-                                        </div>
-                                </UI>
-                                {/* </SideBar>
-                             </div>                                         */}
-                        </div>
-
+                                                                        </tbody>
+                                                                        </Table>
+                                                                    
+                                                           
+                   </UI>
+                        </div>      
 
                 )
         }
@@ -275,7 +269,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-        return bindActionCreators({ ViewEvent, GetEventOrganiser }, dispatch)
+        return bindActionCreators({ ViewEvent, GetEventOrganiser ,deleteEvent,updateEvent}, dispatch)
 
 }
 

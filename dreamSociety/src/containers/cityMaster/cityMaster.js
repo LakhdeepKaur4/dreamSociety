@@ -19,6 +19,7 @@ class CityMaster extends Component {
             stateName:'',
             countryId:'',
             stateId:'',
+           
             
             menuVisible: false,
          }
@@ -157,6 +158,9 @@ class CityMaster extends Component {
     }
 
     handleSubmit=(e)=>{
+
+    
+
         e.preventDefault();
 
         this.props.addCity(this.state)
@@ -167,6 +171,7 @@ class CityMaster extends Component {
             cityName:'',
             countryId:'',
             stateId:'',
+        
 
             menuVisible: false,
             
@@ -179,13 +184,7 @@ class CityMaster extends Component {
     }
 
     
-    OnKeyPressUserhandler(event) {
-        const pattern = /^[a-zA-Z]+$/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
-    }
+    
 
     render() {
          console.log(this.props.cityMasterReducer)
@@ -220,6 +219,8 @@ class CityMaster extends Component {
                         <input type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler}
                     maxLength='30'
                     minLength='3'/>
+                    
+                 
                     </div>
                     <div>
                     <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Submit</button>

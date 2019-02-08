@@ -116,7 +116,7 @@ class displayVendorMaster extends Component {
 
 
         if (vendors) {
-            return vendors.vendor.map((vendors) => {
+            return vendors.vendor.filter(this.searchFilter(this.state.search)).map((vendors) => {
                 return (
 
                     <tr key={vendors.vendorId}>
@@ -231,6 +231,7 @@ class displayVendorMaster extends Component {
 
 
                     </Modal>
+                    <div style={{ fontWeight: 'bold' }}><label>Vendor Details</label></div>
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
                     <table className="table table-bordered">
