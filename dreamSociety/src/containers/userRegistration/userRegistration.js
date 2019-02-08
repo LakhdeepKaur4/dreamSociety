@@ -169,7 +169,7 @@ class Registration extends Component {
                     value={this.state.firstName}
                     onChange={this.onChange}
                     onKeyPress={this.OnKeyPressUserhandler}
-                    maxLength='15'
+                    maxLength='25'
                     minLength='3' />
                 <span className='error'>{this.state.errors.firstName}</span>
             </FormGroup>
@@ -180,7 +180,7 @@ class Registration extends Component {
                     value={this.state.lastName}
                     onChange={this.onChange}
                     onKeyPress={this.OnKeyPressUserhandler}
-                    maxLength='15'
+                    maxLength='25'
                     minLength='3'  />
                 <span className='error'>{this.state.errors.lastName}</span>
             </FormGroup>
@@ -190,7 +190,7 @@ class Registration extends Component {
                     type="text"
                     value={this.state.userName}
                     onChange={this.onChange}
-                    maxLength='10'
+                    maxLength='25'
                     minLength='3'  />
                 <span className='error'>{this.state.errors.userName}</span>
             </FormGroup>
@@ -200,7 +200,7 @@ class Registration extends Component {
                     type="email"
                     value={this.state.email}
                     onChange={this.onChange}
-                    maxLength='30'
+                    maxLength='40'
                     minLength='10'
                     onKeyPress={this.emailValid}  />
                 <span className='error'>{this.state.errors.email}</span>

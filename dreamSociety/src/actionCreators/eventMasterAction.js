@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN,GET_EVENT,ADD_EVENT, GET_EVENT_ORGANISER} from '../actions/index';
+import {URN,GET_EVENT,ADD_EVENT, GET_EVENT_ORGANISER, DELETE_EVENT,UPDATE_EVENT} from '../actions/index';
 
 
 export function ViewEvent(){
@@ -31,4 +31,29 @@ export function ViewEvent(){
             type:ADD_EVENT,
             payload:request
         }
+    }
+    export function deleteEvent(eventId,isActive){
+
+        const request = 
+          axios.put(`${URN}/event/delete/` + eventId, { isActive }, { headers: authHeader() }).then((response) => {
+                       
+                        
+
+                }) 
+                return{
+                    type:DELETE_EVENT,
+                    payload:request
+                }
+    }
+    export function updateEvent( eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId ){
+   console.log( eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId );
+        const request =
+        axios.put(`${URN}/event/`+eventId,{ userId, eventType, eventName, eventOrganiser, startDate, endDate },{headers:authHeader()}).then((response)=>{
+
+        })
+ 
+         return {
+             type:UPDATE_EVENT,
+             payload:request
+         }
     }
