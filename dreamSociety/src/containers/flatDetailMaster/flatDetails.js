@@ -7,7 +7,7 @@ import  axios from 'axios';
 import {authHeader} from '../../helper/authHeader';
 import {URN} from '../../actions/index';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-
+import UI from '../../components/newUI/superAdminDashboard';
 
 class flatDetails extends Component{
         
@@ -154,6 +154,7 @@ renderList =({details})=>{
 
 render(){
     return(
+        <UI>
         <div>
              <Modal isOpen={this.state.editFlatModal} toggle={this.toggleEditFlatModal.bind(this)}>
                  <ModalHeader toggle={this.toggleEditFlatModal.bind(this)}>Edit Details</ModalHeader>
@@ -214,7 +215,7 @@ render(){
                          <Button color="secondary" onClick={this.toggleEditFlatModal.bind(this)}>Cancel</Button>
                     </ModalFooter>
              </Modal>
-   
+             <div style={{ fontWeight: 'bold' }}><label>Flat Details</label></div>
              <SearchFilter type="text" value={this.state.search}
                                             onChange={this.searchOnChange} />
             <table className="table table-bordered">
@@ -234,6 +235,7 @@ render(){
                 
                 <button onClick={this.push}> Add Flat</button>
         </div>
+        </UI>
     )
 }
 

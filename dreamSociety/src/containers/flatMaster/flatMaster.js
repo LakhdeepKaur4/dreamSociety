@@ -149,6 +149,7 @@ class FlatMaster extends Component {
                 <Input
                     type="text"
                     name="flatType"
+                    maxLength='4'
                     value={this.state.flatType}
                     onChange={this.onChange} />
                 <span>{this.state.errors.flatType}</span>
@@ -159,6 +160,7 @@ class FlatMaster extends Component {
                 <Input
                     type="number"
                     name="flatSuperArea"
+                    min='0'
                     value={this.state.flatSuperArea}
                     onChange={this.onChange} />
                 <span>{this.state.errors.flatSuperArea}</span>
@@ -182,6 +184,7 @@ class FlatMaster extends Component {
                     type="number"
                     name="coverArea"
                     value={this.state.coverArea}
+                    min='0'
                     onChange={this.onChange} />
                 <span>{this.state.errors.coverArea}</span>
             </FormGroup>

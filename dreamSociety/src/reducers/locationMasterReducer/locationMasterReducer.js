@@ -1,4 +1,4 @@
-import {GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME, GET_CITY,ADD_LOCATION_DETAILS,GET_LOCATION_NAME,GET_LOCATION,GET_STATE} from '../../actions/index';
+import {GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME,ADD_LOCATION_DETAILS,GET_LOCATION_NAME,GET_LOCATION,UPDATE_LOCATION} from '../../actions/index';
 
 export default function(state={},action){
 
@@ -15,20 +15,14 @@ export default function(state={},action){
             }
             
                
-        case GET_STATE:
-        return{
-            ...state, state1:action.payload
-        }
+    
         
         case GET_CITY_NAME:
             return{
                 ...state, city:action.payload
             }
 
-        case GET_CITY:
-            return{
-                ...state, city1:action.payload
-            }
+       
 
         case GET_LOCATION_NAME:
             return{
@@ -44,6 +38,11 @@ export default function(state={},action){
             return{
                 ...state, details:action.payload
             }  
+
+        case UPDATE_LOCATION:
+            return{
+                ...state, update:action.payload
+            }
 
         default:
             return state

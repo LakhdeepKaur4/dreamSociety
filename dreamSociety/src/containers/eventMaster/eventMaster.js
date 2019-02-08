@@ -3,13 +3,11 @@ import { connect } from 'react-redux';
 import { AddEvent, GetEventOrganiser } from '../../actionCreators/eventMasterAction';
 import { bindActionCreators } from 'redux';
 import { Input } from 'reactstrap';
-import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
-import Logo from '../../assets/2.jpg';
-import './event.css';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import UI from '../../components/newUI/superAdminDashboard';
+import { Link } from 'react-router-dom';
+
+import './event.css';
+
 
 
 class EventMaster extends Component {
@@ -35,9 +33,9 @@ class EventMaster extends Component {
     const pattern = /[a-zA-Z]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
-      event.preventDefault();
+        event.preventDefault();
     }
-  }
+}
   componentDidMount() {
     this.props.GetEventOrganiser()
     console.log("hieee", this.props.GetEventOrganiser)
@@ -142,43 +140,6 @@ class EventMaster extends Component {
                   required
                 />
               </div>
-
-              <div className="form-group">
-                <label> Event End Date</label>
-                <input
-                  type="date"
-                  className=" form-control"
-                  name="endDate"
-                  placeholder="event end date"
-                  onChange={this.onChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label >Event Organiser</label>
-                <Input
-                  type="select"
-                  className="form-control"
-                  name="eventOrganiser"
-                  value={this.state.userId}
-                  onChange={this.onChange}
-                  required
-                >
-                  <option > Please Select</option>
-                  {this.getEvent(this.props.EventDetails)}
-                </Input>
-              </div>
-
-              <button
-                className="btn btn-primary"
-              > Submit</button>
-              <Link color="primary" to="/superDashboard/display-event">event details</Link>
-            </form>
-          </div>
-        </UI>
-        {/* </SideBar>
-              </div> */}
-      </div>
     )
   }
 

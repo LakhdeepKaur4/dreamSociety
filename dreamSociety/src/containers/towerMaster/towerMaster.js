@@ -4,14 +4,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Logo from '../../assets/2.jpg';
 import { FormGroup, Form, Label, Input, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
+import  {Link} from 'react-router-dom';
 import UI from '../../components/newUI/superAdminDashboard';
 
-
 import './towerMaster.css'
-import sideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
+
 
 
 class TowerMaster extends Component {

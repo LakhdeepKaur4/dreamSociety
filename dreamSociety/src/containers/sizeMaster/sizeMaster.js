@@ -3,13 +3,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { AddSize } from '../../actionCreators/sizeMasterAction';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Logo from '../../assets/2.jpg';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
+import UI from '../../components/newUI/superAdminDashboard';
+
 import { Link } from 'react-router-dom';
 import './sizeMaster.css';
 import { Form, FormGroup, Input, Button, Label } from 'reactstrap';
-import UI from '../../components/newUI/superAdminDashboard';
 
 class SizeMaster extends Component {
     constructor(props) {
@@ -26,7 +24,14 @@ class SizeMaster extends Component {
     onChange(e) {
         this.setState({ [e.target.name]: e.target.value });
     }
+ onkeyPresshandle(event){
+    const pattern = /^[0-9]$/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      event.preventDefault();
 
+    }
+ }
 
     submit(e) {
         e.preventDefault();

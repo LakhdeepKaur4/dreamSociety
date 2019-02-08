@@ -120,6 +120,7 @@ class FlatMaster extends Component {
                 <Input
                     type="text"
                     name="stateName"
+                    maxLength='10'
                     // value={this.state.flatType} 
                     onChange={this.onChange} />
                 <span>{this.state.errors.stateName}</span>

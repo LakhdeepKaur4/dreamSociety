@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { viewTower } from '../../actionCreators/towerMasterAction';
+import { viewTower,updateTower,deleteTower } from '../../actionCreators/towerMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
+
 import { authHeader } from '../../helper/authHeader';
-import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
-import { URN } from '../../actions/index'
-import SearchFilter from '../../components/searchFilter/searchFilter';
+import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import {URN} from  '../../actions/index'
+import SearchFilter from '../../components/searchFilter/searchFilter'
+import {Link} from 'react-router-dom'
 import UI from '../../components/newUI/superAdminDashboard';
 
 class DisplayTowerMaster extends Component {
@@ -23,11 +23,11 @@ class DisplayTowerMaster extends Component {
 
       towerId: [],
       towerName: [],
-      isActive: false
+      isActive:false
     },
     editTowerModal: false,
     menuVisible: false,
-    search: ''
+    search:''
   }
 
   componentDidMount() {
@@ -37,30 +37,28 @@ class DisplayTowerMaster extends Component {
   }
 
   OnKeyPresshandle(event) {
-    const pattern = /^[0-9]$/;
+    const pattern=/^[0-9]$/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       event.preventDefault();
-
+      
     }
   }
 
-
+  
   refreshdata() {
     this.props.viewTower()
 
   }
   deleteTower(towerId) {
-    console.log(towerId);
 
-    let { isActive } = this.state.editTowerData;
-    axios.put(
-      `${URN}/tower/delete/` + towerId, { isActive }, { headers: authHeader() }).then((response) => {
-        this.refreshdata()
 
-        this.setState({ editTowerData: { isActive: false } });
+  let {isActive} =this.state.editTowerData;
+     this.props.deleteTower(towerId,isActive).then(()=>{this.refreshdata()})
 
-      })
+        this.setState({editTowerData:{isActive:false}});
+
+
   }
 
 
@@ -72,17 +70,14 @@ class DisplayTowerMaster extends Component {
   }
 
   updateTower() {
-    let { id, towerId, towerName } = this.state.editTowerData;
-    console.log('----------------', towerId, towerName);
-    axios.put(`${URN}/tower/` + this.state.editTowerData.towerId, {
-      towerName
-    }, { headers: authHeader() }).then((response) => {
-      this.refreshdata();
+    let {  towerId, towerName } = this.state.editTowerData;
 
+  
+   this.props.updateTower(towerId,towerName).then(()=>{this.refreshdata()})
       this.setState({
         editTowerModal: false, editTowerData: { id: '', towerName: '' }
       })
-    })
+
   }
 
 
@@ -93,11 +88,11 @@ class DisplayTowerMaster extends Component {
       editTowerData: { id, towerId, towerName }, editTowerModal: !this.state.editTowerModal
     })
   }
-  searchFilter(search) {
-    return function (x) {
-      return x.towerName.toLowerCase().includes(search.toLowerCase()) || !search;
+  searchFilter(search){
+    return function(x){
+        return x.towerName.toLowerCase().includes(search.toLowerCase()) || !search;
     }
-  }
+}
 
 
   TowerMasterDetails({ tower }) {
@@ -122,9 +117,9 @@ class DisplayTowerMaster extends Component {
   }
 
 
-  searchOnChange = (e) => {
-    //  this.setState({})
-    this.setState({ search: e.target.value })
+  searchOnChange =(e)=>{
+  //  this.setState({})
+  this.setState({search:e.target.value})
   }
   logout=()=>{
     localStorage.removeItem('token');
@@ -192,6 +187,7 @@ class DisplayTowerMaster extends Component {
         {/* </SideBar>
       </div> */}
       </div>
+      
     );
   }
 }
@@ -206,7 +202,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ viewTower }, dispatch)
+  return bindActionCreators({ viewTower,updateTower,deleteTower}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayTowerMaster)

@@ -3,6 +3,9 @@ import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import {getCountryName,getStateName,getCityName,addLocationDetails, getLocationName} from '../../actionCreators/locationMasterAction';
 import _ from 'underscore';
+import UI from '../../components/newUI/superAdminDashboard';
+import { Link } from 'react-router-dom';
+
 
 class locationMaster extends Component{
     constructor(props){
@@ -170,6 +173,7 @@ class locationMaster extends Component{
     console.log("countryId",this.state.countryId)
         console.log("locationMasterReducer",this.props.locationMasterReducer.stateResult)
         return(
+            <UI>
             <div className="form">
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group  col-md-6">
@@ -199,9 +203,12 @@ class locationMaster extends Component{
                     </div>
 
                     <button type="submit" className ="btn btn-primary" value="submit">Submit</button>
+                    <Link to='/superDashboard/locationDetails'>
                     <button className="button" >Show Details</button>
+                    </Link>
                 </form> 
             </div>
+            </UI>
         )
     }
 

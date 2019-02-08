@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { ViewEvent, GetEventOrganiser } from '../../actionCreators/eventMasterAction';
+import { ViewEvent, GetEventOrganiser,deleteEvent,updateEvent} from '../../actionCreators/eventMasterAction';
 import { bindActionCreators } from 'redux';
-import axios from 'axios';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import { authHeader } from '../../helper/authHeader'
-import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
-import { URN } from '../../actions';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import SearchFilter from '../../components/searchFilter/searchFilter';
+
+import {  Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
+import  SearchFilter from '../../components/searchFilter/searchFilter';
+import {Link } from 'react-router-dom';
 class DisplayEventMaster extends Component {
         state = {
                 editEventData: {
@@ -26,7 +24,7 @@ class DisplayEventMaster extends Component {
                 },
                 editEventModal: false,
                 menuVisible: false,
-                search: ''
+                search:''
         }
         componentDidMount() {
                 this.props.ViewEvent();
@@ -55,15 +53,14 @@ class DisplayEventMaster extends Component {
                 })
         }
 
-        updateEvent = () => {
-                let { eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId } = this.state.editEventData;
-                console.log('dfdsf', eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId);
-
-                axios.put(`${URN}/event/` + eventId, { userId, eventType, eventName, eventOrganiser, startDate, endDate },
-                        { headers: authHeader() }).then((response) => {
-
-                                this.refreshData();
-                        })
+        updateEvent = (  ) => {
+      
+ let {eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId}=this.state.editEventData;
+                     this.props.updateEvent( eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId ).then(()=>{this.refreshData()})
+                       
+            
+                                
+                     
                 this.setState({
                         editEventModal: false, editEventData: { eventId: '', eventType: '', eventName: '', eventOrganiser: '', startDate: '', endDate: '', userId: '', userName: '' }
                 })
@@ -73,24 +70,26 @@ class DisplayEventMaster extends Component {
                 const pattern = /[a-zA-Z]/;
                 let inputChar = String.fromCharCode(event.charCode);
                 if (!pattern.test(inputChar)) {
-                        event.preventDefault();
+                    event.preventDefault();
                 }
-        }
+            }
         deleteEvent(eventId) {
                 let { isActive } = this.state.editEventData;
-                axios.put(`${URN}/event/delete/` + eventId, { isActive }, { headers: authHeader() }).then((response) => {
-                        this.refreshData()
-                        this.setState({ editEventData: { isActive: false } })
+             
 
-                })
+                this.props.deleteEvent(eventId,isActive).then(()=>{this.refreshData()})
+                this.setState({ editEventData: { isActive: false } })
+             
+             
+             
         }
 
 
-        searchFilter(search) {
-                return function (x) {
-                        return x.eventType.toLowerCase().includes(search.toLowerCase()) || !search;
+        searchFilter(search){
+                return function(x){
+                    return x.eventType.toLowerCase().includes(search.toLowerCase()) || !search;
                 }
-        }
+            }
         getEvent({ events }) {
                 console.log("events rocks", events);
 
@@ -107,11 +106,11 @@ class DisplayEventMaster extends Component {
                         )
                 }
         }
-        searchOnChange = (e) => {
+        searchOnChange =(e)=>{
                 //  this.setState({})
-                this.setState({ search: e.target.value })
-        }
-
+                this.setState({search:e.target.value})
+                }
+              
         displayEvent({ getEvent }) {
                 console.log(getEvent);
                 if (getEvent) {
@@ -279,7 +278,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-        return bindActionCreators({ ViewEvent, GetEventOrganiser }, dispatch)
+        return bindActionCreators({ ViewEvent, GetEventOrganiser ,deleteEvent,updateEvent}, dispatch)
 
 }
 

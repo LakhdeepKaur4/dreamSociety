@@ -231,6 +231,7 @@ class displayServices extends Component {
                             <Button color="secondary" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
+                    <div style={{ fontWeight: 'bold' }}><label>Service Details</label></div>
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
                     <Table className="table table-bordered">
