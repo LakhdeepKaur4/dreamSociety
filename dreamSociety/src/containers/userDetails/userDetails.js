@@ -68,6 +68,7 @@ class userDetails extends Component {
     deleteUser(userId) {
         let { isActive } = this.state.editUserData
         this.props.deleteUser(userId, isActive)
+        .then(() => this.refreshData())
         .then(() => this.setState({isActive: false}))
     }
 
