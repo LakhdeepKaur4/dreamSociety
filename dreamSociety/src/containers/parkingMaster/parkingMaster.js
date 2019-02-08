@@ -51,9 +51,12 @@ class ParkingMaster extends Component {
         }
     }
 
-    searchFilter(search) {
-        return function (x) {
-            return x.parking_master.parkingName.toLowerCase().includes(search.toLowerCase()) || !search;
+    searchFilter(search){
+        return function(x){
+            const slots = x.count.toString()
+            return x.parking_master.parkingName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+            slots.includes(search)||
+           !search;
         }
     }
 
