@@ -3,7 +3,7 @@
 .wrapper {
     display: flex;
     align-items: stretch;
-    background-image: url('../../assets/society.jpg');
+    background-image: url('../../assets/bgImage.jpg');
     background-size: cover;
 }
 
