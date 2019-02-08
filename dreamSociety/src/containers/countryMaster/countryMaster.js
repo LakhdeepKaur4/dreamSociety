@@ -76,6 +76,7 @@ class Country extends Component {
                 <Input
                     type="text"
                     name="countryName"
+                    maxLength='20'
                     onChange={this.onChange} />
                 <span>{this.state.errors.countryName}</span>
             </FormGroup>
@@ -85,7 +86,7 @@ class Country extends Component {
                 <Input
                     type="text"
                     name="code"
-                    max='3'
+                    maxLength='3'
                     onChange={this.onChange} />
                 <span>{this.state.errors.code}</span>
             </FormGroup>
@@ -95,6 +96,7 @@ class Country extends Component {
                 <Input
                     type="text"
                     name="currency"
+                    maxLength='10'
                     onChange={this.onChange} />
                 <span>{this.state.errors.currency}</span>
             </FormGroup>
@@ -104,6 +106,8 @@ class Country extends Component {
                 <Input
                     type="number"
                     name="phoneCode"
+                    maxLength='3'
+                    
                     onChange={this.onChange} />
                 <span>{this.state.errors.phoneCode}</span>
             </FormGroup>
