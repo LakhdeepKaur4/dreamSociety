@@ -9,7 +9,7 @@ import serviceMasterReducer from './vendorMasterReducer/serviceMasterReducer';
 import displayServiceMasterReducer from './vendorMasterReducer/displayServiceMasterReducer';
 import vendorMasterReducer from './vendorMasterReducer/vendorMasterReducer';
 import SizeDetails from './sizeReducer/sizeReducer';
-// import societyReducer from './societyReducer/societyReducer';
+import societyReducer from './societyReducer/societyReducer';
 import parkingDetail from './parkingReducer/parkingReducer';
 import personDetails from './personReducer/personReducer';
 import flatDetailMasterReducer from './flatDetailMasterReducer/flatDetailMasterReducer';
@@ -28,13 +28,12 @@ const rootReducer = combineReducers({
     flat,
     EventDetails,
     parkingDetail,
-    // societyReducer,
     cityMasterReducer,
     flats,
     serviceMasterReducer,
     displayServiceMasterReducer,
     vendorMasterReducer,
-    // societyReducer,
+    societyReducer,
     personDetails,
     AssetsReducer,
     AssetsTypeReducer,
