@@ -163,7 +163,7 @@ class Registration extends Component {
                 <span className='error'>{this.state.errors.roles}</span>
             </FormGroup>
             <FormGroup>
-                <Label>FirstName</Label>
+                <Label>First Name</Label>
                 <Input name="firstName"
                     type="text"
                     value={this.state.firstName}
@@ -174,7 +174,7 @@ class Registration extends Component {
                 <span className='error'>{this.state.errors.firstName}</span>
             </FormGroup>
             <FormGroup>
-                <Label>LastName</Label>
+                <Label>Last Name</Label>
                 <Input name="lastName"
                     type="text"
                     value={this.state.lastName}
@@ -185,7 +185,7 @@ class Registration extends Component {
                 <span className='error'>{this.state.errors.lastName}</span>
             </FormGroup>
             <FormGroup>
-                <Label>Username</Label>
+                <Label>User Name</Label>
                 <Input name="userName"
                     type="text"
                     value={this.state.userName}
