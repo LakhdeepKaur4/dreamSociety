@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { viewTower } from '../../actionCreators/towerMasterAction';
+import { viewTower,updateTower,deleteTower } from '../../actionCreators/towerMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
+
 import { authHeader } from '../../helper/authHeader';
-import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
-import { URN } from '../../actions/index'
-import SearchFilter from '../../components/searchFilter/searchFilter';
+import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import {URN} from  '../../actions/index'
+import SearchFilter from '../../components/searchFilter/searchFilter'
+import {Link} from 'react-router-dom'
 import UI from '../../components/newUI/superAdminDashboard';
 
 class DisplayTowerMaster extends Component {
@@ -23,11 +23,11 @@ class DisplayTowerMaster extends Component {
 
       towerId: [],
       towerName: [],
-      isActive: false
+      isActive:false
     },
     editTowerModal: false,
     menuVisible: false,
-    search: ''
+    search:''
   }
 
   componentDidMount() {
@@ -37,30 +37,28 @@ class DisplayTowerMaster extends Component {
   }
 
   OnKeyPresshandle(event) {
-    const pattern = /^[0-9]$/;
+    const pattern=/^[0-9]$/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       event.preventDefault();
-
+      
     }
   }
 
-
+  
   refreshdata() {
     this.props.viewTower()
 
   }
   deleteTower(towerId) {
-    console.log(towerId);
 
-    let { isActive } = this.state.editTowerData;
-    axios.put(
-      `${URN}/tower/delete/` + towerId, { isActive }, { headers: authHeader() }).then((response) => {
-        this.refreshdata()
 
-        this.setState({ editTowerData: { isActive: false } });
+  let {isActive} =this.state.editTowerData;
+     this.props.deleteTower(towerId,isActive).then(()=>{this.refreshdata()})
 
-      })
+        this.setState({editTowerData:{isActive:false}});
+
+
   }
 
 
@@ -72,17 +70,14 @@ class DisplayTowerMaster extends Component {
   }
 
   updateTower() {
-    let { id, towerId, towerName } = this.state.editTowerData;
-    console.log('----------------', towerId, towerName);
-    axios.put(`${URN}/tower/` + this.state.editTowerData.towerId, {
-      towerName
-    }, { headers: authHeader() }).then((response) => {
-      this.refreshdata();
+    let {  towerId, towerName } = this.state.editTowerData;
 
+  
+   this.props.updateTower(towerId,towerName).then(()=>{this.refreshdata()})
       this.setState({
         editTowerModal: false, editTowerData: { id: '', towerName: '' }
       })
-    })
+
   }
 
 
@@ -93,11 +88,11 @@ class DisplayTowerMaster extends Component {
       editTowerData: { id, towerId, towerName }, editTowerModal: !this.state.editTowerModal
     })
   }
-  searchFilter(search) {
-    return function (x) {
-      return x.towerName.toLowerCase().includes(search.toLowerCase()) || !search;
+  searchFilter(search){
+    return function(x){
+        return x.towerName.toLowerCase().includes(search.toLowerCase()) || !search;
     }
-  }
+}
 
 
   TowerMasterDetails({ tower }) {
@@ -122,72 +117,67 @@ class DisplayTowerMaster extends Component {
   }
 
 
-  searchOnChange = (e) => {
-    //  this.setState({})
-    this.setState({ search: e.target.value })
+  searchOnChange =(e)=>{
+  //  this.setState({})
+  this.setState({search:e.target.value})
   }
 
   render() {
 
 
     return (
-      <div>
-        {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
-        <UI>
-          <div>
-            <h3 align="center"> Tower List</h3>
-            <Modal isOpen={this.state.editTowerModal} toggle={this.toggleEditTowerModal.bind(this)}>
-              <ModalHeader toggle={this.toggleEditTowerModal.bind(this)}>Edit Tower</ModalHeader>
-              <ModalBody>
+    
+<div>
+  <UI>
+<Link to="/superDashboard/towermaster"> Tower Master</Link>
+                <h3 align="center"> Tower List</h3>
+                <Modal isOpen={this.state.editTowerModal} toggle={this.toggleEditTowerModal.bind(this)}>
+                  <ModalHeader toggle={this.toggleEditTowerModal.bind(this)}>Edit Tower</ModalHeader>
+                  <ModalBody>
 
 
 
-                <FormGroup>
-                  <Label for="towerName">  Tower Name</Label>
-                  <Input id="towerName" value={this.state.editTowerData.towerName} onChange={(e) => {
-                    let { editTowerData } = this.state;
+                    <FormGroup>
+                      <Label for="towerName">  Tower Name</Label>
+                      <Input id="towerName" value={this.state.editTowerData.towerName} onChange={(e) => {
+                        let { editTowerData } = this.state;
 
-                    editTowerData.towerName = e.target.value;
+                        editTowerData.towerName = e.target.value;
 
-                    this.setState({ editTowerData })
-
-                  }}
-                    onKeyPress={this.OnKeyPresshandler}
-
-                    required />
-                </FormGroup>
-
-
-              </ModalBody>
-              <ModalFooter>
-                <Button color="primary" onClick={this.updateTower.bind(this)}>Update Tower</Button>
-                <Button color="secondary" onClick={this.toggleEditTowerModal.bind(this)}>Cancel</Button>
-              </ModalFooter>
-            </Modal>
-            <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-            <Table >
-              <thead>
-                <tr>
-
-                  <th>Tower Name</th>
+                        this.setState({ editTowerData })
+                        
+                      }}
+                      onKeyPress={this.OnKeyPresshandler}
+                      maxLength={10}
+                       required />
+                    </FormGroup>
 
 
-                </tr>
-              </thead>
-              <tbody>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="primary" onClick={this.updateTower.bind(this)}>Update Tower</Button>
+                    <Button color="secondary" onClick={this.toggleEditTowerModal.bind(this)}>Cancel</Button>
+                  </ModalFooter>
+                </Modal>
+  <SearchFilter type="text" value ={this.state.search}   onChange={this.searchOnChange}  />
+                <Table >
+                  <thead>
+                    <tr>
 
-                <td colSpan="2"> {this.TowerMasterDetails(this.props.TowerDetails)}</td>
+                      <th>Tower Name</th>
 
-              </tbody>
-            </Table>
-          </div>
-        </UI>
-        {/* </SideBar>
-      </div> */}
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                   
+                      <td colSpan="2"> {this.TowerMasterDetails(this.props.TowerDetails)}</td>
+                    
+                  </tbody>
+              </Table>
+              </UI>
       </div>
+      
     );
   }
 }
@@ -202,7 +192,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ viewTower }, dispatch)
+  return bindActionCreators({ viewTower,updateTower,deleteTower}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayTowerMaster)
