@@ -19,7 +19,7 @@ class CityMaster extends Component {
             stateName:'',
             countryId:'',
             stateId:'',
-            errors: {},
+           
             
             menuVisible: false,
          }
@@ -159,13 +159,7 @@ class CityMaster extends Component {
 
     handleSubmit=(e)=>{
 
-      
-        let errors = {};
-        if (!this.state.cityName) {
-            errors.cityName = "User type can't be empty. Please select"
-        }
-        if (this.state.cityName === '') errors.cityName = "Can't be empty";
-        else if (this.state.cityName.length < 3) errors.cityName = "City Name can't be less than four";
+    
 
         e.preventDefault();
 
@@ -177,7 +171,7 @@ class CityMaster extends Component {
             cityName:'',
             countryId:'',
             stateId:'',
-            errors:{},
+        
 
             menuVisible: false,
             
@@ -190,13 +184,7 @@ class CityMaster extends Component {
     }
 
     
-    OnKeyPressUserhandler(event) {
-        const pattern = /^[a-zA-Z]+$/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
-    }
+    
 
     render() {
          console.log(this.props.cityMasterReducer)
@@ -232,7 +220,7 @@ class CityMaster extends Component {
                     maxLength='30'
                     minLength='3'/>
                     
-                  <span className='error'>{this.state.errors.cityName}</span>
+                 
                     </div>
                     <div>
                     <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Submit</button>
