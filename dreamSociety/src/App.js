@@ -52,7 +52,7 @@ import flatDetails from './containers/flatDetailMaster/flatDetails';
 import CityMaster from './containers/cityMaster/cityMaster';
 import CityMasterDetail from './containers/cityMaster/cityMasterDetail';
 import locationDetails from './containers/locationMaster/locationDetails';
-// import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
+import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
 
 class App extends Component {
   render() {
@@ -87,7 +87,7 @@ class App extends Component {
 
 
             <Route path='/superDashboard/societyManagement' component={SocietyManagement} />
-            {/* <Route path ='/superDashboard/societyManagementDetail' component={SocietyManagementDetail}/> */}
+            <Route path ='/superDashboard/societyManagementDetail' component={SocietyManagementDetail}/>
             <Route path='/superDashboard/display-event' component={DisplayEventMaster} />
             {/* <Route path ='/superDashboard/assetmanagement'component ={AssetManagement}/> */}
             {/* <Route path ='/superDashboard/assetmanagement/assetmanagementdetails'component ={AssetManagementDetails}/> */}
