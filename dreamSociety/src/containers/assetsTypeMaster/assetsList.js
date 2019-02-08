@@ -4,8 +4,6 @@ import { getAssets, updateAssets, removeAssets } from '../../actionCreators/asse
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Link} from 'react-router-dom'
 

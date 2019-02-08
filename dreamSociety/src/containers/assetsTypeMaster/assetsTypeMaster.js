@@ -4,8 +4,6 @@ import { bindActionCreators } from 'redux';
 import { addAssets } from '../../actionCreators/assetsAction';
 import './assetsTypeMaster.css';
 import { Link } from 'react-router-dom'
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import UI from '../../components/newUI/superAdminDashboard';
 
 class AssetsTypeMaster extends Component {
