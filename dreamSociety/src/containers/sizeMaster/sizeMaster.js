@@ -42,7 +42,11 @@ class SizeMaster extends Component {
 
     }
 
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
     render() {
         return (
             <div>
@@ -50,7 +54,7 @@ class SizeMaster extends Component {
             <div style={{ margin: '48px auto' }}>
                 <SideBar onClick={() => this.setState({ menuVisible: false })}
                  visible={this.state.menuVisible}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     <div style={{ margin: '48px auto' }}>
 
                         <div className="form">

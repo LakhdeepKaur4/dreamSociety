@@ -280,7 +280,11 @@ class SocietyMangement extends Component {
     }
 
 
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
 
 
@@ -292,7 +296,7 @@ class SocietyMangement extends Component {
                 {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
                 <div style={{ marginTop: '52px' }}>
                 <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     <div>
                         <form className="ui form" onSubmit={this.handleSubmit}>
                             <div className="field">

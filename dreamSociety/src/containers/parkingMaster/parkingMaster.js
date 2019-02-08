@@ -56,7 +56,11 @@ class ParkingMaster extends Component {
             return x.parking_master.parkingName.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
     render() {
         return (
             <div>
@@ -64,7 +68,7 @@ class ParkingMaster extends Component {
                 <div style={{ margin: '48px auto' }}>
                     <SideBar onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     <h1 style={{ color: 'black' }}>Add Parking</h1>
                     <div>
 

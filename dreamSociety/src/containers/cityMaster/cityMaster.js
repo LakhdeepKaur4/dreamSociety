@@ -196,6 +196,11 @@ class CityMaster extends Component {
         });
         console.log("cityid", this.state.stateId)
     }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
 
 
@@ -208,7 +213,7 @@ class CityMaster extends Component {
                 {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
               <div style={{ marginTop: '52px' }}>
               <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     {/* <Link to='/superDashboard/cityMasterDetail'>City Details</Link> */}
                     <form className="ui form" onSubmit={this.handleSubmit}>
                         <div className="field">

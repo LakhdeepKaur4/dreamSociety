@@ -189,7 +189,11 @@ class flatMasterDetails extends Component {
         }
     }
 
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
         return (
@@ -198,7 +202,7 @@ class flatMasterDetails extends Component {
                 <div style={{ margin: '48px auto' }}>
                     <SideBar onClick={() => this.setState({menuVisible: false})}
                         visible={this.state.menuVisible}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     <div>
                         <Link to="/superDashboard/flatmaster">Add flats</Link>
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>

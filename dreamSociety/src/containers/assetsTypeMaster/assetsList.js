@@ -7,6 +7,7 @@ import SearchFilter from '../../components/searchFilter/searchFilter'
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import UI from '../../components/newUI/superAdminDashboard';
+import {Link} from 'react-router-dom'
 
 class AssetList extends Component {
     constructor(props) {
@@ -79,13 +80,21 @@ class AssetList extends Component {
         }
     }
 
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
     render() {
         return (
             <div>
                 {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
             <SideBar onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}> */}
-                <UI>
+                <UI onClick={this.logout}>
+                <Link to='/superDashBoard/assetsMaster'>
+                 <button className="btn btn-success" id="addAssets" >Assets List</button>
+                </Link>
                     <div className="search">
                         <h3>Assets Name</h3>
                         <SearchFilter type="text" value={this.state.search}

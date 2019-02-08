@@ -88,6 +88,11 @@ class serviceMaster extends Component {
             event.preventDefault();
         }
     }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
 
@@ -127,7 +132,7 @@ class serviceMaster extends Component {
                     </Sidebar>
                     <Sidebar.Pusher dimmed={this.state.menuVisible}>
                         <Segment basic style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px', backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '600px' }}> */}
-            <UI>
+            <UI onClick={this.logout}>
                 {/* <Header as="h3">Application Content</Header> */}
                 {/* <Image src='//unsplash.it/800/480' /> */}
                 <div className="form col-8">

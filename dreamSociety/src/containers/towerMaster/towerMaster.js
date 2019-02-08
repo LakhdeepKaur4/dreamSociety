@@ -54,7 +54,11 @@ class TowerMaster extends Component {
         }),
             this.props.history.push('/superDashboard/display-tower');
     }
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
         return (
@@ -63,7 +67,7 @@ class TowerMaster extends Component {
                 <div style={{ margin: '48px auto' }}>
                     <SideBar onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     <div className="form">
                         <Form onSubmit={this.onSubmit}>
                             <FormGroup>

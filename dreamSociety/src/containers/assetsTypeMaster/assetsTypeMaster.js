@@ -32,6 +32,11 @@ class AssetsTypeMaster extends Component {
        .then(()=>this.props.history.push('/superDashBoard/assetsMaster/assetsList'))
     }
 
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
     render() {
         return (
             <div>
@@ -39,22 +44,24 @@ class AssetsTypeMaster extends Component {
              <div style={{ margin: '48px auto' }}>
             <SideBar onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}>   */}
-                <UI>
+                <UI onClick={this.logout}>
                     <div className="Assets">
-                        <Link to='/superDashBoard/assetsMaster/assetsList'>Assets List</Link>
                         <form onSubmit={this.onSubmit}>
 
                             <div className="Assets">
                                 <div className="assetsName">
                                     <label htmlFor="AssetsName">Assets Name</label>
-                                    <input type="text" className="form-control" placeholder="Enter Assets Name" name="assets" onChange={this.onChangeHandler} required />
+                                    <input type="text" maxLength={30} className="form-control" placeholder="Enter Assets Name" name="assets" onChange={this.onChangeHandler} required />
                                 </div>
                                 <div>
                                     <label htmlFor="Description">Description</label>
-                                    <textarea type="text" id="Description" placeholder="Enter Description..." className="form-control" onChange={this.onChangeHandler} name='description' required />
+                                    <textarea type="text" maxLength={100} id="Description" placeholder="Enter Description..." className="form-control" onChange={this.onChangeHandler} name='description' required />
                                 </div>
-                                <div>
-                                    <button className="btn btn-success" id="addAssets">Add Assets</button>
+                                <div>  
+                                 <button className="btn btn-success" id="addAssets">Add Assets</button>
+                                 <Link to='/superDashBoard/assetsMaster/assetsList'>
+                                    <button className="btn btn-success" id="addAssets" >Assets List</button>
+                                    </Link>
                                 </div>
                             </div>
 

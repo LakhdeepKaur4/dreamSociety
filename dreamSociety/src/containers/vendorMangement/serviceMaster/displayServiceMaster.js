@@ -146,6 +146,11 @@ class displayServices extends Component {
             })
         }
     }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
         return (
@@ -186,7 +191,7 @@ class displayServices extends Component {
                         </Sidebar>
                         <Sidebar.Pusher dimmed={this.state.menuVisible}>
                             <Segment basic > */}
-                <UI>
+                <UI onClick={this.logout}>
                     {/* <Header as="h3">Application Content</Header> */}
                     {/* <Image src='//unsplash.it/800/480' /> */}
                     <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)}>

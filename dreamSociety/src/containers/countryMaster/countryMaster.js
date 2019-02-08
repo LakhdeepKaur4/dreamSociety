@@ -66,6 +66,11 @@ class Country extends Component {
         this.props.history.push('/superDashboard/countrymaster/countrymasterdetails');
     }
 
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
 
@@ -122,7 +127,7 @@ class Country extends Component {
                         visible={this.state.menuVisible}
                         style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px',
                         backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     <div className="flatMaster">
                         {this.state.isSubmit ? <Redirect to="/superDashboard/countrymaster/countrymasterdetails" /> : form}
                     </div>

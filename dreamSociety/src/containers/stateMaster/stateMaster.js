@@ -91,6 +91,11 @@ class FlatMaster extends Component {
     push = () => {
         this.props.history.push('/superDashboard/statemaster/statemasterdetails')
     }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
 
@@ -135,7 +140,7 @@ class FlatMaster extends Component {
                         visible={this.state.menuVisible}
                         style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px',
                         backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     <div className="flatMaster">
                         {this.state.isSubmit ? <Redirect to="/superDashboard/statemaster/statemasterdetails" /> : form}
                     </div>

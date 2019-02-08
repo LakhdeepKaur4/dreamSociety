@@ -139,6 +139,12 @@ class Registration extends Component {
     routeToUserDetails = () => {
         this.props.history.push('/superDashboard/user_details');
     }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
+
 
     render() {
         return (<div>
@@ -149,7 +155,7 @@ class Registration extends Component {
                     style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px',
                     backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}
                     visible={this.state.menuVisible}> */}
-            <UI>
+            <UI onClick={this.logout}>
                 <div>
                     {this.state.message}
                 </div>

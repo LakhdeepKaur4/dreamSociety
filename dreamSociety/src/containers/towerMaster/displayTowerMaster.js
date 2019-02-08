@@ -126,7 +126,11 @@ class DisplayTowerMaster extends Component {
     //  this.setState({})
     this.setState({ search: e.target.value })
   }
-
+  logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
   render() {
 
 
@@ -136,7 +140,7 @@ class DisplayTowerMaster extends Component {
                 <div style={{ margin: '48px auto' }}>
                     <SideBar onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}> */}
-        <UI>
+        <UI onClick={this.logout}>
           <div>
             <h3 align="center"> Tower List</h3>
             <Modal isOpen={this.state.editTowerModal} toggle={this.toggleEditTowerModal.bind(this)}>

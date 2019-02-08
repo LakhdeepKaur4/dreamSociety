@@ -176,7 +176,11 @@ class CityMasterDetail extends Component {
         }
     }
 
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
         return (
@@ -184,7 +188,7 @@ class CityMasterDetail extends Component {
                 {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
               <div style={{ marginTop: '52px' }}>
               <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     <div className="container" >
                         <div>
                             <h3>City details</h3>

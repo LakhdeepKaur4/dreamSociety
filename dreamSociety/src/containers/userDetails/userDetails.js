@@ -140,6 +140,11 @@ class userDetails extends Component {
         let x = document.getElementById('sidebar');
         x.style.position = 'fixed';
     }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
         return (
@@ -148,7 +153,7 @@ class userDetails extends Component {
                 <div style={{ marginTop: '48px' }}>
                     <SideBar id='sidebar' onScroll={this.windowScroll} onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}> */}
-                     <UI>
+                     <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top">
                             <Link to="/superDashboard/registration">Add Users</Link>
                             <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>

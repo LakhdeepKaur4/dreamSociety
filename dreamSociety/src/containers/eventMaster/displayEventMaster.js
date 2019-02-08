@@ -141,7 +141,11 @@ class DisplayEventMaster extends Component {
         }
 
 
-
+        logout=()=>{
+                localStorage.removeItem('token');
+                localStorage.removeItem('user-type');
+                return this.props.history.replace('/') 
+            }
 
 
 
@@ -153,7 +157,7 @@ class DisplayEventMaster extends Component {
                 <div style={{ margin: '48px auto' }}>
                     <SideBar onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}> */}
-                                <UI>
+                                <UI onClick={this.logout}>
                                         <div>
                                                 <h3>Display Event Details</h3>
 

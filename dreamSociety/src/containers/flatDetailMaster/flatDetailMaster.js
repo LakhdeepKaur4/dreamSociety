@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import {getTowerName,getFlatType,addFlatDetails} from '../../actionCreators/flatDetailMasterAction';
 
+
 class flatDetailMaster extends Component{
     constructor(props){
         super(props);
