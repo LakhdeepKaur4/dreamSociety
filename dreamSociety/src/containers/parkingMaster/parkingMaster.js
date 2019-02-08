@@ -79,10 +79,6 @@ class ParkingMaster extends Component {
                         </Table>
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
                 <UI onClick={this.logout}>
                     <h1 style={{ color: 'black' }}>Add Parking</h1>
                     <div>
@@ -98,8 +94,6 @@ class ParkingMaster extends Component {
                         </div>
                     </div>
                 </UI>
-                {/* </SideBar>
-                </div> */}
             </div>
         )
     }

@@ -9,7 +9,6 @@ import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, In
 
 import UI  from '../../components/newUI/superAdminDashboard';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import {Link} from 'react-router-dom';
 
 class DisplaySizeMaster extends Component {
   state = {
@@ -133,10 +132,6 @@ class DisplaySizeMaster extends Component {
      
 
       <div>
-        {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
         <UI onClick={this.logout}>
 
           <div>
@@ -185,8 +180,6 @@ class DisplaySizeMaster extends Component {
             </Table>
           </div>
         </UI>
-        {/* </SideBar>
- </div> */}
       </div>
 
     );

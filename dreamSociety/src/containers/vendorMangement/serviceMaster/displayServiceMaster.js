@@ -10,8 +10,7 @@ import './serviceMaster.css';
 import { Link } from 'react-router-dom';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
-import SideBar from '../../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../../components/superAdminDashboardUI/menuBar/menuBar';
+
 import UI from '../../../components/newUI/vendorDashboardInside';
 
 
@@ -156,44 +155,8 @@ class displayServices extends Component {
         return (
 
             <div>
-                {/* <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
-                    <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} >
-                        <Icon name="sidebar" style={{ color: 'white', cursor: 'pointer' }} />
-
-                    </MenuBar>
-                    <i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa">&#xf1ad;</i> <Link className="navbar-brand" to="#">DRE@M SOCIETY</Link>
-                    <div className="navbar-collapse collapse" id="navbarCollapse" style={{ marginLeft: '20%' }}>
-                        <ul className="navbar-nav mr-auto">
-                            <li className="nav-item active">
-                                <Link className="nav-link" to="/vendorDashboard">Home<span className="sr-only">(current)</span></Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="#">Gallery</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="#">About Us</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="#">Contact Us</Link>
-                            </li>
-                        </ul>
-                        <form className="form-inline mt-2 mt-md-0">
-                            <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
-                                onClick={this.editUser}>Logout</button>
-                        </form>
-                    </div>
-                </nav>
-                <div style={{ marginTop: '48px' }}>
-                    <Sidebar.Pushable as={Segment} attached="bottom">
-                        <Sidebar width='thin' as={Menu} animation="uncover" visible={this.state.menuVisible} icon="labeled" vertical inverted>
-                            <Menu.Item><Icon name="user" /><Link to="/superDashboard/serviceMaster">Service Master</Link></Menu.Item>
-                            <Menu.Item><Icon name="user" /><Link to="/superDashboard/vendorMaster">Vendor Master</Link></Menu.Item>
-                        </Sidebar>
-                        <Sidebar.Pusher dimmed={this.state.menuVisible}>
-                            <Segment basic > */}
                 <UI onClick={this.logout}>
-                    {/* <Header as="h3">Application Content</Header> */}
-                    {/* <Image src='//unsplash.it/800/480' /> */}
+                  
                     <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)}>
                         <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Edit a Service</ModalHeader>
                         <ModalBody>
@@ -217,9 +180,7 @@ class displayServices extends Component {
                                     this.setState({ editServiceData })
                                 }}>
                                     <option disabled>--SELECT--</option>
-                                    {/* <option value={this.state.editServiceData.service_detail}>
-                      {this.state.editServiceData.service_detail}
-                        </option> */}
+                           
                                     {this.getDropdown1(this.props.serviceMasterReducer)}
 
                                 </select>
@@ -250,10 +211,7 @@ class displayServices extends Component {
                         <button className="button" type="button">Add Services</button>
                     </Link>
                 </UI>
-                {/* </Segment>
-                        </Sidebar.Pusher>
-                    </Sidebar.Pushable>
-                </div> */}
+               
 
             </div>
         )

@@ -63,19 +63,7 @@ onChange=(e)=>{
 this.setState({[e.target.name]:e.target.value});
 }
 
-// Flat({flat1}){
-//     console.log('xyz',flat1)
-// if(flat1){
-//     return(
-//         flat1.map((item)=>{
-//             return(
-//                 <option key={item.flatId} value ={item.flatId}>{item.flatType}</option>
-//             )
-//         })
-//     )
-// }
 
-// }
 
 submit=(e)=>{
 e.preventDefault();
@@ -86,20 +74,7 @@ console.log(this.state,'adsdfskjfss');
             
 }
 
-// submit=(e)=>{
-//     e.preventDefault();
-//     console.log(this.state.eventOrganiser);
-//     this.props.AddEvent({...this.state})
-//     this.setState({
-//       state:{
-//         eventType: [],  
-//     eventName:[],
-//     eventOrganiser:[],
-//     startDate:[],
-//     endDate:[],
 
-//       }
-//     }
 getRole({roles}){
     console.log(roles,'sdfasfsdf')
     if(roles){
@@ -140,10 +115,6 @@ Tower({get}){
     render() {
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-    <div style={{ margin: '48px auto' }}>
-        <SideBar onClick={() => this.setState({ menuVisible: false })}
-         visible={this.state.menuVisible}> */}
                 <UI onClick={this.logout}>
 
 
@@ -176,16 +147,6 @@ Email
     {this.Tower(this.props.personDetails)}
     </select>
 </div>
-        {/* <div  className="form-group">
-            <label> Flat Number</label>
-            <select name="flatDetailId"   onChange={(e)=>{this.setState({flatDetailId:e.target.value})}}     className="form-control" >
-            {this.Flat(this.props.personDetails)}
-            </select>
-            </div> */}
-{/* <div   className="form-group">
-    <label>floor</label>
-    <input type="text" name="floor" className="form-control" onChange={this.onChange}  onKeyPress={this.OnKeyPresshandler}required />
-    </div>       */}
     <div   className="form-group">
         <label> Number of members in family</label>
         <input type="text"  name ="familyMember"  className="form-control" maxLength ={5}  onChange={this.onChange} onKeyPress ={this.OnKeyPressNumber} required/>

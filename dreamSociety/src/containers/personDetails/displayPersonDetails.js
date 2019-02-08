@@ -7,8 +7,6 @@ import { URN } from '../../actions/index';
 import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
 import { viewPerson, getFlat, getTower, getRoles } from '../../actionCreators/personDetailsMasterAction';
 import SearchFilter from '../../components/searchFilter/searchFilter'
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import UI from '../../components/newUI/superAdminDashboard';
 
 
@@ -185,10 +183,6 @@ class displayPersonDetails extends Component {
         render() {
                 return (
                         <div>
-                                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
                                 <UI onClick={this.logout}>
                                         <div>
 
@@ -269,18 +263,7 @@ class displayPersonDetails extends Component {
 
                                                                         </select>
                                                                 </FormGroup>
-                                                                {/* 
-                <FormGroup>
-                        <Label> Floor</Label>
-                        <Input type="text"  value={this.state.editPersonData.floor} onChange={(e) => {
-                                let { editPersonData } = this.state
-                                editPersonData.floor = e.target.value;
-                                this.setState({
-                                        editPersonData
-                                })
-                        }}
-                        />
-                </FormGroup> */}
+                                                                
                                                                 <FormGroup>
                                                                         <Label> Number of family Members</Label>
                                                                         <Input type="text" value={this.state.editPersonData.familyMember} onChange={(e) => {
@@ -318,7 +301,6 @@ class displayPersonDetails extends Component {
                                                                         <th>UserName</th>
                                                                         <th>Email</th>
                                                                         <th>Tower Name </th>
-                                                                        {/* <th>Flat</th> */}
                                                                         <th>Roles</th>
                                                                         <th>Number of
                       family member</th>

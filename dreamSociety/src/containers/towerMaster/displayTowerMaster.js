@@ -2,21 +2,11 @@ import React, { Component } from 'react';
 import { viewTower,updateTower,deleteTower } from '../../actionCreators/towerMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import axios from 'axios';
-
-import { authHeader } from '../../helper/authHeader';
 import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
-import {URN} from  '../../actions/index'
 import SearchFilter from '../../components/searchFilter/searchFilter'
-import {Link} from 'react-router-dom'
 import UI from '../../components/newUI/superAdminDashboard';
 
 class DisplayTowerMaster extends Component {
-  constructor(props) {
-    super(props);
-    // this.deleteTower = this.deleteTower.bind(this);
-  }
-
 
   state = {
     editTowerData: {
@@ -131,10 +121,6 @@ class DisplayTowerMaster extends Component {
 
     return (
       <div>
-        {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
         <UI onClick={this.logout}>
           <div>
             <h3 align="center"> Tower List</h3>
@@ -184,8 +170,6 @@ class DisplayTowerMaster extends Component {
             </Table>
           </div>
         </UI>
-        {/* </SideBar>
-      </div> */}
       </div>
       
     );

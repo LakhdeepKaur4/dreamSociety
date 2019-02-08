@@ -53,7 +53,6 @@ class locationMaster extends Component{
     
     onChangeCountry=(event)=>{
         let selected= event.target.value;
-        // countryId:e.target.value
 
         console.log(selected)
       
@@ -163,10 +162,7 @@ class locationMaster extends Component{
 
 
 
-    // push=()=>{
-    //     this.props.history.push('/superDashboard')
-    // }
-
+    
     render (){
     console.log("stateId",this.state.stateId)
     console.log("cityId",this.state.cityId)

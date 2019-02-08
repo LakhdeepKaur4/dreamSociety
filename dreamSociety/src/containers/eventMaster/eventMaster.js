@@ -14,8 +14,6 @@ class EventMaster extends Component {
   constructor(props) {
     super(props)
 
-
-    //  this.onChange = this.onChange.bind(this);
   }
 
   state = {
@@ -24,8 +22,7 @@ class EventMaster extends Component {
     eventOrganiser: [],
     startDate: Date,
     endDate: Date,
-    menuVisible: false,
-    // userId:''
+    menuVisible: false
 
   }
 
@@ -69,7 +66,6 @@ class EventMaster extends Component {
   }
 
   getEvent({ events }) {
-    // console.log("dsgggggggg",events);
     if (events) {
       return (
         events.event.map((item) => {

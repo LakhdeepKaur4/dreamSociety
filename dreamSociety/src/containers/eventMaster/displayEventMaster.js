@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import {  Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import  SearchFilter from '../../components/searchFilter/searchFilter';
-import {Link } from 'react-router-dom';
 class DisplayEventMaster extends Component {
         state = {
                 editEventData: {
@@ -28,9 +27,7 @@ class DisplayEventMaster extends Component {
         }
         componentDidMount() {
                 this.props.ViewEvent();
-                // console.log("viewEvent",this.props.ViewEvent)
                 this.props.GetEventOrganiser()
-                // console.log("eventDetails",this.props.GetEventOrganiser())
         }
 
 
@@ -96,7 +93,6 @@ class DisplayEventMaster extends Component {
                 if (events) {
                         return (
                                 events.event.map((item) => {
-                                        // console.log('abc,events',item.userName);
                                         return (
                                                 <option key={item.userId} value={item.userId}>
                                                         {item.userName}
@@ -152,10 +148,7 @@ class DisplayEventMaster extends Component {
 
                 return (
                         <div>
-                                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
+                                
                                 <UI onClick={this.logout}>
                                         <div>
                                                 <h3>Display Event Details</h3>
@@ -255,8 +248,6 @@ class DisplayEventMaster extends Component {
                                                 </Table>
                                         </div>
                                 </UI>
-                                {/* </SideBar>
-                             </div>                                         */}
                         </div>
 
 

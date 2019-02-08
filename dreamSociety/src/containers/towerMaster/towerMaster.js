@@ -60,10 +60,6 @@ class TowerMaster extends Component {
     render() {
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
                 <UI onClick={this.logout}>
                     <div className="form">
                         <Form onSubmit={this.onSubmit}>
@@ -78,8 +74,6 @@ class TowerMaster extends Component {
                         </Form>
                     </div>
                 </UI>
-                {/* </SideBar>
-                                </div> */}
             </div>
 
 

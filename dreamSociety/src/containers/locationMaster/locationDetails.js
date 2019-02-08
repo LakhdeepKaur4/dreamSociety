@@ -80,7 +80,7 @@ toggleEditLocationModal(){
 
 
 getDropDown1=({country})=>{
-    //  console.log(country,"================country")
+    
     if(country){
         return country.map((items)=>{  console.log(items,"abc")
 

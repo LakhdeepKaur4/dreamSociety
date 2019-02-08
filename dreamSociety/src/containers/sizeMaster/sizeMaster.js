@@ -25,7 +25,7 @@ class SizeMaster extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
  onkeyPresshandle(event){
-    const pattern = /^[0-9]$/;
+    const pattern = /[a-zA-Z]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       event.preventDefault();
@@ -55,10 +55,6 @@ class SizeMaster extends Component {
     render() {
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-            <div style={{ margin: '48px auto' }}>
-                <SideBar onClick={() => this.setState({ menuVisible: false })}
-                 visible={this.state.menuVisible}> */}
                 <UI onClick={this.logout}>
                     <div style={{ margin: '48px auto' }}>
 
@@ -77,10 +73,6 @@ class SizeMaster extends Component {
 
                     </div>
                 </UI>
-                {/* </SideBar>
-</div> */}
-
-
             </div>
 
         )

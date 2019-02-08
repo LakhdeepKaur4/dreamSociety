@@ -9,7 +9,7 @@ import axios from 'axios';
 import { URN } from '../../../actions/index';
 import { Link } from 'react-router-dom';
 import './vendorMaster.css';
-import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/vendorDashboardInside';
 
@@ -147,44 +147,8 @@ class displayVendorMaster extends Component {
     render() {
         return (
             <div>
-                {/* <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
-                    <Menu.Item onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} >
-                        <Icon name="sidebar" style={{ color: 'white', cursor: 'pointer' }} />
-
-                    </Menu.Item>
-                    <i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa">&#xf1ad;</i> <Link className="navbar-brand" to="#">DRE@M SOCIETY</Link>
-                    <div className="navbar-collapse collapse" id="navbarCollapse" style={{ marginLeft: '20%' }}>
-                        <ul className="navbar-nav mr-auto">
-                            <li className="nav-item active">
-                                <Link className="nav-link" to="/vendorDashboard">Home<span className="sr-only">(current)</span></Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="#">Gallery</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="#">About Us</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to="#">Contact Us</Link>
-                            </li>
-                        </ul>
-                        <form className="form-inline mt-2 mt-md-0">
-                            <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
-                                onClick={this.editUser}>Logout</button>
-                        </form>
-                    </div>
-                </nav>
-                <div style={{ margin: '48px auto' }}>
-                    <Sidebar.Pushable as={Segment} attached="bottom">
-                        <Sidebar width='thin' as={Menu} animation="uncover" visible={this.state.menuVisible} icon="labeled" vertical inverted>
-                            <Menu.Item><Icon name="user" /><Link to="/superDashboard/serviceMaster">Service Master</Link></Menu.Item>
-                            <Menu.Item><Icon name="user" /><Link to="/superDashboard/vendorMaster">Vendor Master</Link></Menu.Item>
-                        </Sidebar>
-                        <Sidebar.Pusher dimmed={this.state.menuVisible}>
-                            <Segment basic> */}
                 <UI onClick={this.logout}>
-                    {/* <Header as="h3">Application Content</Header> */}
-                    {/* <Image src='//unsplash.it/800/480' /> */}
+                   
                     <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
                         <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}>Edit a Vendor</ModalHeader>
                         <ModalBody>
@@ -208,10 +172,7 @@ class displayVendorMaster extends Component {
 
                                     this.setState({ editVendorData })
                                 }}>
-                                    {/* <option  value={this.state.editVendorData.serviceName}>
-                                     {this.state.editVendorData.serviceName}
-                                    </option>
-                                     */}
+                                    
                                     <option disabled>--Select--</option>
                                     {this.getDropdown(this.props.displayServiceMasterReducer)}
                                 </Input>
@@ -255,10 +216,7 @@ class displayVendorMaster extends Component {
                         <button className="button" type="button">Add Vendor</button>
                     </Link>
                 </UI>
-                {/* </Segment>
-                        </Sidebar.Pusher>
-                    </Sidebar.Pushable>
-                </div> */}
+              
 
             </div>
         )

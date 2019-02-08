@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { FormGroup, Form, Label, Input, Button } from 'reactstrap';
 import { fetchBasement, createParking } from '../../actionCreators/parkingAction';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import './parking.css';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
@@ -132,8 +131,6 @@ class Parking extends Component {
                         </Form>
                     </div>
                 </UI>
-                {/* </SideBar>
-                </div> */}
 
             </div>
         )
