@@ -1,252 +1,211 @@
 import React, { Component } from 'react';
-// import {authHeader} from '../../helper/auth-header';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import { getCountry, getState, getCity, getLocation, postSociety, getSociety } from '../../actionCreators/societyMasterAction';
+import{Link} from 'react-router-dom';
+import {getCountry,getState,getCity,getLocation,postSociety,getSociety} from '../../actionCreators/societyMasterAction';
 import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard';
 
 
 
-
-// import axios from 'axios';
-// import { authHeader } from '../../helper/auth-header';
-
 class SocietyMangement extends Component {
     constructor(props) {
         super(props);
         console.log(this.props)
-
+        
 
         this.state = {
-            cityName: '',
-            countryName: '',
-            stateName: '',
-            locationName: '',
-            countryId: '',
-            stateId: '',
-            locationId: '',
-            soicietyName: '',
-            societyId: '',
-
+            cityName:'',
+            countryName:'',
+            stateName:'',
+            locationName:'',
+            countryId:'',
+            stateId:'',
+            cityId:'',
+            locationId:'',
+            societyName:'',
+            
+         
             menuVisible: false,
-
-
+            
+           
         }
-        // this.onChangeCountry=this.onChangeCountry.bind(this);
-        this.cityName = this.cityName.bind(this);
+      
+        this.cityName=this.cityName.bind(this);
 
-
+        
     }
 
-
-    componentDidMount() {
-        this.props.getCountry()
-        this.props.getState()
-        this.props.getCity()
-        this.props.getLocation()
-
-
+  
+    componentDidMount(){
+           this.props.getCountry()
+           this.props.getState()
+           this.props.getCity()
+           this.props.getLocation()
+           this.props.getSociety()
+           
+                   
     }
 
-    refreshData() {
+    refreshData(){
         this.props.postSociety()
     }
 
-    onChangeCountry = (event) => {
-
-        let selected = event.target.value
+    onChangeCountry= (event)=>{
+        let selected= event.target.value
         console.log(selected)
-
-
-        var country = _.find(this.props.societyReducer.countryResult, function (obj) {
+        var country = _.find(this.props.societyReducer.countryResult,function(obj){
             return obj.countryName === selected
-        })
+            })
+            console.log(country)
 
-        // var country= this.props.societyReducer.countryResult.filter((item)=> { return item.countryName===selected})
-
-        console.log(country)
-
-        this.setState({
-            countryName: country.countryName,
-            countryId: country.countryId
-        })
-
-        this.props.getState(country.countryId)
-        //  let request=await axios(`http://localhost:3004/state?countryId=${country.countryId}`, { method: 'GET' })
-        //                     //   .then(response => {console.log(response)})
-
-        //  console.log(request.data);
-
-        //  this.setState({
-        //      stateData: request.data
-        //  })
-
+            this.setState({
+                countryName: country.countryName,
+                countryId:country.countryId
+            })
+            
+            this.props.getState(country.countryId)
+          
     }
 
-
-    onChangeState = (event) => {
-
-        let selected = event.target.value
+    
+    onChangeState= (event)=>{
+      
+        let selected= event.target.value
         console.log(selected)
-
-
-        var data1 = _.find(this.props.societyReducer.stateResult, function (obj) {
+        var data1 = _.find(this.props.societyReducer.stateResult,function(obj){
             return obj.stateName === selected
-        })
+            })
+    
+            console.log(data1)
 
-        console.log(data1)
-
-        this.setState({
-            stateName: data1.stateName,
-            stateId: data1.stateId
-        })
-
-        this.props.getCity(data1.stateId);
-
-
-        //  let request=await axios(`http://localhost:3004/city?stateId=${data1.stateId}`, { method: 'GET' })
-        //                     //   .then(response => {console.log(response)})
-
-        //  console.log(request.data);
-
-        //  this.setState({
-        //      cityData: request.data
-        //  })
-
+            this.setState({
+                stateName: data1.stateName,
+                stateId:data1.stateId
+            })
+        
+            this.props.getCity(data1.stateId);
+            
+         
     }
 
-    onChangeCity = (event) => {
-
-        let selected = event.target.value
+    onChangeCity= (event)=>{
+      
+        let selected= event.target.value
         console.log(selected)
-
-
-        var data2 = _.find(this.props.societyReducer.cityResult, function (obj) {
+       
+        
+        var data2 = _.find(this.props.societyReducer.cityResult,function(obj){
             return obj.cityName === selected
-        })
+            })
+    
+            console.log(data2)
 
-        console.log(data2)
-
-        this.setState({
-            cityName: data2.cityName,
-            cityId: data2.cityId
-        })
-
+            this.setState({
+                cityName:data2.cityName,
+                cityId:data2.cityId
+            })
+            
         this.props.getLocation(data2.cityId)
-        //  let request=await axios(`http://localhost:3004/location?cityid=${data2.cityId}`, { method: 'GET' })
-        //                     //   .then(response => {console.log(response)})
-
-        //  console.log(request.data);
-
-        //  this.setState({
-        //      locationData: request.data
-        //  })
 
     }
 
-    onChangeLocation = (e) => {
-        e.preventDefault();
-        this.setState({
-            [e.target.name]: e.target.value
-        })
-        //  let selected= event.target.value
-        //  console.log(selected)
+    onChangeLocation= (event)=>{
+       
+         let selected= event.target.value
+         console.log(selected)
+         
+         
+         
+        var data3 = _.find(this.props.societyReducer.locationResult,function(obj){
+            return obj.locationName === selected
+            })
 
+            
+    
+            console.log(data3)
 
+            this.setState({
+                locationName:data3.locationName,
+                locationId:data3.locationId
+            })
 
-        // var data3 = _.find(this.props.societyReducer.loactionResult,function(obj){
-        //     return obj.locationName === selected
-        //     })
+            this.props.getSociety(data3.locationId)
 
-        //     console.log(data3)
-
-
-
-        //     this.props.getSociety(data3.locationId)
-
-        //      this.setState({
-        //         // locationName:data3.locationName,
-        //         locationId:data3.locationId
-        //     })
-
-
+           
+          
     }
 
 
 
-
-    countryName({ countryResult }) {
-        if (countryResult) {
+    
+    countryName({countryResult}){
+        if(countryResult){
             console.log(countryResult);
-            return (
-                countryResult.map((item) => {
-                    return (
-                        <option key={item.countryId} value={item.countryName}>
-                            {item.countryName}
-                        </option>
-                    )
-                })
-            )
-
+           return( 
+            countryResult.map((item) =>{
+                   return(
+                       <option key={item.countryId} value={item.countryName}>
+                        {item.countryName}
+                       </option>
+                   )
+               })
+           )
+            
         }
     }
 
-    stateName({ stateResult }) {
-        if (stateResult) {
+    stateName({stateResult}){
+        if(stateResult){
             console.log(stateResult);
-            return (
-                stateResult.map((item) => {
-                    return (
-                        <option key={item.stateId} value={item.stateName}>
-                            {item.stateName}
-                        </option>
-                    )
-                })
-            )
-
+           return( 
+            stateResult.map((item) =>{ console.log(item.stateName)
+                   return(
+                       <option key={item.stateId} value={item.stateName}>
+                        {item.stateName}
+                       </option>
+                   )
+               })
+           )
+            
         }
     }
 
-    cityName = ({ cityResult }) => {
+    cityName=({cityResult})=>{
         console.log(cityResult);
-        if (cityResult) {
-
-            return (
-                cityResult.map((item) => {
-                    console.log(item.cityName)
-                    return (
-                        <option key={item.cityId} value={item.cityName}>
-                            {item.cityName}
-                        </option>
-                    )
-                }
-                )
-            )
-
+        if(cityResult){
+            
+           return( 
+            cityResult.map((item) =>{ console.log(item.cityName)
+                   return(
+                       <option key={item.cityId} value={item.cityName}>
+                        {item.cityName}
+                       </option>
+                   )
+               }
+               )
+           )
+            
         }
     }
 
-    locationName({ locationResult }) {
-        if (locationResult) {
+    locationName({locationResult}){
+        if(locationResult){
             console.log(locationResult);
-            return (
-                locationResult.map((item) => {
-                    return (
-                        <option key={item.locationId} value={item.locationName}>
-                            {item.locationName}
-                        </option>
-                    )
-                })
-            )
-
+           return( 
+            locationResult.map((item) =>{ console.log(item.locationName)
+                   return(
+                       <option key={item.locationId} value={item.locationName}>
+                        {item.locationName}
+                       </option>
+                   )
+               })
+           )
+            
         }
     }
 
-    onChange = (e) => {
+    onChange=(e)=> {
         e.preventDefault();
         this.setState({
             [e.target.name]: e.target.value
@@ -254,28 +213,28 @@ class SocietyMangement extends Component {
     }
 
 
-    handleSubmit = (e) => {
+    handleSubmit=(e)=>{
         e.preventDefault();
 
-
+        
         this.props.postSociety(this.state)
-        // .then(() => this.props.history.push('/superDashboard/cityMasterDetail'))
+        .then(() => this.props.history.push('/superDashboard/societyManagementDetail'))
 
         this.setState({
-            state: {
-                countryName: '',
-                stateName: '',
-                cityName: '',
-                locationName: '',
-                societyName: '',
-                countryId: '',
-                stateId: '',
-                cityId: '',
-                locationId: '',
+          state:{
+            countryName:'',
+            stateName:'',
+            cityName:'',
+            locationName:'',
+            countryId:'',
+            stateId:'',
+            cityId:'',
+            locationId:'',
+            societyName:'',
 
-
-
-            }
+            
+           
+          }
         });
     }
 
@@ -289,98 +248,82 @@ class SocietyMangement extends Component {
 
 
     render() {
-        console.log(this.props.societyReducer)
-
+         console.log(this.props.societyReducer)
+  
         return (
+           <div>
+               <UI onClick={this.logout}>
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-                <div style={{ marginTop: '52px' }}>
-                <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}> */}
-                <UI onClick={this.logout}>
-                    <div>
-                        <form className="ui form" onSubmit={this.handleSubmit}>
-                            <div className="field">
-                                <label><h4>Country Name</h4></label>
-                                <select name="countryName" className="ui fluid dropdown" onChange={this.onChangeCountry}>
-                                    <option>Select</option>
-                                    {this.countryName(this.props.societyReducer)}
-                                    {/* {this.props.societyReducer.country.map((m, k) =>
-                               <option key={k.countryId}>{m.countryName}</option>
-                            )}  */}
-
-
-
-                                </select>
-                            </div>
-                            <div className="field">
-                                <label><h4>State Name</h4></label>
-                                <select name="stateName" className="ui fluid dropdown" onChange={this.onChangeState}>
-                                    <option>Select</option>
-                                    {this.stateName(this.props.societyReducer)}
-
-                                    {/* {this.state.stateData.map((m, k) =>
-                                <option key={k}>{m.stateName}</option>
-                            )} */}
-                                    {/* <option>{filteredOptions.stateName}</option> */}
-
-
-                                </select>
-                            </div>
-                            <div className="field">
-                                <label><h4>City Name</h4></label>
-                                <select name="cityName" className="ui fluid dropdown" onChange={this.onChangeCity}>
-                                    <option>Select</option>
-                                    {this.cityName(this.props.societyReducer)}
-
-                                    {/* {this.state.cityData.map((m, k) =>
-                                <option key={k}>{m.cityName}</option>
-                            )}  */}
-                                </select>
-                            </div>
-                            <div className="field">
-                                <label><h4>Location Name</h4></label>
-                                <select name="locationName" className="ui fluid dropdown" onChange={this.onChangeLocation} >
-                                    <option>Select</option>
-                                    {this.locationName(this.props.societyReducer)}
-                                    {/* {this.state.locationData.map((m, k) =>
-                                <option key={k}>{m.locationName}</option>
-                            )} */}
-                                </select>
-                            </div>
-                            <div className="field">
-                                <label htmlFor="societyName"><h4>Society Name</h4></label>
-                                <input type="text" name="societyName" onChange={this.onChange} />
-                            </div>
-
-                            <button className="ui submit button" type="submit" style={{ backgroundColor: 'lightblue' }}>Submit</button>
-
-                            <Link to='/superDashboard/societyManagementDetail'>
-                                <button className="ui submit button" type="submit" style={{ backgroundColor: 'lightgreen' }}>Show Details</button>
-                            </Link>
-                        </form>
-                        <div>
-                        </div>
+                <form className="ui form" onSubmit={this.handleSubmit}>
+                    <div className="field">
+                        <label><h4>Country Name</h4></label>
+                        <select name="countryName" className="ui fluid dropdown"  onChange={this.onChangeCountry}>
+                            <option>Select</option>
+                            {this.countryName(this.props.societyReducer)}
+                            
+                        
+                        </select>
                     </div>
-                </UI>
-                {/* </SideBar>
-            </div> */}
+                    <div className="field">
+                        <label><h4>State Name</h4></label>
+                        <select name="stateName" className="ui fluid dropdown"  onChange={this.onChangeState}>
+                            <option>Select</option>
+                            {this.stateName(this.props.societyReducer)}
+                           
+                            
+                            
+                        </select>
+                    </div>
+                    <div className="field">
+                        <label><h4>City Name</h4></label>
+                        <select name="cityName" className="ui fluid dropdown"  onChange={this.onChangeCity}>
+                            <option>Select</option>
+                            {this.cityName(this.props.societyReducer)}
+                            
+                        </select>
+                    </div>
+                    <div className="field">
+                        <label><h4>Location Name</h4></label>
+                        <select name="locationName" className="ui fluid dropdown" onChange={this.onChangeLocation} >
+                            <option>Select</option>
+                            {this.locationName(this.props.societyReducer)}
+                            
+                        </select>
+                    </div>
+                    <div className="field">
+                        <label htmlFor="societyName"><h4>Society Name</h4></label>
+                        <input type="text" name="societyName" value={this.state.societyName} onChange={this.onChange}
+                    maxLength='30'
+                    minLength='3'/>
+                    </div>
+
+                    <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Submit</button>
+
+                    <Link to='/superDashboard/societyManagementDetail'>
+                    <button className="ui submit button" type="submit" style={{backgroundColor:'lightgreen'}}>Show Details</button>
+                    </Link>
+                </form>
+                <div>
+                </div>
             </div>
+            </UI>
+            </div> 
         );
     }
 }
 
 function mapStateToProps(state) {
     console.log('===========stateCountry=========', state)
-
+   
     return {
-        societyReducer: state.societyReducer
+        societyReducer: state.societyReducer    
     }
 
 
 
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getCountry, getState, getCity, getLocation, postSociety }, dispatch);
+    return bindActionCreators({ getCountry,getState,getCity,getLocation,postSociety, getSociety}, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(SocietyMangement));

@@ -36,7 +36,7 @@ class FlatMaster extends Component {
         e.preventDefault();
         let errors = {};
         if (!this.state.countryId) {
-            errors.countryId = "countryName name cannot be empty"
+            errors.countryId = "CountryName  cannot be empty"
         }
         if (this.state.stateName === '') errors.stateName = "cant be empty";
 
@@ -102,7 +102,7 @@ class FlatMaster extends Component {
 
         const form = <Form onSubmit={this.submit}>
             <FormGroup>
-                <Label>countryName</Label>
+                <Label>CountryName</Label>
                 <Input
                     type="select"
                     name="countryId"
@@ -116,7 +116,7 @@ class FlatMaster extends Component {
 
 
             <FormGroup>
-                <Label>stateName</Label>
+                <Label>StateName</Label>
                 <Input
                     type="text"
                     name="stateName"
@@ -126,7 +126,7 @@ class FlatMaster extends Component {
             </FormGroup>
 
             <FormGroup>
-                <Button color="primary" type="submit" col="sm-2">Submit</Button>
+                <Button color="primary" type="submit" className="mr-2">Submit</Button>
                 <Button color="success" onClick={this.push}>Details</Button>
             </FormGroup>
         </Form>

@@ -8,9 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import UI from '../../components/newUI/superAdminDashboard';
-
+import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar'
+import SearchFilter from '../../components/searchFilter/searchFilter'
 
 import { URN } from '../../actions/index'
 
@@ -26,10 +25,12 @@ class flatMasterDetails extends Component {
             sizeType: '',
             sizeType1: '',
             coverArea: '',
-            isActive: false
+            isActive: false,
+
         },
         editUserModal: false,
-        menuVisible: false
+        menuVisible: false,
+        search: ''
     }
 
 
@@ -119,6 +120,25 @@ class flatMasterDetails extends Component {
 
     }
 
+    searchFilter(search) {
+        return function (x) {
+            const flatSuperArea = x.flatSuperArea.toString();
+            const coverArea = x.coverArea.toString()
+            return x.society_master.societyName.toLowerCase().includes(search.toLowerCase()) ||
+                x.flatType.toLowerCase().includes(search.toLowerCase()) ||
+                flatSuperArea.toLowerCase().includes(search.toLowerCase()) ||
+                x.size_master.sizeType.toLowerCase().includes(search.toLowerCase()) ||
+                coverArea.toLowerCase().includes(search.toLowerCase()) ||
+                !search;
+            
+        }
+    }
+
+    searchOnChange = (e) => {
+        this.setState({search:e.target.value})
+    }
+
+
     editBook(flatId, societyName, flatType, flatSuperArea, sizeType, coverArea) {
         this.setState({
             editUserData: { flatId, societyName, flatType, flatSuperArea, sizeType, coverArea }, editUserModal: !this.state.editUserModal
@@ -137,7 +157,7 @@ class flatMasterDetails extends Component {
     fetchUsers({ list1 }) {
         if (list1) {
 
-            return list1.map((item) => {
+            return list1.filter(this.searchFilter(this.state.search)).map((item) => {
 
                 return (
                     <tr key={item.flatId}>
@@ -198,10 +218,10 @@ class flatMasterDetails extends Component {
     render() {
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({menuVisible: !this.state.menuVisible})}/>
+                <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} />
                 <div style={{ margin: '48px auto' }}>
                     <SideBar onClick={() => this.setState({menuVisible: false})}
-                        visible={this.state.menuVisible}> */}
+                        visible={this.state.menuVisible}>
                 <UI onClick={this.logout}>
                     <div>
                         <Link to="/superDashboard/flatmaster">Add flats</Link>
@@ -273,8 +293,8 @@ class flatMasterDetails extends Component {
                         </Table>
                     </div>
                 </UI>
-                {/* </SideBar>
-                </div> */}
+                </SideBar>
+                </div>
 
             </div>
         )

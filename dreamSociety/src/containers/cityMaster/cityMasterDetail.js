@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getCountry, getState, detailCity, deleteCity, updateCity } from './../../actionCreators/cityMasterAction';
+import { Link } from 'react-router-dom';
+import { getCountry, getState, getCity, detailCity, deleteCity, updateCity } from './../../actionCreators/cityMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
+import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 class CityMasterDetail extends Component {
     constructor(props) {
         super(props);
@@ -48,65 +47,44 @@ class CityMasterDetail extends Component {
     toggleModal = () => {
         this.setState({ modal: !this.state.modal })
     }
-    // componentWillMount() {
-    //     this.props.detailCity();
 
-    // }
 
     componentDidMount() {
         this.refreshData();
         this.props.getCountry()
+        this.props.getState()
+        this.props.getCity()
     }
 
     refreshData() {
         this.props.detailCity()
     }
 
-    // updateCityDetail = () => {
-    //     const { cityId, countryId, stateId, cityName } = this.state.editCityData;
-    //     console.log("========================cityid===========",cityId);
-    //     this.props.updateCity(cityId, countryId, stateId, cityName)
-    //     this.setState({
-    //         modal: false, editCityData: { cityId: '', countryId: '', stateId: '', cityName: ''}
-    //     })
-    // }
+
 
 
     editCityType = () => {
         const { cityId, countryId, stateId, cityName } = this.state
-        console.log('=======editCityType=====', cityId, countryId, stateId, cityName)
-        // this.props.fetchAssets();
+
+
         this.props.updateCity(cityId, countryId, stateId, cityName)
             .then(() => this.props.detailCity())
         this.setState({
             editCityData: { cityId, countryId, stateId, cityName },
             modal: !this.state.modal
         })
-        // .then(()=>this.props.fetchAssets())
-        // this.props.fetchAssets();
+
 
     }
 
     deleteCityName = (cityId) => {
-        console.log(cityId);
+
         this.props.deleteCity(cityId)
             .then(() => this.props.detailCity())
 
     }
 
-    //    deleteUser(userId) {
-    //     let { isActive } = this.state.editUserData
-    //     console.log(userId)
-    //     // axios.put(`${url}` + userId, { isActive }, { headers: authHeader() }).then((response) => {
-    //     //     this.refreshData()
-    //     //     this.setState({
-    //     //         editUserData: { isActive: false }
-    //     //     })
-    //     //     console.log(response)
-    //     // })
-    //     this.props.deleteUser(userId, isActive)
-    //     .then(() => this.setState({isActive: false}))
-    // }
+
 
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
@@ -120,10 +98,10 @@ class CityMasterDetail extends Component {
         }
     }
     renderCity = ({ city }) => {
-        console.log('=========getCity=========', city)
+
         if (city) {
             return city.filter(this.searchFilter(this.state.search)).map((item) => {
-                // console.log(item)
+
                 return (
                     <tr key={item.cityId}>
                         <td>{item.country_master.countryName}</td>
@@ -134,8 +112,7 @@ class CityMasterDetail extends Component {
                         </td>
                         <td>
                             <button className="btn btn-danger" onClick={this.deleteCityName.bind(this, item.cityId)} >Delete</button>
-                            {/* <button className="btn btn-success">Edit</button>
-                             <button className="btn btn-danger"  >Delete</button> */}
+
                         </td>
                     </tr>
 
@@ -146,10 +123,10 @@ class CityMasterDetail extends Component {
 
     fetchCountry({ countryResult }) {
         if (countryResult) {
-            console.log(countryResult)
+
             return (
                 countryResult.map((item) => {
-                    // console.log(this.state)
+
                     return (
                         <option value={item.countryId} key={item.countryId}>
                             {item.countryName}
@@ -160,15 +137,15 @@ class CityMasterDetail extends Component {
         }
     }
 
-    fetchState({ city }) {
-        if (city) {
-            console.log(city)
+    fetchState({ stateResult }) {
+        if (stateResult) {
+
             return (
-                city.map((item) => {
-                    // console.log(this.state)
+                stateResult.map((item) => {
+
                     return (
-                        <option value={item.state_master.stateId} key={item.cityId}>
-                            {item.state_master.stateName}
+                        <option value={item.stateId} key={item.stateId}>
+                            {item.stateName}
                         </option>
                     )
                 })
@@ -196,71 +173,70 @@ class CityMasterDetail extends Component {
                                 onChange={this.searchOnChange} />
                         </div>
 
-                        <table className="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Country Name</th>
-                                    <th>State Name</th>
-                                    <th>City Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.renderCity(this.props.cityMasterReducer)}
-                            </tbody>
-                        </table>
-                        <Modal isOpen={this.state.modal} toggle={this.toggleModal.bind(this)}>
-                            <ModalHeader toggle={this.toggleModal.bind(this)}>Edit</ModalHeader>
-                            <ModalBody>
-                                <FormGroup>
-                                    <Label htmlFor="countryName">Country Name</Label>
-                                    {/* <Input type="text" id="countryId" name="countryName" onChange={this.onChangeHandler} value={this.state.countryName} /> */}
-                                    <Input type="select" id="countryId" name="countryName" onChange={(e) => {
-                                        console.log(this.state)
-                                        let { countryId } = this.state;
+                            <table className="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Country Name</th>
+                                        <th>State Name</th>
+                                        <th>City Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {this.renderCity(this.props.cityMasterReducer)}
+                                </tbody>
+                            </table>
+                            <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+                                <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
+                                <ModalBody>
+                                    <FormGroup>
+                                        <Label htmlFor="countryName">Country Name</Label>
 
-                                        countryId = e.target.value;
+                                        <Input type="select" id="countryId" name="countryName" onChange={(e) => {
 
-                                        this.setState({ countryId });
-                                    }} >
-                                        <option value={this.state.countryId}>{this.state.countryName}</option>
-                                        <option disabled>Select</option>
-                                        {this.fetchCountry(this.props.cityMasterReducer)}
-                                    </Input>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label htmlFor="stateName">State Name</Label>
-                                    {/* <Input type="text" id="stateId" name="stateName" onChange={this.onChangeHandler} value={this.state.stateName} /> */}
-                                    <Input type="select" id="stateId" name="stateName" onChange={(e) => {
-                                        console.log(this.state)
-                                        let { stateId } = this.state;
+                                            let { countryId } = this.state;
+                                            countryId = e.target.value;
+                                            this.setState({ countryId });
+                                            this.props.getState(countryId)
+                                        }} >
+                                            <option value={this.state.countryId}>{this.state.countryName}</option>
+                                            <option disabled>Select</option>
+                                            {this.fetchCountry(this.props.cityMasterReducer)}
+                                        </Input>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label htmlFor="stateName">State Name</Label>
 
-                                        stateId = e.target.value;
+                                        <Input type="select" id="stateId" name="stateName" onChange={(e) => {
 
-                                        this.setState({ stateId });
-                                    }} >
-                                        <option value={this.state.stateId}>{this.state.stateName}</option>
-                                        <option disabled>Select</option>
-                                        {this.fetchState(this.props.cityMasterReducer)}
-                                    </Input>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label htmlFor="cityName">City Name</Label>
-                                    <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} value={this.state.cityName} />
-                                </FormGroup>
+                                            let { stateId } = this.state;
 
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="primary" onClick={this.editCityType}>Update City</Button>
-                                {/* <Button color="primary">Update City</Button> */}
-                                <Button color="secondary" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                            </ModalFooter>
-                        </Modal>
+                                            stateId = e.target.value;
+
+                                            this.setState({ stateId });
+                                            this.props.getCity(stateId);
+                                        }} >
+                                            <option value={this.state.stateId}>{this.state.stateName}</option>
+                                            <option>Select</option>
+                                            {this.fetchState(this.props.cityMasterReducer)}
+                                        </Input>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label htmlFor="cityName">City Name</Label>
+                                        <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} value={this.state.cityName} />
+                                    </FormGroup>
+
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button color="primary" onClick={this.editCityType}>Update City</Button>
+
+                                    <Button color="secondary" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+                                </ModalFooter>
+                            </Modal>
 
 
-                    </div>
-                </UI>
-                {/* </SideBar>
-            </div> */}
+                        </div>
+                        </UI>
+                   
             </div>
         );
     }
@@ -268,14 +244,14 @@ class CityMasterDetail extends Component {
 
 
 function mapStatToProps(state) {
-    // console.log('citymaster list', state.cityMasterReducer)
+
     return {
         cityMasterReducer: state.cityMasterReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getCountry, getState, detailCity, deleteCity, updateCity }, dispatch)
+    return bindActionCreators({ getCountry, getState, getCity, detailCity, deleteCity, updateCity }, dispatch)
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(CityMasterDetail);

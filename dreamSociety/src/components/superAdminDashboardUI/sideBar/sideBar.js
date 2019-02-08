@@ -26,7 +26,7 @@ class sideBar extends Component {
                             <Menu.Item><Icon name="user" /><Link to="/superDashboard/countrymaster">Country Master</Link></Menu.Item>
                             <Menu.Item><Icon name="user" /><Link to="/superDashboard/statemaster">State Master</Link></Menu.Item>
                             <Menu.Item><Icon name="user" /><Link to="/superDashBoard/assetsMaster">Assets Master</Link></Menu.Item>
-            <Menu.Item><Icon name="user" /><Link to="/superDashBoard/assetsTypeSubMaster">Assets Type Sub Master</Link></Menu.Item>
+                            <Menu.Item><Icon name="user" /><Link to="/superDashBoard/assetsTypeSubMaster">Assets Type Sub Master</Link></Menu.Item>
 
                         </Sidebar>
                         <Sidebar.Pusher dimmed={this.props.visible} >

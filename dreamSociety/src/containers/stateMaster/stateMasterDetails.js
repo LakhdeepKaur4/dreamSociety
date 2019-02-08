@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getDetails, deleteDetails, getCountry, updateDetails, AddDetails, getDrop, getSizeDrop } from '../../actionCreators/countryAction';
+import { getDetails,deleteDetails,getCountry,updateDetails} from '../../actionCreators/countryAction';
 import { URN } from '../../actions/index';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
@@ -7,72 +7,76 @@ import { authHeader } from '../../helper/authHeader';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
+import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
-import UI from '../../components/newUI/superAdminDashboard';
+import SearchFilter from '../../components/searchFilter/searchFilter';
 
 
 class flatMasterDetails extends Component {
 
-
-
+   
+      
     state = {
         editUserData: {
-            stateId: '',
-            countryId: '',
-            countryName: '',
-            stateName: '',
-            coverArea: '',
-            isActive: false
-        }
+            stateId:'',
+            countryId:'',
+            countryName:'',
+             stateName:'',
+             coverArea:'',
+            isActive:false
+        }    
         ,
         editUserModal: false,
-        menuVisible: false
+        menuVisible: false,
+        search:''
+        
 
-
-
-
+        
+    
     }
 
 
-    componentDidMount() {
-
+    componentDidMount(){
+        
         this.refreshData()
-
+        
     }
 
     // componentDidUpdate(){
     //     if(this.props.AddDetails){
-
+           
     //     }
     // }
 
+    
 
-
-    refreshData() {
+    refreshData=()=>{
         this.props.getDetails();
         this.props.getCountry();
+        
+        // this.props.updateDetails();
         // this.props.getDrop();
         // this.props.getSizeDrop();
-
+        
     }
 
     toggleEditUserModal() {
         this.setState({
-            editUserModal: !this.state.editUserModal
+          editUserModal: ! this.state.editUserModal
         });
-    }
+      }
+    
+      updateBook=()=> {
+         let{ stateId,countryId,stateName} =this.state.editUserData;
+         this.props.updateDetails(stateId,countryId,stateName).then(() => this.refreshData());
+         
 
-    updateBook = () => {
-        let { stateId, countryId, stateName } = this.state.editUserData;
-        this.props.updateDetails(stateId, countryId, stateName);
+         this.setState({
 
-        this.setState({
-
-            editUserModal: false, editUserData: { stateId: '', countryId: '', stateName: '' }
-        })
-
+            editUserModal:false , editUserData:{stateId:'',countryId:'',stateName:''}
+         })
+  
         // axios.put(`${URN}/flat/` +flatId,{  societyId, flatType, flatSuperArea,
         // sizeId,coverArea},{headers:authHeader()}).then((response) => {
         //   this.refreshData();
@@ -80,64 +84,75 @@ class flatMasterDetails extends Component {
         //   this.setState({
         //     editUserModal: false, editUserData: {  flatId: '',societyName:'',flatType:'', flatSuperArea: '',sizeType:'',CoverArea:''  }
         // })
-
-
+      
+    
     }
 
-    stateName = (e) => {
+    searchFilter(search) {
+        return function (x) {
+            return x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) ||
+                x.stateName.toLowerCase().includes(search.toLowerCase()) ||!search;
+        }
+    }
 
-        let { editUserData } = this.state;
+    searchOnChange = (e) => {
+        this.setState({search:e.target.value})
+    }
+
+      stateName =(e) =>{
+         
+        let{ editUserData } = this.state;
 
         editUserData.stateName = e.target.value;
 
-        this.setState({ editUserData })
+        this.setState({editUserData})
         console.log(this.state.editUserData.stateName)
+          
+      }
+      
 
+      countryName = (e) => {
+             let{ editUserData }= this.state
+             editUserData.countryId = e.target.value
+             this.setState({editUserData})
+             console.log(this.state.editUserData.countryId)
+        
+      }
+      
+      editBook(stateId,countryName,stateName) {
+          this.setState({
+              editUserData:{stateId,countryName,stateName}, editUserModal: ! this.state.editUserModal
+          })    
+      }
+
+        deleteUser(stateId){
+            let { isActive } = this.state.editUserData
+            this.props.deleteDetails(stateId,isActive).then(() => this.props.getDetails())
+            .then(() => this.setState({isActive: false}))
+            // .then(()=>{console.log('ereeere')
+            //     this.props.getDetails()})
+             
+           
+           
     }
 
-
-    countryName = (e) => {
-        let { editUserData } = this.state
-        editUserData.countryId = e.target.value
-        this.setState({ editUserData })
-        console.log(this.state.editUserData.countryId)
-
-    }
-
-    editBook(stateId, countryName, stateName) {
-        this.setState({
-            editUserData: { stateId, countryName, stateName }, editUserModal: !this.state.editUserModal
-        })
-    }
-
-    deleteUser(stateId) {
-        let { isActive } = this.state.editUserData
-        this.props.deleteDetails(stateId, isActive)
-            .then(() => this.setState({ isActive: false }))
-        // axios.put(`${URN}/flat/delete/`+stateId, {isActive},{headers:authHeader()}).then((response) => {
-        //     this.refreshData()
-        //     this.setState({editUserData: {isActive: false}})
-
-        // })
-    }
-
-    fetchDetails({ country3 }) {
+    fetchDetails=({country3})=> {
         console.log(country3)
-        if (country3) {
-
-            return country3.map((item) => {
-
+        if(country3){
+          
+            return country3.filter(this.searchFilter(this.state.search)).map((item) => {
+                
                 return (
                     <tr key={item.stateId}>
                         <td>{item.country_master.countryName}</td>
                         <td>{item.stateName}</td>
-
+                        
                         {/* <td>{item.size_master.sizeType}</td> */}
-
+                        
                         <td>
-                            <Button color="success" size="sm" className="mr-2"
-                                onClick={this.editBook.bind(this, item.stateId, item.country_master.countryName,
-                                    item.stateName)}>Edit</Button>
+                            <Button color="success" size="sm" className="mr-2" 
+                            onClick={this.editBook.bind(this, item.stateId,item.country_master.countryName, 
+                            item.stateName)}>Edit</Button>
                             <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, item.stateId)}>Delete</Button>
                         </td>
                     </tr>
@@ -145,20 +160,20 @@ class flatMasterDetails extends Component {
             })
         }
     }
-    fetchDrop({ country1 }) {
+    fetchDrop({country1}){
         console.log(country1)
-        if (country1) {
-
-            return (
-                country1.map((item) => {
-                    return (
-                        <option key={item.countryId} value={item.countryId}>
-                            {item.countryName}
-                        </option>
-                    )
-                })
-            )
-
+        if(country1){
+            
+           return( 
+            country1.map((item) =>{
+                   return(
+                       <option key={item.countryId} value={item.countryId}>
+                        {item.countryName}
+                       </option>
+                   )
+               })
+           )
+            
         }
     }
 
@@ -187,7 +202,7 @@ class flatMasterDetails extends Component {
     render() {
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({menuVisible: !this.state.menuVisible})}/>
+              <MenuBar onClick={() => this.setState({menuVisible: !this.state.menuVisible})}/>
                 <div style={{ margin: '48px auto' }}>
                     <SideBar onClick={() => this.setState({menuVisible: false})}
                         visible={this.state.menuVisible}> */}
@@ -235,18 +250,18 @@ class flatMasterDetails extends Component {
                         </Table>
                     </div>
                 </UI>
-                {/* </SideBar>
-                 </div> */}
+                </SideBar>
+                 </div>
             </div>
         )
     }
 }
 
 function mapStateToProps(state) {
-
+   
     return {
         countryDetails: state.countryDetails
-
+        
     }
 }
 

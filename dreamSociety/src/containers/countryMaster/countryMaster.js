@@ -86,10 +86,11 @@ class Country extends Component {
             </FormGroup>
 
             <FormGroup>
-                <Label>code</Label>
+                <Label>Code</Label>
                 <Input
                     type="text"
                     name="code"
+                    max='3'
                     onChange={this.onChange} />
                 <span>{this.state.errors.code}</span>
             </FormGroup>
@@ -104,9 +105,9 @@ class Country extends Component {
             </FormGroup>
 
             <FormGroup>
-                <Label>phoneCode</Label>
+                <Label>PhoneCode</Label>
                 <Input
-                    type="text"
+                    type="number"
                     name="phoneCode"
                     onChange={this.onChange} />
                 <span>{this.state.errors.phoneCode}</span>
@@ -114,7 +115,7 @@ class Country extends Component {
 
 
             <FormGroup>
-                <Button>Submit</Button>
+                <Button className="mr-2">Submit</Button>
                 <Button onClick={this.countryDetails}>CountryDetails</Button>
             </FormGroup>
         </Form>
