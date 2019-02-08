@@ -1,5 +1,6 @@
 const db = require('../config/db.config.js');
 const config = require('../config/config.js');
+const httpStatus = require('http-status');
 
 const Society = db.society;
 const City = db.city;
@@ -101,7 +102,6 @@ exports.update = (req,res) => {
 exports.delete = async(req,res,next) => {
   try{
       const id = req.params.id;
-  
       if(!id){
           return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
       }
@@ -109,18 +109,16 @@ exports.delete = async(req,res,next) => {
       if(!update){
           return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
       }
-      const updatedSociety = await Society.find({where:{societyId:id}}).then(society => {
+      const updatedSociety= await Society.find({where:{societyId:id}}).then(society => {
           return society.updateAttributes(update)
         })
       if(updatedSociety){
           return res.status(httpStatus.OK).json({
-              message: "Society deleted successfully",
+              message: "State deleted successfully",
               society:updatedSociety
           });
       }
   }catch(error){
-      res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
   }
 }
-
- 

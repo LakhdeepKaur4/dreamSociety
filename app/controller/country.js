@@ -4,8 +4,7 @@ const config = require('../config/config.js');
 const Country = db.country;
 
 exports.create = (req,res) => {
-    console.log("creating country");
-    console.log("body",req.body)
+    let body= req.body;
     Country.create({
         countryName:body.countryName,
         code:body.code,
