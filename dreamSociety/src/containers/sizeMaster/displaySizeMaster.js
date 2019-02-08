@@ -115,7 +115,7 @@ class DisplaySizeMaster extends Component {
         )
       })
     }
-    return <div>...loading</div>
+    
   }
 
 
@@ -163,6 +163,7 @@ class DisplaySizeMaster extends Component {
             </Modal>
             <SearchFilter type="text" value={this.state.search}
               onChange={this.searchOnChange} />
+         
             <Table >
               <thead>
                 <tr>
@@ -174,7 +175,7 @@ class DisplaySizeMaster extends Component {
               </thead>
               <tbody>
 
-                <td> {this.TowerMasterDetails(this.props.SizeDetails)}</td>
+                 {this.TowerMasterDetails(this.props.SizeDetails)}
 
               </tbody>
             </Table>

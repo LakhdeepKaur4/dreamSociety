@@ -164,7 +164,7 @@ class DisplayTowerMaster extends Component {
               </thead>
               <tbody>
 
-                <td colSpan="2"> {this.TowerMasterDetails(this.props.TowerDetails)}</td>
+                 {this.TowerMasterDetails(this.props.TowerDetails)}
 
               </tbody>
             </Table>
