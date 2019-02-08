@@ -120,7 +120,11 @@ class DisplaySizeMaster extends Component {
   }
 
 
-  
+  logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
 
   render() {
 
@@ -129,55 +133,61 @@ class DisplaySizeMaster extends Component {
      
 
       <div>
-        <UI>
-      <Link to="/superDashboard/sizemaster">Size Master</Link>
-                  <h3 align="center"> Size List</h3>
+        {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
+                <div style={{ margin: '48px auto' }}>
+                    <SideBar onClick={() => this.setState({ menuVisible: false })}
+                     visible={this.state.menuVisible}> */}
+        <UI onClick={this.logout}>
 
-                  <Modal isOpen={this.state.editSizeModal} toggle={this.toggleEditSizeModal.bind(this)}>
-                    <ModalHeader toggle={this.toggleEditSizeModal.bind(this)}>Edit  Size Details</ModalHeader>
-                    <ModalBody>
+          <div>
 
+            <h3 align="center"> Size List</h3>
 
-                      <FormGroup>
-                        <Label for="lastName"> Size Type</Label>
-                        <Input id="sizeType" value={this.state.editSizeData.sizeType} onChange={(e) => {
-                          let { editSizeData } = this.state;
-
-                          editSizeData.sizeType = e.target.value;
-
-                          this.setState({ editSizeData });
-                        }} 
-                        maxLength ={20}
-                        onkeyPress={this.OnKeyPresshandle}/>
-                      </FormGroup>
+            <Modal isOpen={this.state.editSizeModal} toggle={this.toggleEditSizeModal.bind(this)}>
+              <ModalHeader toggle={this.toggleEditSizeModal.bind(this)}>Edit  Size Details</ModalHeader>
+              <ModalBody>
 
 
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color="primary" onClick={this.updateSize.bind(this)}>Update Size Details</Button>{' '}
-                      <Button color="secondary" onClick={this.toggleEditSizeModal.bind(this)}>Cancel</Button>
-                    </ModalFooter>
-                  </Modal>
-                  <SearchFilter type="text" value={this.state.search}
-                                onChange={this.searchOnChange} />
-                  <Table >
-                    <thead>
-                      <tr>
+                <FormGroup>
+                  <Label for="lastName"> Size Type</Label>
+                  <Input id="sizeType" value={this.state.editSizeData.sizeType} onChange={(e) => {
+                    let { editSizeData } = this.state;
 
-                        <th>Size Details</th>
+                    editSizeData.sizeType = e.target.value;
+
+                    this.setState({ editSizeData });
+                  }} />
+                </FormGroup>
 
 
-                      </tr>
-                    </thead>
-                    <tbody>
-                      
-                        <td> {this.TowerMasterDetails(this.props.SizeDetails)}</td>
-                      
-                    </tbody>
-                  </Table>
-                  </UI>
-                </div>
- 
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" onClick={this.updateSize.bind(this)}>Update Size Details</Button>{' '}
+                <Button color="secondary" onClick={this.toggleEditSizeModal.bind(this)}>Cancel</Button>
+              </ModalFooter>
+            </Modal>
+            <SearchFilter type="text" value={this.state.search}
+              onChange={this.searchOnChange} />
+            <Table >
+              <thead>
+                <tr>
+
+                  <th>Size Details</th>
+
+
+                </tr>
+              </thead>
+              <tbody>
+
+                <td> {this.TowerMasterDetails(this.props.SizeDetails)}</td>
+
+              </tbody>
+            </Table>
+          </div>
+        </UI>
+        {/* </SideBar>
+ </div> */}
+      </div>
 
     );
   }

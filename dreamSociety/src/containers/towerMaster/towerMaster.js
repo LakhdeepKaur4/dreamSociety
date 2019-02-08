@@ -51,25 +51,37 @@ class TowerMaster extends Component {
         }),
             this.props.history.push('/superDashboard/display-tower');
     }
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
         return (
-           <UI>
-                                <div className="form">
-                                    <Form onSubmit={this.onSubmit}>
-                                        <FormGroup>
-                                            <Label>Tower Name</Label>
-                                            <Input type="text" className="form-control" placeholder="tower Name" name="towerName"  maxLength ={10} value={this.state.name} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange} required />
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <Button color="success" className="mr-2">Submit</Button>
-                                            <Link color="primary" to="/superDashboard/display-tower">Tower details</Link>
-                                        </FormGroup>
-                                    </Form>
-                               
-                            </div>
-</UI>
+            <div>
+                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
+                <div style={{ margin: '48px auto' }}>
+                    <SideBar onClick={() => this.setState({ menuVisible: false })}
+                     visible={this.state.menuVisible}> */}
+                <UI onClick={this.logout}>
+                    <div className="form">
+                        <Form onSubmit={this.onSubmit}>
+                            <FormGroup>
+                                <Label>Tower Name</Label>
+                                <Input type="text" className="form-control" placeholder="tower Name" name="towerName" value={this.state.name} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange} required />
+                            </FormGroup>
+                            <FormGroup>
+                                <Button color="success" className="mr-2">Submit</Button>
+                                <Link color="primary" to="/superDashboard/display-tower">Tower details</Link>
+                            </FormGroup>
+                        </Form>
+                    </div>
+                </UI>
+                {/* </SideBar>
+                                </div> */}
+            </div>
+
 
 
         );

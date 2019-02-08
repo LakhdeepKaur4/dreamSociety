@@ -10,6 +10,7 @@ import axios from 'axios';
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import SearchFilter from '../../components/searchFilter/searchFilter';
+import UI from '../../components/newUI/superAdminDashboard';
 
 class CountryDetails extends Component{
 
@@ -142,10 +143,14 @@ class CountryDetails extends Component{
                         </td>
                     </tr>
                 )
-             })
-       }
-   }
-
+            })
+        }
+    }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render(){
         return(
@@ -153,6 +158,72 @@ class CountryDetails extends Component{
                 <MenuBar onClick={() => this.setState({menuVisible: !this.state.menuVisible})}/>
                 <div style={{ margin: '48px auto' }}>
                     <SideBar onClick={() => this.setState({menuVisible: false})}
+                        visible={this.state.menuVisible}> */}
+                <UI onClick={this.logout}>
+                    <div>
+                        <Link to="/superDashboard/countrymaster">Add Country</Link>
+                        <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
+                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
+                            <ModalBody>
+                                <FormGroup>
+                                    <Label for="roles">countryName</Label>
+                                    <input
+                                        type="textbox"
+                                        placeholder="enter countryName"
+                                        // name="countryName"
+                                        value={this.state.editUserData.countryName}
+                                        onChange={this.selectCountry} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="roles">code</Label>
+                                    <input
+                                        type="textbox"
+                                        placeholder="enter code"
+                                        value={this.state.editUserData.code}
+                                        onChange={this.selectCode} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="firstName">currency</Label>
+                                    <input
+                                        type="textbox"
+                                        placeholder="enter currency"
+                                        value={this.state.editUserData.currency}
+                                        onChange={this.selectCurrency} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="roles">phoneCode</Label>
+                                    <input
+                                        type="textbox"
+                                        placeholder="enter currency"
+                                        value={this.state.editUserData.phoneCode}
+                                        onChange={this.selectPhoneCode} />
+                                </FormGroup>
+
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="primary" onClick={this.updateBook}>Update Flat</Button>
+                                <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
+                            </ModalFooter>
+                        </Modal>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>countryName</th>
+                                    <th>code</th>
+                                    <th>currency</th>
+                                    <th>phoneCode</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.getCountryDetails(this.props.countryDetails)}
+                            </tbody>
+                        </Table>
+                    </div>
+                </UI>
+                {/* </SideBar>
+            </div> */}
                         visible={this.state.menuVisible}>
             <div>
                 <Link to ="/superDashboard/countrymaster">Add Country</Link>

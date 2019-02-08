@@ -239,16 +239,20 @@ class SocietyMangement extends Component {
     }
 
 
-    
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
-    
+
 
     render() {
          console.log(this.props.societyReducer)
   
         return (
            <div>
-               <UI>
+               <UI onClick={this.logout}>
             <div>
                 <form className="ui form" onSubmit={this.handleSubmit}>
                     <div className="field">

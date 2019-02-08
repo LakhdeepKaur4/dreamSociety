@@ -10,7 +10,7 @@ import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, L
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar'
 import SearchFilter from '../../components/searchFilter/searchFilter'
-
+import UI from '../../components/newUI/superAdminDashboard';
 import { URN } from '../../actions/index'
 
 class flatMasterDetails extends Component {
@@ -209,90 +209,91 @@ class flatMasterDetails extends Component {
         }
     }
 
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
         return (
             <div>
                 <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} />
                 <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({ menuVisible: false })}
+                    <SideBar onClick={() => this.setState({menuVisible: false})}
                         visible={this.state.menuVisible}>
-                        <div>
-                            <Link to="/superDashboard/flatmaster">Add flats</Link>
-                            <div className="search">
-                                <h3>Flat Master Details</h3>
-                                <SearchFilter type="text" value={this.state.search}
-                                    onChange={this.searchOnChange} />
-                            </div>
-                            <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
-                                <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
-                                <ModalBody>
-                                    <FormGroup>
-                                        <Label for="roles">SocietyName</Label>
-                                        <select value={this.state.editUserData.societyId} onChange={this.societyNameType}>
-                                            <option>{this.state.editUserData.societyName}</option>
-                                            <option disabled>Select</option>
-                                            {this.fetchDrop(this.props.flats)}
-                                        </select>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="roles">flatType</Label>
-                                        <input
-                                            type="textbox"
-                                            placeholder="enter  flat type"
-                                            value={this.state.editUserData.flatType}
-                                            onChange={this.selectflatType} />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="firstName">Flat Super Area</Label>
-                                        <input
-                                            type="textbox"
-                                            placeholder="enter flat super area"
-                                            value={this.state.editUserData.flatSuperArea}
-                                            onChange={this.setFlatSuperArea} />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="roles">sizeType</Label>
-                                        <select value={this.state.editUserData.sizeId} onChange={this.sizeNameType}>
-                                            <option>{this.state.editUserData.sizeType}</option>
-                                            <option disabled>Select</option>
-                                            {this.fetchSizeDrop(this.props.flats)}
-                                        </select>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="lastName">Cover Area</Label>
-                                        <input
-                                            type="textbox"
-                                            placeholder="enter cover area"
-                                            value={this.state.editUserData.coverArea}
-                                            onChange={this.setCoverArea} />
+                <UI onClick={this.logout}>
+                    <div>
+                        <Link to="/superDashboard/flatmaster">Add flats</Link>
+                        <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
+                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
+                            <ModalBody>
+                                <FormGroup>
+                                    <Label for="roles">SocietyName</Label>
+                                    <select value={this.state.editUserData.societyId} onChange={this.societyNameType}>
+                                        <option>{this.state.editUserData.societyName}</option>
+                                        <option disabled>Select</option>
+                                        {this.fetchDrop(this.props.flats)}
+                                    </select>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="roles">flatType</Label>
+                                    <input
+                                        type="textbox"
+                                        placeholder="enter  flat type"
+                                        value={this.state.editUserData.flatType}
+                                        onChange={this.selectflatType} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="firstName">Flat Super Area</Label>
+                                    <input
+                                        type="textbox"
+                                        placeholder="enter flat super area"
+                                        value={this.state.editUserData.flatSuperArea}
+                                        onChange={this.setFlatSuperArea} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="roles">sizeType</Label>
+                                    <select value={this.state.editUserData.sizeId} onChange={this.sizeNameType}>
+                                        <option>{this.state.editUserData.sizeType}</option>
+                                        <option disabled>Select</option>
+                                        {this.fetchSizeDrop(this.props.flats)}
+                                    </select>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="lastName">Cover Area</Label>
+                                    <input
+                                        type="textbox"
+                                        placeholder="enter cover area"
+                                        value={this.state.editUserData.coverArea}
+                                        onChange={this.setCoverArea} />
 
-                                    </FormGroup>
+                                </FormGroup>
 
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button color="primary" onClick={this.updateBook}>Update Flat</Button>
-                                    <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
-                                </ModalFooter>
-                            </Modal>
-                            <Table>
-                                <thead>
-                                    <tr>
-                                        <th>societyName</th>
-                                        <th>flat Type</th>
-                                        <th>flat SuperArea</th>
-                                        <th>sizeType</th>
-                                        <th>coverArea</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.fetchUsers(this.props.flats)}
-                                </tbody>
-                            </Table>
-                        </div>
-                    </SideBar>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="primary" onClick={this.updateBook}>Update Flat</Button>
+                                <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
+                            </ModalFooter>
+                        </Modal>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>societyName</th>
+                                    <th>flat Type</th>
+                                    <th>flat SuperArea</th>
+                                    <th>sizeType</th>
+                                    <th>coverArea</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.fetchUsers(this.props.flats)}
+                            </tbody>
+                        </Table>
+                    </div>
+                </UI>
+                </SideBar>
                 </div>
 
             </div>

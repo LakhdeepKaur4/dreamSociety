@@ -2,6 +2,8 @@ import React,{ Component } from 'react';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import {getTowerName,getFlatType,addFlatDetails} from '../../actionCreators/flatDetailMasterAction';
+import UI from '../../components/newUI/superAdminDashboard';
+
 
 class flatDetailMaster extends Component{
     constructor(props){
@@ -110,8 +112,10 @@ class flatDetailMaster extends Component{
 
     render (){
         return(
+            <UI>
             <div className="form">
                 <form onSubmit={this.onSubmit}>
+                <div style={{textAlign: 'center',fontWeight: 'bold' }}><label>Flat Detail Master</label></div>
                     <div className="form-group col-md-6">
                         <label>Flat No</label>
                         <input className ="form-control" type="text" name="flatNo" maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.handleChange} value={this.state.flatNo} required></input>
@@ -138,6 +142,7 @@ class flatDetailMaster extends Component{
                     <button className="button" onClick={this.push}>Show Details</button>
                 </form> 
             </div>
+            </UI>
         )
     }
 

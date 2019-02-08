@@ -87,3 +87,4 @@ export const DELETE_TOWER ='delete_tower';
 export const UPDATE_TOWER ='update_tower';
 export const DELETE_PERSON ='delete_person';
 export const UPDATE_PERSON1= 'update_person';
+export const UPDATE_LOCATION='update_location'

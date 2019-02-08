@@ -129,18 +129,30 @@ Tower({get}){
   }
 }
 
-render(){
-    return(
 
-    
-       <UI>
-  
-        <div className="person" >
-            <form  onSubmit ={this.submit}>
-        <div   className="form-group">
-<label>
-Username
 
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
+
+    render() {
+        return (
+            <div>
+                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
+    <div style={{ margin: '48px auto' }}>
+        <SideBar onClick={() => this.setState({ menuVisible: false })}
+         visible={this.state.menuVisible}> */}
+                <UI onClick={this.logout}>
+
+
+                    <div className="person" >
+                        <form onSubmit={this.submit}>
+                            <div className="form-group">
+                                <label>
+                                    Username
+                                    
 </label>
 <input type="text" name="userName" onChange={this.onChange} maxLength={20} className="form-control" onKeyPress={this.OnKeyPresshandler} required />
         </div>
@@ -189,6 +201,7 @@ Email
          
              </div>
              </UI>
+             </div>
     )
 }
 }

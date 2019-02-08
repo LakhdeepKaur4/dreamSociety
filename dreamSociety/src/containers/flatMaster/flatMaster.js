@@ -120,6 +120,11 @@ class FlatMaster extends Component {
     push = () => {
         this.props.history.push('/superDashboard/flatmaster/flatmasterdetails')
     }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
 
@@ -144,6 +149,7 @@ class FlatMaster extends Component {
                 <Input
                     type="text"
                     name="flatType"
+                    maxLength='4'
                     value={this.state.flatType}
                     onChange={this.onChange} />
                 <span>{this.state.errors.flatType}</span>
@@ -154,6 +160,7 @@ class FlatMaster extends Component {
                 <Input
                     type="number"
                     name="flatSuperArea"
+                    min='0'
                     value={this.state.flatSuperArea}
                     onChange={this.onChange} />
                 <span>{this.state.errors.flatSuperArea}</span>
@@ -177,6 +184,7 @@ class FlatMaster extends Component {
                     type="number"
                     name="coverArea"
                     value={this.state.coverArea}
+                    min='0'
                     onChange={this.onChange} />
                 <span>{this.state.errors.coverArea}</span>
             </FormGroup>
@@ -196,7 +204,7 @@ class FlatMaster extends Component {
                         visible={this.state.menuVisible}
                         style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px',
                         backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     <div className="flatMaster">
                         {this.state.isSubmit ? <Redirect to="/superDashboard/flatmaster/flatmasterdetails" /> : form}
                     </div>

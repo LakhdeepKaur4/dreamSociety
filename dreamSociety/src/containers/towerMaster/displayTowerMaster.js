@@ -121,61 +121,71 @@ class DisplayTowerMaster extends Component {
   //  this.setState({})
   this.setState({search:e.target.value})
   }
-
+  logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
   render() {
 
 
     return (
-    
-<div>
-  <UI>
-<Link to="/superDashboard/towermaster"> Tower Master</Link>
-                <h3 align="center"> Tower List</h3>
-                <Modal isOpen={this.state.editTowerModal} toggle={this.toggleEditTowerModal.bind(this)}>
-                  <ModalHeader toggle={this.toggleEditTowerModal.bind(this)}>Edit Tower</ModalHeader>
-                  <ModalBody>
+      <div>
+        {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
+                <div style={{ margin: '48px auto' }}>
+                    <SideBar onClick={() => this.setState({ menuVisible: false })}
+                     visible={this.state.menuVisible}> */}
+        <UI onClick={this.logout}>
+          <div>
+            <h3 align="center"> Tower List</h3>
+            <Modal isOpen={this.state.editTowerModal} toggle={this.toggleEditTowerModal.bind(this)}>
+              <ModalHeader toggle={this.toggleEditTowerModal.bind(this)}>Edit Tower</ModalHeader>
+              <ModalBody>
 
 
 
-                    <FormGroup>
-                      <Label for="towerName">  Tower Name</Label>
-                      <Input id="towerName" value={this.state.editTowerData.towerName} onChange={(e) => {
-                        let { editTowerData } = this.state;
+                <FormGroup>
+                  <Label for="towerName">  Tower Name</Label>
+                  <Input id="towerName" value={this.state.editTowerData.towerName} onChange={(e) => {
+                    let { editTowerData } = this.state;
 
-                        editTowerData.towerName = e.target.value;
+                    editTowerData.towerName = e.target.value;
 
-                        this.setState({ editTowerData })
-                        
-                      }}
-                      onKeyPress={this.OnKeyPresshandler}
-                      maxLength={10}
-                       required />
-                    </FormGroup>
+                    this.setState({ editTowerData })
 
+                  }}
+                    onKeyPress={this.OnKeyPresshandler}
 
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button color="primary" onClick={this.updateTower.bind(this)}>Update Tower</Button>
-                    <Button color="secondary" onClick={this.toggleEditTowerModal.bind(this)}>Cancel</Button>
-                  </ModalFooter>
-                </Modal>
-  <SearchFilter type="text" value ={this.state.search}   onChange={this.searchOnChange}  />
-                <Table >
-                  <thead>
-                    <tr>
-
-                      <th>Tower Name</th>
+                    required />
+                </FormGroup>
 
 
-                    </tr>
-                  </thead>
-                  <tbody>
-                   
-                      <td colSpan="2"> {this.TowerMasterDetails(this.props.TowerDetails)}</td>
-                    
-                  </tbody>
-              </Table>
-              </UI>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="primary" onClick={this.updateTower.bind(this)}>Update Tower</Button>
+                <Button color="secondary" onClick={this.toggleEditTowerModal.bind(this)}>Cancel</Button>
+              </ModalFooter>
+            </Modal>
+            <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
+            <Table >
+              <thead>
+                <tr>
+
+                  <th>Tower Name</th>
+
+
+                </tr>
+              </thead>
+              <tbody>
+
+                <td colSpan="2"> {this.TowerMasterDetails(this.props.TowerDetails)}</td>
+
+              </tbody>
+            </Table>
+          </div>
+        </UI>
+        {/* </SideBar>
+      </div> */}
       </div>
       
     );

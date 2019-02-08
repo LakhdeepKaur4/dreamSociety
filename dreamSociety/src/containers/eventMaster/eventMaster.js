@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import './event.css';
 
 
+
 class EventMaster extends Component {
   constructor(props) {
     super(props)
@@ -81,11 +82,16 @@ class EventMaster extends Component {
       )
     }
   }
+  logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
 
   render() {
     return (
       <div>
-    <UI>
+    <UI onClick={this.logout}>
                 
         
                 <div className="form">
@@ -183,7 +189,7 @@ function mapStateToProps(state) {
   }
 }
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ AddEvent, GetEventOrganiser }, dispatch)
+  return bindActionCreators({ AddEvent, GetEventOrganiser}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventMaster)

@@ -153,17 +153,21 @@ class CityMasterDetail extends Component {
         }
     }
 
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
         return (
             <div>
-                 <UI>
-                            <div className="container" >
-                            <Link to='/superDashboard/cityMaster'>
-                                <button className="ui submit button" type="submit" style={{ backgroundColor: 'lightblue', marginTop: '25px' }}>Add City</button>
-                            </Link>
-                        <div style={{ marginTop: '40px' }}>
+                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
+              <div style={{ marginTop: '52px' }}>
+              <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}> */}
+                <UI onClick={this.logout}>
+                    <div className="container" >
+                        <div>
                             <h3>City details</h3>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />

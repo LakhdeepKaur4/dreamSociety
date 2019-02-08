@@ -116,7 +116,7 @@ class displayVendorMaster extends Component {
 
 
         if (vendors) {
-            return vendors.vendor.map((vendors) => {
+            return vendors.vendor.filter(this.searchFilter(this.state.search)).map((vendors) => {
                 return (
 
                     <tr key={vendors.vendorId}>
@@ -139,7 +139,11 @@ class displayVendorMaster extends Component {
             })
         }
     }
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
     render() {
         return (
             <div>
@@ -178,7 +182,7 @@ class displayVendorMaster extends Component {
                         </Sidebar>
                         <Sidebar.Pusher dimmed={this.state.menuVisible}>
                             <Segment basic> */}
-                <UI>
+                <UI onClick={this.logout}>
                     {/* <Header as="h3">Application Content</Header> */}
                     {/* <Image src='//unsplash.it/800/480' /> */}
                     <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
@@ -231,6 +235,7 @@ class displayVendorMaster extends Component {
 
 
                     </Modal>
+                    <div style={{ fontWeight: 'bold' }}><label>Vendor Details</label></div>
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
                     <table className="table table-bordered">

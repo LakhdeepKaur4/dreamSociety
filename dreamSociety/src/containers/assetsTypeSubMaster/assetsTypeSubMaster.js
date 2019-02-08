@@ -43,6 +43,12 @@ class AssetsTypeSubMaster extends Component {
         }
 
     }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
+
 
     render() {
         return (
@@ -51,14 +57,15 @@ class AssetsTypeSubMaster extends Component {
             <div style={{ margin: '48px auto' }}>
             <SideBar onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     <div className="SubType">
-                        <Link to='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList'>Assets Sub List</Link>
+                       
+                        <h3>Assets Sub Type Master</h3>
                         <form onSubmit={this.onSubmit}>
                             <div className="SubType">
 
                                 <label htmlFor="assetsSubType">Assets Sub Type</label>
-                                <input placeholder="Enter Assets Sub Type" name='assetsSubType' onChange={this.onChangeHandler} required />
+                                <input placeholder="Enter Assets Sub Type" maxLength={30}  name='assetsSubType' onChange={this.onChangeHandler} required />
 
 
                                 <div>
@@ -70,10 +77,13 @@ class AssetsTypeSubMaster extends Component {
                                 </div>
                                 <div>
                                     <label htmlFor="Description">Description</label>
-                                    <textarea type="text" id="Description" placeholder="Enter Description..." onChange={this.onChangeHandler} className="form-control" onChange={this.onChangeHandler} name='description' required />
+                                    <textarea type="text" maxLength={100}  id="Description" placeholder="Enter Description..." onChange={this.onChangeHandler} className="form-control" onChange={this.onChangeHandler} name='description' required />
                                 </div>
                                 <div>
                                     <button className="btn btn-success" id="addAssets" >Add Assets</button>
+                                    <Link to='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList'>
+                                    <button className="btn btn-success" id="addAssets" >Assets Sub List</button>
+                                    </Link>
                                 </div>
                             </div>
                         </form>

@@ -11,8 +11,7 @@ import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, La
 import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
 import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-
-
+import UI from '../../components/newUI/superAdminDashboard';
 class flatMasterDetails extends Component {
 
    
@@ -177,7 +176,27 @@ class flatMasterDetails extends Component {
         }
     }
 
-        
+    // fetchSizeDrop({list3}){
+    //     if(list3){
+
+    //        return( 
+    //            list3.map((item) =>{
+    //                return(
+    //                    <option key={item.sizeId} value={item.sizeId}>
+    //                     {item.sizeType}
+    //                    </option>
+    //                )
+    //            })
+    //        )
+
+    //     }
+    // }
+
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
         return (
@@ -185,58 +204,55 @@ class flatMasterDetails extends Component {
               <MenuBar onClick={() => this.setState({menuVisible: !this.state.menuVisible})}/>
                 <div style={{ margin: '48px auto' }}>
                     <SideBar onClick={() => this.setState({menuVisible: false})}
-                        visible={this.state.menuVisible}>
-            
-                 <div>
-                 <Link to="/superDashboard/statemaster">Add state</Link>
-                 <div className="search">
-                                <h3>State Master Details</h3>
-                                <SearchFilter type="text" value={this.state.search}
-                                    onChange={this.searchOnChange} />
-                            </div>
-                 <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
-                    <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit Details</ModalHeader>
-                    <ModalBody>
-                    <FormGroup>
-                        <Label for="roles">CountryName</Label>
-                       <select  value={this.state.editUserData.countryId} onChange={this.countryName}>
-                            <option>{this.state.editUserData.countryName}</option>
-                            <option disabled>Select</option>
-                            {this.fetchDrop(this.props.countryDetails)}
-                       </select>
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="roles">StateName</Label>
-                        <input
-                            type="textbox"
-                            placeholder="enter state name"
-                            value={this.state.editUserData.stateName} 
-                            onChange={this.stateName } />
-                    </FormGroup>
-                
-                    </ModalBody>
-                    <ModalFooter>
-                    <Button color="primary" onClick={this.updateBook}>Update State</Button>
-                    <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
-                    </ModalFooter>
-                </Modal>
-                <Table>
-                    <thead>
-                        <tr>
-                            <th>countryName</th>
-                            <th>stateName</th>
-                            
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.fetchDetails(this.props.countryDetails)}
-                    </tbody>
-                </Table>
-                </div>
+                        visible={this.state.menuVisible}> */}
+                <UI onClick={this.logout}>
+
+                    <div>
+                        <Link to="/superDashboard/statemaster">Add state</Link>
+                        <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
+                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit Details</ModalHeader>
+                            <ModalBody>
+                                <FormGroup>
+                                    <Label for="roles">CountryName</Label>
+                                    <select value={this.state.editUserData.countryId} onChange={this.countryName}>
+                                        <option>{this.state.editUserData.countryName}</option>
+                                        <option disabled>Select</option>
+                                        {this.fetchDrop(this.props.countryDetails)}
+                                    </select>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label for="roles">StateName</Label>
+                                    <input
+                                        type="textbox"
+                                        placeholder="enter state name"
+                                        value={this.state.editUserData.stateName}
+                                        onChange={this.stateName} />
+                                </FormGroup>
+
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="primary" onClick={this.updateBook}>Update Flat</Button>
+                                <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
+                            </ModalFooter>
+                        </Modal>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <th>countryName</th>
+                                    <th>stateName</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.fetchDetails(this.props.countryDetails)}
+                            </tbody>
+                        </Table>
+                    </div>
+                </UI>
                 </SideBar>
                  </div>
-                </div>
-            )
+            </div>
+        )
     }
 }
 

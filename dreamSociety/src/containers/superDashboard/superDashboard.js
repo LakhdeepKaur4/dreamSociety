@@ -23,6 +23,7 @@ import UI from '../../components/newUI/superAdminDashboard';
   }
 
   logout=()=>{
+    console.log('7777777')
     this.props.userLogout();   
 }
   editUser() {
@@ -60,7 +61,7 @@ import UI from '../../components/newUI/superAdminDashboard';
           </form>
         </div>
       </nav> */}
-      <UI >
+      <UI onClick={this.logout} >
         
       </UI>
       {/* <div style={{ margin: '48px auto' }}>

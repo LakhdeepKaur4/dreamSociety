@@ -138,6 +138,11 @@ class userDetails extends Component {
         let x = document.getElementById('sidebar');
         x.style.position = 'fixed';
     }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
         const tableData = <Table>
@@ -159,7 +164,7 @@ class userDetails extends Component {
         </Table>
         return (
             <div>
-                <UI>
+                <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top">
                             <Link to="/superDashboard/registration">Add Users</Link>
                             <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
@@ -246,7 +251,6 @@ class userDetails extends Component {
                             {this.props.userDetail.user ? tableData: <Spinner />}
                         </div>
                         </UI>
-                    {/* </SideBar> */}
                 
 </div>
         )

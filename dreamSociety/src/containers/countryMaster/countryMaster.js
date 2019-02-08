@@ -32,6 +32,14 @@ class Country extends Component {
 
     }
 
+    OnKeyPresshandlerPhone = (event) => {
+        const pattern = /^[0-9+]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
     submit = (e) => {
         e.preventDefault();
         //   console.log(this.state);
@@ -66,6 +74,11 @@ class Country extends Component {
         this.props.history.push('/superDashboard/countrymaster/countrymasterdetails');
     }
 
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
 
@@ -76,6 +89,7 @@ class Country extends Component {
                 <Input
                     type="text"
                     name="countryName"
+                    maxLength='20'
                     onChange={this.onChange} />
                 <span>{this.state.errors.countryName}</span>
             </FormGroup>
@@ -85,7 +99,7 @@ class Country extends Component {
                 <Input
                     type="text"
                     name="code"
-                    max='3'
+                    maxLength='3'
                     onChange={this.onChange} />
                 <span>{this.state.errors.code}</span>
             </FormGroup>
@@ -95,6 +109,7 @@ class Country extends Component {
                 <Input
                     type="text"
                     name="currency"
+                    maxLength='10'
                     onChange={this.onChange} />
                 <span>{this.state.errors.currency}</span>
             </FormGroup>
@@ -102,8 +117,10 @@ class Country extends Component {
             <FormGroup>
                 <Label>PhoneCode</Label>
                 <Input
-                    type="number"
+                    type="text"
                     name="phoneCode"
+                    maxLength='3'
+                    onKeyPress = {this.OnKeyPresshandlerPhone}
                     onChange={this.onChange} />
                 <span>{this.state.errors.phoneCode}</span>
             </FormGroup>
@@ -123,7 +140,7 @@ class Country extends Component {
                         visible={this.state.menuVisible}
                         style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px',
                         backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}> */}
-                <UI>
+                <UI onClick={this.logout}>
                     <div className="flatMaster">
                         {this.state.isSubmit ? <Redirect to="/superDashboard/countrymaster/countrymasterdetails" /> : form}
                     </div>

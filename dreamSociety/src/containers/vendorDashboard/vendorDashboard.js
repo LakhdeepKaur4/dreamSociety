@@ -25,7 +25,12 @@ export default class Dashboard extends Component {
       editUserModal: !this.state.editUserModal
     });
   }
-  
+  logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
+
   render() {
     return (<div>
       {/* <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
@@ -70,7 +75,7 @@ export default class Dashboard extends Component {
         </Sidebar.Pushable> */}
       {/* </div> */}
 
-      <UI></UI>
+      <UI onClick={this.logout}></UI>
 
     </div>
     );

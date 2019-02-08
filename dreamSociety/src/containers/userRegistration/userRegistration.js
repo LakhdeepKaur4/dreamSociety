@@ -149,6 +149,12 @@ class Registration extends Component {
     routeToUserDetails = () => {
         this.props.history.push('/superDashboard/user_details');
     }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
+
 
     render() {
         const formData = <div>
@@ -240,7 +246,7 @@ class Registration extends Component {
             <Button onClick={this.routeToUserDetails} color="primary">User Details</Button>
         </div>
         return (<div>
-            <UI>
+            <UI onClick={this.logout}>
                 <div>
                     {this.state.message}
                 </div>
@@ -255,9 +261,6 @@ class Registration extends Component {
                     </Form>
                 </div>
             </UI>
-            {/* </SideBar> */}
-
-
         </div>
         );
     }

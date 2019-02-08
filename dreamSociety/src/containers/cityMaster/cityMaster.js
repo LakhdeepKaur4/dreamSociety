@@ -11,7 +11,7 @@ class CityMaster extends Component {
     constructor(props) {
         super(props);
         console.log(this.props)
-        
+
 
         this.state = {
             cityName:'',
@@ -19,22 +19,22 @@ class CityMaster extends Component {
             stateName:'',
             countryId:'',
             stateId:'',
-           
-            
+
+
             menuVisible: false,
          }
-       
+
         this.cityName=this.cityName.bind(this);
 
-        
+
     }
 
-  
+
     componentDidMount(){
            this.props.getCountry()
            this.props.getState()
-           this.props.getCity();  
-                   
+           this.props.getCity();
+
     }
 
     refreshData(){
@@ -42,7 +42,7 @@ class CityMaster extends Component {
     }
 
     onChangeCountry= (event)=>{
-      
+
         let selected= event.target.value
         console.log(selected)
 
@@ -50,44 +50,44 @@ class CityMaster extends Component {
             return obj.countryName === selected
             })
 
-    
+
             console.log(country)
 
-    
-            
+
+
             this.props.getState(country.countryId)
 
-            
+
             this.setState({
                 countryId: country.countryId,
                 countryName: country.countryName
             })
-      
-          
+
+
     }
 
-    
+
     onChangeState= (event)=>{
-      
+
         let selected= event.target.value
         console.log(selected)
-       
-        
+
+
         var data1 = _.find(this.props.cityMasterReducer.stateResult,function(obj){
             return obj.stateName === selected
             })
-    
+
             console.log(data1)
 
-        
+
             this.props.getCity(data1.stateId);
 
             this.setState({
                 stateId: data1.stateId,
                 stateName:data1.stateName
             })
-            
-          
+
+
     }
 
     onCityChange=(e)=>{
@@ -99,11 +99,11 @@ class CityMaster extends Component {
       console.log(this.state.cityName)
 
     }
-    
+
     countryName=({countryResult})=>{
         if(countryResult){
             console.log(countryResult);
-           return( 
+           return(
             countryResult.map((item) =>{
                    return(
                        <option key={item.countryId} value={item.countryName}>
@@ -112,14 +112,14 @@ class CityMaster extends Component {
                    )
                })
            )
-            
+
         }
     }
 
     stateName=({stateResult})=>{
         if(stateResult){
             console.log(stateResult);
-           return( 
+           return(
             stateResult.map((item) =>{
                    return(
                        <option key={item.stateId} value={item.stateName}>
@@ -128,15 +128,15 @@ class CityMaster extends Component {
                    )
                })
            )
-            
+
         }
     }
 
     cityName=({cityResult})=>{
         console.log(cityResult);
         if(cityResult){
-            
-           return( 
+
+           return(
             cityResult.map((item) =>{ console.log(item.cityName)
                    return(
                        <option key={item.cityId} value={item.cityName}>
@@ -146,7 +146,7 @@ class CityMaster extends Component {
                }
                )
            )
-            
+
         }
     }
 
@@ -159,23 +159,23 @@ class CityMaster extends Component {
 
     handleSubmit=(e)=>{
 
-    
+
 
         e.preventDefault();
 
         this.props.addCity(this.state)
         .then(()=>this.props.history.push('/superDashboard/cityMasterDetail'))
-      
+
         this.setState({
           state:{
             cityName:'',
             countryId:'',
             stateId:'',
-        
+
 
             menuVisible: false,
-            
-           
+
+
           }
 
 
@@ -183,23 +183,28 @@ class CityMaster extends Component {
         console.log("cityid", this.state.stateId)
     }
 
-    
-    
+    logout=()=>{
+                localStorage.removeItem('token');
+                localStorage.removeItem('user-type');
+                return this.props.history.replace('/') 
+            }
+
+
 
     render() {
          console.log(this.props.cityMasterReducer)
-        
-  
+
+
         return (
             <div>
-                <UI>
+                <UI onClick={this.logout}>
                 <form className="ui form" onSubmit={this.handleSubmit}>
                     <div className="field">
                         <label><h4>Country Name</h4></label>
                         <select className="ui fluid dropdown"  onChange={this.onChangeCountry}>
                             <option>Select</option>
                             {this.countryName(this.props.cityMasterReducer)}
-                            
+
                         </select>
                     </div>
                     <div className="field">
@@ -207,24 +212,24 @@ class CityMaster extends Component {
                         <select className="ui fluid dropdown" onChange={this.onChangeState}>
                             <option>Select</option>
                             {this.stateName(this.props.cityMasterReducer)}
-                           
-                            
-                            
-                            
+
+
+
+
                         </select>
                     </div>
-                 
+
                   <div className="form-group">
                         <label htmlFor='cityName'><h4>City Name</h4></label>
                         <input type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler}
                     maxLength='30'
                     minLength='3'/>
-                    
-                 
+
+
                     </div>
                     <div>
                     <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Submit</button>
-                
+
                     <Link to='/superDashboard/cityMasterDetail'>
                     <button className="ui submit button" type="submit" style={{backgroundColor:'lightgreen'}}>Show Details</button>
                     </Link>
@@ -241,9 +246,9 @@ class CityMaster extends Component {
 
 function mapStateToProps(state) {
     console.log('===========stateCountry=========', state)
-   
+
     return {
-        cityMasterReducer: state.cityMasterReducer    
+        cityMasterReducer: state.cityMasterReducer
     }
 
 
@@ -254,6 +259,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(CityMaster));
-
-
-

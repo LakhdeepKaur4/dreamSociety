@@ -47,26 +47,42 @@ class SizeMaster extends Component {
 
     }
 
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
     render() {
         return (
-            
-                   <UI>
-                                                       <div className="form">
-                                    <Form onSubmit={this.submit}>
-                                        <FormGroup>
-                                            <Label> Size Type</Label>
-                                            <Input type="text" className="form-control" onKeyPress ={this.onkeyPresshandle}   maxLength={20}  placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange} />
-                                        </FormGroup>
-                                        <FormGroup>
-                                            <Button type="submit" color="success">Submit</Button>
-                                            <Link color="primary" to="/superDashboard/display-size">Size details</Link>
-                                        </FormGroup>
-                                    </Form>
-                                </div>
+            <div>
+                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
+            <div style={{ margin: '48px auto' }}>
+                <SideBar onClick={() => this.setState({ menuVisible: false })}
+                 visible={this.state.menuVisible}> */}
+                <UI onClick={this.logout}>
+                    <div style={{ margin: '48px auto' }}>
 
-</UI>
-           
+                        <div className="form">
+                            <Form onSubmit={this.submit}>
+                                <FormGroup>
+                                    <Label> Size Type</Label>
+                                    <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Button type="submit" color="success">Submit</Button>
+                                    <Link color="primary" to="/superDashboard/display-size">Size details</Link>
+                                </FormGroup>
+                            </Form>
+                        </div>
+
+                    </div>
+                </UI>
+                {/* </SideBar>
+</div> */}
+
+
+            </div>
+
         )
 
     }
