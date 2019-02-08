@@ -8,7 +8,8 @@ exports.create = (req,res) => {
     console.log("creating tower");
 
     Tower.create({
-        towerName:req.body.towerName
+        towerName:req.body.towerName,
+        userId:req.userId
     }).then(tower =>{
         res.json({message:"Tower added successfully!",tower:tower});
     }).catch(err => {

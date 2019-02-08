@@ -6,6 +6,7 @@ const Parking = db.parking;
 exports.create = async (req,res,next) => {
     try{
         let body = req.body;
+        body.userId = req.userId;
         console.log("body==>",body);
         const parking = await Parking.create(body);
         return res.status(httpStatus.CREATED).json({

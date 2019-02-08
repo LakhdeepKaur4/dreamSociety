@@ -11,7 +11,7 @@ exports.create = (req,res) => {
         stateName:req.body.stateName,
         stateId:req.body.stateId,
         countryId:req.body.countryId,
-        userId:req.body.userId
+        userId:req.userId
     }).then(state =>{
         res.json({message:"State added successfully!",state:state});
     }).catch(err => {

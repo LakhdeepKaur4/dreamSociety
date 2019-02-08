@@ -5,7 +5,8 @@ const Size = db.size;
 
 exports.create = (req,res) => {
     console.log("creating size");
-
+    let body = req.body;
+    body.userId = req.userId;
     Size.create({
         sizeType:req.body.sizeType,
     }).then(size =>{

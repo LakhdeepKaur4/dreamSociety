@@ -6,6 +6,7 @@ const ServiceDetail = db.serviceDetail;
 
 exports.create = (req,res) => {
     let body = req.body;
+    body.userId = req.userId;
     console.log("req.body===>",req.body)
     console.log("creating service");
     if(!body.serviceName && !body.serviceDetailId){

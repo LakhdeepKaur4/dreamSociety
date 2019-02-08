@@ -7,6 +7,7 @@ const ServiceDetail = db.serviceDetail;
 exports.create = async (req, res, next) => {
     try {
         let body = req.body;
+        body.userId = req.userId;
         const service = await ServiceDetail.create(body);
         return res.status(httpStatus.CREATED).json({
             message: "Service Detail successfully created",

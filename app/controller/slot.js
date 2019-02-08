@@ -9,6 +9,7 @@ exports.create = async (req, res, next) => {
     try {
         console.log("creating parking api");
         let body = req.body;
+        body.userId = req.userId;
         let slot;
         const start = body.numberOfSlots;  
         const parkingId = body.parkingId;

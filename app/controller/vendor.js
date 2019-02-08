@@ -6,10 +6,7 @@ const Service = db.service;
 
 exports.create = async (req, res, next) => {
     try {
-        console.log("creating vendor");
-        console.log("userId==>",req.userId)
         let body = req.body;
-        console.log("body===>",body)
         body.userId = req.userId;
         const vendor = await Vendor.create(body);
         return res.status(httpStatus.CREATED).json({

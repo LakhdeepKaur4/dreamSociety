@@ -16,7 +16,7 @@ console.log("creating society");
         countryId:req.body.countryId,
         locationId:req.body.locationId,
         stateId:req.body.stateId,
-        userId:req.body.userId,
+        userId:req.userId,
     }).then(society =>{
         res.json({message:"Society added successfully!",society:society});
     }).catch(err => {
