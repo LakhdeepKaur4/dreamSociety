@@ -163,34 +163,34 @@ class Registration extends Component {
                 <span className='error'>{this.state.errors.roles}</span>
             </FormGroup>
             <FormGroup>
-                <Label>FirstName</Label>
+                <Label>First Name</Label>
                 <Input name="firstName"
                     type="text"
                     value={this.state.firstName}
                     onChange={this.onChange}
                     onKeyPress={this.OnKeyPressUserhandler}
-                    maxLength='15'
+                    maxLength='25'
                     minLength='3' />
                 <span className='error'>{this.state.errors.firstName}</span>
             </FormGroup>
             <FormGroup>
-                <Label>LastName</Label>
+                <Label>Last Name</Label>
                 <Input name="lastName"
                     type="text"
                     value={this.state.lastName}
                     onChange={this.onChange}
                     onKeyPress={this.OnKeyPressUserhandler}
-                    maxLength='15'
+                    maxLength='25'
                     minLength='3'  />
                 <span className='error'>{this.state.errors.lastName}</span>
             </FormGroup>
             <FormGroup>
-                <Label>Username</Label>
+                <Label>User Name</Label>
                 <Input name="userName"
                     type="text"
                     value={this.state.userName}
                     onChange={this.onChange}
-                    maxLength='10'
+                    maxLength='25'
                     minLength='3'  />
                 <span className='error'>{this.state.errors.userName}</span>
             </FormGroup>
@@ -200,7 +200,7 @@ class Registration extends Component {
                     type="email"
                     value={this.state.email}
                     onChange={this.onChange}
-                    maxLength='15'
+                    maxLength='40'
                     minLength='10'
                     onKeyPress={this.emailValid}  />
                 <span className='error'>{this.state.errors.email}</span>
