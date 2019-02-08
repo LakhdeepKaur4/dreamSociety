@@ -62,7 +62,7 @@ class Registration extends Component {
     }
 
     emailValid(event){
-        const pattern = /^[a-zA-Z0-9@.]+$/
+        const pattern = /^[a-zA-Z0-9@._]+$/
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
