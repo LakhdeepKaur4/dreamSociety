@@ -19,10 +19,10 @@ class userDetails extends Component {
             userName: "",
             email: "",
             contact: "",
-            loading:false,
             isActive: false,
         },
         editUserModal: false,
+        loading:false,
         dropdownOpen: false,
         search:''
     }
@@ -36,9 +36,8 @@ class userDetails extends Component {
     }
 
     refreshData() {
-        this.props.getUsers();
-        this.props.getRoles();
-        this.fetchUsers(this.props.userDetail)
+        this.props.getUsers().then(() => this.setState({loading:false}))
+        this.props.getRoles().then(() => this.setState({loading:false}));
     }
 
     toggleEditUserModal() {
@@ -48,15 +47,15 @@ class userDetails extends Component {
     }
 
     updateUser = () => {
-        if(this.props.userDetail.user){
+            
             let { userId, roleName, firstName, lastName, userName, email, contact } = this.state.editUserData;
-        
-            this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact).then(() => this.refreshData())
+            this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact)
+            .then(() => {
+                this.refreshData()
+            })
             this.setState({
-                editUserModal: false, editUserData: { userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' }
+                editUserModal: false,loading:true, editUserData: { userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' }
             });
-        }
-        return this.setState({loading:true})
     }
 
     editUser(userId, roleName, firstName, lastName, userName, email, contact) {
@@ -66,6 +65,7 @@ class userDetails extends Component {
     }
 
     deleteUser(userId) {
+        this.setState({loading:true})
         let { isActive } = this.state.editUserData
         this.props.deleteUser(userId, isActive)
         .then(() => this.refreshData())
@@ -84,6 +84,7 @@ class userDetails extends Component {
                  x.contact.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||  
                  !search;
             }
+            return <div>Not Found</div>
         }
     }
  
@@ -113,14 +114,12 @@ class userDetails extends Component {
                 )
             })
         }
-        return <tr><td><span style={{fontSize:'24px',fontWeight:'bold'}}>...Loading. Please Wait!</span></td></tr>
     }
 
     fetchRoles({ userRole }) {
         if (userRole) {
             return (
                 userRole.map((item) => {
-                    console.log(this.state)
                     return (
                         <option value={item.roleName} key={item.id}>
                             {item.roleName}
@@ -146,7 +145,9 @@ class userDetails extends Component {
     }
 
     render() {
-        const tableData = <Table>
+        let tableData;
+        if(this.props.userDetail.user){
+        tableData = <Table>
 
             <thead>
                 <tr>
@@ -162,7 +163,10 @@ class userDetails extends Component {
             <tbody>
                 {this.fetchUsers(this.props.userDetail)}
             </tbody>
-        </Table>
+        </Table>}
+        else if(!this.props.userDetail.user){
+            tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Users. Please! wait...</div>
+        }
         return (
             <div>
                 <UI onClick={this.logout}>
@@ -174,7 +178,6 @@ class userDetails extends Component {
                                     <FormGroup>
                                         <Label>Role</Label>
                                         <Input type="select" id="roleName" value={this.state.editUserData.roleName} onChange={(e) => {
-                                            console.log(this.state)
                                             let { editUserData } = this.state;
 
                                             editUserData.roleName = e.target.value;
@@ -243,13 +246,13 @@ class userDetails extends Component {
 
                                 </ModalBody>
                                 <ModalFooter>
-                                    <Button color="primary" onClick={this.updateUser}>Update Book</Button>{' '}
+                                    <Button color="primary" onClick={this.updateUser}>Update User</Button>{' '}
                                     <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
                                 </ModalFooter>
                             </Modal>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                            {this.props.userDetail.user ? tableData: <Spinner />}
+                            {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         </UI>
                 

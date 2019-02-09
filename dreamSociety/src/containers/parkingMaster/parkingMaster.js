@@ -65,22 +65,27 @@ class ParkingMaster extends Component {
         return this.props.history.replace('/') 
     }
     render() {
-        const tableData = <Table>
-                            <thead>
-                                <tr>
-                                    <th>Basement</th>
-                                    <th>No. of Parking</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.renderParking(this.props.parkingDetail)}
-                            </tbody>
-                        </Table>
+        let tableData;
+        if(this.props.parkingDetail.parking){
+            tableData = <Table>
+            <thead>
+                <tr>
+                    <th>Basement</th>
+                    <th>No. of Parking</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {this.renderParking(this.props.parkingDetail)}
+            </tbody>
+        </Table>
+        } 
+        else {
+            tableData = <Spinner />
+        }
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <h1 style={{ color: 'black' }}>Add Parking</h1>
                     <div>
 
                         <div className="container">
@@ -90,7 +95,7 @@ class ParkingMaster extends Component {
                             <h3>Parking details</h3>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                            {this.props.parkingDetail.parking ? tableData : <Spinner />}
+                            { tableData }
                         </div>
                     </div>
                 </UI>

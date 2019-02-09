@@ -13,6 +13,11 @@
     display: inline;
 }
 
+.table{
+    background: #f3f3f3 !important;
+    padding: 20px;
+}
+
 #sidebar.inactive {
     margin-left: -250px;
     transition: all 0.3s;

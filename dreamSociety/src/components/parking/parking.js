@@ -63,6 +63,7 @@ class Parking extends Component {
     submit = (e) => {
         e.preventDefault();
         let errors = {};
+        let {parkingId, numberOfSlots} = this.state;
         if (!this.state.parkingId) {
             errors.parkingId = `Parking details can't be empty. Please select any.`;
             console.log(this.state.errors);
@@ -76,24 +77,30 @@ class Parking extends Component {
 
         if (isValid) {
             console.log(this.state);
-            this.props.createParking({ ...this.state })
-                .then(() => this.props.history.push('/superDashboard/parking_master'))
+            this.setState({loading: true})
+            this.props.createParking({ parkingId, numberOfSlots })
+            .then(() => {
+                this.setState({loading: false})
+                this.props.history.push('/superDashboard/parking_master')
+                })
+            
                 this.setState(
                     {
                         parkingId: '',
                         numberOfSlots: '',
                         menuVisible: false,
-                        loading: false,
                         errors: {}
                     }
                 );
-            this.setState({loading:true})
+              
         }
 
     }
 
     render() {
-        const formData = <div>
+        let formData;
+        if(!this.state.loading && this.props.parkingDetail.parking && this.state.errors){
+            formData = <div>
             <FormGroup>
                 <Label>Parking Name</Label>
                 <Input type="select" name="parkingId" onChange={this.onChange}>
@@ -117,16 +124,19 @@ class Parking extends Component {
             <Button color="success" className="mr-2">Add</Button>
             <Button onClick={this.routeToParkingDetails} color="primary">Parking Details</Button>
         </div>
+        }
+        else if(!this.props.parkingDetail.parking){
+            formData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching parking Names...</div>
+        }
+        else if(this.submit){
+            formData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Adding Parking. Please! Wait...</div>
+        }
         return (
             <div>
                 <UI>
                     <div className="form col-8">
                         <Form onSubmit={this.submit}>
-                        <div>{!this.state.loading && this.state.errors ? formData : 
-                            <div style={{textAlign:'center'}}>
-                                <Spinner />
-                                <span style={{fontSize:'20px'}}>Parking is getting created!Please wait...</span>
-                            </div>}
+                        <div>{formData}
                         </div>
                         </Form>
                     </div>
