@@ -67,9 +67,10 @@ class AssetsTypeSubList extends Component {
 
     searchFilter(search) {
         return function (x) {
-            return x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||
-            x.asset_master.assetName.toUpperCase().includes(search.toUpperCase()) ||
-            x.description.toLowerCase().includes(search.toLowerCase()) ||!search;
+            return (
+            x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||
+            x.assetType.toLowerCase().includes(search.toUpperCase()) || 
+            x.description.toLowerCase().includes(search.toLowerCase()) ||!search);
         }
     }
 
@@ -110,7 +111,7 @@ class AssetsTypeSubList extends Component {
                      visible={this.state.menuVisible}>   */}
                 <UI onClick={this.logout}>
                 <Link to='/superDashBoard/assetsTypeSubMaster'>
-                  <button className="btn btn-success" id="addAssets" >Assets Sub List</button>
+                  <button className="btn btn-success" id="addAssets" >Add Assets Sub Type</button>
                     </Link>
                     <div className="search">
                         <h3>Assets Sub Type Name</h3>

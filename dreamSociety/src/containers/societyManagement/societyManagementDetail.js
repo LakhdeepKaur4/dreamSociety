@@ -184,10 +184,17 @@ class SocietyManagementDetail extends Component {
         }
     }
 
+    
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
+
     render() {
         return (
             <div>
-                <UI>
+                <UI onClick={this.logout}>
                         <div className="container" >
                             <Link to='/superDashboard/societyManagement'>
                                 <button className="ui submit button" type="submit" style={{ backgroundColor: 'lightblue', marginTop: '25px' }}>Add Society</button>

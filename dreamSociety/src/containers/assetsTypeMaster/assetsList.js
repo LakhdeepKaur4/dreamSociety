@@ -55,7 +55,8 @@ class AssetList extends Component {
     }
     searchFilter(search) {
         return function (x) {
-            return x.assetName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.assetName.toLowerCase().includes(search.toLowerCase()) || 
+             x.description.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
 

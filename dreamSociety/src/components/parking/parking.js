@@ -91,6 +91,12 @@ class Parking extends Component {
         }
 
     }
+    logout=()=>{
+
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
 
     render() {
         const formData = <div>
@@ -119,7 +125,7 @@ class Parking extends Component {
         </div>
         return (
             <div>
-                <UI>
+                <UI onClick={this.logout}>
                     <div className="form col-8">
                         <Form onSubmit={this.submit}>
                         <div>{!this.state.loading && this.state.errors ? formData : 
