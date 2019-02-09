@@ -157,7 +157,9 @@ class Registration extends Component {
 
 
     render() {
-        const formData = <div>
+        let formData;
+        if(!this.state.loading && this.props.userDetail.userRole && this.state.errors){
+            formData = <div>
             <FormGroup>
                 <Label>User Type</Label>
                 <Input type="select" name="roles" onChange={this.onChange}>
@@ -245,18 +247,23 @@ class Registration extends Component {
             <Button color="primary" className="mr-2">Add User</Button>
             <Button onClick={this.routeToUserDetails} color="primary">User Details</Button>
         </div>
-        return (<div>
+        }
+        else if(!this.props.userDetail.userRole){
+            formData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Role Names. Please! Wait...</div>
+        }
+        else if(this.submit){
+            formData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />User is getting registered. Please! Wait...</div>
+        }
+        
+        return (
+        <div>
             <UI onClick={this.logout}>
                 <div>
                     {this.state.message}
                 </div>
                 <div style={{ width: '600px', padding: '20px 20px', borderRadius: '20px', margin: '0 auto', background: '#f3f3f3', position: 'relative' }}>
                     <Form onSubmit={this.submit}>
-                    <div>{!this.state.loading && this.state.errors ? formData : 
-                        <div style={{textAlign:'center'}}>
-                            <Spinner />
-                            <span style={{fontSize:'20px'}}>User is getting registered!Please wait...</span>
-                        </div>}
+                    <div>{formData}
                     </div>
                     </Form>
                 </div>
