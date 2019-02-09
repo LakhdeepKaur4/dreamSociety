@@ -110,6 +110,7 @@ class AssetsTypeSubList extends Component {
             <SideBar onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}>   */}
                 <UI onClick={this.logout}>
+               
                 <Link to='/superDashBoard/assetsTypeSubMaster'>
                   <button className="btn btn-success" id="addAssets" >Add Assets Sub Type</button>
                     </Link>
@@ -118,12 +119,14 @@ class AssetsTypeSubList extends Component {
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
                     </div>
+                    <div style={{backgroundColor:'lightgray'}}>
                     <table className="table table-striped">
                         <thead>
                             <tr>
                                 <th>AssetName</th>
                                 <th>Assets Sub Type Name</th>
                                 <th>Description</th>
+                                <th>Edit/Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -146,6 +149,7 @@ class AssetsTypeSubList extends Component {
                             <Button color="secondary" onClick={this.toggles}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
+                    </div>
                 </UI>
                 {/* </SideBar> */}
             </div>

@@ -7,7 +7,8 @@ const searchFilter = (props) => {
         <FormGroup>
             <Input type={props.type}
                 value={props.value}
-                onChange={props.onChange} />
+                onChange={props.onChange}
+                placeholder="Search" />
         </FormGroup>
     );
 }

@@ -172,19 +172,21 @@ class CityMasterDetail extends Component {
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
                         </div>
-
+                        <div style={{backgroundColor:'lightgray'}}>
                             <table className="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>Country Name</th>
                                         <th>State Name</th>
                                         <th>City Name</th>
+                                        <th>Edit/Delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {this.renderCity(this.props.cityMasterReducer)}
                                 </tbody>
                             </table>
+                            </div>
                             <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                                 <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                                 <ModalBody>

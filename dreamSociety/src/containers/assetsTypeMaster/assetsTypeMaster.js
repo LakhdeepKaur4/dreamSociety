@@ -48,11 +48,11 @@ class AssetsTypeMaster extends Component {
 
                             <div className="Assets">
                                 <div className="assetsName">
-                                    <label htmlFor="AssetsName">Assets Name</label>
+                                    <label htmlFor="AssetsName" style={{fontFamily:'cursive',fontSize: '30px',fontWeight: 200}}>Assets Name</label>
                                     <input type="text" maxLength={30} className="form-control" placeholder="Enter Assets Name" name="assets" onChange={this.onChangeHandler} required />
                                 </div>
                                 <div>
-                                    <label htmlFor="Description">Description</label>
+                                    <label htmlFor="Description" style={{fontFamily:'cursive',fontSize: '30px',fontWeight: 200}}>Description</label>
                                     <textarea type="text" maxLength={100} id="Description" placeholder="Enter Description..." className="form-control" onChange={this.onChangeHandler} name='description' required />
                                 </div>
                                 <div>  
