@@ -160,10 +160,16 @@ renderList =({details})=>{
     }  
 }    
 
+logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
+
 render(){
     
     return(
-        <UI>
+        <UI onClick={this.logout}>
         <div>
             <Modal isOpen={this.state.editLocationModal} toggle={this.toggleEditLocationModal.bind(this)}>
                 <ModalHeader toggle={this.toggleEditLocationModal.bind(this)}>Edit Details</ModalHeader>

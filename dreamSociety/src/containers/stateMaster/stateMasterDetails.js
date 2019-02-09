@@ -176,22 +176,6 @@ class flatMasterDetails extends Component {
         }
     }
 
-    // fetchSizeDrop({list3}){
-    //     if(list3){
-
-    //        return( 
-    //            list3.map((item) =>{
-    //                return(
-    //                    <option key={item.sizeId} value={item.sizeId}>
-    //                     {item.sizeType}
-    //                    </option>
-    //                )
-    //            })
-    //        )
-
-    //     }
-    // }
-
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
@@ -200,15 +184,15 @@ class flatMasterDetails extends Component {
 
     render() {
         return (
-            <div>
-              <MenuBar onClick={() => this.setState({menuVisible: !this.state.menuVisible})}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({menuVisible: false})}
-                        visible={this.state.menuVisible}> */}
+            <div>  
                 <UI onClick={this.logout}>
-
                     <div>
                         <Link to="/superDashboard/statemaster">Add state</Link>
+                        <div className="search">
+                                <h3>State Master Details</h3>
+                                <SearchFilter type="text" value={this.state.search}
+                                    onChange={this.searchOnChange} />
+                            </div>
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit Details</ModalHeader>
                             <ModalBody>
@@ -249,8 +233,8 @@ class flatMasterDetails extends Component {
                         </Table>
                     </div>
                 </UI>
-                </SideBar>
-                 </div>
+                
+                 
             </div>
         )
     }

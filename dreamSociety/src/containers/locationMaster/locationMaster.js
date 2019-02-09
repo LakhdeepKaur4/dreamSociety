@@ -161,7 +161,11 @@ class locationMaster extends Component{
     }
 
 
-
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
     
     render (){
     console.log("stateId",this.state.stateId)
@@ -169,7 +173,7 @@ class locationMaster extends Component{
     console.log("countryId",this.state.countryId)
         console.log("locationMasterReducer",this.props.locationMasterReducer.stateResult)
         return(
-            <UI>
+            <UI onClick={this.logout}>
             <div className="form">
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group  col-md-6">

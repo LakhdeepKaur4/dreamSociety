@@ -67,9 +67,10 @@ class AssetsTypeSubList extends Component {
 
     searchFilter(search) {
         return function (x) {
-            return x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||
-            x.asset_master.assetName.toUpperCase().includes(search.toUpperCase()) ||
-            x.description.toLowerCase().includes(search.toLowerCase()) ||!search;
+            return (
+            x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||
+            x.assetType.toLowerCase().includes(search.toUpperCase()) || 
+            x.description.toLowerCase().includes(search.toLowerCase()) ||!search);
         }
     }
 
@@ -109,20 +110,23 @@ class AssetsTypeSubList extends Component {
             <SideBar onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}>   */}
                 <UI onClick={this.logout}>
+               
                 <Link to='/superDashBoard/assetsTypeSubMaster'>
-                  <button className="btn btn-success" id="addAssets" >Assets Sub List</button>
+                  <button className="btn btn-success" id="addAssets" >Add Assets Sub Type</button>
                     </Link>
                     <div className="search">
                         <h3>Assets Sub Type Name</h3>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
                     </div>
+                    <div style={{backgroundColor:'lightgray'}}>
                     <table className="table table-striped">
                         <thead>
                             <tr>
                                 <th>AssetName</th>
                                 <th>Assets Sub Type Name</th>
                                 <th>Description</th>
+                                <th>Edit/Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -145,6 +149,7 @@ class AssetsTypeSubList extends Component {
                             <Button color="secondary" onClick={this.toggles}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
+                    </div>
                 </UI>
                 {/* </SideBar> */}
             </div>

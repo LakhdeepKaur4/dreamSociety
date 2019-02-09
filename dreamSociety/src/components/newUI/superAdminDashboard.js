@@ -55,10 +55,10 @@ class Demo extends Component {
                     <div className="collapse navbar-collapse" id="navbarsExample05">
                         <ul className="navbar-nav mr-auto mx-auto">
                             <li className="nav-item mx-3 active">
-                                <Link className="nav-link" to="/superDashboard">Home<span className="sr-only">(current)</span></Link>
+                                <Link style={{ textDecoration:"none" }} className="nav-link" to="/superDashboard">Home<span className="sr-only">(current)</span></Link>
                             </li>
                             <li className="nav-item mx-3">
-                                <Link className="nav-link" to="#">Gallery</Link>
+                                <Link style={{ textDecoration: 'none'}} className="nav-link" to="#">Gallery</Link>
                             </li>
                             <li className="nav-item mx-3">
                                 <Link className="nav-link" to="#">About Us</Link>

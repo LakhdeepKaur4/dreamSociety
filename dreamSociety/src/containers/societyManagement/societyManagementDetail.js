@@ -184,10 +184,17 @@ class SocietyManagementDetail extends Component {
         }
     }
 
+    
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
+
     render() {
         return (
             <div>
-                <UI>
+                <UI onClick={this.logout}>
                         <div className="container" >
                             <Link to='/superDashboard/societyManagement'>
                                 <button className="ui submit button" type="submit" style={{ backgroundColor: 'lightblue', marginTop: '25px' }}>Add Society</button>
@@ -197,6 +204,7 @@ class SocietyManagementDetail extends Component {
                                 <SearchFilter type="text" value={this.state.search}
                                     onChange={this.searchOnChange} />
                             </div>
+                            <div style={{backgroundColor:'lightgray'}}>
                 <table className="table table-striped">
                     <thead>
                         <tr>
@@ -205,12 +213,14 @@ class SocietyManagementDetail extends Component {
                             <th>City Name</th>
                             <th>Location Name</th>
                             <th>Society Name</th>
+                            <th>Edit/Delete</th>
                         </tr>
                     </thead>
                     <tbody>
                         {this.societyData(this.props.societyReducer)}
                     </tbody>
                 </table>
+                </div>
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                     <ModalBody>

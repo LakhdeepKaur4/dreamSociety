@@ -62,19 +62,19 @@ class AssetsTypeSubMaster extends Component {
                         <form onSubmit={this.onSubmit}>
                             <div className="SubType">
 
-                                <label htmlFor="assetsSubType">Assets Sub Type</label>
+                                <label htmlFor="assetsSubType" style={{fontFamily:'cursive',fontSize: '30px',fontWeight: 200}}>Assets Sub Type</label>
                                 <input placeholder="Enter Assets Sub Type" maxLength={30}  name='assetsSubType' onChange={this.onChangeHandler} required />
 
 
                                 <div>
-                                    <label htmlFor="assetsType">Assets Type</label>
+                                    <label htmlFor="assetsType" style={{fontFamily:'cursive',fontSize: '30px',fontWeight: 200}}>Assets Type</label>
                                     <select onChange={this.onChangeHandler} name="assetId">
                                         <option value="">select</option>
                                         {this.getAssetsName(this.props.assetsName)}
                                     </select>
                                 </div>
                                 <div>
-                                    <label htmlFor="Description">Description</label>
+                                    <label htmlFor="Description" style={{fontFamily:'cursive',fontSize: '30px',fontWeight: 200}}>Description</label>
                                     <textarea type="text" maxLength={100}  id="Description" placeholder="Enter Description..." onChange={this.onChangeHandler} className="form-control" onChange={this.onChangeHandler} name='description' required />
                                 </div>
                                 <div>

@@ -71,8 +71,7 @@ class CountryDetails extends Component{
         
         let{ countryId,countryName,code,currency,phoneCode} =this.state.editUserData;
         this.props.updateCountry(countryId,countryName,code,currency,phoneCode).then(() => this.refreshData());;
-    //    axios.put(`${URN}/country/`+ countryId ,{  countryName,code,currency,phoneCode}
-    //    ,{headers:authHeader()}).then((response) => this.refreshData())
+  
          this.setState({
            editUserModal: false, editUserData: {  countryId: '',countryName:'',code:'',currency:'', phoneCode: ''  }
        })
@@ -86,7 +85,7 @@ class CountryDetails extends Component{
         editUserData.countryName= e.target.value;
 
         this.setState({editUserData})
-        // console.log('shunag',this.editUserData.countryName)
+      
     }
 
     selectCode=(e)=>{
@@ -117,11 +116,7 @@ class CountryDetails extends Component{
         let { isActive } = this.state.editUserData
         this.props.deleteCountry(countryId, isActive).then(() => this.refreshData())
         .then(() => this.setState({isActive: false}))
-    // axios.put(`${URN}/country/`+ countryId, {isActive},{headers:authHeader()}).then((response) => {
-    //     this.refreshData()
-    //     this.setState({editUserData: {isActive: false}})
-        
-    // })
+    
 }
 
    getCountryDetails({country1}){
@@ -155,13 +150,17 @@ class CountryDetails extends Component{
     render(){
         return(
             <div>
-                <MenuBar onClick={() => this.setState({menuVisible: !this.state.menuVisible})}/>
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({menuVisible: false})}
-                        visible={this.state.menuVisible}> */}
+                
+               
+                   
                 <UI onClick={this.logout}>
                     <div>
                         <Link to="/superDashboard/countrymaster">Add Country</Link>
+                        <div className="search">
+                                <h3>Country Master Details</h3>
+                                <SearchFilter type="text" value={this.state.search}
+                                    onChange={this.searchOnChange} />
+                            </div>
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
                             <ModalBody>
@@ -212,6 +211,7 @@ class CountryDetails extends Component{
                                     <th>code</th>
                                     <th>currency</th>
                                     <th>phoneCode</th>
+                                    
 
 
                                 </tr>
@@ -222,77 +222,10 @@ class CountryDetails extends Component{
                         </Table>
                     </div>
                 </UI>
-                {/* </SideBar>
-            </div> */}
-                        visible={this.state.menuVisible}>
-            <div>
-                <Link to ="/superDashboard/countrymaster">Add Country</Link>
-                <div className="search">
-                                <h3>Country Master Details</h3>
-                                <SearchFilter type="text" value={this.state.search}
-                                    onChange={this.searchOnChange} />
-                            </div>
-                <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
-                    <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
-                    <ModalBody>
-                    <FormGroup>
-                        <Label for="roles">countryName</Label>
-                        <input
-                            type="textbox"
-                            placeholder="enter countryName"
-                            // name="countryName"
-                            value={this.state.editUserData.countryName} 
-                            onChange={this.selectCountry } /> 
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="roles">code</Label>
-                        <input
-                            type="textbox"
-                            placeholder="enter code"
-                            value={this.state.editUserData.code} 
-                            onChange={this.selectCode } />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="firstName">currency</Label>
-                        <input
-                            type="textbox"
-                            placeholder="enter currency"
-                            value={this.state.editUserData.currency} 
-                            onChange={this.selectCurrency } />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label for="roles">phoneCode</Label>
-                        <input
-                            type="textbox"
-                            placeholder="enter currency"
-                            value={this.state.editUserData.phoneCode} 
-                            onChange={this.selectPhoneCode } />
-                    </FormGroup>
+               
                     
-                    </ModalBody>
-                    <ModalFooter>
-                    <Button color="primary" onClick={this.updateBook}>Update Flat</Button>
-                    <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
-                    </ModalFooter>
-                </Modal>
-                <Table>
-                <thead>
-                        <tr>
-                            <th>countryName</th>
-                            <th>code</th>
-                            <th>currency</th>
-                            <th>phoneCode</th>
-                            
-                            
-                        </tr>
-                    </thead>
-                    <tbody>
-                      {this.getCountryDetails(this.props.countryDetails)}
-                     </tbody>
-                     </Table>
-            </div>
-            </SideBar>
-            </div>
+            
+            
             </div>
         )
     }

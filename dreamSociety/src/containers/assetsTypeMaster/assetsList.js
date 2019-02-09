@@ -55,7 +55,8 @@ class AssetList extends Component {
     }
     searchFilter(search) {
         return function (x) {
-            return x.assetName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.assetName.toLowerCase().includes(search.toLowerCase()) || 
+             x.description.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
 
@@ -90,6 +91,7 @@ class AssetList extends Component {
             <SideBar onClick={() => this.setState({ menuVisible: false })}
                      visible={this.state.menuVisible}> */}
                 <UI onClick={this.logout}>
+              
                 <Link to='/superDashBoard/assetsMaster'>
                  <button className="btn btn-success" id="addAssets" >Assets List</button>
                 </Link>
@@ -98,11 +100,13 @@ class AssetList extends Component {
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
                     </div>
+                    <div style={{backgroundColor:'lightgray'}}>
                     <table className="table table-striped">
                         <thead>
                             <tr>
                                 <th>Asset Name</th>
                                 <th>Description</th>
+                                <th>Edit/Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,6 +128,7 @@ class AssetList extends Component {
                             <Button color="secondary" onClick={this.toggles}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
+                    </div>
                 </UI>
                 {/* </SideBar> */}
             </div>

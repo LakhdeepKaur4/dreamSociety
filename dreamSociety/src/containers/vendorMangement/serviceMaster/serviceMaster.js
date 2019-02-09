@@ -86,6 +86,7 @@ class serviceMaster extends Component {
         }
     }
     logout=()=>{
+        console.log('676666')
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
