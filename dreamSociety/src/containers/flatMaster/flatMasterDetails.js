@@ -218,13 +218,14 @@ class flatMasterDetails extends Component {
     render() {
         return (
             <div>
-                <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} />
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({menuVisible: false})}
-                        visible={this.state.menuVisible}>
                 <UI onClick={this.logout}>
                     <div>
                         <Link to="/superDashboard/flatmaster">Add flats</Link>
+                        <div className="search">
+                                <h3>Country Master Details</h3>
+                                <SearchFilter type="text" value={this.state.search}
+                                    onChange={this.searchOnChange} />
+                            </div>
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
                             <ModalBody>
@@ -293,8 +294,8 @@ class flatMasterDetails extends Component {
                         </Table>
                     </div>
                 </UI>
-                </SideBar>
-                </div>
+                
+                
 
             </div>
         )
