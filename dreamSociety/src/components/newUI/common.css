@@ -12,6 +12,13 @@
     padding: 20px !important;
 }
 
+.top-details{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+}
+
 #sidebar {
     min-width: 150px;
     max-width: 150px;

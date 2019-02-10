@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchParking } from '../../actionCreators/parkingAction';
 import { Table, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
@@ -89,10 +88,11 @@ class ParkingMaster extends Component {
                     <div>
 
                         <div className="w3-container w3-margin-top">
-                            <div>
-                                <Link to='/superDashboard/add_parking/new'>Add Parking</Link>
+                            <div className="top-details">
+                                <h3>Parking details</h3>
+                                <Button onClick={() => this.props.history.push('/superDashboard/add_parking/new')}>Add Parking</Button>
                             </div>
-                            <h3>Parking details</h3>
+                            
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
                             { tableData }

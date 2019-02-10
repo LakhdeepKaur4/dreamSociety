@@ -129,10 +129,10 @@ class Parking extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <div className="form col-8">
+                    <div className="form col-8" >
                         <Form onSubmit={this.submit}>
-                        <div>{formData}
-                        </div>
+                            <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Parking</h3></div>
+                            <div>{formData}</div>
                         </Form>
                     </div>
                 </UI>

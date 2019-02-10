@@ -178,7 +178,7 @@ class userDetails extends Component {
             <div>
                 <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top">
-                            <div style={{display:'flex', justifyContent: 'space-between', alignItems:'baseline'}}>
+                            <div className="top-details">
                                 <h3>User Details</h3>
                                 <Button onClick={this.routeToAddNewUser} color="primary">Add Users</Button>
                             </div>
