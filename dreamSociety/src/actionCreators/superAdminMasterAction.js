@@ -5,16 +5,10 @@ import{URN,ADD_USER,UPDATE_USER,GET_ROLES,GET_USERS,DELETE_USER} from '../action
 
 
 export function addUser(values) {
-    const request = axios.post(`${URN}/auth/signup`, values , { method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'x-access-token': authHeader()
-                    },
-                    body: JSON.stringify(values) })
+    const request = axios.post(`${URN}/auth/signup`, values , {headers: authHeader() })
                     .then(response => {console.log(response.status)
                         if(response.status === 201){
-                            return response.data
+                            return this.getUsers()
                         }
                         else if(response.status === 400){
                             return console.log('something went wrong')

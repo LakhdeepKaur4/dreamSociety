@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { FormGroup, Form, Label, Input, Button } from 'reactstrap';
+import { Form } from 'reactstrap';
 import { fetchBasement, createParking } from '../../actionCreators/parkingAction';
 import { connect } from 'react-redux';
 import './parking.css';
+import ParkingForm from './parkingForm';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 
@@ -106,30 +107,18 @@ class Parking extends Component {
     render() {
         let formData;
         if(!this.state.loading && this.props.parkingDetail.parking && this.state.errors){
-            formData = <div>
-            <FormGroup>
-                <Label>Parking Name</Label>
-                <Input type="select" name="parkingId" onChange={this.onChange}>
-                    <option value=''>--Select--</option>
-                    {this.getParking(this.props.parkingDetail)}
-                </Input>
-                <span className='error'>{this.state.errors.parkingId}</span>
-            </FormGroup>
-            <FormGroup>
-                <Label>Parking</Label>
-                <Input name="numberOfSlots"
-                    type="text"
-                    value={this.state.numberOfSlots}
-                    onChange={this.onChange}
-                    onKeyPress={this.numberOfSlots}
-                    maxLength='2'
-                    minLength='1'
-                />
-                <span className='error'>{this.state.errors.numberOfSlots}</span>
-            </FormGroup>
-            <Button color="success" className="mr-2">Add</Button>
-            <Button onClick={this.routeToParkingDetails} color="primary">Parking Details</Button>
-        </div>
+            formData = <ParkingForm 
+                            parkingName="parkingId"
+                            parkingChange={this.onChange}
+                            fetchParkingName={this.getParking(this.props.parkingDetail)}
+                            parkingError={this.state.errors.parkingId}
+                            parkingSlotValueName="numberOfSlots"
+                            parkingSlotValue = {this.state.numberOfSlots}
+                            parkingSlotValueChange={this.onChange}
+                            parkingSlotKeyPress={this.numberOfSlots}
+                            parkingSlotError={this.state.errors.numberOfSlots}
+                            routeToParkingDetails={this.routeToParkingDetails}
+                             />
         }
         else if(!this.props.parkingDetail.parking){
             formData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching parking Names...</div>

@@ -88,7 +88,7 @@ class ParkingMaster extends Component {
                 <UI onClick={this.logout}>
                     <div>
 
-                        <div className="container">
+                        <div className="w3-container w3-margin-top">
                             <div>
                                 <Link to='/superDashboard/add_parking/new'>Add Parking</Link>
                             </div>
