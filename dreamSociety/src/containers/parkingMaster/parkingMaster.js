@@ -9,18 +9,24 @@ import Spinner from '../../components/spinner/spinner';
 
 
 class ParkingMaster extends Component {
-    state = {
-        menuVisible: false,
-        loading:false,
-        search: ''
+    componentWillMount(){
+        this.state = {
+            menuVisible: false,
+            loading:true,
+            search: ''
+        }
     }
     componentDidMount() {
-        this.props.fetchParking()
+        this.refreshData()
+    }
+
+    refreshData(){
+        this.props.fetchParking().then(() => this.setState({loading: false}))
     }
 
     delete_Parking(id) {
         this.props.deleteParking(id)
-            .then(() => this.props.fetchParking())
+            .then(() => this.refreshData())
     }
 
     searchOnChange = (e) => {
@@ -95,7 +101,7 @@ class ParkingMaster extends Component {
                             
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                            { tableData }
+                            {!this.state.loading ? tableData: <Spinner /> }
                         </div>
                     </div>
                 </UI>

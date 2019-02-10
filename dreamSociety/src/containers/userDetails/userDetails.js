@@ -11,22 +11,24 @@ import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 
 class userDetails extends Component {
-    state = {
-        userId: "",
-        roleName: "",
-        firstName: "",
-        lastName: "",
-        userName: "",
-        email: "",
-        contact: "",
-        isActive: false,
-        editUserModal: false,
-        loading:false,
-        dropdownOpen: false,
-        search:''
+    componentWillMount(){
+        this.state = {
+            userId: "",
+            roleName: "",
+            firstName: "",
+            lastName: "",
+            userName: "",
+            email: "",
+            contact: "",
+            isActive: false,
+            editUserModal: false,
+            loading:true,
+            dropdownOpen: false,
+            search:''
+        }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.refreshData();
     }
 
