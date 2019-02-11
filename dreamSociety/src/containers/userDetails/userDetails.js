@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { getUsers, getRoles, addUser, updateUser, deleteUser } from '../../actionCreators/superAdminMasterAction';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button } from 'reactstrap';
