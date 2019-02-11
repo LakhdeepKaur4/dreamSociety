@@ -10,22 +10,25 @@ import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 
 class userDetails extends Component {
-    componentWillMount(){
-        this.state = {
-            userId: "",
-            roleName: "",
-            firstName: "",
-            lastName: "",
-            userName: "",
-            email: "",
-            contact: "",
-            isActive: false,
-            editUserModal: false,
-            loading:true,
-            dropdownOpen: false,
-            search:''
+    constructor(props){
+            super(props);
+            this.state = {
+                userId: "",
+                roleName: "",
+                firstName: "",
+                lastName: "",
+                userName: "",
+                email: "",
+                contact: "",
+                isActive: false,
+                editUserModal: false,
+                loading:true,
+                dropdownOpen: false,
+                search:''
         }
+        
     }
+    
 
     componentDidMount() {
         this.refreshData();
@@ -154,7 +157,7 @@ class userDetails extends Component {
 
     render() {
         let tableData;
-        tableData = <Table className="w3-responsive">
+        tableData = <Table>
 
             <thead>
                 <tr>
@@ -178,7 +181,7 @@ class userDetails extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <div className="w3-container w3-margin-top w3-responsive">
+                    <div className="w3-container w3-margin-top">
                             <div className="top-details">
                                 <h3>User Details</h3>
                                 <Button onClick={this.routeToAddNewUser} color="primary">Add Users</Button>
