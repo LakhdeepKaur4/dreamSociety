@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 // =====Components============//
-import { PrivateRoute } from './components/privateRoute/privateRoute';
+import  {PrivateRoute}  from './components/privateRoute/privateRoute';
 // ========Containers =========//
 import Login from './containers/login/login';
 import Parking from './containers/parking/parking';
@@ -15,7 +15,6 @@ import SuperDashboard from './containers/superDashboard/superDashboard';
 import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
 import VendorDashboard from './containers/vendorDashboard/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
-
 
 import SocietyManagement from './containers/societyManagement/societyMangement';
 import TowerMaster from './containers/towerMaster/towerMaster';
@@ -46,8 +45,9 @@ import flatDetails from './containers/flatDetailMaster/flatDetails';
 import CityMaster from './containers/cityMaster/cityMaster';
 import CityMasterDetail from './containers/cityMaster/cityMasterDetail';
 import locationMaster from './containers/locationMaster/locationMaster';
-import locationDetails from './containers/locationMaster/locationDetails';
+import DisplayLocation from './containers/locationMaster/displayLocation';
 import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
+
 
 class App extends Component {
   render() {
@@ -56,9 +56,46 @@ class App extends Component {
         <div>
           <Switch>
             <Route path="/" exact component={Login} />
-
             <Route path='/login' component={Login} />
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
+            <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
+            <PrivateRoute path='/ownerDashboard' component={OwnerDashboard} />
+            <PrivateRoute path='/tenantDashboard' component={TenantDashboard} />
+            <PrivateRoute path='/vendorDashboard' component={VendorDashboard} />
+            <PrivateRoute path='/superDashboard/registration' component={Registration} />
+            <PrivateRoute path={'/superDashboard/user_details'} component={UserDetails} />
+            <PrivateRoute path='/superDashboard/parking_master' component={ParkingMaster} />
+            <PrivateRoute path='/superDashboard/display-tower' component={DisplayTowerMaster} />
+            <PrivateRoute path='/superDashboard/display-size' component={DisplaySizeMaster} />
+            <PrivateRoute path='/superDashboard/towermaster' component={TowerMaster} />
+            <PrivateRoute path='/superDashboard/sizemaster' component={SizeMaster} />
+            <PrivateRoute path='/superDashboard/event' component={EventMaster} />
+            <PrivateRoute path='/superDashboard/flatmaster' exact component={FlatMaster} />
+            <PrivateRoute path='/superDashboard/flatmaster/flatmasterdetails' component={FlatMasterDetails} />
+            <PrivateRoute path='/superDashboard/countryMaster' exact component={countryMaster} />
+            <PrivateRoute path='/superDashboard/countryMaster/countryMasterDetails' exact component={countryMasterDetails} />
+            <PrivateRoute path='/superDashboard/statemaster' exact component={stateMaster} />
+            <PrivateRoute path='/superDashboard/statemaster/statemasterdetails' exact component={stateMasterDetails} />
+            <PrivateRoute path='/superDashboard/societyManagement' component={SocietyManagement} />
+            <PrivateRoute path ='/superDashboard/societyManagementDetail' component={SocietyManagementDetail}/>
+            <PrivateRoute path='/superDashboard/display-event' component={DisplayEventMaster} />
+            <PrivateRoute path='/superDashboard/add_parking/new' component={Parking} />
+            <PrivateRoute path='/superDashboard/serviceMaster' component={serviceMaster} />
+            <PrivateRoute path='/superDashboard/personDetails' component={PersonDetails} />
+            <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster} />
+            <PrivateRoute path='/superDashboard/displayVendorMaster' component={displayVendorMaster} />
+            <PrivateRoute path='/superDashboard/displayServices' component={displayServices} />
+            <PrivateRoute path='/superDashBoard/displayPerson' component={displayPersonDetails} />
+            <PrivateRoute path='/superDashBoard/demo' component={Demo} />
+            <PrivateRoute path='/superDashBoard/assetsMaster' exact component={AssetTypeMaster} />
+            <PrivateRoute path='/superDashBoard/assetsMaster/assetsList' component={AssetList} />
+            <PrivateRoute path='/superDashBoard/assetsTypeSubMaster' exact component={AssetsTypeSubMaster} />
+            <PrivateRoute path='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubList} />
+            <PrivateRoute path='/superdashboard/flatDetailMaster' component={flatDetailMaster} />
+            <PrivateRoute path='/superdashboard/flatDetails' component={flatDetails} />     
+            <PrivateRoute path='/superDashboard/cityMaster' component={CityMaster} />
+            <PrivateRoute path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
+            <PrivateRoute path='/superDashboard/locationMaster' component={locationMaster}/>
             <Route path='/superDashboard' exact component={SuperDashboard} />
             <Route path='/adminDashboard' component={AdminDashboard} />
             <Route path='/ownerDashboard' component={OwnerDashboard} />
@@ -100,15 +137,14 @@ class App extends Component {
             <Route path='/superdashboard/flatDetailMaster' component={flatDetailMaster} />
             <Route path='/superdashboard/flatDetails' component={flatDetails} />
   
-            <Route path='/superdashboard/locationDetails' component={locationDetails} />
+            
       
             <Route path='/superDashboard/cityMaster' component={CityMaster} />
             <Route path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
             <Route path='/superDashboard/locationMaster' component={locationMaster}/>
-
-
         
-            <Route path='/superdashboard/locationDetails' component={locationDetails} />
+        
+            <Route path='/superdashboard/DisplayLocation' component={DisplayLocation} />
           </Switch>
         </div>
       </BrowserRouter>

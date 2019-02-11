@@ -6,7 +6,7 @@ import { authHeader } from '../../../helper/authHeader';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label, Table } from 'reactstrap';
 import { URN } from '../../../actions/index';
-import './serviceMaster.css';
+
 import { Link } from 'react-router-dom';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 import SearchFilter from '../../../components/searchFilter/searchFilter';

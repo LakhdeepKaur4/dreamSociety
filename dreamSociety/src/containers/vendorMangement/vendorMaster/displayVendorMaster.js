@@ -8,7 +8,7 @@ import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, L
 import axios from 'axios';
 import { URN } from '../../../actions/index';
 import { Link } from 'react-router-dom';
-import './vendorMaster.css';
+
 
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/vendorDashboardInside';

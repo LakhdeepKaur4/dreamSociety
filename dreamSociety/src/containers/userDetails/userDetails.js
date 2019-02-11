@@ -109,8 +109,8 @@ class userDetails extends Component {
                         <td>{item.contact}</td>
                         <td>
                             <div className="w3-row">
-                            <Button color="success" size="sm" className="w3-btn w3-col l6 mr-1 mb-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email, item.contact)}>Edit</Button>
-                            <Button color="danger" size="sm" className="w3-btn w3-col l6" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
+                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email, item.contact)}>Edit</Button>
+                            <Button color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
                             </div>
                         </td>
                     </tr>
@@ -174,17 +174,14 @@ class userDetails extends Component {
                 {this.fetchUsers(this.props.userDetail)}
             </tbody>
         </Table>
-         if(!this.props.userDetail.user && !this.props.userDetail.userRole){
-            tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Users. Please! wait...</div>
-        }
 
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <div className="w3-container w3-margin-top">
+                    <div className="w3-container w3-margin-top w3-responsive">
                             <div className="top-details">
                                 <h3>User Details</h3>
-                                <Button onClick={this.routeToAddNewUser} color="primary">Add Users</Button>
+                                <Button color="primary" onClick={this.routeToAddNewUser} color="primary">Add Users</Button>
                             </div>
                             
                             <EditUserModal isOpen={this.state.editUserModal}
