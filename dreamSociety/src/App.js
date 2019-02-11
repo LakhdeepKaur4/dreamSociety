@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 // =====Components============//
 import  {PrivateRoute}  from './components/privateRoute/privateRoute';
-import Parking from './components/parking/parking';
 // ========Containers =========//
 import Login from './containers/login/login';
 import Parking from './containers/parking/parking';
