@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import { getCountry, getState, getCity, getLocation, getSociety, detailSociety, deleteSociety, updateSociety } from './../../actionCreators/societyMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import {Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
+import Spinner from '../../components/spinner/spinner';
 
 
 class SocietyManagementDetail extends Component {
@@ -27,7 +28,8 @@ class SocietyManagementDetail extends Component {
             },
             menuVisible: false,
             search: '',
-            modal: false
+            modal: false,
+            loading: true,
 
         };
     }
@@ -53,22 +55,26 @@ class SocietyManagementDetail extends Component {
     }
     componentDidMount() {
         this.refreshData()
-        this.props.getCountry()
-        this.props.getState()
-        this.props.getCity()
-        this.props.getLocation()
-        this.props.getSociety()
+      
     }
 
     refreshData() {
-        this.props.detailSociety()
+        this.props.detailSociety().then(() => this.setState({loading: false}))
+        this.props.getCountry().then(() => this.setState({loading: false}))
+        this.props.getState().then(() => this.setState({loading: false}))
+        this.props.getCity().then(() => this.setState({loading: false}))
+        this.props.getLocation().then(() => this.setState({loading: false}))
+        this.props.getSociety().then(() => this.setState({loading: false}))
     }
 
 
     editSocietyType = () => {
+        this.setState({
+            loading: true
+        })
         const { societyId, countryId, stateId, cityId, locationId, societyName } = this.state
         this.props.updateSociety(societyId, countryId, stateId, cityId, locationId, societyName)
-            .then(() => this.props.detailSociety())
+            .then(() => this.refreshData())
         this.setState({
             editSocietyData: { societyId, countryId, stateId, cityId, locationId, societyName },
             modal: !this.state.modal
@@ -77,9 +83,11 @@ class SocietyManagementDetail extends Component {
     }
 
     deleteSocietyName = (societyId) => {
-
+        this.setState({
+            loading: true
+        })
         this.props.deleteSociety(societyId)
-            .then(() => this.props.detailSociety())
+            .then(() => this.refreshData())
 
     }
 
@@ -191,36 +199,44 @@ class SocietyManagementDetail extends Component {
         return this.props.history.replace('/') 
     }
 
+    routeToAddNewSociety =() => {
+        this.props.history.push('/superDashboard/societyManagement')
+    }
+
     render() {
+        let tableData;
+
+        tableData= <div style={{backgroundColor:'lightgray'}}>
+        <Table className="table table-striped">
+            <thead>
+                <tr>
+                    <th>Country Name</th>
+                    <th>State Name</th>
+                    <th>City Name</th>
+                    <th>Location Name</th>
+                    <th>Society Name</th>
+                    <th>Edit/Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {this.societyData(this.props.societyReducer)}
+            </tbody>
+        </Table>
+        </div>
         return (
             <div>
                 <UI onClick={this.logout}>
-                        <div className="container" >
-                            <Link to='/superDashboard/societyManagement'>
-                                <button className="ui submit button" type="submit" style={{ backgroundColor: 'lightblue', marginTop: '25px' }}>Add Society</button>
-                            </Link>
+                <div className="w3-container w3-margin-top  w3-responsive">
+                <div className="top-details">
+                                <h3>Society Details</h3>
+                                <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button>
+                            </div>
                             <div style={{ marginTop: '40px' }}>
-                                <h3>Society details</h3>
+                              
                                 <SearchFilter type="text" value={this.state.search}
                                     onChange={this.searchOnChange} />
                             </div>
-                            <div style={{backgroundColor:'lightgray'}}>
-                <table className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Country Name</th>
-                            <th>State Name</th>
-                            <th>City Name</th>
-                            <th>Location Name</th>
-                            <th>Society Name</th>
-                            <th>Edit/Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.societyData(this.props.societyReducer)}
-                    </tbody>
-                </table>
-                </div>
+                            {!this.state.loading ? tableData : <Spinner />}
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                     <ModalBody>

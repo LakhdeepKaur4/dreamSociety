@@ -7,6 +7,7 @@ import UI from '../../components/newUI/superAdminDashboard';
 import _ from 'underscore';
 
 
+
 class CityMaster extends Component {
     constructor(props) {
         super(props);
@@ -19,7 +20,7 @@ class CityMaster extends Component {
             stateName:'',
             countryId:'',
             stateId:'',
-
+            loading: true,
 
             menuVisible: false,
          }
@@ -31,14 +32,14 @@ class CityMaster extends Component {
 
 
     componentDidMount(){
-           this.props.getCountry()
+           this.refreshData()
            this.props.getState()
            this.props.getCity();
 
     }
 
     refreshData(){
-        this.props.addCity();
+        this.props.getCountry().then(() => this.setState({loading: false}))
     }
 
     onChangeCountry= (event)=>{
@@ -192,7 +193,7 @@ class CityMaster extends Component {
 
 
     render() {
-         console.log(this.props.cityMasterReducer)
+        
 
 
         return (
