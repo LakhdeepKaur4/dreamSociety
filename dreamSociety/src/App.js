@@ -46,8 +46,9 @@ import flatDetails from './containers/flatDetailMaster/flatDetails';
 import CityMaster from './containers/cityMaster/cityMaster';
 import CityMasterDetail from './containers/cityMaster/cityMasterDetail';
 import locationMaster from './containers/locationMaster/locationMaster';
-import locationDetails from './containers/locationMaster/locationDetails';
+import DisplayLocation from './containers/locationMaster/displayLocation';
 import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
+
 
 class App extends Component {
   render() {
@@ -58,6 +59,7 @@ class App extends Component {
             <Route path="/" exact component={Login} />
             <Route path='/login' component={Login} />
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
+<<<<<<< Updated upstream
             <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
             <PrivateRoute path='/ownerDashboard' component={OwnerDashboard} />
             <PrivateRoute path='/tenantDashboard' component={TenantDashboard} />
@@ -98,6 +100,57 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
             <PrivateRoute path='/superDashboard/locationMaster' component={locationMaster}/>
             <PrivateRoute path='/superdashboard/locationDetails' component={locationDetails} />
+=======
+            <Route path='/superDashboard' exact component={SuperDashboard} />
+            <Route path='/adminDashboard' component={AdminDashboard} />
+            <Route path='/ownerDashboard' component={OwnerDashboard} />
+            <Route path='/tenantDashboard' component={TenantDashboard} />
+            <Route path='/vendorDashboard' component={VendorDashboard} />
+
+            <Route path='/superDashboard/registration' component={Registration} />
+            <Route path={'/superDashboard/user_details'} component={UserDetails} />
+            <Route path='/superDashboard/parking_master' component={ParkingMaster} />
+            <Route path='/superDashboard/display-tower' component={DisplayTowerMaster} />
+            <Route path='/superDashboard/display-size' component={DisplaySizeMaster} />
+            <Route path='/superDashboard/towermaster' component={TowerMaster} />
+            <Route path='/superDashboard/sizemaster' component={SizeMaster} />
+            <Route path='/superDashboard/event' component={EventMaster} />
+            <Route path='/superDashboard/flatmaster' exact component={FlatMaster} />
+            <Route path='/superDashboard/flatmaster/flatmasterdetails' component={FlatMasterDetails} />
+            <Route path='/superDashboard/countryMaster' exact component={countryMaster} />
+            <Route path='/superDashboard/countryMaster/countryMasterDetails' exact component={countryMasterDetails} />
+            <Route path='/superDashboard/statemaster' exact component={stateMaster} />
+            <Route path='/superDashboard/statemaster/statemasterdetails' exact component={stateMasterDetails} />
+
+
+            <Route path='/superDashboard/societyManagement' component={SocietyManagement} />
+            <Route path ='/superDashboard/societyManagementDetail' component={SocietyManagementDetail}/>
+            <Route path='/superDashboard/display-event' component={DisplayEventMaster} />
+            <Route path='/superDashboard/add_parking/new' component={Parking} />
+            <Route path='/superDashboard/serviceMaster' component={serviceMaster} />
+            <Route path='/superDashboard/personDetails' component={PersonDetails} />
+            <Route path='/superDashboard/vendorMaster' component={vendorMaster} />
+            <Route path='/superDashboard/displayVendorMaster' component={displayVendorMaster} />
+            <Route path='/superDashboard/displayServices' component={displayServices} />
+            <Route path='/superDashBoard/displayPerson' component={displayPersonDetails} />
+            <Route path='/superDashBoard/demo' component={Demo} />
+            <Route path='/superDashBoard/assetsMaster' exact component={AssetTypeMaster} />
+            <Route path='/superDashBoard/assetsMaster/assetsList' component={AssetList} />
+            <Route path='/superDashBoard/assetsTypeSubMaster' exact component={AssetsTypeSubMaster} />
+            <Route path='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubList} />
+      
+            <Route path='/superdashboard/flatDetailMaster' component={flatDetailMaster} />
+            <Route path='/superdashboard/flatDetails' component={flatDetails} />
+  
+            
+      
+            <Route path='/superDashboard/cityMaster' component={CityMaster} />
+            <Route path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
+            <Route path='/superDashboard/locationMaster' component={locationMaster}/>
+        
+        
+            <Route path='/superdashboard/DisplayLocation' component={DisplayLocation} />
+>>>>>>> Stashed changes
           </Switch>
         </div>
       </BrowserRouter>
