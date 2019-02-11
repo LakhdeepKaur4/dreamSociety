@@ -9,14 +9,18 @@ import Spinner from '../../components/spinner/spinner';
 
 class Parking extends Component {
     componentDidMount() {
-        this.props.fetchBasement()
+        this.renderParking()
+    }
+
+    renderParking(){
+        this.props.fetchBasement().then(() => this.setState({loading: false}))
     }
 
     state = {
         parkingId: '',
         numberOfSlots: '',
         menuVisible: false,
-        loading: false,
+        loading: true,
         errors: {}
     }
 
@@ -106,33 +110,25 @@ class Parking extends Component {
 
     render() {
         let formData;
-        if(!this.state.loading && this.props.parkingDetail.parking && this.state.errors){
-            formData = <ParkingForm 
-                            parkingName="parkingId"
-                            parkingChange={this.onChange}
-                            fetchParkingName={this.getParking(this.props.parkingDetail)}
-                            parkingError={this.state.errors.parkingId}
-                            parkingSlotValueName="numberOfSlots"
-                            parkingSlotValue = {this.state.numberOfSlots}
-                            parkingSlotValueChange={this.onChange}
-                            parkingSlotKeyPress={this.numberOfSlots}
-                            parkingSlotError={this.state.errors.numberOfSlots}
-                            routeToParkingDetails={this.routeToParkingDetails}
-                             />
-        }
-        else if(!this.props.parkingDetail.parking){
-            formData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching parking Names...</div>
-        }
-        else if(this.submit){
-            formData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Adding Parking. Please! Wait...</div>
-        }
+        formData = <ParkingForm 
+                        parkingName="parkingId"
+                        parkingChange={this.onChange}
+                        fetchParkingName={this.getParking(this.props.parkingDetail)}
+                        parkingError={this.state.errors.parkingId}
+                        parkingSlotValueName="numberOfSlots"
+                        parkingSlotValue = {this.state.numberOfSlots}
+                        parkingSlotValueChange={this.onChange}
+                        parkingSlotKeyPress={this.numberOfSlots}
+                        parkingSlotError={this.state.errors.numberOfSlots}
+                        routeToParkingDetails={this.routeToParkingDetails}
+                            />
         return (
             <div>
                 <UI onClick={this.logout}>
                     <div>
                         <Form onSubmit={this.submit}>
                             <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Parking</h3></div>
-                            <div>{formData}</div>
+                            <div>{!this.state.loading ? formData : <Spinner />}</div>
                         </Form>
                     </div>
                 </UI>
