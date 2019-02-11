@@ -9,7 +9,8 @@ import Spinner from '../../components/spinner/spinner';
 
 
 class ParkingMaster extends Component {
-    componentWillMount(){
+    constructor(props){
+        super(props);
         this.state = {
             menuVisible: false,
             loading:true,
@@ -72,18 +73,20 @@ class ParkingMaster extends Component {
     render() {
         let tableData;
         if(this.props.parkingDetail.parking){
-            tableData = <Table>
-            <thead>
-                <tr>
-                    <th>Basement</th>
-                    <th>No. of Parking</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {this.renderParking(this.props.parkingDetail)}
-            </tbody>
-        </Table>
+            tableData = <div style={{margin:'0 auto'}}>
+                <Table className="w3-responsive">
+                    <thead>
+                        <tr>
+                            <th>Basement</th>
+                            <th>No. of Parking</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.renderParking(this.props.parkingDetail)}
+                    </tbody>
+                </Table>
+            </div>
         } 
         else {
             tableData = <Spinner />
@@ -93,7 +96,7 @@ class ParkingMaster extends Component {
                 <UI onClick={this.logout}>
                     <div>
 
-                        <div className="w3-container w3-margin-top">
+                        <div className="w3-container w3-margin-top w3-responsive">
                             <div className="top-details">
                                 <h3>Parking details</h3>
                                 <Button onClick={() => this.props.history.push('/superDashboard/add_parking/new')}>Add Parking</Button>

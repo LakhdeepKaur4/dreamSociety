@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN, GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME,ADD_LOCATION_DETAILS,GET_LOCATION_NAME,GET_LOCATION,UPDATE_LOCATION} from '../actions/index';
+import {URN, GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME,ADD_LOCATION_DETAILS,GET_LOCATION_NAME,GET_LOCATION,DELETE_LOCATION,UPDATE_LOCATION} from '../actions/index';
 
 
 
@@ -65,13 +65,30 @@ export  function getLocation(){
     }
 
     
-export function updateLocation(locationId,countryId,countryName,stateId,stateName,cityId,cityName,locationName){
-    console.log("+++++++++++++++++++++++++++++++",locationId,countryId,countryName,stateId,stateName,cityId,cityName,locationName)
+export function updateLocation(locationId, countryId, stateId, cityId, locationName ){
 
-    const request = axios.put(`${URN}/location/`+locationId,{countryId,countryName,stateId,stateName,cityId,cityName,locationName},{headers:authHeader()})
+    const request = axios.put(`${URN}/location/`+locationId,{countryId, stateId, cityId, locationName },{headers:authHeader()})
     .then()
     return{
         type:UPDATE_LOCATION,
         payload:request
     }
 }
+
+export const deleteLocation=(locationId)=>{
+    const data={
+        locationId,
+        isActive:false
+    }
+
+    const request = axios.put(`${URN}/location/${locationId}`,data, {headers:authHeader()})
+     .then(response => response.data)
+ 
+     // .then(getDetails())
+     return{
+ 
+         type:DELETE_LOCATION,
+         payload: request 
+     }
+ 
+ }
