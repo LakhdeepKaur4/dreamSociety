@@ -16,7 +16,6 @@ import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
 import VendorDashboard from './containers/vendorDashboard/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
 
-
 import SocietyManagement from './containers/societyManagement/societyMangement';
 import TowerMaster from './containers/towerMaster/towerMaster';
 import DisplayTowerMaster from './containers/towerMaster/displayTowerMaster';

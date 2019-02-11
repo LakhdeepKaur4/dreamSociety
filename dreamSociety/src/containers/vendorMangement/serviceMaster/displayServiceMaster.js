@@ -134,9 +134,8 @@ class displayServices extends Component {
 
 
                         <td>
-                            <Button color="primary" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</Button>
-                        </td>
-                        <td>
+                            <Button color="primary" className="mr-2" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</Button>
+                        
                             <Button color="danger" onClick={this.deleteService.bind(this, item.serviceId)}>Delete</Button>
                         </td>
                     </tr>
@@ -157,6 +156,7 @@ class displayServices extends Component {
             <div>
                 <UI onClick={this.logout}>
                   
+                    <div className="w3-container w3-margin-top w3-responsive">
                     <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)}>
                         <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Edit a Service</ModalHeader>
                         <ModalBody>
@@ -192,7 +192,7 @@ class displayServices extends Component {
                             <Button color="secondary" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
-                    <div style={{ fontWeight: 'bold' }}><label>Service Details</label></div>
+                    <div style={{ fontWeight: 'bold'}}><label>Service Details</label></div>
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
                     <Table className="table table-bordered">
@@ -200,6 +200,7 @@ class displayServices extends Component {
                             <tr>
                                 <th>Service Type</th>
                                 <th>Service Details</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
 
@@ -208,8 +209,9 @@ class displayServices extends Component {
                         </tbody>
                     </Table>
                     <Link to="/superDashboard/serviceMaster">
-                        <button className="button" type="button">Add Services</button>
+                        <Button color="success" type="button">Add Services</Button>
                     </Link>
+                    </div>
                 </UI>
                
 
