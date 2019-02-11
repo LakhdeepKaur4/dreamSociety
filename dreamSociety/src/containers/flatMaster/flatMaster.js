@@ -6,9 +6,7 @@ import { bindActionCreators } from 'redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, Redirect } from 'react-router-dom';
 import { FormGroup, Form, Input, Button, Label } from 'reactstrap';
-import Logo from '../../assets/2.jpg';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
+import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
 
 
@@ -25,14 +23,15 @@ class FlatMaster extends Component {
             validationError: '',
             errors: {},
             isSubmit: false,
+            loading:true,
             menuVisible: false
         }
 
     }
 
     componentDidMount() {
-        this.props.getSocietyNameDetails()
-        this.props.getSizeTypeDetails()
+        this.props.getSocietyNameDetails().then(()=> this.setState({loading:false}))
+        this.props.getSizeTypeDetails().then(()=> this.setState({loading:false}))
     }
 
     submit = (e) => {
@@ -56,6 +55,7 @@ class FlatMaster extends Component {
         if (isValid) {
             this.setState({ isSubmit: true })
             this.props.AddDetails({ ...this.state })
+            .then(() => this.props.history.push('/superDashboard/flatmaster/flatmasterdetails'));
             this.setState({
                 societyId: "",
                 flatType: '',
@@ -94,13 +94,6 @@ class FlatMaster extends Component {
 
         }
     }
-
-
-
-    // selectedSizeType=(e)=>{
-    //     this.state.sizeId=e.target.value
-    //     console.log(this.state.sizeId)
-    // }
     sizeType({ list4 }) {
         if (list4) {
 
@@ -127,9 +120,11 @@ class FlatMaster extends Component {
     }
 
     render() {
-
-
-        const form = <Form onSubmit={this.submit}>
+          let form;
+          if(!this.state.loading && this.props.flat.list0 && this.props.flat.list4 && this.state.errors){
+            
+          
+            form = <Form onSubmit={this.submit}>
             <FormGroup>
                 <Label>SocietyName</Label>
                 <Input
@@ -194,19 +189,19 @@ class FlatMaster extends Component {
                 <Button color="primary" onClick={this.push}>FlatDetails</Button>
             </FormGroup>
         </Form>
+          }
+
+          else if(this.submit){
+            form = <Spinner />
+        }
 
 
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({menuVisible: !this.state.menuVisible})} />
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({menuVisible: false})}
-                        visible={this.state.menuVisible}
-                        style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px',
-                        backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}> */}
+                
                 <UI onClick={this.logout}>
                     <div className="flatMaster">
-                        {this.state.isSubmit ? <Redirect to="/superDashboard/flatmaster/flatmasterdetails" /> : form}
+                        {form}
                     </div>
                 </UI>
                 {/* </SideBar>

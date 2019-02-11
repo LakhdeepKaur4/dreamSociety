@@ -1,28 +1,27 @@
 import React, { Component } from 'react';
-import { getDetails,deleteDetails,getCountry,updateDetails} from '../../actionCreators/countryAction';
+import { getDetails,getCountry,updateDetails} from '../../actionCreators/countryAction';
 import { URN } from '../../actions/index';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
-import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
 import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
+import Spinner from '../../components/spinner/spinner';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 class flatMasterDetails extends Component {
 
-   
-      
-    state = {
+   constructor(props){
+      super(props);
+    this.state = {
         editUserData: {
             stateId:'',
             countryId:'',
             countryName:'',
-             stateName:'',
-             coverArea:'',
+            stateName:'',
+            coverArea:'',
+            loading:true,
             isActive:false
         }    
         ,
@@ -31,7 +30,7 @@ class flatMasterDetails extends Component {
         search:''
         
 
-        
+    }
     
     }
 
@@ -51,8 +50,9 @@ class flatMasterDetails extends Component {
     
 
     refreshData=()=>{
-        this.props.getDetails();
-        this.props.getCountry();
+        console.log('data is refreshed')
+        this.props.getDetails().then(() => this.setState({loading:false}));
+        this.props.getCountry().then(() => this.setState({loading:false}));
         
         // this.props.updateDetails();
         // this.props.getDrop();
@@ -73,7 +73,7 @@ class flatMasterDetails extends Component {
 
          this.setState({
 
-            editUserModal:false , editUserData:{stateId:'',countryId:'',stateName:''}
+            editUserModal:false ,loading:true, editUserData:{stateId:'',countryId:'',stateName:''}
          })
   
         // axios.put(`${URN}/flat/` +flatId,{  societyId, flatType, flatSuperArea,
@@ -125,14 +125,14 @@ class flatMasterDetails extends Component {
       }
 
         deleteUser(stateId){
+            // this.setState({loading: true})
             let { isActive } = this.state.editUserData
-            this.props.deleteDetails(stateId,isActive).then(() => this.props.getDetails())
-            .then(() => this.setState({isActive: false}))
+            axios.put(`${URN}/state/delete/` + stateId, { isActive }, { headers: authHeader() })
+            .then(() => this.refreshData())
+            // .then(() => this.setState({loading:false}))
+            this.setState({ editUserData: { isActive: false } })
             // .then(()=>{console.log('ereeere')
-            //     this.props.getDetails()})
-             
-           
-           
+            //     this.props.getDetails()})    
     }
 
     fetchDetails=({country3})=> {
@@ -175,6 +175,9 @@ class flatMasterDetails extends Component {
             
         }
     }
+    routeToAddNewUser =() => {
+        this.props.history.push('/superDashboard/statemaster')
+    }
 
     logout=()=>{
         localStorage.removeItem('token');
@@ -183,15 +186,31 @@ class flatMasterDetails extends Component {
     }
 
     render() {
+        let tableData;
+        tableData=<Table>
+        
+        <thead>
+            <tr>
+                <th>countryName</th>
+                <th>stateName</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {this.fetchDetails(this.props.countryDetails)}
+        </tbody>
+       </Table>
+       
+       if(!this.props.countryDetails.country3 && !this.props.countryDetails.country1){
+        tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Users. Please! wait...</div>
+    }
         return (
             <div>  
                 <UI onClick={this.logout}>
-                    <div>
-                        <Link to="/superDashboard/statemaster">Add state</Link>
-                        <div className="search">
+                    <div className="w3-container w3-margin-top">
+                        <div className="top-details">
                                 <h3>State Master Details</h3>
-                                <SearchFilter type="text" value={this.state.search}
-                                    onChange={this.searchOnChange} />
+                                <Button onClick={this.routeToAddNewUser} color="primary">Add State</Button>
                             </div>
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit Details</ModalHeader>
@@ -219,18 +238,10 @@ class flatMasterDetails extends Component {
                                 <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
                             </ModalFooter>
                         </Modal>
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th>countryName</th>
-                                    <th>stateName</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.fetchDetails(this.props.countryDetails)}
-                            </tbody>
-                        </Table>
+                        <SearchFilter type="text" value={this.state.search}
+                                onChange={this.searchOnChange} />
+                            {!this.state.loading ? tableData : <Spinner />}
+                       
                     </div>
                 </UI>
                 
@@ -251,7 +262,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getDetails,
-        deleteDetails,
+    
         getCountry,
         updateDetails
         // AddDetails,

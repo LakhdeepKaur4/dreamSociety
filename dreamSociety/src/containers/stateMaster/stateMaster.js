@@ -4,11 +4,8 @@ import { connect } from 'react-redux';
 import { getCountry, addStates } from '../../actionCreators/countryAction';
 import { bindActionCreators } from 'redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Link, Redirect } from 'react-router-dom';
 import { FormGroup, Form, Input, Button, Label } from 'reactstrap';
-import Logo from '../../assets/2.jpg';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
+import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
 
 
@@ -22,13 +19,14 @@ class FlatMaster extends Component {
 
             errors: {},
             isSubmit: false,
+            loading:true,
             menuVisible: false
         }
 
     }
 
     componentDidMount() {
-        this.props.getCountry()
+        this.props.getCountry().then(()=> this.setState({loading:false}))
         //    this.props.getSizeTypeDetails()
     }
 
@@ -45,13 +43,19 @@ class FlatMaster extends Component {
         const isValid = Object.keys(errors).length === 0;
 
         if (isValid) {
-            this.setState({ isSubmit: true })
+            
+            this.setState({loading:true})
             console.log(this.state);
             this.props.addStates({ ...this.state })
+           
+            .then(() => this.props.history.push('/superDashboard/statemaster/statemasterdetails'));
+            
+            
             this.setState({
                 countryId: "",
                 countryName: '',
                 stateName: '',
+                
                 isSubmit: true
             });
 
@@ -99,8 +103,10 @@ class FlatMaster extends Component {
 
     render() {
 
-
-        const form = <Form onSubmit={this.submit}>
+         let form;
+         if(!this.state.loading && this.props.countryDetails.country1 && this.state.errors){
+            form = <Form onSubmit={this.submit}>
+        
             <FormGroup>
                 <Label>CountryName</Label>
                 <Input
@@ -131,23 +137,24 @@ class FlatMaster extends Component {
                 <Button color="success" onClick={this.push}>Details</Button>
             </FormGroup>
         </Form>
+         }
+        
+        else if(this.submit){
+            form = <Spinner />
+        }
+        
 
 
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({menuVisible: !this.state.menuVisible})} />
-                <div style={{ margin: '48px auto' }}>
-                    <SideBar onClick={() => this.setState({menuVisible: false})}
-                        visible={this.state.menuVisible}
-                        style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px',
-                        backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}> */}
+                
                 <UI onClick={this.logout}>
                     <div className="flatMaster">
-                        {this.state.isSubmit ? <Redirect to="/superDashboard/statemaster/statemasterdetails" /> : form}
+                      { form}   
                     </div>
+                    
                 </UI>
-                {/* </SideBar>
-                </div> */}
+               
             </div>
         )
 
