@@ -157,7 +157,7 @@ class userDetails extends Component {
 
     render() {
         let tableData;
-        tableData = <Table>
+        tableData = <Table className="w3-responsive">
 
             <thead>
                 <tr>
@@ -181,7 +181,7 @@ class userDetails extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <div className="w3-container w3-margin-top">
+                    <div className="w3-container w3-margin-top w3-responsive">
                             <div className="top-details">
                                 <h3>User Details</h3>
                                 <Button onClick={this.routeToAddNewUser} color="primary">Add Users</Button>
