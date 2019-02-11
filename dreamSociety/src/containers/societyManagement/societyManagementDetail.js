@@ -23,13 +23,15 @@ class SocietyManagementDetail extends Component {
                 locationName: '',
                 locationId: '',
                 societyId: '',
-                societyName: ''
+                societyName: '',
+                isActive:false,
 
             },
             menuVisible: false,
             search: '',
             modal: false,
             loading: true,
+            
 
         };
     }
@@ -47,6 +49,7 @@ class SocietyManagementDetail extends Component {
             cityName,
             locationName,
             societyName,
+            
             modal: !this.state.modal
         })
     }
@@ -83,11 +86,13 @@ class SocietyManagementDetail extends Component {
     }
 
     deleteSocietyName = (societyId) => {
+        let {isActive}=this.state.editSocietyData
         this.setState({
             loading: true
         })
-        this.props.deleteSociety(societyId)
+        this.props.deleteSociety(societyId, isActive)
             .then(() => this.refreshData())
+            this.setState({editSocietyData:{isActive:false}})
 
     }
 

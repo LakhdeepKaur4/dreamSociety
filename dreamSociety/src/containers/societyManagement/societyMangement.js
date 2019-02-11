@@ -8,6 +8,7 @@ import UI from '../../components/newUI/superAdminDashboard';
 
 
 
+
 class SocietyMangement extends Component {
     constructor(props) {
         super(props);

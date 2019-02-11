@@ -5,6 +5,7 @@ import{Link} from 'react-router-dom';
 import {getCountry,getState,getCity, addCity,detailCity} from './../../actionCreators/cityMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import _ from 'underscore';
+import Spinner from '../../components/spinner/spinner'
 
 
 
@@ -33,17 +34,17 @@ class CityMaster extends Component {
 
     componentDidMount(){
            this.refreshData()
-           this.props.getState()
-           this.props.getCity();
-
     }
 
+
+
     refreshData(){
-        this.props.getCountry().then(() => this.setState({loading: false}))
+        this.props.getCountry().then(() => this.setState({loading: false}));
+        this.props.getState().then(() => this.setState({loading: false}));
+        this.props.getCity().then(() => this.setState({loading: false}));
     }
 
     onChangeCountry= (event)=>{
-
         let selected= event.target.value
         console.log(selected)
 
@@ -56,20 +57,15 @@ class CityMaster extends Component {
 
 
 
-            this.props.getState(country.countryId)
-
-
-            this.setState({
-                countryId: country.countryId,
-                countryName: country.countryName
-            })
+            this.props.getState(country.countryId).then(() => this.setState({countryId: country.countryId,
+                countryName: country.countryName}))
 
 
     }
 
 
     onChangeState= (event)=>{
-
+        this.setState({loading: false})
         let selected= event.target.value
         console.log(selected)
 
@@ -117,7 +113,7 @@ class CityMaster extends Component {
         }
     }
 
-    stateName=({stateResult})=>{
+    stateName({stateResult}){
         if(stateResult){
             console.log(stateResult);
            return(
@@ -193,51 +189,50 @@ class CityMaster extends Component {
 
 
     render() {
-        
+        let formData;
+        formData = <form className="ui form" onSubmit={this.handleSubmit}>
+        <div className="field">
+            <label><h4>Country Name</h4></label>
+            <select className="ui fluid dropdown"  onChange={this.onChangeCountry}>
+                <option>Select</option>
+                {this.countryName(this.props.cityMasterReducer)}
+
+            </select>
+        </div>
+        <div className="field">
+            <label><h4>State Name</h4></label>
+            <select className="ui fluid dropdown" onChange={this.onChangeState}>
+                <option>Select</option>
+                {this.stateName(this.props.cityMasterReducer)}
+
+
+
+
+            </select>
+        </div>
+
+      <div className="form-group">
+            <label htmlFor='cityName'><h4>City Name</h4></label>
+            <input type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler}
+        maxLength='30'
+        minLength='3'/>
+
+
+        </div>
+        <div>
+        <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Submit</button>
+
+        <Link to='/superDashboard/cityMasterDetail'>
+        <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Show Details</button>
+        </Link>
+        </div>
+    </form>
 
 
         return (
             <div>
                 <UI onClick={this.logout}>
-                <form className="ui form" onSubmit={this.handleSubmit}>
-                    <div className="field">
-                        <label><h4>Country Name</h4></label>
-                        <select className="ui fluid dropdown"  onChange={this.onChangeCountry}>
-                            <option>Select</option>
-                            {this.countryName(this.props.cityMasterReducer)}
-
-                        </select>
-                    </div>
-                    <div className="field">
-                        <label><h4>State Name</h4></label>
-                        <select className="ui fluid dropdown" onChange={this.onChangeState}>
-                            <option>Select</option>
-                            {this.stateName(this.props.cityMasterReducer)}
-
-
-
-
-                        </select>
-                    </div>
-
-                  <div className="form-group">
-                        <label htmlFor='cityName'><h4>City Name</h4></label>
-                        <input type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler}
-                    maxLength='30'
-                    minLength='3'/>
-
-
-                    </div>
-                    <div>
-                    <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Submit</button>
-
-                    <Link to='/superDashboard/cityMasterDetail'>
-                    <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Show Details</button>
-                    </Link>
-                    </div>
-                </form>
-                <div>
-                </div>
+                    {!this.state.loading ? formData : <Spinner />}
                 </UI>
 
             </div>

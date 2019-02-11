@@ -18,7 +18,8 @@ class CityMasterDetail extends Component {
                 stateName: '',
                 stateId: '',
                 cityName: '',
-                cityId: ''
+                cityId: '',
+                isActive:false,
 
             },
             menuVisible: false,
@@ -85,9 +86,11 @@ class CityMasterDetail extends Component {
     }
 
     deleteCityName = (cityId) => {
+        let {isActive}=this.state.editCityData
         this.setState({loading:true})
-        this.props.deleteCity(cityId)
+        this.props.deleteCity(cityId,isActive)
             .then(() => this.refreshData())
+            this.setState({editCityData:{isActive:false}})
 
     }
 

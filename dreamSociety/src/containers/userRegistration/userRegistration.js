@@ -111,8 +111,8 @@ class Registration extends Component {
         // const isValid = this.validate();
         if (isValid) {
             this.setState({loading: true})
-            this.props.addUser({ ...this.state })
-            .then(() => this.props.history.push('/superDashboard/user_details'));
+            this.props.addUser({ ...this.state }).then(
+            () => this.props.history.push('/superDashboard/user_details'));
             this.setState({
                 roleName: [],
                 roles: "",
