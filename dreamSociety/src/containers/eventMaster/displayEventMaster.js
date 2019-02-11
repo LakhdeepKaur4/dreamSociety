@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { ViewEvent, GetEventOrganiser,deleteEvent,updateEvent} from '../../actionCreators/eventMasterAction';
 import { bindActionCreators } from 'redux';
-
+import Spinner from   '../../components/spinner/spinner'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-
+import {Link} from 'react-router-dom';
 import {  Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import  SearchFilter from '../../components/searchFilter/searchFilter';
@@ -23,17 +23,18 @@ class DisplayEventMaster extends Component {
                 },
                 editEventModal: false,
                 menuVisible: false,
-                search:''
+                search:'',
+                loading:true
         }
         componentDidMount() {
-                this.props.ViewEvent();
-                this.props.GetEventOrganiser()
+              this.refreshData()
         }
 
 
         refreshData() {
-                this.props.ViewEvent();
-                this.props.GetEventOrganiser()
+               
+                this.props.ViewEvent().then(() => this.setState({loading:false}));
+                this.props.GetEventOrganiser().then(() => this.setState({loading:false}));
 
         }
         toggleEditEventModal() {
@@ -59,7 +60,7 @@ class DisplayEventMaster extends Component {
                                 
                      
                 this.setState({
-                        editEventModal: false, editEventData: { eventId: '', eventType: '', eventName: '', eventOrganiser: '', startDate: '', endDate: '', userId: '', userName: '' }
+                        editEventModal: false,  loading:true, editEventData: { eventId: '', eventType: '', eventName: '', eventOrganiser: '', startDate: '', endDate: '', userId: '', userName: '' }
                 })
         }
 
@@ -71,6 +72,8 @@ class DisplayEventMaster extends Component {
                 }
             }
         deleteEvent(eventId) {
+                this.setState({loading:true})
+
                 let { isActive } = this.state.editEventData;
              
 
@@ -145,12 +148,30 @@ class DisplayEventMaster extends Component {
 
 
         render() {
+                let tableData;
+                tableData=    <Table>
+                <thead>
+                        <tr>
+                                <th>Event Type</th>
+                                <th>Event Name</th>
+                                <th>Event Organiser</th>
+                                <th>Event Start Date</th>
+                                <th>Event End Date</th>
 
+                        </tr>
+                </thead>
+                <tbody>
+
+                        {this.displayEvent(this.props.EventDetails)}
+
+                </tbody>
+        </Table>
                 return (
                         <div>
                                 
                                 <UI onClick={this.logout}>
                                         <div>
+                                        <Link to="/superDashboard/event"><button  type="submit" style={{ backgroundColor: 'lightblue', marginTop: '25px' }}>Add Event</button></Link>
                                                 <h3>Display Event Details</h3>
 
                                                 <Modal isOpen={this.state.editEventModal} toggle={this.toggleEditEventModal.bind(this)}>
@@ -229,23 +250,8 @@ class DisplayEventMaster extends Component {
                                                         </ModalFooter>
                                                 </Modal>
                                                 <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-                                                <Table>
-                                                        <thead>
-                                                                <tr>
-                                                                        <th>Event Type</th>
-                                                                        <th>Event Name</th>
-                                                                        <th>Event Organiser</th>
-                                                                        <th>Event Start Date</th>
-                                                                        <th>Event End Date</th>
+                                                {!this.state.loading? tableData:<Spinner/>}
 
-                                                                </tr>
-                                                        </thead>
-                                                        <tbody>
-
-                                                                {this.displayEvent(this.props.EventDetails)}
-
-                                                        </tbody>
-                                                </Table>
                                         </div>
                                 </UI>
                         </div>

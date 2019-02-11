@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
-
+import {Link} from 'react-router-dom';
+import Spinner from '../../components/spinner/spinner';
 class DisplayTowerMaster extends Component {
 
   state = {
@@ -17,13 +18,18 @@ class DisplayTowerMaster extends Component {
     },
     editTowerModal: false,
     menuVisible: false,
-    search:''
+    search:'',
+    loading:true
   }
 
   componentDidMount() {
 
-    this.props.viewTower()
+    this.refreshData();
 
+  }
+
+  refreshData=()=>{
+    this.props.viewTower().then(() =>this.setState({loading:false}));
   }
 
   OnKeyPresshandle(event) {
@@ -34,17 +40,11 @@ class DisplayTowerMaster extends Component {
       
     }
   }
-
-  
-  refreshdata() {
-    this.props.viewTower()
-
-  }
   deleteTower(towerId) {
-
+this.setState({loading:true});
 
   let {isActive} =this.state.editTowerData;
-     this.props.deleteTower(towerId,isActive).then(()=>{this.refreshdata()})
+     this.props.deleteTower(towerId,isActive).then(()=>{this.refreshData()})
 
         this.setState({editTowerData:{isActive:false}});
 
@@ -63,9 +63,9 @@ class DisplayTowerMaster extends Component {
     let {  towerId, towerName } = this.state.editTowerData;
 
   
-   this.props.updateTower(towerId,towerName).then(()=>{this.refreshdata()})
+   this.props.updateTower(towerId,towerName).then(()=>{this.refreshData()})
       this.setState({
-        editTowerModal: false, editTowerData: { id: '', towerName: '' }
+        editTowerModal: false,loading:true, editTowerData: { id: '', towerName: '' }
       })
 
   }
@@ -117,12 +117,31 @@ class DisplayTowerMaster extends Component {
     return this.props.history.replace('/') 
 }
   render() {
+     let tableData;
+     tableData=<Table >
+              <thead>
+                <tr>
 
+                  <th>Tower Name</th>
+
+
+                </tr>
+              </thead>
+              <tbody>
+
+                 {this.TowerMasterDetails(this.props.TowerDetails)}
+
+              </tbody>
+            </Table>
+            if(!this.props.TowerDetails.tower){
+              tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching Towers</Spinner></div>
+            }
 
     return (
       <div>
         <UI onClick={this.logout}>
           <div>
+         
             <h3 align="center"> Tower List</h3>
             <Modal isOpen={this.state.editTowerModal} toggle={this.toggleEditTowerModal.bind(this)}>
               <ModalHeader toggle={this.toggleEditTowerModal.bind(this)}>Edit Tower</ModalHeader>
@@ -153,21 +172,7 @@ class DisplayTowerMaster extends Component {
               </ModalFooter>
             </Modal>
             <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-            <Table >
-              <thead>
-                <tr>
-
-                  <th>Tower Name</th>
-
-
-                </tr>
-              </thead>
-              <tbody>
-
-                 {this.TowerMasterDetails(this.props.TowerDetails)}
-
-              </tbody>
-            </Table>
+            {!this.state.loading?tableData:<Spinner/>}
           </div>
         </UI>
       </div>

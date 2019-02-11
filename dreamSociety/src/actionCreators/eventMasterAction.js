@@ -26,7 +26,7 @@ export function ViewEvent(){
     
     
     export  function AddEvent(values){
-        const request= axios.post(`${URN}/event`,values,{headers:authHeader()}).then()
+        const request= axios.post(`${URN}/event`,values,{headers:authHeader()}).then(ViewEvent())
         return{
             type:ADD_EVENT,
             payload:request

@@ -37,9 +37,11 @@ export function getTower(){
 
      export function addPerson(values){
          
-      const request =axios.post(`${URN}/auth/signup`,values,{headers:authHeader()})
-      .then()
-      console.log(values,"abc")
+      const request =axios.post(`${URN}/auth/signup`,values,{headers:authHeader()}) 
+      .then(response => response.data)
+
+      .then(viewPerson());
+  
          return{
              type:ADD_PERSON,
              payload:request
