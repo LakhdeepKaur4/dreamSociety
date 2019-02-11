@@ -61,7 +61,6 @@ class AssetList extends Component {
     }
 
     renderList = ({ AssetsList }) => {
-        console.log('======AssetsList=========', AssetsList)
         if (AssetsList) {
             return AssetsList.assets.filter(this.searchFilter(this.state.search)).map((items) => {
                 return (
@@ -87,13 +86,10 @@ class AssetList extends Component {
     render() {
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-            <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}> */}
                 <UI onClick={this.logout}>
               
                 <Link to='/superDashBoard/assetsMaster'>
-                 <button className="btn btn-success" id="addAssets" >Assets List</button>
+                 <button className="btn btn-success" id="addAssets" >Add Assets </button>
                 </Link>
                     <div className="search">
                         <h3>Assets Name</h3>
@@ -130,13 +126,11 @@ class AssetList extends Component {
                     </Modal>
                     </div>
                 </UI>
-                {/* </SideBar> */}
             </div>
         );
     }
 }
 function mapStatToProps(state) {
-    console.log('Assets List', state)
     return {
         List: state.AssetsReducer
     }

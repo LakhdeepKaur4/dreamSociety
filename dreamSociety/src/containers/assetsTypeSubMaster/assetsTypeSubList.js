@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchAssets, updateAssetsSub, removeAssetsSub, getAssets } from '../../actionCreators/assetsSubAction';
+import { fetchAssets, updateAssetsSub, removeAssetsSub } from '../../actionCreators/assetsSubAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
@@ -106,11 +106,7 @@ class AssetsTypeSubList extends Component {
 
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-            <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}>   */}
-                <UI onClick={this.logout}>
-               
+                <UI onClick={this.logout}>      
                 <Link to='/superDashBoard/assetsTypeSubMaster'>
                   <button className="btn btn-success" id="addAssets" >Add Assets Sub Type</button>
                     </Link>
@@ -151,7 +147,6 @@ class AssetsTypeSubList extends Component {
                     </Modal>
                     </div>
                 </UI>
-                {/* </SideBar> */}
             </div>
         );
     }
