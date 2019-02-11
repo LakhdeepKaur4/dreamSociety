@@ -110,12 +110,12 @@ class AssetsTypeSubList extends Component {
                 <Link to='/superDashBoard/assetsTypeSubMaster'>
                   <button className="btn btn-success" id="addAssets" >Add Assets Sub Type</button>
                     </Link>
+                    <div style={{backgroundColor:'lightgray'}}>
                     <div className="search">
                         <h3>Assets Sub Type Name</h3>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
                     </div>
-                    <div style={{backgroundColor:'lightgray'}}>
                     <table className="table table-striped">
                         <thead>
                             <tr>

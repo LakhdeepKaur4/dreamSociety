@@ -91,12 +91,12 @@ class AssetList extends Component {
                 <Link to='/superDashBoard/assetsMaster'>
                  <button className="btn btn-success" id="addAssets" >Add Assets </button>
                 </Link>
+                <div style={{backgroundColor:'lightgray'}}>
                     <div className="search">
                         <h3>Assets Name</h3>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
                     </div>
-                    <div style={{backgroundColor:'lightgray'}}>
                     <table className="table table-striped">
                         <thead>
                             <tr>
