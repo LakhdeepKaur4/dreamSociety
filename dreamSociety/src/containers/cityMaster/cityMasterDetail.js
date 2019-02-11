@@ -89,14 +89,17 @@ class CityMasterDetail extends Component {
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
     }
-    searchFilter(search) {
+
+    searchFilter=(search)=> {
         return function (x) {
             return x.cityName.toLowerCase().includes(search.toLowerCase()) ||
-                x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) ||
+                x.country_master.countryName.toLowerCase().includes(search.toLowerCase())||
                 x.state_master.stateName.toLowerCase().includes(search.toLowerCase())
                 || !search;
         }
     }
+
+    
     renderCity = ({ city }) => {
 
         if (city) {
@@ -108,10 +111,10 @@ class CityMasterDetail extends Component {
                         <td>{item.state_master.stateName}</td>
                         <td>{item.cityName}</td>
                         <td>
-                            <button className="btn btn-success" onClick={this.toggle.bind(this, item.cityId, item.country_master.countryName, item.state_master.stateName, item.cityName)} >Edit</button>
+                            <Button color="success" onClick={this.toggle.bind(this, item.cityId, item.country_master.countryName, item.state_master.stateName, item.cityName)} >Edit</Button>
                         </td>
                         <td>
-                            <button className="btn btn-danger" onClick={this.deleteCityName.bind(this, item.cityId)} >Delete</button>
+                            <Button color="danger" onClick={this.deleteCityName.bind(this, item.cityId)} >Delete</Button>
 
                         </td>
                     </tr>

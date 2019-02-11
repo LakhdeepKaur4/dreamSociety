@@ -97,10 +97,10 @@ class SocietyManagementDetail extends Component {
                         <td>{item.location_master.locationName}</td>
                         <td>{item.societyName}</td>
                             <td>
-                                <button className="btn btn-success" onClick={this.toggle.bind(this, item.societyId, item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, item.societyName)} >Edit</button>
+                                <Button color="success" onClick={this.toggle.bind(this, item.societyId, item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, item.societyName)} >Edit</Button>
                             </td>
                             <td>
-                                <button className="btn btn-danger" onClick={this.deleteSocietyName.bind(this, item.societyId)} >Delete</button>
+                                <Button color="danger" onClick={this.deleteSocietyName.bind(this, item.societyId)} >Delete</Button>
                             </td>
                     </tr>
                 )

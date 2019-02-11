@@ -300,7 +300,7 @@ class SocietyMangement extends Component {
                     <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Submit</button>
 
                     <Link to='/superDashboard/societyManagementDetail'>
-                    <button className="ui submit button" type="submit" style={{backgroundColor:'lightgreen'}}>Show Details</button>
+                    <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Show Details</button>
                     </Link>
                 </form>
                 <div>
