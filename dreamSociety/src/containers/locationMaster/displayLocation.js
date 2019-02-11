@@ -258,7 +258,7 @@ render(){
                            {!this.state.loading ? tableData : <Spinner />}
                        
                                 
-                <Button color="success" type="button" onClick={this.push}> Add Flat</Button>
+                <Button color="success" type="button" onClick={this.push}> Add Location</Button>
                 </div>
         </UI>
         </div>
