@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import {getTowerName,getFlatType,addFlatDetails} from '../../actionCreators/flatDetailMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
-
+import { Button, Modal, FormGroup, ModalBody, ModalHeader,Table, ModalFooter, Input, Label } from 'reactstrap';
 
 class flatDetailMaster extends Component{
     constructor(props){
@@ -113,33 +113,33 @@ class flatDetailMaster extends Component{
     render (){
         return(
             <UI>
-            <div className="form">
+            <div >
                 <form onSubmit={this.onSubmit}>
                 <div style={{textAlign: 'center',fontWeight: 'bold' }}><label>Flat Detail Master</label></div>
-                    <div className="form-group col-md-6">
+                    <div >
                         <label>Flat No</label>
                         <input className ="form-control" type="text" name="flatNo" maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.handleChange} value={this.state.flatNo} required></input>
                     </div>
-                    <div className="form-group  col-md-6">
+                    <div >
                         <label>Flat Type</label>
                         <select required className ="form-control" value={this.state.flatId} name="flatType" onChange={(e)=> this.setState({flatId:e.target.value})} >
                         <option value="">--SELECT--</option>
                             {this.getDropdown1(this.props.flatDetailMasterReducer)}
                         </select>
                     </div>
-                    <div className="form-group  col-md-6">    
+                    <div >    
                         <label>Floor</label>
                         <input className ="form-control" type="text" name="floor" maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  value={this.state.floor} required></input>
                     </div>
-                    <div className="form-group  col-md-6">    
+                    <div >    
                         <label>Tower Name</label>
                         <select  required  className ="form-control" value={this.state.towerId} name="towerName" onChange={(e)=> this.setState({towerId:e.target.value})}>
                         <option  value="">--SELECT--</option>
                             {this.getDropdown(this.props.flatDetailMasterReducer)}
                         </select>
                     </div>
-                    <button type="submit" className ="btn btn-primary" value="submit">Submit</button>
-                    <button className="button" onClick={this.push}>Show Details</button>
+                    <Button type="submit" color="primary" value="submit">Submit</Button>
+                    <Button color="secondary" onClick={this.push}>Show Details</Button>
                 </form> 
             </div>
             </UI>

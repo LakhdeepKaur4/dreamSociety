@@ -4,7 +4,7 @@ import { getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { authHeader } from '../../../helper/authHeader';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import { Button, Modal, FormGroup, ModalBody, ModalHeader,Table, ModalFooter, Input, Label } from 'reactstrap';
 import axios from 'axios';
 import { URN } from '../../../actions/index';
 import { Link } from 'react-router-dom';
@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/vendorDashboardInside';
+import Spinner from '../../../components/spinner/spinner';
 
 class displayVendorMaster extends Component {
 
@@ -28,13 +29,13 @@ class displayVendorMaster extends Component {
             menuVisible: false
         },
         editVendorModal: false,
+        loading:true,
         search: ''
 
     }
 
     componentDidMount() {
-        this.props.getVendorMaster();
-        this.props.getServiceType();
+       this.refreshData();
     }
 
 
@@ -43,7 +44,8 @@ class displayVendorMaster extends Component {
     }
 
     refreshData() {
-        this.props.getVendorMaster();
+        this.props.getVendorMaster().then(()=> this.setState({loading:false}));
+        this.props.getServiceType().then(()=> this.setState({loading:false}));
     }
 
 
@@ -82,6 +84,7 @@ class displayVendorMaster extends Component {
 
 
     deleteService(vendorId) {
+        this.setState({loading:true})
         let { isActive } = this.state.editVendorData;
         axios.put(`${URN}/vendor/delete/` + vendorId, { isActive }, { headers: authHeader() }).then((response) => {
             this.refreshData()
@@ -100,7 +103,7 @@ class displayVendorMaster extends Component {
             this.refreshData();
             console.log('dddddddd', response.data);
             this.setState({
-                editVendorModal: false, editVendorData: { vendorId: '', vendorName: '', serviceName: '', serviceId: '', description: '' }
+                editVendorModal: false,loading:true, editVendorData: { vendorId: '', vendorName: '', serviceName: '', serviceId: '', description: '' }
             })
         });
     }
@@ -128,10 +131,9 @@ class displayVendorMaster extends Component {
 
 
                         <td>
-                            <button className="btn btn-primary" onClick={this.editUser.bind(this, vendors.vendorId, vendors.vendorName, vendors.serviceName, vendors.serviceId, vendors.description)}>Edit</button>
-                        </td>
-                        <td>
-                            <button className="btn btn-danger" onClick={this.deleteService.bind(this, vendors.vendorId)}>Delete</button>
+                            <Button color="primary" className="mr-2" onClick={this.editUser.bind(this, vendors.vendorId, vendors.vendorName, vendors.serviceName, vendors.serviceId, vendors.description)}>Edit</Button>
+                       
+                            <Button color="danger" onClick={this.deleteService.bind(this, vendors.vendorId)}>Delete</Button>
                         </td>
                     </tr>
 
@@ -145,10 +147,26 @@ class displayVendorMaster extends Component {
         return this.props.history.replace('/') 
     }
     render() {
+        let tableData;
+        tableData=
+        <Table className="table table-bordered">
+        <thead>
+            <tr>
+                <th>Vendor Name</th>
+                <th>Service Type</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {this.renderList(this.props.vendorMasterReducer)}
+        </tbody>
+    </Table>
         return (
             <div>
                 <UI onClick={this.logout}>
-                   
+                <div className="w3-container w3-margin-top w3-responsive">
                     <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
                         <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}>Edit a Vendor</ModalHeader>
                         <ModalBody>
@@ -199,22 +217,12 @@ class displayVendorMaster extends Component {
                     <div style={{ fontWeight: 'bold' }}><label>Vendor Details</label></div>
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
-                    <table className="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Vendor Name</th>
-                                <th>Service Type</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {this.renderList(this.props.vendorMasterReducer)}
-                        </tbody>
-                    </table>
+                              {!this.state.loading ? tableData : <Spinner />}
+                 
                     <Link to="/superDashboard/vendorMaster">
-                        <button className="button" type="button">Add Vendor</button>
+                        <Button color="success" type="button">Add Vendor</Button>
                     </Link>
+                    </div>
                 </UI>
               
 

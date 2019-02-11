@@ -6,9 +6,7 @@ import { authHeader } from '../../helper/authHeader';
 import { bindActionCreators } from 'redux';
 import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label, } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar';
+import Spinner from '../../components/spinner/spinner';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 
@@ -23,6 +21,7 @@ class CountryDetails extends Component{
                 code:'',
                 currency:'',
                 phoneCode:'',
+                loading:true,
                 isActive:false
             }
             ,
@@ -37,7 +36,7 @@ class CountryDetails extends Component{
    }
 
      refreshData(){
-    this.props.getCountry();
+    this.props.getCountry().then(() => this.setState({loading:false}));
     }  
 
     toggleEditUserModal() {
@@ -73,7 +72,7 @@ class CountryDetails extends Component{
         this.props.updateCountry(countryId,countryName,code,currency,phoneCode).then(() => this.refreshData());;
   
          this.setState({
-           editUserModal: false, editUserData: {  countryId: '',countryName:'',code:'',currency:'', phoneCode: ''  }
+           editUserModal: false,loading:true,  editUserData: {  countryId: '',countryName:'',code:'',currency:'', phoneCode: ''  }
        })
      
    
@@ -113,6 +112,7 @@ class CountryDetails extends Component{
     }
 
     deleteUser(countryId){
+        this.setState({loading:true});
         let { isActive } = this.state.editUserData
         this.props.deleteCountry(countryId, isActive).then(() => this.refreshData())
         .then(() => this.setState({isActive: false}))
@@ -146,20 +146,39 @@ class CountryDetails extends Component{
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+    routeToAddNewUser =() => {
+        this.props.history.push('/superDashboard/countrymaster')
+    }
 
     render(){
+         let tableData;
+          tableData= <Table>
+        <thead>
+            <tr>
+                <th>countryName</th>
+                <th>code</th>
+                <th>currency</th>
+                <th>phoneCode</th>
+                
+
+
+            </tr>
+        </thead>
+        <tbody>
+            {this.getCountryDetails(this.props.countryDetails)}
+        </tbody>
+    </Table>
+
+    if(!this.props.countryDetails.country1){
+    tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Users. Please! wait...</div>
+}
         return(
             <div>
-                
-               
-                   
                 <UI onClick={this.logout}>
-                    <div>
-                        <Link to="/superDashboard/countrymaster">Add Country</Link>
-                        <div className="search">
+                <div className="w3-container w3-margin-top">
+                        <div className="top-details">
                                 <h3>Country Master Details</h3>
-                                <SearchFilter type="text" value={this.state.search}
-                                    onChange={this.searchOnChange} />
+                                <Button onClick={this.routeToAddNewUser} color="primary">Add State</Button>
                             </div>
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
@@ -204,27 +223,12 @@ class CountryDetails extends Component{
                                 <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
                             </ModalFooter>
                         </Modal>
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th>countryName</th>
-                                    <th>code</th>
-                                    <th>currency</th>
-                                    <th>phoneCode</th>
-                                    
-
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.getCountryDetails(this.props.countryDetails)}
-                            </tbody>
-                        </Table>
+                        <SearchFilter type="text" value={this.state.search}
+                                onChange={this.searchOnChange} />
+                            {!this.state.loading ? tableData : <Spinner />}
+                       
                     </div>
                 </UI>
-               
-                    
-            
             
             </div>
         )

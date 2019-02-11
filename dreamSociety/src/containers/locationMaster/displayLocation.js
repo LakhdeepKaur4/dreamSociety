@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {getLocation,getStateName,getCountryName,getCityName,getLocationName,updateLocation,deleteLocation} from '../../actionCreators/locationMasterAction';
 import { bindActionCreators } from 'redux';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import { Button, Modal, FormGroup, ModalBody,Table, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
-
+import SearchFilter from '../../components/searchFilter/searchFilter';
+import Spinner from '../../components/spinner/spinner';
 
 class DisplayLocation extends Component {
     constructor(props) {
@@ -24,22 +25,23 @@ class DisplayLocation extends Component {
             },
             menuVisible: false,
             search: '',
-            modal: false
-
+            modal: false,
+            loading:true,
         };
     }
 
 
 componentDidMount(){
-    this.props.getLocation();
-    this.props.getStateName();
-    this.props.getCountryName();
-    this.props.getCityName();
-    this.props.getLocationName();
+    this.refreshData();
+
 }    
 
 refreshData() {
-    this.props.getLocation()
+    this.props.getLocation().then(()=> this.setState({loading:false}));
+    this.props.getStateName().then(()=> this.setState({loading:false}));
+    this.props.getCountryName().then(()=> this.setState({loading:false}));
+    this.props.getCityName().then(()=> this.setState({loading:false}));
+    this.props.getLocationName().then(()=> this.setState({loading:false}));
 }
 
 
@@ -60,8 +62,19 @@ toggle = (locationId, countryName, stateName, cityName, locationName) => {
     })
 }
 
-delete = (locationId) => {
+searchFilter(search) {
+    return function (x) {
+        return x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) || !search;
+    }
+}
 
+    
+searchOnChange = (e) => {
+    this.setState({ search: e.target.value })
+}
+
+delete = (locationId) => {
+        this.setState({loading:true})
     let {isActive } =this.state.editLocation;  
     this.props.deleteLocation(locationId,isActive)
         .then(() => this.refreshData())
@@ -74,7 +87,7 @@ toggleModal = () => {
 
 renderList=({details})=>{
     if(details){
-        return details.map((item)=>{
+        return details.filter(this.searchFilter(this.state.search)).map((item)=>{
             return(
                 <tr key={item.locationId}>
                 <td>{item.country_master.countryName}</td>
@@ -82,10 +95,9 @@ renderList=({details})=>{
                 <td>{item.city_master.cityName}</td>
                 <td>{item.locationName}</td>
                 <td>
-                    <button className="btn btn-success" onClick={this.toggle.bind(this, item.locationId, item.country_master.countryName,item.state_master.stateName,item.city_master.cityName,item.locationName)}> Edit</button>
-                </td>
-                <td>
-                    <button className="btn btn-danger" onClick={this.delete.bind(this,item.locationId)}> Delete</button>
+                    <Button color="primary"  className="mr-2" onClick={this.toggle.bind(this, item.locationId, item.country_master.countryName,item.state_master.stateName,item.city_master.cityName,item.locationName)}> Edit</Button>
+               
+                    <Button color="danger" onClick={this.delete.bind(this,item.locationId)}> Delete</Button>
                 </td>
                 </tr>
                 
@@ -148,34 +160,43 @@ updateLocation = () => {
     const { locationId, countryId, stateId, cityId,locationName } = this.state
     this.props.updateLocation(locationId, countryId, stateId, cityId,locationName)
         .then(() => this.refreshData())
-    this.setState({
+    this.setState({loading:true,
         editLocation: { locationId, countryId, stateId, cityId,locationName},
         modal: !this.state.modal
     })
 
 }
 
+push=()=>{
+    this.props.history.push('/superDashboard/locationMaster')
+}
+
 render(){
+    let tableData;
+    tableData=
+    <Table className="table table-bordered">
+    <thead>
+    <tr>
+        <th>Country Name</th>
+        <th>State Name</th>
+        <th>City Name</th>
+        <th>Location Name</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
     
+    <tbody>
+    {this.renderList(this.props.locationMasterReducer)}
+    </tbody>
+</Table> 
     return(
         <div>
         <UI onClick={this.logout}>
         
               
-              <table className="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Country Name</th>
-                        <th>State Name</th>
-                        <th>City Name</th>
-                        <th>Location Name</th>
-                    </tr>
-                    </thead>
-                    
-                    <tbody>
-                    {this.renderList(this.props.locationMasterReducer)}
-                    </tbody>
-             </table>  
+              
+        <div className="w3-container w3-margin-top w3-responsive">
+             
              <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                  <ModalHeader toggle={this.toggle}> Edit Details</ModalHeader>
                  <ModalBody>
@@ -232,7 +253,13 @@ render(){
                         <Button color="secondary" onClick={this.toggleModal.bind(this)}>Cancel</Button>
                  </ModalFooter>
              </Modal> 
-
+             <SearchFilter type="text" value={this.state.search}
+                        onChange={this.searchOnChange} />
+                           {!this.state.loading ? tableData : <Spinner />}
+                       
+                                
+                <Button color="success" type="button" onClick={this.push}> Add Flat</Button>
+                </div>
         </UI>
         </div>
     )

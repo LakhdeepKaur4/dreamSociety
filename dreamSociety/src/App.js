@@ -49,6 +49,7 @@ import DisplayLocation from './containers/locationMaster/displayLocation';
 import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
 
 
+
 class App extends Component {
   render() {
     return (
@@ -92,10 +93,12 @@ class App extends Component {
             <PrivateRoute path='/superDashBoard/assetsTypeSubMaster' exact component={AssetsTypeSubMaster} />
             <PrivateRoute path='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubList} />
             <PrivateRoute path='/superdashboard/flatDetailMaster' component={flatDetailMaster} />
-            <PrivateRoute path='/superdashboard/flatDetails' component={flatDetails} />     
+            <PrivateRoute path='/superdashboard/flatDetails' component={flatDetails} />
+             
             <PrivateRoute path='/superDashboard/cityMaster' component={CityMaster} />
             <PrivateRoute path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
             <PrivateRoute path='/superDashboard/locationMaster' component={locationMaster}/>
+            
             <Route path='/superDashboard' exact component={SuperDashboard} />
             <Route path='/adminDashboard' component={AdminDashboard} />
             <Route path='/ownerDashboard' component={OwnerDashboard} />
@@ -116,7 +119,7 @@ class App extends Component {
             <Route path='/superDashboard/countryMaster/countryMasterDetails' exact component={countryMasterDetails} />
             <Route path='/superDashboard/statemaster' exact component={stateMaster} />
             <Route path='/superDashboard/statemaster/statemasterdetails' exact component={stateMasterDetails} />
-
+            <Route path='/superDashboard/displayLocation'  component={DisplayLocation} />
 
             <Route path='/superDashboard/societyManagement' component={SocietyManagement} />
             <Route path ='/superDashboard/societyManagementDetail' component={SocietyManagementDetail}/>

@@ -5,6 +5,7 @@ import {getCountryName,getStateName,getCityName,addLocationDetails, getLocationN
 import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Link } from 'react-router-dom';
+import { Button } from 'semantic-ui-react';
 
 
 class locationMaster extends Component{
@@ -138,6 +139,10 @@ class locationMaster extends Component{
         })
     }
 
+    push=()=>{
+        this.props.history.push('/superDashboard/displayLocation')
+    }
+
     onSubmit=(event)=> {
        
         event.preventDefault();
@@ -174,38 +179,36 @@ class locationMaster extends Component{
         console.log("locationMasterReducer",this.props.locationMasterReducer.stateResult)
         return(
             <UI onClick={this.logout}>
-            <div className="form">
+            <div>
                 <form onSubmit={this.onSubmit}>
-                    <div className="form-group  col-md-6">
+                    <div>
                         <label>Country Name</label>
                         <select required className ="form-control"  name="countryName"  onChange={this.onChangeCountry} >
                         <option value="">--SELECT--</option>
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
                     </div>
-                    <div className="form-group  col-md-6">    
+                    <div>    
                         <label>State Name</label>
                         <select  required  className ="form-control" name="stateName" onChange={this.onChangeState}>
                         <option  value="">--SELECT--</option>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
                     </div>
-                    <div className="form-group  col-md-6">    
+                    <div>    
                         <label>City Name</label>
                         <select  required  className ="form-control"  name="cityName" onChange={this.onChangeCity} >
                         <option  value="">--SELECT--</option>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
                     </div>
-                    <div className="form-group col-md-6">
+                    <div>
                         <label>Location Name</label>
                         <input className ="form-control" type="text" name="locationName"  value={this.state.locationName}  onChange={this.onLocationChange} required></input>
                     </div>
 
-                    <button type="submit" className ="btn btn-primary" value="submit">Submit</button>
-                    <Link to='/superDashboard/locationDetails'>
-                    <button className="button" >Show Details</button>
-                    </Link>
+                    <Button type="submit" color="primary" value="submit">Submit</Button>
+                    <Button color="secondary" onClick={this.push}>Show Details</Button>
                 </form> 
             </div>
             </UI>
