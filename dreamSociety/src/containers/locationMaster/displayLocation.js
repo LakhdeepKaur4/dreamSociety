@@ -5,7 +5,7 @@ import {getLocation,getStateName,getCountryName,getCityName,getLocationName,upda
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
-
+import SearchFilter from '../../components/searchFilter/searchFilter';
 
 class DisplayLocation extends Component {
     constructor(props) {
@@ -60,6 +60,17 @@ toggle = (locationId, countryName, stateName, cityName, locationName) => {
     })
 }
 
+searchFilter(search) {
+    return function (x) {
+        return x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) || !search;
+    }
+}
+
+    
+searchOnChange = (e) => {
+    this.setState({ search: e.target.value })
+}
+
 delete = (locationId) => {
 
     let {isActive } =this.state.editLocation;  
@@ -74,7 +85,7 @@ toggleModal = () => {
 
 renderList=({details})=>{
     if(details){
-        return details.map((item)=>{
+        return details.filter(this.searchFilter(this.state.search)).map((item)=>{
             return(
                 <tr key={item.locationId}>
                 <td>{item.country_master.countryName}</td>
@@ -176,6 +187,7 @@ render(){
                     {this.renderList(this.props.locationMasterReducer)}
                     </tbody>
              </table>  
+             
              <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                  <ModalHeader toggle={this.toggle}> Edit Details</ModalHeader>
                  <ModalBody>
@@ -232,6 +244,8 @@ render(){
                         <Button color="secondary" onClick={this.toggleModal.bind(this)}>Cancel</Button>
                  </ModalFooter>
              </Modal> 
+             <SearchFilter type="text" value={this.state.search}
+                        onChange={this.searchOnChange} />
 
         </UI>
         </div>

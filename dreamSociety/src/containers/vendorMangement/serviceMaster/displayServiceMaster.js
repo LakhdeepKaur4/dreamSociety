@@ -8,7 +8,7 @@ import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, L
 import { URN } from '../../../actions/index';
 
 import { Link } from 'react-router-dom';
-import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 
 import UI from '../../../components/newUI/vendorDashboardInside';
@@ -134,10 +134,10 @@ class displayServices extends Component {
 
 
                         <td>
-                            <button className="btn btn-primary" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</button>
+                            <Button color="primary" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</Button>
                         </td>
                         <td>
-                            <button className="btn btn-danger" onClick={this.deleteService.bind(this, item.serviceId)}>Delete</button>
+                            <Button color="danger" onClick={this.deleteService.bind(this, item.serviceId)}>Delete</Button>
                         </td>
                     </tr>
 

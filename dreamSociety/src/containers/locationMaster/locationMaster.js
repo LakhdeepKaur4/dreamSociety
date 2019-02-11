@@ -203,7 +203,7 @@ class locationMaster extends Component{
                     </div>
 
                     <button type="submit" className ="btn btn-primary" value="submit">Submit</button>
-                    <Link to='/superDashboard/locationDetails'>
+                    <Link to='/superDashboard/displayLocation'>
                     <button className="button" >Show Details</button>
                     </Link>
                 </form> 
