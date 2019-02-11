@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import AddTower from '../../actionCreators/towerMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Logo from '../../assets/2.jpg';
 import { FormGroup, Form, Label, Input, Button } from 'reactstrap';
 import  {Link} from 'react-router-dom';
 import UI from '../../components/newUI/superAdminDashboard';
 
-import './towerMaster.css'
 
 
 
