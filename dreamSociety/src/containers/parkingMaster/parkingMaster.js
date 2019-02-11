@@ -3,25 +3,30 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchParking } from '../../actionCreators/parkingAction';
 import { Table, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 
 
 class ParkingMaster extends Component {
-    state = {
-        menuVisible: false,
-        loading:false,
-        search: ''
+    componentWillMount(){
+        this.state = {
+            menuVisible: false,
+            loading:true,
+            search: ''
+        }
     }
     componentDidMount() {
-        this.props.fetchParking()
+        this.refreshData()
+    }
+
+    refreshData(){
+        this.props.fetchParking().then(() => this.setState({loading: false}))
     }
 
     delete_Parking(id) {
         this.props.deleteParking(id)
-            .then(() => this.props.fetchParking())
+            .then(() => this.refreshData())
     }
 
     searchOnChange = (e) => {
@@ -65,32 +70,38 @@ class ParkingMaster extends Component {
         return this.props.history.replace('/') 
     }
     render() {
-        const tableData = <Table>
-                            <thead>
-                                <tr>
-                                    <th>Basement</th>
-                                    <th>No. of Parking</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.renderParking(this.props.parkingDetail)}
-                            </tbody>
-                        </Table>
+        let tableData;
+        if(this.props.parkingDetail.parking){
+            tableData = <Table>
+            <thead>
+                <tr>
+                    <th>Basement</th>
+                    <th>No. of Parking</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {this.renderParking(this.props.parkingDetail)}
+            </tbody>
+        </Table>
+        } 
+        else {
+            tableData = <Spinner />
+        }
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <h1 style={{ color: 'black' }}>Add Parking</h1>
                     <div>
 
-                        <div className="container">
-                            <div>
-                                <Link to='/superDashboard/add_parking/new'>Add Parking</Link>
+                        <div className="w3-container w3-margin-top">
+                            <div className="top-details">
+                                <h3>Parking details</h3>
+                                <Button onClick={() => this.props.history.push('/superDashboard/add_parking/new')}>Add Parking</Button>
                             </div>
-                            <h3>Parking details</h3>
+                            
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                            {this.props.parkingDetail.parking ? tableData : <Spinner />}
+                            {!this.state.loading ? tableData: <Spinner /> }
                         </div>
                     </div>
                 </UI>

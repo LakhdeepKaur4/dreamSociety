@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import UI from '../../components/newUI/superAdminDashboard';
 
 import { Link } from 'react-router-dom';
-import './sizeMaster.css';
+
 import { Form, FormGroup, Input, Button, Label } from 'reactstrap';
 
 class SizeMaster extends Component {
@@ -58,7 +58,7 @@ class SizeMaster extends Component {
                 <UI onClick={this.logout}>
                     <div style={{ margin: '48px auto' }}>
 
-                        <div className="form">
+                        <div>
                             <Form onSubmit={this.submit}>
                                 <FormGroup>
                                     <Label> Size Type</Label>

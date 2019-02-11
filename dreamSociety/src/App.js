@@ -5,6 +5,7 @@ import  {PrivateRoute}  from './components/privateRoute/privateRoute';
 import Parking from './components/parking/parking';
 // ========Containers =========//
 import Login from './containers/login/login';
+import Parking from './containers/parking/parking';
 // import QR from './containers/QR/QR Code';
 import UserDetails from './containers/userDetails/userDetails';
 import Demo from './containers/demo';

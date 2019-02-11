@@ -5,9 +5,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { addUser, getRoles } from '../../actionCreators/superAdminMasterAction'
 import './userRegistration.css';
 import { withRouter } from 'react-router-dom';
-import { Form, FormGroup, Input, Button, Label } from 'reactstrap';
+import { Form } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import '../../r-css/w3.css';
+import UserRegistrationForm from './userRegistrationForm';
 import UI from '../../components/newUI/superAdminDashboard';
 
 
@@ -69,14 +70,6 @@ class Registration extends Component {
         }
     }
 
-    OnKeyPressPasswordhandler(event) {
-        const pattern = /^[a-zA-Z0-9]+$/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
-    }
-
     onChange(e) {
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
@@ -113,7 +106,7 @@ class Registration extends Component {
 
         // const isValid = this.validate();
         if (isValid) {
-            this.setState({loading: false})
+            this.setState({loading: true})
             this.props.addUser({ ...this.state })
             .then(() => this.props.history.push('/superDashboard/user_details'));
             this.setState({
@@ -128,7 +121,6 @@ class Registration extends Component {
                 passwordConfirmation: "",
                 isSubmit: true
             });
-            this.setState({loading: true})
         }
     }
 
@@ -157,106 +149,65 @@ class Registration extends Component {
 
 
     render() {
-        const formData = <div>
-            <FormGroup>
-                <Label>User Type</Label>
-                <Input type="select" name="roles" onChange={this.onChange}>
-                    <option value=''>--Select--</option>
-                    {this.fetchRoles(this.props.userDetail)}
-                </Input>
-
-
-                <span className='error'>{this.state.errors.roles}</span>
-            </FormGroup>
-            <FormGroup>
-                <Label>First Name</Label>
-                <Input name="firstName"
-                    type="text"
-                    value={this.state.firstName}
-                    onChange={this.onChange}
-                    onKeyPress={this.OnKeyPressUserhandler}
-                    maxLength='25'
-                    minLength='3' />
-                <span className='error'>{this.state.errors.firstName}</span>
-            </FormGroup>
-            <FormGroup>
-                <Label>Last Name</Label>
-                <Input name="lastName"
-                    type="text"
-                    value={this.state.lastName}
-                    onChange={this.onChange}
-                    onKeyPress={this.OnKeyPressUserhandler}
-                    maxLength='25'
-                    minLength='3'  />
-                <span className='error'>{this.state.errors.lastName}</span>
-            </FormGroup>
-            <FormGroup>
-                <Label>User Name</Label>
-                <Input name="userName"
-                    type="text"
-                    value={this.state.userName}
-                    onChange={this.onChange}
-                    maxLength='25'
-                    minLength='3'  />
-                <span className='error'>{this.state.errors.userName}</span>
-            </FormGroup>
-            <FormGroup>
-                <Label>Email</Label>
-                <Input name="email"
-                    type="email"
-                    value={this.state.email}
-                    onChange={this.onChange}
-                    maxLength='40'
-                    minLength='10'
-                    onKeyPress={this.emailValid}  />
-                <span className='error'>{this.state.errors.email}</span>
-            </FormGroup>
-            <FormGroup>
-                <Label>Contact No.</Label>
-                <Input name="contact"
-                    type="text"
-                    value={this.state.contact}
-                    onChange={this.onChange}
-                    onKeyPress={this.OnKeyPresshandlerPhone}
-                    maxLength='10'
-                    minLength='10' />
-                <span className='error'>{this.state.errors.contact}</span>
-            </FormGroup>
-            <FormGroup>
-                <Label>Password</Label>
-                <Input name="password"
-                    type="password"
-                    value={this.state.password}
-                    onChange={this.onChange}
-                    onKeyPress={this.OnKeyPressPasswordhandler}
-                    maxLength='15' />
-                <span className='error'>{this.state.errors.password}</span>
-            </FormGroup>
-            <FormGroup>
-                <Label>Confirm Password</Label>
-                <Input name="passwordConfirmation"
-                    type="password"
-                    value={this.state.passwordConfirmation}
-                    onChange={this.onChange}
-                    onKeyPress={this.OnKeyPressPasswordhandler} />
-                <span className='error'>{this.state.errors.passwordConfirmation}</span>
-            </FormGroup>
-
-            <Button color="primary" className="mr-2">Add User</Button>
-            <Button onClick={this.routeToUserDetails} color="primary">User Details</Button>
-        </div>
-        return (<div>
+        let formData;
+        if(!this.state.loading && this.props.userDetail.userRole && this.state.errors){
+            formData = <UserRegistrationForm 
+                roleInputName="roles"
+                roleChange={this.onChange}
+                fetchingRole={this.fetchRoles(this.props.userDetail)}
+                roleError = {this.state.errors.roles}
+                firstNameInputName="firstName"
+                firstNameValue={this.state.firstName}
+                firstNameChange = {this.onChange}
+                NameKeyPress={this.OnKeyPressUserhandler}
+                firstNameError={this.state.errors.firstName}
+                lastNameInputName="lastName"
+                lastNameValue={this.state.lastName}
+                lastNameChange = {this.onChange}
+                lastNameError={this.state.errors.lastName}
+                userNameInputName ="userName"
+                userNameValue={this.state.userName}
+                userNameChange={this.onChange}
+                userNameError = {this.state.errors.userName}
+                emailInputName="email"
+                emailValue={this.state.email}
+                emailChange={this.onChange}
+                emailError={this.state.errors.email}
+                emailKeyPress={this.emailValid}
+                contactInputName="contact"
+                contactValue={this.state.contact}
+                contactChange={this.onChange}
+                contactError={this.state.errors.contact}
+                contactKeyPress={this.OnKeyPresshandlerPhone}
+                passwordInputName="password"
+                passwordValue={this.state.password}
+                passwordChange={this.onChange}
+                passwordError={this.state.errors.password}
+                passwordConfirmationInputName="passwordConfirmation"
+                passwordConfirmationValue={this.state.passwordConfirmation}
+                passwordConfirmationChange={this.onChange}
+                passwordConfirmationError={this.state.errors.passwordConfirmation}
+                routeToUserDetails={this.routeToUserDetails}
+                />
+        }
+        else if(!this.props.userDetail.userRole){
+            formData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Role Names. Please! Wait...</div>
+        }
+        else if(this.submit){
+            formData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />User is getting registered. Please! Wait...</div>
+        }
+        
+        return (
+        <div>
             <UI onClick={this.logout}>
                 <div>
                     {this.state.message}
                 </div>
-                <div style={{ width: '600px', padding: '20px 20px', borderRadius: '20px', margin: '0 auto', background: '#f3f3f3', position: 'relative' }}>
+                <div>
                     <Form onSubmit={this.submit}>
-                    <div>{!this.state.loading && this.state.errors ? formData : 
-                        <div style={{textAlign:'center'}}>
-                            <Spinner />
-                            <span style={{fontSize:'20px'}}>User is getting registered!Please wait...</span>
-                        </div>}
+                    <div>
+                        <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add User</h3></div>
+                        {formData}
                     </div>
                     </Form>
                 </div>

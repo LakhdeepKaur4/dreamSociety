@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getTower,getFlat,getRoles,addPerson} from '../../actionCreators/personDetailsMasterAction';
-import './personDetails.css';
+
 import {Link} from 'react-router-dom';
 import UI from '../../components/newUI/superAdminDashboard';
 
@@ -51,8 +51,8 @@ OnKeyPressNumber(event) {
     }
 }
 
-onKeyPressmail(event){
-    const pattern = /^[a-zA-Z]$/;
+OnKeyPressmail(event){
+    const pattern = /^[a-zA-Z0-9@._]+$/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
         event.preventDefault();

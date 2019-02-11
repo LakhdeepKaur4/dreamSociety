@@ -1,31 +1,34 @@
 import React, { Component } from 'react';
 import { getUsers, getRoles, addUser, updateUser, deleteUser } from '../../actionCreators/superAdminMasterAction';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import { Table, Button } from 'reactstrap';
 import '../../r-css/w3.css';
+import EditUserModal from './editUserModal'
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 
 class userDetails extends Component {
-    state = {
-        editUserData: {
-            userId: "",
-            roleName: "",
-            firstName: "",
-            lastName: "",
-            userName: "",
-            email: "",
-            contact: "",
-            loading:false,
-            isActive: false,
-        },
-        editUserModal: false,
-        dropdownOpen: false,
-        search:''
+    constructor(props){
+            super(props);
+            this.state = {
+                userId: "",
+                roleName: "",
+                firstName: "",
+                lastName: "",
+                userName: "",
+                email: "",
+                contact: "",
+                isActive: false,
+                editUserModal: false,
+                loading:true,
+                dropdownOpen: false,
+                search:''
+        }
+        
     }
+    
 
     componentDidMount() {
         this.refreshData();
@@ -36,9 +39,8 @@ class userDetails extends Component {
     }
 
     refreshData() {
-        this.props.getUsers();
-        this.props.getRoles();
-        this.fetchUsers(this.props.userDetail)
+        this.props.getUsers().then(() => this.setState({loading:false}))
+        this.props.getRoles().then(() => this.setState({loading:false}));
     }
 
     toggleEditUserModal() {
@@ -48,25 +50,26 @@ class userDetails extends Component {
     }
 
     updateUser = () => {
-        if(this.props.userDetail.user){
-            let { userId, roleName, firstName, lastName, userName, email, contact } = this.state.editUserData;
-        
-            this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact).then(() => this.refreshData())
+            
+            let { userId, roleName, firstName, lastName, userName, email, contact } = this.state;
+            this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact)
+            .then(() => {
+                this.refreshData()
+            })
             this.setState({
-                editUserModal: false, editUserData: { userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' }
+                editUserModal: false,loading:true,  userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' 
             });
-        }
-        return this.setState({loading:true})
     }
 
     editUser(userId, roleName, firstName, lastName, userName, email, contact) {
         this.setState({
-            editUserData: { userId, roleName, firstName, lastName, userName, email, contact }, editUserModal: !this.state.editUserModal
+             userId, roleName, firstName, lastName, userName, email, contact , editUserModal: !this.state.editUserModal
         });
     }
 
     deleteUser(userId) {
-        let { isActive } = this.state.editUserData
+        this.setState({loading:true})
+        let { isActive } = this.state
         this.props.deleteUser(userId, isActive)
         .then(() => this.refreshData())
         .then(() => this.setState({isActive: false}))
@@ -84,6 +87,7 @@ class userDetails extends Component {
                  x.contact.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||  
                  !search;
             }
+            return <div>Not Found</div>
         }
     }
  
@@ -113,14 +117,16 @@ class userDetails extends Component {
                 )
             })
         }
-        return <tr><td><span style={{fontSize:'24px',fontWeight:'bold'}}>...Loading. Please Wait!</span></td></tr>
+    }
+
+    onChange = (e) => {
+        this.setState({[e.target.name]:e.target.value});
     }
 
     fetchRoles({ userRole }) {
         if (userRole) {
             return (
                 userRole.map((item) => {
-                    console.log(this.state)
                     return (
                         <option value={item.roleName} key={item.id}>
                             {item.roleName}
@@ -129,6 +135,10 @@ class userDetails extends Component {
                 })
             )
         }
+    }
+
+    routeToAddNewUser =() => {
+        this.props.history.push('/superDashboard/registration')
     }
 
     searchOnChange = (e) => {
@@ -146,7 +156,8 @@ class userDetails extends Component {
     }
 
     render() {
-        const tableData = <Table>
+        let tableData;
+        tableData = <Table>
 
             <thead>
                 <tr>
@@ -163,93 +174,48 @@ class userDetails extends Component {
                 {this.fetchUsers(this.props.userDetail)}
             </tbody>
         </Table>
+         if(!this.props.userDetail.user && !this.props.userDetail.userRole){
+            tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Users. Please! wait...</div>
+        }
+
         return (
             <div>
                 <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top">
-                            <Link to="/superDashboard/registration">Add Users</Link>
-                            <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
-                                <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit User</ModalHeader>
-                                <ModalBody>
-                                    <FormGroup>
-                                        <Label>Role</Label>
-                                        <Input type="select" id="roleName" value={this.state.editUserData.roleName} onChange={(e) => {
-                                            console.log(this.state)
-                                            let { editUserData } = this.state;
+                            <div className="top-details">
+                                <h3>User Details</h3>
+                                <Button onClick={this.routeToAddNewUser} color="primary">Add Users</Button>
+                            </div>
+                            
+                            <EditUserModal isOpen={this.state.editUserModal}
+                                 toggle={this.toggleEditUserModal.bind(this)}
+                                 roleNameValue = {this.state.roleName}
+                                 roleInputName = "roleName"
+                                 roleNameChange = {this.onChange}
+                                selectedRoleNameValue = {this.state.roleName}
+                                selectedRoleName = {this.state.roleName}
+                                fetchRoles = {this.fetchRoles(this.props.userDetail)}
+                                firstNameInputName="firstName"
+                                firstNameValue = {this.state.firstName}
+                                firstNameValueChange = {this.onChange}
+                                lastNameInputName = "lastName"
+                                lastNameValue = {this.state.lastName}
+                                lastNameValueChange = {this.onChange}
+                                userNameInputName = "userName"
+                                userNameValue = {this.state.userName}
+                                userNameValueChange = {this.onChange}
+                                emailInputName= "email"
+                                emailValue = {this.state.email}
+                                emailValueChange = {this.onChange}
+                                contactInputName = "contact"
+                                contactValue = {this.state.contact}
+                                contactValueChange = {this.onChange}
+                                updateUserClick={this.updateUser}
+                                 />
 
-                                            editUserData.roleName = e.target.value;
-
-                                            this.setState({ editUserData });
-                                        }} >
-                                            <option value={this.state.editUserData.roleName}>{this.state.editUserData.roleName}</option>
-                                            <option disabled>Select</option>
-                                            {this.fetchRoles(this.props.userDetail)}
-                                        </Input>
-
-                                    </FormGroup>
-
-                                    <FormGroup>
-                                        <Label for="firstName">firstName</Label>
-                                        <Input id="firstName" value={this.state.editUserData.firstName} onChange={(e) => {
-                                            let { editUserData } = this.state;
-
-                                            editUserData.firstName = e.target.value;
-
-                                            this.setState({ editUserData });
-                                        }} />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="lastName">lastName</Label>
-                                        <Input id="lastName" value={this.state.editUserData.lastName} onChange={(e) => {
-                                            let { editUserData } = this.state;
-
-                                            editUserData.lastName = e.target.value;
-
-                                            this.setState({ editUserData });
-                                        }} />
-
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="Username">Username</Label>
-                                        <Input id="Username" value={this.state.editUserData.userName} onChange={(e) => {
-                                            let { editUserData } = this.state;
-
-                                            editUserData.userName = e.target.value;
-
-                                            this.setState({ editUserData });
-                                        }} />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="email">email</Label>
-                                        <Input id="email" value={this.state.editUserData.email} onChange={(e) => {
-                                            let { editUserData } = this.state;
-
-                                            editUserData.email = e.target.value;
-
-                                            this.setState({ editUserData });
-                                        }} />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label for="contact">contact</Label>
-                                        <Input id="contact" value={this.state.editUserData.contact} onChange={(e) => {
-                                            let { editUserData } = this.state;
-
-                                            editUserData.contact = e.target.value;
-
-                                            this.setState({ editUserData });
-                                        }} />
-                                    </FormGroup>
-
-
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button color="primary" onClick={this.updateUser}>Update Book</Button>{' '}
-                                    <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
-                                </ModalFooter>
-                            </Modal>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                            {this.props.userDetail.user ? tableData: <Spinner />}
+                            {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         </UI>
                 
