@@ -99,7 +99,7 @@ class ParkingMaster extends Component {
                         <div className="w3-container w3-margin-top w3-responsive">
                             <div className="top-details">
                                 <h3>Parking details</h3>
-                                <Button onClick={() => this.props.history.push('/superDashboard/add_parking/new')}>Add Parking</Button>
+                                <Button color="primary" onClick={() => this.props.history.push('/superDashboard/add_parking/new')}>Add Parking</Button>
                             </div>
                             
                             <SearchFilter type="text" value={this.state.search}

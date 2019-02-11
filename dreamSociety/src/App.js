@@ -16,7 +16,6 @@ import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
 import VendorDashboard from './containers/vendorDashboard/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
 
-
 import SocietyManagement from './containers/societyManagement/societyMangement';
 import TowerMaster from './containers/towerMaster/towerMaster';
 import DisplayTowerMaster from './containers/towerMaster/displayTowerMaster';
@@ -59,7 +58,6 @@ class App extends Component {
             <Route path="/" exact component={Login} />
             <Route path='/login' component={Login} />
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
-<<<<<<< Updated upstream
             <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
             <PrivateRoute path='/ownerDashboard' component={OwnerDashboard} />
             <PrivateRoute path='/tenantDashboard' component={TenantDashboard} />
@@ -94,13 +92,10 @@ class App extends Component {
             <PrivateRoute path='/superDashBoard/assetsTypeSubMaster' exact component={AssetsTypeSubMaster} />
             <PrivateRoute path='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubList} />
             <PrivateRoute path='/superdashboard/flatDetailMaster' component={flatDetailMaster} />
-            <PrivateRoute path='/superdashboard/flatDetails' component={flatDetails} />
-            <PrivateRoute path='/superdashboard/locationDetails' component={locationDetails} />     
+            <PrivateRoute path='/superdashboard/flatDetails' component={flatDetails} />     
             <PrivateRoute path='/superDashboard/cityMaster' component={CityMaster} />
             <PrivateRoute path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
             <PrivateRoute path='/superDashboard/locationMaster' component={locationMaster}/>
-            <PrivateRoute path='/superdashboard/locationDetails' component={locationDetails} />
-=======
             <Route path='/superDashboard' exact component={SuperDashboard} />
             <Route path='/adminDashboard' component={AdminDashboard} />
             <Route path='/ownerDashboard' component={OwnerDashboard} />
@@ -150,7 +145,6 @@ class App extends Component {
         
         
             <Route path='/superdashboard/DisplayLocation' component={DisplayLocation} />
->>>>>>> Stashed changes
           </Switch>
         </div>
       </BrowserRouter>
