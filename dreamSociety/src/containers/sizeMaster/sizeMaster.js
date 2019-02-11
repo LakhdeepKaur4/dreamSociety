@@ -58,7 +58,7 @@ class SizeMaster extends Component {
                 <UI onClick={this.logout}>
                     <div style={{ margin: '48px auto' }}>
 
-                        <div className="form">
+                        <div>
                             <Form onSubmit={this.submit}>
                                 <FormGroup>
                                     <Label> Size Type</Label>

@@ -61,7 +61,7 @@ class TowerMaster extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <div className="form">
+                    <div>
                         <Form onSubmit={this.onSubmit}>
                             <FormGroup>
                                 <Label>Tower Name</Label>

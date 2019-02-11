@@ -142,7 +142,7 @@ class FlatMaster extends Component {
                         style={{ backgroundImage: `url(${Logo})`,padding:'55px 0px',
                         backgroundSize: 'cover', backgroundRepeat: 'no-repeat', overFlow:`auto` }}> */}
                 <UI onClick={this.logout}>
-                    <div className="flatMaster">
+                    <div>
                         {this.state.isSubmit ? <Redirect to="/superDashboard/statemaster/statemasterdetails" /> : form}
                     </div>
                 </UI>
