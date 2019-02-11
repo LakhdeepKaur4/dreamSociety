@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 
 import UI from '../../../components/newUI/vendorDashboardInside';
+import Spinner from '../../../components/spinner/spinner';
 
 
 
@@ -26,18 +27,20 @@ class displayServices extends Component {
             serviceName: '',
             service_detail: '',
             serviceDetailId: '',
+            
             isActive: false
         },
         menuVisible: false,
         editServiceModal: false,
-        search: ''
+        search: '',
+        loading:true,
 
     }
 
 
     componentDidMount() {
-        this.props.getServiceType()
-        this.props.getServiceDetail();
+        this.refreshData();
+   
     }
 
     componentWillMount() {
@@ -45,12 +48,14 @@ class displayServices extends Component {
     }
 
     refreshData() {
-        this.props.getServiceType();
+        this.props.getServiceType().then(()=> this.setState({loading:false}));
+        this.props.getServiceDetail().then(()=> this.setState({loading:false}));
     }
 
 
 
     deleteService(serviceId) {
+        this.setState({loading:true})
         let { isActive } = this.state.editServiceData;
         axios.put(`${URN}/service/` + serviceId, { isActive }, { headers: authHeader() }).then((response) => {
             this.refreshData()
@@ -81,7 +86,7 @@ class displayServices extends Component {
             this.refreshData();
 
             this.setState({
-                editServiceModal: false, editServiceData: { serviceId: '', serviceName: '', service_detail: '', serviceDetailId: '' }
+                editServiceModal: false,loading:true, editServiceData: { serviceId: '', serviceName: '', service_detail: '', serviceDetailId: '' }
             })
         });
 
@@ -151,6 +156,21 @@ class displayServices extends Component {
     }
 
     render() {
+        let tableData;
+        tableData=
+        <Table className="table table-bordered">
+        <thead>
+            <tr>
+                <th>Service Type</th>
+                <th>Service Details</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {this.renderList(this.props.displayServiceMasterReducer)}
+        </tbody>
+    </Table>
         return (
 
             <div>
@@ -195,19 +215,8 @@ class displayServices extends Component {
                     <div style={{ fontWeight: 'bold'}}><label>Service Details</label></div>
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
-                    <Table className="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Service Type</th>
-                                <th>Service Details</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {this.renderList(this.props.displayServiceMasterReducer)}
-                        </tbody>
-                    </Table>
+                           {!this.state.loading ? tableData : <Spinner />}
+                 
                     <Link to="/superDashboard/serviceMaster">
                         <Button color="success" type="button">Add Services</Button>
                     </Link>
