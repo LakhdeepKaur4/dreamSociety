@@ -6,7 +6,7 @@ import {URN,ADD_TOWER,GET_TOWER,UPDATE_TOWER,DELETE_TOWER}  from '../actions/ind
 export  default function AddTower(values){
     const request = axios.post(`${URN}/tower`,values,{headers:authHeader()},
      {method: 'POST'})
-    .then()
+    .then(viewTower())
    console.log(request);
    
     return{

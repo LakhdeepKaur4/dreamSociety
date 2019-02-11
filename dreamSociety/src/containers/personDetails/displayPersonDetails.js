@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { authHeader } from '../../helper/authHeader';
-import { URN } from '../../actions/index';
+
 import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
-import { viewPerson, getFlat, getTower, getRoles } from '../../actionCreators/personDetailsMasterAction';
+import { viewPerson, getFlat, getTower, getRoles,updatePerson,deletePerson } from '../../actionCreators/personDetailsMasterAction';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
-
-
+import {Link} from 'react-router-dom';
+import Spinner from '../../components/spinner/spinner';
 class displayPersonDetails extends Component {
 
 
@@ -25,22 +24,22 @@ class displayPersonDetails extends Component {
                                 flatDetailId: '',
                                 roles: [],
                                 id: '',
-
+                                
                                 familyMember: '',
                                 parking: '',
                                 isActive: false
                         },
                         editPersonModal: false,
+                        loading:true,
                         search: ''
                 }
         }
         componentDidMount() {
-                this.props.viewPerson()
-                this.props.getTower()
-                this.props.getRoles()
-
-                console.log(this.props.viewPerson(), "abc")
+                this.refreshData()
+        
         }
+
+        
 
         OnKeyPresshandler(event) {
                 const pattern = /[a-zA-Z]/;
@@ -84,7 +83,10 @@ OnKeyPressmail(event){
         }
         refreshData() {
 
-                this.props.viewPerson()
+                this.props.viewPerson().then(() => this.setState({loading:false}));
+                this.props.getTower().then(() => this.setState({loading:false}));
+                this.props.getRoles().then(() => this.setState({loading:false}));
+                
         }
         toggleEditPersonModal() {
 
@@ -99,30 +101,37 @@ OnKeyPressmail(event){
                         editPersonModal: !this.state.editPersonModal
                 })
         }
-        updatePerson = () => {
-                let { userId, userName, email, towerId, id, roles, familyMember, parking, roleName, flatDetailId } = this.state.editPersonData;
-                console.log('dfdsf', userName, email, towerId, id, roles, familyMember, parking);
+     
+updatePerson = ( ) => {
 
-                axios.put(`${URN}/user/` + userId, { userId, userName, email, towerId, id, roles, familyMember, parking, roleName, flatDetailId },
-                        { headers: authHeader() }).then((response) => {
+        let {  userId,userName,email,towerId,familyMember,parking,roleName } = this.state.editPersonData;
+     
+  console.log("person check" , userId,userName,email,towerId,familyMember,parking,roleName)
+        
+  this.props.updatePerson( userId,userName,email,towerId,familyMember,parking,roleName).then(()=>{this.refreshData()})
 
-                                this.refreshData();
-                        })
+        //   this.refreshData()
                 this.setState({
-                        editPersonModal: false, editPersonData: { userName: '', email: '', towerId: '', id: '', roles: '', familyMember: '', parking: '', roleName: '', flatDetailId: '' }
+                        editPersonModal: false,loading:true, editPersonData: { userName:'',email:'',towerId:'',familyMember:'',parking:'',roleName:''  }
                 })
-        }
+        
+}
 
 
 
 
-        deletePerson(userId) {
-                let { isActive } = this.state.editPersonData;
-                axios.put(`${URN}/user/delete/` + userId, { isActive }, { headers: authHeader() }).then((response) => {
-                        this.refreshData();
-                        this.setState({ editPersonData: { isActive: false } })
-                })
-        }
+
+      
+deletePerson(userId){
+        this.setState({loading:true})
+
+        let {isActive} = this.state.editPersonData;
+       
+        this.props.deletePerson(userId,isActive).then(()=>{this.refreshData()})
+    
+            this.setState({editPersonData:{isActive:false}})
+      
+    }
         searchFilter(search) {
                 return function (x) {
                         return x.userName.toLowerCase().includes(search.toLowerCase()) || !search;
@@ -183,6 +192,9 @@ OnKeyPressmail(event){
                         )
                 }
         }
+        Addperson=()=>{
+                this.props.history.push('/superDashboard/persondetails')
+        }
         logout=()=>{
                 localStorage.removeItem('token');
                 localStorage.removeItem('user-type');
@@ -190,14 +202,34 @@ OnKeyPressmail(event){
             }
 
         render() {
+                let tableData;
+                tableData= <Table>
+                                                        <thead>
+                                                                <tr>
+                                                                        <th>UserName</th>
+                                                                        <th>Email</th>
+                                                                        <th>Tower Name </th>
+                                                                        <th>Roles</th>
+                                                                        <th>Number of
+                      family member</th>
+                                                                        <th>Parking</th>
+
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                                {this.person(this.props.personDetails)}
+
+                                                        </tbody>
+                                                </Table>
                 return (
                         <div>
                                 <UI onClick={this.logout}>
-                                        <div>
-
-
-                                                <h3>Display Person Details</h3>
-
+                                        <div className ="w3-container w3-margin-top">
+                                        <div  className ="top-details" >         
+                                        <h3>Display Person Details</h3>
+<Button onClick ={this.Addperson} colr="primary"> Add person</Button>
+</div>
                                                 <Modal isOpen={this.state.editPersonModal} toggle={this.toggleEditPersonModal.bind(this)}>
                                                         <ModalHeader toggle={this.toggleEditPersonModal.bind(this)}>Edit  Event Details</ModalHeader>
                                                         <ModalBody>
@@ -304,25 +336,7 @@ OnKeyPressmail(event){
                                                         </ModalFooter>
                                                 </Modal>
                                                 <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-                                                <Table>
-                                                        <thead>
-                                                                <tr>
-                                                                        <th>UserName</th>
-                                                                        <th>Email</th>
-                                                                        <th>Tower Name </th>
-                                                                        <th>Roles</th>
-                                                                        <th>Number of
-                      family member</th>
-                                                                        <th>Parking</th>
-
-                                                                </tr>
-                                                        </thead>
-                                                        <tbody>
-
-                                                                {this.person(this.props.personDetails)}
-
-                                                        </tbody>
-                                                </Table>
+                                                {!this.state.loading? tableData:<Spinner/>}
 
                                         </div>
                                 </UI>
@@ -348,7 +362,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-        return bindActionCreators({ viewPerson, getFlat, getRoles, getTower }, dispatch)
+        return bindActionCreators({ viewPerson, getFlat, getRoles, getTower,updatePerson,deletePerson}, dispatch)
 }
 
 

@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import {Link} from 'react-router-dom';
 import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 
 import UI  from '../../components/newUI/superAdminDashboard';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-
+import Spinner from '../../components/spinner/spinner';
 class DisplaySizeMaster extends Component {
   state = {
     
@@ -23,17 +23,18 @@ class DisplaySizeMaster extends Component {
 
     editSizeModal: false,
     menuVisible: false,
-    search:''
+    search:'',
+    loading:true
   }
 
   componentDidMount() {
 
-    this.props.displaySize()
+    this.refreshData()
 
   }
 
   refreshData() {
-    this.props.displaySize();
+    this.props.displaySize().then(() =>this.setState({loading:false}));
   }
 
    
@@ -64,7 +65,7 @@ class DisplaySizeMaster extends Component {
 
     
       this.setState({
-        editSizeModal: false, editSizeData: { sizeType: '' }
+        editSizeModal: false, loading:true,editSizeData: { sizeType: '' }
       })
   }
 
@@ -81,7 +82,7 @@ class DisplaySizeMaster extends Component {
 
 
   deleteSize(sizeId) {
- 
+             this.setState({loading:true})
         let {isActive } =this.state.editSizeData;    
        this.props.deleteSize(sizeId,isActive).then(()=>{this.refreshData()})
       this.setState({editSizeData:{isActive:false}})
@@ -126,7 +127,25 @@ class DisplaySizeMaster extends Component {
 }
 
   render() {
+    let tableData;
+    tableData=  <Table >
+    <thead>
+      <tr>
 
+        <th>Size Details</th>
+
+
+      </tr>
+    </thead>
+    <tbody>
+
+       {this.TowerMasterDetails(this.props.SizeDetails)}
+
+    </tbody>
+  </Table>
+   if(!this.props.SizeDetails.getSize){
+    tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching details</Spinner></div>
+  }
 
     return (
      
@@ -135,7 +154,7 @@ class DisplaySizeMaster extends Component {
         <UI onClick={this.logout}>
 
           <div>
-
+          <Link to="/superDashboard/sizemaster"><button  type="submit" style={{ backgroundColor: 'lightblue', marginTop: '25px' }}>Add Size</button></Link>
             <h3 align="center"> Size List</h3>
 
             <Modal isOpen={this.state.editSizeModal} toggle={this.toggleEditSizeModal.bind(this)}>
@@ -164,21 +183,7 @@ class DisplaySizeMaster extends Component {
             <SearchFilter type="text" value={this.state.search}
               onChange={this.searchOnChange} />
          
-            <Table >
-              <thead>
-                <tr>
-
-                  <th>Size Details</th>
-
-
-                </tr>
-              </thead>
-              <tbody>
-
-                 {this.TowerMasterDetails(this.props.SizeDetails)}
-
-              </tbody>
-            </Table>
+         {!this.state.loading?tableData:<Spinner/>}
           </div>
         </UI>
       </div>

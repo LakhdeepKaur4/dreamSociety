@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { FormGroup, Form, Label, Input, Button } from 'reactstrap';
 import  {Link} from 'react-router-dom';
 import UI from '../../components/newUI/superAdminDashboard';
-
+import Spinner from '../../components/spinner/spinner'
 
 
 
@@ -18,13 +18,20 @@ class TowerMaster extends Component {
         this.state = {
 
             towerName: "",
-            menuVisible: false
+            menuVisible: false,
+            loading:true
         }
 
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
+    componentWillMount(){
+        this.refreshData()
+    }
 
+    refreshData(){
+        this.setState({loading:false})
+    }
 
     onChange(e) {
         this.setState({ [e.target.name]: e.target.value });
@@ -37,17 +44,19 @@ class TowerMaster extends Component {
         }
     }
     onSubmit(event) {
+        this.setState({loading:true})
         event.preventDefault();
         console.log(this.state)
 
         this.props.AddTower(this.state)
+        .then(()=> this.props.history.push('/superDashboard/display-tower'));
         return this.setState({
             state: {
 
                 towerName: ""
             }
-        }),
-            this.props.history.push('/superDashboard/display-tower');
+        })
+           
     }
     logout=()=>{
         localStorage.removeItem('token');
@@ -56,21 +65,30 @@ class TowerMaster extends Component {
     }
 
     render() {
+      let form;
+      if(!this.state.loading){
+      form= <div>
+        <Form onSubmit={this.onSubmit}>
+            <FormGroup>
+                <Label>Tower Name</Label>
+                <Input type="text" className="form-control" placeholder="tower Name" name="towerName" value={this.state.name} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange} required />
+            </FormGroup>
+            <FormGroup>
+                <Button color="success" className="mr-2">Submit</Button>
+                <Link color="primary" to="/superDashboard/display-tower">Tower details</Link>
+            </FormGroup>
+        </Form>
+        
+    </div>
+      }
+      else if(this.onSubmit){
+          form=<Spinner/>
+      }
+     
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <div>
-                        <Form onSubmit={this.onSubmit}>
-                            <FormGroup>
-                                <Label>Tower Name</Label>
-                                <Input type="text" className="form-control" placeholder="tower Name" name="towerName" value={this.state.name} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange} required />
-                            </FormGroup>
-                            <FormGroup>
-                                <Button color="success" className="mr-2">Submit</Button>
-                                <Link color="primary" to="/superDashboard/display-tower">Tower details</Link>
-                            </FormGroup>
-                        </Form>
-                    </div>
+                   {form}
                 </UI>
             </div>
 
