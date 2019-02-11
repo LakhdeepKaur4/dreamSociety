@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { addServiceType, getServiceDetail } from '../../../actionCreators/serviceMasterAction';
-import './serviceMaster.css';
+
 import { Link } from 'react-router-dom';
 
 import UI from '../../../components/newUI/vendorDashboardInside';
