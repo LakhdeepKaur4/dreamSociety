@@ -43,7 +43,7 @@ class DisplaySizeMaster extends Component {
 
 
   OnKeyPresshandle(event) {
-    const pattern = /^[0-9]$/;
+    const pattern = /[a-zA-Z]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       event.preventDefault();

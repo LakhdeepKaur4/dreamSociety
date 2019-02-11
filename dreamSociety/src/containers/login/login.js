@@ -169,7 +169,6 @@ class Login extends Component {
             <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                 <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>User Login</ModalHeader>
                 <ModalBody>
-                    <Form onSubmit={this.submit}>
                         <div style={{ 'color': 'red' }}>{this.state.message}</div>
                         <FormGroup>
                             <Label>Username</Label>
@@ -180,9 +179,8 @@ class Login extends Component {
                             <Input name="password" type="password" value={this.state.password} onChange={this.onChangeHandler}></Input>
                         </FormGroup>
                         <FormGroup>
-                            <Button color="primary" >Login</Button>{' '}
+                            <Button onClick={this.submit} color="primary" >Login</Button>{' '}
                         </FormGroup>
-                    </Form>
 
                 </ModalBody>
                 <ModalFooter>

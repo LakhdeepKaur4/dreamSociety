@@ -55,10 +55,10 @@ class Demo extends Component {
                     <div className="collapse navbar-collapse" id="navbarsExample05">
                         <ul className="navbar-nav mr-auto mx-auto">
                             <li className="nav-item mx-3 active">
-                                <Link style={{ textDecoration:"none" }} className="nav-link" to="/superDashboard">Home<span className="sr-only">(current)</span></Link>
+                                <Link  className="nav-link" to="/superDashboard">Home<span className="sr-only">(current)</span></Link>
                             </li>
                             <li className="nav-item mx-3">
-                                <Link style={{ textDecoration: 'none'}} className="nav-link" to="#">Gallery</Link>
+                                <Link  className="nav-link" to="#">Gallery</Link>
                             </li>
                             <li className="nav-item mx-3">
                                 <Link className="nav-link" to="#">About Us</Link>
@@ -67,10 +67,10 @@ class Demo extends Component {
                                 <Link className="nav-link" to="#">Contact Us</Link>
                             </li>
                         </ul>
-                        <form className="form-inline mt-2 mt-md-0">
+                        <div className="form-inline mt-2 mt-md-0">
                             <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
                             onClick={this.props.onClick} >Logout</button>
-                        </form>
+                        </div>
 
                     </div>
                 </nav>

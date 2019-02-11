@@ -28,7 +28,7 @@ class Registration extends Component {
             isSubmit: false,
             menuVisible: false,
             message:'',
-            loading: false,
+            loading: true,
             errors: {}
         };
         this.onChange = this.onChange.bind(this);
@@ -43,7 +43,11 @@ class Registration extends Component {
     }
 
     componentDidMount() {
-        this.props.getRoles();
+        this.renderRoles()
+    }
+
+    renderRoles(){
+        this.props.getRoles().then(() => this.setState({loading:false}));
     }
 
     OnKeyPresshandlerPhone(event) {
@@ -150,7 +154,7 @@ class Registration extends Component {
 
     render() {
         let formData;
-        if(!this.state.loading && this.props.userDetail.userRole && this.state.errors){
+
             formData = <UserRegistrationForm 
                 roleInputName="roles"
                 roleChange={this.onChange}
@@ -189,13 +193,6 @@ class Registration extends Component {
                 passwordConfirmationError={this.state.errors.passwordConfirmation}
                 routeToUserDetails={this.routeToUserDetails}
                 />
-        }
-        else if(!this.props.userDetail.userRole){
-            formData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Role Names. Please! Wait...</div>
-        }
-        else if(this.submit){
-            formData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />User is getting registered. Please! Wait...</div>
-        }
         
         return (
         <div>
@@ -203,11 +200,11 @@ class Registration extends Component {
                 <div>
                     {this.state.message}
                 </div>
-                <div style={{ width: '600px', padding: '20px 20px', borderRadius: '20px', margin: '0 auto', background: '#f3f3f3', position: 'relative' }}>
+                <div>
                     <Form onSubmit={this.submit}>
                     <div>
                         <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add User</h3></div>
-                        {formData}
+                        {!this.state.loading ? formData: <Spinner />}
                     </div>
                     </Form>
                 </div>
