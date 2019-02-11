@@ -7,9 +7,8 @@ import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
-import SideBar from '../../components/superAdminDashboardUI/sideBar/sideBar';
-import MenuBar from '../../components/superAdminDashboardUI/menuBar/menuBar'
 import SearchFilter from '../../components/searchFilter/searchFilter'
+import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
 import { URN } from '../../actions/index'
 
@@ -25,6 +24,7 @@ class flatMasterDetails extends Component {
             sizeType: '',
             sizeType1: '',
             coverArea: '',
+            loading:true,
             isActive: false,
 
         },
@@ -49,9 +49,9 @@ class flatMasterDetails extends Component {
 
 
     refreshData() {
-        this.props.getDetails();
-        this.props.getDrop();
-        this.props.getSizeDrop();
+        this.props.getDetails().then(() => this.setState({loading:false}));
+        this.props.getDrop().then(() => this.setState({loading:false}));
+        this.props.getSizeDrop().then(() => this.setState({loading:false}));
 
     }
 
@@ -71,7 +71,7 @@ class flatMasterDetails extends Component {
             this.refreshData();
         })
         this.setState({
-            editUserModal: false, editUserData: { flatId: '', societyName: '', flatType: '', flatSuperArea: '', sizeType: '', CoverArea: '' }
+            editUserModal: false,loading:true, editUserData: { flatId: '', societyName: '', flatType: '', flatSuperArea: '', sizeType: '', CoverArea: '' }
         })
 
 
@@ -149,7 +149,7 @@ class flatMasterDetails extends Component {
         let { isActive } = this.state.editUserData
         axios.put(`${URN}/flat/delete/` + flatId, { isActive }, { headers: authHeader() }).then((response) => {
             this.refreshData()
-            this.setState({ editUserData: { isActive: false } })
+            this.setState({ editUserData: { isActive: false },loading:true })
 
         })
     }
@@ -208,6 +208,9 @@ class flatMasterDetails extends Component {
 
         }
     }
+    routeToAddNewUser =() => {
+        this.props.history.push('/superDashboard/flatmaster')
+    }
 
     logout=()=>{
         localStorage.removeItem('token');
@@ -216,16 +219,36 @@ class flatMasterDetails extends Component {
     }
 
     render() {
+        let tableData;
+        tableData=<Table>
+        <thead>
+            <tr>
+                <th>societyName</th>
+                <th>flat Type</th>
+                <th>flat SuperArea</th>
+                <th>sizeType</th>
+                <th>coverArea</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {this.fetchUsers(this.props.flats)}
+        </tbody>
+    </Table>
+     
+     if(!this.props.flats.list1 && !this.props.flats.list2 && !this.props.flats.list3 ){
+        tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Users. Please! wait...</div>
+    }
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <div>
-                        <Link to="/superDashboard/flatmaster">Add flats</Link>
-                        <div className="search">
-                                <h3>Country Master Details</h3>
-                                <SearchFilter type="text" value={this.state.search}
-                                    onChange={this.searchOnChange} />
-                            </div>
+                        <div className="w3-container w3-margin-top">
+                            <div className="top-details">                               
+                             <h3>Flat Master Details</h3>
+                                <Button onClick={this.routeToAddNewUser} color="primary">Add Flats</Button>
+                                </div>
+
+                            
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
                             <ModalBody>
@@ -277,26 +300,13 @@ class flatMasterDetails extends Component {
                                 <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
                             </ModalFooter>
                         </Modal>
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <th>societyName</th>
-                                    <th>flat Type</th>
-                                    <th>flat SuperArea</th>
-                                    <th>sizeType</th>
-                                    <th>coverArea</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.fetchUsers(this.props.flats)}
-                            </tbody>
-                        </Table>
+                        <SearchFilter type="text" value={this.state.search}
+                                onChange={this.searchOnChange} />
+                            {!this.state.loading ? tableData : <Spinner />}
+                     
                     </div>
                 </UI>
                 
-                
-
             </div>
         )
     }

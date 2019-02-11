@@ -1,5 +1,5 @@
 import {URN,ADD_COUNTRY,GET_COUNTRY_DETAILS,UPDATE_COUNTRY,DELETE_COUNTRY,ADD_STATE,
-     GET_COUNTRY_DETAILS1,DELETE_DETAILS,UPDATE_DETAILS} from '../actions/index';
+     GET_COUNTRY_DETAILS1,UPDATE_DETAILS} from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 import axios from 'axios';
 
@@ -79,17 +79,17 @@ export function getDetails(){
     }
 }
 
-export function deleteDetails(stateId,isActive){
-    console.log(stateId,isActive);
-    const request=axios.put(`${URN}/state/delete/` + stateId, {isActive}, {headers:authHeader()})
-    .then(response => response.data)
+// export function deleteDetails(stateId,isActive){
+//     console.log(stateId,isActive);
+//     const request=axios.put(`${URN}/state/delete/` + stateId, {isActive}, {headers:authHeader()})
+//     .then(response => response.data)
     
     
-    return{
-       type: DELETE_DETAILS,
-       payload:request
-    }
-}
+//     return{
+//        type: DELETE_DETAILS,
+//        payload:request
+//     }
+// }
 
 export function updateDetails(stateId,countryId,stateName){
     console.log("gggggg",stateId,countryId,stateName);
