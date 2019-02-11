@@ -74,7 +74,7 @@ class ParkingMaster extends Component {
         let tableData;
         if(this.props.parkingDetail.parking){
             tableData = <div style={{margin:'0 auto'}}>
-                <Table className="w3-responsive">
+                <Table>
                     <thead>
                         <tr>
                             <th>Basement</th>

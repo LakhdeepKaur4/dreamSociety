@@ -157,7 +157,7 @@ class userDetails extends Component {
 
     render() {
         let tableData;
-        tableData = <Table className="w3-responsive">
+        tableData = <Table>
 
             <thead>
                 <tr>
@@ -174,9 +174,6 @@ class userDetails extends Component {
                 {this.fetchUsers(this.props.userDetail)}
             </tbody>
         </Table>
-         if(!this.props.userDetail.user && !this.props.userDetail.userRole){
-            tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Users. Please! wait...</div>
-        }
 
         return (
             <div>
