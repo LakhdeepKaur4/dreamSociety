@@ -50,6 +50,15 @@ class displayPersonDetails extends Component {
                 }
         }
 
+        
+OnKeyPressmail(event){
+        const pattern = /^[a-zA-Z0-9@._]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    
 
         OnKeyPressNumber(event) {
                 const pattern = /^[0-9]$/;
@@ -215,7 +224,7 @@ class displayPersonDetails extends Component {
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-
+                                                                        onKeyPress={this.OnKeyPressmail} required
                                                                         />
                                                                 </FormGroup>
 
@@ -256,7 +265,7 @@ class displayPersonDetails extends Component {
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-
+                                                                      
                                                                         >
 
                                                                                 {this.getRole(this.props.personDetails)}
@@ -273,7 +282,7 @@ class displayPersonDetails extends Component {
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-                                                                                onKeyPress={this.onkePressNumber}
+                                                                                onKeyPress={this.OnkeyPressNumber}
                                                                         />
                                                                 </FormGroup>
                                                                 <FormGroup>
@@ -285,7 +294,7 @@ class displayPersonDetails extends Component {
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-                                                                                onKeyPress={this.onKeyPressNumber}
+                                                                                onKeyPress={this.OnKeyPressNumber}
                                                                         />
                                                                 </FormGroup>
                                                         </ModalBody>

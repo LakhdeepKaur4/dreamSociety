@@ -203,7 +203,7 @@ class Registration extends Component {
                 <div>
                     {this.state.message}
                 </div>
-                <div style={{ width: '600px', padding: '20px 20px', borderRadius: '20px', margin: '0 auto', background: '#f3f3f3', position: 'relative' }}>
+                <div>
                     <Form onSubmit={this.submit}>
                     <div>
                         <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add User</h3></div>

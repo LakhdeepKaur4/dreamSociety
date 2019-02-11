@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { getUsers, getRoles, addUser, updateUser, deleteUser } from '../../actionCreators/superAdminMasterAction';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button } from 'reactstrap';
@@ -11,22 +10,25 @@ import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 
 class userDetails extends Component {
-    componentWillMount(){
-        this.state = {
-            userId: "",
-            roleName: "",
-            firstName: "",
-            lastName: "",
-            userName: "",
-            email: "",
-            contact: "",
-            isActive: false,
-            editUserModal: false,
-            loading:true,
-            dropdownOpen: false,
-            search:''
+    constructor(props){
+            super(props);
+            this.state = {
+                userId: "",
+                roleName: "",
+                firstName: "",
+                lastName: "",
+                userName: "",
+                email: "",
+                contact: "",
+                isActive: false,
+                editUserModal: false,
+                loading:true,
+                dropdownOpen: false,
+                search:''
         }
+        
     }
+    
 
     componentDidMount() {
         this.refreshData();

@@ -47,7 +47,7 @@ export function updateUser(userId, roleName, firstName, lastName, userName, emai
     const request = axios.put(`${URN}/user/`+ userId, {
             userId, roleName, firstName, lastName, userName, email, contact
         }, { headers: authHeader() })
-    .then((response =>response.data))
+    .then(() => this.getUsers())
 
     return {
         type: UPDATE_USER,
