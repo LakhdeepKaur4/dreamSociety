@@ -200,7 +200,7 @@ class FlatMaster extends Component {
             <div>
                 
                 <UI onClick={this.logout}>
-                    <div className="flatMaster">
+                    <div>
                         {form}
                     </div>
                 </UI>
