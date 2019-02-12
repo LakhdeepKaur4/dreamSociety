@@ -88,10 +88,10 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/displayServices' component={displayServices} />
             <PrivateRoute path='/superDashBoard/displayPerson' component={displayPersonDetails} />
             <PrivateRoute path='/superDashBoard/demo' component={Demo} />
-            <PrivateRoute path='/superDashBoard/assetsMaster' exact component={AssetTypeMaster} />
-            <PrivateRoute path='/superDashBoard/assetsMaster/assetsList' component={AssetList} />
-            <PrivateRoute path='/superDashBoard/assetsTypeSubMaster' exact component={AssetsTypeSubMaster} />
-            <PrivateRoute path='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubList} />
+            <PrivateRoute path='/superDashBoard/assetsMaster' exact component={AssetList} />
+            <PrivateRoute path='/superDashBoard/assetsMaster/assetsList' component={AssetTypeMaster} />
+            <PrivateRoute path='/superDashBoard/assetsTypeSubMaster' exact component={AssetsTypeSubList} />
+            <PrivateRoute path='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubMaster} />
             <PrivateRoute path='/superdashboard/flatDetailMaster' component={flatDetailMaster} />
             <PrivateRoute path='/superdashboard/flatDetails' component={flatDetails} />   
             <PrivateRoute path='/superDashboard/cityMaster' component={CityMaster} />
