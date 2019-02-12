@@ -36,16 +36,10 @@ class Demo extends Component {
                 <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
 
                     {/* <div id="content">
-
                         <div className="container-fluid">
-
                             <button type="button" id="sidebarCollapse" className="btn btn-info bg-dark">
-
                                 <Icon name="sidebar" style={{ color: 'white', cursor: 'pointer' }} />
-
-
                             </button>
-
                         </div>
                     </div> */}
                     <Link className="navbar-brand" to="#"><i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa mr-1">&#xf1ad;</i>DRE@M SOCIETY</Link>

@@ -70,7 +70,7 @@ class ParkingMaster extends Component {
         let tableData;
         if(this.props.parkingDetail.parking){
             tableData = <div style={{margin:'0 auto'}}>
-                <Table>
+                <Table className="table table-bordered">
                     <thead>
                         <tr>
                             <th>Basement</th>
