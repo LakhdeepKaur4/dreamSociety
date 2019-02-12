@@ -164,7 +164,7 @@ class DisplaySizeMaster extends Component {
             <SearchFilter type="text" value={this.state.search}
               onChange={this.searchOnChange} />
          
-            <Table >
+            <Table>
               <thead>
                 <tr>
 

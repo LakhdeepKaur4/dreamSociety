@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { getCountry,updateCountry,deleteCountry } from '../../actionCreators/countryAction';
 import { authHeader } from '../../helper/authHeader';
 import { bindActionCreators } from 'redux';
-import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label, } from 'reactstrap';
+import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Input } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import Spinner from '../../components/spinner/spinner';
 import SearchFilter from '../../components/searchFilter/searchFilter';
@@ -150,15 +150,45 @@ class CountryDetails extends Component{
         this.props.history.push('/superDashboard/countrymaster')
     }
 
+    onKeyPressHandler=(event)=> {
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    onKeyPressHandle1=(event)=>{
+        const pattern = /^[a-zA-Z$]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    onKeyPressHandle=(event)=> {
+        const pattern = /^[0-9+]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }   
+    onKeyPressCode=(event)=>{
+        const pattern = /^[A-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
     render(){
          let tableData;
           tableData= <Table>
         <thead>
             <tr>
-                <th>countryName</th>
-                <th>code</th>
-                <th>currency</th>
-                <th>phoneCode</th>
+                <th>Country Name</th>
+                <th>Country Code</th>
+                <th>Currency</th>
+                <th>Phone Code</th>
                 
 
 
@@ -175,7 +205,7 @@ class CountryDetails extends Component{
         return(
             <div>
                 <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top">
+                <div className="w3-container w3-margin-top w3-responsive">
                         <div className="top-details">
                                 <h3>Country Master Details</h3>
                                 <Button onClick={this.routeToAddNewUser} color="primary">Add State</Button>
@@ -185,43 +215,52 @@ class CountryDetails extends Component{
                             <ModalBody>
                                 <FormGroup>
                                     <Label for="roles">countryName</Label>
-                                    <input
+                                    <Input
                                         type="textbox"
                                         placeholder="enter countryName"
                                         // name="countryName"
                                         value={this.state.editUserData.countryName}
-                                        onChange={this.selectCountry} />
+                                        maxLength='20'
+                                        onKeyPress={this.onKeyPressHandler}
+                                        onChange={this.selectCountry}
+                                         />
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">code</Label>
-                                    <input
+                                    <Input
                                         type="textbox"
                                         placeholder="enter code"
                                         value={this.state.editUserData.code}
+                                        maxLength='3'
+                                        onKeyPress={this.onKeyPressCode}
                                         onChange={this.selectCode} />
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="firstName">currency</Label>
-                                    <input
+                                    <Input
                                         type="textbox"
                                         placeholder="enter currency"
                                         value={this.state.editUserData.currency}
+                                        onKeyPress={this.onKeyPressHandle1}
+                                        maxLength='10'
                                         onChange={this.selectCurrency} />
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">phoneCode</Label>
-                                    <input
+                                    <Input
                                         type="textbox"
                                         placeholder="enter currency"
                                         value={this.state.editUserData.phoneCode}
+                                        maxLength='3'
+                                        onKeyPress = {this.onKeyPressHandle}
                                         onChange={this.selectPhoneCode} />
                                 </FormGroup>
-
+                                <FormGroup>
+                                <Button color="primary mr-2" onClick={this.updateBook}>Save</Button>
+                                <Button color="danger" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
+                                </FormGroup>
                             </ModalBody>
-                            <ModalFooter>
-                                <Button color="primary" onClick={this.updateBook}>Update Flat</Button>
-                                <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
-                            </ModalFooter>
+                           
                         </Modal>
                         <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />

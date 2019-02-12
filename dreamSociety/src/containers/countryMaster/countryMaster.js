@@ -33,9 +33,15 @@ class Country extends Component {
     }
 
     onChange = (e) => {
-        e.preventDefault();
-        this.setState({ [e.target.name]: e.target.value })
-        //   console.log(this.state);
+        if (!this.state.errors[e.target.value]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            console.log('no errors');
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+        } else {
+            this.setState({ [e.target.name]: e.target.value.trim('') });
+        }
+
 
     }
 
@@ -87,6 +93,34 @@ class Country extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+    onKeyPressHandler=(event)=> {
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    onKeyPressHandle=(event)=> {
+        const pattern = /^[0-9+]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    onKeyPressHandle1=(event)=>{
+        const pattern = /^[a-zA-Z$]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    onKeyPressCode=(event)=>{
+        const pattern = /^[A-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     render() {
           
@@ -94,23 +128,25 @@ class Country extends Component {
           if(!this.state.loading && this.state.errors){
          form = <Form onSubmit={this.submit}>
             <FormGroup>
-                <Label>CountryName</Label>
+                <Label>Country Name</Label>
                 <Input
                     type="text"
                     name="countryName"
-                    maxLength='20'
+                    onKeyPress={this.onKeyPressHandler}
+                    maxLength='30'
                     onChange={this.onChange} />
-                <span>{this.state.errors.countryName}</span>
+                <span className='error'>{this.state.errors.countryName}</span>
             </FormGroup>
 
             <FormGroup>
-                <Label>Code</Label>
+                <Label>Country Code</Label>
                 <Input
                     type="text"
                     name="code"
+                    onKeyPress={this.onKeyPressCode}
                     maxLength='3'
                     onChange={this.onChange} />
-                <span>{this.state.errors.code}</span>
+                <span className='error'>{this.state.errors.code}</span>
             </FormGroup>
 
             <FormGroup>
@@ -118,26 +154,27 @@ class Country extends Component {
                 <Input
                     type="text"
                     name="currency"
+                    onKeyPress={this.onKeyPressHandle1}
                     maxLength='10'
                     onChange={this.onChange} />
-                <span>{this.state.errors.currency}</span>
+                <span className='error'>{this.state.errors.currency}</span>
             </FormGroup>
 
             <FormGroup>
-                <Label>PhoneCode</Label>
+                <Label>Phone Code</Label>
                 <Input
                     type="text"
                     name="phoneCode"
                     maxLength='3'
-                    onKeyPress = {this.OnKeyPresshandlerPhone}
+                    onKeyPress = {this.onKeyPressHandle}
                     onChange={this.onChange} />
-                <span>{this.state.errors.phoneCode}</span>
+                <span className='error'>{this.state.errors.phoneCode}</span>
             </FormGroup>
 
 
             <FormGroup>
                 <Button className="mr-2">Submit</Button>
-                <Button onClick={this.countryDetails}>CountryDetails</Button>
+                <Button onClick={this.countryDetails}>Cancel</Button>
             </FormGroup>
         </Form>
           }
@@ -149,7 +186,7 @@ class Country extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <div className="flatMaster">
+                    <div>
                        {form}
                     </div>
                 </UI>
