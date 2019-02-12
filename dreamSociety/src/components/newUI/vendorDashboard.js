@@ -75,8 +75,8 @@ class Demo extends Component {
                     </div>
                 </nav>
                 <div className="wrapper">
-                    
-                        <nav id="sidebar" className="bg-dark inactive">
+
+                    <nav id="sidebar" className="bg-dark inactive">
                         <div id="sidebar-content">
                             {/* <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/registration">Super Admin Register</Link></div></Menu.Item>
                         <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2' style={{ fontSize: "0.8rem" }}>Admin Register</div></Menu.Item>
@@ -90,9 +90,10 @@ class Demo extends Component {
                         <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/sizemaster">Size Master</Link></div></Menu.Item> */}
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/serviceMaster">Service Master</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/vendorMaster">Vendor Master</Link></div></Menu.Item>
-                            </div>
-                        </nav>
-                    
+                            <div style={{ height: "10%" }}></div>
+                        </div>
+                    </nav>
+
                     <div id="body" className="container">
                         <div className="mt-4 mb-4">
                             {this.props.children}
