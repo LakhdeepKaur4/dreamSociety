@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button } from 'reactstrap';
 import '../../r-css/w3.css';
-import EditUserModal from './editUserModal'
+import ScrollToTop from 'react-router-scroll-top';
+import EditUserModal from './editUserModal';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 
@@ -20,12 +21,16 @@ class userDetails extends Component {
                 userName: "",
                 email: "",
                 contact: "",
+                errors:{},
                 isActive: false,
                 editUserModal: false,
                 loading:true,
                 dropdownOpen: false,
                 search:''
         }
+        this.OnKeyPresshandlerPhone = this.OnKeyPresshandlerPhone.bind(this);
+        this.OnKeyPressUserhandler = this.OnKeyPressUserhandler.bind(this);
+        this.emailValid = this.emailValid.bind(this);
         
     }
     
@@ -33,9 +38,36 @@ class userDetails extends Component {
     componentDidMount() {
         this.refreshData();
     }
+    componentWillMount(){
+        window.scrollTo(0, 0);
+    }
 
     toggle() {
         this.setState({ dropdownOpen: !this.state.dropdownOpen })
+    }
+
+    OnKeyPresshandlerPhone(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    OnKeyPressUserhandler(event) {
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    emailValid(event) {
+        const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
     }
 
     refreshData() {
@@ -49,16 +81,31 @@ class userDetails extends Component {
         });
     }
 
-    updateUser = () => {
+    updateUser = (e) => {
+            e.preventDefault();
             
             let { userId, roleName, firstName, lastName, userName, email, contact } = this.state;
-            this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact)
-            .then(() => {
-                this.refreshData()
-            })
-            this.setState({
-                editUserModal: false,loading:true,  userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' 
-            });
+            let errors = {};
+    
+            if (firstName === '') errors.firstName = "Can't be empty";
+    
+            if (lastName === '') errors.lastName = "Can't be empty";
+    
+            if (userName === '') errors.userName = "Can't be empty";
+            if (email === '') errors.email = "Can't be empty";
+            if (email.includes('@').length > 1) errors.email = "Invalid email";
+            if (contact === '') errors.contact = "Can't be empty";
+            this.setState({ errors });
+            const isValid = Object.keys(errors).length === 0;
+            if (isValid) {
+                this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact)
+                .then(() => {
+                    this.refreshData()
+                })
+                this.setState({
+                    editUserModal: false,loading:true,  userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' 
+                });
+            }
     }
 
     editUser(userId, roleName, firstName, lastName, userName, email, contact) {
@@ -120,7 +167,14 @@ class userDetails extends Component {
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]:e.target.value});
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value });
+        }
     }
 
     fetchRoles({ userRole }) {
@@ -156,6 +210,7 @@ class userDetails extends Component {
     }
 
     render() {
+        <ScrollToTop/>
         let tableData;
         tableData = <Table>
 
@@ -176,19 +231,20 @@ class userDetails extends Component {
         </Table>
 
         return (
+            
             <div>
                 <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top w3-responsive">
                             <div className="top-details">
-                                <h3>User Details</h3>
+                                <h3>User Master Details</h3>
                                 <Button color="primary" onClick={this.routeToAddNewUser} color="primary">Add Users</Button>
                             </div>
                             
                             <EditUserModal isOpen={this.state.editUserModal}
-                                 toggle={this.toggleEditUserModal.bind(this)}
-                                 roleNameValue = {this.state.roleName}
-                                 roleInputName = "roleName"
-                                 roleNameChange = {this.onChange}
+                                toggle={this.toggleEditUserModal.bind(this)}
+                                roleNameValue = {this.state.roleName}
+                                roleInputName = "roleName"
+                                roleNameChange = {this.onChange}
                                 selectedRoleNameValue = {this.state.roleName}
                                 selectedRoleName = {this.state.roleName}
                                 fetchRoles = {this.fetchRoles(this.props.userDetail)}
@@ -197,15 +253,23 @@ class userDetails extends Component {
                                 firstNameValueChange = {this.onChange}
                                 lastNameInputName = "lastName"
                                 lastNameValue = {this.state.lastName}
+                                firstNameError = {this.state.errors.firstName}
+                                NameKeyPress = {this.OnKeyPressUserhandler}
                                 lastNameValueChange = {this.onChange}
+                                lastNameError = {this.state.errors.lastName}
                                 userNameInputName = "userName"
                                 userNameValue = {this.state.userName}
                                 userNameValueChange = {this.onChange}
+                                userNameError = {this.state.errors.userName}
                                 emailInputName= "email"
                                 emailValue = {this.state.email}
+                                emailError = {this.state.errors.email}
+                                emailKeyPress={this.emailValid}
                                 emailValueChange = {this.onChange}
                                 contactInputName = "contact"
                                 contactValue = {this.state.contact}
+                                contactError = {this.state.errors.contact}
+                                contactValidation = {this.OnKeyPresshandlerPhone}
                                 contactValueChange = {this.onChange}
                                 updateUserClick={this.updateUser}
                                  />

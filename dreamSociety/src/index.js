@@ -13,7 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const store= applyMiddleware(promise)(createStore)
 ReactDOM.render(
     <Provider store={store(rootReducer)}>
-        <App/>
+            <App/>    
     </Provider>
 , document.getElementById('root'));
 
