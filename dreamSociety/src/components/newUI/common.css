@@ -5,6 +5,8 @@
     align-items: stretch;
     background-image: url('../../assets/society.jpg');
     background-size: cover;
+    max-height: inherit;
+    min-height: 100vh;
 }
 
 .error{
@@ -38,6 +40,13 @@ form{
     display: inline;
 }
 
+#sidebar-content {
+    position: fixed;
+    width: 10rem;
+    height: 100vh;
+    overflow: auto;
+}
+
 .table{
     background: #f3f3f3 !important;
     padding: 20px;
@@ -66,7 +75,7 @@ form{
 
 #body {
     display: inline-block;
-    height: 100vh;
+    height: inherit;
 }
 
 

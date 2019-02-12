@@ -11,3 +11,7 @@
 .flatMaster.input{
     width:50px;
 }
+
+.error{
+    color:red;
+}

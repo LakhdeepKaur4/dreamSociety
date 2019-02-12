@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
-import {Link} from 'react-router-dom';
+
 import Spinner from '../../components/spinner/spinner';
 class DisplayTowerMaster extends Component {
 
@@ -32,8 +32,8 @@ class DisplayTowerMaster extends Component {
     this.props.viewTower().then(() =>this.setState({loading:false}));
   }
 
-  OnKeyPresshandle(event) {
-    const pattern=/^[0-9]$/;
+  OnKeyPresshandler(event) {
+    const pattern=/[a-zA-Z _]/
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       event.preventDefault();
@@ -96,7 +96,7 @@ this.setState({loading:true});
 
             <td>{item.towerName}</td>
             <td>
-              <button className="btn btn-primary" onClick={this.editTower.bind(this, item.id, item.towerId, item.towerName)}>edit </button>
+              <button className="btn btn-success" onClick={this.editTower.bind(this, item.id, item.towerId, item.towerName)}>edit </button>
               <button className="btn btn-danger" onClick={this.deleteTower.bind(this, item.towerId)}>delete</button>
             </td>
           </tr>
@@ -111,6 +111,11 @@ this.setState({loading:true});
   //  this.setState({})
   this.setState({search:e.target.value})
   }
+
+ addTower =() =>{
+   this.props.history.push('/superDashboard/towermaster')
+ }
+
   logout=()=>{
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
@@ -118,7 +123,8 @@ this.setState({loading:true});
 }
   render() {
      let tableData;
-     tableData=<Table >
+     tableData=<Table    className="table table-bordered">
+       <div className="w3-row">
               <thead>
                 <tr>
 
@@ -127,11 +133,15 @@ this.setState({loading:true});
 
                 </tr>
               </thead>
+
+              
+
               <tbody>
 
                  {this.TowerMasterDetails(this.props.TowerDetails)}
 
               </tbody>
+              </div>
             </Table>
             if(!this.props.TowerDetails.tower){
               tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching Towers</Spinner></div>
@@ -140,9 +150,12 @@ this.setState({loading:true});
     return (
       <div>
         <UI onClick={this.logout}>
-          <div>
-         
+        
+          <div className ="w3-container w3-margin-top">
+                                        <div  className ="top-details" >
             <h3 align="center"> Tower List</h3>
+            <Button  className="btn btn-success" onClick ={this.addTower} colr="primary"> Add Tower</Button>
+            </div>
             <Modal isOpen={this.state.editTowerModal} toggle={this.toggleEditTowerModal.bind(this)}>
               <ModalHeader toggle={this.toggleEditTowerModal.bind(this)}>Edit Tower</ModalHeader>
               <ModalBody>
@@ -160,7 +173,7 @@ this.setState({loading:true});
 
                   }}
                     onKeyPress={this.OnKeyPresshandler}
-
+                     maxLength={20}
                     required />
                 </FormGroup>
 

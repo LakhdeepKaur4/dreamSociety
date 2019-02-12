@@ -212,7 +212,7 @@ class userDetails extends Component {
     render() {
         <ScrollToTop/>
         let tableData;
-        tableData = <Table>
+        tableData = <Table className="table table-bordered">
 
             <thead>
                 <tr>

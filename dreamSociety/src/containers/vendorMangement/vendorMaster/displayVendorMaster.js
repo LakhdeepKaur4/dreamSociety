@@ -131,7 +131,7 @@ class displayVendorMaster extends Component {
 
 
                         <td>
-                            <Button color="primary" className="mr-2" onClick={this.editUser.bind(this, vendors.vendorId, vendors.vendorName, vendors.serviceName, vendors.serviceId, vendors.description)}>Edit</Button>
+                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, vendors.vendorId, vendors.vendorName, vendors.serviceName, vendors.serviceId, vendors.description)}>Edit</Button>
                        
                             <Button color="danger" onClick={this.deleteService.bind(this, vendors.vendorId)}>Delete</Button>
                         </td>
@@ -146,6 +146,20 @@ class displayVendorMaster extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+
+    OnKeyPressUserhandler(event) {
+        const pattern = /[a-zA-Z_ ]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    
+
+    push=()=>{
+        this.props.history.push('/superDashboard/vendorMaster')
+    }
+
     render() {
         let tableData;
         tableData=
@@ -172,7 +186,7 @@ class displayVendorMaster extends Component {
                         <ModalBody>
                             <FormGroup>
                                 <Label for="vendorName">Vendor Name</Label>
-                                <Input id="vendorName" value={this.state.editVendorData.vendorName} onChange={(e) => {
+                                <Input id="vendorName" value={this.state.editVendorData.vendorName} onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={(e) => {
                                     let { editVendorData } = this.state;
 
                                     editVendorData.vendorName = e.target.value;
@@ -197,7 +211,7 @@ class displayVendorMaster extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <Label for="description">Description</Label>
-                                <Input id="description" value={this.state.editVendorData.description} onChange={(e) => {
+                                <Input id="description" value={this.state.editVendorData.description} maxLength={50} onChange={(e) => {
                                     let { editVendorData } = this.state;
 
                                     editVendorData.description = e.target.value;
@@ -205,23 +219,24 @@ class displayVendorMaster extends Component {
                                     this.setState({ editVendorData });
                                 }} />
                             </FormGroup>
+                    
+                     
+                            <Button color="primary" className="mr-2" onClick={this.updateServices.bind(this)}>Save </Button>
+                            <Button color="danger" onClick={this.toggleEditVendorModal.bind(this)}>Cancel</Button>
+                   
                         </ModalBody>
 
-                        <ModalFooter>
-                            <Button color="primary" onClick={this.updateServices.bind(this)}>Update </Button>
-                            <Button color="secondary" onClick={this.toggleEditVendorModal.bind(this)}>Cancel</Button>
-                        </ModalFooter>
 
 
                     </Modal>
-                    <div style={{ fontWeight: 'bold' }}><label>Vendor Details</label></div>
+                    <div className="top-details" style={{ fontWeight: 'bold' }}><h3>Vendor Details</h3>
+                    <Button color="primary" onClick={this.push} type="button">Add Vendor</Button>
+                    </div>
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
                               {!this.state.loading ? tableData : <Spinner />}
                  
-                    <Link to="/superDashboard/vendorMaster">
-                        <Button color="success" type="button">Add Vendor</Button>
-                    </Link>
+                 
                     </div>
                 </UI>
               

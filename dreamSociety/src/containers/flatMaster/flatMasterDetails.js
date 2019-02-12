@@ -3,10 +3,9 @@ import { getDetails, AddDetails, getDrop, getSizeDrop } from '../../actionCreato
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
-import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
+import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Input } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -217,17 +216,24 @@ class flatMasterDetails extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+    OnKeyPresshandlerPhone=(event)=>{
+        const pattern = /^[0-9+]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     render() {
         let tableData;
         tableData=<Table>
         <thead>
             <tr>
-                <th>societyName</th>
-                <th>flat Type</th>
-                <th>flat SuperArea</th>
-                <th>sizeType</th>
-                <th>coverArea</th>
+                <th>Society Name</th>
+                <th>Flat Type</th>
+                <th>Flat SuperArea</th>
+                <th>SizeType</th>
+                <th>Cover Area</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -242,7 +248,7 @@ class flatMasterDetails extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                        <div className="w3-container w3-margin-top">
+                        <div className="w3-container w3-margin-top  w3-responsive">
                             <div className="top-details">                               
                              <h3>Flat Master Details</h3>
                                 <Button onClick={this.routeToAddNewUser} color="primary">Add Flats</Button>
@@ -254,51 +260,60 @@ class flatMasterDetails extends Component {
                             <ModalBody>
                                 <FormGroup>
                                     <Label for="roles">SocietyName</Label>
-                                    <select value={this.state.editUserData.societyId} onChange={this.societyNameType}>
-                                        <option>{this.state.editUserData.societyName}</option>
-                                        <option disabled>Select</option>
-                                        {this.fetchDrop(this.props.flats)}
-                                    </select>
+                                    <Input type="select" value={this.state.editUserData.societyId} onChange={this.societyNameType}>
+                                            
+                                            <option>{this.state.editUserData.societyName}</option>
+                                            <option disabled>Select</option>
+                                            {this.fetchDrop(this.props.flats)}
+                                            
+                                        </Input>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">flatType</Label>
-                                    <input
+                                    <Input
                                         type="textbox"
                                         placeholder="enter  flat type"
                                         value={this.state.editUserData.flatType}
-                                        onChange={this.selectflatType} />
+                                        onChange={this.selectflatType} 
+                                        maxLength='4'/>
+                                        
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="firstName">Flat Super Area</Label>
-                                    <input
+                                    <Input
                                         type="textbox"
                                         placeholder="enter flat super area"
                                         value={this.state.editUserData.flatSuperArea}
-                                        onChange={this.setFlatSuperArea} />
+                                        onChange={this.setFlatSuperArea}
+                                        onKeyPress={this.OnKeyPresshandlerPhone}
+                                        maxLength='3' />
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">sizeType</Label>
-                                    <select value={this.state.editUserData.sizeId} onChange={this.sizeNameType}>
+                                    <Input type="select" 
+                                    value={this.state.editUserData.sizeId} onChange={this.sizeNameType}>
                                         <option>{this.state.editUserData.sizeType}</option>
                                         <option disabled>Select</option>
                                         {this.fetchSizeDrop(this.props.flats)}
-                                    </select>
+                                    </Input>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="lastName">Cover Area</Label>
-                                    <input
+                                    <Input
                                         type="textbox"
                                         placeholder="enter cover area"
                                         value={this.state.editUserData.coverArea}
-                                        onChange={this.setCoverArea} />
+                                        onChange={this.setCoverArea}
+                                        onKeyPress={this.OnKeyPresshandlerPhone}
+                                        maxLength='3' />
 
                                 </FormGroup>
-
+                                <FormGroup>
+                                <Button color="primary mr-2" onClick={this.updateBook}>Save</Button>
+                                <Button color="danger" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
+                                </FormGroup>
                             </ModalBody>
-                            <ModalFooter>
-                                <Button color="primary" onClick={this.updateBook}>Update Flat</Button>
-                                <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
-                            </ModalFooter>
+                            
                         </Modal>
                         <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />

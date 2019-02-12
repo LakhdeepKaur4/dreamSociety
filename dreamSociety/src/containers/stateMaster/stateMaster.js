@@ -36,7 +36,7 @@ class FlatMaster extends Component {
         if (!this.state.countryId) {
             errors.countryId = "CountryName  cannot be empty"
         }
-        if (this.state.stateName === '') errors.stateName = "cant be empty";
+        if (this.state.stateName === '') errors.stateName = "Cant be empty";
 
         this.setState({ errors });
 
@@ -64,7 +64,7 @@ class FlatMaster extends Component {
 
     }
     onChange = (e) => {
-        if (!!this.state.errors[e.target.value]) {
+        if (!this.state.errors[e.target.value]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({ [e.target.name]: e.target.value.trim(''), errors });
@@ -100,6 +100,13 @@ class FlatMaster extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+    onStateChange=(event)=>{
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     render() {
 
@@ -116,7 +123,7 @@ class FlatMaster extends Component {
                     <option >--SELECT--</option>
                     {this.countryName(this.props.countryDetails)}
                 </Input>
-                <span>{this.state.errors.countryId}</span>
+                <span className='error'>{this.state.errors.countryId}</span>
 
             </FormGroup>
 
@@ -126,15 +133,16 @@ class FlatMaster extends Component {
                 <Input
                     type="text"
                     name="stateName"
-                    maxLength='10'
+                    maxLength='50'
+                    onKeyPress={this.onStateChange}
                     // value={this.state.flatType} 
                     onChange={this.onChange} />
-                <span>{this.state.errors.stateName}</span>
+                <span className='error'>{this.state.errors.stateName}</span>
             </FormGroup>
 
             <FormGroup>
                 <Button color="primary" type="submit" className="mr-2">Submit</Button>
-                <Button color="success" onClick={this.push}>Details</Button>
+                <Button color="success" onClick={this.push}>Cancel</Button>
             </FormGroup>
         </Form>
          }
