@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { addServiceType, getServiceDetail } from '../../../actionCreators/serviceMasterAction';
-
+import { Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
 import UI from '../../../components/newUI/vendorDashboardInside';
@@ -97,7 +97,7 @@ class serviceMaster extends Component {
         return (<div>
             <UI onClick={this.logout}>
                
-                <div className="form col-8">
+                <div >
                     <form onSubmit={this.onSubmit}>
                     <div style={{textAlign: 'center',fontWeight: 'bold' }}><label>Service Master</label></div>
                         <div>
@@ -112,9 +112,9 @@ class serviceMaster extends Component {
                             </select>
                         </div>
                         <div className="mt-4">
-                            <button type="submit" className="btn btn-primary mr-2" value="submit">Submit</button>
+                            <Button type="submit" color="primary" value="submit">Submit</Button>
                             <Link to='/superDashboard/displayServices'>
-                                <button className="btn">Show Details</button>
+                                <Button color="secondary" >Show Details</Button>
                             </Link>
                         </div>
                     </form>

@@ -5,7 +5,8 @@ import { addAssets } from '../../actionCreators/assetsAction';
 import './assetsTypeMaster.css';
 import { Link } from 'react-router-dom'
 import UI from '../../components/newUI/superAdminDashboard';
-
+import Spinner from '../../components/spinner/spinner';
+import { Form,FormGroup, Input, Button, Label } from 'reactstrap';
 class AssetsTypeMaster extends Component {
     constructor(props) {
         super(props);
@@ -14,7 +15,9 @@ class AssetsTypeMaster extends Component {
             assets: '',
             description: '',
             menuVisible: false,
-            search: ''
+            search: '',
+            loading:false,
+            errors: {},
         }
     }
 
@@ -26,8 +29,20 @@ class AssetsTypeMaster extends Component {
     onSubmit = (e) => {
         e.preventDefault();
         const { assets, description } = this.state
-        this.props.addAssets(assets, description)
-       .then(()=>this.props.history.push('/superDashBoard/assetsMaster/assetsList'))
+        let errors = {};
+        if(this.state.assets===''){
+            errors.assets="Assets can't be empty"
+        }
+        else if(this.state.description===''){
+            errors.description="Description can't be empty"
+        }
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0
+        if (isValid) {
+            this.setState({loading: true})
+            this.props.addAssets(assets, description)
+            .then(()=>this.props.history.push('/superDashBoard/assetsMaster'))
+        }
     }
 
     logout=()=>{
@@ -36,42 +51,39 @@ class AssetsTypeMaster extends Component {
         return this.props.history.replace('/') 
     }
     render() {
+        let formData;
+        formData= 
+        <div>
+            <div className="assetsName">
+                <Label>Assets Name</Label>
+                <Input type="text" maxLength={30} placeholder="Enter Assets Name" name="assets" onChange={this.onChangeHandler} />
+                <span className="error">{this.state.errors.assets}</span>
+            </div>
+            <div>
+                <Label>Description</Label>
+                <textarea type="text" maxLength={30} id="Description" placeholder="Enter Description..." className="form-control" onChange={this.onChangeHandler} name='description'/>
+                <span className="error">{this.state.errors.description}</span>
+            </div>
+            <div>  
+             <Button className="btn btn-success" id="addAssets">Add Assets</Button>
+             <Link to='/superDashBoard/assetsMaster'>
+                <Button color="danger" id="addAssets" >Cancel</Button>
+                </Link>
+            </div>
+        </div>
+
+
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-             <div style={{ margin: '48px auto' }}>
-            <SideBar onClick={() => this.setState({ menuVisible: false })}
-                     visible={this.state.menuVisible}>   */}
                 <UI onClick={this.logout}>
-                    <div className="Assets">
-                        <form onSubmit={this.onSubmit}>
-
-                            <div className="Assets">
-                                <div className="assetsName">
-                                    <label htmlFor="AssetsName" style={{fontFamily:'cursive',fontSize: '30px',fontWeight: 200}}>Assets Name</label>
-                                    <input type="text" maxLength={30} className="form-control" placeholder="Enter Assets Name" name="assets" onChange={this.onChangeHandler} required />
-                                </div>
-                                <div>
-                                    <label htmlFor="Description" style={{fontFamily:'cursive',fontSize: '30px',fontWeight: 200}}>Description</label>
-                                    <textarea type="text" maxLength={100} id="Description" placeholder="Enter Description..." className="form-control" onChange={this.onChangeHandler} name='description' required />
-                                </div>
-                                <div>  
-                                 <button className="btn btn-success" id="addAssets">Add Assets</button>
-                                 <Link to='/superDashBoard/assetsMaster/assetsList'>
-                                    <button className="btn btn-success" id="addAssets" >Assets List</button>
-                                    </Link>
-                                </div>
-                            </div>
-
-                        </form>
+                    <div>
+                    <Form onSubmit={this.onSubmit}>
+                    <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Assets Sub Type Master</h3></div>
+                    {!this.state.loading ? formData: <Spinner />} 
+                   </Form>
                     </div>
                 </UI>
-                {/* </SideBar>
-            </div> */}
             </div>
-
-
-
         );
     }
 }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { AddSize } from '../../actionCreators/sizeMasterAction';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import UI from '../../components/newUI/superAdminDashboard';
-
+import Spinner from '../../components/spinner/spinner';
 import { Link } from 'react-router-dom';
 
 import { Form, FormGroup, Input, Button, Label } from 'reactstrap';
@@ -14,18 +14,27 @@ class SizeMaster extends Component {
         super(props);
         this.state = {
             sizeType: "",
-            menuVisible: false
+            menuVisible: false,
+            loading:true
         }
 
         this.onChange = this.onChange.bind(this);
         this.submit = this.submit.bind(this);
     }
 
+    componentWillMount(){
+        this.refreshData()
+    }
+
+    refreshData =()=>{
+            this.setState({loading:false})
+    }
+
     onChange(e) {
         this.setState({ [e.target.name]: e.target.value });
     }
  onkeyPresshandle(event){
-    const pattern = /[a-zA-Z]/;
+    const pattern = /[a-zA-Z _]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       event.preventDefault();
@@ -34,47 +43,59 @@ class SizeMaster extends Component {
  }
 
     submit(e) {
-        e.preventDefault();
+this.setState({loading:true})
         console.log(this.state);
-        this.props.AddSize(this.state)
+        this.props.AddSize(this.state).then(()=> this.props.history.push('/superDashboard/display-size')
+
+    )
         return this.setState({
             state: {
 
                 sizeType: ""
             }
-        }),
-            this.props.history.push('/superDashboard/display-size');
-
+        })
+           
     }
-
+    size=()=>{
+        this.props.history.push('/superDashboard/display-size')
+    }
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
     render() {
+        let form;
+        if(!this.state.loading){
+        form=
+        <div>
+        <Form onSubmit={this.submit}>
+        <h3 align="center">  Add Size </h3>
+            <FormGroup>
+                <Label> Size Type</Label>
+                <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={20}/>
+            </FormGroup>
+            <FormGroup>
+                <Button type="submit" color="success">Submit</Button>
+                <button className=" btn btn-primary" onClick ={this.size}>Size details</button>
+            </FormGroup>
+        </Form>
+    </div>  
+        }
+        else if(this.submit){
+            form=<Spinner/>
+        }
         return (
+                     
+            
             <div>
                 <UI onClick={this.logout}>
-                    <div style={{ margin: '48px auto' }}>
-
-                        <div>
-                            <Form onSubmit={this.submit}>
-                                <FormGroup>
-                                    <Label> Size Type</Label>
-                                    <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange} />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Button type="submit" color="success">Submit</Button>
-                                    <Link color="primary" to="/superDashboard/display-size">Size details</Link>
-                                </FormGroup>
-                            </Form>
-                        </div>
-
-                    </div>
+                        
+       {form}
+           
                 </UI>
             </div>
-
+            
         )
 
     }

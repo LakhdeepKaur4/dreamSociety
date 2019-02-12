@@ -8,10 +8,11 @@ import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, L
 import { URN } from '../../../actions/index';
 
 import { Link } from 'react-router-dom';
-import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 
 import UI from '../../../components/newUI/vendorDashboardInside';
+import Spinner from '../../../components/spinner/spinner';
 
 
 
@@ -26,18 +27,20 @@ class displayServices extends Component {
             serviceName: '',
             service_detail: '',
             serviceDetailId: '',
+            
             isActive: false
         },
         menuVisible: false,
         editServiceModal: false,
-        search: ''
+        search: '',
+        loading:true,
 
     }
 
 
     componentDidMount() {
-        this.props.getServiceType()
-        this.props.getServiceDetail();
+        this.refreshData();
+   
     }
 
     componentWillMount() {
@@ -45,12 +48,14 @@ class displayServices extends Component {
     }
 
     refreshData() {
-        this.props.getServiceType();
+        this.props.getServiceType().then(()=> this.setState({loading:false}));
+        this.props.getServiceDetail().then(()=> this.setState({loading:false}));
     }
 
 
 
     deleteService(serviceId) {
+        this.setState({loading:true})
         let { isActive } = this.state.editServiceData;
         axios.put(`${URN}/service/` + serviceId, { isActive }, { headers: authHeader() }).then((response) => {
             this.refreshData()
@@ -81,7 +86,7 @@ class displayServices extends Component {
             this.refreshData();
 
             this.setState({
-                editServiceModal: false, editServiceData: { serviceId: '', serviceName: '', service_detail: '', serviceDetailId: '' }
+                editServiceModal: false,loading:true, editServiceData: { serviceId: '', serviceName: '', service_detail: '', serviceDetailId: '' }
             })
         });
 
@@ -134,10 +139,9 @@ class displayServices extends Component {
 
 
                         <td>
-                            <button className="btn btn-primary" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</button>
-                        </td>
-                        <td>
-                            <button className="btn btn-danger" onClick={this.deleteService.bind(this, item.serviceId)}>Delete</button>
+                            <Button color="primary" className="mr-2" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</Button>
+                        
+                            <Button color="danger" onClick={this.deleteService.bind(this, item.serviceId)}>Delete</Button>
                         </td>
                     </tr>
 
@@ -152,11 +156,27 @@ class displayServices extends Component {
     }
 
     render() {
+        let tableData;
+        tableData=
+        <Table className="table table-bordered">
+        <thead>
+            <tr>
+                <th>Service Type</th>
+                <th>Service Details</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {this.renderList(this.props.displayServiceMasterReducer)}
+        </tbody>
+    </Table>
         return (
 
             <div>
                 <UI onClick={this.logout}>
                   
+                    <div className="w3-container w3-margin-top w3-responsive">
                     <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)}>
                         <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Edit a Service</ModalHeader>
                         <ModalBody>
@@ -192,24 +212,15 @@ class displayServices extends Component {
                             <Button color="secondary" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button>
                         </ModalFooter>
                     </Modal>
-                    <div style={{ fontWeight: 'bold' }}><label>Service Details</label></div>
+                    <div style={{ fontWeight: 'bold'}}><label>Service Details</label></div>
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
-                    <Table className="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Service Type</th>
-                                <th>Service Details</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {this.renderList(this.props.displayServiceMasterReducer)}
-                        </tbody>
-                    </Table>
+                           {!this.state.loading ? tableData : <Spinner />}
+                 
                     <Link to="/superDashboard/serviceMaster">
-                        <button className="button" type="button">Add Services</button>
+                        <Button color="success" type="button">Add Services</Button>
                     </Link>
+                    </div>
                 </UI>
                
 

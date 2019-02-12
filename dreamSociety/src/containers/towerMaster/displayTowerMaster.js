@@ -6,6 +6,7 @@ import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, In
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
 
+import Spinner from '../../components/spinner/spinner';
 class DisplayTowerMaster extends Component {
 
   state = {
@@ -17,34 +18,33 @@ class DisplayTowerMaster extends Component {
     },
     editTowerModal: false,
     menuVisible: false,
-    search:''
+    search:'',
+    loading:true
   }
 
   componentDidMount() {
 
-    this.props.viewTower()
+    this.refreshData();
 
   }
 
-  OnKeyPresshandle(event) {
-    const pattern=/^[0-9]$/;
+  refreshData=()=>{
+    this.props.viewTower().then(() =>this.setState({loading:false}));
+  }
+
+  OnKeyPresshandler(event) {
+    const pattern=/[a-zA-Z _]/
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       event.preventDefault();
       
     }
   }
-
-  
-  refreshdata() {
-    this.props.viewTower()
-
-  }
   deleteTower(towerId) {
-
+this.setState({loading:true});
 
   let {isActive} =this.state.editTowerData;
-     this.props.deleteTower(towerId,isActive).then(()=>{this.refreshdata()})
+     this.props.deleteTower(towerId,isActive).then(()=>{this.refreshData()})
 
         this.setState({editTowerData:{isActive:false}});
 
@@ -63,9 +63,9 @@ class DisplayTowerMaster extends Component {
     let {  towerId, towerName } = this.state.editTowerData;
 
   
-   this.props.updateTower(towerId,towerName).then(()=>{this.refreshdata()})
+   this.props.updateTower(towerId,towerName).then(()=>{this.refreshData()})
       this.setState({
-        editTowerModal: false, editTowerData: { id: '', towerName: '' }
+        editTowerModal: false,loading:true, editTowerData: { id: '', towerName: '' }
       })
 
   }
@@ -96,7 +96,7 @@ class DisplayTowerMaster extends Component {
 
             <td>{item.towerName}</td>
             <td>
-              <button className="btn btn-primary" onClick={this.editTower.bind(this, item.id, item.towerId, item.towerName)}>edit </button>
+              <button className="btn btn-success" onClick={this.editTower.bind(this, item.id, item.towerId, item.towerName)}>edit </button>
               <button className="btn btn-danger" onClick={this.deleteTower.bind(this, item.towerId)}>delete</button>
             </td>
           </tr>
@@ -111,19 +111,51 @@ class DisplayTowerMaster extends Component {
   //  this.setState({})
   this.setState({search:e.target.value})
   }
+
+ addTower =() =>{
+   this.props.history.push('/superDashboard/towermaster')
+ }
+
   logout=()=>{
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
     return this.props.history.replace('/') 
 }
   render() {
+     let tableData;
+     tableData=<Table    className="table table-bordered">
+       <div className="w3-row">
+              <thead>
+                <tr>
 
+                  <th>Tower Name</th>
+
+
+                </tr>
+              </thead>
+
+              
+
+              <tbody>
+
+                 {this.TowerMasterDetails(this.props.TowerDetails)}
+
+              </tbody>
+              </div>
+            </Table>
+            if(!this.props.TowerDetails.tower){
+              tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching Towers</Spinner></div>
+            }
 
     return (
       <div>
         <UI onClick={this.logout}>
-          <div>
+        
+          <div className ="w3-container w3-margin-top">
+                                        <div  className ="top-details" >
             <h3 align="center"> Tower List</h3>
+            <Button  className="btn btn-success" onClick ={this.addTower} colr="primary"> Add Tower</Button>
+            </div>
             <Modal isOpen={this.state.editTowerModal} toggle={this.toggleEditTowerModal.bind(this)}>
               <ModalHeader toggle={this.toggleEditTowerModal.bind(this)}>Edit Tower</ModalHeader>
               <ModalBody>
@@ -141,7 +173,7 @@ class DisplayTowerMaster extends Component {
 
                   }}
                     onKeyPress={this.OnKeyPresshandler}
-
+                     maxLength={20}
                     required />
                 </FormGroup>
 
@@ -153,21 +185,7 @@ class DisplayTowerMaster extends Component {
               </ModalFooter>
             </Modal>
             <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-            <Table >
-              <thead>
-                <tr>
-
-                  <th>Tower Name</th>
-
-
-                </tr>
-              </thead>
-              <tbody>
-
-                 {this.TowerMasterDetails(this.props.TowerDetails)}
-
-              </tbody>
-            </Table>
+            {!this.state.loading?tableData:<Spinner/>}
           </div>
         </UI>
       </div>

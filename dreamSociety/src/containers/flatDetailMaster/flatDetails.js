@@ -2,12 +2,13 @@ import React,{Component} from 'react';
 import {getFlatDetails,getFlatType,getTowerName} from '../../actionCreators/flatDetailMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import {Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import {Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Table,Input, Label } from 'reactstrap';
 import  axios from 'axios';
 import {authHeader} from '../../helper/authHeader';
 import {URN} from '../../actions/index';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
+import Spinner from '../../components/spinner/spinner';
 
 class flatDetails extends Component{
         
@@ -23,23 +24,25 @@ class flatDetails extends Component{
             isActive: false
     },
     editFlatModal: false,
-    search:''
+    search:'',
+    loading:true,
 }
 
 
 componentDidMount(){
-    this.props.getFlatDetails();
-    this.props.getFlatType();
-    this.props.getTowerName();
+    this.refreshData();
 }
 
 
 componentWillMount(){
-    this.refreshData()
+    this.refreshData();
+    
 }
 
 refreshData(){
-     this.props.getFlatDetails();
+     this.props.getFlatDetails().then(()=> this.setState({loading:false}));
+     this.props.getFlatType().then(()=> this.setState({loading:false}));
+     this.props.getTowerName().then(()=> this.setState({loading:false}));
 }
 
   
@@ -51,12 +54,23 @@ edit(flatNo,flatType,floor,towerName, flatId,flatDetailId){console.log("tttttttt
 
 }
 
-searchFilter(search){
-    return function(x){
-        return x.floor.toLowerCase().includes(search.toLowerCase()) || !search;
+// searchFilter(search){
+//     return function(x){
+//         return x.floor.toLowerCase().includes(search.toLowerCase()) || 
+//         x.tower_master.towerName.toLowerCase().includes(search.toLowerCase())|| !search;
+//     }
+// }
+
+searchFilter(search) {
+    return function (x) {
+        return x.floor.toLowerCase().includes(search.toLowerCase()) ||
+            x.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
+            x.flat_master.flatType.toLowerCase().includes(search.toLowerCase()) ||
+            x.flatNo.toLowerCase().includes(search.toLowerCase()) 
+
+            || !search;
     }
 }
-
 
 
 
@@ -74,13 +88,14 @@ updateDetails(){
       this.refreshData();
            console.log(response.data)
       this.setState({
-        editFlatModal: false, editFlatData: {flatDetailId:'', flatNo:'',flatId:'',flatType:'',floor:'',towerId:'',towerName:''}
+        editFlatModal: false,loading:true, editFlatData: {flatDetailId:'', flatNo:'',flatId:'',flatType:'',floor:'',towerId:'',towerName:''}
       })
       console.log(flatType)
     });
 }  
 
 delete(flatDetailId){
+    this.setState({loading:true})
     let{isActive}=this.state.editFlatData;
     axios.put(`${URN}/flatDetail/delete/` +flatDetailId,{isActive},{headers:authHeader()}).then((response)=>{
         this.refreshData();
@@ -140,10 +155,9 @@ renderList =({details})=>{
                             <td>{item.tower_master.towerName}</td>
                             
                                 <td>
-                                   <button className="btn btn-primary" onClick={this.edit.bind(this,item.flatNo, item.flat_master.flatType,item.floor,item.tower_master.towerName,item.flat_master.flatId, item.flatDetailId)} >Edit</button>
-                                </td>
-                                 <td>
-                                   <button className="btn btn-danger" onClick={this.delete.bind(this, item.flatDetailId)}>Delete</button>
+                                   <Button color="primary"   className="mr-2" onClick={this.edit.bind(this,item.flatNo, item.flat_master.flatType,item.floor,item.tower_master.towerName,item.flat_master.flatId, item.flatDetailId)} >Edit</Button>
+                              
+                                   <Button color="danger" onClick={this.delete.bind(this, item.flatDetailId)}>Delete</Button>
                                  </td>  
                     </tr>
        
@@ -152,10 +166,36 @@ renderList =({details})=>{
     }  
 }    
 
+logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
+
 render(){
+    let tableData;
+    tableData=
+    <Table className="table table-bordered">
+    <thead>
+    <tr>
+        <th>Flat No</th>
+        <th>Flat Type</th>
+        <th>Floor</th>
+        <th>Tower Name</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    
+    <tbody>
+    {this.renderList(this.props.flatDetailMasterReducer)}
+    </tbody>
+</Table>    
+
     return(
-        <UI>
         <div>
+        <UI onClick={this.logout}>
+      
+        <div className="w3-container w3-margin-top w3-responsive">
              <Modal isOpen={this.state.editFlatModal} toggle={this.toggleEditFlatModal.bind(this)}>
                  <ModalHeader toggle={this.toggleEditFlatModal.bind(this)}>Edit Details</ModalHeader>
                      <ModalBody>
@@ -216,26 +256,14 @@ render(){
                     </ModalFooter>
              </Modal>
              <div style={{ fontWeight: 'bold' }}><label>Flat Details</label></div>
-             <SearchFilter type="text" value={this.state.search}
+             <SearchFilter  type="text" value={this.state.search}
                                             onChange={this.searchOnChange} />
-            <table className="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Flat No</th>
-                        <th>Flat Type</th>
-                        <th>Floor</th>
-                        <th>Tower Name</th>
-                    </tr>
-                    </thead>
-                    
-                    <tbody>
-                    {this.renderList(this.props.flatDetailMasterReducer)}
-                    </tbody>
-                </table>    
-                
-                <button onClick={this.push}> Add Flat</button>
+                                                 {!this.state.loading ? tableData : <Spinner />}
+          
+                <Button color="success" type="button" onClick={this.push}> Add Flat</Button>
         </div>
         </UI>
+        </div>
     )
 }
 

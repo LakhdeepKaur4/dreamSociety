@@ -4,8 +4,8 @@ import { AddEvent, GetEventOrganiser } from '../../actionCreators/eventMasterAct
 import { bindActionCreators } from 'redux';
 import { Input } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
-import { Link } from 'react-router-dom';
 
+import Spinner from '../../components/spinner/spinner';
 import './event.css';
 
 
@@ -22,19 +22,21 @@ class EventMaster extends Component {
     eventOrganiser: [],
     startDate: Date,
     endDate: Date,
-    menuVisible: false
+    menuVisible: false,
+    loading:true
 
   }
 
   OnKeyPresshandler(event) {
-    const pattern = /[a-zA-Z]/;
+    const pattern = /[a-zA-Z _]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
         event.preventDefault();
     }
 }
   componentDidMount() {
-    this.props.GetEventOrganiser()
+    this.props.GetEventOrganiser().then(()=> this.setState({loading:false}))
+    
     console.log("hieee", this.props.GetEventOrganiser)
   }
 
@@ -49,9 +51,10 @@ class EventMaster extends Component {
     console.log("userId", this.state.userId)
   }
   submit = (e) => {
-    e.preventDefault();
+this.setState({loading:true})
     console.log(this.state.eventOrganiser);
-    this.props.AddEvent({ ...this.state })
+    this.props.AddEvent({ ...this.state }).then(()=>
+    this.props.history.push('/superDashboard/display-event'))
     this.setState({
       state: {
         eventType: [],
@@ -62,7 +65,7 @@ class EventMaster extends Component {
 
       }
     })
-    this.props.history.push('/superDashboard/display-event')
+   
   }
 
   getEvent({ events }) {
@@ -84,88 +87,101 @@ class EventMaster extends Component {
     return this.props.history.replace('/') 
 }
 
+  event=()=>{
+    this.props.history.push('/superDashboard/display-event')
+  }
+  
+  
   render() {
+
+    let form1 ;
+    if(!this.state.loading && this.props.EventDetails.events){
+    form1=
+    <div >
+      <h3 align="center">Add Event</h3>
+      <form onSubmit={this.submit}>
+        <div className="form-group">
+          <label >Event Type</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="eventType"
+            onKeyPress={this.OnKeyPresshandler}
+            name="eventType"
+            onChange={this.onChange}
+             maxLength ={25}
+            required
+          />
+
+        </div>
+
+        <div className="form-group">
+          <label>Event Name</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="eventName"
+            onKeyPress={this.OnKeyPresshandler}
+            name="eventName"
+            onChange={this.onChange}
+            maxLength ={25}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Event Start Date</label>
+          <input
+            type="date"
+            className="form-control"
+            name="startDate"
+            placeholder=" event start date"
+            onChange={this.onChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label> Event End Date</label>
+          <input
+            type="date"
+            className=" form-control"
+            name="endDate"
+            placeholder="event end date"
+            onChange={this.onChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label >Event Organiser</label>
+          <Input
+            type="select"
+            className="form-control"
+            name="eventOrganiser"
+            value={this.state.userId}
+            onChange={this.onChange}
+            required
+          >
+            <option > Please Select</option>
+            {this.getEvent(this.props.EventDetails)}
+          </Input>
+        </div>
+
+        <button
+          className="btn btn-success"
+        > Submit</button>
+    <button  onClick={this.event}  className="btn btn-primary">  Event Details</button>
+      </form>
+    </div>
+    }
+    else if(this.submit){
+      form1 =<Spinner/>
+  }
     return (
       <div>
     <UI onClick={this.logout}>
-                
+             {form1}   
         
-                <div className="form">
-
-                  <form onSubmit={this.submit}>
-                    <div className="form-group">
-                      <label >Event Type</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="eventType"
-                        onKeyPress={this.OnKeyPresshandler}
-                        name="eventType"
-                        onChange={this.onChange}
-                         maxLength ={20}
-                        required
-                      />
-
-                    </div>
-
-                    <div className="form-group">
-                      <label>Event Name</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="eventName"
-                        onKeyPress={this.OnKeyPresshandler}
-                        name="eventName"
-                        onChange={this.onChange}
-                        maxLength ={20}
-                        required
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label>Event Start Date</label>
-                      <input
-                        type="date"
-                        className="form-control"
-                        name="startDate"
-                        placeholder=" event start date"
-                        onChange={this.onChange}
-                        required
-                      />
-                    </div>
-
-                    <div className="form-group">
-                      <label> Event End Date</label>
-                      <input
-                        type="date"
-                        className=" form-control"
-                        name="endDate"
-                        placeholder="event end date"
-                        onChange={this.onChange}
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label >Event Organiser</label>
-                      <Input
-                        type="select"
-                        className="form-control"
-                        name="eventOrganiser"
-                        value={this.state.userId}
-                        onChange={this.onChange}
-                        required
-                      >
-                        <option > Please Select</option>
-                        {this.getEvent(this.props.EventDetails)}
-                      </Input>
-                    </div>
-
-                    <button
-                      className="btn btn-primary"
-                    > Submit</button>
-                      <Link color="primary" to="/superDashboard/display-event">event details</Link>
-                  </form>
-                </div>
        </UI>
              
               </div>

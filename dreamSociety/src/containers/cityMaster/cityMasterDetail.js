@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { getCountry, getState, getCity, detailCity, deleteCity, updateCity } from './../../actionCreators/cityMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import {Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
+import Spinner from '../../components/spinner/spinner';
+
+
 class CityMasterDetail extends Component {
     constructor(props) {
         super(props);
@@ -16,12 +18,14 @@ class CityMasterDetail extends Component {
                 stateName: '',
                 stateId: '',
                 cityName: '',
-                cityId: ''
+                cityId: '',
+                isActive:false,
 
             },
             menuVisible: false,
             search: '',
-            modal: false
+            modal: false,
+            loading: true,
 
         };
     }
@@ -49,26 +53,30 @@ class CityMasterDetail extends Component {
     }
 
 
-    componentDidMount() {
-        this.refreshData();
-        this.props.getCountry()
-        this.props.getState()
-        this.props.getCity()
+    componentWillMount() {
+        this.refreshData()
+        
     }
 
     refreshData() {
-        this.props.detailCity()
+        this.props.detailCity().then(() => this.setState({loading: false}))
+        this.props.getCountry().then(() => this.setState({loading: false}))
+        this.props.getState().then(() => this.setState({loading: false}))
+        this.props.getCity().then(() => this.setState({loading: false}))
     }
 
 
 
 
     editCityType = () => {
+        this.setState({
+            loading: true
+        })
         const { cityId, countryId, stateId, cityName } = this.state
 
 
         this.props.updateCity(cityId, countryId, stateId, cityName)
-            .then(() => this.props.detailCity())
+            .then(() => this.refreshData())
         this.setState({
             editCityData: { cityId, countryId, stateId, cityName },
             modal: !this.state.modal
@@ -78,9 +86,11 @@ class CityMasterDetail extends Component {
     }
 
     deleteCityName = (cityId) => {
-
-        this.props.deleteCity(cityId)
-            .then(() => this.props.detailCity())
+        let {isActive}=this.state.editCityData
+        this.setState({loading:true})
+        this.props.deleteCity(cityId,isActive)
+            .then(() => this.refreshData())
+            this.setState({editCityData:{isActive:false}})
 
     }
 
@@ -89,14 +99,17 @@ class CityMasterDetail extends Component {
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
     }
-    searchFilter(search) {
+
+    searchFilter=(search)=> {
         return function (x) {
             return x.cityName.toLowerCase().includes(search.toLowerCase()) ||
-                x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) ||
+                x.country_master.countryName.toLowerCase().includes(search.toLowerCase())||
                 x.state_master.stateName.toLowerCase().includes(search.toLowerCase())
                 || !search;
         }
     }
+
+    
     renderCity = ({ city }) => {
 
         if (city) {
@@ -108,10 +121,9 @@ class CityMasterDetail extends Component {
                         <td>{item.state_master.stateName}</td>
                         <td>{item.cityName}</td>
                         <td>
-                            <button className="btn btn-success" onClick={this.toggle.bind(this, item.cityId, item.country_master.countryName, item.state_master.stateName, item.cityName)} >Edit</button>
-                        </td>
-                        <td>
-                            <button className="btn btn-danger" onClick={this.deleteCityName.bind(this, item.cityId)} >Delete</button>
+                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.cityId, item.country_master.countryName, item.state_master.stateName, item.cityName)} >Edit</Button>
+                        
+                            <Button color="danger" onClick={this.deleteCityName.bind(this, item.cityId)} >Delete</Button>
 
                         </td>
                     </tr>
@@ -159,34 +171,48 @@ class CityMasterDetail extends Component {
         return this.props.history.replace('/') 
     }
 
+    routeToAddNewCity =() => {
+        this.props.history.push('/superDashboard/cityMaster')
+    }
+
+
+    OnKeyPressUserhandler(event) {
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
     render() {
+        let tableData;
+        tableData= <div style={{backgroundColor:'lightgray'}}>
+        <Table className="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Country Name</th>
+                    <th>State Name</th>
+                    <th>City Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {this.renderCity(this.props.cityMasterReducer)}
+            </tbody>
+        </Table></div>
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-              <div style={{ marginTop: '52px' }}>
-              <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}> */}
+               
                 <UI onClick={this.logout}>
-                    <div className="container" >
-                        <div>
-                            <h3>City details</h3>
+                  <div className="w3-container w3-margin-top">
+                             <div className="top-details">
+                                <h3>City Details</h3>
+                                <Button onClick={this.routeToAddNewCity} color="primary">Add City</Button>
+                            </div>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                        </div>
-                        <div style={{backgroundColor:'lightgray'}}>
-                            <table className="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Country Name</th>
-                                        <th>State Name</th>
-                                        <th>City Name</th>
-                                        <th>Edit/Delete</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.renderCity(this.props.cityMasterReducer)}
-                                </tbody>
-                            </table>
-                            </div>
+                        
+                            {!this.state.loading ? tableData : <Spinner />}
                             <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                                 <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                                 <ModalBody>
@@ -224,15 +250,16 @@ class CityMasterDetail extends Component {
                                     </FormGroup>
                                     <FormGroup>
                                         <Label htmlFor="cityName">City Name</Label>
-                                        <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} value={this.state.cityName} />
+                                        <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} value={this.state.cityName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler}/>
                                     </FormGroup>
 
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button color="primary" onClick={this.editCityType}>Update City</Button>
+                                
+                                 <FormGroup>
+                                    <Button color="primary mr-2" onClick={this.editCityType}>Save</Button>
 
-                                    <Button color="secondary" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                                </ModalFooter>
+                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+                                </FormGroup>
+                                    </ModalBody>
                             </Modal>
 
 

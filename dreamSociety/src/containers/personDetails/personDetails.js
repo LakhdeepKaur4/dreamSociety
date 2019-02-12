@@ -2,8 +2,8 @@ import React,{Component} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getTower,getFlat,getRoles,addPerson} from '../../actionCreators/personDetailsMasterAction';
+import Spinner from '../../components/spinner/spinner'
 
-import {Link} from 'react-router-dom';
 import UI from '../../components/newUI/superAdminDashboard';
 
  class PersonDetails extends Component{
@@ -22,13 +22,13 @@ this.state={
 menuVisible: false  ,      
     familyMember:'',
     parking:'',
-    
+    loading:true
 }                              
 
 }
 
 OnKeyPresshandler(event) {
-    const pattern = /[a-zA-Z]/;
+    const pattern = /[a-zA-Z _]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
         event.preventDefault();
@@ -36,10 +36,10 @@ OnKeyPresshandler(event) {
 }
 componentDidMount(){
 
-    console.log(   this.props.getRoles(),"mnsssss")
-    this.props.getTower()
-    this.props.getFlat()
-    this.props.getRoles()
+ 
+    this.props.getTower().then(()=> this.setState({loading:false}))
+    // this.props.getFlat()
+    this.props.getRoles().then(()=> this.setState({loading:false}))
     
 }
 
@@ -65,12 +65,14 @@ this.setState({[e.target.name]:e.target.value});
 
 
 
-submit=(e)=>{
-e.preventDefault();
+submit=()=>{
+    this.setState({loading:true})
 
-this.props.addPerson({...this.state}),
+
+this.props.addPerson({...this.state})
+.then(()=>
 this.props.history.push('/superDashboard/displayPerson')
-console.log(this.state,'adsdfskjfss');  
+);
             
 }
 
@@ -105,6 +107,10 @@ Tower({get}){
 }
 
 
+person=()=>{
+    this.props.history.push('/superDashboard/displayPerson')
+}
+
 
     logout=()=>{
         localStorage.removeItem('token');
@@ -113,54 +119,60 @@ Tower({get}){
     }
 
     render() {
-        return (
-            <div>
-                <UI onClick={this.logout}>
-
-
-                    <div className="person" >
-                        <form onSubmit={this.submit}>
-                            <div className="form-group">
-                                <label>
-                                    Username
-                                    
+let form1;
+  if(!this.state.loading && this.props.personDetails.get && this.props.personDetails.roles){
+form1 = <form onSubmit={this.submit}>
+      <h3 align="center">  Add Person </h3>
+            <div className="form-group">
+                <label>
+                    Username
+                    
 </label>
-<input type="text" name="userName" onChange={this.onChange} maxLength={20} className="form-control" onKeyPress={this.OnKeyPresshandler} required />
-        </div>
-   <div   className="form-group">
+<input type="text" name="userName" onChange={this.onChange} maxLength={30} className="form-control" onKeyPress={this.OnKeyPresshandler} required />
+</div>
+<div   className="form-group">
 <label>
 Email
 </label>
-<input type="email"  name="email"  onChange={this.onChange} maxLength={30}    className="form-control"  onKeyPress ={this.OnKeyPressmail} required/>
-        </div> 
-        <div className="form-group">
-            <label> Roles</label>
+<input type="email"  name="email"  onChange={this.onChange} maxLength={50}    className="form-control"  onKeyPress ={this.OnKeyPressmail} required/>
+</div> 
+<div className="form-group">
+<label> Roles</label>
 <select  name="roles"  onChange={(e)=>{this.setState({roles:e.target.value })}}    className="form-control"  required>
 
 {this.getRole(this.props.personDetails)}
 
 </select>
-        </div  >  
+</div  >  
 <div   className="form-group">
-    <label>Tower</label>
-    <select  name="towerId"  className="form-control" onChange ={(e)=>{this.setState({towerId:e.target.value})}}>
-    {this.Tower(this.props.personDetails)}
-    </select>
+<label>Tower</label>
+<select  name="towerId"  className="form-control" onChange ={(e)=>{this.setState({towerId:e.target.value})}}>
+{this.Tower(this.props.personDetails)}
+</select>
 </div>
-    <div   className="form-group">
-        <label> Number of members in family</label>
-        <input type="text"  name ="familyMember"  className="form-control" maxLength ={5}  onChange={this.onChange} onKeyPress ={this.OnKeyPressNumber} required/>
-       
-        </div>
-        <div   className="form-group">
-            <label> parking</label>
-            <input  type="text"   name ="parking" className="form-control" maxLength ={3} onChange={this.onChange}    onKeyPress ={this.OnKeyPressNumber}  required />
-        </div>
-        <button className="btn btn-primary"> Submit</button>
-        <Link color="primary" to="/superDashboard/displayPerson">Person details</Link>
-        </form>       
-         
-             </div>
+<div   className="form-group">
+<label> Number of members in family</label>
+<input type="text"  name ="familyMember"  className="form-control" maxLength ={2}  onChange={this.onChange} onKeyPress ={this.OnKeyPressNumber} required/>
+
+</div>
+<div   className="form-group">
+<label> parking</label>
+<input  type="text"   name ="parking" className="form-control" maxLength ={2} onChange={this.onChange}    onKeyPress ={this.OnKeyPressNumber}  required />
+</div>
+<button className="btn btn-success"> Submit</button>
+<button   className ="btn btn-primary" onClick={this.person}>Person Details</button> 
+</form>  
+     
+  }
+  else if(this.submit){
+      form1 =<Spinner/>
+  }
+        return (
+            <div>
+                <UI onClick={this.logout}>
+                 {form1} 
+
+                 
              </UI>
              </div>
     )

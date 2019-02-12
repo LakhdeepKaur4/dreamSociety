@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import{Link} from 'react-router-dom';
 import {getCountry,getState,getCity,getLocation,postSociety,getSociety} from '../../actionCreators/societyMasterAction';
 import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard';
+import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
+import Spinner from '../../components/spinner/spinner'
+
 
 
 
 class SocietyMangement extends Component {
     constructor(props) {
         super(props);
-        console.log(this.props)
+        
         
 
         this.state = {
@@ -24,7 +26,8 @@ class SocietyMangement extends Component {
             cityId:'',
             locationId:'',
             societyName:'',
-            
+            errors: {},
+            loading:true,
          
             menuVisible: false,
             
@@ -37,21 +40,22 @@ class SocietyMangement extends Component {
     }
 
   
-    componentDidMount(){
-           this.props.getCountry()
+    componentDidMount=()=>{
+           this.props.getCountry().then(()=> this.setState({loading:false}))
            this.props.getState()
            this.props.getCity()
            this.props.getLocation()
            this.props.getSociety()
-           
-                   
+                       
     }
 
-    refreshData(){
+    refreshData=()=>{
         this.props.postSociety()
     }
 
     onChangeCountry= (event)=>{
+
+        
         let selected= event.target.value
         console.log(selected)
         var country = _.find(this.props.societyReducer.countryResult,function(obj){
@@ -205,18 +209,45 @@ class SocietyMangement extends Component {
         }
     }
 
-    onChange=(e)=> {
-        e.preventDefault();
-        this.setState({
-            [e.target.name]: e.target.value
-        })
+    
+    
+    onChange=(e) =>{
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value.trim('') });
+        }
     }
-
 
     handleSubmit=(e)=>{
         e.preventDefault();
 
+        let errors = {};
+        if (!this.state.countryName) {
+            errors.countryName = "cant be empty"
+        }
+        if (this.state.stateName === '') errors.stateName = "cant be empty";
+        this.setState({ errors });
+
+        if (this.state.cityName === '') errors.cityName = "cant be empty";
+        this.setState({ errors });
+
+        if (this.state.locationName === '') errors.locationName = "cant be empty";
+        this.setState({ errors });
+
+        if (this.state.societyName === '') errors.societyName = "cant be empty";
+        this.setState({ errors });
+
+
+
+        const isValid = Object.keys(errors).length === 0;
         
+        if(isValid) {
+        
+         this.setState({loading:true})
         this.props.postSociety(this.state)
         .then(() => this.props.history.push('/superDashboard/societyManagementDetail'))
 
@@ -236,6 +267,7 @@ class SocietyMangement extends Component {
            
           }
         });
+      }
     }
 
 
@@ -245,76 +277,86 @@ class SocietyMangement extends Component {
         return this.props.history.replace('/') 
     }
 
+    societyDetails=()=>{
+        this.props.history.push('/superDashboard/societyManagementDetail');
+    }
 
+    OnKeyPressUserhandler(event) {
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     render() {
-         console.log(this.props.societyReducer)
-  
+        let form;
+        if(!this.state.loading && this.props.societyReducer.countryResult && this.props.societyReducer.stateResult && this.props.societyReducer.cityResult && this.props.societyReducer.locationResult && this.state.errors){
+            form= <div>
+            <FormGroup>
+            <Label><h4>Country Name</h4></Label>
+            <Input type="select" name="countryName"  onChange={this.onChangeCountry} required>
+            <option value=''>--Select--</option>
+                {this.countryName(this.props.societyReducer)}
+            </Input>
+            <span className='error'>{this.state.errors.countryName}</span>
+        </FormGroup>
+
+        <FormGroup>
+            <Label><h4>State Name</h4></Label>
+            <Input type="select" name="stateName"   onChange={this.onChangeState} required>
+            <option value=''>--Select--</option>
+                {this.stateName(this.props.societyReducer)}
+            </Input>
+             <span className='error'>{this.state.errors.stateName}</span>
+        </FormGroup>
+
+        <FormGroup>
+            <Label><h4>City Name</h4></Label>
+            <Input type="select" name="cityName"  onChange={this.onChangeCity} required>
+            <option value=''>--Select--</option>
+                {this.cityName(this.props.societyReducer)}  
+            </Input>
+            <span className='error'>{this.state.errors.cityName}</span>
+        </FormGroup>
+
+        <FormGroup>
+            <Label><h4>Location Name</h4></Label>
+            <Input type="select" name="locationName"  onChange={this.onChangeLocation} required>
+                <option value=''>--Select--</option>
+                {this.locationName(this.props.societyReducer)}
+            </Input>
+            <span className='error'>{this.state.errors.locationName}</span>
+        </FormGroup>
+
+        <FormGroup>
+            <Label htmlFor="societyName"><h4>Society Name</h4></Label>
+            <Input type="text" name="societyName" value={this.state.societyName} onChange={this.onChange} maxLength={30}/>
+             <span className='error'>{this.state.errors.societyName}</span>
+        </FormGroup>
+       
+      
+          <Button color="success" className="mr-2">Submit</Button>
+          <Button color="danger" onClick={this.societyDetails}>Cancel</Button>
+          </div>
+   
+        }
         return (
            <div>
                <UI onClick={this.logout}>
-            <div>
-                <form className="ui form" onSubmit={this.handleSubmit}>
-                    <div className="field">
-                        <label><h4>Country Name</h4></label>
-                        <select name="countryName" className="ui fluid dropdown"  onChange={this.onChangeCountry}>
-                            <option>Select</option>
-                            {this.countryName(this.props.societyReducer)}
-                            
-                        
-                        </select>
-                    </div>
-                    <div className="field">
-                        <label><h4>State Name</h4></label>
-                        <select name="stateName" className="ui fluid dropdown"  onChange={this.onChangeState}>
-                            <option>Select</option>
-                            {this.stateName(this.props.societyReducer)}
-                           
-                            
-                            
-                        </select>
-                    </div>
-                    <div className="field">
-                        <label><h4>City Name</h4></label>
-                        <select name="cityName" className="ui fluid dropdown"  onChange={this.onChangeCity}>
-                            <option>Select</option>
-                            {this.cityName(this.props.societyReducer)}
-                            
-                        </select>
-                    </div>
-                    <div className="field">
-                        <label><h4>Location Name</h4></label>
-                        <select name="locationName" className="ui fluid dropdown" onChange={this.onChangeLocation} >
-                            <option>Select</option>
-                            {this.locationName(this.props.societyReducer)}
-                            
-                        </select>
-                    </div>
-                    <div className="field">
-                        <label htmlFor="societyName"><h4>Society Name</h4></label>
-                        <input type="text" name="societyName" value={this.state.societyName} onChange={this.onChange}
-                    maxLength='30'
-                    minLength='3'/>
-                    </div>
-
-                    <button className="ui submit button" type="submit" style={{backgroundColor:'lightblue'}}>Submit</button>
-
-                    <Link to='/superDashboard/societyManagementDetail'>
-                    <button className="ui submit button" type="submit" style={{backgroundColor:'lightgreen'}}>Show Details</button>
-                    </Link>
-                </form>
-                <div>
-                </div>
-            </div>
-            </UI>
+               <Form  onSubmit={this.handleSubmit}>
+                 <h3 style={{textAlign:'center', marginBottom: '10px'}}>Society Master</h3>
+                 {!this.state.loading ? form : <Spinner />}
+                </Form>
+               </UI>
             </div> 
         );
     }
 }
 
 function mapStateToProps(state) {
-    console.log('===========stateCountry=========', state)
    
+
     return {
         societyReducer: state.societyReducer    
     }
@@ -327,6 +369,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(SocietyMangement));
-
-
-
