@@ -4,7 +4,7 @@ import { getCountry, getState, getCity, detailCity, deleteCity, updateCity } fro
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
-import {Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import {Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 
 
@@ -121,9 +121,8 @@ class CityMasterDetail extends Component {
                         <td>{item.state_master.stateName}</td>
                         <td>{item.cityName}</td>
                         <td>
-                            <Button color="success" onClick={this.toggle.bind(this, item.cityId, item.country_master.countryName, item.state_master.stateName, item.cityName)} >Edit</Button>
-                        </td>
-                        <td>
+                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.cityId, item.country_master.countryName, item.state_master.stateName, item.cityName)} >Edit</Button>
+                        
                             <Button color="danger" onClick={this.deleteCityName.bind(this, item.cityId)} >Delete</Button>
 
                         </td>
@@ -177,16 +176,24 @@ class CityMasterDetail extends Component {
     }
 
 
+    OnKeyPressUserhandler(event) {
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
     render() {
         let tableData;
         tableData= <div style={{backgroundColor:'lightgray'}}>
-        <Table className=" w3-responsive">
+        <Table className="table table-bordered">
             <thead>
                 <tr>
                     <th>Country Name</th>
                     <th>State Name</th>
                     <th>City Name</th>
-                    <th>Edit/Delete</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -195,11 +202,9 @@ class CityMasterDetail extends Component {
         </Table></div>
         return (
             <div>
-                {/* <MenuBar onClick={() => this.setState({ menuVisible: !this.state.menuVisible })}/>
-              <div style={{ marginTop: '52px' }}>
-              <SideBar onClick={() => this.setState({ menuVisible: false })} visible={this.state.menuVisible}> */}
+               
                 <UI onClick={this.logout}>
-                  <div className="w3-container w3-margin-top  w3-responsive">
+                  <div className="w3-container w3-margin-top">
                              <div className="top-details">
                                 <h3>City Details</h3>
                                 <Button onClick={this.routeToAddNewCity} color="primary">Add City</Button>
@@ -245,15 +250,16 @@ class CityMasterDetail extends Component {
                                     </FormGroup>
                                     <FormGroup>
                                         <Label htmlFor="cityName">City Name</Label>
-                                        <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} value={this.state.cityName} />
+                                        <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} value={this.state.cityName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler}/>
                                     </FormGroup>
 
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button color="primary" onClick={this.editCityType}>Update City</Button>
+                                
+                                 <FormGroup>
+                                    <Button color="primary mr-2" onClick={this.editCityType}>Save</Button>
 
-                                    <Button color="secondary" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                                </ModalFooter>
+                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+                                </FormGroup>
+                                    </ModalBody>
                             </Modal>
 
 

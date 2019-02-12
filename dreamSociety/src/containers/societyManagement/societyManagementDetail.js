@@ -110,9 +110,8 @@ class SocietyManagementDetail extends Component {
                         <td>{item.location_master.locationName}</td>
                         <td>{item.societyName}</td>
                             <td>
-                                <Button color="success" onClick={this.toggle.bind(this, item.societyId, item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, item.societyName)} >Edit</Button>
-                            </td>
-                            <td>
+                                <Button color="success mr-2" onClick={this.toggle.bind(this, item.societyId, item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, item.societyName)} >Edit</Button>
+                            
                                 <Button color="danger" onClick={this.deleteSocietyName.bind(this, item.societyId)} >Delete</Button>
                             </td>
                     </tr>
@@ -212,7 +211,7 @@ class SocietyManagementDetail extends Component {
         let tableData;
 
         tableData= <div style={{backgroundColor:'lightgray'}}>
-        <Table className="table table-striped">
+        <Table className="table table-bordered">
             <thead>
                 <tr>
                     <th>Country Name</th>
@@ -220,7 +219,7 @@ class SocietyManagementDetail extends Component {
                     <th>City Name</th>
                     <th>Location Name</th>
                     <th>Society Name</th>
-                    <th>Edit/Delete</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -231,7 +230,7 @@ class SocietyManagementDetail extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top  w3-responsive">
+                <div className="w3-container w3-margin-top">
                 <div className="top-details">
                                 <h3>Society Details</h3>
                                 <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button>
@@ -301,13 +300,14 @@ class SocietyManagementDetail extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="societyName">Society Name</Label>
-                            <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName} />
+                            <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName}  maxLength={50} required/>
+                           
                         </FormGroup>
+                   
+                        <Button color="primary mr-2" onClick={this.editSocietyType}>Save</Button> 
+
+                        <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
                     </ModalBody>
-                    <ModalFooter>
-                        <Button color="primary" onClick={this.editSocietyType}>Update Society</Button> 
-                        <Button color="secondary" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                    </ModalFooter>
                 </Modal>
                </div>
                </UI>
