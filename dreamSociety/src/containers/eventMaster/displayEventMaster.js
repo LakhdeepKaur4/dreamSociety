@@ -65,7 +65,7 @@ class DisplayEventMaster extends Component {
         }
 
         OnKeyPresshandler(event) {
-                const pattern = /[a-zA-Z]/;
+                const pattern = /[a-zA-Z _]/;
                 let inputChar = String.fromCharCode(event.charCode);
                 if (!pattern.test(inputChar)) {
                     event.preventDefault();
@@ -127,7 +127,7 @@ class DisplayEventMaster extends Component {
 
                                                         <td>
 
-                                                                <button className="btn btn-primary" onClick={this.editEvent.bind(this, item.eventId, item.eventType, item.eventName, item.eventOrganiser, item.startDate, item.endDate, item.organiser.userId, item.organiser.userName)}> Edit</button>
+                                                                <button className="btn btn-success" onClick={this.editEvent.bind(this, item.eventId, item.eventType, item.eventName, item.eventOrganiser, item.startDate, item.endDate, item.organiser.userId, item.organiser.userName)}> Edit</button>
 
                                                                 <button className="btn btn-danger" onClick={this.deleteEvent.bind(this, item.eventId)}>Delete</button>
                                                         </td>
@@ -137,7 +137,12 @@ class DisplayEventMaster extends Component {
                         )
                 }
         }
+   
 
+        addEvent =() =>{
+              this.props.history.push('/superDashboard/event')
+        
+        }
 
         logout=()=>{
                 localStorage.removeItem('token');
@@ -170,10 +175,12 @@ class DisplayEventMaster extends Component {
                         <div>
                                 
                                 <UI onClick={this.logout}>
-                                        <div>
-                                        <Link to="/superDashboard/event"><button  type="submit" style={{ backgroundColor: 'lightblue', marginTop: '25px' }}>Add Event</button></Link>
-                                                <h3>Display Event Details</h3>
-
+                                      
+                                        <div className ="w3-container w3-margin-top">
+                                        <div  className ="top-details" >
+                                                <h3 align="center"> Event Details</h3>
+                                                <Button  className="btn btn-success" onClick ={this.addEvent} > Add Event</Button>
+                                                </div>
                                                 <Modal isOpen={this.state.editEventModal} toggle={this.toggleEditEventModal.bind(this)}>
                                                         <ModalHeader toggle={this.toggleEditEventModal.bind(this)}>Edit  Event Details</ModalHeader>
                                                         <ModalBody>
@@ -189,7 +196,7 @@ class DisplayEventMaster extends Component {
 
                                                                                         this.setState({ editEventData });
                                                                                 }}
-
+                                                                                 maxLength ={25}
                                                                                 onKeyPress={this.OnKeyPresshandler}
                                                                                 required
                                                                         />
@@ -203,6 +210,7 @@ class DisplayEventMaster extends Component {
                                                                                 this.setState({ editEventData });
                                                                         }}
                                                                                 onKeyPress={this.OnKeyPresshandler}
+                                                                                maxLength ={25}
                                                                                 required />
                                                                 </FormGroup>
                                                                 <FormGroup>

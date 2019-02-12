@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchAssets, updateAssetsSub, removeAssetsSub } from '../../actionCreators/assetsSubAction';
 import { bindActionCreators } from 'redux';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import { Button, Modal, FormGroup, Table, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
-import {Link} from 'react-router-dom';
-
+import Spinner from '../../components/spinner/spinner';
 class AssetsTypeSubList extends Component {
     constructor(props) {
         super(props);
@@ -18,9 +17,10 @@ class AssetsTypeSubList extends Component {
             description: '',
             modal: false,
             menuVisible: false,
-            search:'',
+            search: '',
             pageCount: 1,
-            activePage: 1
+            activePage: 1,
+            loading: true,
         };
     }
     onChangeHandler = (event) => {
@@ -43,22 +43,24 @@ class AssetsTypeSubList extends Component {
         this.setState({ modal: !this.state.modal })
     }
     componentWillMount() {
-        this.props.fetchAssets()
+        this.props.fetchAssets().then(() => this.setState({ loading: false }))
     }
 
 
     editAssetsSubType = () => {
         const { assetTypeId, assetType, description } = this.state
+        this.setState({loading:true})
         this.props.updateAssetsSub(assetTypeId, assetType, description)
-            .then(() => this.props.fetchAssets())
+            .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
 
         this.setState({ modal: !this.state.modal })
 
 
     }
     delete = (assetTypeId) => {
+        this.setState({loading:true})
         this.props.removeAssetsSub(assetTypeId)
-            .then(() => this.props.fetchAssets())
+            .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
     }
 
     searchOnChange = (e) => {
@@ -68,14 +70,14 @@ class AssetsTypeSubList extends Component {
     searchFilter(search) {
         return function (x) {
             return (
-            x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||
-            x.assetType.toLowerCase().includes(search.toUpperCase()) || 
-            x.description.toLowerCase().includes(search.toLowerCase()) ||!search);
+                x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||
+                x.assetType.toLowerCase().includes(search.toUpperCase()) ||
+                x.description.toLowerCase().includes(search.toLowerCase()) || !search);
         }
     }
 
-    renderListAssets = ({ getAssetsType }) => {    
-  
+    renderListAssets = ({ getAssetsType }) => {
+
         if (getAssetsType) {
             return getAssetsType.assetsType.filter(this.searchFilter(this.state.search)).map((item) => {
                 {
@@ -85,66 +87,67 @@ class AssetsTypeSubList extends Component {
                             <td>{item.assetType}</td>
                             <td>{item.description}</td>
                             <td>
-                                <button className="btn btn-success" onClick={this.toggle.bind(this, item.assetTypeId, item.assetType, item.description)} >Edit</button>
-                                <button className="btn btn-danger" onClick={this.delete.bind(this, item.assetTypeId)} >Delete</button>
+                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, item.assetTypeId, item.assetType, item.description)} >Edit</button>
+                             <button className="btn btn-danger" onClick={this.delete.bind(this, item.assetTypeId)} >Delete</button>
                             </td>
                         </tr>
                     )
                 }
             })
         }
-        
+
     }
-    logout=()=>{
+    logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
-        return this.props.history.replace('/') 
+        return this.props.history.replace('/')
     }
 
 
     render() {
-
+        let tableData;
+        tableData = <Table className="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Asset Name</th>
+                    <th>Assets Sub Type Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {this.renderListAssets(this.props.ListOfAssets)}
+            </tbody>
+        </Table>
         return (
             <div>
-                <UI onClick={this.logout}>      
-                <Link to='/superDashBoard/assetsTypeSubMaster'>
-                  <button className="btn btn-success" id="addAssets" >Add Assets Sub Type</button>
-                    </Link>
-                    <div className="search">
-                        <h3>Assets Sub Type Name</h3>
-                        <SearchFilter type="text" value={this.state.search}
-                            onChange={this.searchOnChange} />
-                    </div>
-                    <div style={{backgroundColor:'lightgray'}}>
-                    <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>AssetName</th>
-                                <th>Assets Sub Type Name</th>
-                                <th>Description</th>
-                                <th>Edit/Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.renderListAssets(this.props.ListOfAssets)}
-                        </tbody>
-
-                    </table>
-                    <Modal isOpen={this.state.modal} toggle={this.toggles}>
-                        <ModalHeader toggle={this.toggle}>Edit Assets</ModalHeader>
-                        <ModalBody>
-                            <FormGroup>
-                                <Label htmlFor="assetType">Assets Sub Type Name</Label>
-                                <Input type="text" id="AssetName" name="assetType" onChange={this.onChangeHandler} value={this.state.assetType} />
-                                <Label htmlFor="description">Description</Label>
-                                <Input type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description} />
+                <UI onClick={this.logout}>
+                    <div className="w3-container w3-margin-top w3-responsive">
+                        <div className="top-details">
+                            <h3>Assets Sub Type Name</h3>
+                            <Button color="primary" onClick={() => this.props.history.push('/superDashBoard/assetsTypeSubMaster/assetsTypeSubList')} id="addAssets" >Add Assets Sub Type</Button>
+                        </div>
+                        <div>
+                            <SearchFilter type="text" value={this.state.search}
+                                onChange={this.searchOnChange} />
+                            {!this.state.loading ? tableData : <Spinner />}
+                        </div>
+                        <Modal isOpen={this.state.modal} toggle={this.toggles}>
+                            <ModalHeader toggle={this.toggle}>Edit Assets Sub Type</ModalHeader>
+                            <ModalBody>
+                                <FormGroup>
+                                    <Label htmlFor="assetType">Assets Sub Type Name</Label>
+                                    <Input maxLength={30} type="text" id="AssetName" name="assetType" onChange={this.onChangeHandler} value={this.state.assetType} />
+                                    <Label htmlFor="description">Description</Label>
+                                    <Input maxLength={30} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description} />
+                                </FormGroup>
+                           
+                            <FormGroup>  
+                                <Button color="primary mr-2" onClick={this.editAssetsSubType}>Save</Button>
+                                <Button color="danger" onClick={this.toggles}>Cancel</Button>
                             </FormGroup>
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button color="primary" onClick={this.editAssetsSubType}>Save</Button>
-                            <Button color="secondary" onClick={this.toggles}>Cancel</Button>
-                        </ModalFooter>
-                    </Modal>
+                            </ModalBody>
+                        </Modal>
                     </div>
                 </UI>
             </div>

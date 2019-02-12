@@ -54,12 +54,23 @@ edit(flatNo,flatType,floor,towerName, flatId,flatDetailId){console.log("tttttttt
 
 }
 
-searchFilter(search){
-    return function(x){
-        return x.floor.toLowerCase().includes(search.toLowerCase()) || !search;
+// searchFilter(search){
+//     return function(x){
+//         return x.floor.toLowerCase().includes(search.toLowerCase()) || 
+//         x.tower_master.towerName.toLowerCase().includes(search.toLowerCase())|| !search;
+//     }
+// }
+
+searchFilter(search) {
+    return function (x) {
+        return x.floor.toLowerCase().includes(search.toLowerCase()) ||
+            x.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
+            x.flat_master.flatType.toLowerCase().includes(search.toLowerCase()) ||
+            x.flatNo.toLowerCase().includes(search.toLowerCase()) 
+
+            || !search;
     }
 }
-
 
 
 
@@ -245,7 +256,7 @@ render(){
                     </ModalFooter>
              </Modal>
              <div style={{ fontWeight: 'bold' }}><label>Flat Details</label></div>
-             <SearchFilter type="text" value={this.state.search}
+             <SearchFilter  type="text" value={this.state.search}
                                             onChange={this.searchOnChange} />
                                                  {!this.state.loading ? tableData : <Spinner />}
           

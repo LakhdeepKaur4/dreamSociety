@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getAssets, updateAssets, removeAssets } from '../../actionCreators/assetsAction';
 import { bindActionCreators } from 'redux';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Table, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
-import {Link} from 'react-router-dom'
+import Spinner from '../../components/spinner/spinner';
 
 class AssetList extends Component {
     constructor(props) {
@@ -16,7 +16,8 @@ class AssetList extends Component {
             description: '',
             menuVisible: false,
             search: '',
-            modal: false
+            modal: false,
+            loading: true,
         };
     }
     onChangeHandler = (event) => {
@@ -37,17 +38,21 @@ class AssetList extends Component {
         this.setState({ modal: !this.state.modal })
     }
     componentWillMount() {
-        this.props.getAssets();
+        this.props.getAssets()
+            .then(() => this.setState({ loading: false }))
     }
     editAssets = () => {
         const { assetId, assets, description } = this.state
+        this.setState({loading:true})
         this.props.updateAssets(assetId, assets, description)
-            .then(() => this.props.getAssets());
+        .then(() => this.props.getAssets().then(()=>this.setState({loading:false})));
         this.setState({ modal: !this.state.modal })
     }
     delete = (assetId) => {
+        this.setState({loading:true})
         this.props.removeAssets(assetId)
-            .then(() => this.props.getAssets())
+        .then(() => {this.props.getAssets()
+        .then(()=>this.setState({loading:false}))})
     }
 
     searchOnChange = (e) => {
@@ -55,8 +60,8 @@ class AssetList extends Component {
     }
     searchFilter(search) {
         return function (x) {
-            return x.assetName.toLowerCase().includes(search.toLowerCase()) || 
-             x.description.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.assetName.toLowerCase().includes(search.toLowerCase()) ||
+                x.description.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
 
@@ -69,8 +74,8 @@ class AssetList extends Component {
                         <td>{items.assetName}</td>
                         <td>{items.description}</td>
                         <td>
-                            <button className="btn btn-success" onClick={this.toggle.bind(this, items.assetId, items.assetName, items.description)} >Edit</button>
-                            <button className="btn btn-danger" onClick={this.delete.bind(this, items.assetId)} >Delete</button>
+                        <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.assetId, items.assetName, items.description)} >Edit</button>
+                        <button className="btn btn-danger" onClick={this.delete.bind(this, items.assetId)} >Delete</button>
                         </td>
                     </tr>
                 )
@@ -78,53 +83,56 @@ class AssetList extends Component {
         }
     }
 
-    logout=()=>{
+    logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
-        return this.props.history.replace('/') 
+        return this.props.history.replace('/')
     }
     render() {
+        let tableData;
+        tableData = <Table className="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Asset Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {this.renderList(this.props.List)}
+            </tbody>
+        </Table>
         return (
             <div>
                 <UI onClick={this.logout}>
-              
-                <Link to='/superDashBoard/assetsMaster'>
-                 <button className="btn btn-success" id="addAssets" >Add Assets </button>
-                </Link>
-                    <div className="search">
-                        <h3>Assets Name</h3>
-                        <SearchFilter type="text" value={this.state.search}
-                            onChange={this.searchOnChange} />
-                    </div>
-                    <div style={{backgroundColor:'lightgray'}}>
-                    <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Asset Name</th>
-                                <th>Description</th>
-                                <th>Edit/Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.renderList(this.props.List)}
-                        </tbody>
-                    </table>
-                    <Modal isOpen={this.state.modal} toggle={this.toggles}>
-                        <ModalHeader toggle={this.toggle}>Edit Assets</ModalHeader>
-                        <ModalBody>
+                    <div className="w3-container w3-margin-top w3-responsive">
+                        <div className="top-details">
+                            <h3>Assets List</h3>
+                            <Button color="primary" onClick={() => this.props.history.push('/superDashBoard/assetsMaster/assetsList')} id="addAssets" >Add Assets</Button>
+                        </div>
+                        <div>
+                            <SearchFilter type="text" value={this.state.search}
+                                onChange={this.searchOnChange} />
+                            {!this.state.loading ? tableData : <Spinner />}
+                        </div>
+                        <Modal isOpen={this.state.modal} toggle={this.toggles}>
+                            <ModalHeader toggle={this.toggle}>Edit Assets</ModalHeader>
+                            <ModalBody>
+                                <FormGroup>
+                                    <Label htmlFor="AssetName">Assets Name</Label>
+                                    <Input maxLength={30} type="text" id="AssetName" name="assets" onChange={this.onChangeHandler} value={this.state.assets}/>
+                                    <Label htmlFor="description">Description</Label>
+                                    <Input maxLength={30} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description}/>
+                                </FormGroup>
+                          
                             <FormGroup>
-                                <Label htmlFor="AssetName">Assets Name</Label>
-                                <Input type="text" id="AssetName" name="assets" onChange={this.onChangeHandler} value={this.state.assets} />
-                                <Label htmlFor="description">Description</Label>
-                                <Input type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description} />
+                                <Button color="primary mr-2" onClick={this.editAssets}>Save</Button>
+                                <Button color="danger" onClick={this.toggles}>Cancel</Button>
                             </FormGroup>
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button color="primary" onClick={this.editAssets}>Save</Button>
-                            <Button color="secondary" onClick={this.toggles}>Cancel</Button>
-                        </ModalFooter>
-                    </Modal>
+                            </ModalBody>
+                        </Modal>
                     </div>
+
                 </UI>
             </div>
         );

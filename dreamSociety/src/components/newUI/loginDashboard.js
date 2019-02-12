@@ -90,7 +90,7 @@ class Demo extends Component {
                         <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/sizemaster">Size Master</Link></div></Menu.Item>
                     </nav> */}
                     <div id="body" className="container">
-                        <div className="mt-4">
+                        <div className="mt-4 mb-4">
                             {this.props.children}
                         </div>
                     </div>
