@@ -42,7 +42,7 @@ class displayPersonDetails extends Component {
         
 
         OnKeyPresshandler(event) {
-                const pattern = /[a-zA-Z]/;
+                const pattern = /[a-zA-Z _]/;
                 let inputChar = String.fromCharCode(event.charCode);
                 if (!pattern.test(inputChar)) {
                         event.preventDefault();
@@ -181,7 +181,7 @@ deletePerson(userId){
 
                                                         <td>
 
-                                                                <button className="btn btn-primary" onClick={this.editPerson.bind(this, item.userId, item.userName, currentRole, item.email, item.towerId, item.flatDetailId, item.roles, item.familyMember, item.parking)}> Edit</button>
+                                                                <button className="btn btn-success" onClick={this.editPerson.bind(this, item.userId, item.userName, currentRole, item.email, item.towerId, item.flatDetailId, item.roles, item.familyMember, item.parking)}> Edit</button>
 
                                                                 <button className="btn btn-danger" onClick={this.deletePerson.bind(this, item.userId)}>Delete</button>
                                                         </td>
@@ -203,7 +203,7 @@ deletePerson(userId){
 
         render() {
                 let tableData;
-                tableData= <Table>
+                tableData= <Table  className="table table-bordered">
                                                         <thead>
                                                                 <tr>
                                                                         <th>UserName</th>
@@ -211,7 +211,7 @@ deletePerson(userId){
                                                                         <th>Tower Name </th>
                                                                         <th>Roles</th>
                                                                         <th>Number of
-                      family member</th>
+                                                                            family member</th>
                                                                         <th>Parking</th>
 
                                                                 </tr>
@@ -227,8 +227,8 @@ deletePerson(userId){
                                 <UI onClick={this.logout}>
                                         <div className ="w3-container w3-margin-top">
                                         <div  className ="top-details" >         
-                                        <h3>Display Person Details</h3>
-<Button onClick ={this.Addperson} colr="primary"> Add person</Button>
+                                        <h3 align="center"> Person Details</h3>
+<Button  className="btn btn-success" onClick ={this.Addperson} colr="primary"> Add person</Button>
 </div>
                                                 <Modal isOpen={this.state.editPersonModal} toggle={this.toggleEditPersonModal.bind(this)}>
                                                         <ModalHeader toggle={this.toggleEditPersonModal.bind(this)}>Edit  Event Details</ModalHeader>
@@ -244,7 +244,7 @@ deletePerson(userId){
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-                                                                                onKeyPress={this.OnKeyPresshandler} required
+                                                                                onKeyPress={this.OnKeyPresshandler}  maxLength ={30} required
                                                                         />
                                                                 </FormGroup>
                                                                 <FormGroup>
@@ -256,7 +256,7 @@ deletePerson(userId){
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-                                                                        onKeyPress={this.OnKeyPressmail} required
+                                                                        onKeyPress={this.OnKeyPressmail}  maxLength ={40} required
                                                                         />
                                                                 </FormGroup>
 
@@ -314,7 +314,7 @@ deletePerson(userId){
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-                                                                                onKeyPress={this.OnkeyPressNumber}
+                                                                                onKeyPress={this.OnkeyPressNumber}  maxLength ={2} required
                                                                         />
                                                                 </FormGroup>
                                                                 <FormGroup>
@@ -326,7 +326,7 @@ deletePerson(userId){
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-                                                                                onKeyPress={this.OnKeyPressNumber}
+                                                                                onKeyPress={this.OnKeyPressNumber} maxLength={2} required
                                                                         />
                                                                 </FormGroup>
                                                         </ModalBody>

@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getTower,getFlat,getRoles,addPerson} from '../../actionCreators/personDetailsMasterAction';
 import Spinner from '../../components/spinner/spinner'
-import {Link} from 'react-router-dom';
+
 import UI from '../../components/newUI/superAdminDashboard';
 
  class PersonDetails extends Component{
@@ -28,7 +28,7 @@ menuVisible: false  ,
 }
 
 OnKeyPresshandler(event) {
-    const pattern = /[a-zA-Z]/;
+    const pattern = /[a-zA-Z _]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
         event.preventDefault();
@@ -107,6 +107,10 @@ Tower({get}){
 }
 
 
+person=()=>{
+    this.props.history.push('/superDashboard/displayPerson')
+}
+
 
     logout=()=>{
         localStorage.removeItem('token');
@@ -118,18 +122,19 @@ Tower({get}){
 let form1;
   if(!this.state.loading && this.props.personDetails.get && this.props.personDetails.roles){
 form1 = <form onSubmit={this.submit}>
+      <h3 align="center">  Add Person </h3>
             <div className="form-group">
                 <label>
                     Username
                     
 </label>
-<input type="text" name="userName" onChange={this.onChange} maxLength={20} className="form-control" onKeyPress={this.OnKeyPresshandler} required />
+<input type="text" name="userName" onChange={this.onChange} maxLength={30} className="form-control" onKeyPress={this.OnKeyPresshandler} required />
 </div>
 <div   className="form-group">
 <label>
 Email
 </label>
-<input type="email"  name="email"  onChange={this.onChange} maxLength={30}    className="form-control"  onKeyPress ={this.OnKeyPressmail} required/>
+<input type="email"  name="email"  onChange={this.onChange} maxLength={50}    className="form-control"  onKeyPress ={this.OnKeyPressmail} required/>
 </div> 
 <div className="form-group">
 <label> Roles</label>
@@ -147,15 +152,15 @@ Email
 </div>
 <div   className="form-group">
 <label> Number of members in family</label>
-<input type="text"  name ="familyMember"  className="form-control" maxLength ={5}  onChange={this.onChange} onKeyPress ={this.OnKeyPressNumber} required/>
+<input type="text"  name ="familyMember"  className="form-control" maxLength ={2}  onChange={this.onChange} onKeyPress ={this.OnKeyPressNumber} required/>
 
 </div>
 <div   className="form-group">
 <label> parking</label>
-<input  type="text"   name ="parking" className="form-control" maxLength ={3} onChange={this.onChange}    onKeyPress ={this.OnKeyPressNumber}  required />
+<input  type="text"   name ="parking" className="form-control" maxLength ={2} onChange={this.onChange}    onKeyPress ={this.OnKeyPressNumber}  required />
 </div>
-<button className="btn btn-primary"> Submit</button>
-<Link color="primary" to="/superDashboard/displayPerson">Person details</Link>
+<button className="btn btn-success"> Submit</button>
+<button   className ="btn btn-primary" onClick={this.person}>Person Details</button> 
 </form>  
      
   }
