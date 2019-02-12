@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button } from 'reactstrap';
 import '../../r-css/w3.css';
-import ScrollToTop from 'react-router-scroll-top';
 import EditUserModal from './editUserModal';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
@@ -210,7 +209,7 @@ class userDetails extends Component {
     }
 
     render() {
-        <ScrollToTop/>
+     
         let tableData;
         tableData = <Table className="table table-bordered">
 
