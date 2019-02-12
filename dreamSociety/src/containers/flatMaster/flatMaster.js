@@ -135,6 +135,7 @@ class FlatMaster extends Component {
             
           
             form = <Form onSubmit={this.submit}>
+             <h3 style={{textAlign:'center', marginBottom: '10px'}}>Flat Master</h3>
             <FormGroup>
                 <Label>Society Name</Label>
                 <Input

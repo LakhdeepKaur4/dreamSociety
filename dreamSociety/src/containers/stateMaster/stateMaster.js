@@ -113,6 +113,7 @@ class FlatMaster extends Component {
          let form;
          if(!this.state.loading && this.props.countryDetails.country1 && this.state.errors){
             form = <Form onSubmit={this.submit}>
+             <h3 style={{textAlign:'center', marginBottom: '10px'}}>State Master</h3>
         
             <FormGroup>
                 <Label>CountryName</Label>

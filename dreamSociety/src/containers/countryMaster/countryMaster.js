@@ -127,6 +127,7 @@ class Country extends Component {
           let form;
           if(!this.state.loading && this.state.errors){
          form = <Form onSubmit={this.submit}>
+          <h3 style={{textAlign:'center', marginBottom: '10px'}}>Country Master</h3>
             <FormGroup>
                 <Label>Country Name</Label>
                 <Input
@@ -187,6 +188,7 @@ class Country extends Component {
             <div>
                 <UI onClick={this.logout}>
                     <div>
+                   
                        {form}
                     </div>
                 </UI>
