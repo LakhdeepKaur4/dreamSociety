@@ -98,8 +98,9 @@ this.setState({loading:true})
     if(!this.state.loading && this.props.EventDetails.events){
     form1=
     <div >
-      <h3 align="center">Add Event</h3>
+     
       <form onSubmit={this.submit}>
+      <h3 align="center">Add Event</h3>
         <div className="form-group">
           <label >Event Type</label>
           <input
@@ -162,7 +163,7 @@ this.setState({loading:true})
             onChange={this.onChange}
             required
           >
-            <option > Please Select</option>
+            <option > --Select--</option>
             {this.getEvent(this.props.EventDetails)}
           </Input>
         </div>
@@ -170,7 +171,7 @@ this.setState({loading:true})
         <button
           className="btn btn-success"
         > Submit</button>
-    <button  onClick={this.event}  className="btn btn-primary">  Event Details</button>
+    <button  onClick={this.event}  className="btn btn-danger">  Cancel</button>
       </form>
     </div>
     }
