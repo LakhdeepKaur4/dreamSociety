@@ -96,7 +96,7 @@ this.setState({loading:true});
 
             <td>{item.towerName}</td>
             <td>
-              <button className="btn btn-success" onClick={this.editTower.bind(this, item.id, item.towerId, item.towerName)}>edit </button>
+              <button className="btn btn-success mr-2" onClick={this.editTower.bind(this, item.id, item.towerId, item.towerName)}>edit </button>
               <button className="btn btn-danger" onClick={this.deleteTower.bind(this, item.towerId)}>delete</button>
             </td>
           </tr>
@@ -124,7 +124,7 @@ this.setState({loading:true});
   render() {
      let tableData;
      tableData=<Table    className="table table-bordered">
-       <div className="w3-row">
+   
               <thead>
                 <tr>
 
@@ -141,7 +141,7 @@ this.setState({loading:true});
                  {this.TowerMasterDetails(this.props.TowerDetails)}
 
               </tbody>
-              </div>
+              
             </Table>
             if(!this.props.TowerDetails.tower){
               tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching Towers</Spinner></div>
@@ -151,10 +151,10 @@ this.setState({loading:true});
       <div>
         <UI onClick={this.logout}>
         
-          <div className ="w3-container w3-margin-top">
+          <div className ="w3-container w3-margin-top w3-responsive">
                                         <div  className ="top-details" >
             <h3 align="center"> Tower List</h3>
-            <Button  className="btn btn-success" onClick ={this.addTower} colr="primary"> Add Tower</Button>
+            <button  className="btn btn-primary" onClick ={this.addTower} > Add Tower</button>
             </div>
             <Modal isOpen={this.state.editTowerModal} toggle={this.toggleEditTowerModal.bind(this)}>
               <ModalHeader toggle={this.toggleEditTowerModal.bind(this)}>Edit Tower</ModalHeader>

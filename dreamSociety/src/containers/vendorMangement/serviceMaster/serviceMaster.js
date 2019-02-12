@@ -109,7 +109,7 @@ class serviceMaster extends Component {
                     <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Services</h3></div>
                         <div>
                             <label>Service Type</label>
-                            <input type="text" className="form-control" name="serviceName" maxLength={30} value={this.state.serviceName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
+                            <input type="text" placeholder="Service Type" className="form-control" name="serviceName" maxLength={30} value={this.state.serviceName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
                         </div>
                         <div>
                             <label>Service Details</label>

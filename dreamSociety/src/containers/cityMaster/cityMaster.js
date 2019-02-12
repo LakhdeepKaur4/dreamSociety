@@ -240,7 +240,7 @@ class CityMaster extends Component {
 
       <FormGroup>
             <Label htmlFor='cityName'><h4>City Name</h4></Label>
-            <Input  type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler} maxLength={30}
+            <Input  type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler} placeholder="City Name" maxLength={30}
         minLength={3}/>
             <span className='error'>{this.state.errors.cityName}</span>
         </FormGroup>

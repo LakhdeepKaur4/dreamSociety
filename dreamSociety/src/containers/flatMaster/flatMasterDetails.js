@@ -226,7 +226,7 @@ class flatMasterDetails extends Component {
 
     render() {
         let tableData;
-        tableData=<Table>
+        tableData=<Table className="table table-bordered">
         <thead>
             <tr>
                 <th>Society Name</th>
@@ -243,7 +243,7 @@ class flatMasterDetails extends Component {
     </Table>
      
      if(!this.props.flats.list1 && !this.props.flats.list2 && !this.props.flats.list3 ){
-        tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Users. Please! wait...</div>
+        tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner /></div>
     }
         return (
             <div>

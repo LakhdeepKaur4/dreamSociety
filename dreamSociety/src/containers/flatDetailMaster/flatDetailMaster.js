@@ -125,7 +125,7 @@ class flatDetailMaster extends Component{
                 <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Flat Details</h3></div>
                     <div >
                         <label>Flat No</label>
-                        <input className ="form-control" type="text" name="flatNo" maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.handleChange} value={this.state.flatNo} required></input>
+                        <input className ="form-control" placeholder="Flat No" type="text" name="flatNo" maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.handleChange} value={this.state.flatNo} required></input>
                     </div>
                     <div >
                         <label>Flat Type</label>
@@ -136,7 +136,7 @@ class flatDetailMaster extends Component{
                     </div>
                     <div >    
                         <label>Floor</label>
-                        <input className ="form-control" type="text" name="floor" maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  value={this.state.floor} required></input>
+                        <input className ="form-control" placeholder="Floor" type="text" name="floor" maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  value={this.state.floor} required></input>
                     </div>
                     <div >    
                         <label>Tower Name</label>

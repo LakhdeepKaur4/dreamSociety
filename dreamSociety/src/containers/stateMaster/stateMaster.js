@@ -134,6 +134,7 @@ class FlatMaster extends Component {
                 <Input
                     type="text"
                     name="stateName"
+                    placeholder='StateName'
                     maxLength='50'
                     onKeyPress={this.onStateChange}
                     // value={this.state.flatType} 
@@ -142,8 +143,8 @@ class FlatMaster extends Component {
             </FormGroup>
 
             <FormGroup>
-                <Button color="primary" type="submit" className="mr-2">Submit</Button>
-                <Button color="success" onClick={this.push}>Cancel</Button>
+                <Button color="success" type="submit" className="mr-2">Submit</Button>
+                <Button color="danger" onClick={this.push}>Cancel</Button>
             </FormGroup>
         </Form>
          }

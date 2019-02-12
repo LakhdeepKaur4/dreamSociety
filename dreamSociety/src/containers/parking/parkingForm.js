@@ -12,8 +12,9 @@ const parkingForm = (props) => (
                 <span className='error'>{props.parkingError}</span>
             </FormGroup>
             <FormGroup>
-                <Label>Parking</Label>
+                <Label>Parking Slots</Label>
                 <Input name={props.parkingSlotValueName}
+                    placeholder="Parking Slots"
                     type="text"
                     value={props.parkingSlotValue}
                     onChange={props.parkingSlotValueChange}

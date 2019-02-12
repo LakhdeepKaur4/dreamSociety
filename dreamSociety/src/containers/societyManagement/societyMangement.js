@@ -331,7 +331,7 @@ class SocietyMangement extends Component {
 
         <FormGroup>
             <Label htmlFor="societyName"><h4>Society Name</h4></Label>
-            <Input type="text" name="societyName" value={this.state.societyName} onChange={this.onChange} maxLength={30}/>
+            <Input placeholder="Society Name" type="text" name="societyName" value={this.state.societyName} onChange={this.onChange} maxLength={30}/>
              <span className='error'>{this.state.errors.societyName}</span>
         </FormGroup>
        

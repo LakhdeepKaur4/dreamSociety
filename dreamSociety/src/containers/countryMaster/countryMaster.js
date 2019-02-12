@@ -132,6 +132,7 @@ class Country extends Component {
                 <Label>Country Name</Label>
                 <Input
                     type="text"
+                    placeholder="Country Name"
                     name="countryName"
                     onKeyPress={this.onKeyPressHandler}
                     maxLength='30'
@@ -144,6 +145,7 @@ class Country extends Component {
                 <Input
                     type="text"
                     name="code"
+                    placeholder="Country Code"
                     onKeyPress={this.onKeyPressCode}
                     maxLength='3'
                     onChange={this.onChange} />
@@ -155,6 +157,7 @@ class Country extends Component {
                 <Input
                     type="text"
                     name="currency"
+                    placeholder="Currency"
                     onKeyPress={this.onKeyPressHandle1}
                     maxLength='10'
                     onChange={this.onChange} />
@@ -166,6 +169,7 @@ class Country extends Component {
                 <Input
                     type="text"
                     name="phoneCode"
+                    placeholder="Phone Code"
                     maxLength='3'
                     onKeyPress = {this.onKeyPressHandle}
                     onChange={this.onChange} />
@@ -174,8 +178,8 @@ class Country extends Component {
 
 
             <FormGroup>
-                <Button className="mr-2">Submit</Button>
-                <Button onClick={this.countryDetails}>Cancel</Button>
+                <Button color="success" className="mr-2">Submit</Button>
+                <Button color="danger" onClick={this.countryDetails}>Cancel</Button>
             </FormGroup>
         </Form>
           }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter , Route, Switch } from 'react-router-dom';
-import ScrollToTop from 'react-router-scroll-top';
+// import ScrollToTop from 'react-router-scroll-top';
 // =====Components============//
 import  {PrivateRoute}  from './components/privateRoute/privateRoute';
 // ========Containers =========//
@@ -54,7 +54,7 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter onUpdate={() => window.scrollTo(0, 0)}>
-        <ScrollToTop>
+        {/* <ScrollToTop> */}
         <div>
           <Switch>
             <Route path="/" exact component={Login} />
@@ -87,7 +87,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster} />
             <PrivateRoute path='/superDashboard/displayVendorMaster' component={displayVendorMaster} />
             <PrivateRoute path='/superDashboard/displayServices' component={displayServices} />
-            <PrivateRoute path='/superDashBoard/displayPerson' component={displayPersonDetails} />
+            <PrivateRoute path='/superDashBoard/displayPerson' exact component={displayPersonDetails} />
             <PrivateRoute path='/superDashBoard/demo' component={Demo} />
             <PrivateRoute path='/superDashBoard/assetsMaster' exact component={AssetList} />
             <PrivateRoute path='/superDashBoard/assetsMaster/assetsList' component={AssetTypeMaster} />
@@ -101,7 +101,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/displayLocation' component={DisplayLocation}/>
           </Switch>
         </div>
-        </ScrollToTop>
+        {/* </ScrollToTop> */}
       </BrowserRouter>
     );
   }

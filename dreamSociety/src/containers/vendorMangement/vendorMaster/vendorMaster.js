@@ -84,7 +84,7 @@ class vendorMaster extends Component {
                         <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Vendor</h3></div>
                             <div>
                                 <label>Vendor Name</label>
-                                <input type="text" className="form-control" name="vendorName" maxLength={20} value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
+                                <input type="text" placeholder="Vendor Name"  className="form-control" name="vendorName" maxLength={20} value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
                             </div>
                             <div>
                                 <label>Service Type</label>
@@ -97,7 +97,7 @@ class vendorMaster extends Component {
                             </div>
                             <div>
                                 <label>Description</label>
-                                <input className="form-control" maxLength={50}  value={this.state.description} onChange={this.handleChange} type="text" name="description" required></input>
+                                <input className="form-control" placeholder="Description" maxLength={50}  value={this.state.description} onChange={this.handleChange} type="text" name="description" required></input>
                             </div>
                             <div className="mt-4">
                                 <Button type="submit" color="success" className="mr-2" value="submit">Submit</Button>

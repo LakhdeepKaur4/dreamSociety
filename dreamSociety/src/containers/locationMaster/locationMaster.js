@@ -211,7 +211,7 @@ class locationMaster extends Component{
                     </div>
                     <div>
                         <label>Location Name</label>
-                        <input  type="text" className ="form-control" name="locationName" maxLength={30}  onKeyPress={this.OnKeyPressUserhandler} value={this.state.locationName}  onChange={this.onLocationChange} required></input>
+                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  onKeyPress={this.OnKeyPressUserhandler} value={this.state.locationName}  onChange={this.onLocationChange} required></input>
                     </div>
              
                     <div className="mt-4">

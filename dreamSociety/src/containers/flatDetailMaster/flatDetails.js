@@ -273,11 +273,11 @@ render(){
                     
                     </ModalBody>
              </Modal>
-             <div className="top-details"  style={{ fontWeight: 'bold' }}><h3>Flat Details</h3>
+                <div className="top-details"  style={{ fontWeight: 'bold' }}><h3>Flat Details</h3>
              
-             <Button color="primary" type="button" onClick={this.push}> Add Flat</Button>
-             </div>
-             <SearchFilter  type="text" value={this.state.search}
+                 <Button color="primary" type="button" onClick={this.push}> Add Flat</Button>
+                </div>
+                    <SearchFilter  type="text" value={this.state.search}
                                             onChange={this.searchOnChange} />
                                                  {!this.state.loading ? tableData : <Spinner />}
           

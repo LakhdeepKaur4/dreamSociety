@@ -15,6 +15,7 @@ const userRegistrationForm = (props) => (
                 <Label>First Name</Label>
                 <Input name={props.firstNameInputName}
                     type="text"
+                    placeholder="First Name"
                     value={props.firstNameValue}
                     onChange={props.firstNameChange}
                     onKeyPress={props.NameKeyPress}
@@ -26,6 +27,7 @@ const userRegistrationForm = (props) => (
                 <Label>Last Name</Label>
                 <Input name={props.lastNameInputName}
                     type="text"
+                    placeholder="Last Name"
                     value={props.lastNameValue}
                     onChange={props.lastNameChange}
                     onKeyPress={props.NameKeyPress}
@@ -37,6 +39,7 @@ const userRegistrationForm = (props) => (
                 <Label>User Name</Label>
                 <Input name={props.userNameInputName}
                     type="text"
+                    placeholder="User Name"
                     value={props.userNameValue}
                     onChange={props.userNameChange}
                     maxLength='25'
@@ -47,6 +50,7 @@ const userRegistrationForm = (props) => (
                 <Label>Email</Label>
                 <Input name={props.emailInputName}
                     type="email"
+                    placeholder="Email"
                     value={props.emailValue}
                     onChange={props.emailChange}
                     maxLength='40'
@@ -58,6 +62,7 @@ const userRegistrationForm = (props) => (
                 <Label>Contact No.</Label>
                 <Input name={props.contactInputName}
                     type="text"
+                    placeholder="Contact No."
                     value={props.contactValue}
                     onChange={props.contactChange}
                     onKeyPress={props.contactKeyPress}
@@ -68,6 +73,7 @@ const userRegistrationForm = (props) => (
             <FormGroup>
                 <Label>Password</Label>
                 <Input name={props.passwordInputName}
+                    placeholder="Password"
                     type="password"
                     value={props.passwordValue}
                     onChange={props.passwordChange} />
@@ -76,6 +82,7 @@ const userRegistrationForm = (props) => (
             <FormGroup>
                 <Label>Confirm Password</Label>
                 <Input name={props.passwordConfirmationInputName}
+                    placeholder="Confirm Password"
                     type="password"
                     value={props.passwordConfirmationValue}
                     onChange={props.passwordConfirmationChange} />

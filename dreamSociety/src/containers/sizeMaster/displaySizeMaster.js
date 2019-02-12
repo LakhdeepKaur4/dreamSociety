@@ -109,7 +109,7 @@ class DisplaySizeMaster extends Component {
   
             <td>
             <div>
-              <button className="btn btn-success"  onClick={this.editSize.bind(this, item.id, item.sizeId, item.sizeType)}> Edit</button>
+              <button className="btn btn-success mr-2"  onClick={this.editSize.bind(this, item.id, item.sizeId, item.sizeType)}> Edit</button>
 
               <button className="btn btn-danger" onClick={this.deleteSize.bind(this, item.sizeId)}>Delete</button>
               </div>
@@ -137,7 +137,7 @@ class DisplaySizeMaster extends Component {
   render() {
     let tableData;
     tableData=  <Table  className ="table table-bordered" >
-    <div className="w3-row" >
+
     <thead>
       <tr>
 
@@ -151,7 +151,7 @@ class DisplaySizeMaster extends Component {
        {this.TowerMasterDetails(this.props.SizeDetails)}
 
     </tbody>
-    </div>
+
   </Table>
    if(!this.props.SizeDetails.getSize){
     tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching details</Spinner></div>
@@ -164,10 +164,10 @@ class DisplaySizeMaster extends Component {
         <UI onClick={this.logout}>
 
           
-          <div className ="w3-container w3-margin-top">
+          <div className ="w3-container w3-margin-top w3-responsive">
                                         <div  className ="top-details" >
             <h3 align="center"> Size List</h3>
-            <Button  className="btn btn-success" onClick ={this.addSize} > Add Size master</Button>
+            <button  className="btn btn-primary" onClick ={this.addSize} > Add Size master</button>
             </div>
             <Modal isOpen={this.state.editSizeModal} toggle={this.toggleEditSizeModal.bind(this)}>
               <ModalHeader toggle={this.toggleEditSizeModal.bind(this)}>Edit  Size Details</ModalHeader>

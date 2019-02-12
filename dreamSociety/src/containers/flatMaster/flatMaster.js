@@ -141,6 +141,7 @@ class FlatMaster extends Component {
                 <Input
                     type="select"
                     name="societyId"
+                  
                     onChange={this.onChange}>
                     <option >--Select--</option>
                     {this.societyName(this.props.flat)}
@@ -155,6 +156,7 @@ class FlatMaster extends Component {
                 <Input
                     type="text"
                     name="flatType"
+                    placeholder="flat type"
                     maxLength='4'
                     value={this.state.flatType}
                     onChange={this.onChange} />
@@ -166,7 +168,8 @@ class FlatMaster extends Component {
                 <Label>Flat SuperArea</Label>
                 <Input
                     type="text"
-                    name="flatSuperArea"    
+                    name="flatSuperArea"  
+                    placeholder="flat superArea"  
                     value={this.state.flatSuperArea}
                     onKeyPress = {this.OnKeyPresshandlerPhone}
                     maxLength='3'
@@ -191,6 +194,7 @@ class FlatMaster extends Component {
                 <Input
                     type="text"
                     name="coverArea"
+                    placeholder="Cover Area"
                     value={this.state.coverArea}
                     onKeyPress = {this.OnKeyPresshandlerPhone}
                     maxLength='3'
@@ -200,7 +204,7 @@ class FlatMaster extends Component {
 
             <FormGroup>
                 <Button color="success" type="submit" className="mr-2">Submit</Button>
-                <Button color="primary" onClick={this.push}>Cancel</Button>
+                <Button color="danger" onClick={this.push}>Cancel</Button>
               
             </FormGroup>
         </Form>
