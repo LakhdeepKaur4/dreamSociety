@@ -5,11 +5,12 @@ const httpStatus = require('http-status');
 const City = db.city;
 const Country = db.country;
 const State = db.state;
+const Op = db.Sequelize.Op;
 
 exports.create = (req,res) => {
     console.log("creating city");
     City.create({
-        countryId:req.body.countryId,
+        countryId:req.body.countryId, 
         cityName:req.body.cityName,
         cityId:req.body.cityId,
         stateId:req.body.stateId,
@@ -34,7 +35,12 @@ exports.get = (req, res) => {
 
 exports.getById = (req,res) => {
    City.findAll({
-       where: {stateId: req.params.id},
+       where: {
+           [Op.and]:[
+           {stateId: req.params.id},
+           {isActive:true}
+           ]
+        },
    },
    ).then(city => {
     res.status(200).json(
@@ -63,6 +69,29 @@ exports.update = (req,res) => {
       .then(updatedCity => {
         res.json({message:"City updated successfully!",updatedCity:updatedCity});
       });
+}
+
+exports.deleteById  = async(req,res,next) =>{
+    try{
+        const id = req.params.id;
+
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+        }
+        const city = await City.findOne({where:{cityId:id}});
+        if(!city){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id does not exists"});
+        }
+        const deletedCity = await City.destroy({where:{cityId:id}})
+
+        if(deletedCity){
+            return res.status(httpStatus.OK).json({
+                message: "City deleted successfully",
+            });
+        }
+    }catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }  
 }
 
 exports.delete = async(req,res,next) => {

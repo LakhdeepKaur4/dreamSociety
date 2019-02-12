@@ -31,6 +31,8 @@ module.exports = function(app) {
     app.post('/api/auth/signin', userController.signin);
 	
 	app.get('/api/user',[authJwt.verifyToken],userController.get);
+
+	app.get('/api/user/search',userController.search);
 	
 	// app.get('/api/user/test', [authJwt.verifyToken], userController.userContent);
 
@@ -55,6 +57,8 @@ module.exports = function(app) {
 	app.get('/api/city/:id', [authJwt.verifyToken], cityController.getById);
 
 	app.put('/api/city/:id',[authJwt.verifyToken], cityController.update);
+  
+	app.delete('/api/city/:id',[authJwt.verifyToken],cityController.deleteById)
 
 	app.put('/api/city/delete/:id',[authJwt.verifyToken], cityController.delete);
 
@@ -186,6 +190,8 @@ module.exports = function(app) {
 
 	app.put('/api/assets/delete/:id', [authJwt.verifyToken], assetsController.delete);
 
+	app.delete('/api/assets/:id', [authJwt.verifyToken], assetsController.deleteById);
+
 	app.post('/api/assetsType', [authJwt.verifyToken], assetsTypeController.create);
 
 	app.get('/api/assetsType/', [authJwt.verifyToken], assetsTypeController.get);
@@ -193,6 +199,8 @@ module.exports = function(app) {
 	app.get('/api/assetsType/:page', [authJwt.verifyToken], assetsTypeController.getAssetsTypeByPageNumber);
 
 	app.put('/api/assetsType/:id', [authJwt.verifyToken], assetsTypeController.update);
+
+	app.delete('/api/assetsType/:id', [authJwt.verifyToken], assetsTypeController.deleteById);
 
 	app.put('/api/assetsType/delete/:id', [authJwt.verifyToken], assetsTypeController.delete);
 

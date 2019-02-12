@@ -95,6 +95,30 @@ exports.update = async(req,res,next) => {
     }
 }
 
+exports.deleteById  = async(req,res,next) =>{
+    try{
+        const id = req.params.id;
+
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+        }
+        const asset = await Assets.findOne({where:{assetId:id}});
+        if(!asset){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id does not exists"});
+        }
+        const deletedAsset = await Assets.destroy({where:{assetId:id}})
+
+        if(deletedAsset){
+            return res.status(httpStatus.OK).json({
+                message: "Asset deleted successfully",
+            });
+        }
+    }catch(error){
+        console.log(error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).send({error:error});
+    }  
+}
+
 exports.delete = async(req,res,next) => {
     try{
         const id = req.params.id;

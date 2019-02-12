@@ -1,5 +1,6 @@
 const db = require('../config/db.config.js');
 const config = require('../config/config.js');
+const httpStatus = require('http-status');
 
 const Country = db.country;
 
@@ -56,6 +57,29 @@ exports.update = (req,res) => {
       .then(updatedCountry => {
         res.json({message:"Country updated successfully!",updatedCountry:updatedCountry});
       });
+}
+
+exports.deleteById  = async(req,res,next) =>{
+    try{
+        const id = req.params.id;
+
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+        }
+        const country = await Country.findOne({where:{countryId:id}});
+        if(!country){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id does not exists"});
+        }
+        const deletedAssetType = await AssetsType.destroy({where:{assetTypeId:id}})
+
+        if(deletedAssetType){
+            return res.status(httpStatus.OK).json({
+                message: "Asset Type deleted successfully",
+            });
+        }
+    }catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }  
 }
 
 exports.delete = async(req,res,next) => {

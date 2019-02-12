@@ -5,7 +5,7 @@ var CryptoJS = require("crypto-js");
 var crypto = require('crypto');
 var generator = require('generate-password');
 // var schedule = require('node-schedule');
- 
+
 const User = db.user;
 const Role = db.role;
 const Test = db.test;
@@ -24,25 +24,25 @@ exports.start = (req, res) => {
 exports.signup = (req, res) => {
 	// Save User to Database
 	console.log("Processing func -> SignUp");
-	console.log("req.body===>",req.body)
+	console.log("req.body===>", req.body)
 	let password;
 	let body = req.body;
 	let roles = req.body.roles;
 	let roleName = [];
-	if(roles){
+	if (roles) {
 		roleName.push(roles);
 	}
-	if (!body.userName || !body.email  || !body.roles) {
-	return res.json({
+	if (!body.userName || !body.email || !body.roles) {
+		return res.json({
 			message: "Parameters missing"
 		});
 	}
-	if(!body.password){
+	if (!body.password) {
 		password = generator.generate({
 			length: 10,
 			numbers: true
 		});
-	  body.password = password;
+		body.password = password;
 	}
 	User.create({
 		firstName: req.body.firstName,
@@ -51,11 +51,11 @@ exports.signup = (req, res) => {
 		email: req.body.email,
 		contact: req.body.contact,
 		password: bcrypt.hashSync(req.body.password, 8),
-		towerId:req.body.towerId,
-		flatDetailId:req.body.flatDetailId,
-		familyMember:req.body.familyMember,
-		parking:req.body.parking,
-		floor:req.body.floor
+		towerId: req.body.towerId,
+		flatDetailId: req.body.flatDetailId,
+		familyMember: req.body.familyMember,
+		parking: req.body.parking,
+		floor: req.body.floor
 	}).then(user => {
 		Role.findAll({
 			where: {
@@ -65,46 +65,48 @@ exports.signup = (req, res) => {
 			}
 		}).then(roles => {
 			user.setRoles(roles).then(() => {
-				res.status(httpStatus.CREATED).json({message:"User registered successfully!"});
+				res.status(httpStatus.CREATED).json({ message: "User registered successfully!" });
 			});
 		}).catch(err => {
 			res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-				status:500,
-				message: err});
+				status: 500,
+				message: err
+			});
 		});
 	}).catch(err => {
-		console.log("err==>",err)
+		console.log("err==>", err)
 		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-			status:500,
-			message:err});
+			status: 500,
+			message: err
+		});
 	})
 }
 
-exports.update= (req, res) => {
+exports.update = (req, res) => {
 	const id = req.params.id;
 	const updates = req.body;
 	User.find({
-			where: {
-				userId: id
-			}
-		})
+		where: {
+			userId: id
+		}
+	})
 		.then(user => {
 			Role.findAll({
 				where: {
-					roleName:  req.body.roleName
+					roleName: req.body.roleName
 				}
 			}).then(roles => {
 				user.setRoles(roles).then(() => {
 					return user.updateAttributes(updates)
 				});
 			})
-		.then(updatedUser => {
-			res.status(httpStatus.OK).json({
-				message: "User updated successfully!",
-				updatedUser: updatedUser
-			});
-		});
-	})
+				.then(updatedUser => {
+					res.status(httpStatus.OK).json({
+						message: "User updated successfully!",
+						updatedUser: updatedUser
+					});
+				});
+		})
 }
 
 exports.signin = (req, res) => {
@@ -123,39 +125,39 @@ exports.signin = (req, res) => {
 	}
 	User.findOne({
 		where: {
-			userName:req.body.userName
-		},	include: [{
+			userName: req.body.userName
+		}, include: [{
 			model: Role,
-			attributes: ['id','roleName'],
+			attributes: ['id', 'roleName'],
 		}]
 	}).then(user => {
-	    if (!user) {
+		if (!user) {
 			console.log("------user-------");
 			return res.status(httpStatus.OK).send({
 				status: 401,
 				auth: false,
 				user: user,
-				message: "Invalid Username!"	
+				message: "Invalid Username!"
 			});
 		}
-        
+
 		var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
-		console.log("isvalid===>",passwordIsValid)
+		console.log("isvalid===>", passwordIsValid)
 		if (!passwordIsValid) {
 			return res.status(httpStatus.OK).send({
 				status: 401,
 				auth: false,
 				user: user,
 				message: "Invalid Password!"
-				
+
 			});
 		}
 
 		var token = jwt.sign({
 			id: user.userId
 		}, config.secret, {
-			expiresIn: 86400 // expires in 24 hours
-		});
+				expiresIn: 86400 // expires in 24 hours
+			});
 
 		res.status(httpStatus.OK).send({
 			status: 200,
@@ -167,32 +169,32 @@ exports.signin = (req, res) => {
 
 	}).catch(err => {
 		console.log()
-		res.status(500).json({"message":err});
+		res.status(500).json({ "message": err });
 	});
 }
 
 exports.get = (req, res) => {
-	try{
-	User.findAll({
+	try {
+		User.findAll({
 			where: {
 				isActive: true
 			},
 			include: [{
 				model: Role,
-				attributes: ['id','roleName'],
+				attributes: ['id', 'roleName'],
 			},
-			{model:Tower}
-		]
+			{ model: Tower }
+			]
 		})
-		.then(user => {
-	//   let decipher = crypto.createCipher(config.algorithm,user.QRCode);
-	//    let encryptedUser = decipher.update(user,'hex','utf8') + decipher.final('utf8');
-	//    console.log("encrypted user==>",encryptedUser)
-			res.status(httpStatus.OK).json(user);
-		});
-	}catch(error){
-		console.log("error--->",error)
-		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({"message":error})
+			.then(user => {
+				//   let decipher = crypto.createCipher(config.algorithm,user.QRCode);
+				//    let encryptedUser = decipher.update(user,'hex','utf8') + decipher.final('utf8');
+				//    console.log("encrypted user==>",encryptedUser)
+				res.status(httpStatus.OK).json(user);
+			});
+	} catch (error) {
+		console.log("error--->", error)
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ "message": error })
 	}
 }
 
@@ -297,39 +299,39 @@ exports.managementBoard = (req, res) => {
 	})
 }
 
-exports.getById = (req,res) => {
-    User.findOne({
-       where: {userId: req.params.id},
-   }).then(user => {
-	//    let decipher = crypto.createCipher(config.algorithm,user.QRCode);
-	//    let encryptedUser = decipher.update(user,'hex','utf8') + decipher.final('utf8');
-	//    console.log("encrypted user==>",encryptedUser)
-	let firstNameDecipher = crypto.createDecipher(config.algorithm, user.QRCode);
-	let firstName = firstNameDecipher.update(user.firstName, 'hex', 'utf8') + firstNameDecipher.final('utf8');
-	let lastNameDecipher = crypto.createDecipher(config.algorithm, user.QRCode);
-	let lastName = lastNameDecipher.update(user.lastName, 'hex', 'utf8') + lastNameDecipher.final('utf8');
-	let userNameDecipher = crypto.createDecipher(config.algorithm, user.QRCode);
-	let userName = userNameDecipher.update(user.userName, 'hex', 'utf8') + userNameDecipher.final('utf8');
-	let contactDecipher = crypto.createDecipher(config.algorithm, user.QRCode);
-	let contact = contactDecipher.update(user.contact, 'hex', 'utf8') + contactDecipher.final('utf8');
-	let emailDecipher = crypto.createDecipher(config.algorithm, user.QRCode);
-	let email = emailDecipher.update(user.email, 'hex', 'utf8') + emailDecipher.final('utf8');
-	// console.log(decrypted);
-    res.status(200).json({
-        "description": "User Content Page",
-		"firstName": firstName,
-		"lastName":lastName,
-		"userName":userName,
-		"contact":contact,
-		"email":email
-    });
-}).catch(err => {
-	console.log("err=>",err)
-    res.status(500).json({
-        "description": "Can not User Page",
-        "error": err
-    });
-})
+exports.getById = (req, res) => {
+	User.findOne({
+		where: { userId: req.params.id },
+	}).then(user => {
+		//    let decipher = crypto.createCipher(config.algorithm,user.QRCode);
+		//    let encryptedUser = decipher.update(user,'hex','utf8') + decipher.final('utf8');
+		//    console.log("encrypted user==>",encryptedUser)
+		let firstNameDecipher = crypto.createDecipher(config.algorithm, user.QRCode);
+		let firstName = firstNameDecipher.update(user.firstName, 'hex', 'utf8') + firstNameDecipher.final('utf8');
+		let lastNameDecipher = crypto.createDecipher(config.algorithm, user.QRCode);
+		let lastName = lastNameDecipher.update(user.lastName, 'hex', 'utf8') + lastNameDecipher.final('utf8');
+		let userNameDecipher = crypto.createDecipher(config.algorithm, user.QRCode);
+		let userName = userNameDecipher.update(user.userName, 'hex', 'utf8') + userNameDecipher.final('utf8');
+		let contactDecipher = crypto.createDecipher(config.algorithm, user.QRCode);
+		let contact = contactDecipher.update(user.contact, 'hex', 'utf8') + contactDecipher.final('utf8');
+		let emailDecipher = crypto.createDecipher(config.algorithm, user.QRCode);
+		let email = emailDecipher.update(user.email, 'hex', 'utf8') + emailDecipher.final('utf8');
+		// console.log(decrypted);
+		res.status(200).json({
+			"description": "User Content Page",
+			"firstName": firstName,
+			"lastName": lastName,
+			"userName": userName,
+			"contact": contact,
+			"email": email
+		});
+	}).catch(err => {
+		console.log("err=>", err)
+		res.status(500).json({
+			"description": "Can not User Page",
+			"error": err
+		});
+	})
 }
 
 // exports.updateUser = (req, res) => {
@@ -357,63 +359,67 @@ exports.role = async (req, res, next) => {
 	try {
 		// console.log("req.session===>",req.userId);
 		const role = await Role.findAll({
-			attributes: ['id','roleName']
+			attributes: ['id', 'roleName']
 		});
 		if (role) {
 			res.status(200).json(role);
 		}
 	} catch (error) {
-		res.status(500).json({message:error})
+		res.status(500).json({ message: error })
 	}
 }
 
 exports.roleTest = async (req, res, next) => {
 	try {
 		let roleId;
-		const user= await User.findOne({where:{userId:req.userId},include: [{model: Role}]});
-		user.roles.map(data=>{
+		const user = await User.findOne({ where: { userId: req.userId }, include: [{ model: Role }] });
+		user.roles.map(data => {
 			roleId = data.id
 		})
-		console.log("user role name==>",roleId);
-		if(roleId == 1){
-		const role = await Role.findAll({
-			where:{
-				id:{
-				[Op.ne]: roleId
+		console.log("user role name==>", roleId);
+		if (roleId == 1) {
+			const role = await Role.findAll({
+				where: {
+					id: {
+						[Op.ne]: roleId
+					}
+				},
+			});
+			if (role) {
+				return res.status(httpStatus.OK).json(role);
 			}
-		},
-		});
-		if (role) {
-			return res.status(httpStatus.OK).json(role);
 		}
-	}
-	if(roleId == 2){
-    	const role = await Role.findAll({
-			where:{
-				id:{
-				[Op.ne]: roleId},
-				roleName:{
-				[Op.ne]: 'SUPER_ADMIN'},
-		},
-		});
-		if (role) {
-			return res.status(httpStatus.OK).json(role);
+		if (roleId == 2) {
+			const role = await Role.findAll({
+				where: {
+					id: {
+						[Op.ne]: roleId
+					},
+					roleName: {
+						[Op.ne]: 'SUPER_ADMIN'
+					},
+				},
+			});
+			if (role) {
+				return res.status(httpStatus.OK).json(role);
+			}
 		}
-	}
 
-	if(roleId == 3 || roleId == 4 ){
-    	const role = await Role.findAll({
-			where:{
-				id:{
-				[Op.ne]: roleId},
-				roleName:{
-				[Op.ne]: 'VENDOR'},
-		},
-		});
-		if (role) {
-			return res.status(httpStatus.OK).json(role);
+		if (roleId == 3 || roleId == 4) {
+			const role = await Role.findAll({
+				where: {
+					id: {
+						[Op.ne]: roleId
+					},
+					roleName: {
+						[Op.ne]: 'VENDOR'
+					},
+				},
+			});
+			if (role) {
+				return res.status(httpStatus.OK).json(role);
+			}
 		}
-	}
 	} catch (error) {
 		res.status(httpStatus.OK).json(error)
 	}
@@ -422,14 +428,14 @@ exports.roleTest = async (req, res, next) => {
 exports.delete = (req, res) => {
 	const id = req.params.id;
 	if (!id) {
-		res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+		res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
 	}
 	const updates = req.body;
 	User.find({
-			where: {
-				userId: id
-			}
-		})
+		where: {
+			userId: id
+		}
+	})
 		.then(user => {
 			return user.updateAttributes(updates)
 			// res.json({message:"User deleted successfully!",user:user});
@@ -443,9 +449,79 @@ exports.delete = (req, res) => {
 }
 
 function randomValueHex(len) {
-	return crypto.randomBytes(Math.ceil(len / 2)).toString('hex') .slice(0, len) 
-  }
+	return crypto.randomBytes(Math.ceil(len / 2)).toString('hex').slice(0, len)
+}
 
+exports.search = async (req, res, next) => {
+	try {
+		console.log("in here search api")
+		console.log("req.query", req.query);
+		if(req.query.roleName){
+			const user = await User.findAll({
+				include: [{
+					model: Role,
+					where:{isActive:true,
+						[Op.like]: '%' + req.query.roleName + '%'},
+				}],
+			})
+			if (user.length > 0) {
+				return res.json({ message: 'Search results', users: user })
+			} else {
+				return res.json({ message: 'No Users Found', users: user })
+			}
+		}else{
+		// const role = await Role.findAll({
+		// 	where:{roleName:req.query.roleName}
+		// });
+		// console.log("Roless==>",role)
+		const user = await User.findAll({
+			limit: 10,
+			 include: [{
+				model: Role,
+				attributes: ['id', 'roleName'],
+			}],
+			where: {
+				isActive: true,
+				[Op.or]: [
+					{
+						firstName: {
+							[Op.like]: '%' + req.query.firstName + '%'
+						}
+					},
+					{
+						lastName: {
+							[Op.like]: '%' + req.query.lastName + '%'
+						}
+					},
+					{
+						userName: {
+							[Op.like]: '%' + req.query.userName + '%'
+						}
+					},
+					{
+						contact: {
+							[Op.like]: '%' + req.query.contact + '%'
+						}
+					},
+					{
+						email: {
+							[Op.like]: '%' + req.query.email + '%'
+						}
+					},
+				]
+			}
+		})
+		if (user.length > 0) {
+			return res.json({ message: 'Search results', users: user })
+		} else {
+			return res.json({ message: 'No Users Found', users: user })
+		}
+	}
+	} catch (error) {
+		console.log(error)
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: error });
+	}
+}
 //   var crypto = require('crypto');
 // var assert = require('assert');
 
@@ -462,38 +538,38 @@ function randomValueHex(len) {
 
 exports.signupCopy = (req, res) => {
 	// Save User to Database
-	console.log("req.body===>",req.body)
+	console.log("req.body===>", req.body)
 	let body = req.body;
 	let roles = req.body.roles;
 	let roleName = [];
 	let QRCode = randomValueHex(30);
-	console.log("QRCODE++>",QRCode);
-	if(roles){
+	console.log("QRCODE++>", QRCode);
+	if (roles) {
 		roleName.push(roles);
 	}
 	if (!body.firstName || !body.lastName || !body.userName || !body.email || !body.contact || !body.roles) {
-	return res.json({
+		return res.json({
 			message: "Parameters missing"
 		});
 	}
-	let firstNameCipher = crypto.createCipher(config.algorithm,QRCode);
+	let firstNameCipher = crypto.createCipher(config.algorithm, QRCode);
 	let firstName = firstNameCipher.update(req.body.firstName, 'utf8', 'hex') + firstNameCipher.final('hex');
-	let lastNameCipher = crypto.createCipher(config.algorithm,QRCode);
+	let lastNameCipher = crypto.createCipher(config.algorithm, QRCode);
 	let lastName = lastNameCipher.update(req.body.lastName, 'utf8', 'hex') + lastNameCipher.final('hex');
-	let userNameCipher = crypto.createCipher(config.algorithm,QRCode);
+	let userNameCipher = crypto.createCipher(config.algorithm, QRCode);
 	let userName = userNameCipher.update(req.body.userName, 'utf8', 'hex') + userNameCipher.final('hex');
-	let emailCipher = crypto.createCipher(config.algorithm,QRCode);
+	let emailCipher = crypto.createCipher(config.algorithm, QRCode);
 	let email = emailCipher.update(req.body.email, 'utf8', 'hex') + emailCipher.final('hex');
-	let contactCipher = crypto.createCipher(config.algorithm,QRCode);
+	let contactCipher = crypto.createCipher(config.algorithm, QRCode);
 	let contact = contactCipher.update(req.body.contact, 'utf8', 'hex') + contactCipher.final('hex');
-	let passwordCipher = crypto.createCipher(config.algorithm,QRCode);
+	let passwordCipher = crypto.createCipher(config.algorithm, QRCode);
 	let password = passwordCipher.update(req.body.password, 'utf8', 'hex') + passwordCipher.final('hex');
 	User.create({
-		QRCode:QRCode,
+		QRCode: QRCode,
 		firstName: firstName,
 		lastName: lastName,
 		userName: userName,
-		email:    email,
+		email: email,
 		contact: contact,
 		password: password
 	}).then(user => {
@@ -516,24 +592,26 @@ exports.signupCopy = (req, res) => {
 }
 
 
-exports.encryptData = async(req,res,next) =>{
-try{
-var algorithm = 'aes256';
-var value = randomValueHex(30);
-console.log("value======>",value)
-var cipher = crypto.createCipher(algorithm,config.secret);
-var encrypted = cipher.update(req.body.name, 'utf8', 'hex') + cipher.final('hex');
-console.log(encrypted);
-var decipher = crypto.createDecipher(algorithm, config.secret);
-var decrypted = decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
-console.log(decrypted);
-const test = await Test.create({name:encrypted});
-	return res.status(httpStatus.CREATED).json({
-		message: "Test successfully created",
-		test
-	});
-}catch(error){
-	console.log("eroor===>",error)
-	res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+exports.encryptData = async (req, res, next) => {
+	try {
+		var algorithm = 'aes256';
+		var value = randomValueHex(30);
+		console.log("value======>", value)
+		var cipher = crypto.createCipher(algorithm, config.secret);
+		var encrypted = cipher.update(req.body.name, 'utf8', 'hex') + cipher.final('hex');
+		console.log(encrypted);
+		var decipher = crypto.createDecipher(algorithm, config.secret);
+		var decrypted = decipher.update(encrypted, 'hex', 'utf8') + decipher.final('utf8');
+		console.log(decrypted);
+		const test = await Test.create({ name: encrypted });
+		return res.status(httpStatus.CREATED).json({
+			message: "Test successfully created",
+			test
+		});
+	} catch (error) {
+		console.log("eroor===>", error)
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+	}
 }
-}
+
+
