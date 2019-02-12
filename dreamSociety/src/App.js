@@ -86,7 +86,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster} />
             <PrivateRoute path='/superDashboard/displayVendorMaster' component={displayVendorMaster} />
             <PrivateRoute path='/superDashboard/displayServices' component={displayServices} />
-            <PrivateRoute path='/superDashBoard/displayPerson' component={displayPersonDetails} />
+            <PrivateRoute path='/superDashBoard/displayPerson' exact component={displayPersonDetails} />
             <PrivateRoute path='/superDashBoard/demo' component={Demo} />
             <PrivateRoute path='/superDashBoard/assetsMaster' exact component={AssetList} />
             <PrivateRoute path='/superDashBoard/assetsMaster/assetsList' component={AssetTypeMaster} />

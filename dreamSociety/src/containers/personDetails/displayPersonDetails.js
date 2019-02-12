@@ -7,7 +7,7 @@ import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFo
 import { viewPerson, getFlat, getTower, getRoles,updatePerson,deletePerson } from '../../actionCreators/personDetailsMasterAction';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
-import {Link} from 'react-router-dom';
+
 import Spinner from '../../components/spinner/spinner';
 class displayPersonDetails extends Component {
 
@@ -181,7 +181,7 @@ deletePerson(userId){
 
                                                         <td>
 
-                                                                <button className="btn btn-success" onClick={this.editPerson.bind(this, item.userId, item.userName, currentRole, item.email, item.towerId, item.flatDetailId, item.roles, item.familyMember, item.parking)}> Edit</button>
+                                                                <button className="btn btn-success mr-2"  onClick={this.editPerson.bind(this, item.userId, item.userName, currentRole, item.email, item.towerId, item.flatDetailId, item.roles, item.familyMember, item.parking)}> Edit</button>
 
                                                                 <button className="btn btn-danger" onClick={this.deletePerson.bind(this, item.userId)}>Delete</button>
                                                         </td>
@@ -210,8 +210,7 @@ deletePerson(userId){
                                                                         <th>Email</th>
                                                                         <th>Tower Name </th>
                                                                         <th>Roles</th>
-                                                                        <th>Number of
-                                                                            family member</th>
+                                                                        <th>Number  of family member</th>
                                                                         <th>Parking</th>
                                                                         <th> Actions  </th>
                                                                 </tr>
@@ -225,11 +224,8 @@ deletePerson(userId){
                 return (
                         <div>
                                 <UI onClick={this.logout}>
-                                        <div className ="w3-container w3-margin-top">
-                                        <div  className ="top-details" >         
-                                        <h3 align="center"> Person Details</h3>
-<Button  className="btn btn-success" onClick ={this.Addperson} colr="primary"> Add person</Button>
-</div>
+                                        <div className ="w3-container w3-margin-top w3-responsive">
+                                      
                                                 <Modal isOpen={this.state.editPersonModal} toggle={this.toggleEditPersonModal.bind(this)}>
                                                         <ModalHeader toggle={this.toggleEditPersonModal.bind(this)}>Edit  Event Details</ModalHeader>
                                                         <ModalBody>
@@ -275,17 +271,7 @@ deletePerson(userId){
                                                                                 {this.getTower(this.props.personDetails)}
                                                                         </Input>
                                                                 </FormGroup>
-                                                                {/* <FormGroup>
-                        <Label> Flat Details</Label>
-                        <Input type="text"  value={this.state.editPersonData.id} onChange={(e) => {
-                                let { editPersonData } = this.state
-                                editPersonData.roleName = e.target.value;
-                                this.setState({
-                                        editPersonData
-                                })
-                        }}
-                        />
-                </FormGroup> */}
+  
 
 
                                                                 <FormGroup>
@@ -338,14 +324,18 @@ deletePerson(userId){
                                                                 <Button color="danger" onClick={this.toggleEditPersonModal.bind(this)}>Cancel</Button>
                                                                 </ModalBody>
                                                 </Modal>
+                                                <div  className ="top-details" >         
+                                                        <h3 align="center"> Person Details</h3>
+                                                                <button className="btn btn-primary"  onClick ={this.Addperson}> Add person</button>
+                                                </div>
                                                 <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
                                                 {!this.state.loading? tableData:<Spinner/>}
 
                                         </div>
                                 </UI>
-                                {/* </SideBar>
-            </div> */}
-                        </div>
+                                
+            </div> 
+                        
 
                 )
         }

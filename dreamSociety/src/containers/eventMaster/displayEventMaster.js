@@ -127,7 +127,7 @@ class DisplayEventMaster extends Component {
 
                                                         <td>
 
-                                                                <button className="btn btn-success" onClick={this.editEvent.bind(this, item.eventId, item.eventType, item.eventName, item.eventOrganiser, item.startDate, item.endDate, item.organiser.userId, item.organiser.userName)}> Edit</button>
+                                                                <button className="btn btn-success mr-2" onClick={this.editEvent.bind(this, item.eventId, item.eventType, item.eventName, item.eventOrganiser, item.startDate, item.endDate, item.organiser.userId, item.organiser.userName)}> Edit</button>
 
                                                                 <button className="btn btn-danger" onClick={this.deleteEvent.bind(this, item.eventId)}>Delete</button>
                                                         </td>
@@ -176,10 +176,10 @@ class DisplayEventMaster extends Component {
                                 
                                 <UI onClick={this.logout}>
                                       
-                                        <div className ="w3-container w3-margin-top">
+                                        <div className ="w3-container w3-margin-top w3-responsive">
                                         <div  className ="top-details" >
                                                 <h3 align="center"> Event Details</h3>
-                                                <Button  className="btn btn-success" onClick ={this.addEvent} > Add Event</Button>
+                                                <Button  color ="primary" onClick ={this.addEvent} > Add Event</Button>
                                                 </div>
                                                 <Modal isOpen={this.state.editEventModal} toggle={this.toggleEditEventModal.bind(this)}>
                                                         <ModalHeader toggle={this.toggleEditEventModal.bind(this)}>Edit  Event Details</ModalHeader>
