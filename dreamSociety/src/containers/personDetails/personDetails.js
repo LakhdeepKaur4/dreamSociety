@@ -139,7 +139,7 @@ Email
 <div className="form-group">
 <label> Roles</label>
 <select  name="roles"  onChange={(e)=>{this.setState({roles:e.target.value })}}    className="form-control"  required>
-
+<option>  --Select--</option>
 {this.getRole(this.props.personDetails)}
 
 </select>
@@ -147,6 +147,7 @@ Email
 <div   className="form-group">
 <label>Tower</label>
 <select  name="towerId"  className="form-control" onChange ={(e)=>{this.setState({towerId:e.target.value})}}>
+<option> --Select--</option>
 {this.Tower(this.props.personDetails)}
 </select>
 </div>
@@ -160,7 +161,7 @@ Email
 <input  type="text"   name ="parking" className="form-control" maxLength ={2} onChange={this.onChange}    onKeyPress ={this.OnKeyPressNumber}  required />
 </div>
 <button className="btn btn-success"> Submit</button>
-<button   className ="btn btn-primary" onClick={this.person}>Person Details</button> 
+<button   className ="btn btn-danger" onClick={this.person}>Cancel</button> 
 </form>  
      
   }

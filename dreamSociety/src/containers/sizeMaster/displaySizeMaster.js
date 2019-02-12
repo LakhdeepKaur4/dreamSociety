@@ -106,13 +106,13 @@ class DisplaySizeMaster extends Component {
 
 
             <td>{item.sizeType}</td>
-
+  
             <td>
-              <div className="w3-row">
+            <div>
               <button className="btn btn-success"  onClick={this.editSize.bind(this, item.id, item.sizeId, item.sizeType)}> Edit</button>
 
               <button className="btn btn-danger" onClick={this.deleteSize.bind(this, item.sizeId)}>Delete</button>
-            </div>
+              </div>
             </td>
           </tr>
         )
@@ -137,12 +137,13 @@ class DisplaySizeMaster extends Component {
   render() {
     let tableData;
     tableData=  <Table  className ="table table-bordered" >
+    <div className="w3-row" >
     <thead>
       <tr>
 
         <th>Size Details</th>
 
-
+        <th> Actions  </th>
       </tr>
     </thead>
     <tbody>
@@ -150,6 +151,7 @@ class DisplaySizeMaster extends Component {
        {this.TowerMasterDetails(this.props.SizeDetails)}
 
     </tbody>
+    </div>
   </Table>
    if(!this.props.SizeDetails.getSize){
     tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching details</Spinner></div>
@@ -187,11 +189,11 @@ class DisplaySizeMaster extends Component {
                 </FormGroup>
 
 
-              </ModalBody>
-              <ModalFooter>
-                <Button color="primary" onClick={this.updateSize.bind(this)}>Update Size Details</Button>{' '}
-                <Button color="secondary" onClick={this.toggleEditSizeModal.bind(this)}>Cancel</Button>
-              </ModalFooter>
+             
+             
+                <Button color="primary"   className="mr-2" onClick={this.updateSize.bind(this)}>Save</Button>
+                <Button color="danger" onClick={this.toggleEditSizeModal.bind(this)}>Cancel</Button>
+                </ModalBody>
             </Modal>
             <SearchFilter type="text" value={this.state.search}
               onChange={this.searchOnChange} />

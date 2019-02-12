@@ -223,7 +223,7 @@ class CityMaster extends Component {
          <FormGroup>
             <Label><h4>Country Name</h4></Label>
             <Input type="select" onChange={this.onChangeCountry} required>
-            <option value=''>--Select--</option>
+            <option value='' disabled selected>--Select--</option>
                 {this.countryName(this.props.cityMasterReducer)}
             </Input >
             <span className='error'>{this.state.errors.countryName}</span>
@@ -232,7 +232,7 @@ class CityMaster extends Component {
         <FormGroup>
             <Label><h4>State Name</h4></Label>
             <Input type="select"  onChange={this.onChangeState} required>
-            <option value=''>--Select--</option>
+            <option value='' disabled selected>--Select--</option>
                 {this.stateName(this.props.cityMasterReducer)}
             </Input>
             <span className='error'>{this.state.errors.stateName}</span>

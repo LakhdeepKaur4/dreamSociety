@@ -78,9 +78,11 @@ class TowerMaster extends Component {
             </FormGroup>
             <FormGroup>
                 <Button color="success" className="mr-2">Submit</Button>
-                <button  onClick ={this.tower}   className="btn btn-primary">Tower details</button>
+
+                <button  onClick ={this.tower}   className="btn  btn-danger">Cancel</button>
+       
             </FormGroup>
-        </Form>
+        </Form>                        
         
     </div>
       }
