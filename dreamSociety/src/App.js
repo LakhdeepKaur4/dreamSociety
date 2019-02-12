@@ -97,6 +97,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/cityMaster' component={CityMaster} />
             <PrivateRoute path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
             <PrivateRoute path='/superDashboard/locationMaster' component={locationMaster}/>
+            <PrivateRoute path='/superDashboard/displayLocation' component={DisplayLocation}/>
           </Switch>
         </div>
       </BrowserRouter>

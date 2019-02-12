@@ -162,7 +162,7 @@ class DisplayEventMaster extends Component {
                                 <th>Event Organiser</th>
                                 <th>Event Start Date</th>
                                 <th>Event End Date</th>
-
+                                <th> Actions  </th>
                         </tr>
                 </thead>
                 <tbody>
@@ -196,9 +196,10 @@ class DisplayEventMaster extends Component {
 
                                                                                         this.setState({ editEventData });
                                                                                 }}
+                                                                                required
                                                                                  maxLength ={25}
                                                                                 onKeyPress={this.OnKeyPresshandler}
-                                                                                required
+                                                                             
                                                                         />
                                                                 </FormGroup>
 
@@ -215,7 +216,7 @@ class DisplayEventMaster extends Component {
                                                                 </FormGroup>
                                                                 <FormGroup>
                                                                         <Label >Event Organiser</Label>
-                                                                        <select value={this.state.editEventData.eventOrganiser} onChange={(e) => {
+                                                                        <Input type="select" value={this.state.editEventData.eventOrganiser} onChange={(e) => {
                                                                                 let { editEventData } = this.state;
                                                                                 editEventData.eventOrganiser = e.target.value;
                                                                                 console.log('vghvghyghfgh', this.state.editEventData.eventOrganiser);
@@ -223,12 +224,13 @@ class DisplayEventMaster extends Component {
                                                                                 this.setState({ editEventData })
 
                                                                         }} required >
+                                                                        
                                                                                 <option value={this.state.editEventData.userName}>{this.state.editEventData.userName}</option>
 
-                                                                                <option disabled> Select an Event Organiser</option>
+                                                                                <option disabled> --Select --</option>
 
                                                                                 {this.getEvent(this.props.EventDetails)}
-                                                                        </select>
+                                                                        </Input>
                                                                 </FormGroup>
                                                                 <FormGroup>
                                                                         <Label> Event Start Date</Label>
@@ -251,11 +253,11 @@ class DisplayEventMaster extends Component {
                                                                 </FormGroup>
 
 
-                                                        </ModalBody>
-                                                        <ModalFooter>
-                                                                <Button color="primary" onClick={this.updateEvent}>Update Details</Button>
-                                                                <Button color="secondary" onClick={this.toggleEditEventModal.bind(this)}>Cancel</Button>
-                                                        </ModalFooter>
+
+                                                                <Button color="primary" className="mr-2" onClick={this.updateEvent}>Save</Button>
+                                                                <Button color="danger" onClick={this.toggleEditEventModal.bind(this)}>Cancel</Button>
+                                                  
+                                                                </ModalBody>
                                                 </Modal>
                                                 <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
                                                 {!this.state.loading? tableData:<Spinner/>}
