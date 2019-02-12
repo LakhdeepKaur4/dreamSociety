@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 import $ from 'jquery';
 import './common.css';
+import ReactDOM from 'react-dom';
 
 class Demo extends Component {
     componentDidMount() {
+        ReactDOM.findDOMNode(this).scrollIntoView();
         $(document).ready(function () {
 
             $('#sidebarCollapse').on('click', function () {
@@ -47,7 +49,7 @@ class Demo extends Component {
 
                         </div>
                     </div>
-                    <Link className="navbar-brand" to="#"><i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa mr-1">&#xf1ad;</i>DRE@M SOCIETY</Link>
+                    <Link className="navbar-brand" to="/superDashboard"><i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa mr-1">&#xf1ad;</i>DRE@M SOCIETY</Link>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
@@ -75,7 +77,6 @@ class Demo extends Component {
                     </div>
                 </nav>
                 <div className="wrapper">
-
                     <nav id="sidebar" className="bg-dark inactive">
                         <div id="sidebar-content">
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/user_details">Super Admin Register</Link></div></Menu.Item>
@@ -98,6 +99,7 @@ class Demo extends Component {
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}>Admin Register</div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}>Society Member Owner Register</div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}>Society Member Tenant Register</div></Menu.Item>
+                            <div style={{height:'10%'}}></div>
                             </div>
                     </nav>
                     <div id="body" className="container">
