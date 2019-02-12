@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { AddDetails, getSocietyNameDetails, getSizeTypeDetails, getDetails } from '../../actionCreators/flatMasterAction';
 import { bindActionCreators } from 'redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Link, Redirect } from 'react-router-dom';
 import { FormGroup, Form, Input, Button, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -18,14 +17,13 @@ class FlatMaster extends Component {
             flatType: '',
             flatSuperArea: '',
             sizeId: '',
-
             coverArea: '',
-            validationError: '',
             errors: {},
             isSubmit: false,
             loading:true,
             menuVisible: false
-        }
+        };
+        this.onChange = this.onChange.bind(this);
 
     }
 
@@ -38,22 +36,24 @@ class FlatMaster extends Component {
         e.preventDefault();
         let errors = {};
         if (!this.state.societyId) {
-            errors.societyId = "society name cannot be empty"
+            errors.societyId = "Society Name cannot be empty"
         }
-        if (this.state.flatType === '') errors.flatType = "cant be empty";
+        if (this.state.flatType === '') errors.flatType = "Cant be empty";
         else if (this.state.flatType.length < 3) errors.flatType = "Characters should be less than four"
-        if (this.state.flatSuperArea === '') errors.flatSuperArea = "cant be empty";
+        if (this.state.flatSuperArea === '') errors.flatSuperArea = "Cant be empty";
 
         if (!this.state.sizeId) {
-            errors.sizeId = "sizeType cannot be empty";
+            errors.sizeId = "SizeType cannot be empty";
         }
-        if (this.state.coverName === '') errors.coverName = "cant be empty";
+        if (this.state.coverArea === '') errors.coverArea = "Cant be empty";
+        else if (parseInt(this.state.coverArea) >= parseInt(this.state.flatSuperArea)) errors.coverArea=
+         "CoverArea cannot be greater then flatSuperArea";
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
 
         if (isValid) {
-            this.setState({ isSubmit: true })
+            this.setState({ loading: true })
             this.props.AddDetails({ ...this.state })
             .then(() => this.props.history.push('/superDashboard/flatmaster/flatmasterdetails'));
             this.setState({
@@ -67,10 +67,11 @@ class FlatMaster extends Component {
             });
         }
     }
-    onChange = (e) => {
-        if (!!this.state.errors[e.target.value]) {
+    onChange(e){
+        if (!this.state.errors[e.target.value]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
+            console.log('no errors');
             this.setState({ [e.target.name]: e.target.value.trim(''), errors });
         } else {
             this.setState({ [e.target.name]: e.target.value.trim('') });
@@ -119,6 +120,15 @@ class FlatMaster extends Component {
         return this.props.history.replace('/') 
     }
 
+    OnKeyPresshandlerPhone=(event)=>{
+        const pattern = /^[0-9+]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    
+
     render() {
           let form;
           if(!this.state.loading && this.props.flat.list0 && this.props.flat.list4 && this.state.errors){
@@ -126,15 +136,15 @@ class FlatMaster extends Component {
           
             form = <Form onSubmit={this.submit}>
             <FormGroup>
-                <Label>SocietyName</Label>
+                <Label>Society Name</Label>
                 <Input
                     type="select"
                     name="societyId"
                     onChange={this.onChange}>
-                    <option >--SELECT--</option>
+                    <option >--Select--</option>
                     {this.societyName(this.props.flat)}
                 </Input>
-                <span>{this.state.errors.societyId}</span>
+                <span  className='error'>{this.state.errors.societyId}</span>
 
             </FormGroup>
 
@@ -147,18 +157,20 @@ class FlatMaster extends Component {
                     maxLength='4'
                     value={this.state.flatType}
                     onChange={this.onChange} />
-                <span>{this.state.errors.flatType}</span>
+                    
+                <span className='error'>{this.state.errors.flatType}</span>
             </FormGroup>
 
             <FormGroup>
                 <Label>Flat SuperArea</Label>
                 <Input
-                    type="number"
-                    name="flatSuperArea"
-                    min='0'
+                    type="text"
+                    name="flatSuperArea"    
                     value={this.state.flatSuperArea}
+                    onKeyPress = {this.OnKeyPresshandlerPhone}
+                    maxLength='3'
                     onChange={this.onChange} />
-                <span>{this.state.errors.flatSuperArea}</span>
+                <span className='error'>{this.state.errors.flatSuperArea}</span>
             </FormGroup>
 
             <FormGroup>
@@ -170,23 +182,25 @@ class FlatMaster extends Component {
                     <option>--SELECT--</option>
                     {this.sizeType(this.props.flat)}
                 </Input>
-                <span>{this.state.errors.sizeId}</span>
+                <span className='error'>{this.state.errors.sizeId}</span>
             </FormGroup>
 
             <FormGroup>
-                <Label>CoverArea</Label>
+                <Label>Cover Area</Label>
                 <Input
-                    type="number"
+                    type="text"
                     name="coverArea"
                     value={this.state.coverArea}
-                    min='0'
+                    onKeyPress = {this.OnKeyPresshandlerPhone}
+                    maxLength='3'
                     onChange={this.onChange} />
-                <span>{this.state.errors.coverArea}</span>
+                <span  className='error'>{this.state.errors.coverArea}</span>
             </FormGroup>
 
             <FormGroup>
                 <Button color="success" type="submit" className="mr-2">Submit</Button>
-                <Button color="primary" onClick={this.push}>FlatDetails</Button>
+                <Button color="primary" onClick={this.push}>Cancel</Button>
+              
             </FormGroup>
         </Form>
           }

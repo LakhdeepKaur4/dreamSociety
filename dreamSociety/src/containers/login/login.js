@@ -2,20 +2,18 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './login.css';
-import Logo from '../../assets/2.jpg';
-import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { login } from '../../actionCreators/loginAction';
 import { bindActionCreators } from 'redux';
 import { Form, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Button, Label } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import UI from '../../components/newUI/loginDashboard';
-
+import Spinner from '../../components/spinner/spinner';
 
 class Login extends Component {
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', message: '', menuVisible: false, editUserModal: false };
+        this.state = { username: '', password: '', message: '', menuVisible: false, editUserModal: false , loading:false,};
         this.toggleEditUserModal = this.toggleEditUserModal.bind(this);
         this.editUser = this.editUser.bind(this);
 
@@ -33,6 +31,9 @@ class Login extends Component {
     }
 
     submit = (e) => {
+        this.setState({
+            loading:true
+        })
         e.preventDefault();
         const { username, password } = this.state
         if (username!==null && password!==null ) {
@@ -119,6 +120,29 @@ class Login extends Component {
     }
 
     render() {
+        let loginForm;
+        loginForm=
+        <div>
+        <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>User Login</ModalHeader>
+        <ModalBody>
+                <div style={{ 'color': 'red' }}>{this.state.message}</div>
+                <FormGroup>
+                    <Label>Username</Label>
+                    <Input name="username" type="text" value={this.state.username} onChange={this.onChangeHandler}></Input>
+                </FormGroup>
+                <FormGroup>
+                    <Label>Password</Label>
+                    <Input name="password" type="password" value={this.state.password} onChange={this.onChangeHandler}></Input>
+                </FormGroup>
+                <FormGroup>
+                    <Button onClick={this.submit} color="primary" >Login</Button>{' '}
+                </FormGroup>
+
+        </ModalBody>
+        <ModalFooter>
+
+        </ModalFooter>
+        </div>
         return (<div>
             {/* <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
                 {/* <Menu.Item onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} >
@@ -160,33 +184,16 @@ class Login extends Component {
                 {/* <Header as="h3">Application Content</Header> */}
                 {/* <Image src='//unsplash.it/800/480' /> */}
                 <UI onClick={this.editUser}>
+                <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
+                    {!this.state.loading?loginForm:<Spinner/>}
+                </Modal>
                     {/* <img src={Logo} alt="society" style={{width: "100%", height: "100%"}} /> */}
                 </UI>
                 {/* </Segment>
          </Sidebar.Pusher>
       </Sidebar.Pushable> */}
             </div>
-            <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
-                <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>User Login</ModalHeader>
-                <ModalBody>
-                        <div style={{ 'color': 'red' }}>{this.state.message}</div>
-                        <FormGroup>
-                            <Label>Username</Label>
-                            <Input name="username" type="text" value={this.state.username} onChange={this.onChangeHandler}></Input>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label>Password</Label>
-                            <Input name="password" type="password" value={this.state.password} onChange={this.onChangeHandler}></Input>
-                        </FormGroup>
-                        <FormGroup>
-                            <Button onClick={this.submit} color="primary" >Login</Button>{' '}
-                        </FormGroup>
-
-                </ModalBody>
-                <ModalFooter>
-
-                </ModalFooter>
-            </Modal>
+            
 
         </div>
         );

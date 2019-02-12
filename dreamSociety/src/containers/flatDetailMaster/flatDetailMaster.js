@@ -19,6 +19,7 @@ class flatDetailMaster extends Component{
         }
     }
 
+
     handleChange=(event)=>  {
                    
         this.setState({[event.target.name]:event.target.value});
@@ -105,6 +106,12 @@ class flatDetailMaster extends Component{
             })
         }
     }
+
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
     
     push=()=>{
         this.props.history.push('/superDashboard/flatDetails')
@@ -112,10 +119,10 @@ class flatDetailMaster extends Component{
 
     render (){
         return(
-            <UI>
+            <UI onClick={this.logout}>
             <div >
                 <form onSubmit={this.onSubmit}>
-                <div style={{textAlign: 'center',fontWeight: 'bold' }}><label>Flat Detail Master</label></div>
+                <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Flat Details</h3></div>
                     <div >
                         <label>Flat No</label>
                         <input className ="form-control" type="text" name="flatNo" maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.handleChange} value={this.state.flatNo} required></input>
@@ -138,8 +145,10 @@ class flatDetailMaster extends Component{
                             {this.getDropdown(this.props.flatDetailMasterReducer)}
                         </select>
                     </div>
-                    <Button type="submit" color="primary" value="submit">Submit</Button>
-                    <Button color="secondary" onClick={this.push}>Show Details</Button>
+                    <div className="mt-4">
+                    <Button type="submit" className="mr-2" color="success" value="submit">Submit</Button>
+                    <Button color="danger" onClick={this.push}>Cancel</Button>
+                    </div>
                 </form> 
             </div>
             </UI>

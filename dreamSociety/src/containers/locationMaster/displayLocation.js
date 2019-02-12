@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import {getLocation,getStateName,getCountryName,getCityName,getLocationName,updateLocation,deleteLocation} from '../../actionCreators/locationMasterAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody,Table, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
@@ -95,7 +94,7 @@ renderList=({details})=>{
                 <td>{item.city_master.cityName}</td>
                 <td>{item.locationName}</td>
                 <td>
-                    <Button color="primary"  className="mr-2" onClick={this.toggle.bind(this, item.locationId, item.country_master.countryName,item.state_master.stateName,item.city_master.cityName,item.locationName)}> Edit</Button>
+                    <Button color="success"  className="mr-2" onClick={this.toggle.bind(this, item.locationId, item.country_master.countryName,item.state_master.stateName,item.city_master.cityName,item.locationName)}> Edit</Button>
                
                     <Button color="danger" onClick={this.delete.bind(this,item.locationId)}> Delete</Button>
                 </td>
@@ -155,6 +154,13 @@ fetchCity({city}) {
     }
 }
 
+OnKeyPressUserhandler(event) {
+    const pattern = /[a-zA-Z_ ]/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
+    }
+}
 
 updateLocation = () => {
     const { locationId, countryId, stateId, cityId,locationName } = this.state
@@ -245,20 +251,24 @@ render(){
                      </FormGroup>
                      <FormGroup>
                          <Label>Location Name</Label>
-                         <Input type="text" id="locationId" name="locationName" onChange={this.onChangeHandler} value={this.state.locationName} />
+                         <Input type="text" id="locationId" name="locationName" onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onChangeHandler} value={this.state.locationName} />
                      </FormGroup> 
+                 
+            
+                        <Button color="primary" className="mr-2" onClick={this.updateLocation}>Save</Button> 
+                        <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+                 
                  </ModalBody>
-                 <ModalFooter>
-                        <Button color="primary" onClick={this.updateLocation}>Update</Button> 
-                        <Button color="secondary" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                 </ModalFooter>
              </Modal> 
+             <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Location Details</h3>
+             <Button color="primary" type="button" onClick={this.push}> Add Location</Button>
+             </div>
              <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
                            {!this.state.loading ? tableData : <Spinner />}
                        
                                 
-                <Button color="success" type="button" onClick={this.push}> Add Location</Button>
+            
                 </div>
         </UI>
         </div>
