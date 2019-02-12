@@ -44,7 +44,7 @@ class DisplaySizeMaster extends Component {
 
 
   OnKeyPresshandle(event) {
-    const pattern = /[a-zA-Z]/;
+    const pattern = /[a-zA-Z _]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       event.preventDefault();
@@ -108,9 +108,11 @@ class DisplaySizeMaster extends Component {
             <td>{item.sizeType}</td>
 
             <td>
-              <button className="btn btn-primary" onClick={this.editSize.bind(this, item.id, item.sizeId, item.sizeType)}> Edit</button>
+              <div className="w3-row">
+              <button className="btn btn-success"  onClick={this.editSize.bind(this, item.id, item.sizeId, item.sizeType)}> Edit</button>
 
               <button className="btn btn-danger" onClick={this.deleteSize.bind(this, item.sizeId)}>Delete</button>
+            </div>
             </td>
           </tr>
         )
@@ -120,6 +122,12 @@ class DisplaySizeMaster extends Component {
   }
 
 
+  
+  addSize =() =>{
+    this.props.history.push('/superDashboard/sizemaster')
+
+}
+
   logout=()=>{
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
@@ -128,7 +136,7 @@ class DisplaySizeMaster extends Component {
 
   render() {
     let tableData;
-    tableData=  <Table >
+    tableData=  <Table  className ="table table-bordered" >
     <thead>
       <tr>
 
@@ -153,10 +161,12 @@ class DisplaySizeMaster extends Component {
       <div>
         <UI onClick={this.logout}>
 
-          <div>
-          <Link to="/superDashboard/sizemaster"><button  type="submit" style={{ backgroundColor: 'lightblue', marginTop: '25px' }}>Add Size</button></Link>
+          
+          <div className ="w3-container w3-margin-top">
+                                        <div  className ="top-details" >
             <h3 align="center"> Size List</h3>
-
+            <Button  className="btn btn-success" onClick ={this.addSize} > Add Size master</Button>
+            </div>
             <Modal isOpen={this.state.editSizeModal} toggle={this.toggleEditSizeModal.bind(this)}>
               <ModalHeader toggle={this.toggleEditSizeModal.bind(this)}>Edit  Size Details</ModalHeader>
               <ModalBody>
@@ -170,7 +180,10 @@ class DisplaySizeMaster extends Component {
                     editSizeData.sizeType = e.target.value;
 
                     this.setState({ editSizeData });
-                  }} />
+                  }}
+                  onKeyPress ={ this.OnKeyPresshandle}  required  maxLength={20}
+                   />
+                  
                 </FormGroup>
 
 

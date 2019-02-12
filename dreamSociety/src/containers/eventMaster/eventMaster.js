@@ -4,7 +4,7 @@ import { AddEvent, GetEventOrganiser } from '../../actionCreators/eventMasterAct
 import { bindActionCreators } from 'redux';
 import { Input } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
-import { Link } from 'react-router-dom';
+
 import Spinner from '../../components/spinner/spinner';
 import './event.css';
 
@@ -28,7 +28,7 @@ class EventMaster extends Component {
   }
 
   OnKeyPresshandler(event) {
-    const pattern = /[a-zA-Z]/;
+    const pattern = /[a-zA-Z _]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
         event.preventDefault();
@@ -87,13 +87,18 @@ this.setState({loading:true})
     return this.props.history.replace('/') 
 }
 
+  event=()=>{
+    this.props.history.push('/superDashboard/display-event')
+  }
+  
+  
   render() {
 
     let form1 ;
     if(!this.state.loading && this.props.EventDetails.events){
     form1=
-    <div className="form">
-
+    <div >
+      <h3 align="center">Add Event</h3>
       <form onSubmit={this.submit}>
         <div className="form-group">
           <label >Event Type</label>
@@ -104,7 +109,7 @@ this.setState({loading:true})
             onKeyPress={this.OnKeyPresshandler}
             name="eventType"
             onChange={this.onChange}
-             maxLength ={20}
+             maxLength ={25}
             required
           />
 
@@ -119,7 +124,7 @@ this.setState({loading:true})
             onKeyPress={this.OnKeyPresshandler}
             name="eventName"
             onChange={this.onChange}
-            maxLength ={20}
+            maxLength ={25}
             required
           />
         </div>
@@ -163,9 +168,9 @@ this.setState({loading:true})
         </div>
 
         <button
-          className="btn btn-primary"
+          className="btn btn-success"
         > Submit</button>
-          <Link color="primary" to="/superDashboard/display-event">event details</Link>
+    <button  onClick={this.event}  className="btn btn-primary">  Event Details</button>
       </form>
     </div>
     }

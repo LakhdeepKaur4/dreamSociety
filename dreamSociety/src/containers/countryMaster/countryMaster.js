@@ -149,7 +149,7 @@ class Country extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <div className="flatMaster">
+                    <div>
                        {form}
                     </div>
                 </UI>
