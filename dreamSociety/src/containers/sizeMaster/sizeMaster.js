@@ -34,7 +34,7 @@ class SizeMaster extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
  onkeyPresshandle(event){
-    const pattern = /[a-zA-Z]/;
+    const pattern = /[a-zA-Z _]/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
       event.preventDefault();
@@ -56,6 +56,9 @@ this.setState({loading:true})
         })
            
     }
+    size=()=>{
+        this.props.history.push('/superDashboard/display-size')
+    }
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
@@ -67,13 +70,14 @@ this.setState({loading:true})
         form=
         <div>
         <Form onSubmit={this.submit}>
+        <h3 align="center">  Add Size </h3>
             <FormGroup>
                 <Label> Size Type</Label>
-                <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange} />
+                <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={20}/>
             </FormGroup>
             <FormGroup>
                 <Button type="submit" color="success">Submit</Button>
-                <Link color="primary" to="/superDashboard/display-size">Size details</Link>
+                <button className=" btn btn-primary" onClick ={this.size}>Size details</button>
             </FormGroup>
         </Form>
     </div>  

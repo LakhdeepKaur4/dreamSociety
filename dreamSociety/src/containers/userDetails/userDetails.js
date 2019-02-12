@@ -157,7 +157,7 @@ class userDetails extends Component {
 
     render() {
         let tableData;
-        tableData = <Table>
+        tableData = <Table >
 
             <thead>
                 <tr>
