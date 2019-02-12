@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { addVendorMaster } from '../../../actionCreators/vendorMasterAction';
 import { Link } from 'react-router-dom';
-
+import { Button } from 'reactstrap';
 import UI from '../../../components/newUI/vendorDashboardInside';
 
 
@@ -79,31 +79,31 @@ class vendorMaster extends Component {
             <div>
                 <UI onClick={this.logout}>
                   
-                    <div className="form1 col-8">
+                    <div >
                         <form onSubmit={this.onSubmit}>
-                        <div style={{textAlign: 'center',fontWeight: 'bold' }}><label>Vendor Master</label></div>
+                        <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Vendor</h3></div>
                             <div>
                                 <label>Vendor Name</label>
-                                <input type="text" className="form-control" name="vendorName" value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
+                                <input type="text" className="form-control" name="vendorName" maxLength={20} value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
                             </div>
                             <div>
                                 <label>Service Type</label>
                                 <select className="form-control" value={this.state.serviceId} onChange={(e) => {
                                     this.setState({ serviceId: e.target.value })
                                 }} required>
-                                    <option>--SELECT--</option>
+                                    <option value="" >--Select--</option>
                                     {this.getDropDowm(this.props.displayServiceMasterReducer)}
                                 </select>
                             </div>
                             <div>
                                 <label>Description</label>
-                                <input className="form-control" value={this.state.description} onChange={this.handleChange} type="text" name="description" required></input>
+                                <input className="form-control" maxLength={50}  value={this.state.description} onChange={this.handleChange} type="text" name="description" required></input>
                             </div>
                             <div className="mt-4">
-                                <button type="submit" className="btn btn-primary mr-2" value="submit">Submit</button>
+                                <Button type="submit" color="success" className="mr-2" value="submit">Submit</Button>
 
                                 <Link to='/superDashboard/displayVendorMaster'>
-                                    <button className="btn">Show Details</button>
+                                    <Button color="danger" className="btn">Cancel</Button>
                                 </Link>
                             </div>
                         </form>
