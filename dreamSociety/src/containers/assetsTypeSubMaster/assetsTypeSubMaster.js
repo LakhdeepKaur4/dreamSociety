@@ -82,7 +82,7 @@ class AssetsTypeSubMaster extends Component {
                     <FormGroup>
                     <Label>Assets Type</Label>
                     <Input type="select" onChange={this.onChangeHandler} name="assetId">
-                        <option value="">select</option>
+                        <option value="" disabled selected>--Select--</option>
                         {this.getAssetsName(this.props.assetsName)}
                     </Input>
                     <span className="error">{this.state.errors.assetId}</span>

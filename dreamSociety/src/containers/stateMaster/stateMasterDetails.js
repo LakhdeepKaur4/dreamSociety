@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { getDetails,getCountry,updateDetails} from '../../actionCreators/countryAction';
-import { URN } from '../../actions/index';
+import { getDetails,getCountry,updateDetails,deleteDetails} from '../../actionCreators/countryAction';
+
 import { bindActionCreators } from 'redux';
-import axios from 'axios';
-import { authHeader } from '../../helper/authHeader';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
+import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Input } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -76,14 +75,6 @@ class flatMasterDetails extends Component {
             editUserModal:false ,loading:true, editUserData:{stateId:'',countryId:'',stateName:''}
          })
   
-        // axios.put(`${URN}/flat/` +flatId,{  societyId, flatType, flatSuperArea,
-        // sizeId,coverArea},{headers:authHeader()}).then((response) => {
-        //   this.refreshData();
-        // })
-        //   this.setState({
-        //     editUserModal: false, editUserData: {  flatId: '',societyName:'',flatType:'', flatSuperArea: '',sizeType:'',CoverArea:''  }
-        // })
-      
     
     }
 
@@ -127,10 +118,11 @@ class flatMasterDetails extends Component {
         deleteUser(stateId){
             // this.setState({loading: true})
             let { isActive } = this.state.editUserData
-            axios.put(`${URN}/state/delete/` + stateId, { isActive }, { headers: authHeader() })
-            .then(() => this.refreshData())
-            // .then(() => this.setState({loading:false}))
-            this.setState({ editUserData: { isActive: false } })
+            this.props.deleteDetails(stateId,isActive).then(()=>this.refereshData())
+            // axios.put(`${URN}/state/delete/` + stateId, { isActive }, { headers: authHeader() })
+            // .then(() => this.refreshData())
+            .then(() => this.setState({isActive:false}));
+            // this.setState({ editUserData: { isActive: false }})
             // .then(()=>{console.log('ereeere')
             //     this.props.getDetails()})    
     }
@@ -185,14 +177,31 @@ class flatMasterDetails extends Component {
         return this.props.history.replace('/') 
     }
 
+    onStateChange=(event)=>{
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    // searchFilter=(event)=>{
+    //     const pattern = /^[a-zA-Z]+$/;
+    //     let inputChar = String.fromCharCode(event.charCode);
+    //     if (!pattern.test(inputChar)) {
+    //         event.preventDefault();
+    //     }
+    // }
+
     render() {
         let tableData;
         tableData=<Table>
         
         <thead>
             <tr>
-                <th>countryName</th>
-                <th>stateName</th>
+                <th>Country Name</th>
+                <th>State Name</th>
+                <th>Actions</th>
 
             </tr>
         </thead>
@@ -202,12 +211,12 @@ class flatMasterDetails extends Component {
        </Table>
        
        if(!this.props.countryDetails.country3 && !this.props.countryDetails.country1){
-        tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner />Fetching Users. Please! wait...</div>
+        tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner /></div>
     }
         return (
             <div>  
                 <UI onClick={this.logout}>
-                    <div className="w3-container w3-margin-top">
+                    <div className="w3-container w3-margin-top  w3-responsive">
                         <div className="top-details">
                                 <h3>State Master Details</h3>
                                 <Button onClick={this.routeToAddNewUser} color="primary">Add State</Button>
@@ -217,29 +226,38 @@ class flatMasterDetails extends Component {
                             <ModalBody>
                                 <FormGroup>
                                     <Label for="roles">CountryName</Label>
-                                    <select value={this.state.editUserData.countryId} onChange={this.countryName}>
+                                    <Input type="select"
+                                    value={this.state.editUserData.countryId} onChange={this.countryName}>
                                         <option>{this.state.editUserData.countryName}</option>
                                         <option disabled>Select</option>
-                                        {this.fetchDrop(this.props.countryDetails)}
-                                    </select>
+                                        {this.fetchDrop(this.props.countryDetails)}/>
+                                        </Input>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">StateName</Label>
-                                    <input
+                                    <Input
                                         type="textbox"
                                         placeholder="enter state name"
                                         value={this.state.editUserData.stateName}
-                                        onChange={this.stateName} />
+                                        onChange={this.stateName}
+                                        maxLength='50'
+                                        onKeyPress={this.onStateChange} />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Button color="primary" className="mr-2" onClick={this.updateBook} >Save</Button>
+                                    <Button color="danger" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
                                 </FormGroup>
 
                             </ModalBody>
-                            <ModalFooter>
-                                <Button color="primary" onClick={this.updateBook}>Update Flat</Button>
-                                <Button color="secondary" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
-                            </ModalFooter>
+                            
+                            
                         </Modal>
-                        <SearchFilter type="text" value={this.state.search}
-                                onChange={this.searchOnChange} />
+                        <SearchFilter
+                         type="text" 
+                         value={this.state.search}
+                         
+                         onChange={this.searchOnChange} 
+                        />
                             {!this.state.loading ? tableData : <Spinner />}
                        
                     </div>
@@ -264,7 +282,8 @@ function mapDispatchToProps(dispatch) {
         getDetails,
     
         getCountry,
-        updateDetails
+        updateDetails,
+        deleteDetails
         // AddDetails,
         // getDrop,
         // getSizeDrop

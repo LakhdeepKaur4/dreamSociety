@@ -124,7 +124,7 @@ class AssetsTypeSubList extends Component {
                 <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top w3-responsive">
                         <div className="top-details">
-                            <h3>Assets Sub Type Name</h3>
+                            <h3>Assets Sub Type List</h3>
                             <Button color="primary" onClick={() => this.props.history.push('/superDashBoard/assetsTypeSubMaster/assetsTypeSubList')} id="addAssets" >Add Assets Sub Type</Button>
                         </div>
                         <div>

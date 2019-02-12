@@ -1,11 +1,10 @@
 import React,{ Component } from 'react';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import {getCountryName,getStateName,getCityName,addLocationDetails, getLocationName} from '../../actionCreators/locationMasterAction';
+import {getCountryName,getStateName,getCityName,addLocationDetails, getLocationName,getLocation} from '../../actionCreators/locationMasterAction';
 import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard';
-import { Link } from 'react-router-dom';
-import { Button } from 'semantic-ui-react';
+import { Button, Form ,FormGroup, Input, Label } from 'semantic-ui-react';
 
 
 class locationMaster extends Component{
@@ -26,6 +25,7 @@ class locationMaster extends Component{
     
 
     componentDidMount(){
+        this.props.getLocation();
         this.props.getCountryName();
         this.props.getStateName();
         this.props.getCityName();
@@ -68,10 +68,10 @@ class locationMaster extends Component{
    }  
 
         
-    getDropdown2=({stateResult})=>{
-        console.log("stateResult", stateResult)
-        if(stateResult){
-            return stateResult.map((item)=>{
+    getDropdown2=({state})=>{
+        console.log("stateResult", state)
+        if(state){
+            return state.map((item)=>{
                 console.log("state",item.stateId)
                     return(
                         <option key={item.stateId} value={item.stateName}>
@@ -92,7 +92,7 @@ class locationMaster extends Component{
         console.log("selected",selected)
        
         
-        var data1 = _.find(this.props.locationMasterReducer.stateResult,function(obj){
+        var data1 = _.find(this.props.locationMasterReducer.state,function(obj){
             return obj.stateName === selected
             })
     
@@ -162,8 +162,17 @@ class locationMaster extends Component{
                 }
                  
         })  
-          console.log("cityId",this.state.cityId)
+        this.props.history.push('/superDashboard/displayLocation')
     }
+
+    OnKeyPressUserhandler(event) {
+        const pattern = /[a-zA-Z_ ]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
 
 
     logout=()=>{
@@ -173,45 +182,49 @@ class locationMaster extends Component{
     }
     
     render (){
-    console.log("stateId",this.state.stateId)
-    console.log("cityId",this.state.cityId)
-    console.log("countryId",this.state.countryId)
-        console.log("locationMasterReducer",this.props.locationMasterReducer.stateResult)
         return(
+            <div>
             <UI onClick={this.logout}>
             <div>
                 <form onSubmit={this.onSubmit}>
+                <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Location</h3></div>
                     <div>
                         <label>Country Name</label>
-                        <select required className ="form-control"  name="countryName"  onChange={this.onChangeCountry} >
-                        <option value="">--SELECT--</option>
+                        <select required className ="form-control" name="countryName"  onChange={this.onChangeCountry} >
+                        <option value="">--Select--</option>
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
                     </div>
                     <div>    
                         <label>State Name</label>
-                        <select  required  className ="form-control" name="stateName" onChange={this.onChangeState}>
-                        <option  value="">--SELECT--</option>
+                        <select  required className ="form-control" name="stateName" onChange={this.onChangeState}>
+                        <option  value="">--Select--</option>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
                     </div>
                     <div>    
                         <label>City Name</label>
-                        <select  required  className ="form-control"  name="cityName" onChange={this.onChangeCity} >
-                        <option  value="">--SELECT--</option>
+                        <select  required className ="form-control"  name="cityName" onChange={this.onChangeCity} >
+                        <option  value="">--Select--</option>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
                     </div>
                     <div>
                         <label>Location Name</label>
-                        <input className ="form-control" type="text" name="locationName"  value={this.state.locationName}  onChange={this.onLocationChange} required></input>
+                        <input  type="text" className ="form-control" name="locationName" maxLength={30}  onKeyPress={this.OnKeyPressUserhandler} value={this.state.locationName}  onChange={this.onLocationChange} required></input>
                     </div>
-
-                    <Button type="submit" color="primary" value="submit">Submit</Button>
-                    <Button color="secondary" onClick={this.push}>Show Details</Button>
+             
+                    <div className="mt-4">
+                            <button type="submit" className=" btn btn-success mr-2" value="submit">Submit</button>
+                          
+                                <button className=" btn btn-danger" onClick={this.push}>Cancel</button>
+                       
+                        </div>
                 </form> 
+                
             </div>
             </UI>
+            </div>
         )
     }
 
@@ -224,7 +237,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({getCountryName,getStateName,getCityName,getLocationName,addLocationDetails},dispatch);
+    return bindActionCreators({getCountryName,getStateName,getCityName,getLocationName,addLocationDetails,getLocation},dispatch);
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(locationMaster);
