@@ -37,7 +37,7 @@ const editUserModal = (props) => (
                 <Input id="contact" name={props.contactInputName} value={props.contactValue} onChange={props.contactValueChange} />
             </FormGroup>
             <FormGroup>
-                <Button color="primary" onClick={props.updateUserClick}>Update User</Button>{' '}
+                <Button color="primary" onClick={props.updateUserClick}>Update User</Button>
                 <Button color="secondary" onClick={props.toggle}>Cancel</Button>
             </FormGroup>
 

@@ -89,3 +89,5 @@ export const DELETE_PERSON ='delete_person';
 export const UPDATE_PERSON1= 'update_person';
 export const UPDATE_LOCATION='update_location'
 export const DELETE_LOCATION='delete_location';
+export const DELETE_DETAILS='delete-details';
+

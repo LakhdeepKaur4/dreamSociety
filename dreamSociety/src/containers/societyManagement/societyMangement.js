@@ -296,7 +296,7 @@ class SocietyMangement extends Component {
             <FormGroup>
             <Label><h4>Country Name</h4></Label>
             <Input type="select" name="countryName"  onChange={this.onChangeCountry} required>
-            <option value=''>--Select--</option>
+            <option value='' disabled selected>--Select--</option>
                 {this.countryName(this.props.societyReducer)}
             </Input>
             <span className='error'>{this.state.errors.countryName}</span>
@@ -305,7 +305,7 @@ class SocietyMangement extends Component {
         <FormGroup>
             <Label><h4>State Name</h4></Label>
             <Input type="select" name="stateName"   onChange={this.onChangeState} required>
-            <option value=''>--Select--</option>
+            <option value='' disabled selected>--Select--</option>
                 {this.stateName(this.props.societyReducer)}
             </Input>
              <span className='error'>{this.state.errors.stateName}</span>
@@ -314,7 +314,7 @@ class SocietyMangement extends Component {
         <FormGroup>
             <Label><h4>City Name</h4></Label>
             <Input type="select" name="cityName"  onChange={this.onChangeCity} required>
-            <option value=''>--Select--</option>
+            <option value='' disabled selected>--Select--</option>
                 {this.cityName(this.props.societyReducer)}  
             </Input>
             <span className='error'>{this.state.errors.cityName}</span>
@@ -323,7 +323,7 @@ class SocietyMangement extends Component {
         <FormGroup>
             <Label><h4>Location Name</h4></Label>
             <Input type="select" name="locationName"  onChange={this.onChangeLocation} required>
-                <option value=''>--Select--</option>
+                <option value='' disabled selected>--Select--</option>
                 {this.locationName(this.props.societyReducer)}
             </Input>
             <span className='error'>{this.state.errors.locationName}</span>

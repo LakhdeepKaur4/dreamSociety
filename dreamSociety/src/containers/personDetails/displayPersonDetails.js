@@ -24,7 +24,7 @@ class displayPersonDetails extends Component {
                                 flatDetailId: '',
                                 roles: [],
                                 id: '',
-                                
+                                roleId:'',
                                 familyMember: '',
                                 parking: '',
                                 isActive: false
@@ -97,7 +97,7 @@ OnKeyPressmail(event){
         editPerson(userId, userName, roleName, email, towerId, id, roles, familyMember, parking, flatDetailId) {
                 console.log('i m in edit ', userName, email, towerId, id, roles, familyMember, parking);
                 this.setState({
-                        editPersonData: { userId, userName, email, towerId, id, familyMember, parking, flatDetailId },
+                        editPersonData: { userId, userName, email, towerId, id, familyMember,roleName, parking, flatDetailId },
                         editPersonModal: !this.state.editPersonModal
                 })
         }
@@ -213,7 +213,7 @@ deletePerson(userId){
                                                                         <th>Number of
                                                                             family member</th>
                                                                         <th>Parking</th>
-
+                                                                        <th> Actions  </th>
                                                                 </tr>
                                                         </thead>
                                                         <tbody>
@@ -262,7 +262,7 @@ deletePerson(userId){
 
                                                                 <FormGroup>
                                                                         <Label> Tower Name</Label>
-                                                                        <select id="towerId" value={this.state.editPersonData.towerId} onChange={(e) => {
+                                                                        <Input type="select" id="towerId" value={this.state.editPersonData.towerId} onChange={(e) => {
                                                                                 let { editPersonData } = this.state
                                                                                 editPersonData.towerId = e.target.value;
                                                                                 this.setState({
@@ -270,8 +270,10 @@ deletePerson(userId){
                                                                                 })
                                                                         }}
                                                                         >
+                                                                        
+                                                                        <option> --Select--</option>
                                                                                 {this.getTower(this.props.personDetails)}
-                                                                        </select>
+                                                                        </Input>
                                                                 </FormGroup>
                                                                 {/* <FormGroup>
                         <Label> Flat Details</Label>
@@ -289,20 +291,21 @@ deletePerson(userId){
                                                                 <FormGroup>
                                                                         <Label> Roles</Label>
 
-                                                                        <select value={this.state.editPersonData.roleName} onChange={(e) => {
+                                                                        <Input type="select" value={this.state.editPersonData.roleName} onChange={(e) => {
 
                                                                                 let { editPersonData } = this.state
-                                                                                editPersonData.roleName = e.target.value;
+                                                                                editPersonData.roleName    = e.target.value;
                                                                                 this.setState({
                                                                                         editPersonData
                                                                                 })
                                                                         }}
                                                                       
-                                                                        >
-
+                                                                        >       
+                                                                                <option>{this.state.editPersonData.roleName}</option>
+                                                                                <option> --Select--</option>
                                                                                 {this.getRole(this.props.personDetails)}
 
-                                                                        </select>
+                                                                        </Input>
                                                                 </FormGroup>
                                                                 
                                                                 <FormGroup>
@@ -329,11 +332,11 @@ deletePerson(userId){
                                                                                 onKeyPress={this.OnKeyPressNumber} maxLength={2} required
                                                                         />
                                                                 </FormGroup>
-                                                        </ModalBody>
-                                                        <ModalFooter>
-                                                                <Button color="primary" onClick={this.updatePerson} >Update Details</Button>
-                                                                <Button color="secondary" onClick={this.toggleEditPersonModal.bind(this)}>Cancel</Button>
-                                                        </ModalFooter>
+                                                        
+                                                        
+                                                                <Button color="primary" onClick={this.updatePerson} className="mr-2" >Save</Button>
+                                                                <Button color="danger" onClick={this.toggleEditPersonModal.bind(this)}>Cancel</Button>
+                                                                </ModalBody>
                                                 </Modal>
                                                 <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
                                                 {!this.state.loading? tableData:<Spinner/>}

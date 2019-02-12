@@ -73,11 +73,11 @@ this.setState({loading:true})
         <h3 align="center">  Add Size </h3>
             <FormGroup>
                 <Label> Size Type</Label>
-                <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={20}/>
+                <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={20} required/>
             </FormGroup>
             <FormGroup>
                 <Button type="submit" color="success">Submit</Button>
-                <button className=" btn btn-primary" onClick ={this.size}>Size details</button>
+                <button className=" btn btn-danger" onClick ={this.size}>Cancel</button>
             </FormGroup>
         </Form>
     </div>  

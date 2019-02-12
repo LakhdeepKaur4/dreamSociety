@@ -130,7 +130,7 @@ this.setState({loading:true});
 
                   <th>Tower Name</th>
 
-
+                  <th> Actions  </th>
                 </tr>
               </thead>
 
@@ -178,11 +178,11 @@ this.setState({loading:true});
                 </FormGroup>
 
 
-              </ModalBody>
-              <ModalFooter>
-                <Button color="primary" onClick={this.updateTower.bind(this)}>Update Tower</Button>
-                <Button color="secondary" onClick={this.toggleEditTowerModal.bind(this)}>Cancel</Button>
-              </ModalFooter>
+              
+              
+                <Button color="primary"  className="mr-2" onClick={this.updateTower.bind(this)}>Save</Button>
+                <Button color="danger" onClick={this.toggleEditTowerModal.bind(this)}>Cancel</Button>
+                </ModalBody>
             </Modal>
             <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
             {!this.state.loading?tableData:<Spinner/>}
