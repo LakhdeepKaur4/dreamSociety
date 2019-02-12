@@ -32,37 +32,23 @@ exports.get = (req, res) => {
             include: [
                 {
                     model: City,
-                    where: {
-                        isActive: true
-                    },
                     attributes: ['cityId', 'cityName']
                 },
                 {
                     model: Country,
-                    where: {
-                        isActive: true
-                    },
+
                     attributes: ['countryId', 'countryName']
                 },
                 {
                     model: State,
-                    where: {
-                        isActive: true
-                    },
                     attributes: ['stateId', 'stateName']
                 },
                 {
                     model: User,
-                    where: {
-                        isActive: true
-                    },
                     attributes: ['userId', 'userName']
                 },
                 {
                     model: location,
-                    where: {
-                        isActive: true
-                    },
                     attributes: ['locationId', 'locationName']
                 },
             ]
