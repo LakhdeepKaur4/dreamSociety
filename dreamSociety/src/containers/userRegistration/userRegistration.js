@@ -74,16 +74,6 @@ class Registration extends Component {
         }
     }
 
-    onChange(e) {
-        if (!!this.state.errors[e.target.name]) {
-            let errors = Object.assign({}, this.state.errors);
-            delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
-        }
-        else {
-            this.setState({ [e.target.name]: e.target.value.trim('') });
-        }
-    }
 
     submit(e) {
         
@@ -125,6 +115,17 @@ class Registration extends Component {
                 passwordConfirmation: "",
                 isSubmit: true
             });
+        }
+    }
+
+    onChange(e) {
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value.trim('') });
         }
     }
 

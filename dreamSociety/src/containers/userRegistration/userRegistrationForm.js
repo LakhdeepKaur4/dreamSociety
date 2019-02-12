@@ -83,7 +83,7 @@ const userRegistrationForm = (props) => (
             </FormGroup>
 
             <Button color="success" className="mr-2">Add User</Button>
-            <Button onClick={props.routeToUserDetails} color="primary">User Details</Button>
+            <Button onClick={props.routeToUserDetails} color="danger">Cancel</Button>
     </div>
 );
 

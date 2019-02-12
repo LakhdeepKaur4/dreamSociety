@@ -226,7 +226,7 @@ class flatMasterDetails extends Component {
 
     render() {
         let tableData;
-        tableData=<Table>
+        tableData=<Table className="table table-bordered">
         <thead>
             <tr>
                 <th>Society Name</th>

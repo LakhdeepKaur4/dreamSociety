@@ -182,7 +182,7 @@ class CountryDetails extends Component{
 
     render(){
          let tableData;
-          tableData= <Table>
+          tableData= <Table className="table table-bordered">
         <thead>
             <tr>
                 <th>Country Name</th>
@@ -208,7 +208,7 @@ class CountryDetails extends Component{
                 <div className="w3-container w3-margin-top w3-responsive">
                         <div className="top-details">
                                 <h3>Country Master Details</h3>
-                                <Button onClick={this.routeToAddNewUser} color="primary">Add State</Button>
+                                <Button onClick={this.routeToAddNewUser} color="primary">Add Country</Button>
                             </div>
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>

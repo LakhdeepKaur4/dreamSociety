@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter , Route, Switch } from 'react-router-dom';
+// import ScrollToTop from 'react-router-scroll-top';
 // =====Components============//
 import  {PrivateRoute}  from './components/privateRoute/privateRoute';
 // ========Containers =========//
@@ -49,11 +50,11 @@ import DisplayLocation from './containers/locationMaster/displayLocation';
 import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
 
 
-
 class App extends Component {
   render() {
     return (
-      <BrowserRouter>
+      <BrowserRouter onUpdate={() => window.scrollTo(0, 0)}>
+        {/* <ScrollToTop> */}
         <div>
           <Switch>
             <Route path="/" exact component={Login} />
@@ -100,6 +101,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/displayLocation' component={DisplayLocation}/>
           </Switch>
         </div>
+        {/* </ScrollToTop> */}
       </BrowserRouter>
     );
   }

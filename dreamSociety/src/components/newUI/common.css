@@ -9,6 +9,10 @@
     min-height: 100vh;
 }
 
+.error{
+    color: red;
+}
+
 .w3-margin-top{
     background: #f3f3f3 !important;
     padding: 20px !important;

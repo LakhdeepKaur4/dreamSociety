@@ -25,10 +25,6 @@ class ParkingMaster extends Component {
         this.props.fetchParking().then(() => this.setState({loading: false}))
     }
 
-    delete_Parking(id) {
-        this.props.deleteParking(id)
-            .then(() => this.refreshData())
-    }
 
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
@@ -49,7 +45,7 @@ class ParkingMaster extends Component {
                         </td>
                         <td>
                             <Button color='success' className="mr-2">Edit</Button>
-                            <Button color='danger' onClick={this.delete_Parking.bind(this, item.id)}>Delete</Button>
+                            <Button color='danger' >Delete</Button>
                         </td>
                     </tr>
                 );
@@ -74,7 +70,7 @@ class ParkingMaster extends Component {
         let tableData;
         if(this.props.parkingDetail.parking){
             tableData = <div style={{margin:'0 auto'}}>
-                <Table>
+                <Table className="table table-bordered">
                     <thead>
                         <tr>
                             <th>Basement</th>
@@ -98,7 +94,7 @@ class ParkingMaster extends Component {
 
                         <div className="w3-container w3-margin-top w3-responsive">
                             <div className="top-details">
-                                <h3>Parking details</h3>
+                                <h3>Parking Master details</h3>
                                 <Button color="primary" onClick={() => this.props.history.push('/superDashboard/add_parking/new')}>Add Parking</Button>
                             </div>
                             
