@@ -24,7 +24,7 @@ const parkingForm = (props) => (
                 <span className='error'>{props.parkingSlotError}</span>
             </FormGroup>
             <Button color="success" className="mr-2">Add</Button>
-            <Button onClick={props.routeToParkingDetails} color="primary">Parking Details</Button>
+            <Button onClick={props.routeToParkingDetails} color="danger">Cancel</Button>
     </div>
 );
 
