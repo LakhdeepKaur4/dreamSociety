@@ -78,6 +78,11 @@ class serviceMaster extends Component {
 
     }
 
+    push=()=>{
+        this.props.history.push('/superDashboard/displayservices')
+    }
+
+
     OnKeyPressUserhandler(event) {
         const pattern = /[a-zA-Z_ ]/;
         let inputChar = String.fromCharCode(event.charCode);
@@ -85,6 +90,7 @@ class serviceMaster extends Component {
             event.preventDefault();
         }
     }
+    
     logout=()=>{
         console.log('676666')
         localStorage.removeItem('token');
@@ -94,28 +100,29 @@ class serviceMaster extends Component {
 
     render() {
 
-        return (<div>
+        return (
+        <div>
             <UI onClick={this.logout}>
                
-                <div >
+                <div>
                     <form onSubmit={this.onSubmit}>
-                    <div style={{textAlign: 'center',fontWeight: 'bold' }}><label>Service Master</label></div>
+                    <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Services</h3></div>
                         <div>
                             <label>Service Type</label>
-                            <input type="text" className="form-control" name="serviceName" value={this.state.serviceName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
+                            <input type="text" className="form-control" name="serviceName" maxLength={30} value={this.state.serviceName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
                         </div>
                         <div>
                             <label>Service Details</label>
-                            <select className="form-control" value={this.state.serviceDetailId} onChange={(e) => this.setState({ serviceDetailId: e.target.value })}>
-                                <option >--SELECT--</option>
+                            <select className="form-control" value={this.state.serviceDetailId} onChange={(e) => this.setState({ serviceDetailId: e.target.value })} required>
+                                <option value="" >--Select--</option>
                                 {this.getDropdown(this.props.serviceMasterReducer)}
                             </select>
                         </div>
                         <div className="mt-4">
-                            <Button type="submit" color="primary" value="submit">Submit</Button>
-                            <Link to='/superDashboard/displayServices'>
-                                <Button color="secondary" >Show Details</Button>
-                            </Link>
+                            <Button type="submit" color="success" className="mr-2" value="submit">Submit</Button>
+                          
+                                <Button color="danger" onClick={this.push}>Cancel</Button>
+                       
                         </div>
                     </form>
                 </div>
