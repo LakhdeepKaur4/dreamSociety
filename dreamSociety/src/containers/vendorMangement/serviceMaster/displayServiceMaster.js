@@ -70,6 +70,10 @@ class displayServices extends Component {
         }
     }
 
+    push=()=>{
+        this.props.history.push('/superDashboard/serviceMaster')
+    }
+
     toggleEditServiceModal() {
         this.setState({
             editServiceModal: !this.state.editServiceModal
@@ -139,7 +143,7 @@ class displayServices extends Component {
 
 
                         <td>
-                            <Button color="primary" className="mr-2" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</Button>
+                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</Button>
                         
                             <Button color="danger" onClick={this.deleteService.bind(this, item.serviceId)}>Delete</Button>
                         </td>
@@ -155,6 +159,14 @@ class displayServices extends Component {
         return this.props.history.replace('/') 
     }
 
+    OnKeyPressUserhandler(event) {
+        const pattern = /[a-zA-Z_ ]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    
     render() {
         let tableData;
         tableData=
@@ -177,24 +189,24 @@ class displayServices extends Component {
                 <UI onClick={this.logout}>
                   
                     <div className="w3-container w3-margin-top w3-responsive">
-                    <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)}>
+                    <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)} >
                         <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Edit a Service</ModalHeader>
                         <ModalBody>
                             <FormGroup>
                                 <Label for="serviceName">Service Type</Label>
-                                <Input id="serviceName" value={this.state.editServiceData.serviceName} onChange={(e) => {
+                                <Input id="serviceName" value={this.state.editServiceData.serviceName} onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={(e) => {
                                     let { editServiceData } = this.state;
 
                                     editServiceData.serviceName = e.target.value;
 
                                     this.setState({ editServiceData });
-                                }} />
+                                }}  />
                             </FormGroup>
 
                             <FormGroup>
                                 <Label for="service_detail">Service Details</Label>
 
-                                <select value={this.state.editServiceData.serviceDetailId} onChange={(e) => {
+                                <Input type="select" value={this.state.editServiceData.serviceDetailId} onChange={(e) => {
                                     let { editServiceData } = this.state;
                                     editServiceData.serviceDetailId = e.target.value;
                                     this.setState({ editServiceData })
@@ -203,23 +215,24 @@ class displayServices extends Component {
                            
                                     {this.getDropdown1(this.props.serviceMasterReducer)}
 
-                                </select>
+                                </Input>
                             </FormGroup>
-                        </ModalBody>
+                      
 
-                        <ModalFooter>
-                            <Button color="primary" onClick={this.updateServices.bind(this)}>Update </Button>
-                            <Button color="secondary" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button>
-                        </ModalFooter>
+                        <FormGroup>
+                            <Button color="primary" className="mr-2" onClick={this.updateServices.bind(this)}>Save </Button>
+                            <Button color="danger" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button>
+                        </FormGroup>
+                        </ModalBody>
                     </Modal>
-                    <div style={{ fontWeight: 'bold'}}><label>Service Details</label></div>
+                    <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Service Details</h3>
+                    <Button color="primary" type="button" onClick={this.push}>Add Services</Button></div>
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
                            {!this.state.loading ? tableData : <Spinner />}
                  
-                    <Link to="/superDashboard/serviceMaster">
-                        <Button color="success" type="button">Add Services</Button>
-                    </Link>
+                     
+                    
                     </div>
                 </UI>
                
@@ -241,4 +254,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ getServiceType, getServiceDetail }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(displayServices);
+export default connect(mapStateToProps, mapDispatchToProps)(displayServices);      

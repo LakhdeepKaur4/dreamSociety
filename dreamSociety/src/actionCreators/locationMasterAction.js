@@ -48,7 +48,7 @@ export function addLocationDetails(values){
     
 
     const request = axios.post(`${URN}/location`,values,{headers:authHeader()})
-    .then()
+    .then(getLocation())
     return{
         type:ADD_LOCATION_DETAILS,
         payload:request

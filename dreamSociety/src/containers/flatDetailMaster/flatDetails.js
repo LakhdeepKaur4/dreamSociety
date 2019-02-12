@@ -155,7 +155,7 @@ renderList =({details})=>{
                             <td>{item.tower_master.towerName}</td>
                             
                                 <td>
-                                   <Button color="primary"   className="mr-2" onClick={this.edit.bind(this,item.flatNo, item.flat_master.flatType,item.floor,item.tower_master.towerName,item.flat_master.flatId, item.flatDetailId)} >Edit</Button>
+                                   <Button color="success"   className="mr-2" onClick={this.edit.bind(this,item.flatNo, item.flat_master.flatType,item.floor,item.tower_master.towerName,item.flat_master.flatId, item.flatDetailId)} >Edit</Button>
                               
                                    <Button color="danger" onClick={this.delete.bind(this, item.flatDetailId)}>Delete</Button>
                                  </td>  
@@ -249,18 +249,21 @@ render(){
                            </Input>
                         </FormGroup>
 
+                    
+                         <Button color="primary" className="mr-2" onClick={this.updateDetails.bind(this)}>Save </Button>
+                         <Button color="danger" onClick={this.toggleEditFlatModal.bind(this)}>Cancel</Button>
+                  
+                    
                     </ModalBody>
-                    <ModalFooter>
-                         <Button color="primary" onClick={this.updateDetails.bind(this)}>Update </Button>
-                         <Button color="secondary" onClick={this.toggleEditFlatModal.bind(this)}>Cancel</Button>
-                    </ModalFooter>
              </Modal>
-             <div style={{ fontWeight: 'bold' }}><label>Flat Details</label></div>
+             <div className="top-details"  style={{ fontWeight: 'bold' }}><h3>Flat Details</h3>
+             
+             <Button color="primary" type="button" onClick={this.push}> Add Flat</Button>
+             </div>
              <SearchFilter  type="text" value={this.state.search}
                                             onChange={this.searchOnChange} />
                                                  {!this.state.loading ? tableData : <Spinner />}
           
-                <Button color="success" type="button" onClick={this.push}> Add Flat</Button>
         </div>
         </UI>
         </div>
