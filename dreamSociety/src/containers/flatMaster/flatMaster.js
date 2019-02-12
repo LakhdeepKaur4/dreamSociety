@@ -200,7 +200,7 @@ class FlatMaster extends Component {
 
             <FormGroup>
                 <Button color="success" type="submit" className="mr-2">Submit</Button>
-                <Button color="primary" onClick={this.push}>Cancel</Button>
+                <Button color="danger" onClick={this.push}>Cancel</Button>
               
             </FormGroup>
         </Form>

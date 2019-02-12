@@ -174,8 +174,8 @@ class Country extends Component {
 
 
             <FormGroup>
-                <Button className="mr-2">Submit</Button>
-                <Button onClick={this.countryDetails}>Cancel</Button>
+                <Button color="primary" className="mr-2">Submit</Button>
+                <Button color="danger" onClick={this.countryDetails}>Cancel</Button>
             </FormGroup>
         </Form>
           }
