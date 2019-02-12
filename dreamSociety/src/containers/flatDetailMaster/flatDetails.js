@@ -166,6 +166,23 @@ renderList =({details})=>{
     }  
 }    
 
+OnKeyPresshandlerPhone(event) {
+    const pattern = /^[0-9]$/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
+    }
+}
+
+OnKeyPressUserhandler(event) {
+    const pattern = /[a-zA-Z_ ]/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
+    }
+}
+
+
 logout=()=>{
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
@@ -201,7 +218,7 @@ render(){
                      <ModalBody>
                         <FormGroup>
                             <Label for="flatNo">Flat No</Label>
-                            <Input id="flatNo" value={this.state.editFlatData.flatNo} onChange={(e) => {
+                            <Input id="flatNo" value={this.state.editFlatData.flatNo} maxLength={20} onKeyPress={this.OnKeyPresshandlerPhone} onChange={(e) => {
                             let { editFlatData } = this.state;
 
                             editFlatData.flatNo = e.target.value;
@@ -226,7 +243,7 @@ render(){
                         </FormGroup>
                         <FormGroup>
                             <Label for="floor">Floor</Label>
-                            <Input id="floor" value={this.state.editFlatData.floor} onChange={(e) => {
+                            <Input id="floor" value={this.state.editFlatData.floor} maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={(e) => {
                                  let { editFlatData } = this.state;
 
                                     editFlatData.floor = e.target.value;

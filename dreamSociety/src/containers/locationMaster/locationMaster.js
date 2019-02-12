@@ -190,22 +190,22 @@ class locationMaster extends Component{
                 <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Location</h3></div>
                     <div>
                         <label>Country Name</label>
-                        <select required className ="form-control" name="countryName"  onChange={this.onChangeCountry} >
-                        <option value="">--Select--</option>
+                        <select  required className ="form-control" name="countryName"  onChange={this.onChangeCountry} >
+                        <option value="" disabled selected>--Select--</option>
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
                     </div>
                     <div>    
                         <label>State Name</label>
                         <select  required className ="form-control" name="stateName" onChange={this.onChangeState}>
-                        <option  value="">--Select--</option>
+                        <option value="" disabled selected>--Select--</option>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
                     </div>
                     <div>    
                         <label>City Name</label>
                         <select  required className ="form-control"  name="cityName" onChange={this.onChangeCity} >
-                        <option  value="">--Select--</option>
+                        <option value="" disabled selected>--Select--</option>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
                     </div>

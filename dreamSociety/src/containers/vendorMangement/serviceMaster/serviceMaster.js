@@ -114,7 +114,7 @@ class serviceMaster extends Component {
                         <div>
                             <label>Service Details</label>
                             <select className="form-control" value={this.state.serviceDetailId} onChange={(e) => this.setState({ serviceDetailId: e.target.value })} required>
-                                <option value="" >--Select--</option>
+                            <option value="" disabled selected>--Select--</option>
                                 {this.getDropdown(this.props.serviceMasterReducer)}
                             </select>
                         </div>

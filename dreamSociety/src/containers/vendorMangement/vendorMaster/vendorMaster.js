@@ -91,7 +91,7 @@ class vendorMaster extends Component {
                                 <select className="form-control" value={this.state.serviceId} onChange={(e) => {
                                     this.setState({ serviceId: e.target.value })
                                 }} required>
-                                    <option value="" >--Select--</option>
+                                      <option value="" disabled selected>--Select--</option>
                                     {this.getDropDowm(this.props.displayServiceMasterReducer)}
                                 </select>
                             </div>

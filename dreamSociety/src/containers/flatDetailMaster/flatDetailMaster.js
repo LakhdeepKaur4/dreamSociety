@@ -130,7 +130,7 @@ class flatDetailMaster extends Component{
                     <div >
                         <label>Flat Type</label>
                         <select required className ="form-control" value={this.state.flatId} name="flatType" onChange={(e)=> this.setState({flatId:e.target.value})} >
-                        <option value="">--SELECT--</option>
+                        <option value="" disabled selected>--Select--</option>
                             {this.getDropdown1(this.props.flatDetailMasterReducer)}
                         </select>
                     </div>
@@ -141,7 +141,7 @@ class flatDetailMaster extends Component{
                     <div >    
                         <label>Tower Name</label>
                         <select  required  className ="form-control" value={this.state.towerId} name="towerName" onChange={(e)=> this.setState({towerId:e.target.value})}>
-                        <option  value="">--SELECT--</option>
+                        <option value="" disabled selected>--Select--</option>
                             {this.getDropdown(this.props.flatDetailMasterReducer)}
                         </select>
                     </div>
