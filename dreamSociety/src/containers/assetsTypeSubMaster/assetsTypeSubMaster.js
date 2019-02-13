@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom'
 import { getAssets, addAssetsSubType } from '../../actionCreators/assetsSubAction';
 import UI from '../../components/newUI/superAdminDashboard';
-import { Form,FormGroup, Input, Button, Label  } from 'reactstrap';
+import { Form,FormGroup, Input, Button, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 
 
@@ -82,7 +82,7 @@ class AssetsTypeSubMaster extends Component {
                     <FormGroup>
                     <Label>Assets Type</Label>
                     <Input type="select" onChange={this.onChangeHandler} name="assetId">
-                        <option value="" disabled selected>--Select--</option>
+                        <option disabled selected>--Select--</option>
                         {this.getAssetsName(this.props.assetsName)}
                     </Input>
                     <span className="error">{this.state.errors.assetId}</span>
@@ -101,7 +101,7 @@ class AssetsTypeSubMaster extends Component {
                 <div>
                     <Button className="btn btn-success" id="addAssets" >Add Assets</Button>
                     <Link to='/superDashBoard/assetsTypeSubMaster'>
-                        <Button color="primary" id="addAssets" >Cancel</Button>
+                        <Button color="danger" id="addAssets" >Cancel</Button>
                     </Link>
                 </div>
             </div>

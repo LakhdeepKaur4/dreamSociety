@@ -18,6 +18,7 @@ class AssetList extends Component {
             search: '',
             modal: false,
             loading: true,
+            errors: {},
         };
     }
     onChangeHandler = (event) => {
@@ -44,6 +45,10 @@ class AssetList extends Component {
     editAssets = () => {
         const { assetId, assets, description } = this.state
         this.setState({loading:true})
+        let errors = {};
+        if(this.state.assetsSubType===''){
+            errors.assetsSubType="AssetsSubType can't be empty"
+        }
         this.props.updateAssets(assetId, assets, description)
         .then(() => this.props.getAssets().then(()=>this.setState({loading:false})));
         this.setState({ modal: !this.state.modal })
@@ -88,6 +93,9 @@ class AssetList extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/')
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
     render() {
         let tableData;
         tableData = <Table className="table table-bordered">
@@ -106,6 +114,9 @@ class AssetList extends Component {
             <div>
                 <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top w3-responsive">
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
                         <div className="top-details">
                             <h3>Assets List</h3>
                             <Button color="primary" onClick={() => this.props.history.push('/superDashBoard/assetsMaster/assetsList')} id="addAssets" >Add Assets</Button>

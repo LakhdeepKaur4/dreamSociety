@@ -102,7 +102,9 @@ class AssetsTypeSubList extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/')
     }
-
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
     render() {
         let tableData;
@@ -123,10 +125,15 @@ class AssetsTypeSubList extends Component {
             <div>
                 <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top w3-responsive">
+                            <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
                         <div className="top-details">
                             <h3>Assets Sub Type List</h3>
                             <Button color="primary" onClick={() => this.props.history.push('/superDashBoard/assetsTypeSubMaster/assetsTypeSubList')} id="addAssets" >Add Assets Sub Type</Button>
+
                         </div>
+
                         <div>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
