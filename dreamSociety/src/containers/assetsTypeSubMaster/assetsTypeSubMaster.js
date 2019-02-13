@@ -129,6 +129,7 @@ class AssetsTypeSubMaster extends Component {
     }
 }
 function mapStateToProps(state) {
+    console.log('state',state.AssetsReducer)
     return {
         assetsName: state.AssetsReducer
     }

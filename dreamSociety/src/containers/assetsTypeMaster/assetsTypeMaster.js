@@ -6,7 +6,7 @@ import './assetsTypeMaster.css';
 import { Link } from 'react-router-dom'
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
-import { Form,FormGroup, Input, Button, Label } from 'reactstrap';
+import { Form,Input, Button, Label } from 'reactstrap';
 class AssetsTypeMaster extends Component {
     constructor(props) {
         super(props);

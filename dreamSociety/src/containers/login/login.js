@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './login.css';
 import { connect } from 'react-redux';
 import { login } from '../../actionCreators/loginAction';
 import { bindActionCreators } from 'redux';
-import { Form, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Button, Label } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Button, Label } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import UI from '../../components/newUI/loginDashboard';
 import Spinner from '../../components/spinner/spinner';
@@ -37,7 +36,7 @@ class Login extends Component {
         e.preventDefault();
         const { username, password } = this.state
         if (username!==null && password!==null ) {
-            this.props.login(username,password) 
+            this.props.login(username,password)
            .then((loginData)=>{
             if(loginData.payload.data.status===200){
                 this.setState({
@@ -63,10 +62,9 @@ class Login extends Component {
                                 return null;
                         }
                     }
-
-
                     else if (loginData.payload.data.status === 401) {
                         this.setState({
+                            loading:false,
                             message: loginData.payload.data.message
                         })
                     }
@@ -96,7 +94,7 @@ class Login extends Component {
               }
           }
           else if(response.payload.data.status===401){
-             var data={
+           data={
                  error:response.payload.data.message
              }
           return <Redirect to='/'></Redirect>
@@ -143,59 +141,15 @@ class Login extends Component {
 
         </ModalFooter>
         </div>
-        return (<div>
-            {/* <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark" id="headernav" >
-                {/* <Menu.Item onClick={() => this.setState({ menuVisible: !this.state.menuVisible })} >
-            <Icon name="sidebar" style={{color:'white',cursor:'pointer'}} />
-            
-          </Menu.Item>   */}
-                {/* <i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa">&#xf1ad;</i> <Link className="navbar-brand" to="#">DRE@M SOCIETY</Link>
-                <div className="navbar-collapse collapse" id="navbarCollapse" style={{ marginLeft: '20%' }}>
-                    <ul className="navbar-nav mr-auto">
-                        <li className="nav-item active">
-                            <Link className="nav-link" to="#">Home<span className="sr-only">(current)</span></Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="#">Gallery</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="#">About Us</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="#">Contact Us</Link>
-                        </li>
-                    </ul>
-                    <form className="form-inline mt-2 mt-md-0">
-                        <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
-                            onClick={this.editUser}>Login</button>
-                    </form>
-                </div>
-            </nav> */}
-            <div>
-                {/* <Sidebar.Pushable as={Segment} attached="bottom">
-        <Sidebar width='thin' as={Menu} animation="uncover" visible={this.state.menuVisible} icon="labeled" vertical inverted>
-          <Menu.Item><Icon name="user" /><Link to='/superDashboard/registration'>Register</Link></Menu.Item>
-          <Menu.Item><Icon name="block layout" />Topics</Menu.Item>
-          <Menu.Item><Icon name="smile" />Friends</Menu.Item>
-          <Menu.Item><Icon name="calendar" />History</Menu.Item>    
-        </Sidebar>
-         <Sidebar.Pusher dimmed={this.state.menuVisible}>
-              <Segment basic> */}
-                {/* <Header as="h3">Application Content</Header> */}
-                {/* <Image src='//unsplash.it/800/480' /> */}
+        return (
+        <div>    
                 <UI onClick={this.editUser}>
                 <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                     {!this.state.loading?loginForm:<Spinner/>}
                 </Modal>
-                    {/* <img src={Logo} alt="society" style={{width: "100%", height: "100%"}} /> */}
                 </UI>
-                {/* </Segment>
-         </Sidebar.Pusher>
-      </Sidebar.Pushable> */}
-            </div>
-            
 
-        </div>
+            </div>
         );
     }
 }
