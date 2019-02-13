@@ -98,6 +98,7 @@ exports.deleteById  = async(req,res,next) =>{
             return res.status(httpStatus.OK).json({
                 message: "City deleted successfully",
             });
+            
         }
     }catch(error){
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);

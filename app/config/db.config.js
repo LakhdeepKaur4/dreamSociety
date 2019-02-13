@@ -40,6 +40,7 @@ db.assets = require('../model/asset.model')(sequelize,Sequelize);
 db.assetsType = require('../model/assetType.model')(sequelize,Sequelize);
 db.test = require('../model/test.model')(sequelize,Sequelize);
 db.flatDetail = require('../model/flatDetail.model')(sequelize,Sequelize);
+db.maintenance = require('../model/maintenance')(sequelize,Sequelize);
 
  
 db.role.belongsToMany(db.user, { through: 'user_roles', foreignKey: 'roleId', otherKey: 'userId'});
@@ -75,5 +76,6 @@ db.flatDetail.belongsTo(db.flat,{foreignKey:'flatId'});
 db.flatDetail.belongsTo(db.user,{foreignKey:'userId'});
 db.user.belongsTo(db.tower,{foreignKey:'towerId'});
 db.user.belongsTo(db.flatDetail,{foreignKey:'flatDetailId',constraints: false});
+db.maintenance.belongsTo(db.user,{foreignKey:'userId'});
 
 module.exports = db;

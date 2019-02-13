@@ -17,7 +17,6 @@ exports.create = async (req,res) => {
          return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"State Name already Exists"})
      }
 
-
     State.create({
         stateName:req.body.stateName,
         stateId:req.body.stateId,

@@ -22,6 +22,7 @@ module.exports = function(app) {
 	const assetsController = require('../controller/assets');
 	const assetsTypeController = require('../controller/assetType');
 	const flatDetailController = require('../controller/flatDetail');
+	const maintenanceController = require('../controller/maintenance');
 	
 	
 	app.get('/', userController.start);
@@ -215,4 +216,8 @@ module.exports = function(app) {
 	app.put('/api/flatDetail/:id', [authJwt.verifyToken],flatDetailController.update);
 
 	app.put('/api/flatDetail/delete/:id', [authJwt.verifyToken],flatDetailController.delete);
+
+	app.post('/api/maintenance', [authJwt.verifyToken],maintenanceController.create);
+
+	app.get('/api/maintenance', [authJwt.verifyToken],maintenanceController.get);
 }
