@@ -31,10 +31,8 @@ class ParkingMaster extends Component {
     }
 
     renderParking({ parking }) {
-        console.log(parking);
         if (parking) {
             return parking.slot.filter(this.searchFilter(this.state.search)).map((item) => {
-                console.log(item)
                 return (
                     <tr key={item.parking_master.parkingName}>
                         <td>
@@ -110,7 +108,6 @@ class ParkingMaster extends Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log(state)
     return {
         parkingDetail: state.parkingDetail
     }

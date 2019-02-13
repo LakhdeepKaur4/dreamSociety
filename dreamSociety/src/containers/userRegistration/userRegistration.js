@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { addUser, getRoles } from '../../actionCreators/superAdminMasterAction'
+import { addUser, getRoles } from '../../actionCreators/superAdminMasterAction';
+import { viewTower } from '../../actionCreators/towerMasterAction';
 import './userRegistration.css';
 import { withRouter } from 'react-router-dom';
 import { Form } from 'reactstrap';
@@ -16,12 +17,15 @@ class Registration extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            roleName: [],
             roles: "",
             firstName: "",
             lastName: "",
             userName: "",
             email: "",
+            familyMember:"",
+            parking:"",
+            floor:"",
+            towerId: "",
             contact: "",
             password: "",
             passwordConfirmation: "",
@@ -44,10 +48,15 @@ class Registration extends Component {
 
     componentDidMount() {
         this.renderRoles()
+        this.renderTower()
     }
 
     renderRoles(){
         this.props.getRoles().then(() => this.setState({loading:false}));
+    }
+
+    renderTower(){
+        this.props.viewTower().then(() => this.setState({loading:false}))
     }
 
     OnKeyPresshandlerPhone(event) {
@@ -66,6 +75,16 @@ class Registration extends Component {
         }
     }
 
+    parkingAndFloorKeyPress(event){
+        const pattern = /^[a-zA-Z0-9 ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    
+
     emailValid(event){
         const pattern = /^[a-zA-Z0-9@._]+$/
         let inputChar = String.fromCharCode(event.charCode);
@@ -82,18 +101,24 @@ class Registration extends Component {
         if (!this.state.roles) {
             errors.roles = "User type can't be empty. Please select"
         }
+        if(!this.state.towerId){
+            errors.towerId = "Tower can't be empty. Please select."
+        }
+        if(this.state.floor === '') errors.floor = "Can't be empty."
+        if(this.state.parking === '') errors.parking = "Can't be empty."
 
-        if (this.state.firstName === '') errors.firstName = "Can't be empty";
-        else if (this.state.firstName.length < 2) errors.firstName = "First name can't be less than four"
+        if (this.state.firstName === '') errors.firstName = "Can't be empty.";
+        else if (this.state.firstName.length < 2) errors.firstName = "First name can't be less than four."
 
         if (this.state.lastName === '') errors.lastName = "Can't be empty";
-        else if (this.state.lastName.length < 2) errors.lastName = "Last name can't be les than two";
+        else if (this.state.lastName.length < 2) errors.lastName = "Last name can't be les than two.";
+        if(this.state.familyMember === '') errors.familyMember="Can't be empty."
 
-        if (this.state.userName === '') errors.userName = "Can't be empty";
-        if (this.state.email === '') errors.email = "Can't be empty";
-        if (this.state.contact === '') errors.contact = "Can't be empty";
-        if (this.state.password === '') errors.password = "Can't be empty";
-        else if (this.state.password !== this.state.passwordConfirmation) errors.passwordConfirmation = `Password doesn't match`
+        if (this.state.userName === '') errors.userName = "Can't be empty.";
+        if (this.state.email === '') errors.email = "Can't be empty.";
+        if (this.state.contact === '') errors.contact = "Can't be empty.";
+        if (this.state.password === '') errors.password = "Can't be empty.";
+        else if (this.state.password !== this.state.passwordConfirmation) errors.passwordConfirmation = `Password doesn't match.`
 
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
@@ -110,6 +135,10 @@ class Registration extends Component {
                 lastName: "",
                 userName: "",
                 email: "",
+                floor:"",
+                parking:"",
+                familyMember: "",
+                towerId:"",
                 contact: "",
                 password: "",
                 passwordConfirmation: "",
@@ -136,6 +165,20 @@ class Registration extends Component {
                     return (
                         <option value={item.roleName} key={item.id}>
                             {item.roleName}
+                        </option>
+                    )
+                })
+            )
+        }
+    }
+
+    fetchTowers({tower}){
+        if(tower){
+            return (
+                tower.map((item) => {
+                    return (
+                        <option value={item.towerId} key={item.towerId}>
+                            {item.towerName}
                         </option>
                     )
                 })
@@ -182,6 +225,22 @@ class Registration extends Component {
                 contactInputName="contact"
                 contactValue={this.state.contact}
                 contactChange={this.onChange}
+                familyInputName="familyMember"
+                familyValue={this.state.familyMember}
+                familyChange={this.onChange}
+                familyError={this.state.errors.familyMember}
+                parkingInputName="parking"
+                parkingAndFloorKeyPress = {this.parkingAndFloorKeyPress}
+                parkingValue={this.state.parking}
+                parkingChange={this.onChange}
+                floorInputName="floor"
+                floorValue={this.state.floor}
+                floorChange={this.onChange}
+                towerInputName = "towerId"
+                fetchingTower={this.fetchTowers(this.props.TowerDetails)}
+                towerValue={this.state.towerId}
+                towerChange={this.onChange}
+                towerError={this.state.errors.towerId}
                 contactError={this.state.errors.contact}
                 contactKeyPress={this.OnKeyPresshandlerPhone}
                 passwordInputName="password"
@@ -217,12 +276,13 @@ class Registration extends Component {
 
 function mapStateToProps(state) {
     return {
-        userDetail: state.userDetail
+        userDetail: state.userDetail,
+        TowerDetails: state.TowerDetails
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ addUser, getRoles }, dispatch);
+    return bindActionCreators({ addUser, getRoles, viewTower }, dispatch);
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Registration));

@@ -19,7 +19,7 @@ const editUserModal = (props) => (
                 <Label for="firstName">First Name</Label>
                 <Input id="firstName" onKeyPress={props.NameKeyPress} maxLength='25'
                     minLength='3' name={props.firstNameInputName} value={props.firstNameValue} onChange={props.firstNameValueChange} />
-                <span className="error">{props.firstNameError}</span>
+                {!props.firstNameValue ? <span className="error">{props.firstNameError}</span> : null}
             </FormGroup>
             <FormGroup>
                 <Label for="lastName">Last Name</Label>
@@ -28,7 +28,7 @@ const editUserModal = (props) => (
                 maxLength='25'
                 minLength='3'
                 value={props.lastNameValue} onChange={props.lastNameValueChange} />
-                <span className="error">{props.lastNameError}</span>
+                {!props.lastNameValue ? <span className="error">{props.lastNameError}</span> : null}
             </FormGroup>
             <FormGroup>
                 <Label for="Username">Username</Label>
@@ -37,7 +37,7 @@ const editUserModal = (props) => (
                 maxLength='25'
                 minLength='3'
                 name={props.userNameInputName} value={props.userNameValue} onChange={props.userNameValueChange} />
-                <span className="error">{props.userNameError}</span>
+                {!props.userNameValue ? <span className="error">{props.userNameError}</span> : null}
             </FormGroup>
             <FormGroup>
                 <Label for="email">Email</Label>
@@ -46,12 +46,12 @@ const editUserModal = (props) => (
                  minLength='10'
                  onKeyPress={props.emailKeyPress}
                  name={props.emailInputName} value={props.emailValue} onChange={props.emailValueChange}/>
-                <span className="error">{props.emailError}</span>
+                {!props.emailValue ? <span className="error">{props.emailError}</span> : null}
             </FormGroup>
             <FormGroup>
                 <Label for="contact">Contact</Label>
                 <Input id="contact" onKeyPress = {props.contactValidation} name={props.contactInputName} value={props.contactValue} onChange={props.contactValueChange} />
-                <span className="error">{props.contactError}</span>
+                {!props.contactValue ? <span className="error">{props.contactError}</span> : null}
             </FormGroup>
             <FormGroup>
                 <Button type="submit" color="primary" onClick={props.updateUserClick}>Save</Button>{' '}

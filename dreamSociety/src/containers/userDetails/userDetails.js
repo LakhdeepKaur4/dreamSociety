@@ -42,7 +42,8 @@ class userDetails extends Component {
     }
 
     toggle() {
-        this.setState({ dropdownOpen: !this.state.dropdownOpen })
+        let {firstName, lastName, userName, email, contact} = this.state.errors
+        this.setState({ dropdownOpen: !this.state.dropdownOpen, firstName })
     }
 
     OnKeyPresshandlerPhone(event) {
@@ -81,8 +82,8 @@ class userDetails extends Component {
     }
 
     updateUser = (e) => {
-            e.preventDefault();
             
+            e.preventDefault();
             let { userId, roleName, firstName, lastName, userName, email, contact } = this.state;
             let errors = {};
     
@@ -92,7 +93,6 @@ class userDetails extends Component {
     
             if (userName === '') errors.userName = "Can't be empty";
             if (email === '') errors.email = "Can't be empty";
-            if (email.includes('@').length > 1) errors.email = "Invalid email";
             if (contact === '') errors.contact = "Can't be empty";
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0;
@@ -102,7 +102,7 @@ class userDetails extends Component {
                     this.refreshData()
                 })
                 this.setState({
-                    editUserModal: false,loading:true,  userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' 
+                    editUserModal: false,loading:true,errors:{},  userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '' 
                 });
             }
     }
