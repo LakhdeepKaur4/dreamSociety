@@ -241,7 +241,7 @@ class SocietyManagementDetail extends Component {
                                 <h3>Society Details</h3>
                                 <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button>
                             </div>
-                            <div style={{ marginTop: '40px' }}>
+                            <div>
                               
                                 <SearchFilter type="text" value={this.state.search}
                                     onChange={this.searchOnChange} />
