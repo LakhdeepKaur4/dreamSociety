@@ -7,8 +7,19 @@ const Country = db.country;
 const State = db.state;
 const Op = db.Sequelize.Op;
 
-exports.create = (req,res) => {
+exports.create = async (req,res) => {
     console.log("creating city");
+    
+    const city = await City.findOne({
+        where: {
+            cityName: req.body.cityName
+        }
+     })
+
+     if(city){
+         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"City Name already Exists"})
+     }
+
     City.create({
         countryId:req.body.countryId, 
         cityName:req.body.cityName,
@@ -41,8 +52,7 @@ exports.getById = (req,res) => {
            {isActive:true}
            ]
         },
-   },
-   ).then(city => {
+   }).then(city => {
     res.status(200).json(
          city
      );

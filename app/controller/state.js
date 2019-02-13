@@ -1,11 +1,22 @@
 const db = require('../config/db.config.js');
 const config = require('../config/config.js');
+const httpStatus = require("http-status")
 
 const State = db.state;
 const Country = db.country;
 
-exports.create = (req,res) => {
+exports.create = async (req,res) => {
     console.log("creating state");
+
+    const state = await State.findOne({
+        where: {
+            stateName: req.body.stateName
+        }
+     })
+     if(state){
+         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"State Name already Exists"})
+     }
+
 
     State.create({
         stateName:req.body.stateName,

@@ -4,8 +4,19 @@ const httpStatus = require('http-status');
 
 const Country = db.country;
 
-exports.create = (req,res) => {
+exports.create = async (req,res) => {
     let body= req.body;
+     const country = await Country.findOne({
+        where: {
+            countryName: body.countryName
+        }
+     })
+
+     if(country){
+         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Country Name already Exists"})
+     }
+
+
     Country.create({
         countryName:body.countryName,
         code:body.code,
