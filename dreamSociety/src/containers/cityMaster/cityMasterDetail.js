@@ -35,7 +35,7 @@ class CityMasterDetail extends Component {
     }
 
     toggle = (cityId, countryName, stateName, cityName) => {
-        console.log('toggle')
+        
         this.setState({
             cityId,
             countryName,
@@ -204,7 +204,8 @@ class CityMasterDetail extends Component {
             <div>
                
                 <UI onClick={this.logout}>
-                  <div className="w3-container w3-margin-top">
+                  <div className="w3-container w3-margin-top w3-responsive">
+                 
                              <div className="top-details">
                                 <h3>City Details</h3>
                                 <Button onClick={this.routeToAddNewCity} color="primary">Add City</Button>

@@ -55,14 +55,12 @@ class SocietyMangement extends Component {
 
     onChangeCountry= (event)=>{
 
-        
         let selected= event.target.value
-        console.log(selected)
+    
         var country = _.find(this.props.societyReducer.countryResult,function(obj){
             return obj.countryName === selected
             })
-            console.log(country)
-
+        
             this.setState({
                 countryName: country.countryName,
                 countryId:country.countryId
@@ -76,13 +74,11 @@ class SocietyMangement extends Component {
     onChangeState= (event)=>{
       
         let selected= event.target.value
-        console.log(selected)
+        
         var data1 = _.find(this.props.societyReducer.stateResult,function(obj){
             return obj.stateName === selected
             })
     
-            console.log(data1)
-
             this.setState({
                 stateName: data1.stateName,
                 stateId:data1.stateId
@@ -96,15 +92,12 @@ class SocietyMangement extends Component {
     onChangeCity= (event)=>{
       
         let selected= event.target.value
-        console.log(selected)
-       
-        
+    
         var data2 = _.find(this.props.societyReducer.cityResult,function(obj){
             return obj.cityName === selected
             })
     
-            console.log(data2)
-
+    
             this.setState({
                 cityName:data2.cityName,
                 cityId:data2.cityId
@@ -117,17 +110,9 @@ class SocietyMangement extends Component {
     onChangeLocation= (event)=>{
        
          let selected= event.target.value
-         console.log(selected)
-         
-         
-         
         var data3 = _.find(this.props.societyReducer.locationResult,function(obj){
             return obj.locationName === selected
             })
-
-            
-    
-            console.log(data3)
 
             this.setState({
                 locationName:data3.locationName,
@@ -145,7 +130,7 @@ class SocietyMangement extends Component {
     
     countryName({countryResult}){
         if(countryResult){
-            console.log(countryResult);
+          
            return( 
             countryResult.map((item) =>{
                    return(
@@ -161,7 +146,7 @@ class SocietyMangement extends Component {
 
     stateName({stateResult}){
         if(stateResult){
-            console.log(stateResult);
+          
            return( 
             stateResult.map((item) =>{ console.log(item.stateName)
                    return(
@@ -176,7 +161,7 @@ class SocietyMangement extends Component {
     }
 
     cityName=({cityResult})=>{
-        console.log(cityResult);
+       
         if(cityResult){
             
            return( 
@@ -195,7 +180,7 @@ class SocietyMangement extends Component {
 
     locationName({locationResult}){
         if(locationResult){
-            console.log(locationResult);
+          
            return( 
             locationResult.map((item) =>{ console.log(item.locationName)
                    return(

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { getCountry, getState, getCity, getLocation, getSociety, detailSociety, deleteSociety, updateSociety } from './../../actionCreators/societyMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import {Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import {Table, Button, Modal, FormGroup, ModalBody, ModalHeader,  Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 
@@ -100,7 +99,7 @@ class SocietyManagementDetail extends Component {
         console.log('=========societyResult=========', detail_Society)
         if (detail_Society) {
             return detail_Society.filter(this.searchFilter(this.state.search)).map((item) => {
-                console.log(item)
+              
 
                 return (
                     <tr key={item.societyId}>
@@ -122,7 +121,7 @@ class SocietyManagementDetail extends Component {
 
     fetchCountry({ countryResult }) {
         
-        console.log("=========country=====",countryResult )
+        
         if (countryResult) {
             return (
                 countryResult.map((item) => {
@@ -230,7 +229,7 @@ class SocietyManagementDetail extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top">
+                <div className="w3-container w3-margin-top w3-responsive">
                 <div className="top-details">
                                 <h3>Society Details</h3>
                                 <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button>
@@ -300,8 +299,7 @@ class SocietyManagementDetail extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label htmlFor="societyName">Society Name</Label>
-                            <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName}  maxLength={50} required/>
-                           
+                            <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName}  maxLength={50} required/> 
                         </FormGroup>
                    
                         <Button color="primary mr-2" onClick={this.editSocietyType}>Save</Button> 
