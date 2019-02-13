@@ -133,6 +133,10 @@ class DisplaySizeMaster extends Component {
     localStorage.removeItem('user-type');
     return this.props.history.replace('/') 
 }
+close=()=>{
+  return this.props.history.replace('/superDashBoard')
+}
+
 
   render() {
     let tableData;
@@ -165,6 +169,9 @@ class DisplaySizeMaster extends Component {
 
           
           <div className ="w3-container w3-margin-top w3-responsive">
+          <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
                                         <div  className ="top-details" >
             <h3 align="center"> Size List</h3>
             <button  className="btn btn-primary" onClick ={this.addSize} > Add Size master</button>

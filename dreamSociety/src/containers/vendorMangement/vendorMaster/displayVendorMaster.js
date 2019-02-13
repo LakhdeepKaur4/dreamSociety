@@ -159,6 +159,11 @@ class displayVendorMaster extends Component {
     push=()=>{
         this.props.history.push('/superDashboard/vendorMaster')
     }
+       
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
 
     render() {
         let tableData;
@@ -181,6 +186,10 @@ class displayVendorMaster extends Component {
             <div>
                 <UI onClick={this.logout}>
                 <div className="w3-container w3-margin-top w3-responsive">
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+
                     <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
                         <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}>Edit a Vendor</ModalHeader>
                         <ModalBody>

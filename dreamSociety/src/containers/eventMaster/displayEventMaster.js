@@ -150,7 +150,10 @@ class DisplayEventMaster extends Component {
                 return this.props.history.replace('/') 
             }
 
-
+            close=()=>{
+                return this.props.history.replace('/superDashBoard')
+            }
+        
 
         render() {
                 let tableData;
@@ -177,6 +180,9 @@ class DisplayEventMaster extends Component {
                                 <UI onClick={this.logout}>
                                       
                                         <div className ="w3-container w3-margin-top w3-responsive">
+                                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
                                         <div  className ="top-details" >
                                                 <h3 align="center"> Event Details</h3>
                                                 <Button  color ="primary" onClick ={this.addEvent} > Add Event</Button>
