@@ -30,6 +30,7 @@ class CityMasterDetail extends Component {
         };
     }
     onChangeHandler = (event) => {
+        console.log(this.state)
         const { name, value } = event.target;
         this.setState({ [name]: value });
     }

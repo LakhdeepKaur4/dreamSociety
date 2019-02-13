@@ -70,6 +70,17 @@ const userRegistrationForm = (props) => (
                 <span className='error'>{props.familyError}</span>
             </FormGroup>
             <FormGroup>
+                <Label>Tower Name</Label>
+                <Input name={props.towerInputName}
+                    type="select"
+                    value={props.towerValue}
+                    onChange={props.towerChange} >
+                    <option>--Select--</option>
+                    {props.fetchingTower}
+                </Input>
+                <span className='error'>{props.towerError}</span>
+            </FormGroup>
+            <FormGroup>
                 <Label>Floor</Label>
                 <Input name={props.floorInputName}
                     type="text"
@@ -91,17 +102,7 @@ const userRegistrationForm = (props) => (
                     maxLength='20'  />
                 <span className='error'>{props.parkingError}</span>
             </FormGroup>
-            <FormGroup>
-                <Label>Tower Name</Label>
-                <Input name={props.towerInputName}
-                    type="select"
-                    value={props.towerValue}
-                    onChange={props.towerChange} >
-                    <option>--Select--</option>
-                    {props.fetchingTower}
-                </Input>
-                <span className='error'>{props.towerError}</span>
-            </FormGroup>
+            
             
             <FormGroup>
                 <Label>Contact No.</Label>

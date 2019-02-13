@@ -148,6 +148,7 @@ class Registration extends Component {
     }
 
     onChange(e) {
+        console.log(this.state)
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -233,8 +234,10 @@ class Registration extends Component {
                 parkingAndFloorKeyPress = {this.parkingAndFloorKeyPress}
                 parkingValue={this.state.parking}
                 parkingChange={this.onChange}
+                parkingError={this.state.errors.parking}
                 floorInputName="floor"
                 floorValue={this.state.floor}
+                floorError={this.state.errors.floor}
                 floorChange={this.onChange}
                 towerInputName = "towerId"
                 fetchingTower={this.fetchTowers(this.props.TowerDetails)}
