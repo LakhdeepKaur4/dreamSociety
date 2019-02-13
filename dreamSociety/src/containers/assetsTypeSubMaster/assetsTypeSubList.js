@@ -21,11 +21,18 @@ class AssetsTypeSubList extends Component {
             pageCount: 1,
             activePage: 1,
             loading: true,
+            errors: {},
         };
     }
     onChangeHandler = (event) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value.trim('') });
+        }
     }
 
     toggle = (assetTypeId, assetType, description) => {
@@ -49,11 +56,26 @@ class AssetsTypeSubList extends Component {
 
     editAssetsSubType = () => {
         const { assetTypeId, assetType, description } = this.state
-        this.setState({loading:true})
-        this.props.updateAssetsSub(assetTypeId, assetType, description)
+        let errors = {};
+        if(this.state.assetType===''){
+            errors.assetType="Assets type can't be empty"
+        }
+        else if(this.state.description===''){
+            errors.description="Description can't be empty"
+        }
+        this.setState({errors});
+        const isValid = Object.keys(errors).length === 0
+        if (isValid) {
+            this.setState({loading: true})
+            this.props.updateAssetsSub(assetTypeId, assetType, description)
             .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
+            this.setState({ modal: !this.state.modal })
+        }
+        // this.setState({loading:true})
+        // this.props.updateAssetsSub(assetTypeId, assetType, description)
+        //     .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
 
-        this.setState({ modal: !this.state.modal })
+        // this.setState({ modal: !this.state.modal })
 
 
     }
@@ -145,8 +167,10 @@ class AssetsTypeSubList extends Component {
                                 <FormGroup>
                                     <Label htmlFor="assetType">Assets Sub Type Name</Label>
                                     <Input maxLength={30} type="text" id="AssetName" name="assetType" onChange={this.onChangeHandler} value={this.state.assetType} />
+                                    <div className="error">{this.state.errors.assetType}</div>
                                     <Label htmlFor="description">Description</Label>
                                     <Input maxLength={30} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description} />
+                                    <span className="error">{this.state.errors.description}</span>
                                 </FormGroup>
                            
                             <FormGroup>  

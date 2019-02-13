@@ -22,8 +22,14 @@ class AssetList extends Component {
         };
     }
     onChangeHandler = (event) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value.trim('') });
+        }
     }
 
     toggle = (assetId, assetName, description) => {
@@ -44,14 +50,21 @@ class AssetList extends Component {
     }
     editAssets = () => {
         const { assetId, assets, description } = this.state
-        this.setState({loading:true})
         let errors = {};
-        if(this.state.assetsSubType===''){
-            errors.assetsSubType="AssetsSubType can't be empty"
+        if(this.state.assets===''){
+            errors.assets="Assets can't be empty"
         }
-        this.props.updateAssets(assetId, assets, description)
-        .then(() => this.props.getAssets().then(()=>this.setState({loading:false})));
-        this.setState({ modal: !this.state.modal })
+        else if(this.state.description===''){
+            errors.description="Description can't be empty"
+        }
+        this.setState({errors});
+        const isValid = Object.keys(errors).length === 0
+        if (isValid) {
+            this.setState({loading: true})
+            this.props.updateAssets(assetId, assets, description)
+            .then(() => this.props.getAssets().then(()=>this.setState({loading:false})));
+            this.setState({ modal: !this.state.modal })
+        }
     }
     delete = (assetId) => {
         this.setState({loading:true})
@@ -132,8 +145,10 @@ class AssetList extends Component {
                                 <FormGroup>
                                     <Label htmlFor="AssetName">Assets Name</Label>
                                     <Input maxLength={30} type="text" id="AssetName" name="assets" onChange={this.onChangeHandler} value={this.state.assets}/>
+                                    <div className="error">{this.state.errors.assets}</div>
                                     <Label htmlFor="description">Description</Label>
                                     <Input maxLength={30} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description}/>
+                                    <span className="error">{this.state.errors.description}</span>
                                 </FormGroup>
                           
                             <FormGroup>

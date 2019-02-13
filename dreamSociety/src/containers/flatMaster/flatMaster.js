@@ -128,6 +128,10 @@ class FlatMaster extends Component {
         }
     }
     
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
 
     render() {
           let form;
@@ -135,6 +139,10 @@ class FlatMaster extends Component {
             
           
             form = <Form onSubmit={this.submit}>
+              <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+
              <h3 style={{textAlign:'center', marginBottom: '10px'}}>Flat Master</h3>
             <FormGroup>
                 <Label>Society Name</Label>

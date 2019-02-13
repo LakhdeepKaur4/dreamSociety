@@ -98,6 +98,9 @@ class Parking extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
     render() {
         let formData;
@@ -118,6 +121,9 @@ class Parking extends Component {
                 <UI onClick={this.logout}>
                     <div>
                         <Form onSubmit={this.submit}>
+                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
                             <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Parking</h3></div>
                             <div>{!this.state.loading ? formData : <Spinner />}</div>
                         </Form>

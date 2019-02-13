@@ -66,11 +66,19 @@ class TowerMaster extends Component {
   tower=()=>{
   this.props.history.push('/superDashboard/display-tower')
   }
+  close=()=>{
+    return this.props.history.replace('/superDashBoard')
+}
+
     render() {
       let form;
       if(!this.state.loading){
       form= <div>
         <Form onSubmit={this.onSubmit}>
+        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+
         <h3 align="center">  Add Tower</h3>
             <FormGroup>
                 <Label>Tower Name</Label>

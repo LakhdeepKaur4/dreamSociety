@@ -72,7 +72,10 @@ class AssetsTypeSubMaster extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/')
     }
-
+ 
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
     render() {
         let formData;
@@ -112,6 +115,9 @@ class AssetsTypeSubMaster extends Component {
                 <UI onClick={this.logout}>
                     <div>
                     <Form onSubmit={this.onSubmit}>
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
                     <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Assets Sub Type Master</h3></div>
                         {!this.state.loading ? formData : <Spinner />}
                         </Form>
@@ -123,6 +129,7 @@ class AssetsTypeSubMaster extends Component {
     }
 }
 function mapStateToProps(state) {
+    console.log('state',state.AssetsReducer)
     return {
         assetsName: state.AssetsReducer
     }
