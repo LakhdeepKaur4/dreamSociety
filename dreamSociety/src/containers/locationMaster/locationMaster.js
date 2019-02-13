@@ -180,6 +180,10 @@ class locationMaster extends Component{
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
     
     render (){
         return(
@@ -187,6 +191,9 @@ class locationMaster extends Component{
             <UI onClick={this.logout}>
             <div>
                 <form onSubmit={this.onSubmit}>
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
                 <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Location</h3></div>
                     <div>
                         <label>Country Name</label>

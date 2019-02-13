@@ -194,6 +194,10 @@ class Registration extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
 
 
     render() {
@@ -263,6 +267,10 @@ class Registration extends Component {
                 <div>
                     <Form onSubmit={this.submit}>
                     <div>
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+
                         <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add User</h3></div>
                         {!this.state.loading ? formData: <Spinner />}
                     </div>
