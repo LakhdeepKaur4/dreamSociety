@@ -205,6 +205,9 @@ class SocietyManagementDetail extends Component {
     routeToAddNewSociety =() => {
         this.props.history.push('/superDashboard/societyManagement')
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
     render() {
         let tableData;
@@ -229,12 +232,15 @@ class SocietyManagementDetail extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top w3-responsive">
+                <div className="w3-container w3-margin-top">
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
                 <div className="top-details">
                                 <h3>Society Details</h3>
                                 <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button>
                             </div>
-                            <div style={{ marginTop: '40px' }}>
+                            <div>
                               
                                 <SearchFilter type="text" value={this.state.search}
                                     onChange={this.searchOnChange} />

@@ -18,11 +18,18 @@ class AssetList extends Component {
             search: '',
             modal: false,
             loading: true,
+            errors: {},
         };
     }
     onChangeHandler = (event) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value.trim('') });
+        }
     }
 
     toggle = (assetId, assetName, description) => {
@@ -43,10 +50,21 @@ class AssetList extends Component {
     }
     editAssets = () => {
         const { assetId, assets, description } = this.state
-        this.setState({loading:true})
-        this.props.updateAssets(assetId, assets, description)
-        .then(() => this.props.getAssets().then(()=>this.setState({loading:false})));
-        this.setState({ modal: !this.state.modal })
+        let errors = {};
+        if(this.state.assets===''){
+            errors.assets="Assets can't be empty"
+        }
+        else if(this.state.description===''){
+            errors.description="Description can't be empty"
+        }
+        this.setState({errors});
+        const isValid = Object.keys(errors).length === 0
+        if (isValid) {
+            this.setState({loading: true})
+            this.props.updateAssets(assetId, assets, description)
+            .then(() => this.props.getAssets().then(()=>this.setState({loading:false})));
+            this.setState({ modal: !this.state.modal })
+        }
     }
     delete = (assetId) => {
         this.setState({loading:true})
@@ -88,6 +106,9 @@ class AssetList extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/')
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
     render() {
         let tableData;
         tableData = <Table className="table table-bordered">
@@ -106,6 +127,9 @@ class AssetList extends Component {
             <div>
                 <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top w3-responsive">
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
                         <div className="top-details">
                             <h3>Assets List</h3>
                             <Button color="primary" onClick={() => this.props.history.push('/superDashBoard/assetsMaster/assetsList')} id="addAssets" >Add Assets</Button>
@@ -121,8 +145,10 @@ class AssetList extends Component {
                                 <FormGroup>
                                     <Label htmlFor="AssetName">Assets Name</Label>
                                     <Input maxLength={30} type="text" id="AssetName" name="assets" onChange={this.onChangeHandler} value={this.state.assets}/>
+                                    <div className="error">{this.state.errors.assets}</div>
                                     <Label htmlFor="description">Description</Label>
                                     <Input maxLength={30} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description}/>
+                                    <span className="error">{this.state.errors.description}</span>
                                 </FormGroup>
                           
                             <FormGroup>

@@ -50,6 +50,7 @@ import DisplayLocation from './containers/locationMaster/displayLocation';
 import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
 import MaintenanceMaster from './containers/maintenanceMaster/maintenanceMaster';
 import MaintenanceMasterDetail from './containers/maintenanceMaster/maintenanceMasterDetail';
+import InventoryDetails from './containers/inventoryDetails/inventoryDetails'
 
 
 class App extends Component {
@@ -103,6 +104,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/displayLocation' component={DisplayLocation}/>
             <PrivateRoute path='/superDashboard/maintenanceMaster' component={MaintenanceMaster}/>
             <PrivateRoute path='/superDashboard/maintenanceMasterDetail' component={MaintenanceMasterDetail}/>
+            <PrivateRoute path='/superDashboard/inventoryDetails' component={InventoryDetails}/>
           </Switch>
         </div>
         {/* </ScrollToTop> */}

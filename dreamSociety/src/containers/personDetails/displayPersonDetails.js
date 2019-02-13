@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 
 import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
-import { viewPerson, getFlat, getTower, getRoles,updatePerson,deletePerson } from '../../actionCreators/personDetailsMasterAction';
+import { viewPerson, getFlat, getTower, getRoles, updatePerson, deletePerson } from '../../actionCreators/personDetailsMasterAction';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
 
@@ -24,22 +24,22 @@ class displayPersonDetails extends Component {
                                 flatDetailId: '',
                                 roles: [],
                                 id: '',
-                                roleId:'',
+                                roleId: '',
                                 familyMember: '',
                                 parking: '',
                                 isActive: false
                         },
                         editPersonModal: false,
-                        loading:true,
+                        loading: true,
                         search: ''
                 }
         }
         componentDidMount() {
                 this.refreshData()
-        
+
         }
 
-        
+
 
         OnKeyPresshandler(event) {
                 const pattern = /[a-zA-Z _]/;
@@ -49,15 +49,15 @@ class displayPersonDetails extends Component {
                 }
         }
 
-        
-OnKeyPressmail(event){
-        const pattern = /^[a-zA-Z0-9@._]+$/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
+
+        OnKeyPressmail(event) {
+                const pattern = /^[a-zA-Z0-9@._]+$/;
+                let inputChar = String.fromCharCode(event.charCode);
+                if (!pattern.test(inputChar)) {
+                        event.preventDefault();
+                }
         }
-    }
-    
+
 
         OnKeyPressNumber(event) {
                 const pattern = /^[0-9]$/;
@@ -83,10 +83,10 @@ OnKeyPressmail(event){
         }
         refreshData() {
 
-                this.props.viewPerson().then(() => this.setState({loading:false}));
-                this.props.getTower().then(() => this.setState({loading:false}));
-                this.props.getRoles().then(() => this.setState({loading:false}));
-                
+                this.props.viewPerson().then(() => this.setState({ loading: false }));
+                this.props.getTower().then(() => this.setState({ loading: false }));
+                this.props.getRoles().then(() => this.setState({ loading: false }));
+
         }
         toggleEditPersonModal() {
 
@@ -97,41 +97,41 @@ OnKeyPressmail(event){
         editPerson(userId, userName, roleName, email, towerId, id, roles, familyMember, parking, flatDetailId) {
                 console.log('i m in edit ', userName, email, towerId, id, roles, familyMember, parking);
                 this.setState({
-                        editPersonData: { userId, userName, email, towerId, id, familyMember,roleName, parking, flatDetailId },
+                        editPersonData: { userId, userName, email, towerId, id, familyMember, roleName, parking, flatDetailId },
                         editPersonModal: !this.state.editPersonModal
                 })
         }
-     
-updatePerson = ( ) => {
 
-        let {  userId,userName,email,towerId,familyMember,parking,roleName } = this.state.editPersonData;
-     
-  console.log("person check" , userId,userName,email,towerId,familyMember,parking,roleName)
-        
-  this.props.updatePerson( userId,userName,email,towerId,familyMember,parking,roleName).then(()=>{this.refreshData()})
+        updatePerson = () => {
 
-        //   this.refreshData()
+                let { userId, userName, email, towerId, familyMember, parking, roleName } = this.state.editPersonData;
+
+                console.log("person check", userId, userName, email, towerId, familyMember, parking, roleName)
+
+                this.props.updatePerson(userId, userName, email, towerId, familyMember, parking, roleName).then(() => { this.refreshData() })
+
+                //   this.refreshData()
                 this.setState({
-                        editPersonModal: false,loading:true, editPersonData: { userName:'',email:'',towerId:'',familyMember:'',parking:'',roleName:''  }
+                        editPersonModal: false, loading: true, editPersonData: { userName: '', email: '', towerId: '', familyMember: '', parking: '', roleName: '' }
                 })
-        
-}
+
+        }
 
 
 
 
 
-      
-deletePerson(userId){
-        this.setState({loading:true})
 
-        let {isActive} = this.state.editPersonData;
-       
-        this.props.deletePerson(userId,isActive).then(()=>{this.refreshData()})
-    
-            this.setState({editPersonData:{isActive:false}})
-      
-    }
+        deletePerson(userId) {
+                this.setState({ loading: true })
+
+                let { isActive } = this.state.editPersonData;
+
+                this.props.deletePerson(userId, isActive).then(() => { this.refreshData() })
+
+                this.setState({ editPersonData: { isActive: false } })
+
+        }
         searchFilter(search) {
                 return function (x) {
                         return x.userName.toLowerCase().includes(search.toLowerCase()) || !search;
@@ -181,7 +181,7 @@ deletePerson(userId){
 
                                                         <td>
 
-                                                                <button className="btn btn-success mr-2"  onClick={this.editPerson.bind(this, item.userId, item.userName, currentRole, item.email, item.towerId, item.flatDetailId, item.roles, item.familyMember, item.parking)}> Edit</button>
+                                                                <button className="btn btn-success mr-2" onClick={this.editPerson.bind(this, item.userId, item.userName, currentRole, item.email, item.towerId, item.flatDetailId, item.roles, item.familyMember, item.parking)}> Edit</button>
 
                                                                 <button className="btn btn-danger" onClick={this.deletePerson.bind(this, item.userId)}>Delete</button>
                                                         </td>
@@ -192,40 +192,47 @@ deletePerson(userId){
                         )
                 }
         }
-        Addperson=()=>{
+        Addperson = () => {
                 this.props.history.push('/superDashboard/persondetails')
         }
-        logout=()=>{
+        logout = () => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user-type');
-                return this.props.history.replace('/') 
-            }
+                return this.props.history.replace('/')
+        }
+        close = () => {
+                return this.props.history.replace('/superDashBoard')
+        }
+
 
         render() {
                 let tableData;
-                tableData= <Table  className="table table-bordered">
-                                                        <thead>
-                                                                <tr>
-                                                                        <th>UserName</th>
-                                                                        <th>Email</th>
-                                                                        <th>Tower Name </th>
-                                                                        <th>Roles</th>
-                                                                        <th>Number  of family member</th>
-                                                                        <th>Parking</th>
-                                                                        <th> Actions  </th>
-                                                                </tr>
-                                                        </thead>
-                                                        <tbody>
+                tableData = <Table className="table table-bordered">
+                        <thead>
+                                <tr>
+                                        <th>UserName</th>
+                                        <th>Email</th>
+                                        <th>Tower Name </th>
+                                        <th>Roles</th>
+                                        <th>Number  of family member</th>
+                                        <th>Parking</th>
+                                        <th> Actions  </th>
+                                </tr>
+                        </thead>
+                        <tbody>
 
-                                                                {this.person(this.props.personDetails)}
+                                {this.person(this.props.personDetails)}
 
-                                                        </tbody>
-                                                </Table>
+                        </tbody>
+                </Table>
                 return (
                         <div>
                                 <UI onClick={this.logout}>
-                                        <div className ="w3-container w3-margin-top w3-responsive">
-                                      
+                                        <div className="w3-container w3-margin-top w3-responsive">
+                                                <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                                                        <span aria-hidden="true">&times;</span>
+                                                </div>
+
                                                 <Modal isOpen={this.state.editPersonModal} toggle={this.toggleEditPersonModal.bind(this)}>
                                                         <ModalHeader toggle={this.toggleEditPersonModal.bind(this)}>Edit  Event Details</ModalHeader>
                                                         <ModalBody>
@@ -240,7 +247,7 @@ deletePerson(userId){
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-                                                                                onKeyPress={this.OnKeyPresshandler}  maxLength ={30} required
+                                                                                onKeyPress={this.OnKeyPresshandler} maxLength={30} required
                                                                         />
                                                                 </FormGroup>
                                                                 <FormGroup>
@@ -252,7 +259,7 @@ deletePerson(userId){
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-                                                                        onKeyPress={this.OnKeyPressmail}  maxLength ={40} required
+                                                                                onKeyPress={this.OnKeyPressmail} maxLength={40} required
                                                                         />
                                                                 </FormGroup>
 
@@ -266,12 +273,12 @@ deletePerson(userId){
                                                                                 })
                                                                         }}
                                                                         >
-                                                                        
-                                                                        <option> --Select--</option>
+
+                                                                                <option> --Select--</option>
                                                                                 {this.getTower(this.props.personDetails)}
                                                                         </Input>
                                                                 </FormGroup>
-  
+
 
 
                                                                 <FormGroup>
@@ -280,20 +287,20 @@ deletePerson(userId){
                                                                         <Input type="select" value={this.state.editPersonData.roleName} onChange={(e) => {
 
                                                                                 let { editPersonData } = this.state
-                                                                                editPersonData.roleName    = e.target.value;
+                                                                                editPersonData.roleName = e.target.value;
                                                                                 this.setState({
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-                                                                      
-                                                                        >       
+
+                                                                        >
                                                                                 <option>{this.state.editPersonData.roleName}</option>
                                                                                 <option> --Select--</option>
                                                                                 {this.getRole(this.props.personDetails)}
 
                                                                         </Input>
                                                                 </FormGroup>
-                                                                
+
                                                                 <FormGroup>
                                                                         <Label> Number of family Members</Label>
                                                                         <Input type="text" value={this.state.editPersonData.familyMember} onChange={(e) => {
@@ -303,7 +310,7 @@ deletePerson(userId){
                                                                                         editPersonData
                                                                                 })
                                                                         }}
-                                                                                onKeyPress={this.OnkeyPressNumber}  maxLength ={2} required
+                                                                                onKeyPress={this.OnkeyPressNumber} maxLength={2} required
                                                                         />
                                                                 </FormGroup>
                                                                 <FormGroup>
@@ -318,24 +325,24 @@ deletePerson(userId){
                                                                                 onKeyPress={this.OnKeyPressNumber} maxLength={2} required
                                                                         />
                                                                 </FormGroup>
-                                                        
-                                                        
+
+
                                                                 <Button color="primary" onClick={this.updatePerson} className="mr-2" >Save</Button>
                                                                 <Button color="danger" onClick={this.toggleEditPersonModal.bind(this)}>Cancel</Button>
-                                                                </ModalBody>
+                                                        </ModalBody>
                                                 </Modal>
-                                                <div  className ="top-details" >         
+                                                <div className="top-details" >
                                                         <h3 align="center"> Person Details</h3>
-                                                                <button className="btn btn-primary"  onClick ={this.Addperson}> Add person</button>
+                                                        <button className="btn btn-primary" onClick={this.Addperson}> Add person</button>
                                                 </div>
                                                 <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-                                                {!this.state.loading? tableData:<Spinner/>}
+                                                {!this.state.loading ? tableData : <Spinner />}
 
                                         </div>
                                 </UI>
-                                
-            </div> 
-                        
+
+                        </div>
+
 
                 )
         }
@@ -355,7 +362,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-        return bindActionCreators({ viewPerson, getFlat, getRoles, getTower,updatePerson,deletePerson}, dispatch)
+        return bindActionCreators({ viewPerson, getFlat, getRoles, getTower, updatePerson, deletePerson }, dispatch)
 }
 
 

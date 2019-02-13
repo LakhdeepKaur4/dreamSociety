@@ -31,10 +31,8 @@ class ParkingMaster extends Component {
     }
 
     renderParking({ parking }) {
-        console.log(parking);
         if (parking) {
             return parking.slot.filter(this.searchFilter(this.state.search)).map((item) => {
-                console.log(item)
                 return (
                     <tr key={item.parking_master.parkingName}>
                         <td>
@@ -66,6 +64,11 @@ class ParkingMaster extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+       
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
     render() {
         let tableData;
         if(this.props.parkingDetail.parking){
@@ -93,6 +96,9 @@ class ParkingMaster extends Component {
                     <div>
 
                         <div className="w3-container w3-margin-top w3-responsive">
+                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
                             <div className="top-details">
                                 <h3>Parking Master details</h3>
                                 <Button color="primary" onClick={() => this.props.history.push('/superDashboard/add_parking/new')}>Add Parking</Button>
@@ -110,7 +116,6 @@ class ParkingMaster extends Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log(state)
     return {
         parkingDetail: state.parkingDetail
     }

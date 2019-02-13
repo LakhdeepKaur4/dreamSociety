@@ -121,6 +121,10 @@ this.setState({loading:true});
     localStorage.removeItem('user-type');
     return this.props.history.replace('/') 
 }
+close=()=>{
+  return this.props.history.replace('/superDashBoard')
+}
+
   render() {
      let tableData;
      tableData=<Table    className="table table-bordered">
@@ -152,6 +156,10 @@ this.setState({loading:true});
         <UI onClick={this.logout}>
         
           <div className ="w3-container w3-margin-top w3-responsive">
+          <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+
                                         <div  className ="top-details" >
             <h3 align="center"> Tower List</h3>
             <button  className="btn btn-primary" onClick ={this.addTower} > Add Tower</button>

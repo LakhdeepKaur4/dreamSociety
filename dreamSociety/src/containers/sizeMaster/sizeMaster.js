@@ -64,12 +64,23 @@ this.setState({loading:true})
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+       
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
+
+    
     render() {
         let form;
         if(!this.state.loading){
         form=
         <div>
         <Form onSubmit={this.submit}>
+        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+
         <h3 align="center">  Add Size </h3>
             <FormGroup>
                 <Label> Size Type</Label>

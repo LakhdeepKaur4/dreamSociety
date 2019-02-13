@@ -211,6 +211,10 @@ class CityMaster extends Component {
     cityDetails=()=>{
         this.props.history.push('/superDashboard/cityMasterDetail');
     }
+     
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
     render() {
 
@@ -251,6 +255,9 @@ class CityMaster extends Component {
             <div>
                 <UI onClick={this.logout}>
                 <Form onSubmit={this.handleSubmit}>
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
                     <h3 style={{textAlign:'center', marginBottom: '10px'}}>City Master</h3>
                     {!this.state.loading ? formData : <Spinner />}
                 </Form>

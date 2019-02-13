@@ -223,6 +223,9 @@ class flatMasterDetails extends Component {
             event.preventDefault();
         }
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
     render() {
         let tableData;
@@ -249,6 +252,9 @@ class flatMasterDetails extends Component {
             <div>
                 <UI onClick={this.logout}>
                         <div className="w3-container w3-margin-top  w3-responsive">
+                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
                             <div className="top-details">                               
                              <h3>Flat Master Details</h3>
                                 <Button onClick={this.routeToAddNewUser} color="primary">Add Flats</Button>
