@@ -49,6 +49,11 @@ const editUserModal = (props) => (
                 {!props.emailValue ? <span className="error">{props.emailError}</span> : null}
             </FormGroup>
             <FormGroup>
+                <Label for="contact">Contact</Label>
+                <Input id="contact" onKeyPress = {props.contactValidation} name={props.contactInputName} value={props.contactValue} onChange={props.contactValueChange} />
+                {!props.parkingValue ? <span className="error">{props.contactError}</span> : null}
+            </FormGroup>
+            {/* <FormGroup>
                 <Label>No. of Family Members</Label>
                 <Input name={props.familyInputName}
                     placeholder="No. of Family Members"
@@ -91,12 +96,8 @@ const editUserModal = (props) => (
                     onKeyPress={props.parkingAndFloorKeyPress}
                     maxLength='20'  />
                 {!props.floorValue ? <span className='error'>{props.parkingError}</span> : null}
-            </FormGroup>
-            <FormGroup>
-                <Label for="contact">Contact</Label>
-                <Input id="contact" onKeyPress = {props.contactValidation} name={props.contactInputName} value={props.contactValue} onChange={props.contactValueChange} />
-                {!props.parkingValue ? <span className="error">{props.contactError}</span> : null}
-            </FormGroup>
+            </FormGroup> */}
+            
             <FormGroup>
                 <Button type="submit" color="primary" onClick={props.updateUserClick}>Save</Button>{' '}
                 <Button color="danger" onClick={props.toggle}>Cancel</Button>

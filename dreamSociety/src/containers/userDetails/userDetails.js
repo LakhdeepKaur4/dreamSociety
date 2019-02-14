@@ -20,11 +20,6 @@ class userDetails extends Component {
                 lastName: "",
                 userName: "",
                 email: "",
-                familyMember: "",
-                towerName:"",
-                towerId:"",
-                floor:"",
-                parking:"",
                 contact: "",
                 errors:{},
                 isActive: false,
@@ -98,14 +93,14 @@ class userDetails extends Component {
     updateUser = (e) => {
             
             e.preventDefault();
-            let { userId, roleName, firstName, lastName, userName, email,familyMember,towerName, floor,parking, contact,towerId } = this.state;
+            let { userId, roleName, firstName, lastName, userName, email, contact} = this.state;
             let errors = {};
-            if(!this.state.towerName){
-                errors.towerName = "Tower can't be empty. Please select."
-            }
-            if(this.state.floor === '') errors.floor = "Can't be empty."
-            if(this.state.parking === '') errors.parking = "Can't be empty."
-            if(this.state.familyMember === '') errors.familyMember="Can't be empty."
+            // if(!this.state.towerName){
+            //     errors.towerName = "Tower can't be empty. Please select."
+            // }
+            // if(this.state.floor === '') errors.floor = "Can't be empty."
+            // if(this.state.parking === '') errors.parking = "Can't be empty."
+            // if(this.state.familyMember === '') errors.familyMember="Can't be empty."
     
             if (firstName === '') errors.firstName = "Can't be empty.";
     
@@ -117,20 +112,20 @@ class userDetails extends Component {
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0;
             if (isValid) {
-                this.props.updateUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerName,floor,parking, contact,towerId)
+                this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact)
                 .then(() => {
                     this.refreshData()
                 })
                 this.setState({
                     editUserModal: false,loading:true,errors:{},  userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '',
-                    towerId:'' 
+
                 });
             }
     }
 
-    editUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerName, floor,parking, contact, towerId) {
+    editUser(userId, roleName, firstName, lastName, userName, email, contact) {
         this.setState({
-             userId, roleName, firstName, lastName, userName, email,familyMember,towerName, floor,parking, contact , towerId, editUserModal: !this.state.editUserModal
+             userId, roleName, firstName, lastName, userName, email, contact ,  editUserModal: !this.state.editUserModal
         });
     }
 
@@ -177,8 +172,6 @@ class userDetails extends Component {
         if(user) {
             let currentRole;
             return user.filter(this.searchFilter(this.state.search)).map((item) => {
-                let currentTower = item.tower_master.towerName;
-                let currentTowerId = item.towerId
                 return (
                     <tr key={item.userId}>
                         <td>{item.roles.map((i) => {
@@ -189,22 +182,18 @@ class userDetails extends Component {
                         <td>{item.lastName}</td>
                         <td>{item.userName}</td>
                         <td>{item.email}</td>
-                        <td>{item.familyMember}</td>
-                        <td>{currentTower}</td>
-                        <td>{item.floor}</td>
-                        <td>{item.parking}</td>
                         <td>{item.contact}</td>
                         <td>
                             <div className="w3-row">
-                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email,item.familyMember,
-                                currentTowerId,item.floor,item.parking, item.contact, currentTower)}>Edit</Button>
-                            <Button color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
+                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email, item.contact)}>Edit</Button>
+                            <Button  color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
                             </div>
                         </td>
                     </tr>
                 )
             })
         }
+        
     }
 
     onChange = (e) => {
@@ -266,10 +255,6 @@ class userDetails extends Component {
                     <th>Last Name</th>
                     <th>Username</th>
                     <th>Email</th>
-                    <th>Total Family Members</th>
-                    <th>Tower Name</th>
-                    <th>Floor</th>
-                    <th>Parking Slot Name</th>
                     <th>Contact No.</th>
                     <th>Actions</th>
                 </tr>
@@ -319,23 +304,23 @@ class userDetails extends Component {
                                 emailError = {this.state.errors.email}
                                 emailKeyPress={this.emailValid}
                                 emailValueChange = {this.onChange}
-                                familyInputName="familyMember"
-                                familyValue={this.state.familyMember}
-                                familyChange={this.onChange}
-                                familyError={this.state.errors.familyMember}
-                                parkingInputName="parking"
-                                parkingAndFloorKeyPress = {this.parkingAndFloorKeyPress}
-                                parkingValue={this.state.parking}
-                                parkingChange={this.onChange}
-                                parkingError={this.state.errors.parking}
-                                floorInputName="floor"
-                                floorValue={this.state.floor}
-                                floorChange={this.onChange}
-                                floorError={this.state.errors.floor}
-                                towerInputName = "towerId"
-                                fetchingTower={this.fetchTowers(this.props.TowerDetails)}
-                                towerValue={this.state.towerId}
-                                towerChange={this.onChange}
+                                // familyInputName="familyMember"
+                                // familyValue={this.state.familyMember}
+                                // familyChange={this.onChange}
+                                // familyError={this.state.errors.familyMember}
+                                // parkingInputName="parking"
+                                // parkingAndFloorKeyPress = {this.parkingAndFloorKeyPress}
+                                // parkingValue={this.state.parking}
+                                // parkingChange={this.onChange}
+                                // parkingError={this.state.errors.parking}
+                                // floorInputName="floor"
+                                // floorValue={this.state.floor}
+                                // floorChange={this.onChange}
+                                // floorError={this.state.errors.floor}
+                                // towerInputName = "towerId"
+                                // fetchingTower={this.fetchTowers(this.props.TowerDetails)}
+                                // towerValue={this.state.towerId}
+                                // towerChange={this.onChange}
                                 contactInputName = "contact"
                                 contactValue = {this.state.contact}
                                 contactError = {this.state.errors.contact}
