@@ -94,7 +94,7 @@ class Country extends Component {
         return this.props.history.replace('/') 
     }
     onKeyPressHandler=(event)=> {
-        const pattern = /^[a-zA-Z]+$/;
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();

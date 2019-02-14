@@ -14,48 +14,31 @@ class flatMasterDetails extends Component {
    constructor(props){
       super(props);
     this.state = {
-        editUserData: {
+        
             stateId:'',
             countryId:'',
             countryName:'',
             stateName:'',
             coverArea:'',
             loading:true,
-            isActive:false
-        }    
-        ,
-        editUserModal: false,
-        menuVisible: false,
-        search:''
-        
-
-    }
-    
-    }
-
+            isActive:false,
+            editUserModal: false,
+            menuVisible: false,
+            search:'',
+            errors:{}
+      }
+   }
 
     componentDidMount(){
         
-        this.refreshData()
+        this.refreshData();
         
     }
-
-    // componentDidUpdate(){
-    //     if(this.props.AddDetails){
-           
-    //     }
-    // }
-
-    
 
     refreshData=()=>{
         console.log('data is refreshed')
         this.props.getDetails().then(() => this.setState({loading:false}));
         this.props.getCountry().then(() => this.setState({loading:false}));
-        
-        // this.props.updateDetails();
-        // this.props.getDrop();
-        // this.props.getSizeDrop();
         
     }
 
@@ -65,18 +48,43 @@ class flatMasterDetails extends Component {
         });
       }
     
-      updateBook=()=> {
-         let{ stateId,countryId,stateName} =this.state.editUserData;
-         this.props.updateDetails(stateId,countryId,stateName).then(() => this.refreshData());
-         
+      updateBook=(e)=> {
+        e.preventDefault();
+        let{ stateId,countryId,stateName} =this.state;
 
+        let errors = {};
+        if (!countryId) {
+            errors.countryId = " select countryName again"
+        }
+        if (stateName === '') errors.stateName = "Cant be empty";
+    
+        this.setState({ errors });
+
+        const isValid = Object.keys(errors).length === 0;
+        if(isValid){
+         
+         this.props.updateDetails(stateId,countryId,stateName).then(() => this.refreshData());
          this.setState({
 
-            editUserModal:false ,loading:true, editUserData:{stateId:'',countryId:'',stateName:''}
+            editUserModal:false ,loading:true,stateId:'',countryId:'',stateName:''
          })
-  
+        }
     
     }
+    onChange=(e)=>{
+        if (!this.state.errors[e.target.value]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            console.log('no errors');
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+        } else {
+            console.log('hii');
+            this.setState( {[e.target.name]: [e.target.value]});
+         }
+
+        console.log(this.state)
+    }
+
 
     searchFilter(search) {
         return function (x) {
@@ -89,36 +97,36 @@ class flatMasterDetails extends Component {
         this.setState({search:e.target.value})
     }
 
-      stateName =(e) =>{
+    //   stateName =(e) =>{
          
-        let{ editUserData } = this.state;
+    //     let{ editUserData } = this.state;
 
-        editUserData.stateName = e.target.value;
+    //     editUserData.stateName = e.target.value;
 
-        this.setState({editUserData})
-        console.log(this.state.editUserData.stateName)
+    //     this.setState({editUserData})
+    //     console.log(this.state.editUserData.stateName)
           
-      }
+    //   }
       
 
-      countryName = (e) => {
-             let{ editUserData }= this.state
-             editUserData.countryId = e.target.value
-             this.setState({editUserData})
-             console.log(this.state.editUserData.countryId)
+    //   countryName = (e) => {
+    //          let{ editUserData }= this.state
+    //          editUserData.countryId = e.target.value
+    //          this.setState({editUserData})
+    //          console.log(this.state.editUserData.countryId)
         
-      }
+    //   }
       
       editBook(stateId,countryName,stateName) {
           this.setState({
-              editUserData:{stateId,countryName,stateName}, editUserModal: ! this.state.editUserModal
+              stateId,countryName,stateName, editUserModal: ! this.state.editUserModal
           })    
       }
 
         deleteUser(stateId){
-            // this.setState({loading: true})
-            let { isActive } = this.state.editUserData
-            this.props.deleteDetails(stateId,isActive).then(()=>this.refereshData())
+            this.setState({loading: true})
+            let { isActive } = this.state
+            this.props.deleteDetails(stateId,isActive).then(()=>this.refreshData())
             // axios.put(`${URN}/state/delete/` + stateId, { isActive }, { headers: authHeader() })
             // .then(() => this.refreshData())
             .then(() => this.setState({isActive:false}));
@@ -137,8 +145,6 @@ class flatMasterDetails extends Component {
                     <tr key={item.stateId}>
                         <td>{item.country_master.countryName}</td>
                         <td>{item.stateName}</td>
-                        
-                        {/* <td>{item.size_master.sizeType}</td> */}
                         
                         <td>
                             <Button color="success" size="sm" className="mr-2" 
@@ -178,21 +184,12 @@ class flatMasterDetails extends Component {
     }
 
     onStateChange=(event)=>{
-        const pattern = /^[a-zA-Z]+$/;
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
         }
     }
-
-    // searchFilter=(event)=>{
-    //     const pattern = /^[a-zA-Z]+$/;
-    //     let inputChar = String.fromCharCode(event.charCode);
-    //     if (!pattern.test(inputChar)) {
-    //         event.preventDefault();
-    //     }
-    // }
-
     render() {
         let tableData;
         tableData=<Table className="table table-bordered">
@@ -227,21 +224,25 @@ class flatMasterDetails extends Component {
                                 <FormGroup>
                                     <Label for="roles">CountryName</Label>
                                     <Input type="select"
-                                    value={this.state.editUserData.countryId} onChange={this.countryName}>
-                                        <option>{this.state.editUserData.countryName}</option>
+                                    name="countryId"
+                                    value={this.state.countryId} onChange={this.onChange}>
+                                        <option>{this.state.countryName}</option>
                                         <option disabled>Select</option>
                                         {this.fetchDrop(this.props.countryDetails)}/>
                                         </Input>
+                                        <span  className='error'>{this.state.errors.countryId}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">StateName</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter state name"
-                                        value={this.state.editUserData.stateName}
-                                        onChange={this.stateName}
+                                        name="stateName"
+                                        value={this.state.stateName}
+                                        onChange={this.onChange}
                                         maxLength='50'
                                         onKeyPress={this.onStateChange} />
+                                        <span  className='error'>{this.state.errors.stateName}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Button color="primary" className="mr-2" onClick={this.updateBook} >Save</Button>

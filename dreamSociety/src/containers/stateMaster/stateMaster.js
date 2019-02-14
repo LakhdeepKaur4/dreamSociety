@@ -101,7 +101,7 @@ class FlatMaster extends Component {
         return this.props.history.replace('/') 
     }
     onStateChange=(event)=>{
-        const pattern = /^[a-zA-Z]+$/;
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
