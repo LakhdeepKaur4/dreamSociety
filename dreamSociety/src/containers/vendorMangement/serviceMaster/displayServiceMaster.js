@@ -78,7 +78,6 @@ class displayServices extends Component {
         this.setState({
             editServiceModal: !this.state.editServiceModal
         });
-        console.log(this.state.editServiceData)
     }
 
     updateServices() {
@@ -97,9 +96,6 @@ class displayServices extends Component {
     }
 
     editUser(serviceId, serviceName, service_detail, serviceDetailId) {
-        console.log('serviceName', serviceName);
-        console.log('serviceId', serviceId);
-        console.log('serviceDetailId', serviceDetailId)
         this.setState({
 
             editServiceData: { serviceId, serviceName, service_detail, serviceDetailId }, editServiceModal: !this.state.editServiceModal
@@ -111,7 +107,6 @@ class displayServices extends Component {
     getDropdown1 = ({ detail }) => {
         if (detail) {
             return detail.service.map((item) => {
-                console.log("itemmm",item)
                 return (
                     <option key={item.serviceDetailId} value={item.serviceDetailId}>
                         {item.service_detail}</option>
@@ -129,8 +124,6 @@ class displayServices extends Component {
     }
 
     renderList = ({ item }) => {
-
-        console.log("itemmm2222222222",item);
         if (item) {
             return item.filter(this.searchFilter(this.state.search)).map((item) => {
                 return (

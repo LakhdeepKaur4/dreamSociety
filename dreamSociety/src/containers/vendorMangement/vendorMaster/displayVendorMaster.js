@@ -4,10 +4,9 @@ import { getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { authHeader } from '../../../helper/authHeader';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader,Table, ModalFooter, Input, Label } from 'reactstrap';
+import { Button, Modal, FormGroup, ModalBody, ModalHeader,Table, Input, Label } from 'reactstrap';
 import axios from 'axios';
 import { URN } from '../../../actions/index';
-import { Link } from 'react-router-dom';
 
 
 import SearchFilter from '../../../components/searchFilter/searchFilter';
@@ -50,8 +49,6 @@ class displayVendorMaster extends Component {
 
 
     editUser(vendorId, vendorName, serviceName, serviceId, description) {
-        console.log(serviceName)
-        console.log(serviceId)
         this.setState({
 
             editVendorData: { vendorId, vendorName, serviceName, serviceId, description }, editVendorModal: !this.state.editVendorModal
@@ -70,7 +67,6 @@ class displayVendorMaster extends Component {
     }
 
     getDropdown = ({ item }) => {
-        console.log("hiii", item)
         if (item) {
             return item.map((item) => {
                 return (
@@ -101,7 +97,6 @@ class displayVendorMaster extends Component {
             vendorName, serviceName, serviceId, description
         }, { headers: authHeader() }).then((response) => {
             this.refreshData();
-            console.log('dddddddd', response.data);
             this.setState({
                 editVendorModal: false,loading:true, editVendorData: { vendorId: '', vendorName: '', serviceName: '', serviceId: '', description: '' }
             })

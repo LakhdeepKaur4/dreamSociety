@@ -40,7 +40,6 @@ class locationMaster extends Component{
 
 
     getDropdown1=({country})=>{
-        console.log(country,"abc")
         if(country){
             return country.map((items)=>{
                 return(
@@ -54,14 +53,10 @@ class locationMaster extends Component{
     
     onChangeCountry=(event)=>{
         let selected= event.target.value;
-
-        console.log(selected)
       
         var data = _.find(this.props.locationMasterReducer.country,function(obj){
                         return obj.countryName === selected
            })
-   
-           console.log(data)
 
            this.props.getStateName(data.countryId)
            this.setState({countryId:data.countryId})
@@ -69,10 +64,8 @@ class locationMaster extends Component{
 
         
     getDropdown2=({state})=>{
-        console.log("stateResult", state)
         if(state){
             return state.map((item)=>{
-                console.log("state",item.stateId)
                     return(
                         <option key={item.stateId} value={item.stateName}>
                         {item.stateName}</option>
@@ -88,25 +81,19 @@ class locationMaster extends Component{
     onChangeState= (event)=>{
       
         let selected= event.target.value;
-     
-        console.log("selected",selected)
-       
-        
+              
         var data1 = _.find(this.props.locationMasterReducer.state,function(obj){
             return obj.stateName === selected
             })
-    
-            console.log("data1",data1)
             
            this.props.getCityName(data1.stateId)
            this.setState({stateId:data1.stateId})
         
         }
 
-    getDropdown3=({city})=>{console.log("cityResult",city)
+    getDropdown3=({city})=>{
         if(city){
             return city.map((item)=>{
-                console.log("city",item.cityId)
                     return(
                         <option key={item.cityId} value={item.cityName} >
                         {item.cityName}</option>
@@ -117,16 +104,11 @@ class locationMaster extends Component{
     }
 
     onChangeCity=(event)=>{
-        let selected= event.target.value;
-     
-        console.log("selected",selected)
-       
+        let selected= event.target.value;     
         
         var data2 = _.find(this.props.locationMasterReducer.city,function(obj){
             return obj.cityName === selected
             })
-    
-            console.log("data2",data2)
             
           this.props.getLocationName(data2.cityId)
 
@@ -148,7 +130,6 @@ class locationMaster extends Component{
         event.preventDefault();
    
         this.props.addLocationDetails(this.state)
-        console.log("submit",this.state);
         
         this.setState(
         {

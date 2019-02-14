@@ -22,10 +22,7 @@ class flatDetailMaster extends Component{
 
     handleChange=(event)=>  {
                    
-        this.setState({[event.target.name]:event.target.value});
-        console.log(event.target.value)
-        
-        
+        this.setState({[event.target.name]:event.target.value});          
     }
 
     componentDidMount(){
@@ -56,7 +53,6 @@ class flatDetailMaster extends Component{
 
 
     onSubmit=(event)=> {
-        console.log("jkj",this.state)
         event.preventDefault();
    
         this.props.addFlatDetails(this.state)
@@ -95,7 +91,6 @@ class flatDetailMaster extends Component{
     }
 
     getDropdown1=({flattype})=>{
-        console.log(flattype,"abc")
         if(flattype){
             return flattype.map((items)=>{
                 return(
