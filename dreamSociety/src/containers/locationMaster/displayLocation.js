@@ -176,6 +176,10 @@ updateLocation = () => {
 push=()=>{
     this.props.history.push('/superDashboard/locationMaster')
 }
+close=()=>{
+    return this.props.history.replace('/superDashBoard')
+}
+
 
 render(){
     let tableData;
@@ -202,7 +206,9 @@ render(){
               
               
         <div className="w3-container w3-margin-top w3-responsive">
-             
+        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
              <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                  <ModalHeader toggle={this.toggle}> Edit Details</ModalHeader>
                  <ModalBody>

@@ -85,18 +85,18 @@ export  function getSizeTypeDetails(){
     }
 
 }
-export  function getQr(){
+// export  function getQr(){
  
-    const request = axios.get(`${URN}/user/10`,{headers:authHeader()})
-    .then(response => response.data)
+//     const request = axios.get(`${URN}/user/10`,{headers:authHeader()})
+//     .then(response => response.data)
    
-    return{
+//     return{
 
-         type: GET_QR,
-         payload: request 
-    }
+//          type: GET_QR,
+//          payload: request 
+//     }
 
-}
+// }
 // export  function deleteEntry(id){
 
 //     const request = axios.delete(`${URL_ROOT}/flatsIndex/` +id)

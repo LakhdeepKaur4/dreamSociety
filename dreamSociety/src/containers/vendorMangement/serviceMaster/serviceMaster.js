@@ -92,6 +92,11 @@ class serviceMaster extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
+
 
     render() {
 
@@ -101,6 +106,9 @@ class serviceMaster extends Component {
                
                 <div>
                     <form onSubmit={this.onSubmit}>
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
                     <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Services</h3></div>
                         <div>
                             <label>Service Type</label>

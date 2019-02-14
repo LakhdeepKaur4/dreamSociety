@@ -179,7 +179,9 @@ logout=()=>{
     localStorage.removeItem('user-type');
     return this.props.history.replace('/') 
 }
-
+close=()=>{
+    return this.props.history.replace('/superDashBoard')
+}
 render(){
     let tableData;
     tableData=
@@ -204,6 +206,9 @@ render(){
         <UI onClick={this.logout}>
       
         <div className="w3-container w3-margin-top w3-responsive">
+        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
              <Modal isOpen={this.state.editFlatModal} toggle={this.toggleEditFlatModal.bind(this)}>
                  <ModalHeader toggle={this.toggleEditFlatModal.bind(this)}>Edit Details</ModalHeader>
                      <ModalBody>

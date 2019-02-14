@@ -112,11 +112,19 @@ class flatDetailMaster extends Component{
         this.props.history.push('/superDashboard/flatDetails')
     }
 
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
     render (){
         return(
             <UI onClick={this.logout}>
             <div >
                 <form onSubmit={this.onSubmit}>
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+
                 <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Flat Details</h3></div>
                     <div >
                         <label>Flat No</label>

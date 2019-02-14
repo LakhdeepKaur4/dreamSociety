@@ -25,11 +25,8 @@ class Parking extends Component {
     }
 
     getParking({ parking }) {
-        console.log(parking)
         if (parking) {
-            console.log(parking)
             return parking.map((item) => {
-                console.log(item)
                 return (
                     <option name="parkingId" value={item.parkingId} key={item.parkingId}>
                         {item.parkingName}
@@ -48,13 +45,10 @@ class Parking extends Component {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({ [e.target.name]: e.target.value, errors })
-            console.log(this.state)
         }
         else {
             this.setState({ [e.target.name]: e.target.value })
         }
-
-        console.log(this.state)
     }
 
     numberOfSlots = (event) => {
@@ -71,17 +65,14 @@ class Parking extends Component {
         let {parkingId, numberOfSlots} = this.state;
         if (!this.state.parkingId) {
             errors.parkingId = `Parking details can't be empty. Please select any.`;
-            console.log(this.state.errors);
         }
         if (this.state.numberOfSlots === '') {
             errors.numberOfSlots = `Please select number of slots.`;
-            console.log(this.state.errors);
         }
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
 
         if (isValid) {
-            console.log(this.state);
             this.setState({loading: true})
             this.props.createParking({ parkingId, numberOfSlots })
             .then(() => {
@@ -107,6 +98,9 @@ class Parking extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
     render() {
         let formData;
@@ -127,6 +121,9 @@ class Parking extends Component {
                 <UI onClick={this.logout}>
                     <div>
                         <Form onSubmit={this.submit}>
+                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
                             <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Parking</h3></div>
                             <div>{!this.state.loading ? formData : <Spinner />}</div>
                         </Form>
@@ -139,7 +136,6 @@ class Parking extends Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log(state);
     return {
         parkingDetail: state.parkingDetail.all
     }

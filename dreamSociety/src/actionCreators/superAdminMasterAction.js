@@ -43,9 +43,9 @@ export function getRoles(){
     }
 }
 
-export function updateUser(userId, roleName, firstName, lastName, userName, email, contact){
+export function updateUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerName,floor,parking, contact, towerId){
     const request = axios.put(`${URN}/user/`+ userId, {
-            userId, roleName, firstName, lastName, userName, email, contact
+        userId, roleName, firstName, lastName, userName, email,familyMember,towerName,floor,parking, contact, towerId
         }, { headers: authHeader() })
     .then(() => this.getUsers())
 

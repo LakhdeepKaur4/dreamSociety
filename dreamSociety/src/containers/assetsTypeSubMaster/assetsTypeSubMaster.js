@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom'
 import { getAssets, addAssetsSubType } from '../../actionCreators/assetsSubAction';
 import UI from '../../components/newUI/superAdminDashboard';
-import { Form,FormGroup, Input, Button, Label  } from 'reactstrap';
+import { Form,FormGroup, Input, Button, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 
 
@@ -72,7 +72,10 @@ class AssetsTypeSubMaster extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/')
     }
-
+ 
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
     render() {
         let formData;
@@ -82,7 +85,7 @@ class AssetsTypeSubMaster extends Component {
                     <FormGroup>
                     <Label>Assets Type</Label>
                     <Input type="select" onChange={this.onChangeHandler} name="assetId">
-                        <option value="" disabled selected>--Select--</option>
+                        <option disabled selected>--Select--</option>
                         {this.getAssetsName(this.props.assetsName)}
                     </Input>
                     <span className="error">{this.state.errors.assetId}</span>
@@ -101,7 +104,7 @@ class AssetsTypeSubMaster extends Component {
                 <div>
                     <Button className="btn btn-success" id="addAssets" >Add Assets</Button>
                     <Link to='/superDashBoard/assetsTypeSubMaster'>
-                        <Button color="primary" id="addAssets" >Cancel</Button>
+                        <Button color="danger" id="addAssets" >Cancel</Button>
                     </Link>
                 </div>
             </div>
@@ -112,6 +115,9 @@ class AssetsTypeSubMaster extends Component {
                 <UI onClick={this.logout}>
                     <div>
                     <Form onSubmit={this.onSubmit}>
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
                     <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Assets Sub Type Master</h3></div>
                         {!this.state.loading ? formData : <Spinner />}
                         </Form>
@@ -123,6 +129,7 @@ class AssetsTypeSubMaster extends Component {
     }
 }
 function mapStateToProps(state) {
+    console.log('state',state.AssetsReducer)
     return {
         assetsName: state.AssetsReducer
     }

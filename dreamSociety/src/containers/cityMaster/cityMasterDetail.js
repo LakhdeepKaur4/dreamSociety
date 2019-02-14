@@ -30,12 +30,13 @@ class CityMasterDetail extends Component {
         };
     }
     onChangeHandler = (event) => {
+        console.log(this.state)
         const { name, value } = event.target;
         this.setState({ [name]: value });
     }
 
     toggle = (cityId, countryName, stateName, cityName) => {
-        console.log('toggle')
+        
         this.setState({
             cityId,
             countryName,
@@ -184,6 +185,10 @@ class CityMasterDetail extends Component {
         }
     }
 
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
     render() {
         let tableData;
         tableData= <div style={{backgroundColor:'lightgray'}}>
@@ -205,6 +210,9 @@ class CityMasterDetail extends Component {
                
                 <UI onClick={this.logout}>
                   <div className="w3-container w3-margin-top">
+                  <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
                              <div className="top-details">
                                 <h3>City Details</h3>
                                 <Button onClick={this.routeToAddNewCity} color="primary">Add City</Button>

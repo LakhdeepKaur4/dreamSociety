@@ -101,18 +101,25 @@ class FlatMaster extends Component {
         return this.props.history.replace('/') 
     }
     onStateChange=(event)=>{
-        const pattern = /^[a-zA-Z]+$/;
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
         }
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
 
     render() {
 
          let form;
          if(!this.state.loading && this.props.countryDetails.country1 && this.state.errors){
             form = <Form onSubmit={this.submit}>
+              <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
              <h3 style={{textAlign:'center', marginBottom: '10px'}}>State Master</h3>
         
             <FormGroup>
