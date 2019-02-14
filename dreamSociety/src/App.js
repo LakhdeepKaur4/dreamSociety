@@ -50,7 +50,9 @@ import DisplayLocation from './containers/locationMaster/displayLocation';
 import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
 import MaintenanceMaster from './containers/maintenanceMaster/maintenanceMaster';
 import MaintenanceMasterDetail from './containers/maintenanceMaster/maintenanceMasterDetail';
-import InventoryDetails from './containers/inventoryDetails/inventoryDetails'
+import InventoryDetails from './containers/inventoryDetails/inventoryDetails';
+import MaintenanceSubMasterForm from './containers/maintenanceSubMaster/maintenanceSubMasterForm';
+import MaintenanceSubMasterDetails from './containers/maintenanceSubMaster/maintenanceSubMasterDetails'
 
 
 class App extends Component {
@@ -105,6 +107,8 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/maintenanceMaster' component={MaintenanceMaster}/>
             <PrivateRoute path='/superDashboard/maintenanceMasterDetail' component={MaintenanceMasterDetail}/>
             <PrivateRoute path='/superDashboard/inventoryDetails' component={InventoryDetails}/>
+            <PrivateRoute path='/superDashboard/MaintenanceSubMasterForm' component={MaintenanceSubMasterForm} />
+            <PrivateRoute path='/superDashboard/MaintenanceSubMasterDetails' component={MaintenanceSubMasterDetails} />
           </Switch>
         </div>
         {/* </ScrollToTop> */}

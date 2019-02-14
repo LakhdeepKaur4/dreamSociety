@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {getLocation,getStateName,getCountryName,getCityName,getLocationName,updateLocation,deleteLocation} from '../../actionCreators/locationMasterAction';
 import { bindActionCreators } from 'redux';
-import { Button, Modal, FormGroup, ModalBody,Table, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import { Button, Modal, FormGroup, ModalBody,Table, ModalHeader, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import Spinner from '../../components/spinner/spinner';
