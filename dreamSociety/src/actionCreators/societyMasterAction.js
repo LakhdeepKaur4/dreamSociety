@@ -5,11 +5,11 @@ import { authHeader } from '../helper/authHeader';
 
 
 export const getCountry = () => {
-    console.log('========countryAction========')
+  
 
     const request = axios.get(`${URN}/country`, { headers: authHeader() })
         .then(response => response.data)
-        .catch(error => console.log('==error==', error))
+        .catch(error =>  error)
 
     return {
 
@@ -20,11 +20,11 @@ export const getCountry = () => {
 
 
 export const getState = countryId => {
-    console.log('========stateAction========')
+    
 
     const request = axios.get(`${URN}/getState/${countryId}`, { headers: authHeader() })
         .then(response => response.data)
-        .catch(error => console.log('==error==', error))
+        .catch(error =>  error)
 
     return {
         type: GET_STATE,
@@ -34,10 +34,10 @@ export const getState = countryId => {
 
 export const getCity = stateId => {
 
-    console.log('========cityAction========')
+   
     const request = axios.get(`${URN}/city/${stateId}`, { headers: authHeader() })
         .then(response => response.data)
-        .catch(error => console.log('==error==', error))
+        .catch(error =>  error)
 
     return {
         type: GET_CITY,
@@ -47,10 +47,10 @@ export const getCity = stateId => {
 
 export const getLocation = cityId => {
 
-    console.log('========locationAction========')
+    
     const request = axios.get(`${URN}/location/${cityId}`, { headers: authHeader() })
         .then(response => response.data)
-        .catch(error => console.log('==error==', error))
+        .catch(error =>  error)
 
     return {
         type: GET_LOCATION_DETAIL,
@@ -60,11 +60,10 @@ export const getLocation = cityId => {
 
 
 export const postSociety = (values) => {
-    
-    console.log('========valueSocietyAction========', values)
+   
     const request = axios.post(`${URN}/society`,values, { headers: authHeader() })
         .then(response => response.data)
-        .catch(error => console.log('==error==', error))
+        .catch(error =>  error)
 
     return {
         type: POST_SOCIETY,
@@ -74,10 +73,10 @@ export const postSociety = (values) => {
 
 export const getSociety = (locationId) => {
 
-    console.log('========valueSocietyAction========')
+  
     const request = axios.get(`${URN}/society/${locationId}`, { headers: authHeader() })
         .then(response => response.data)
-        .catch(error => console.log('==error==', error))
+        .catch(error =>  error)
 
     return {
         type: GET_SOCIETY,
@@ -91,11 +90,11 @@ export const deleteSociety=(societyId)=>{
         societyId,
         isActive:false
     }
-    console.log("=================delete", societyId)
+    
     const request = axios.put(`${URN}/society/delete/${societyId}`,data, {headers:authHeader()})
      .then(response => response.data)
  
-     // .then(getDetails())
+    
      return{
  
          type:DELETE_SOCIETY,
@@ -106,10 +105,10 @@ export const deleteSociety=(societyId)=>{
 
  export const detailSociety = () => {
 
-    console.log('========valueSocietyAction========')
+   
     const request = axios.get(`${URN}/society`, { headers: authHeader() })
         .then(response => response.data)
-        .catch(error => console.log('==error==', error))
+        .catch(error =>  error)
 
     return {
         type: DETAIL_SOCIETY,
@@ -118,12 +117,12 @@ export const deleteSociety=(societyId)=>{
 }
 
  export const updateSociety=(societyId, countryId, stateId,cityId, locationId, societyName)=>{
-     console.log('==updateCity====',societyId, countryId, stateId,cityId, locationId, societyName )
+   
     
     const request = axios.put(`${URN}/society/`+ societyId ,{countryId, stateId,cityId, locationId, societyName}, {headers:authHeader()})
      .then(response => response.data)
  
-     // .then(getDetails())
+   
      return{
  
          type:UPDATE_SOCIETY,

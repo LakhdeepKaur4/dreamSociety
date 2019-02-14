@@ -54,12 +54,6 @@ edit(flatNo,flatType,floor,towerName, flatId,flatDetailId){console.log("tttttttt
 
 }
 
-// searchFilter(search){
-//     return function(x){
-//         return x.floor.toLowerCase().includes(search.toLowerCase()) || 
-//         x.tower_master.towerName.toLowerCase().includes(search.toLowerCase())|| !search;
-//     }
-// }
 
 searchFilter(search) {
     return function (x) {
@@ -81,16 +75,13 @@ searchOnChange = (e) => {
 
 updateDetails(){
     let { flatNo,flatId,flatType,floor,towerId,towerName} = this.state.editFlatData;
-    console.log(flatId,flatType,"priya");
     axios.put(`${URN}/flatDetail/` + this.state.editFlatData.flatDetailId, {
         flatNo,flatId,flatType,floor,towerId,towerName
     },{headers:authHeader()}).then((response) => {
       this.refreshData();
-           console.log(response.data)
       this.setState({
         editFlatModal: false,loading:true, editFlatData: {flatDetailId:'', flatNo:'',flatId:'',flatType:'',floor:'',towerId:'',towerName:''}
       })
-      console.log(flatType)
     });
 }  
 

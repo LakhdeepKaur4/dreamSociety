@@ -36,7 +36,7 @@ class CityMasterDetail extends Component {
     }
 
     toggle = (cityId, countryName, stateName, cityName) => {
-        console.log('toggle')
+        
         this.setState({
             cityId,
             countryName,
