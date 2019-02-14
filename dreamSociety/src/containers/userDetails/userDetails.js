@@ -20,7 +20,11 @@ class userDetails extends Component {
                 lastName: "",
                 userName: "",
                 email: "",
+                familyMember:"",
+                towerId:"",
+                towerName:"",
                 contact: "",
+                parking:"",
                 errors:{},
                 isActive: false,
                 editUserModal: false,
@@ -93,14 +97,14 @@ class userDetails extends Component {
     updateUser = (e) => {
             
             e.preventDefault();
-            let { userId, roleName, firstName, lastName, userName, email, contact} = this.state;
+            let { userId, roleName, firstName, lastName, userName, email,towerId,familyMember,floor,parking, contact} = this.state;
             let errors = {};
             // if(!this.state.towerName){
             //     errors.towerName = "Tower can't be empty. Please select."
             // }
-            // if(this.state.floor === '') errors.floor = "Can't be empty."
+            if(this.state.floor === '') errors.floor = "Can't be empty."
             // if(this.state.parking === '') errors.parking = "Can't be empty."
-            // if(this.state.familyMember === '') errors.familyMember="Can't be empty."
+            if(this.state.familyMember === '') errors.familyMember="Can't be empty."
     
             if (firstName === '') errors.firstName = "Can't be empty.";
     
@@ -112,20 +116,20 @@ class userDetails extends Component {
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0;
             if (isValid) {
-                this.props.updateUser(userId, roleName, firstName, lastName, userName, email, contact)
+                this.props.updateUser(userId, roleName, firstName, lastName, userName, email,towerId,familyMember,floor,parking, contact)
                 .then(() => {
                     this.refreshData()
                 })
                 this.setState({
-                    editUserModal: false,loading:true,errors:{},  userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '',
+                    editUserModal: false,loading:true,errors:{},  userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '',familyMember:'',floor:'',parking:'', contact: '',
 
                 });
             }
     }
 
-    editUser(userId, roleName, firstName, lastName, userName, email, contact) {
+    editUser(userId, roleName, firstName, lastName, userName, email,towerName,familyMember,floor,parking, contact,towerId) {
         this.setState({
-             userId, roleName, firstName, lastName, userName, email, contact ,  editUserModal: !this.state.editUserModal
+             userId, roleName, firstName, lastName, userName, email,towerId,towerName,familyMember, floor,parking, contact, editUserModal: !this.state.editUserModal
         });
     }
 
@@ -149,7 +153,6 @@ class userDetails extends Component {
                  x.contact.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||  
                  !search;
             }
-            return <div>Not Found</div>
         }
     }
 
@@ -172,6 +175,7 @@ class userDetails extends Component {
         if(user) {
             let currentRole;
             return user.filter(this.searchFilter(this.state.search)).map((item) => {
+                let currentTowerName = item.tower_master.towerName;
                 return (
                     <tr key={item.userId}>
                         <td>{item.roles.map((i) => {
@@ -182,10 +186,14 @@ class userDetails extends Component {
                         <td>{item.lastName}</td>
                         <td>{item.userName}</td>
                         <td>{item.email}</td>
+                        <td>{currentTowerName}</td>
+                        <td>{item.familyMember}</td>
+                        <td>{item.floor}</td>
+                        <td>{item.parking}</td>
                         <td>{item.contact}</td>
                         <td>
                             <div className="w3-row">
-                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email, item.contact)}>Edit</Button>
+                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email,currentTowerName,item.familyMember,item.floor,item.parking, item.contact, item.towerId)}>Edit</Button>
                             <Button  color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
                             </div>
                         </td>
@@ -197,6 +205,7 @@ class userDetails extends Component {
     }
 
     onChange = (e) => {
+        console.log(this.state)
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -255,6 +264,10 @@ class userDetails extends Component {
                     <th>Last Name</th>
                     <th>Username</th>
                     <th>Email</th>
+                    <th>Tower name</th>
+                    <th>No. of Family Members</th>
+                    <th>Floor</th>
+                    <th>Parking Slot</th>
                     <th>Contact No.</th>
                     <th>Actions</th>
                 </tr>
@@ -304,23 +317,23 @@ class userDetails extends Component {
                                 emailError = {this.state.errors.email}
                                 emailKeyPress={this.emailValid}
                                 emailValueChange = {this.onChange}
-                                // familyInputName="familyMember"
-                                // familyValue={this.state.familyMember}
-                                // familyChange={this.onChange}
-                                // familyError={this.state.errors.familyMember}
-                                // parkingInputName="parking"
-                                // parkingAndFloorKeyPress = {this.parkingAndFloorKeyPress}
-                                // parkingValue={this.state.parking}
-                                // parkingChange={this.onChange}
-                                // parkingError={this.state.errors.parking}
-                                // floorInputName="floor"
-                                // floorValue={this.state.floor}
-                                // floorChange={this.onChange}
-                                // floorError={this.state.errors.floor}
-                                // towerInputName = "towerId"
-                                // fetchingTower={this.fetchTowers(this.props.TowerDetails)}
-                                // towerValue={this.state.towerId}
-                                // towerChange={this.onChange}
+                                familyInputName="familyMember"
+                                familyValue={this.state.familyMember}
+                                familyChange={this.onChange}
+                                familyError={this.state.errors.familyMember}
+                                parkingInputName="parking"
+                                parkingAndFloorKeyPress = {this.parkingAndFloorKeyPress}
+                                parkingValue={this.state.parking}
+                                parkingChange={this.onChange}
+                                parkingError={this.state.errors.parking}
+                                floorInputName="floor"
+                                floorValue={this.state.floor}
+                                floorChange={this.onChange}
+                                floorError={this.state.errors.floor}
+                                towerInputName = "towerId"
+                                fetchingTower={this.fetchTowers(this.props.TowerDetails)}
+                                towerValue={this.state.towerName}
+                                towerChange={this.onChange}
                                 contactInputName = "contact"
                                 contactValue = {this.state.contact}
                                 contactError = {this.state.errors.contact}
@@ -341,6 +354,7 @@ class userDetails extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log(state)
     return {
         userDetail: state.userDetail,
         TowerDetails: state.TowerDetails
