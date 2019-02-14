@@ -23,7 +23,11 @@ module.exports = function(app) {
 	const assetsTypeController = require('../controller/assetType');
 	const flatDetailController = require('../controller/flatDetail');
 	const maintenanceController = require('../controller/maintenance');
-	
+	const maintenanceTypeController = require('../controller/maintenanceType');
+	const rateController = require('../controller/rate');
+	const employeeTypeController = require('../controller/employeeType');
+	const employeeWorkTypeController = require('../controller/employeeWorkType');
+	const employeeDetailController = require('../controller/employeeDetail');
 	
 	app.get('/', userController.start);
 
@@ -220,4 +224,24 @@ module.exports = function(app) {
 	app.post('/api/maintenance', [authJwt.verifyToken],maintenanceController.create);
 
 	app.get('/api/maintenance', [authJwt.verifyToken],maintenanceController.get);
+
+	app.post('/api/maintenanceType', [authJwt.verifyToken],maintenanceTypeController.create);
+
+	app.get('/api/maintenanceType', [authJwt.verifyToken],maintenanceTypeController.get);
+
+	app.post('/api/rate', [authJwt.verifyToken],rateController.create);
+
+	app.get('/api/rate', [authJwt.verifyToken],rateController.get);
+
+	app.post('/api/employeeType', [authJwt.verifyToken],employeeTypeController.create);
+
+	app.get('/api/employeeType', [authJwt.verifyToken],employeeTypeController.get);
+
+	app.post('/api/employeeWorkType', [authJwt.verifyToken],employeeWorkTypeController.create);
+
+	app.get('/api/employeeWorkType', [authJwt.verifyToken],employeeWorkTypeController.get);
+
+	app.post('/api/employeeDetail', [authJwt.verifyToken],employeeDetailController.create);
+
+	app.get('/api/employeeDetail', [authJwt.verifyToken],employeeDetailController.get);
 }

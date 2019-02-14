@@ -5,10 +5,28 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true,
             primaryKey: true
         },
+        userName: {
+            type: Sequelize.STRING
+        },
+        password: {
+            type: Sequelize.STRING
+        },
         vendorName: {
             type: Sequelize.STRING
         },
-        description: {
+        picture:{
+            type: Sequelize.STRING
+        },
+        document:{
+            type: Sequelize.STRING
+        },
+        permanentAddress: {
+            type: Sequelize.STRING
+        },
+        currentAddress: {
+            type: Sequelize.STRING
+        },
+        contact: {
             type: Sequelize.STRING
         },
         isActive: {
@@ -24,8 +42,8 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DATE
         }
     }, {
-        freezeTableName: true
-    });
+            freezeTableName: true
+        });
 
     return Vendor;
 }

@@ -1,8 +1,11 @@
 const db = require('../config/db.config.js');
-const httpStatus = require('http-status')
+const httpStatus = require('http-status');
+var userNameGenerator = require('random-username-generator');
+var passwordGenerator = require('generate-password');
 
 const Vendor = db.vendor;
 const Service = db.service;
+const vendorService = db.vendorService;
 
 exports.create = async (req, res, next) => {
     try {
@@ -18,7 +21,59 @@ exports.create = async (req, res, next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
-
+exports.createVendor = async(req,res,next) => {
+try{
+let body = req.body;
+body.userId = req.userId;
+const userName = userNameGenerator.generate();
+console.log("username--->",userName);
+body.userName = userName;
+const password = generator.generate({
+    length: 10,
+    numbers: true
+});
+console.log("password--->",password);
+body.password = password;
+const vendor = await Vendor.create({
+    vendorName:body.vendorName,
+    permanentAddress:body.permanentAddress,
+    currentAddress:body.currentAddress,
+    picture:body.picture,
+    contact:body.contact,
+});
+const vendorId = vendor.vendorId;
+if(body.rate1){
+    const vendorService = await VendorService.create({
+     vendorId:vendorId,
+     serviceDetailId:body.serviceDetailId,
+     rateTypeId:body.rateTypeId,
+     rate:body.rate1
+    })
+}
+if(body.rate2){
+    const vendorService = await VendorService.create({
+     vendorId:vendorId,
+     serviceDetailId:body.serviceDetailId,
+     rateTypeId:body.rateTypeId,
+     rate:body.rate2
+    })
+}
+if(body.rate3){
+    const vendorService = await VendorService.create({
+     vendorId:vendorId,
+     serviceDetailId:body.serviceDetailId,
+     rateTypeId:body.rateTypeId,
+     rate:body.rate3
+    })
+}
+return res.status(httpStatus.CREATED).json({
+    message: "Vendor successfully created",
+    vendor
+});
+}catch(error){
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+}
+}
 
 exports.get = async(req,res,next) => {
     try{
