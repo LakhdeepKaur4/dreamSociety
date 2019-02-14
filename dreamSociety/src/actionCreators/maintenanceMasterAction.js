@@ -6,9 +6,10 @@ import { authHeader } from './../helper/authHeader';
 
 
 export const addMaintenance=(values)=>{
-   console.log("=============maintenance=========", values);
+  
    const request = axios.post(`${URN}/maintenance` , values , {headers:authHeader()})
     .then(response => response.data)
+    .catch((err)=>alert(err.response.data.message))
 
     
     return{
@@ -50,9 +51,9 @@ export const deleteMaintenance=(maintenanceId)=>{
  
  }
 
- export const updateMaintenance=(maintenanceId)=>{
+ export const updateMaintenance=(maintenanceId,category)=>{
     
-    const request = axios.put(`${URN}/maintenance/`+ maintenanceId , {headers:authHeader()})
+    const request = axios.put(`${URN}/maintenance/`+ maintenanceId ,{category}, {headers:authHeader()})
      .then(response => response.data)
  
      
