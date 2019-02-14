@@ -174,6 +174,9 @@ class CountryDetails extends Component{
             event.preventDefault();
         }
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
     routeToAddNewUser =() => {
         this.props.history.push('/superDashboard/countrymaster')
@@ -206,6 +209,9 @@ class CountryDetails extends Component{
             <div>
                 <UI onClick={this.logout}>
                 <div className="w3-container w3-margin-top w3-responsive">
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
                         <div className="top-details">
                                 <h3>Country Master Details</h3>
                                 <Button onClick={this.routeToAddNewUser} color="primary">Add Country</Button>

@@ -59,6 +59,52 @@ const userRegistrationForm = (props) => (
                 <span className='error'>{props.emailError}</span>
             </FormGroup>
             <FormGroup>
+                <Label>No. of Family Members</Label>
+                <Input name={props.familyInputName}
+                    placeholder="No. of Family Members"
+                    type="text"
+                    value={props.familyValue}
+                    onChange={props.familyChange}
+                    maxLength='1'
+                    onKeyPress={props.contactKeyPress}  />
+                <span className='error'>{props.familyError}</span>
+            </FormGroup>
+            <FormGroup>
+                <Label>Tower Name</Label>
+                <Input name={props.towerInputName}
+                    type="select"
+                    value={props.towerValue}
+                    onChange={props.towerChange} >
+                    <option>--Select--</option>
+                    {props.fetchingTower}
+                </Input>
+                <span className='error'>{props.towerError}</span>
+            </FormGroup>
+            <FormGroup>
+                <Label>Floor</Label>
+                <Input name={props.floorInputName}
+                    type="text"
+                    placeholder="Floor"
+                    value={props.floorValue}
+                    onChange={props.floorChange}
+                    onKeyPress={props.parkingAndFloorKeyPress}
+                    maxLength='30'  />
+                <span className='error'>{props.floorError}</span>
+            </FormGroup>
+            <FormGroup>
+                <Label>Parking Slot Name</Label>
+                <Input name={props.parkingInputName}
+                    type="text"
+                    placeholder="Parking Slot Name"
+                    value={props.parkingValue}
+                    onChange={props.parkingChange}
+                    onKeyPress={props.parkingAndFloorKeyPress}
+                    maxLength='20'  />
+                <span className='error'>{props.parkingError}</span>
+            </FormGroup>
+            
+            
+            <FormGroup>
                 <Label>Contact No.</Label>
                 <Input name={props.contactInputName}
                     type="text"

@@ -1,6 +1,6 @@
 import {GET_COUNTRY, GET_STATE, GET_CITY, GET_LOCATION_DETAIL, POST_SOCIETY,GET_SOCIETY,DETAIL_SOCIETY, DELETE_SOCIETY, UPDATE_SOCIETY } from '../../actions/index';
 export default function(state={},action){
-    console.log('=============societyReducer===========',action.payload);
+   
     switch(action.type){
     case GET_COUNTRY:
     return {  ...state, countryResult: action.payload};

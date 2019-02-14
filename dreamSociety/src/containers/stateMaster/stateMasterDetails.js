@@ -214,6 +214,10 @@ class flatMasterDetails extends Component {
             <div>  
                 <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top  w3-responsive">
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+
                         <div className="top-details">
                                 <h3>State Master Details</h3>
                                 <Button onClick={this.routeToAddNewUser} color="primary">Add State</Button>

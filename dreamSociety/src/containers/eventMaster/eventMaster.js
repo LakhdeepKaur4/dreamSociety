@@ -91,6 +91,10 @@ this.setState({loading:true})
     this.props.history.push('/superDashboard/display-event')
   }
   
+  close=()=>{
+    return this.props.history.replace('/superDashBoard')
+}
+
   
   render() {
 
@@ -100,6 +104,9 @@ this.setState({loading:true})
     <div >
      
       <form onSubmit={this.submit}>
+      <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
       <h3 align="center">Add Event</h3>
         <div className="form-group">
           <label >Event Type</label>

@@ -166,7 +166,12 @@ class displayServices extends Component {
             event.preventDefault();
         }
     }
-    
+
+       
+       close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
     render() {
         let tableData;
         tableData=
@@ -189,6 +194,10 @@ class displayServices extends Component {
                 <UI onClick={this.logout}>
                   
                     <div className="w3-container w3-margin-top w3-responsive">
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+
                     <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)} >
                         <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Edit a Service</ModalHeader>
                         <ModalBody>
