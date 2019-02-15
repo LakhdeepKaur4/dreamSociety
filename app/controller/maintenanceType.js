@@ -3,6 +3,7 @@ const config = require('../config/config.js');
 const httpStatus = require('http-status');
 
 const MaintenanceType = db.maintenanceType;
+const Size = db.size;
 
 exports.create = async (req, res, next) => {
     try {
@@ -24,7 +25,11 @@ exports.create = async (req, res, next) => {
 
 exports.get = async(req,res,next) => {
     try{
-        const maintenanceType = await MaintenanceType.findAll({where:{isActive:true}});
+        const maintenanceType = await MaintenanceType.findAll({where:{isActive:true},
+        include:[
+            {model:Size}
+        ]
+        });
         if(maintenanceType){
             return res.status(httpStatus.CREATED).json({
                 message: "Maintenance Type Content Page",
@@ -33,6 +38,57 @@ exports.get = async(req,res,next) => {
         }
     }catch(error){
         console.log("error==>",error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.update = async(req,res,next) => {
+    try{
+        const id = req.params.id;
+        console.log("id==>",id)
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+        }
+        const update = req.body;
+         console.log("update==>",update)
+        if(!update){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
+        }
+        const updatedMaintenanceType = await MaintenanceType.find({where:{maintenanceTypeId:id}}).then(maintenanceType => {
+            return maintenanceType.updateAttributes(update)
+          })
+        if(updatedMaintenanceType){
+            return res.status(httpStatus.OK).json({
+                message: "Maintenance Type Updated Page",
+                updatedMaintenanceType
+            });
+        }
+    }catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.delete = async(req,res,next) => {
+    try{
+        const id = req.params.id;
+    
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+        }
+        const update = req.body;
+        if(!update){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
+        }
+        const updatedMaintenanceType = await MaintenanceType.find({where:{maintenanceTypeId:id}}).then(maintenanceType => {
+            return maintenanceType.updateAttributes(update)
+          })
+        if(updatedMaintenanceType){
+            return res.status(httpStatus.OK).json({
+                message: "Maintenance Type deleted successfully",
+                updatedMaintenanceType
+            });
+        }
+    }catch(error){
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }

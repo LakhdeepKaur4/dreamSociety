@@ -45,3 +45,55 @@ exports.get = async(req,res,next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
+
+exports.update = async(req,res,next) => {
+    try{
+        console.log("update maintenance")
+        const id = req.params.id;
+        console.log("id==>",id)
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+        }
+        const update = req.body;
+         console.log("update==>",update)
+        if(!update){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
+        }
+        const updatedMaintenance = await Maintenance.find({where:{maintenanceId:id}}).then(maintenance => {
+            return maintenance.updateAttributes(update)
+          })
+        if(updatedMaintenance){
+            return res.status(httpStatus.OK).json({
+                message: "Maintenance Updated Page",
+                updatedMaintenance
+            });
+        }
+    }catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.delete = async(req,res,next) => {
+    try{
+        const id = req.params.id;
+    
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+        }
+        const update = req.body;
+        if(!update){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
+        }
+        const updatedMaintenance = await Maintenance.find({where:{maintenanceId:id}}).then(maintenance => {
+            return maintenance.updateAttributes(update)
+          })
+        if(updatedMaintenance){
+            return res.status(httpStatus.OK).json({
+                message: "Maintenance deleted successfully",
+                updatedMaintenance
+            });
+        }
+    }catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}

@@ -179,6 +179,8 @@ module.exports = function(app) {
 
 	app.post('/api/vendor', [authJwt.verifyToken], vendorController.create);
 
+	app.post('/api/vendor/service', [authJwt.verifyToken], vendorController.createVendor);
+
 	app.get('/api/vendor', [authJwt.verifyToken], vendorController.get);
 
 	app.put('/api/vendor/:id', [authJwt.verifyToken], vendorController.update);
@@ -225,7 +227,15 @@ module.exports = function(app) {
 
 	app.get('/api/maintenance', [authJwt.verifyToken],maintenanceController.get);
 
+	app.put('/api/maintenance/:id', [authJwt.verifyToken],maintenanceController.update);
+
+	app.put('/api/maintenance/delete/:id', [authJwt.verifyToken],maintenanceController.delete);
+
 	app.post('/api/maintenanceType', [authJwt.verifyToken],maintenanceTypeController.create);
+
+	app.put('/api/maintenanceType/:id', [authJwt.verifyToken],maintenanceTypeController.update);
+
+	app.put('/api/maintenanceType/delete/:id', [authJwt.verifyToken],maintenanceTypeController.delete);
 
 	app.get('/api/maintenanceType', [authJwt.verifyToken],maintenanceTypeController.get);
 
