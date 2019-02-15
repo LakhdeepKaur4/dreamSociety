@@ -195,19 +195,15 @@ exports.uploadPicture = async (req,res,next) => {
 
 exports.upload =async(req,res,next) => {
     try{
-     if(req.files){
-         console.log(req.files);
-         var file = req.files.filename,
-         filename = file.name;
-         file.mv('./public/profilePictures'+filename,function(err){
-             if(err){
-                 console.log(err);
-                 res.send('error==>',err)
-             }else{
-                 res.send('done');
-             }
-         })
-     }
+        console.log("file info ", req.files);
+        var name = req.files.profileImage.name;
+        console.log("name===>",name);
+        // const id = req.body.id;
+        // console.log("req.file",req.file.name)
+        // const savedUser = await User.findByIdAndUpdate(id, {
+        //   pictures: req.file.filename
+        // });
+        // res.status(httpStatus.OK).send({ picture: savedUser.pictures });
     }catch(error){
         console.log(error)
     }

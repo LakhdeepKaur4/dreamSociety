@@ -3,6 +3,7 @@ const config = require('../config/config.js');
 const httpStatus = require('http-status');
 
 const MaintenanceType = db.maintenanceType;
+const Maintenance = db.maintenance;
 const Size = db.size;
 
 exports.create = async (req, res, next) => {
@@ -27,7 +28,8 @@ exports.get = async(req,res,next) => {
     try{
         const maintenanceType = await MaintenanceType.findAll({where:{isActive:true},
         include:[
-            {model:Size}
+            {model:Size},
+            {model:Maintenance}
         ]
         });
         if(maintenanceType){

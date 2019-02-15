@@ -12,5 +12,7 @@ module.exports = {
   sendMethod: 'simpleMsg',
   msgType: 'text',
   duplicateCheck: 'true',
-  format: 'json'
+  format: 'json',
+  uploadFolderPath: './public',
+  uploadImagePath: './public/profilePictures',
 };

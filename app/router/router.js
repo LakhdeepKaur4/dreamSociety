@@ -1,5 +1,6 @@
 const verifySignUp = require('./verifySignUp');
 const authJwt = require('./verifyJwtToken');
+const fileUploadConfig = require('../config/multer');
 
 module.exports = function(app) {
 
@@ -257,5 +258,5 @@ module.exports = function(app) {
 
 	app.get('/api/employeeDetail', [authJwt.verifyToken],employeeDetailController.get);
 
-	app.post('/api/vendor/upload',[authJwt.verifyToken],vendorController.upload);
+	app.post("/api/test/upload",fileUploadConfig.single('profileImage'),vendorController.upload);
 }
