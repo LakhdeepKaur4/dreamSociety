@@ -9,11 +9,11 @@ import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
 
 
 
+
 class CityMaster extends Component {
     constructor(props) {
         super(props);
        
-
 
         this.state = {
             cityName:'',
@@ -23,11 +23,14 @@ class CityMaster extends Component {
             stateId:'',
             loading: true,
             errors: {},
+            message:{},
+           
 
             menuVisible: false,
          }
 
         this.cityName=this.cityName.bind(this);
+        
 
 
     }
@@ -35,9 +38,11 @@ class CityMaster extends Component {
 
     componentDidMount=()=>{
            this.refreshData()
+
+          
     }
 
-
+    
 
     refreshData=()=>{
         this.props.getCountry().then(() => this.setState({loading: false}));
@@ -130,9 +135,9 @@ class CityMaster extends Component {
     cityName=({cityResult})=>{
        
         if(cityResult){
-
+           
            return(
-            cityResult.map((item) =>{ console.log(item.cityName)
+            cityResult.map((item) =>{ 
                    return(
                        <option key={item.cityId} value={item.cityName}>
                         {item.cityName}
@@ -147,6 +152,9 @@ class CityMaster extends Component {
 
 
     onChange=(e) =>{
+
+      
+        
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -177,29 +185,37 @@ class CityMaster extends Component {
         if (this.state.cityName === '') errors.cityName = "cant be empty";
         this.setState({ errors });
 
+  
+      
+
 
         const isValid = Object.keys(errors).length === 0;
 
         if(isValid){
-        this.setState({loading:true})
-        this.props.addCity(this.state)
-        .then(()=>this.props.history.push('/superDashboard/cityMasterDetail'))
+           
+                    this.setState({loading:true})
+                    this.props.addCity(this.state)
+                    .then(()=>this.props.history.push('/superDashboard/cityMasterDetail'))
+                    
+                    
+                    this.setState({
+                        state:{
+                          cityName:'',
+                          countryId:'',
+                          stateId:'',
+              
+              
+                          menuVisible: false,
+              
+              
+                        }
+                      });
+                 
+                    }
+        
 
-        this.setState({
-          state:{
-            cityName:'',
-            countryId:'',
-            stateId:'',
-
-
-            menuVisible: false,
-
-
-          }
-
-
-        });
-    }
+       
+    
     }
 
     logout=()=>{
@@ -217,7 +233,7 @@ class CityMaster extends Component {
     }
 
     render() {
-
+       
         let formData;
         if(!this.state.loading && this.props.cityMasterReducer.countryResult && this.props.cityMasterReducer.stateResult  &&  this.state.errors){
         formData =<div>
@@ -259,7 +275,7 @@ class CityMaster extends Component {
                                 <span aria-hidden="true">&times;</span>
                             </div>
                     <h3 style={{textAlign:'center', marginBottom: '10px'}}>City Master</h3>
-                    {!this.state.loading ? formData : <Spinner />}
+                    {!this.state.loading ? formData : <Spinner />} 
                 </Form>
                 </UI>
 
@@ -269,7 +285,7 @@ class CityMaster extends Component {
 }
 
 function mapStateToProps(state) {
-
+   
     return {
         cityMasterReducer: state.cityMasterReducer
     }

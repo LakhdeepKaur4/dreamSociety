@@ -26,14 +26,21 @@ class CityMasterDetail extends Component {
             search: '',
             modal: false,
             loading: true,
+            errors:{}
 
         };
     }
     onChangeHandler = (event) => {
-        console.log(this.state)
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value.trim('') });
+        }
     }
+
 
     toggle = (cityId, countryName, stateName, cityName) => {
         
@@ -70,11 +77,20 @@ class CityMasterDetail extends Component {
 
 
     editCityType = () => {
-        this.setState({
-            loading: true
-        })
+      
         const { cityId, countryId, stateId, cityName } = this.state
+         
+        let errors={};
 
+        if(this.state.cityName === ''){ errors.cityName=" City Name can't be empty"}
+        this.setState({errors})
+
+        const isValid = Object.keys(errors).length === 0
+
+        if (isValid) {
+            this.setState({
+                loading: true
+            })
 
         this.props.updateCity(cityId, countryId, stateId, cityName)
             .then(() => this.refreshData())
@@ -83,7 +99,7 @@ class CityMasterDetail extends Component {
             modal: !this.state.modal
         })
 
-
+    }
     }
 
     deleteCityName = (cityId) => {
@@ -259,6 +275,7 @@ class CityMasterDetail extends Component {
                                     <FormGroup>
                                         <Label htmlFor="cityName">City Name</Label>
                                         <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} value={this.state.cityName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler}/>
+                                        <span className="error">{this.state.errors.cityName}</span>
                                     </FormGroup>
 
                                 
