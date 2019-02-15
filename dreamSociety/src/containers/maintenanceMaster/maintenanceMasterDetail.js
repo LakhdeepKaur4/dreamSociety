@@ -200,7 +200,7 @@ class MaintenanceMasterDetail extends Component {
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
                                 <FormGroup>
-                                    <Label htmlFor="category">Category Type</Label>
+                                    <Label >Category Type</Label>
                                     <Input type="text" id="maintenanceId" name="category" onChange={this.onChangeHandler} value={this.state.category} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
                                     <span className="error">{this.state.errors.category}</span>
                                 </FormGroup>
