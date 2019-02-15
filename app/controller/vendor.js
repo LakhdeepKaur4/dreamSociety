@@ -192,3 +192,23 @@ exports.uploadPicture = async (req,res,next) => {
         console.log(error)
     }
 }
+
+exports.upload =async(req,res,next) => {
+    try{
+     if(req.files){
+         console.log(req.files);
+         var file = req.files.filename,
+         filename = file.name;
+         file.mv('./public/profilePictures'+filename,function(err){
+             if(err){
+                 console.log(err);
+                 res.send('error==>',err)
+             }else{
+                 res.send('done');
+             }
+         })
+     }
+    }catch(error){
+        console.log(error)
+    }
+}

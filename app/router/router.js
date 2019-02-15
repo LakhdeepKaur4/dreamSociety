@@ -257,5 +257,5 @@ module.exports = function(app) {
 
 	app.get('/api/employeeDetail', [authJwt.verifyToken],employeeDetailController.get);
 
-	app.post('/api/vendor/upload',[authJwt.verifyToken],vendorController.uploadPicture);
+	app.post('/api/vendor/upload',[authJwt.verifyToken],vendorController.upload);
 }
