@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getDetails, AddDetails, getDrop, getSizeDrop } from '../../actionCreators/flatMasterAction';
+import { getDetails, AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount } from '../../actionCreators/flatMasterAction';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
@@ -32,7 +32,10 @@ class flatMasterDetails extends Component {
         menuVisible: false,
         search: '',
         errors:{},
-        activePage: 1
+        activePage: '1',
+        limit:'5'
+        // itemsCountPerPage :1,
+        // totalItemsCount:1
         }
 
    } 
@@ -46,7 +49,8 @@ class flatMasterDetails extends Component {
 
 
     refreshData() {
-        this.props.getDetails().then(() => this.setState({loading:false}));
+        const defaultPage=this.state.activePage;
+        this.props.getDetails(defaultPage).then(() => this.setState({loading:false}));
         this.props.getDrop().then(() => this.setState({loading:false}));
         this.props.getSizeDrop().then(() => this.setState({loading:false}));
 
@@ -144,11 +148,15 @@ class flatMasterDetails extends Component {
     }
 
     fetchUsers({ list1 }) {
+        
         if (list1) {
-
-            return list1.filter(this.searchFilter(this.state.search)).map((item) => {
-
+            console.log(list1);
+            return list1.flat.filter(this.searchFilter(this.state.search)).map((item) => {
+        
+                     
                 return (
+                    
+                    
                     <tr key={item.flatId}>
                         <td>{item.society_master.societyName}</td>
                         <td>{item.flatType}</td>
@@ -163,6 +171,7 @@ class flatMasterDetails extends Component {
                         </td>
                     </tr>
                 )
+        
             })
         }
     }
@@ -217,8 +226,37 @@ class flatMasterDetails extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
+    handlePageChange=(pageNumber)=> {
+        console.log(`active page is ${pageNumber}`);
+        // this.setState({activePage: pageNumber}) ;
+        this.state.activePage=pageNumber;        
+        const activePage=this.state.activePage;
+        
+            this.props.getPageDetails(activePage);
+        
+        
+      
+      }
+
+    //   countPerPage=(e)=>{
+    //        e.preventDefault();
+    //   }
+
+      onChange1=(e)=>{
+            e.preventDefault();
+            console.log('hii');
+            // this.setState({itemsCountPerPage:e.target.value})
+            const activePage=this.state.activePage;
+            this.state.limit=e.target.value;
+            console.log(this.state.limit,activePage)
+            let countPerPage= parseInt(this.state.limit);
+            this.props.noOfCount(countPerPage,activePage)
+    }
+
     render() {
         let tableData;
+       
+        
         tableData=<Table className="table table-bordered">
         <thead>
             <tr>
@@ -233,8 +271,10 @@ class flatMasterDetails extends Component {
         <tbody>
             {this.fetchUsers(this.props.flats)}
         </tbody>
+        {/* <Pagination/> */}
        
     </Table>
+   
    
     
      
@@ -332,16 +372,25 @@ class flatMasterDetails extends Component {
                         </Modal>
                         <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
+                                 {/* <input type="number"
+                                 placeholder="enter no of entries to display"
+                                 onChange={this.onChange1}/> */}
                             {!this.state.loading ? tableData : <Spinner />}
-                            <Pagination
-          activePage={this.state.activePage}
-          itemsCountPerPage={10}
-          totalItemsCount={450}
-          pageRangeDisplayed={5}
-          onChange={this.handlePageChange}
-        />
-                     
+                           
+                            <Pagination 
+                            // hideDisabled
+                            
+                             activePage={this.state.activePage}
+                             itemsCountPerPage={this.state.limit}
+                             totalItemsCount={11}
+                            //  pageRangeDisplayed={5}
+                             onChange={this.handlePageChange}
+                             itemClass='page-item'
+                             linkClasss='page-link'   />      
+                          
                     </div>
+                
+                    
                 </UI>
            
                 <div>
@@ -369,7 +418,9 @@ function mapDispatchToProps(dispatch) {
         getDetails,
         AddDetails,
         getDrop,
-        getSizeDrop
+        getSizeDrop,
+        getPageDetails,
+        noOfCount
     }, dispatch)
 }
 

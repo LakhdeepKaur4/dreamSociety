@@ -94,5 +94,7 @@ export const ADD_MAINTENANCE ='add_maintenance';
 export const GET_MAINTENANCE ='get_maintenance';
 export const DELETE_MAINTENANCE ='delete_maintenance';
 export const UPDATE_MAINTENANCE ='update_maintenance';
+export const GET_ACTIVE_PAGE='get_active_page';
+export const GET_COUNT_PAGE='get_count_page';
 
 
