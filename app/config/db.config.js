@@ -84,6 +84,7 @@ db.user.belongsTo(db.flatDetail,{foreignKey:'flatDetailId',constraints: false});
 db.maintenance.belongsTo(db.user,{foreignKey:'userId'});
 db.maintenanceType.belongsTo(db.user,{foreignKey:'userId'});
 db.maintenanceType.belongsTo(db.size,{foreignKey:'sizeId'});
+db.maintenanceType.belongsTo(db.maintenance,{foreignKey:'maintenanceId'});
 db.rate.belongsTo(db.user,{foreignKey:'userId'});
 db.employeeType.belongsTo(db.user,{foreignKey:'userId'});
 db.employeeWorkType.belongsTo(db.user,{foreignKey:'userId'})
