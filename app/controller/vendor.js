@@ -169,3 +169,26 @@ exports.delete = async (req, res, next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
+
+exports.uploadPicture = async (req,res,next) => {
+    try{
+        console.log(req.body.pictures)
+        console.log("request picture==>",req.files)
+        let uploadFile = req.files.picture
+        const fileName = req.files.file.name
+        uploadFile.mv(
+          `${__dirname}/public/profilePictures/${fileName}`,
+          function (err) {
+            if (err) {
+              return res.status(500).send(err)
+            }
+      
+            res.json({
+              file: `public/${req.files.file.name}`,
+            })
+          },
+        )
+    }catch(error){
+        console.log(error)
+    }
+}

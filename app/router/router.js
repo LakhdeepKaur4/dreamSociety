@@ -123,6 +123,8 @@ module.exports = function(app) {
 
 	app.get('/api/flat', [authJwt.verifyToken], flatController.get);
 
+	app.get('/api/flat/:page', [authJwt.verifyToken], flatController.getFlatByPageNumber);
+
 	app.get('/api/flat/:id',[authJwt.verifyToken],  flatController.getById);
 
 	app.put('/api/flat/:id', [authJwt.verifyToken], flatController.update);
@@ -254,4 +256,6 @@ module.exports = function(app) {
 	app.post('/api/employeeDetail', [authJwt.verifyToken],employeeDetailController.create);
 
 	app.get('/api/employeeDetail', [authJwt.verifyToken],employeeDetailController.get);
+
+	app.post('/api/vendor/upload',[authJwt.verifyToken],vendorController.uploadPicture);
 }

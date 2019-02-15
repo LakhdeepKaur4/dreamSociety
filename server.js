@@ -25,9 +25,11 @@ var cors = require('cors');
 app.use(cors());
 var bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded({
-	extended: true
-}));
+// app.use(bodyParser.urlencoded({
+// 	extended: true
+// }));
+
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyParser.json());
 
 require('./app/router/router.js')(app);

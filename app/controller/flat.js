@@ -1,5 +1,6 @@
 const db = require('../config/db.config.js');
 const config = require('../config/config.js');
+const httpStatus = require('http-status')
 
 const Flat = db.flat;
 const Society = db.society;
@@ -96,4 +97,26 @@ exports.delete = (req,res) => {
       });
 }
 
-
+exports.getFlatByPageNumber = async(req,res,next) => {
+    try{
+        let limit = 5;
+        let offset = 0;
+        let page = req.params.page;
+        offset = limit * (page - 1);
+        const data = await Flat.findAndCountAll();
+        // let pages = Math.ceil(data.count / limit);
+        const flat = await Flat.findAll({where:{isActive:true}, 
+            limit: limit,
+            offset: offset,
+        });
+        if(flat){
+            return res.status(httpStatus.CREATED).json({
+                message: "Flat Content Page",
+                flat:flat
+            });
+        }
+    }catch(error){
+        console.log("error==>",error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
