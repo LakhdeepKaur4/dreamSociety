@@ -32,9 +32,10 @@ class ParkingMaster extends Component {
 
     renderParking({ parking }) {
         if (parking) {
-            return parking.slot.filter(this.searchFilter(this.state.search)).map((item) => {
+            return parking.slot.filter(this.searchFilter(this.state.search)).map((item, index) => {
                 return (
                     <tr key={item.parking_master.parkingName}>
+                        <td>{index + 1}</td>
                         <td>
                             {item.parking_master.parkingName}
                         </td>
@@ -52,9 +53,10 @@ class ParkingMaster extends Component {
     }
 
     searchFilter(search){
-        return function(x){
+        return function(x,y){
             const slots = x.count.toString()
-            return x.parking_master.parkingName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+            return y.toString().indexOf(search) !== -1 || 
+            x.parking_master.parkingName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
             slots.includes(search)||
            !search;
         }
@@ -62,7 +64,7 @@ class ParkingMaster extends Component {
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
-        return this.props.history.replace('/') 
+        return this.props.history.replace('/'); 
     }
        
     close=()=>{
@@ -76,6 +78,7 @@ class ParkingMaster extends Component {
                 <Table className="table table-bordered">
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>Basement</th>
                             <th>No. of Parking</th>
                             <th>Actions</th>
@@ -97,8 +100,8 @@ class ParkingMaster extends Component {
 
                         <div className="w3-container w3-margin-top w3-responsive">
                         <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
+                                <span aria-hidden="true">&times;</span>
+                        </div>
                             <div className="top-details">
                                 <h3>Parking Master details</h3>
                                 <Button color="primary" onClick={() => this.props.history.push('/superDashboard/add_parking/new')}>Add Parking</Button>
