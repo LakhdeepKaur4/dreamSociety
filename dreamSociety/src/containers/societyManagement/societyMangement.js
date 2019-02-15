@@ -148,7 +148,7 @@ class SocietyMangement extends Component {
         if(stateResult){
           
            return( 
-            stateResult.map((item) =>{ console.log(item.stateName)
+            stateResult.map((item) =>{ 
                    return(
                        <option key={item.stateId} value={item.stateName}>
                         {item.stateName}
@@ -165,7 +165,7 @@ class SocietyMangement extends Component {
         if(cityResult){
             
            return( 
-            cityResult.map((item) =>{ console.log(item.cityName)
+            cityResult.map((item) =>{ 
                    return(
                        <option key={item.cityId} value={item.cityName}>
                         {item.cityName}
@@ -182,7 +182,7 @@ class SocietyMangement extends Component {
         if(locationResult){
           
            return( 
-            locationResult.map((item) =>{ console.log(item.locationName)
+            locationResult.map((item) =>{ 
                    return(
                        <option key={item.locationId} value={item.locationName}>
                         {item.locationName}

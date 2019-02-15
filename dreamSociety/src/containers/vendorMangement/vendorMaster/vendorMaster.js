@@ -102,6 +102,7 @@ class vendorMaster extends Component {
                                     {this.getDropDowm(this.props.displayServiceMasterReducer)}
                                 </select>
                             </div>
+                            
                             <div>
                                 <label>Description</label>
                                 <input className="form-control" placeholder="Description" maxLength={50}  value={this.state.description} onChange={this.handleChange} type="text" name="description" required></input>

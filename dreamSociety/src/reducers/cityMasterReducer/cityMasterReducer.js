@@ -19,6 +19,8 @@ export default function(state={},action){
     case DETAIL_CITY:
     return {...state, city: action.payload}
 
+   
+
     case DELETE_CITY:
     return {...state, delete_city: action.payload}
    

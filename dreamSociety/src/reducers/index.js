@@ -20,6 +20,7 @@ import AssetsReducer from './assetsReducer/assetsReducer';
 import AssetsTypeReducer from './assetsReducer/assetsTypeReducer';
 import countryDetails from './countryReducers/countryReducer';
 import MaintenanceMasterReducer from './maintenanceMasterReducer/maintenanceMasterReducer';
+import MaintenanceSubMaster from './maintenanceSubMasterReducer/maintenanceSubMasterReducer';
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -41,6 +42,7 @@ const rootReducer = combineReducers({
     flatDetailMasterReducer,
     locationMasterReducer,
     countryDetails,
-    MaintenanceMasterReducer
+    MaintenanceMasterReducer,
+    MaintenanceSubMaster
 })
 export default rootReducer;
