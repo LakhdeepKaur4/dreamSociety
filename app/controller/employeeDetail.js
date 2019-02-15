@@ -2,6 +2,8 @@ const db = require('../config/db.config.js');
 const httpStatus = require('http-status')
 
 const EmployeeDetail = db.employeeDetail;
+const EmployeeType =db.employeeType;
+const EmployeeWorkType =db.employeeWorkType;
 
 exports.create = async (req,res,next) => {
     try{
@@ -19,7 +21,12 @@ exports.create = async (req,res,next) => {
 
 exports.get = async(req,res,next) => {
     try{
-        const employeeDetail = await EmployeeDetail.findAll({where:{isActive:true}});
+        const employeeDetail = await EmployeeDetail.findAll({where:{isActive:true},
+        include:[
+            {model:EmployeeType},
+            {model:EmployeeWorkType}
+        ]
+        });
         if(employeeDetail){
             return res.status(httpStatus.OK).json({
                 message: "Employee Detail Content Page",
