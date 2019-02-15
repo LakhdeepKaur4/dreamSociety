@@ -127,6 +127,8 @@ module.exports = function(app) {
 
 	app.get('/api/flat/:page', [authJwt.verifyToken], flatController.getFlatByPageNumber);
 
+	app.post('/api/flat/:page', [authJwt.verifyToken], flatController.getFlatByLimit);
+
 	app.get('/api/flat/:id',[authJwt.verifyToken],  flatController.getById);
 
 	app.put('/api/flat/:id', [authJwt.verifyToken], flatController.update);
@@ -258,6 +260,10 @@ module.exports = function(app) {
 	app.post('/api/employeeDetail', [authJwt.verifyToken],employeeDetailController.create);
 
 	app.get('/api/employeeDetail', [authJwt.verifyToken],employeeDetailController.get);
+
+	app.put('/api/employeeDetail/:id', [authJwt.verifyToken],employeeDetailController.update);
+
+	app.put('/api/employeeDetail/delete/:id', [authJwt.verifyToken],employeeDetailController.delete);
 
 	app.post("/api/test/upload",fileUploadConfig.single('profileImage'),vendorController.upload);
 

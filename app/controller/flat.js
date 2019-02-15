@@ -135,3 +135,39 @@ exports.getFlatByPageNumber = async (req, res, next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
+
+exports.getFlatByLimit = async (req, res, next) => {
+    try {
+        let limit = req.body.limit;
+        let offset = 0;
+        let page = req.params.page;
+        offset = limit * (page - 1);
+        const count = await Flat.findAndCountAll({where:{isActive:true}});
+        // let pages = Math.ceil(data.count / limit);
+        const flat = await Flat.findAll({
+            where: { isActive: true },
+            limit: limit,
+            offset: offset,
+            include: [
+                {
+                    model: Society,
+                    attributes: ['societyId', 'societyName']
+                },
+                {
+                    model: Size,
+                    attributes: ['sizeId', 'sizeType']
+                },
+            ]
+        });
+        if (flat) {
+            return res.status(httpStatus.CREATED).json({
+                message: "Flat Content Page",
+                totalCount:count.count,
+                flat: flat
+            });
+        }
+    } catch (error) {
+        console.log("error==>", error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
