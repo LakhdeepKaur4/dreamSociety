@@ -47,6 +47,7 @@ db.employeeType = require('../model/employeeType.model')(sequelize,Sequelize);
 db.employeeWorkType = require('../model/employeeWorkType.model')(sequelize,Sequelize);
 db.employeeDetail = require('../model/employeeDetail.model')(sequelize,Sequelize);
 db.vendorService = require('../model/vendorService.model')(sequelize,Sequelize);
+db.inventory = require('../model/inventory.model')(sequelize,Sequelize);
 
  
 db.role.belongsToMany(db.user, { through: 'user_roles', foreignKey: 'roleId', otherKey: 'userId'});
@@ -97,5 +98,8 @@ db.vendorService.belongsTo(db.serviceDetail,{foreignKey:'serviceDetailId'});
 db.vendorService.belongsTo(db.rate,{foreignKey:'rateTypeId'});
 db.vendorService.belongsTo(db.user,{foreignKey:'userId'});
 db.vendorService.belongsTo(db.service,{foreignKey:'serviceId'});
+db.inventory.belongsTo(db.assets,{foreignKey:'assetId'});
+db.inventory.belongsTo(db.assetsType,{foreignKey:'assetTypeId'});
+db.inventory.belongsTo(db.user,{foreignKey:'userId'});
 
 module.exports = db;

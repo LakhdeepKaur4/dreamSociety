@@ -29,6 +29,7 @@ module.exports = function(app) {
 	const employeeTypeController = require('../controller/employeeType');
 	const employeeWorkTypeController = require('../controller/employeeWorkType');
 	const employeeDetailController = require('../controller/employeeDetail');
+	const inventoryController = require('../controller/inventory');
 	
 	app.get('/', userController.start);
 
@@ -259,4 +260,13 @@ module.exports = function(app) {
 	app.get('/api/employeeDetail', [authJwt.verifyToken],employeeDetailController.get);
 
 	app.post("/api/test/upload",fileUploadConfig.single('profileImage'),vendorController.upload);
+
+	app.post('/api/inventory', [authJwt.verifyToken],inventoryController.create);
+
+	app.get('/api/inventory', [authJwt.verifyToken],inventoryController.get);
+
+	app.put('/api/inventory/:id', [authJwt.verifyToken],inventoryController.update);
+
+	app.put('/api/inventory/delete/:id', [authJwt.verifyToken],inventoryController.delete);
+	
 }

@@ -12,7 +12,15 @@ module.exports = (sequelize, Sequelize) => {
         type:Sequelize.FLOAT,
         defaultValue: true
       }, 
+      number:{
+        type:Sequelize.INTEGER,
+        defaultValue: true
+      }, 
+      isActive: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
+      },
 	});
 	
-	return Rate;
+	return Inventory;
 }
