@@ -94,5 +94,9 @@ export const ADD_MAINTENANCE ='add_maintenance';
 export const GET_MAINTENANCE ='get_maintenance';
 export const DELETE_MAINTENANCE ='delete_maintenance';
 export const UPDATE_MAINTENANCE ='update_maintenance';
-
-
+export const GET_EMPLOYEE ='get_employee';
+export const GET_EMPLOYEE_WORK_TYPE='get_employee_work_type';
+export const GET_EMPLOYEE_TYPE ='get_employee_type';
+export const ADD_EMPLOYEE = 'add_employee';
+export const UPDATE_EMPLOYEE = 'update_employee';
+export const DELETE_EMPLOYEE ='delete_employee';

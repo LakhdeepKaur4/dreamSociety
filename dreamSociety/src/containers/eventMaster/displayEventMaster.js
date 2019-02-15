@@ -114,9 +114,10 @@ class DisplayEventMaster extends Component {
                 console.log(getEvent);
                 if (getEvent) {
                         return (
-                                getEvent.event.filter(this.searchFilter(this.state.search)).map((item) => {
+                                getEvent.event.filter(this.searchFilter(this.state.search)).map((item,index) => {
                                         return (
                                                 <tr key={item.eventId}>
+                                                <td> {index+1}</td>
                                                         <td>{item.eventType}</td>
                                                         <td>{item.eventName}</td>
                                                         <td>{item.organiser.userName}</td>
@@ -160,6 +161,7 @@ class DisplayEventMaster extends Component {
                 tableData=    <Table>
                 <thead>
                         <tr>
+                                 <th>#</th>
                                 <th>Event Type</th>
                                 <th>Event Name</th>
                                 <th>Event Organiser</th>

@@ -51,7 +51,8 @@ import SocietyManagementDetail from './containers/societyManagement/societyManag
 import MaintenanceMaster from './containers/maintenanceMaster/maintenanceMaster';
 import MaintenanceMasterDetail from './containers/maintenanceMaster/maintenanceMasterDetail';
 import InventoryDetails from './containers/inventoryDetails/inventoryDetails'
-
+import EmployeeTypeMaster from './containers/employeeTypeMaster/employeeTypeMaster'
+import DisplayEmployeeTypeMaster from './containers/employeeTypeMaster/displayEmployeeTypeMaster';
 
 class App extends Component {
   render() {
@@ -105,6 +106,8 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/maintenanceMaster' component={MaintenanceMaster}/>
             <PrivateRoute path='/superDashboard/maintenanceMasterDetail' component={MaintenanceMasterDetail}/>
             <PrivateRoute path='/superDashboard/inventoryDetails' component={InventoryDetails}/>
+            <PrivateRoute  path ='/superDashboard/employeeType' component ={EmployeeTypeMaster}/>
+            <PrivateRoute path='/superDashboard/displayEmployeeType' component ={DisplayEmployeeTypeMaster}/>
           </Switch>
         </div>
         {/* </ScrollToTop> */}
