@@ -49,6 +49,17 @@ const editUserModal = (props) => (
                 {!props.emailValue ? <span className="error">{props.emailError}</span> : null}
             </FormGroup>
             <FormGroup>
+                <Label>Tower Name</Label>
+                <Input name={props.towerInputName}
+                    type="select"
+                    onChange={props.towerChange} >
+                    <option>{props.towerValue}</option>
+                    <option disabled>--Select--</option>
+                    {props.fetchingTower}
+                </Input>
+                {!props.towerValue ? <span className='error'>{props.towerError}</span> : null}
+            </FormGroup>
+            <FormGroup>
                 <Label>No. of Family Members</Label>
                 <Input name={props.familyInputName}
                     placeholder="No. of Family Members"
@@ -59,6 +70,46 @@ const editUserModal = (props) => (
                     onKeyPress={props.contactKeyPress}  />
                 {!props.familyValue ? <span className='error'>{props.familyError}</span> : null}
             </FormGroup>
+            <FormGroup>
+                <Label>Floor</Label>
+                <Input name={props.floorInputName}
+                    type="text"
+                    placeholder="Floor"
+                    value={props.floorValue}
+                    onChange={props.floorChange}
+                    onKeyPress={props.parkingAndFloorKeyPress}
+                    maxLength='30'  />
+                {!props.floorValue ? <span className='error'>{props.floorError}</span> : null}
+            </FormGroup>
+            <FormGroup>
+                <Label>Parking Slot Name</Label>
+                <Input name={props.parkingInputName}
+                    type="text"
+                    placeholder="Parking Slot Name"
+                    value={props.parkingValue}
+                    onChange={props.parkingChange}
+                    onKeyPress={props.parkingAndFloorKeyPress}
+                    maxLength='20'  />
+                {!props.floorValue ? <span className='error'>{props.parkingError}</span> : null}
+            </FormGroup>
+            <FormGroup>
+                <Label for="contact">Contact</Label>
+                <Input id="contact" onKeyPress = {props.contactValidation} name={props.contactInputName} value={props.contactValue} onChange={props.contactValueChange} />
+                {!props.parkingValue ? <span className="error">{props.contactError}</span> : null}
+            </FormGroup>
+            
+            {/* <FormGroup>
+                <Label>No. of Family Members</Label>
+                <Input name={props.familyInputName}
+                    placeholder="No. of Family Members"
+                    type="text"
+                    value={props.familyValue}
+                    onChange={props.familyChange}
+                    maxLength='1'
+                    onKeyPress={props.contactKeyPress}  />
+                {!props.familyValue ? <span className='error'>{props.familyError}</span> : null}
+            </FormGroup>
+
             <FormGroup>
                 <Label>Tower Name</Label>
                 <Input name={props.towerInputName}
@@ -91,12 +142,8 @@ const editUserModal = (props) => (
                     onKeyPress={props.parkingAndFloorKeyPress}
                     maxLength='20'  />
                 {!props.floorValue ? <span className='error'>{props.parkingError}</span> : null}
-            </FormGroup>
-            <FormGroup>
-                <Label for="contact">Contact</Label>
-                <Input id="contact" onKeyPress = {props.contactValidation} name={props.contactInputName} value={props.contactValue} onChange={props.contactValueChange} />
-                {!props.parkingValue ? <span className="error">{props.contactError}</span> : null}
-            </FormGroup>
+            </FormGroup> */}
+            
             <FormGroup>
                 <Button type="submit" color="primary" onClick={props.updateUserClick}>Save</Button>{' '}
                 <Button color="danger" onClick={props.toggle}>Cancel</Button>

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { addUser, getRoles } from '../../actionCreators/superAdminMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
-import './userRegistration.css';
 import { withRouter } from 'react-router-dom';
 import { Form } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
@@ -271,8 +270,8 @@ class Registration extends Component {
                     <Form onSubmit={this.submit}>
                     <div>
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
+                            <span aria-hidden="true">&times;</span>
+                    </div>
 
                         <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add User</h3></div>
                         {!this.state.loading ? formData: <Spinner />}
