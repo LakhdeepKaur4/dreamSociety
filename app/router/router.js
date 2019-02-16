@@ -127,7 +127,7 @@ module.exports = function(app) {
 
 	app.get('/api/flat/:page', [authJwt.verifyToken], flatController.getFlatByPageNumber);
 
-	app.post('/api/flat/:page', [authJwt.verifyToken], flatController.getFlatByLimit);
+	app.put('/api/flat/:page', [authJwt.verifyToken], flatController.getFlatByLimit);
 
 	app.get('/api/flat/:id',[authJwt.verifyToken],  flatController.getById);
 

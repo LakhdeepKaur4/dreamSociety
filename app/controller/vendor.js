@@ -4,6 +4,7 @@ var userNameGenerator = require('random-username-generator');
 var passwordGenerator = require('generate-password');
 const Nexmo = require("nexmo");
 const config = require('../config/config.js');
+const file = require('../handlers/fileSystem');
 
 const nexmo = new Nexmo(
     {
@@ -193,18 +194,53 @@ exports.uploadPicture = async (req,res,next) => {
     }
 }
 
+function uploadFile(data, callback) {
+    try {
+        if (data.file) {
+            file.upload(data.file, isFileUpload => {
+                if (!isFileUpload) {
+                    callback(false);
+                }
+            })
+        }
+        if (data.picture) {
+            file.upload(data.picture, isFileUpload => {
+                if (!isFileUpload) {
+                    callback(false);
+                }
+            })
+        }
+        callback(true);
+    } catch (err) {
+        console.log(':: err in uploadFile ', err)
+        callback(false);
+    }
+}
+
 exports.upload =async(req,res,next) => {
     try{
-        console.log("file info ", req.files);
-        var name = req.files.profileImage.name;
-        console.log("name===>",name);
-        // const id = req.body.id;
-        // console.log("req.file",req.file.name)
-        // const savedUser = await User.findByIdAndUpdate(id, {
-        //   pictures: req.file.filename
-        // });
-        // res.status(httpStatus.OK).send({ picture: savedUser.pictures });
+        console.log(body.fileData);
+        const fileUrl = `/profilePictures/`;
+        // create file url from server directory
+        url = `${process.env["PWD"]}/public${fileUrl}`;
+
+        const documentFile = { url, fileData: body.fileData };
+        console.log('fileUrl',fileUrl);
+        console.log("filedocumentUrl===",documentFile);
+        file.upload(documentFile, (isFileUpload) => {
+            // check file upload on server successfully or not
+            if (isFileUpload) {
+                // update  file url in db
+        console.log("successfully uploaded");
+            }
+            console.log("resp 2", resp)
+        });
+        // console.log("file info ", req.file);
+        // var name = req.files.profileImage.name;
+        // console.log("name===>",name);
+        
     }catch(error){
         console.log(error)
     }
 }
+

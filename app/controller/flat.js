@@ -138,6 +138,7 @@ exports.getFlatByPageNumber = async (req, res, next) => {
 
 exports.getFlatByLimit = async (req, res, next) => {
     try {
+        console.log("body",req.body.limit)
         let limit = req.body.limit;
         let offset = 0;
         let page = req.params.page;
