@@ -6,6 +6,7 @@ import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner'
+import DefaultSelect from '../../constants/defaultSelectOption';
 
 
 
@@ -287,7 +288,7 @@ class SocietyMangement extends Component {
             <FormGroup>
             <Label><h4>Country Name</h4></Label>
             <Input type="select" defaultValue='no-value' name="countryName"  onChange={this.onChangeCountry} required>
-            <option value='no-value' disabled>--Select--</option>
+                <DefaultSelect/>
                 {this.countryName(this.props.societyReducer)}
             </Input>
             <span className='error'>{this.state.errors.countryName}</span>
@@ -296,7 +297,7 @@ class SocietyMangement extends Component {
         <FormGroup>
             <Label><h4>State Name</h4></Label>
             <Input type="select" defaultValue='no-value' name="stateName"   onChange={this.onChangeState} required>
-            <option value='no-value' disabled>--Select--</option>
+           <DefaultSelect/>
                 {this.stateName(this.props.societyReducer)}
             </Input>
              <span className='error'>{this.state.errors.stateName}</span>
@@ -305,7 +306,7 @@ class SocietyMangement extends Component {
         <FormGroup>
             <Label><h4>City Name</h4></Label>
             <Input type="select" defaultValue='no-value' name="cityName"  onChange={this.onChangeCity} required>
-            <option value='no-value' disabled>--Select--</option>
+           <DefaultSelect/>
                 {this.cityName(this.props.societyReducer)}  
             </Input>
             <span className='error'>{this.state.errors.cityName}</span>
@@ -314,7 +315,7 @@ class SocietyMangement extends Component {
         <FormGroup>
             <Label><h4>Location Name</h4></Label>
             <Input type="select" defaultValue='no-value' name="locationName"  onChange={this.onChangeLocation} required>
-                <option value='no-value' disabled>--Select--</option>
+               <DefaultSelect/>
                 {this.locationName(this.props.societyReducer)}
             </Input>
             <span className='error'>{this.state.errors.locationName}</span>

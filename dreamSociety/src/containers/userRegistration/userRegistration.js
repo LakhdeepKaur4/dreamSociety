@@ -140,7 +140,6 @@ class Registration extends Component {
 
     onChange(e) {
         console.log(this.state)
-        
             this.setState({
                 emailServerError:'',
                 userNameServerError:'',

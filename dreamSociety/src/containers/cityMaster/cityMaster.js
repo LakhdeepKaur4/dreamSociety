@@ -5,7 +5,7 @@ import {getCountry,getState,getCity, addCity,detailCity} from './../../actionCre
 import UI from '../../components/newUI/superAdminDashboard';
 import _ from 'underscore';
 import Spinner from '../../components/spinner/spinner'
-import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
+import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap'
 
 
 
