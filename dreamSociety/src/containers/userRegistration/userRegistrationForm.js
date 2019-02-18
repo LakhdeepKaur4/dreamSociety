@@ -6,8 +6,8 @@ const userRegistrationForm = (props) => (
         
         <FormGroup>
                 <Label>User Type</Label>
-                <Input type="select" name={props.roleInputName} onChange={props.roleChange}>
-                    <option value=''>--Select--</option>
+                <Input type="select" defaultValue='select' name={props.roleInputName} onChange={props.roleChange}>
+                    <option disabled value='select'>--Select--</option>
                     {props.fetchingRole}
                 </Input>
                 <span className='error'>{props.roleError}</span>
