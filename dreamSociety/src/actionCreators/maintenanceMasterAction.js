@@ -9,7 +9,7 @@ export const addMaintenance=(values)=>{
   
    const request = axios.post(`${URN}/maintenance` , values , {headers:authHeader()})
     .then(response => response.data)
-    .catch((err)=>alert(err.response.data.message))
+ 
 
     
     return{
