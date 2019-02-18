@@ -30,7 +30,8 @@ class Registration extends Component {
             passwordConfirmation: "",
             isSubmit: false,
             menuVisible: false,
-            message:'',
+            emailServerError:'',
+            userNameServerError:'',
             loading: true,
             errors: {}
         };
@@ -100,10 +101,6 @@ class Registration extends Component {
         if (!this.state.roles) {
             errors.roles = "User type can't be empty. Please select"
         }
-
-        if(this.props.userDetail.users){
-            errors.email="Invalid email"
-        }
         
         if(!this.state.towerId){
             errors.towerId = "Tower can't be empty. Please select."
@@ -129,29 +126,27 @@ class Registration extends Component {
         // const isValid = this.validate();
         if (isValid) {
             this.setState({loading: true})
-            this.props.addUser({ ...this.state }).then(
-            () => this.props.history.push('/superDashboard/user_details'))
-            this.setState({
-                roleName: [],
-                roles: "",
-                firstName: "",
-                lastName: "",
-                userName: "",
-                email: "",
-                floor:"",
-                parking:"",
-                familyMember: "",
-                towerId:"",
-                contact: "",
-                password: "",
-                passwordConfirmation: "",
-                isSubmit: true
-            });
+            this.props.addUser(this.state).then(() =>{
+                    this.props.history.push('/superDashboard/user_details')
+                }
+                    
+            )
+            .catch(err => {
+                console.log(err.response.data.message);
+                this.setState({emailServerError: err.response.data.message, userNameServerError:err.response.data.message, loading: false})
+            })
         }
     }
 
     onChange(e) {
         console.log(this.state)
+        
+            this.setState({
+                emailServerError:'',
+                userNameServerError:'',
+            })
+        
+        
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -262,16 +257,13 @@ class Registration extends Component {
                 passwordConfirmationChange={this.onChange}
                 passwordConfirmationError={this.state.errors.passwordConfirmation}
                 routeToUserDetails={this.routeToUserDetails}
-                serverValidationError={this.props.userDetail.users}
-                serverValidationErrorSpinner = {<Spinner/>}
+                emailServerValidationError={this.state.emailServerError}
+                userNameServerValidationError={this.state.userNameServerError}
                 />
         
         return (
         <div>
             <UI onClick={this.logout}>
-                <div>
-                    {this.state.message}
-                </div>
                 <div>
                     <Form onSubmit={this.submit}>
                     <div>
