@@ -88,12 +88,12 @@ this.setState({loading:true});
   TowerMasterDetails({ tower }) {
 
     if (tower) {
-      return tower.filter(this.searchFilter(this.state.search)).map((item) => {
+      return tower.filter(this.searchFilter(this.state.search)).map((item,index) => {
         return (
 
           <tr key={item.towerId}>
 
-
+            <td>{index+1}</td>
             <td>{item.towerName}</td>
             <td>
               <button className="btn btn-success mr-2" onClick={this.editTower.bind(this, item.id, item.towerId, item.towerName)}>edit </button>
@@ -131,7 +131,7 @@ close=()=>{
    
               <thead>
                 <tr>
-
+                  <th> #</th>
                   <th>Tower Name</th>
 
                   <th> Actions  </th>

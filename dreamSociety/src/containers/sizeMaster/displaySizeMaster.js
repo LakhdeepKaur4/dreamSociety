@@ -99,11 +99,11 @@ class DisplaySizeMaster extends Component {
   TowerMasterDetails({ getSize }) {
     console.log("getSize ", getSize);
     if (getSize) {
-      return getSize.filter(this.searchFilter(this.state.search)).map((item) => {
+      return getSize.filter(this.searchFilter(this.state.search)).map((item,index) => {
         return (
           <tr key={item.sizeId}>
 
-
+           <td>{index+1}</td>
 
             <td>{item.sizeType}</td>
   
@@ -144,7 +144,7 @@ close=()=>{
 
     <thead>
       <tr>
-
+        <th>#</th>
         <th>Size Details</th>
 
         <th> Actions  </th>
