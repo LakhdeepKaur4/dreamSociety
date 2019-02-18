@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getDetails, AddDetails, getDrop, getSizeDrop } from '../../actionCreators/flatMasterAction';
+import { getDetails, AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount } from '../../actionCreators/flatMasterAction';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
@@ -10,28 +10,35 @@ import SearchFilter from '../../components/searchFilter/searchFilter'
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
 import { URN } from '../../actions/index'
+import Pagination from "react-js-pagination";
 
 class flatMasterDetails extends Component {
-    state = {
-        editUserData: {
-            flatId: '',
-            societyId: '',
-            societyName: '',
-            flatType: '',
-            flatSuperArea: '',
-            sizeId: '',
-            sizeType: '',
-            sizeType1: '',
-            coverArea: '',
-            loading:true,
-            isActive: false,
-
-        },
+   constructor(props){
+       super(props);
+         this.state = {
+        
+        flatId: '',
+        societyId: '',
+        societyName: '',
+        flatType: '',
+        flatSuperArea: '',
+        sizeId: '',
+        sizeType: '',
+        sizeType1: '',
+        coverArea: '',
+        loading:true,
+        isActive: false,
         editUserModal: false,
         menuVisible: false,
-        search: ''
-    }
+        search: '',
+        errors:{},
+        activePage: '1',
+        limit:'5'
+        // itemsCountPerPage :1,
+        // totalItemsCount:1
+        }
 
+   } 
 
     componentDidMount() {
 
@@ -39,16 +46,11 @@ class flatMasterDetails extends Component {
 
     }
 
-    // componentDidUpdate(){
-    //     if(this.props.AddDetails){
-
-    //     }
-    // }
-
 
 
     refreshData() {
-        this.props.getDetails().then(() => this.setState({loading:false}));
+        const defaultPage=this.state.activePage;
+        this.props.getDetails(defaultPage).then(() => this.setState({loading:false}));
         this.props.getDrop().then(() => this.setState({loading:false}));
         this.props.getSizeDrop().then(() => this.setState({loading:false}));
 
@@ -60,63 +62,55 @@ class flatMasterDetails extends Component {
         });
     }
 
-    updateBook = () => {
-        let { flatId, societyId, flatType, flatSuperArea, sizeId, coverArea } = this.state.editUserData;
+    updateBook = (e) => {
+        e.preventDefault();
+        let { flatId, societyId, flatType, flatSuperArea,sizeId,  coverArea } = this.state
 
-        axios.put(`${URN}/flat/` + flatId, {
-            societyId, flatType, flatSuperArea,
-            sizeId, coverArea
+        let errors = {};
+        if (!this.state.societyId) {
+            errors.societyId = "Select Society Name Again"
+        }
+        if (flatType === '') errors.flatType = "Cant be empty";
+        else if (flatType.length < 3) errors.flatType = "Characters should be less than four"
+        if (flatSuperArea === '') errors.flatSuperArea = "Cant be empty";
+
+        if (!this.state.sizeId) {
+            errors.sizeId = "Select  SizeType Again";
+        }
+        if (coverArea === '') errors.coverArea = "Cant be empty";
+        else if (parseInt(coverArea) >= parseInt(flatSuperArea)) errors.coverArea=
+         "CoverArea cannot be greater then flatSuperArea";
+        this.setState({ errors });
+
+        const isValid = Object.keys(errors).length === 0;
+        if(isValid){
+        
+        axios.put(`${URN}/flat/` + flatId, {societyId,
+             flatType, flatSuperArea,sizeId,
+             coverArea   
         }, { headers: authHeader() }).then((response) => {
             this.refreshData();
         })
         this.setState({
-            editUserModal: false,loading:true, editUserData: { flatId: '', societyName: '', flatType: '', flatSuperArea: '', sizeType: '', CoverArea: '' }
+            editUserModal: false,loading:true, flatId: '',societyId:'',
+            flatType: '', flatSuperArea: '',sizeId:'', CoverArea: ''
         })
-
-
     }
-
-    selectflatType = (e) => {
-
-        let { editUserData } = this.state;
-
-        editUserData.flatType = e.target.value;
-
-        this.setState({ editUserData })
-
+        
     }
-    setFlatSuperArea = (e) => {
+    onChange=(e)=>{
+        console.log(this.state);
+        if (!this.state.errors[e.target.value]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            console.log('no errors');
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+        } else {
+            console.log('hii');
+            this.setState( {[e.target.name]: [e.target.value]});
+         }
 
-        let { editUserData } = this.state;
-
-        editUserData.flatSuperArea = e.target.value;
-
-        this.setState({ editUserData })
-
-    }
-    setCoverArea = (e) => {
-
-        let { editUserData } = this.state;
-
-        editUserData.coverArea = e.target.value;
-
-        this.setState({ editUserData })
-
-    }
-
-    societyNameType = (e) => {
-        let { editUserData } = this.state
-        editUserData.societyId = e.target.value
-        this.setState({ editUserData })
-        console.log(this.state.editUserData.societyId)
-
-    }
-    sizeNameType = (e) => {
-        let { editUserData } = this.state
-        editUserData.sizeId = e.target.value
-        this.setState({ editUserData })
-
-
+        console.log(this.state)
     }
 
     searchFilter(search) {
@@ -140,25 +134,29 @@ class flatMasterDetails extends Component {
 
     editBook(flatId, societyName, flatType, flatSuperArea, sizeType, coverArea) {
         this.setState({
-            editUserData: { flatId, societyName, flatType, flatSuperArea, sizeType, coverArea }, editUserModal: !this.state.editUserModal
+            flatId, societyName, flatType, flatSuperArea, sizeType, coverArea , editUserModal: !this.state.editUserModal
         })
     }
 
     deleteUser(flatId) {
-        let { isActive } = this.state.editUserData
+        let { isActive } = this.state
         axios.put(`${URN}/flat/delete/` + flatId, { isActive }, { headers: authHeader() }).then((response) => {
             this.refreshData()
-            this.setState({ editUserData: { isActive: false },loading:true })
+            this.setState({ isActive: false ,loading:true })
 
         })
     }
 
     fetchUsers({ list1 }) {
+        
         if (list1) {
-
-            return list1.filter(this.searchFilter(this.state.search)).map((item) => {
-
+            console.log(list1);
+            return list1.flat.filter(this.searchFilter(this.state.search)).map((item) => {
+        
+                     
                 return (
+                    
+                    
                     <tr key={item.flatId}>
                         <td>{item.society_master.societyName}</td>
                         <td>{item.flatType}</td>
@@ -173,6 +171,7 @@ class flatMasterDetails extends Component {
                         </td>
                     </tr>
                 )
+        
             })
         }
     }
@@ -227,8 +226,37 @@ class flatMasterDetails extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
+    handlePageChange=(pageNumber)=> {
+        console.log(`active page is ${pageNumber}`);
+        // this.setState({activePage: pageNumber}) ;
+        this.state.activePage=pageNumber;        
+        const activePage=this.state.activePage;
+        
+            this.props.getPageDetails(activePage);
+        
+        
+      
+      }
+
+    //   countPerPage=(e)=>{
+    //        e.preventDefault();
+    //   }
+
+      onChange1=(e)=>{
+            e.preventDefault();
+            console.log('hii');
+            // this.setState({itemsCountPerPage:e.target.value})
+            const activePage=this.state.activePage;
+            this.state.limit=e.target.value;
+            console.log(this.state.limit,activePage)
+            let countPerPage= parseInt(this.state.limit);
+            this.props.noOfCount(countPerPage,activePage)
+    }
+
     render() {
         let tableData;
+       
+        
         tableData=<Table className="table table-bordered">
         <thead>
             <tr>
@@ -243,11 +271,20 @@ class flatMasterDetails extends Component {
         <tbody>
             {this.fetchUsers(this.props.flats)}
         </tbody>
+        {/* <Pagination/> */}
+       
     </Table>
+   
+   
+    
      
      if(!this.props.flats.list1 && !this.props.flats.list2 && !this.props.flats.list3 ){
         tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner /></div>
     }
+    <div>
+        
+    </div>
+        
         return (
             <div>
                 <UI onClick={this.logout}>
@@ -266,22 +303,26 @@ class flatMasterDetails extends Component {
                             <ModalBody>
                                 <FormGroup>
                                     <Label for="roles">SocietyName</Label>
-                                    <Input type="select" value={this.state.editUserData.societyId} onChange={this.societyNameType}>
-                                            
-                                            <option>{this.state.editUserData.societyName}</option>
+                                    <Input type="select" 
+                                    name="societyId"
+                                            value={this.state.societyId} 
+                                            onChange={this.onChange}>
+                                            <option>{this.state.societyName}</option>
                                             <option disabled>Select</option>
-                                            {this.fetchDrop(this.props.flats)}
-                                            
+                                            {this.fetchDrop(this.props.flats)}     
                                         </Input>
+                                        <span  className='error'>{this.state.errors.societyId}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">flatType</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter  flat type"
-                                        value={this.state.editUserData.flatType}
-                                        onChange={this.selectflatType} 
+                                        name="flatType"
+                                        value={this.state.flatType}
+                                        onChange={this.onChange} 
                                         maxLength='4'/>
+                                        <span  className='error'>{this.state.errors.flatType}</span>
                                         
                                 </FormGroup>
                                 <FormGroup>
@@ -289,29 +330,37 @@ class flatMasterDetails extends Component {
                                     <Input
                                         type="textbox"
                                         placeholder="enter flat super area"
-                                        value={this.state.editUserData.flatSuperArea}
-                                        onChange={this.setFlatSuperArea}
+                                        name="flatSuperArea"
+                                        value={this.state.flatSuperArea}
+                                        onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
                                         maxLength='3' />
+                                        <span  className='error'>{this.state.errors.flatSuperArea}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">sizeType</Label>
                                     <Input type="select" 
-                                    value={this.state.editUserData.sizeId} onChange={this.sizeNameType}>
-                                        <option>{this.state.editUserData.sizeType}</option>
+                                    value={this.state.sizeId} 
+                                    name="sizeId"
+                                    onChange={this.onChange}>
+                                        <option>{this.state.sizeType}</option>
                                         <option disabled>Select</option>
                                         {this.fetchSizeDrop(this.props.flats)}
                                     </Input>
+                                    <span  className='error'>{this.state.errors.sizeId}</span>
+
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="lastName">Cover Area</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter cover area"
-                                        value={this.state.editUserData.coverArea}
-                                        onChange={this.setCoverArea}
+                                        name="coverArea"
+                                        value={this.state.coverArea}
+                                        onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
                                         maxLength='3' />
+                                        <span  className='error'>{this.state.errors.coverArea}</span>
 
                                 </FormGroup>
                                 <FormGroup>
@@ -323,14 +372,37 @@ class flatMasterDetails extends Component {
                         </Modal>
                         <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
+                                 {/* <input type="number"
+                                 placeholder="enter no of entries to display"
+                                 onChange={this.onChange1}/> */}
                             {!this.state.loading ? tableData : <Spinner />}
-                     
+                           
+                            <Pagination 
+                            // hideDisabled
+                            
+                             activePage={this.state.activePage}
+                             itemsCountPerPage={this.state.limit}
+                             totalItemsCount={11}
+                            //  pageRangeDisplayed={5}
+                             onChange={this.handlePageChange}
+                             itemClass='page-item'
+                             linkClasss='page-link'   />      
+                          
                     </div>
+                
+                    
                 </UI>
+           
+                <div>
+        
+      </div>
                 
             </div>
+           
         )
+        
     }
+   
 }
 
 function mapStateToProps(state) {
@@ -346,7 +418,9 @@ function mapDispatchToProps(dispatch) {
         getDetails,
         AddDetails,
         getDrop,
-        getSizeDrop
+        getSizeDrop,
+        getPageDetails,
+        noOfCount
     }, dispatch)
 }
 

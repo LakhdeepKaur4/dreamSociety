@@ -43,7 +43,7 @@ export function updateAssets(id,assetName,description){
  }
 
 export function removeAssets(id){
-    console.log('remove assets', id)
+    
     const data={
         assetsId:id,
         isActive:false

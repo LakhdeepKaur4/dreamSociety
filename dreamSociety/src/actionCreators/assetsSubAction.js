@@ -19,7 +19,7 @@ export function addAssetsSubType(addAssetsSubType, description, assetsId) {
         assetType: addAssetsSubType,
         description: description
     }
-    console.log('dkjdkjfk', data)
+ 
     const request = axios.post(`${URN}/assetsType/`, data, { headers: authHeader() })
         .then(response => response.data)
         .catch(error=>error)
@@ -46,7 +46,7 @@ export function updateAssetsSub(id, assetName, description) {
         assetType: assetName,
         description: description,
     }
-    console.log("============data======",data)
+    
     const request = axios.put(`${URN}/assetsType/${id}`, data, { headers: authHeader() })
         .then(response => response.data)
         .catch(error=>error)
@@ -56,7 +56,7 @@ export function updateAssetsSub(id, assetName, description) {
     }
 }
 export function removeAssetsSub(id) {
-    console.log('remove assets', id)
+   
     const data = {
         assetTypeId: id,
         isActive: false

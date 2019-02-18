@@ -50,6 +50,14 @@ import DisplayLocation from './containers/locationMaster/displayLocation';
 import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
 import Inventory from './containers/inventory/inventory'
 import InventoryDetails from './containers/inventory/inventoryDetails'
+import MaintenanceMaster from './containers/maintenanceMaster/maintenanceMaster';
+import MaintenanceMasterDetail from './containers/maintenanceMaster/maintenanceMasterDetail';
+import InventoryDetails from './containers/inventoryDetails/inventoryDetails'
+import EmployeeTypeMaster from './containers/employeeTypeMaster/employeeTypeMaster'
+import DisplayEmployeeTypeMaster from './containers/employeeTypeMaster/displayEmployeeTypeMaster';
+import MaintenanceSubMasterForm from './containers/maintenanceSubMaster/maintenanceSubMasterForm';
+import MaintenanceSubMasterDetails from './containers/maintenanceSubMaster/maintenanceSubMasterDetails'
+
 
 class App extends Component {
   render() {
@@ -100,8 +108,14 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
             <PrivateRoute path='/superDashboard/locationMaster' component={locationMaster}/>
             <PrivateRoute path='/superDashboard/displayLocation' component={DisplayLocation}/>
+            <PrivateRoute path='/superDashboard/maintenanceMaster' component={MaintenanceMaster}/>
+            <PrivateRoute path='/superDashboard/maintenanceMasterDetail' component={MaintenanceMasterDetail}/>
             <PrivateRoute path='/superDashboard/inventoryDetails' component={InventoryDetails}/>
             <PrivateRoute path='/superDashboard/inventory' component={Inventory}/>
+            <PrivateRoute  path ='/superDashboard/employeeType' component ={EmployeeTypeMaster}/>
+            <PrivateRoute path='/superDashboard/displayEmployeeType' component ={DisplayEmployeeTypeMaster}/>
+            <PrivateRoute path='/superDashboard/MaintenanceSubMasterForm' component={MaintenanceSubMasterForm} />
+            <PrivateRoute path='/superDashboard/MaintenanceSubMasterDetails' component={MaintenanceSubMasterDetails} />
           </Switch>
         </div>
         {/* </ScrollToTop> */}

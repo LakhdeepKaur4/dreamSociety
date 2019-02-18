@@ -95,7 +95,7 @@ class Login extends Component {
           }
           else if(response.payload.data.status===401){
            data={
-                 error:response.payload.data.message
+                 error:response.data.message
              }
           return <Redirect to='/'></Redirect>
           }

@@ -15,19 +15,18 @@ class CountryDetails extends Component{
     constructor(){
         super();
        this.state = {
-            editUserData: {
+            
                 countryId:'',
                 countryName:'',
                 code:'',
                 currency:'',
                 phoneCode:'',
                 loading:true,
-                isActive:false
-            }
-            ,
-            editUserModal: false,
-            menuVisible: false,
-            search: ''
+                isActive:false ,
+                editUserModal: false,
+                 menuVisible: false,
+                 search: '',
+                 errors:''
         }
     }
 
@@ -47,7 +46,7 @@ class CountryDetails extends Component{
 
     editCountry(countryId,countryName,code,currency,phoneCode) {
         this.setState({
-            editUserData:{countryId,countryName,code,currency,phoneCode}, editUserModal: ! this.state.editUserModal
+            countryId,countryName,code,currency,phoneCode, editUserModal: ! this.state.editUserModal
         })    
     }
 
@@ -66,54 +65,51 @@ class CountryDetails extends Component{
     }
 
 
-    updateBook=()=> {
+    updateBook=(e)=> {
         
-        let{ countryId,countryName,code,currency,phoneCode} =this.state.editUserData;
+        e.preventDefault();
+        let { countryId, countryName, code, currency,phoneCode} = this.state
+
+        let errors = {};
+        
+        if (countryName === '') errors.countryName = "Cant be empty";
+       
+        if (code === '') errors.code = "Cant be empty";
+
+        if (currency === '') errors.currency = "Cant be empty";
+
+       
+        if (phoneCode === '') errors.phoneCode = "Cant be empty";
+        
+        this.setState({ errors });
+
+        const isValid = Object.keys(errors).length === 0;
+        if(isValid){
         this.props.updateCountry(countryId,countryName,code,currency,phoneCode).then(() => this.refreshData());;
   
          this.setState({
-           editUserModal: false,loading:true,  editUserData: {  countryId: '',countryName:'',code:'',currency:'', phoneCode: ''  }
+           editUserModal: false,loading:true, countryId: '',countryName:'',code:'',currency:'', phoneCode: '' 
        })
-     
+    }
    
    }
+    onChange=(e)=>{
+        if (!this.state.errors[e.target.value]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            console.log('no errors');
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+        } else {
+            console.log('hii');
+            this.setState( {[e.target.name]: [e.target.value]});
+         }
 
-    selectCountry=(e)=>{
-        let{ editUserData } = this.state;
-
-        editUserData.countryName= e.target.value;
-
-        this.setState({editUserData})
-      
-    }
-
-    selectCode=(e)=>{
-        let{ editUserData } = this.state;
-
-        editUserData.code= e.target.value;
-
-        this.setState({editUserData})
-    }
-
-    selectCurrency=(e)=>{
-        let{ editUserData } = this.state;
-
-        editUserData.currency= e.target.value;
-
-        this.setState({editUserData})
-    }
-
-    selectPhoneCode=(e)=>{
-        let{ editUserData } = this.state;
-
-        editUserData.phoneCode= e.target.value;
-
-        this.setState({editUserData})
+        console.log(this.state)
     }
 
     deleteUser(countryId){
         this.setState({loading:true});
-        let { isActive } = this.state.editUserData
+        let { isActive } = this.state
         this.props.deleteCountry(countryId, isActive).then(() => this.refreshData())
         .then(() => this.setState({isActive: false}))
     
@@ -141,17 +137,16 @@ class CountryDetails extends Component{
             })
         }
     }
+
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
-    routeToAddNewUser =() => {
-        this.props.history.push('/superDashboard/countrymaster')
-    }
+  
 
     onKeyPressHandler=(event)=> {
-        const pattern = /^[a-zA-Z]+$/;
+        const pattern = /^[a-zA-Z.]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -183,6 +178,10 @@ class CountryDetails extends Component{
         return this.props.history.replace('/superDashBoard')
     }
 
+    routeToAddNewUser =() => {
+        this.props.history.push('/superDashboard/countrymaster')
+    }
+
     render(){
          let tableData;
           tableData= <Table className="table table-bordered">
@@ -192,6 +191,7 @@ class CountryDetails extends Component{
                 <th>Country Code</th>
                 <th>Currency</th>
                 <th>Phone Code</th>
+                <th>Action</th>
                 
 
 
@@ -224,42 +224,49 @@ class CountryDetails extends Component{
                                     <Input
                                         type="textbox"
                                         placeholder="enter countryName"
-                                        // name="countryName"
-                                        value={this.state.editUserData.countryName}
+                                        name="countryName"
+                                        value={this.state.countryName}
                                         maxLength='20'
                                         onKeyPress={this.onKeyPressHandler}
-                                        onChange={this.selectCountry}
+                                        onChange={this.onChange}
                                          />
+                                         <span  className='error'>{this.state.errors.countryName}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">code</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter code"
-                                        value={this.state.editUserData.code}
+                                        name="code"
+                                        value={this.state.code}
                                         maxLength='3'
                                         onKeyPress={this.onKeyPressCode}
-                                        onChange={this.selectCode} />
+                                        onChange={this.onChange} />
+                                         <span  className='error'>{this.state.errors.code}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="firstName">currency</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter currency"
-                                        value={this.state.editUserData.currency}
+                                        name="currency"
+                                        value={this.state.currency}
                                         onKeyPress={this.onKeyPressHandle1}
                                         maxLength='10'
-                                        onChange={this.selectCurrency} />
+                                        onChange={this.onChange} />
+                                         <span  className='error'>{this.state.errors.currency}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">phoneCode</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter currency"
-                                        value={this.state.editUserData.phoneCode}
+                                        name="phoneCode"
+                                        value={this.state.phoneCode}
                                         maxLength='3'
                                         onKeyPress = {this.onKeyPressHandle}
-                                        onChange={this.selectPhoneCode} />
+                                        onChange={this.onChange} />
+                                         <span  className='error'>{this.state.errors.phoneCode}</span>
                                 </FormGroup>
                                 <FormGroup>
                                 <Button color="primary mr-2" onClick={this.updateBook}>Save</Button>

@@ -26,9 +26,6 @@ class serviceMaster extends Component {
     handleChange = (event) => {
 
         this.setState({ [event.target.name]: event.target.value });
-        console.log(event.target.value)
-
-
     }
 
     componentDidMount() {
@@ -42,7 +39,6 @@ class serviceMaster extends Component {
     getDropdown = ({ detail }) => {
         if (detail) {
             return detail.service.map((item) => {
-                console.log(item)
                 return (
                     <option key={item.serviceDetailId} value={item.serviceDetailId} >
                         {item.service_detail}</option>
@@ -92,7 +88,6 @@ class serviceMaster extends Component {
     }
     
     logout=()=>{
-        console.log('676666')
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 

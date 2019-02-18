@@ -5,14 +5,13 @@ import { authHeader } from './../helper/authHeader';
 
 
 export const getCountry = () => {
-    console.log('========countryAction========')
+   
 
     const request = axios.get(`${URN}/country`, { headers: authHeader() })
         .then(response => response.data)
-        .catch(error => console.log('==error==', error))
+        .catch(error =>  error)
 
     return {
-
         type: COUNTRY_DETAIL,
         payload: request
     }
@@ -20,11 +19,11 @@ export const getCountry = () => {
 
 
 export const getState = countryId => {
-    console.log('========stateAction========')
+   
 
     const request = axios.get(`${URN}/getState/${countryId}`, { headers: authHeader() })
         .then(response => response.data)
-        .catch(error => console.log('==error==', error))
+        .catch(error =>  error)
 
     return {
         type: STATE_DETAIL,
@@ -34,10 +33,10 @@ export const getState = countryId => {
 
 export const getCity = stateId => {
 
-    console.log('========cityAction========')
+   
     const request = axios.get(`${URN}/city/${stateId}`, { headers: authHeader() })
         .then(response => response.data)
-        .catch(error => console.log('==error==', error))
+        .catch(error =>  error)
 
     return {
         type: CITY_DETAIL,
@@ -47,11 +46,12 @@ export const getCity = stateId => {
 
 
 export const addCity=(values)=>{
-    // console.log(values);
+
    const request = axios.post(`${URN}/city` , values , {headers:authHeader()})
     .then(response => response.data)
+    .catch((err)=>alert(err.response.data.message))
 
-    // .then(getDetails())
+    
     return{
 
         type:ADD_CITY,
@@ -65,7 +65,7 @@ export const detailCity=()=>{
    const request = axios.get(`${URN}/city`  , {headers:authHeader()})
     .then(response => response.data)
 
-    // .then(getDetails())
+    
     return{
 
         type:DETAIL_CITY,
@@ -82,7 +82,7 @@ export const deleteCity=(cityId)=>{
     const request = axios.put(`${URN}/city/delete/${cityId}`,data, {headers:authHeader()})
      .then(response => response.data)
  
-     // .then(getDetails())
+   
      return{
  
          type:DELETE_CITY,
@@ -92,12 +92,13 @@ export const deleteCity=(cityId)=>{
  }
 
  export const updateCity=(cityId, countryId, stateId, cityName)=>{
-     console.log('==updateCity====',cityId, countryId, stateId, cityName)
+  
     
     const request = axios.put(`${URN}/city/`+ cityId ,{countryId, stateId, cityName}, {headers:authHeader()})
      .then(response => response.data)
+     .catch((err)=>alert(err.response.data.message))
  
-     // .then(getDetails())
+     
      return{
  
          type:UPDATE_CITY,

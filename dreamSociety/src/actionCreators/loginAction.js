@@ -8,7 +8,7 @@ export function login(username, password) {
             userName: username,
             password:  password
         }
-      })
+      });
          
     return {
         type: USER_LOGIN,

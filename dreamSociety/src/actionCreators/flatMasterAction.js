@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
-import {URN,GET_DETAILS,FETCH_DETAILS,FETCH_DROP,FETCH_SIZE_DROP,FETCH_SOCIETY_DROP,FETCH_SIZEMASTER_DROP,GET_QR} from '../actions/index';
+import {URN,GET_DETAILS,FETCH_DETAILS,FETCH_DROP,FETCH_SIZE_DROP,FETCH_SOCIETY_DROP,FETCH_SIZEMASTER_DROP,
+    GET_ACTIVE_PAGE,GET_COUNT_PAGE,GET_QR} from '../actions/index';
 
 
 export  function AddDetails(values){
@@ -20,11 +21,11 @@ export  function AddDetails(values){
 
 }
 
-export  function getDetails(){
+export  function getDetails(defaultPage){
+    console.log(defaultPage);
 
-    const request = fetch(`${URN}/flat/`,{headers:authHeader()},
-    {method:'GET'})
-    .then(response => response.json())
+    const request = axios.get(`${URN}/flat/${defaultPage}`,{headers:authHeader()})
+    .then(response => response.data)
    
     return{
 
@@ -32,6 +33,28 @@ export  function getDetails(){
          payload: request 
     }
 
+}
+
+export function getPageDetails(activePage){
+     console.log(activePage);
+     const request = axios.get(`${URN}/flat/${activePage}`,{headers:authHeader()})
+     .then(response => response.data)
+
+     return{
+         type:GET_ACTIVE_PAGE,
+         payload:request
+     }
+}
+
+export function noOfCount(countPerPage,activePage){
+    console.log("InAction",countPerPage,activePage);
+    const request= axios.get(`http://192.168.1.101:5000/flat/${activePage}/${countPerPage}/`,{headers:authHeader()})
+    .then(response => console.log(response.data))
+
+    return{
+        type:GET_COUNT_PAGE,
+        payload:request
+    }
 }
 
 export  function getDrop(){
@@ -85,18 +108,18 @@ export  function getSizeTypeDetails(){
     }
 
 }
-export  function getQr(){
+// export  function getQr(){
  
-    const request = axios.get(`${URN}/user/10`,{headers:authHeader()})
-    .then(response => response.data)
+//     const request = axios.get(`${URN}/user/10`,{headers:authHeader()})
+//     .then(response => response.data)
    
-    return{
+//     return{
 
-         type: GET_QR,
-         payload: request 
-    }
+//          type: GET_QR,
+//          payload: request 
+//     }
 
-}
+// }
 // export  function deleteEntry(id){
 
 //     const request = axios.delete(`${URL_ROOT}/flatsIndex/` +id)

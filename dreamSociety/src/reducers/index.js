@@ -15,11 +15,13 @@ import personDetails from './personReducer/personReducer';
 import flatDetailMasterReducer from './flatDetailMasterReducer/flatDetailMasterReducer';
 import locationMasterReducer from './locationMasterReducer/locationMasterReducer';
 import cityMasterReducer from './cityMasterReducer/cityMasterReducer';
-
+import employeeDetails from './employeeTypeMasterReducer/employeeTypeMasterReducer'
 import AssetsReducer from './assetsReducer/assetsReducer';
 import AssetsTypeReducer from './assetsReducer/assetsTypeReducer';
 import countryDetails from './countryReducers/countryReducer';
-import Inventory from './inventoryReducer/inventoryReducer'
+import Inventory from './inventoryReducer/inventoryReducer';
+import MaintenanceMasterReducer from './maintenanceMasterReducer/maintenanceMasterReducer';
+import MaintenanceSubMaster from './maintenanceSubMasterReducer/maintenanceSubMasterReducer';
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -41,6 +43,9 @@ const rootReducer = combineReducers({
     flatDetailMasterReducer,
     locationMasterReducer,
     countryDetails,
-    Inventory
+    Inventory,
+    MaintenanceMasterReducer,
+    employeeDetails,
+    MaintenanceSubMaster
 })
 export default rootReducer;

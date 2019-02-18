@@ -162,11 +162,12 @@ class displayPersonDetails extends Component {
                         console.log("xyz", person1)
                         let currentRole;
                         return (
-                                person1.filter(this.searchFilter(this.state.search)).map((item) => {
+                                person1.filter(this.searchFilter(this.state.search)).map((item,index) => {
                                         console.log(item.roles, "ancdd")
 
                                         return (
                                                 <tr key={item.userId}>
+                                                 <td>{index+1}</td>
                                                         <td>{item.userName}</td>
                                                         <td>{item.email}</td>
                                                         <td>{item.tower_master.towerName}</td>
@@ -210,6 +211,7 @@ class displayPersonDetails extends Component {
                 tableData = <Table className="table table-bordered">
                         <thead>
                                 <tr>
+                                        <th>#</th>
                                         <th>UserName</th>
                                         <th>Email</th>
                                         <th>Tower Name </th>
