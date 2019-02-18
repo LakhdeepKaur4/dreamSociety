@@ -20,6 +20,7 @@ class FlatMaster extends Component {
             errors: {},
             isSubmit: false,
             loading:true,
+            message:'',
             menuVisible: false
         }
 
@@ -46,16 +47,16 @@ class FlatMaster extends Component {
             
             this.setState({loading:true})
             console.log(this.state);
-            this.props.addStates({ ...this.state })
-           
-            .then(() => this.props.history.push('/superDashboard/statemaster/statemasterdetails'));
+            this.props.addStates(this.state)
+            .then(() => this.props.history.push('/superDashboard/statemaster/statemasterdetails'))
+            .catch((err)=>{console.log(err.response.data.message)
+                this.setState({loading:false, message:err.response.data.message})})
             
             
             this.setState({
                 countryId: "",
                 countryName: '',
                 stateName: '',
-                
                 isSubmit: true
             });
 
@@ -64,6 +65,7 @@ class FlatMaster extends Component {
 
     }
     onChange = (e) => {
+        this.setState({message: ''});
         if (!this.state.errors[e.target.value]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -101,6 +103,7 @@ class FlatMaster extends Component {
         return this.props.history.replace('/') 
     }
     onStateChange=(event)=>{
+        this.setState({message: ''});
         const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
@@ -121,7 +124,7 @@ class FlatMaster extends Component {
         <span aria-hidden="true">&times;</span>
    </div>
              <h3 style={{textAlign:'center', marginBottom: '10px'}}>State Master</h3>
-        
+            {(this.onChange && this.onStateChange) ? <span className="error">{this.state.message}</span>: null}
             <FormGroup>
                 <Label>CountryName</Label>
                 <Input

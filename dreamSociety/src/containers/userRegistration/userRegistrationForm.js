@@ -3,6 +3,7 @@ import { FormGroup, Input, Button, Label } from 'reactstrap';
 
 const userRegistrationForm = (props) => (
     <div>
+        
         <FormGroup>
                 <Label>User Type</Label>
                 <Input type="select" name={props.roleInputName} onChange={props.roleChange}>
@@ -45,6 +46,7 @@ const userRegistrationForm = (props) => (
                     maxLength='25'
                     minLength='3'  />
                 <span className='error'>{props.userNameError}</span>
+                <span className="error">{props.userNameServerValidationError}</span>
             </FormGroup>
             <FormGroup>
                 <Label>Email</Label>
@@ -56,7 +58,8 @@ const userRegistrationForm = (props) => (
                     maxLength='40'
                     minLength='10'
                     onKeyPress={props.emailKeyPress}  />
-                <span className='error'>{props.emailError}</span>}
+                <span className='error'>{props.emailError}</span>
+                <span className="error">{props.emailServerValidationError}</span>
             </FormGroup>
             <FormGroup>
                 <Label>No. of Family Members</Label>

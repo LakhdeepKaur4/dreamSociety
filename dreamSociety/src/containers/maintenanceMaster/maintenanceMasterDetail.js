@@ -69,8 +69,6 @@ class MaintenanceMasterDetail extends Component {
     }
 
 
-
-
     editcategory = () => {
        
         const { maintenanceId, category } = this.state
@@ -124,10 +122,11 @@ class MaintenanceMasterDetail extends Component {
     renderMaintenance = ({ maintenanceResult }) => {
 
         if (maintenanceResult) {
-            return maintenanceResult.maintenance.filter(this.searchFilter(this.state.search)).map((item) => {
+            return maintenanceResult.maintenance.filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                 return (
                     <tr key={item.maintenanceId}>
+                        <td>{index+1}</td>
                         <td>{item.category}</td>
                         <td> 
                             <Button color="success mr-2" onClick={this.toggle.bind(this, item.maintenanceId, item.category)} >Edit</Button>
@@ -172,6 +171,7 @@ class MaintenanceMasterDetail extends Component {
             <Table className="table table-bordered">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Maintenance Category</th>
                         <th>Actions</th>
                     </tr>
@@ -200,7 +200,7 @@ class MaintenanceMasterDetail extends Component {
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
                                 <FormGroup>
-                                    <Label >Category Type</Label>
+                                    <Label>Category Type</Label>
                                     <Input type="text" id="maintenanceId" name="category" onChange={this.onChangeHandler} value={this.state.category} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
                                     <span className="error">{this.state.errors.category}</span>
                                 </FormGroup>
