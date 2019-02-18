@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, FormGroup, Button, Input, Label,  } from 'reactstrap';
-import { getMaintenanceSubSize,postMaintenanceSubMaster } from '../../actionCreators/maintenanceSubMasterAction';
+import { getMaintenanceSubSize,postMaintenanceSubMaster, getMaintenanceType } from '../../actionCreators/maintenanceSubMasterAction';
 import Spinner from '../../components/spinner/spinner';
 import '../../r-css/w3.css';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -11,25 +11,38 @@ class MaintenanceSubMasterForm extends Component{
     constructor(props){
         super(props);
         this.state={
+            maintenanceId:'',
             sizeId:'',
             rate:'',
             errors:{},
-            loading:false
+            loading:true
         }
     }
 
     componentDidMount(){
-        this.props.getMaintenanceSubSize();
+        this.props.getMaintenanceSubSize().then(() => this.setState({loading: false}));
+        this.props.getMaintenanceType().then(() => this.setState({loading: false}));
     }
 
-    fetchSize(size){
+    fetchSize({size}){
         if(size){
             console.log(size)
             return size.map((sizeItem) => {console.log(sizeItem.sizeType)
                 return (
                     <option key={sizeItem.sizeId} value={sizeItem.sizeId}>{sizeItem.sizeType}</option>
-                )
+                );
             });
+        }
+    }
+
+    fetchMaintenanceType({maintenanceType}){
+        console.log(maintenanceType)
+        if(maintenanceType){
+           return maintenanceType.maintenance.map((item) => {
+               return (
+                   <option key={item.maintenanceId} value={item.maintenanceId}>{item.category}</option>
+               )
+           })
         }
     }
 
@@ -39,11 +52,14 @@ class MaintenanceSubMasterForm extends Component{
         if(!this.state.sizeId){
             errors.sizeId = `Please select size.`
         }
+        if(!this.state.maintenanceId){
+            errors.maintenanceId = `Please select.`
+        }
         if(this.state.rate === '') errors.rate = `Please write price.`
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
-            console.log(this.state);
+            this.setState({loading: true})
             this.props.postMaintenanceSubMaster({...this.state})
             .then(() => this.props.history.replace('/superDashboard/MaintenanceSubMasterDetails'));
             this.setState({sizeId:'',rate:''});
@@ -57,14 +73,12 @@ class MaintenanceSubMasterForm extends Component{
 
 
     rateChange = (e) => {
-        console.log(this.state)
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
             this.setState({[e.target.name]:e.target.value});
         }
     }
 
     onChange = (e) => {
-        console.log(this.state)
         if (!!this.state.errors[e.target.name]){
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -75,39 +89,53 @@ class MaintenanceSubMasterForm extends Component{
         }
     }
 
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
+
     route = () => {
         this.props.history.push('/superDashboard/MaintenanceSubMasterDetails');
     }
 
     render(){
         let formData = <div>
-            <FormGroup style={{display:'flex', justifyContent:'spaceBetween'}}>
-                <FormGroup className="mr-3">
-                <Input type="select" name="sizeId" value={this.state.maintenanceId}
+            <FormGroup>
+                <Input type="select" name='maintenanceId' value={this.state.maintenanceType}
+                onChange={this.onChange}>
+                <option>-- Select Size --</option>
+                {this.fetchMaintenanceType(this.props.MaintenanceSubMaster)}
+                </Input>
+                <div><span className="error">{this.state.errors.maintenanceId}</span></div>
+            </FormGroup>
+            <FormGroup>
+                <Input type="select" name="sizeId" value={this.sizeId}
                     onChange={this.onChange}>
                     <option>-- Select Size --</option>
                     {this.fetchSize(this.props.MaintenanceSubMaster)}
                 </Input>
-                <div><span>{this.state.errors.sizeId}</span></div>
-                </FormGroup>
+                <div><span className="error">{this.state.errors.sizeId}</span></div>
+            </FormGroup>
+            <FormGroup>
                 <FormGroup>
                     <Input name="rate" onChange={this.rateChange}
-                    value={this.state.rate} maxLength="12" placeholder="Enter Price"/>
-                    <div>{!this.state.rate ? <span>{this.state.errors.rate}</span>: null}</div>
+                    value={this.state.rate} placeholder="Enter Price"/>
+                    <div>{!this.state.rate ? <span className="error">{this.state.errors.rate}</span>: null}</div>
                 </FormGroup>
             </FormGroup>
             <Button color="success" className="mr-2">Add User</Button>
             <Button  color="danger" onClick={this.route}>Cancel</Button>
         </div>
         return(
-            <UI>
+            <UI onClick={this.logout}>
                 <Form onSubmit={this.onSubmit}>
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
                     </div>
                     <div>
                         <h3 style={{textAlign:'center', marginBottom: '15px'}}>Maintenance Sub Master Form</h3>
-                        {formData}
+                        {!this.state.loading ? formData: <Spinner />}
                     </div>
                 </Form>
             </UI>
@@ -118,9 +146,12 @@ class MaintenanceSubMasterForm extends Component{
 const mapStateToProps = (state) => {
     console.log(state);
     return {
-        MaintenanceSubMaster: state.MaintenanceSubMaster.size
+        MaintenanceSubMaster: state.MaintenanceSubMaster
     }
 }
 
-export default connect(mapStateToProps, {getMaintenanceSubSize,
-    postMaintenanceSubMaster})(MaintenanceSubMasterForm);
+export default connect(mapStateToProps, {
+    getMaintenanceSubSize,
+    postMaintenanceSubMaster,
+    getMaintenanceType
+})(MaintenanceSubMasterForm);

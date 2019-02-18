@@ -46,10 +46,6 @@ class userDetails extends Component {
         window.scrollTo(0, 0);
     }
 
-    toggle() {
-        this.setState({ dropdownOpen: !this.state.dropdownOpen })
-    }
-
     OnKeyPresshandlerPhone(event) {
         const pattern = /^[0-9]$/;
         let inputChar = String.fromCharCode(event.charCode);
@@ -142,10 +138,15 @@ class userDetails extends Component {
     }
 
     searchFilter(search){
-        return function(x){
-            if(x){
+        return function(x,y){
+            if(x,y){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                return y.toString().indexOf(search) !== -1 ||
+                 x.tower_master.towerName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                 x.floor.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                 x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                 x.familyMember.toString().indexOf(search) !== -1 ||
+                 x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
                  x.userName.toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
                  x.email.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
@@ -174,10 +175,11 @@ class userDetails extends Component {
     fetchUsers({ user }) {
         if(user) {
             let currentRole;
-            return user.filter(this.searchFilter(this.state.search)).map((item) => {
+            return user.filter(this.searchFilter(this.state.search)).map((item, index) => {
                 let currentTowerName = item.tower_master.towerName;
                 return (
                     <tr key={item.userId}>
+                        <td>{index + 1}</td>
                         <td>{item.roles.map((i) => {
                             currentRole = i.roleName
                             return currentRole
@@ -259,6 +261,7 @@ class userDetails extends Component {
 
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Roles</th>
                     <th>First Name</th>
                     <th>Last Name</th>

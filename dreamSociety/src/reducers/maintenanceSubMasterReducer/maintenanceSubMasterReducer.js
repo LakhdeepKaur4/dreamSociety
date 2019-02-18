@@ -1,4 +1,4 @@
-import { GET_SUB_MAINTENANCE,GET_SUB_MAINTENANCE_DETAILS } from '../../actions';
+import { GET_SUB_MAINTENANCE,GET_SUB_MAINTENANCE_DETAILS, GET_MAINTENANCE_TYPE } from '../../actions';
 
 export default function(state=[], action){
     switch(action.type){
@@ -6,6 +6,8 @@ export default function(state=[], action){
             return {...state, size: action.payload}
         case GET_SUB_MAINTENANCE_DETAILS:
             return {...state, sizeDetails: action.payload}
+        case GET_MAINTENANCE_TYPE:
+            return {...state, maintenanceType: action.payload}
         default:
             return state;
     }

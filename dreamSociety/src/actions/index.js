@@ -94,8 +94,19 @@ export const ADD_MAINTENANCE ='add_maintenance';
 export const GET_MAINTENANCE ='get_maintenance';
 export const DELETE_MAINTENANCE ='delete_maintenance';
 export const UPDATE_MAINTENANCE ='update_maintenance';
+export const GET_EMPLOYEE ='get_employee';
+export const GET_EMPLOYEE_WORK_TYPE='get_employee_work_type';
+export const GET_EMPLOYEE_TYPE ='get_employee_type';
+export const ADD_EMPLOYEE = 'add_employee';
+export const UPDATE_EMPLOYEE = 'update_employee';
+export const DELETE_EMPLOYEE ='delete_employee';
+export const GET_ACTIVE_PAGE='get_active_page';
+export const GET_COUNT_PAGE='get_count_page';
 export const GET_SUB_MAINTENANCE = 'GET_SUB_MAINTENANCE';
 export const POST_SUB_MAINTENANCE='POST_SUB_MAINTENANCE';
 export const GET_SUB_MAINTENANCE_DETAILS = 'GET_SUB_MAINTENANCE_DETAILS';
+export const DELETE_SUB_MAINTENANCE_DETAILS = 'DELETE_SUB_MAINTENANCE_DETAILS';
+export const GET_MAINTENANCE_TYPE = 'GET_MAINTENANCE_TYPE';
+export const UPDATE_SUB_MAINTENANCE_DETAILS = 'UPDATE_SUB_MAINTENANCE_DETAILS';
 
 
