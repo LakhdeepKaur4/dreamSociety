@@ -56,7 +56,7 @@ const userRegistrationForm = (props) => (
                     maxLength='40'
                     minLength='10'
                     onKeyPress={props.emailKeyPress}  />
-                <span className='error'>{props.emailError}</span>
+                <span className='error'>{props.emailError}</span>}
             </FormGroup>
             <FormGroup>
                 <Label>No. of Family Members</Label>
