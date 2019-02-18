@@ -48,8 +48,8 @@ import CityMasterDetail from './containers/cityMaster/cityMasterDetail';
 import locationMaster from './containers/locationMaster/locationMaster';
 import DisplayLocation from './containers/locationMaster/displayLocation';
 import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
-import InventoryDetails from './containers/inventoryDetails/inventoryDetails'
-
+import Inventory from './containers/inventory/inventory'
+import InventoryDetails from './containers/inventory/inventoryDetails'
 
 class App extends Component {
   render() {
@@ -101,6 +101,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/locationMaster' component={locationMaster}/>
             <PrivateRoute path='/superDashboard/displayLocation' component={DisplayLocation}/>
             <PrivateRoute path='/superDashboard/inventoryDetails' component={InventoryDetails}/>
+            <PrivateRoute path='/superDashboard/inventory' component={Inventory}/>
           </Switch>
         </div>
         {/* </ScrollToTop> */}

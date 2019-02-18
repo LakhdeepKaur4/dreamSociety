@@ -22,14 +22,8 @@ class AssetList extends Component {
         };
     }
     onChangeHandler = (event) => {
-        if (!!this.state.errors[event.target.name]) {
-            let errors = Object.assign({}, this.state.errors);
-            delete errors[event.target.name];
-            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
-        }
-        else {
-            this.setState({ [event.target.name]: event.target.value.trim('') });
-        }
+        const { name, value } = event.target;
+        this.setState({ [name]: value });
     }
 
     toggle = (assetId, assetName, description) => {
@@ -85,10 +79,11 @@ class AssetList extends Component {
 
     renderList = ({ AssetsList }) => {
         if (AssetsList) {
-            return AssetsList.assets.filter(this.searchFilter(this.state.search)).map((items) => {
+            return AssetsList.assets.filter(this.searchFilter(this.state.search)).map((items,index) => {
                 return (
 
                     <tr key={items.assetId}>
+                    <td>{index+1}</td>
                         <td>{items.assetName}</td>
                         <td>{items.description}</td>
                         <td>
@@ -100,6 +95,7 @@ class AssetList extends Component {
             })
         }
     }
+
 
     logout = () => {
         localStorage.removeItem('token');
@@ -114,6 +110,7 @@ class AssetList extends Component {
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Asset Name</th>
                     <th>Description</th>
                     <th>Actions</th>

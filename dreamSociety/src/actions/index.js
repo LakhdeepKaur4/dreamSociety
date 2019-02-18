@@ -90,4 +90,8 @@ export const UPDATE_PERSON1= 'update_person';
 export const UPDATE_LOCATION='update_location'
 export const DELETE_LOCATION='delete_location';
 export const DELETE_DETAILS='delete-details';
-
+export const ADD_INVENTORY='add_inventory';
+export const GET_INVENTORY='get_inventory';
+export const UPDATE_INVENTORY='update_inventory';
+export const REMOVE_INVENTORY='REMOVE_INVENTORY';
+export const PlaceHolder='--Select--';

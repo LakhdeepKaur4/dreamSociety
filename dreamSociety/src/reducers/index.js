@@ -19,6 +19,7 @@ import cityMasterReducer from './cityMasterReducer/cityMasterReducer';
 import AssetsReducer from './assetsReducer/assetsReducer';
 import AssetsTypeReducer from './assetsReducer/assetsTypeReducer';
 import countryDetails from './countryReducers/countryReducer';
+import Inventory from './inventoryReducer/inventoryReducer'
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -39,6 +40,7 @@ const rootReducer = combineReducers({
     AssetsTypeReducer,
     flatDetailMasterReducer,
     locationMasterReducer,
-    countryDetails
+    countryDetails,
+    Inventory
 })
 export default rootReducer;

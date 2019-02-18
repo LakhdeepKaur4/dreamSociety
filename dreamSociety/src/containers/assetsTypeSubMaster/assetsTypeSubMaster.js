@@ -8,7 +8,6 @@ import UI from '../../components/newUI/superAdminDashboard';
 import { Form,FormGroup, Input, Button, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 
-
 class AssetsTypeSubMaster extends Component {
     constructor(props) {
         super(props)
@@ -85,7 +84,6 @@ class AssetsTypeSubMaster extends Component {
                     <FormGroup>
                     <Label>Assets Type</Label>
                     <Input type="select" onChange={this.onChangeHandler} name="assetId">
-                        <option disabled selected>--Select--</option>
                         {this.getAssetsName(this.props.assetsName)}
                     </Input>
                     <span className="error">{this.state.errors.assetId}</span>
