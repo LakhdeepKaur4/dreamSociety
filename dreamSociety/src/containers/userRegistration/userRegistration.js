@@ -100,6 +100,11 @@ class Registration extends Component {
         if (!this.state.roles) {
             errors.roles = "User type can't be empty. Please select"
         }
+
+        if(this.props.userDetail.users){
+            errors.email="Invalid email"
+        }
+        
         if(!this.state.towerId){
             errors.towerId = "Tower can't be empty. Please select."
         }
@@ -112,7 +117,6 @@ class Registration extends Component {
         if (this.state.lastName === '') errors.lastName = "Can't be empty";
         else if (this.state.lastName.length < 2) errors.lastName = "Last name can't be les than two.";
         if(this.state.familyMember === '') errors.familyMember="Can't be empty."
-
         if (this.state.userName === '') errors.userName = "Can't be empty.";
         if (this.state.email === '') errors.email = "Can't be empty.";
         if (this.state.contact === '') errors.contact = "Can't be empty.";
@@ -126,7 +130,7 @@ class Registration extends Component {
         if (isValid) {
             this.setState({loading: true})
             this.props.addUser({ ...this.state }).then(
-            () => this.props.history.push('/superDashboard/user_details'));
+            () => this.props.history.push('/superDashboard/user_details'))
             this.setState({
                 roleName: [],
                 roles: "",
@@ -258,6 +262,8 @@ class Registration extends Component {
                 passwordConfirmationChange={this.onChange}
                 passwordConfirmationError={this.state.errors.passwordConfirmation}
                 routeToUserDetails={this.routeToUserDetails}
+                serverValidationError={this.props.userDetail.users}
+                serverValidationErrorSpinner = {<Spinner/>}
                 />
         
         return (
@@ -285,6 +291,7 @@ class Registration extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log(state)
     return {
         userDetail: state.userDetail,
         TowerDetails: state.TowerDetails

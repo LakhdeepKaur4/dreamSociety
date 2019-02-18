@@ -5,23 +5,14 @@ import{URN,ADD_USER,UPDATE_USER,GET_ROLES,GET_USERS,DELETE_USER} from '../action
 
 
 export function addUser(values) {
-    const request = axios.post(`${URN}/auth/signup`, values , {headers: authHeader() })
-                    .then(response => {console.log(response.status)
-                        if(response.status === 201){
-                            return this.getUsers()
-                        }
-                        else if(response.status === 400){
-                            return console.log('something went wrong')
-                        }
-                    })
-                    .catch(error=> {
-                        console.log('There has been a problem with your fetch operation: ', 
-                        error)});
+    let message;
+    const request = axios.post(`${URN}/auth/signup`, values, {headers: authHeader() })
+                    .catch(err =>err.response.data.message)
                     return {
                         type: ADD_USER,
                         payload: request
                     }
-}
+                }
 
 export function getUsers(){
     const request = axios.get(`${URN}/user`,  {headers:authHeader()}).then((response) => response.data)
@@ -44,7 +35,6 @@ export function getRoles(){
 }
 
 export function updateUser(userId, roleName, firstName, lastName, userName, email,towerId,familyMember,floor,parking,contact){
-    console.log(userId, roleName, firstName, lastName, userName, email,towerId,familyMember,floor,parking,contact)
     const request = axios.put(`${URN}/user/`+ userId, {
         userId, roleName, firstName, lastName, userName, email,towerId,familyMember,floor,parking, contact
         }, { headers: authHeader() })

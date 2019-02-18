@@ -43,7 +43,7 @@ const editUserModal = (props) => (
                 <Label for="email">Email</Label>
                 <Input type="email" name="email" id="email"
                  maxLength='40'
-                 minLength='10'
+                 minLength='6'
                  onKeyPress={props.emailKeyPress}
                  name={props.emailInputName} value={props.emailValue} onChange={props.emailValueChange}/>
                 {!props.emailValue ? <span className="error">{props.emailError}</span> : null}
