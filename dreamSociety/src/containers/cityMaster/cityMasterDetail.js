@@ -130,10 +130,11 @@ class CityMasterDetail extends Component {
     renderCity = ({ city }) => {
 
         if (city) {
-            return city.filter(this.searchFilter(this.state.search)).map((item) => {
+            return city.filter(this.searchFilter(this.state.search)).map((item,index) => {
 
                 return (
                     <tr key={item.cityId}>
+                        <td>{index+1}</td>
                         <td>{item.country_master.countryName}</td>
                         <td>{item.state_master.stateName}</td>
                         <td>{item.cityName}</td>
@@ -211,6 +212,7 @@ class CityMasterDetail extends Component {
         <Table className="table table-bordered">
             <thead>
                 <tr>
+                   <th>#</th>
                     <th>Country Name</th>
                     <th>State Name</th>
                     <th>City Name</th>
@@ -241,7 +243,7 @@ class CityMasterDetail extends Component {
                                 <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                                 <ModalBody>
                                     <FormGroup>
-                                        <Label htmlFor="countryName">Country Name</Label>
+                                        <Label>Country Name</Label>
 
                                         <Input type="select" id="countryId" name="countryName" onChange={(e) => {
 
@@ -256,7 +258,7 @@ class CityMasterDetail extends Component {
                                         </Input>
                                     </FormGroup>
                                     <FormGroup>
-                                        <Label htmlFor="stateName">State Name</Label>
+                                        <Label>State Name</Label>
 
                                         <Input type="select" id="stateId" name="stateName" onChange={(e) => {
 
@@ -273,7 +275,7 @@ class CityMasterDetail extends Component {
                                         </Input>
                                     </FormGroup>
                                     <FormGroup>
-                                        <Label htmlFor="cityName">City Name</Label>
+                                        <Label>City Name</Label>
                                         <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} value={this.state.cityName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler}/>
                                         <span className="error">{this.state.errors.cityName}</span>
                                     </FormGroup>

@@ -239,8 +239,8 @@ class CityMaster extends Component {
         formData =<div>
          <FormGroup>
             <Label><h4>Country Name</h4></Label>
-            <Input type="select" onChange={this.onChangeCountry} required>
-            <option value='' disabled selected>--Select--</option>
+            <Input type="select" defaultValue='no-value' onChange={this.onChangeCountry} required>
+            <option value='no-value' disabled>--Select--</option>
                 {this.countryName(this.props.cityMasterReducer)}
             </Input >
             <span className='error'>{this.state.errors.countryName}</span>
@@ -248,15 +248,15 @@ class CityMaster extends Component {
         
         <FormGroup>
             <Label><h4>State Name</h4></Label>
-            <Input type="select"  onChange={this.onChangeState} required>
-            <option value='' disabled selected>--Select--</option>
+            <Input type="select" defaultValue='no-value'  onChange={this.onChangeState} required>
+            <option value='no-value' disabled>--Select--</option>
                 {this.stateName(this.props.cityMasterReducer)}
             </Input>
             <span className='error'>{this.state.errors.stateName}</span>
         </FormGroup>
 
       <FormGroup>
-            <Label htmlFor='cityName'><h4>City Name</h4></Label>
+            <Label><h4>City Name</h4></Label>
             <Input  type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler} placeholder="City Name" maxLength={30}
         minLength={3}/>
             <span className='error'>{this.state.errors.cityName}</span>

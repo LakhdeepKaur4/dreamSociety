@@ -114,11 +114,12 @@ class SocietyManagementDetail extends Component {
     societyData = ({ detail_Society }) => {
      
         if (detail_Society) {
-            return detail_Society.filter(this.searchFilter(this.state.search)).map((item) => {
+            return detail_Society.filter(this.searchFilter(this.state.search)).map((item,index) => {
               
 
                 return (
                     <tr key={item.societyId}>
+                        <td>{index+1}</td>
                         <td>{item.country_master.countryName}</td>
                         <td>{item.state_master.stateName}</td>
                         <td>{item.city_master.cityName}</td>
@@ -232,6 +233,7 @@ class SocietyManagementDetail extends Component {
         <Table className="table table-bordered">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Country Name</th>
                     <th>State Name</th>
                     <th>City Name</th>
@@ -266,7 +268,7 @@ class SocietyManagementDetail extends Component {
                     <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                     <ModalBody>
                         <FormGroup>
-                            <Label htmlFor="countryName">Country Name</Label>
+                            <Label>Country Name</Label>
 
                             <Input type="select" id="countryId" name="countryName" onChange={(e) => {
 
@@ -281,7 +283,7 @@ class SocietyManagementDetail extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="stateName">State Name</Label>
+                            <Label>State Name</Label>
                             <Input type="select" id="stateId" name="stateName" onChange={(e) => {
                                 let { stateId } = this.state;
                                 stateId = e.target.value;
@@ -294,7 +296,7 @@ class SocietyManagementDetail extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="cityName">City Name</Label>
+                            <Label>City Name</Label>
                             <Input type="select" id="cityId" name="cityName" onChange={(e) => {
                                 let { cityId } = this.state;
                                 cityId = e.target.value;
@@ -307,7 +309,7 @@ class SocietyManagementDetail extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="stateName">Location Name</Label>
+                            <Label>Location Name</Label>
                             <Input type="select" id="locationId" name="locationName" onChange={(e) => {
                                 let { locationId } = this.state;
                                 locationId = e.target.value;
@@ -320,7 +322,7 @@ class SocietyManagementDetail extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="societyName">Society Name</Label>
+                            <Label>Society Name</Label>
                             <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName}  maxLength={50}/>
                             <span className="error">{this.state.errors.societyName}</span> 
                         </FormGroup>
