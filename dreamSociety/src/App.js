@@ -55,6 +55,7 @@ import EmployeeTypeMaster from './containers/employeeTypeMaster/employeeTypeMast
 import DisplayEmployeeTypeMaster from './containers/employeeTypeMaster/displayEmployeeTypeMaster';
 import MaintenanceSubMasterForm from './containers/maintenanceSubMaster/maintenanceSubMasterForm';
 import MaintenanceSubMasterDetails from './containers/maintenanceSubMaster/maintenanceSubMasterDetails'
+import DesignationMaster from './containers/designationMaster/designationMaster';
 
 
 class App extends Component {
@@ -113,6 +114,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/displayEmployeeType' component ={DisplayEmployeeTypeMaster}/>
             <PrivateRoute path='/superDashboard/MaintenanceSubMasterForm' component={MaintenanceSubMasterForm} />
             <PrivateRoute path='/superDashboard/MaintenanceSubMasterDetails' component={MaintenanceSubMasterDetails} />
+            <PrivateRoute path='/superDashboard/designationMaster' component={DesignationMaster} />
           </Switch>
         </div>
         {/* </ScrollToTop> */}

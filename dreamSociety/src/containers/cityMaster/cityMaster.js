@@ -5,7 +5,8 @@ import {getCountry,getState,getCity, addCity,detailCity} from './../../actionCre
 import UI from '../../components/newUI/superAdminDashboard';
 import _ from 'underscore';
 import Spinner from '../../components/spinner/spinner'
-import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap'
+import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
+import DefautSelect from './../../constants/defaultSelect';
 
 
 
@@ -240,7 +241,7 @@ class CityMaster extends Component {
          <FormGroup>
             <Label><h4>Country Name</h4></Label>
             <Input type="select" defaultValue='no-value' onChange={this.onChangeCountry} required>
-            <option value='no-value' disabled>--Select--</option>
+            <DefautSelect/>
                 {this.countryName(this.props.cityMasterReducer)}
             </Input >
             <span className='error'>{this.state.errors.countryName}</span>
@@ -249,7 +250,7 @@ class CityMaster extends Component {
         <FormGroup>
             <Label><h4>State Name</h4></Label>
             <Input type="select" defaultValue='no-value'  onChange={this.onChangeState} required>
-            <option value='no-value' disabled>--Select--</option>
+            <DefautSelect/>
                 {this.stateName(this.props.cityMasterReducer)}
             </Input>
             <span className='error'>{this.state.errors.stateName}</span>
@@ -264,6 +265,7 @@ class CityMaster extends Component {
          
         <Button color="success" className="mr-2">Submit</Button>
         <Button color="danger" onClick={this.cityDetails}>Cancel</Button>
+       
         </div>
 
         }
