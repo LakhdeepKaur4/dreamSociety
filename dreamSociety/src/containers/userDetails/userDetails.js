@@ -96,13 +96,7 @@ class userDetails extends Component {
         }
     }
 
-    onCheckBoxChange = (e) => {
-        console.log(this.state)
-        this.setState({[e.target.name]: e.target.value});
-    }
-
     updateUser = (e) => {
-
             e.preventDefault();
             let { userId, roleName, firstName, lastName, userName, email,familyMember,towerName, floor,parking, contact,towerId } = this.state;
             let errors = {};
@@ -148,21 +142,11 @@ class userDetails extends Component {
         .then(() => this.setState({isActive: false}))
     }
 
-    deleteSelected(ids,e){
-        console.log(this.state.ids);
-        if(ids===[]){
-            console.log('no id is present')
-            e.preventDefault();
-        }
-        else{
-            this.setState({loading:true})
-            let { isActive } = this.state;
-            this.props.deleteSelectedUsers(ids, isActive)
-            .then(() => this.refreshData())
-            .then(() => this.setState({isActive: false}))
-            .catch(err => err.response.data.message)
-        }
-        
+    deleteSelected(ids){
+        this.setState({loading:true});
+        this.props.deleteSelectedUsers(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
     }
 
     searchFilter(search){
@@ -210,19 +194,15 @@ class userDetails extends Component {
                 return (
                     <tr key={item.userId}>
                         <td><input type="checkbox" name="ids" value={item.userId}
-                         onChange={(e, i) => {console.log(this.state);
+                         onChange={(e, i) => {
                             const {userId} = item
-                            if(e.target.checked){
-                                this.setState({ids: [...this.state.ids, userId]})
-                            }
-                            else if(!e.target.checked){
-                                console.log('is Unchecked')
+                            if(!e.target.checked){
                                 let indexOfId = this.state.ids.indexOf(userId);
                                 if(indexOfId > -1){
-                                    this.state.ids.splice(indexOfId > -1)
-                                    console.log(this.state)
+                                    this.state.ids.splice(indexOfId, 1)
                                 }
                             }
+                            else this.setState({ids: [...this.state.ids, userId]})
                                 
                              }}/></td>
                         <td>{index + 1}</td>
@@ -328,8 +308,6 @@ class userDetails extends Component {
 
         let deleteSelectedButton = <Button color="danger" className="mb-2"
         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
-
-        let disabledDeleteSelectedButton = <Button disabled>Delete Selected</Button>;
 
         return (
 

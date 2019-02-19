@@ -57,8 +57,8 @@ export function deleteUser(userId, isActive){
     }
 }
 
-export function deleteSelectedUsers(ids, isActive){
-    const request = axios.put(`${URN}/user/delete/deleteSelected`, { ids, isActive}, { headers: authHeader() })
+export function deleteSelectedUsers(ids){
+    const request = axios.put(`${URN}/user/delete/deleteSelected`, { ids}, { headers: authHeader() })
     .then((response) => response.data)
     .then(() => this.getUsers());
 
