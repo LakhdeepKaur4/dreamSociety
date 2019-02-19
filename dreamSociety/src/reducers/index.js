@@ -22,7 +22,7 @@ import countryDetails from './countryReducers/countryReducer';
 import Inventory from './inventoryReducer/inventoryReducer';
 import MaintenanceMasterReducer from './maintenanceMasterReducer/maintenanceMasterReducer';
 import MaintenanceSubMaster from './maintenanceSubMasterReducer/maintenanceSubMasterReducer';
-
+import EmpDetails from './employeeMasterReducer/employeeMasterReducer';
 const rootReducer = combineReducers({
     loginReducer,
     userDetail,
@@ -46,6 +46,7 @@ const rootReducer = combineReducers({
     Inventory,
     MaintenanceMasterReducer,
     employeeDetails,
-    MaintenanceSubMaster
+    MaintenanceSubMaster,
+    EmpDetails
 })
 export default rootReducer;

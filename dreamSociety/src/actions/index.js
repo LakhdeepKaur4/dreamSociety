@@ -1,5 +1,5 @@
 
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export  const URN = 'http://192.168.1.102:5000/api';
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
@@ -114,8 +114,12 @@ export const GET_SUB_MAINTENANCE_DETAILS = 'GET_SUB_MAINTENANCE_DETAILS';
 export const DELETE_SUB_MAINTENANCE_DETAILS = 'DELETE_SUB_MAINTENANCE_DETAILS';
 export const GET_MAINTENANCE_TYPE = 'GET_MAINTENANCE_TYPE';
 export const UPDATE_SUB_MAINTENANCE_DETAILS = 'UPDATE_SUB_MAINTENANCE_DETAILS';
-export const DELETE_SELECTEDCITY= 'DELETE_SELECTEDCITY';
 export const DELETE_SELECTEDSOCIETY='DELETE_SELECTEDSOCIETY';
+
 export const GET_RATE_TYPE='get_rate_type';
 
 
+export const GET_EMP ='get_emp';
+export const ADD_EMP='add_emp';
+export const UPDATE_EMP ='update_emp';
+export const DELETE_EMP='delete_emp';
