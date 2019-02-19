@@ -8,6 +8,10 @@ module.exports = (sequelize, Sequelize) => {
       serialNumber:{
         type: Sequelize.STRING,
       },
+      autoGenerate:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
+      },
       rate:{
         type:Sequelize.FLOAT,
         defaultValue: true

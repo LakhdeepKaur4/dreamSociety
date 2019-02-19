@@ -9,6 +9,28 @@ exports.create = async (req,res,next) => {
     try{
         let body = req.body;
         body.userId = req.userId;
+        const flatNo = await FlatDetail.findOne({where: {
+            [Op.and]:[
+            {flatNo: body.flatNo},
+            {isActive:true}
+            ]
+         }})
+        if(flatNo){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                message: "Flat number already exists",
+            });
+        }
+        const towerId = await FlatDetail.findOne({where: {
+            [Op.and]:[
+            {towerId: body.towerId},
+            {isActive:true}
+            ]
+         }})
+         if(towerId){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                message: "Tower already exists",
+            });
+         }
         const flatDetail = await FlatDetail.create(body);
         return res.status(httpStatus.CREATED).json({
             message: "FlatDetail successfully created",

@@ -11,7 +11,20 @@ exports.create = async (req, res, next) => {
         console.log("userId==>",req.userId)
         let body = req.body;
         body.userId = req.userId;
-        const inventory = await Inventory.create(body);
+        let serialNumber;
+        let assetName;
+        let inventory;
+        console.log("body assert id ==>0",body.assetId)
+        const assets = await Assets.findOne({where:{assetId:body.assetId}});
+        assetName = assets.assetName;
+        if(body.number){
+            for(i=0 ; i<body.number; i++){
+                serialNumber = assetName.toUpperCase().substring(0,2) + i;
+                body.serialNumber = serialNumber;
+                inventory = await Inventory.create(body);
+             }
+        }
+      
         return res.status(httpStatus.CREATED).json({
             message: "Inventory successfully created",
             inventory
