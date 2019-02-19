@@ -48,6 +48,8 @@ import CityMasterDetail from './containers/cityMaster/cityMasterDetail';
 import locationMaster from './containers/locationMaster/locationMaster';
 import DisplayLocation from './containers/locationMaster/displayLocation';
 import SocietyManagementDetail from './containers/societyManagement/societyManagementDetail';
+import Inventory from './containers/inventory/inventory'
+import InventoryDetails from './containers/inventory/inventoryDetails'
 import MaintenanceMaster from './containers/maintenanceMaster/maintenanceMaster';
 import MaintenanceMasterDetail from './containers/maintenanceMaster/maintenanceMasterDetail';
 import InventoryDetails from './containers/inventoryDetails/inventoryDetails'
@@ -109,6 +111,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/maintenanceMaster' component={MaintenanceMaster}/>
             <PrivateRoute path='/superDashboard/maintenanceMasterDetail' component={MaintenanceMasterDetail}/>
             <PrivateRoute path='/superDashboard/inventoryDetails' component={InventoryDetails}/>
+            <PrivateRoute path='/superDashboard/inventory' component={Inventory}/>
             <PrivateRoute  path ='/superDashboard/employeeType' component ={EmployeeTypeMaster}/>
             <PrivateRoute path='/superDashboard/displayEmployeeType' component ={DisplayEmployeeTypeMaster}/>
             <PrivateRoute path='/superDashboard/MaintenanceSubMasterForm' component={MaintenanceSubMasterForm} />

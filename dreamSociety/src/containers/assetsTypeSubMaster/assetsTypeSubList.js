@@ -25,14 +25,8 @@ class AssetsTypeSubList extends Component {
         };
     }
     onChangeHandler = (event) => {
-        if (!!this.state.errors[event.target.name]) {
-            let errors = Object.assign({}, this.state.errors);
-            delete errors[event.target.name];
-            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
-        }
-        else {
-            this.setState({ [event.target.name]: event.target.value.trim('') });
-        }
+        const { name, value } = event.target;
+        this.setState({ [name]: value });
     }
 
     toggle = (assetTypeId, assetType, description) => {
@@ -56,6 +50,7 @@ class AssetsTypeSubList extends Component {
 
     editAssetsSubType = () => {
         const { assetTypeId, assetType, description } = this.state
+        console.log(assetTypeId, assetType, description )
         let errors = {};
         if(this.state.assetType===''){
             errors.assetType="Assets type can't be empty"
@@ -101,10 +96,11 @@ class AssetsTypeSubList extends Component {
     renderListAssets = ({ getAssetsType }) => {
 
         if (getAssetsType) {
-            return getAssetsType.assetsType.filter(this.searchFilter(this.state.search)).map((item) => {
+            return getAssetsType.assetsType.filter(this.searchFilter(this.state.search)).map((item,index) => {
                 {
                     return (
                         <tr key={item.assetTypeId}>
+                            <td>{index+1}</td>
                             <td>{item.asset_master.assetName}</td>
                             <td>{item.assetType}</td>
                             <td>{item.description}</td>
@@ -133,6 +129,7 @@ class AssetsTypeSubList extends Component {
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Asset Name</th>
                     <th>Assets Sub Type Name</th>
                     <th>Description</th>
