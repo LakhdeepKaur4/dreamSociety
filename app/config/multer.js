@@ -1,12 +1,25 @@
 const multer = require('multer');
 let { uploadImagePath } = require('./config');
+let { uploadDocumentPath } = require('./config');
+const shortId = require('short-id');
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-      cb(null, '../../../');    
+        console.log("upload image path--->",file.fieldname)
+        if(file.fieldname == 'profilePicture'){
+            console.log(uploadImagePath);
+            cb(null,uploadImagePath);    
+        }
+        if(file.fieldname == 'document')
+        {
+            console.log(uploadDocumentPath);
+            cb(null,uploadDocumentPath);    
+        }
+   
     },
     filename: function(req, file, cb) {
-    cb(null, new Date() + '_' + file.originalname);
+        // cb(null, file.fieldname + '-' + Date.now())
+    cb(null,shortId.generate() + '_' + Date.now() + '_' +file.originalname);
     }
 });
 

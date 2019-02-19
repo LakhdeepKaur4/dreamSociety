@@ -15,9 +15,13 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING
         },
         picture:{
-            type: Sequelize.BLOB('long')
+            // type: Sequelize.BLOB('long')
+            type: Sequelize.STRING
         },
-        document:{
+        documentOne:{
+            type: Sequelize.STRING
+        },
+        documentTwo:{
             type: Sequelize.STRING
         },
         permanentAddress: {

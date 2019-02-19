@@ -14,5 +14,6 @@ module.exports = {
   duplicateCheck: 'true',
   format: 'json',
   uploadFolderPath: './public',
-  uploadImagePath: (__dirname, 'public/profilePictures'),
+  uploadImagePath: (__dirname, 'public/profilePictures/'),
+  uploadDocumentPath: (__dirname, 'public/documents/'),
 };

@@ -31,7 +31,7 @@ exports.get = async(req,res,next) => {
         ]
         });
         if(inventory){
-            return res.status(httpStatus.CREATED).json({
+            return res.status(httpStatus.OK).json({
                 message: "Inventory Content Page",
                 inventory:inventory
             });

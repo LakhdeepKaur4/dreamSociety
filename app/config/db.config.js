@@ -95,7 +95,7 @@ db.employeeDetail.belongsTo(db.user,{foreignKey:'userId'});
 db.vendor.hasMany(db.vendorService, {foreignKey: 'vendorId'});
 db.vendorService.belongsTo(db.vendorService, {foreignKey: 'vendorId'});
 db.vendorService.belongsTo(db.serviceDetail,{foreignKey:'serviceDetailId'});
-db.vendorService.belongsTo(db.rate,{foreignKey:'rateTypeId'});
+db.vendorService.belongsTo(db.rate,{foreignKey:'rateId'});
 db.vendorService.belongsTo(db.user,{foreignKey:'userId'});
 db.vendorService.belongsTo(db.service,{foreignKey:'serviceId'});
 db.inventory.belongsTo(db.assets,{foreignKey:'assetId'});

@@ -44,13 +44,13 @@ console.log('server started');
 
 
 
-// app.use(bodyParser.urlencoded({
-// 	extended: true
-// }));
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
 
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(bodyParser.json());
-app.use(upload());
+app.use(bodyParser());
+// app.use(upload());
 
 
 require('./app/router/router.js')(app);

@@ -183,9 +183,9 @@ module.exports = function(app) {
 
 	app.get('/api/getState/:id', [authJwt.verifyToken], stateController.getCountry);
 
-	app.post('/api/vendor', [authJwt.verifyToken], vendorController.create);
+	// app.post('/api/vendor', [authJwt.verifyToken] ,vendorController.create);
 
-	app.post('/api/vendor/service', [authJwt.verifyToken], vendorController.createVendor);
+	app.post('/api/vendor', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]), vendorController.create);
 
 	app.get('/api/vendor', [authJwt.verifyToken], vendorController.get);
 
@@ -265,7 +265,11 @@ module.exports = function(app) {
 
 	app.put('/api/employeeDetail/delete/:id', [authJwt.verifyToken],employeeDetailController.delete);
 
-	app.post("/api/test/upload",fileUploadConfig.single('profileImage'),vendorController.upload);
+	// app.post("/api/test/upload",fileUploadConfig.single('profileImage'),vendorController.uploadPicture);
+
+	// app.post("/api/test/upload",fileUploadConfig.array('photos',3),vendorController.uploadMultiple);
+
+	// app.post("/api/test/upload",fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]),vendorController.uploadMultiple)
 
 	app.post('/api/inventory', [authJwt.verifyToken],inventoryController.create);
 

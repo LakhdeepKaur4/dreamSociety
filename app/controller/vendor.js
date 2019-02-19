@@ -1,6 +1,5 @@
 const db = require('../config/db.config.js');
 const httpStatus = require('http-status');
-var userNameGenerator = require('random-username-generator');
 var passwordGenerator = require('generate-password');
 const Nexmo = require("nexmo");
 const config = require('../config/config.js');
@@ -18,7 +17,7 @@ const Vendor = db.vendor;
 const Service = db.service;
 const VendorService = db.vendorService;
 
-exports.create = async (req, res, next) => {
+exports.createVendor = async (req, res, next) => {
     try {
         let body = req.body;
         body.userId = req.userId;
@@ -32,10 +31,11 @@ exports.create = async (req, res, next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
-exports.createVendor = async (req, res, next) => {
+
+exports.create = async (req, res, next) => {
     try {
         let body = req.body;
-        const userName = userNameGenerator.generate();
+        const userName = req.body.vendorName += Math.floor((Math.random() * 100) + 1);
         const password = passwordGenerator.generate({
             length: 10,
             numbers: true
@@ -52,25 +52,24 @@ exports.createVendor = async (req, res, next) => {
             document: body.document
         });
         const vendorId = vendor.vendorId;
-
         if (body.rate1) {
             const vendorService = await VendorService.create({
                 vendorId: vendorId,
                 serviceDetailId: body.serviceDetailId1,
-                rateTypeId: body.rateTypeId,
+                rateId: body.rateId1,
                 rate: body.rate1,
                 userId: req.userId,
-                serviceId: body.serviceId
+                serviceId: body.serviceId1
             })
         }
         if (body.rate2) {
             const vendorService = await VendorService.create({
                 vendorId: vendorId,
                 serviceDetailId: body.serviceDetailId2,
-                rateTypeId: body.rateTypeId,
+                rateId: body.rateId2,
                 rate: body.rate2,
                 userId: req.userId,
-                serviceId: body.serviceId
+                serviceId: body.serviceId2
             })
         }
 
@@ -78,12 +77,33 @@ exports.createVendor = async (req, res, next) => {
             const vendorService = await VendorService.create({
                 vendorId: vendorId,
                 serviceDetailId: body.serviceDetailId3,
-                rateTypeId: body.rateTypeId,
+                rateId: body.rateId3,
                 rate: body.rate3,
                 userId: req.userId,
-                serviceId: body.serviceId
+                serviceId: body.serviceId3
             })
         }
+        if(req.files){
+            for(let i =0 ;i<req.files.profilePicture.length;i++){
+                  profileImage = req.files.profilePicture[i].filename;
+            }
+                const updateImage = {
+                  picture:  profileImage
+                };
+                const imageUpdate = await Vendor.find({ where: { vendorId: vendorId } }).then(vendor => {
+                    return vendor.updateAttributes(updateImage)
+                }) 
+                    documentOne = req.files.document[0].filename;
+                    documentTwo = req.files.document[1].filename;
+                 const updateDocument = {
+                    documentOne:  documentOne,
+                    documentTwo:documentTwo
+                  }; 
+                
+              const documentUpdate = await Vendor.find({ where: { vendorId: vendorId } }).then(vendor => {
+                return vendor.updateAttributes(updateDocument)
+              }) 
+            }
         const message = `Welcome to Dream society your username is ${userName} and password is ${password}.Do not share with anyone.`
         // nexmo.message.sendSms(config.number, body.contact, message, { type: 'text' }, (err, resp) => {
         //     if (err) {
@@ -171,76 +191,83 @@ exports.delete = async (req, res, next) => {
     }
 }
 
-exports.uploadPicture = async (req,res,next) => {
+exports.uploadPicture = async(req,res,next) => {
     try{
-        console.log(req.body.pictures)
-        console.log("request picture==>",req.files)
-        let uploadFile = req.files.picture
-        const fileName = req.files.file.name
-        uploadFile.mv(
-          `${__dirname}/public/profilePictures/${fileName}`,
-          function (err) {
-            if (err) {
-              return res.status(500).send(err)
-            }
+        console.log("file info ", req.file);
+    }catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+// exports.uploadPicture = async (req,res,next) => {
+//     try{
+//         console.log(req.body.pictures)
+//         console.log("request picture==>",req.files)
+//         let uploadFile = req.files.picture
+//         const fileName = req.files.file.name
+//         uploadFile.mv(
+//           `${__dirname}/public/profilePictures/${fileName}`,
+//           function (err) {
+//             if (err) {
+//               return res.status(500).send(err)
+//             }
       
-            res.json({
-              file: `public/${req.files.file.name}`,
-            })
-          },
-        )
-    }catch(error){
-        console.log(error)
-    }
-}
+//             res.json({
+//               file: `public/${req.files.file.name}`,
+//             })
+//           },
+//         )
+//     }catch(error){
+//         console.log(error)
+//     }
+// }
 
-function uploadFile(data, callback) {
-    try {
-        if (data.file) {
-            file.upload(data.file, isFileUpload => {
-                if (!isFileUpload) {
-                    callback(false);
-                }
-            })
-        }
-        if (data.picture) {
-            file.upload(data.picture, isFileUpload => {
-                if (!isFileUpload) {
-                    callback(false);
-                }
-            })
-        }
-        callback(true);
-    } catch (err) {
-        console.log(':: err in uploadFile ', err)
-        callback(false);
-    }
-}
+// function uploadFile(data, callback) {
+//     try {
+//         if (data.file) {
+//             file.upload(data.file, isFileUpload => {
+//                 if (!isFileUpload) {
+//                     callback(false);
+//                 }
+//             })
+//         }
+//         if (data.picture) {
+//             file.upload(data.picture, isFileUpload => {
+//                 if (!isFileUpload) {
+//                     callback(false);
+//                 }
+//             })
+//         }
+//         callback(true);
+//     } catch (err) {
+//         console.log(':: err in uploadFile ', err)
+//         callback(false);
+//     }
+// }
 
-exports.upload =async(req,res,next) => {
-    try{
-        console.log(body.fileData);
-        const fileUrl = `/profilePictures/`;
-        // create file url from server directory
-        url = `${process.env["PWD"]}/public${fileUrl}`;
-
-        const documentFile = { url, fileData: body.fileData };
-        console.log('fileUrl',fileUrl);
-        console.log("filedocumentUrl===",documentFile);
-        file.upload(documentFile, (isFileUpload) => {
-            // check file upload on server successfully or not
-            if (isFileUpload) {
-                // update  file url in db
-        console.log("successfully uploaded");
-            }
-            console.log("resp 2", resp)
-        });
-        // console.log("file info ", req.file);
-        // var name = req.files.profileImage.name;
-        // console.log("name===>",name);
+// exports.upload =async(req,res,next) => {
+//     try{
+//         console.log(body.fileData);
+//         const fileUrl = `/profilePictures/`;
+//         // create file url from server directory
+//         url = `${process.env["PWD"]}/public${fileUrl}`;
+//         const documentFile = { url, fileData: body.fileData };
+//         console.log('fileUrl',fileUrl);
+//         console.log("filedocumentUrl===",documentFile);
+//         file.upload(documentFile, (isFileUpload) => {
+//             // check file upload on server successfully or not
+//             if (isFileUpload) {
+//                 // update  file url in db
+//         console.log("successfully uploaded");
+//             }
+//             console.log("resp 2", resp)
+//         });
+//         // console.log("file info ", req.file);
+//         // var name = req.files.profileImage.name;
+//         // console.log("name===>",name);
         
-    }catch(error){
-        console.log(error)
-    }
-}
+//     }catch(error){
+//         console.log(error)
+//     }
+// }
 
