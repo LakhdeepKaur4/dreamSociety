@@ -35,7 +35,7 @@ import PersonDetails from './containers/personDetails/personDetails';
 import serviceMaster from './containers/vendorMangement/serviceMaster/serviceMaster';
 import displayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
 import vendorMaster from './containers/vendorMangement/vendorMaster/vendorMaster';
-import displayVendorMaster from './containers/vendorMangement/vendorMaster/displayVendorMaster';
+
 import displayPersonDetails from './containers/personDetails/displayPersonDetails';
 import AssetTypeMaster from './containers/assetsTypeMaster/assetsTypeMaster';
 import AssetList from './containers/assetsTypeMaster/assetsList';
@@ -52,7 +52,7 @@ import Inventory from './containers/inventory/inventory'
 import InventoryDetails from './containers/inventory/inventoryDetails'
 import MaintenanceMaster from './containers/maintenanceMaster/maintenanceMaster';
 import MaintenanceMasterDetail from './containers/maintenanceMaster/maintenanceMasterDetail';
-import InventoryDetails from './containers/inventoryDetails/inventoryDetails'
+
 import EmployeeTypeMaster from './containers/employeeTypeMaster/employeeTypeMaster'
 import DisplayEmployeeTypeMaster from './containers/employeeTypeMaster/displayEmployeeTypeMaster';
 import MaintenanceSubMasterForm from './containers/maintenanceSubMaster/maintenanceSubMasterForm';
@@ -63,7 +63,7 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter onUpdate={() => window.scrollTo(0, 0)}>
-        {/* <ScrollToTop> */}
+        
         <div>
           <Switch>
             <Route path="/" exact component={Login} />
@@ -94,7 +94,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/serviceMaster' component={serviceMaster} />
             <PrivateRoute path='/superDashboard/personDetails' component={PersonDetails} />
             <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster} />
-            <PrivateRoute path='/superDashboard/displayVendorMaster' component={displayVendorMaster} />
+            
             <PrivateRoute path='/superDashboard/displayServices' component={displayServices} />
             <PrivateRoute path='/superDashBoard/displayPerson' exact component={displayPersonDetails} />
             <PrivateRoute path='/superDashBoard/demo' component={Demo} />
@@ -118,7 +118,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/MaintenanceSubMasterDetails' component={MaintenanceSubMasterDetails} />
           </Switch>
         </div>
-        {/* </ScrollToTop> */}
+        
       </BrowserRouter>
     );
   }

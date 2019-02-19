@@ -26,10 +26,10 @@ class displayServices extends Component {
             serviceId: '',
             serviceName: '',
             service_detail: '',
-            serviceDetailId: '',
-            
+            serviceDetailId: '',           
             isActive: false
         },
+     
         menuVisible: false,
         editServiceModal: false,
         search: '',
@@ -64,6 +64,7 @@ class displayServices extends Component {
         })
     }
 
+  
     searchFilter(search) {
         return function (x) {
             return x.serviceName.toLowerCase().includes(search.toLowerCase()) || !search;
@@ -142,7 +143,11 @@ class displayServices extends Component {
                         
                             <Button color="danger" onClick={this.deleteService.bind(this, item.serviceId)}>Delete</Button>
                         </td>
+                        <td>
+                        <input type="checkbox"></input>
+                        </td>
                     </tr>
+                    
 
                 )
             })
@@ -178,6 +183,7 @@ class displayServices extends Component {
                 <th>Service Type</th>
                 <th>Service Details</th>
                 <th>Actions</th>
+                <th>Select All</th>
              
             </tr>
         </thead>
@@ -234,6 +240,8 @@ class displayServices extends Component {
                     </Modal>
                     <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Service Details</h3>
                     <Button color="primary" type="button" onClick={this.push}>Add Services</Button></div>
+                    <Button color="danger" onClick={this.deleteAll}>Delete All</Button>
+             
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
                            {!this.state.loading ? tableData : <Spinner />}

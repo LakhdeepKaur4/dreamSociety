@@ -1,5 +1,5 @@
 
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export  const URN = 'http://192.168.1.102:5000/api';
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
