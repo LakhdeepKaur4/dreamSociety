@@ -30,13 +30,20 @@ class SocietyManagementDetail extends Component {
             search: '',
             modal: false,
             loading: true,
+            errors:{}
             
 
         };
     }
     onChangeHandler = (event) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value.trim('') });
+        }
     }
 
     toggle = (societyId, countryName, stateName, cityName, locationName, societyName) => {
@@ -71,17 +78,26 @@ class SocietyManagementDetail extends Component {
 
 
     editSocietyType = () => {
-        this.setState({
-            loading: true
-        })
         const { societyId, countryId, stateId, cityId, locationId, societyName } = this.state
+
+        let errors={};
+
+        if(this.state.societyName === ''){
+            errors.societyName="Society Name can't be empty"
+        }
+        this.setState({errors})
+
+        const isValid= Object.keys(errors).length === 0
+
+        if(isValid){
+            this.setState({loading:true})
         this.props.updateSociety(societyId, countryId, stateId, cityId, locationId, societyName)
             .then(() => this.refreshData())
         this.setState({
             editSocietyData: { societyId, countryId, stateId, cityId, locationId, societyName },
             modal: !this.state.modal
         })
-    
+      }
     }
 
     deleteSocietyName = (societyId) => {
@@ -96,13 +112,14 @@ class SocietyManagementDetail extends Component {
     }
 
     societyData = ({ detail_Society }) => {
-        console.log('=========societyResult=========', detail_Society)
+     
         if (detail_Society) {
-            return detail_Society.filter(this.searchFilter(this.state.search)).map((item) => {
+            return detail_Society.filter(this.searchFilter(this.state.search)).map((item,index) => {
               
 
                 return (
                     <tr key={item.societyId}>
+                        <td>{index+1}</td>
                         <td>{item.country_master.countryName}</td>
                         <td>{item.state_master.stateName}</td>
                         <td>{item.city_master.cityName}</td>
@@ -216,6 +233,7 @@ class SocietyManagementDetail extends Component {
         <Table className="table table-bordered">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Country Name</th>
                     <th>State Name</th>
                     <th>City Name</th>
@@ -250,7 +268,7 @@ class SocietyManagementDetail extends Component {
                     <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                     <ModalBody>
                         <FormGroup>
-                            <Label htmlFor="countryName">Country Name</Label>
+                            <Label>Country Name</Label>
 
                             <Input type="select" id="countryId" name="countryName" onChange={(e) => {
 
@@ -265,7 +283,7 @@ class SocietyManagementDetail extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="stateName">State Name</Label>
+                            <Label>State Name</Label>
                             <Input type="select" id="stateId" name="stateName" onChange={(e) => {
                                 let { stateId } = this.state;
                                 stateId = e.target.value;
@@ -278,7 +296,7 @@ class SocietyManagementDetail extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="cityName">City Name</Label>
+                            <Label>City Name</Label>
                             <Input type="select" id="cityId" name="cityName" onChange={(e) => {
                                 let { cityId } = this.state;
                                 cityId = e.target.value;
@@ -291,7 +309,7 @@ class SocietyManagementDetail extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="stateName">Location Name</Label>
+                            <Label>Location Name</Label>
                             <Input type="select" id="locationId" name="locationName" onChange={(e) => {
                                 let { locationId } = this.state;
                                 locationId = e.target.value;
@@ -304,8 +322,9 @@ class SocietyManagementDetail extends Component {
                             </Input>
                         </FormGroup>
                         <FormGroup>
-                            <Label htmlFor="societyName">Society Name</Label>
-                            <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName}  maxLength={50} required/> 
+                            <Label>Society Name</Label>
+                            <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName}  maxLength={50}/>
+                            <span className="error">{this.state.errors.societyName}</span> 
                         </FormGroup>
                    
                         <Button color="primary mr-2" onClick={this.editSocietyType}>Save</Button> 

@@ -6,6 +6,7 @@ import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner'
+import DefaultSelect from '../../constants/defaultSelectOption';
 
 
 
@@ -148,7 +149,7 @@ class SocietyMangement extends Component {
         if(stateResult){
           
            return( 
-            stateResult.map((item) =>{ console.log(item.stateName)
+            stateResult.map((item) =>{ 
                    return(
                        <option key={item.stateId} value={item.stateName}>
                         {item.stateName}
@@ -165,7 +166,7 @@ class SocietyMangement extends Component {
         if(cityResult){
             
            return( 
-            cityResult.map((item) =>{ console.log(item.cityName)
+            cityResult.map((item) =>{ 
                    return(
                        <option key={item.cityId} value={item.cityName}>
                         {item.cityName}
@@ -182,7 +183,7 @@ class SocietyMangement extends Component {
         if(locationResult){
           
            return( 
-            locationResult.map((item) =>{ console.log(item.locationName)
+            locationResult.map((item) =>{ 
                    return(
                        <option key={item.locationId} value={item.locationName}>
                         {item.locationName}
@@ -286,8 +287,8 @@ class SocietyMangement extends Component {
             form= <div>
             <FormGroup>
             <Label><h4>Country Name</h4></Label>
-            <Input type="select" name="countryName"  onChange={this.onChangeCountry} required>
-            <option value='' disabled selected>--Select--</option>
+            <Input type="select" defaultValue='no-value' name="countryName"  onChange={this.onChangeCountry} required>
+                <DefaultSelect/>
                 {this.countryName(this.props.societyReducer)}
             </Input>
             <span className='error'>{this.state.errors.countryName}</span>
@@ -295,8 +296,8 @@ class SocietyMangement extends Component {
 
         <FormGroup>
             <Label><h4>State Name</h4></Label>
-            <Input type="select" name="stateName"   onChange={this.onChangeState} required>
-            <option value='' disabled selected>--Select--</option>
+            <Input type="select" defaultValue='no-value' name="stateName"   onChange={this.onChangeState} required>
+           <DefaultSelect/>
                 {this.stateName(this.props.societyReducer)}
             </Input>
              <span className='error'>{this.state.errors.stateName}</span>
@@ -304,8 +305,8 @@ class SocietyMangement extends Component {
 
         <FormGroup>
             <Label><h4>City Name</h4></Label>
-            <Input type="select" name="cityName"  onChange={this.onChangeCity} required>
-            <option value='' disabled selected>--Select--</option>
+            <Input type="select" defaultValue='no-value' name="cityName"  onChange={this.onChangeCity} required>
+           <DefaultSelect/>
                 {this.cityName(this.props.societyReducer)}  
             </Input>
             <span className='error'>{this.state.errors.cityName}</span>
@@ -313,15 +314,15 @@ class SocietyMangement extends Component {
 
         <FormGroup>
             <Label><h4>Location Name</h4></Label>
-            <Input type="select" name="locationName"  onChange={this.onChangeLocation} required>
-                <option value='' disabled selected>--Select--</option>
+            <Input type="select" defaultValue='no-value' name="locationName"  onChange={this.onChangeLocation} required>
+               <DefaultSelect/>
                 {this.locationName(this.props.societyReducer)}
             </Input>
             <span className='error'>{this.state.errors.locationName}</span>
         </FormGroup>
 
         <FormGroup>
-            <Label htmlFor="societyName"><h4>Society Name</h4></Label>
+            <Label><h4>Society Name</h4></Label>
             <Input placeholder="Society Name" type="text" name="societyName" value={this.state.societyName} onChange={this.onChange} maxLength={30}/>
              <span className='error'>{this.state.errors.societyName}</span>
         </FormGroup>

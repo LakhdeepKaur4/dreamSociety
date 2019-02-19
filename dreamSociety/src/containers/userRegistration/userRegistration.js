@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { addUser, getRoles } from '../../actionCreators/superAdminMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
-import './userRegistration.css';
 import { withRouter } from 'react-router-dom';
 import { Form } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
@@ -31,7 +30,8 @@ class Registration extends Component {
             passwordConfirmation: "",
             isSubmit: false,
             menuVisible: false,
-            message:'',
+            emailServerError:'',
+            userNameServerError:'',
             loading: true,
             errors: {}
         };
@@ -101,6 +101,7 @@ class Registration extends Component {
         if (!this.state.roles) {
             errors.roles = "User type can't be empty. Please select"
         }
+        
         if(!this.state.towerId){
             errors.towerId = "Tower can't be empty. Please select."
         }
@@ -113,7 +114,6 @@ class Registration extends Component {
         if (this.state.lastName === '') errors.lastName = "Can't be empty";
         else if (this.state.lastName.length < 2) errors.lastName = "Last name can't be les than two.";
         if(this.state.familyMember === '') errors.familyMember="Can't be empty."
-
         if (this.state.userName === '') errors.userName = "Can't be empty.";
         if (this.state.email === '') errors.email = "Can't be empty.";
         if (this.state.contact === '') errors.contact = "Can't be empty.";
@@ -126,29 +126,26 @@ class Registration extends Component {
         // const isValid = this.validate();
         if (isValid) {
             this.setState({loading: true})
-            this.props.addUser({ ...this.state }).then(
-            () => this.props.history.push('/superDashboard/user_details'));
-            this.setState({
-                roleName: [],
-                roles: "",
-                firstName: "",
-                lastName: "",
-                userName: "",
-                email: "",
-                floor:"",
-                parking:"",
-                familyMember: "",
-                towerId:"",
-                contact: "",
-                password: "",
-                passwordConfirmation: "",
-                isSubmit: true
-            });
+            this.props.addUser(this.state).then(() =>{
+                    this.props.history.push('/superDashboard/user_details')
+                }
+                    
+            )
+            .catch(err => {
+                console.log(err.response.data.message);
+                this.setState({emailServerError: err.response.data.message, userNameServerError:err.response.data.message, loading: false})
+            })
         }
     }
 
     onChange(e) {
         console.log(this.state)
+            this.setState({
+                emailServerError:'',
+                userNameServerError:'',
+            })
+        
+        
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -259,20 +256,19 @@ class Registration extends Component {
                 passwordConfirmationChange={this.onChange}
                 passwordConfirmationError={this.state.errors.passwordConfirmation}
                 routeToUserDetails={this.routeToUserDetails}
+                emailServerValidationError={this.state.emailServerError}
+                userNameServerValidationError={this.state.userNameServerError}
                 />
         
         return (
         <div>
             <UI onClick={this.logout}>
                 <div>
-                    {this.state.message}
-                </div>
-                <div>
                     <Form onSubmit={this.submit}>
                     <div>
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
+                            <span aria-hidden="true">&times;</span>
+                    </div>
 
                         <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add User</h3></div>
                         {!this.state.loading ? formData: <Spinner />}
@@ -286,6 +282,7 @@ class Registration extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log(state)
     return {
         userDetail: state.userDetail,
         TowerDetails: state.TowerDetails

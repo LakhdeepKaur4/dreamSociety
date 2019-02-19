@@ -23,13 +23,22 @@ class MaintenanceMasterDetail extends Component {
             search: '',
             modal: false,
             loading: true,
+            errors: {},
 
         };
     }
+
     onChangeHandler = (event) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value.trim('') });
+        }
     }
+
 
     toggle = (maintenanceId,category) => {
 
@@ -60,33 +69,38 @@ class MaintenanceMasterDetail extends Component {
     }
 
 
+    editcategory = () => {
+       
+        const { maintenanceId, category } = this.state
+        
+        let errors = {};
+        if(this.state.category===''){
+            errors.category="category can't be empty"
+        }
+        this.setState({errors});
+        const isValid = Object.keys(errors).length === 0
+        
+        if (isValid) {
+            this.setState({
+                loading: true
+            })
+        this.props.updateMaintenance(maintenanceId, category)
+            .then(() => this.refreshData())
+        this.setState({
+            editMaintenanceData: { maintenanceId, category },
+            modal: !this.state.modal
+        })
+    }
+    }
 
+      deleteMaintenanceName = (maintenanceId) => {
+        let { isActive } = this.state.editMaintenanceData
+        this.setState({ loading: true })
+        this.props.deleteMaintenance(maintenanceId, isActive)
+            .then(() => this.refreshData())
+        this.setState({editMaintenanceData: { isActive: false } })
 
-    // editcategory = () => {
-    //     this.setState({
-    //         loading: true
-    //     })
-    //     const { maintenanceId, category } = this.state
-
-
-    //     this.props.updateMaintenance(maintenanceId, category)
-    //         .then(() => this.refreshData())
-    //     this.setState({
-    //         editMaintenanceData: { maintenanceId, category },
-    //         modal: !this.state.modal
-    //     })
-
-
-    // }
-
-    // deleteCityName = (maintenanceId) => {
-    //     let { isActive } = this.state.editMaintenanceData
-    //     this.setState({ loading: true })
-    //     this.props.deleteMaintenance(maintenanceId, isActive)
-    //         .then(() => this.refreshData())
-    //     this.setState({editMaintenanceData: { isActive: false } })
-
-    // }
+      }
 
 
 
@@ -96,27 +110,27 @@ class MaintenanceMasterDetail extends Component {
 
     searchFilter = (search) => {
         return function (x) {
-            console.log(x)
+         
             return x.category.toLowerCase().includes(search.toLowerCase())
                 || !search;
         }
     }
 
+   
+
 
     renderMaintenance = ({ maintenanceResult }) => {
 
         if (maintenanceResult) {
-            return maintenanceResult.maintenance.filter(this.searchFilter(this.state.search)).map((item) => {
+            return maintenanceResult.maintenance.filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                 return (
                     <tr key={item.maintenanceId}>
+                        <td>{index+1}</td>
                         <td>{item.category}</td>
-                        <td>
-                            <Button color="success mr-2" >Edit</Button>
-                            <Button color="danger">Delete</Button>
-                             
-                            {/* <Button color="success mr-2" onClick={this.toggle.bind(this, item.maintenanceId, item.category)} >Edit</Button> */}
-                            {/* <Button color="danger" onClick={this.deleteMaintenanceName.bind(this, item.maintenanceId)} >Delete</Button> */}
+                        <td> 
+                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.maintenanceId, item.category)} >Edit</Button>
+                            <Button color="danger" onClick={this.deleteMaintenanceName.bind(this, item.maintenanceId)} >Delete</Button>
 
                         </td>
                     </tr>
@@ -157,6 +171,7 @@ class MaintenanceMasterDetail extends Component {
             <Table className="table table-bordered">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Maintenance Category</th>
                         <th>Actions</th>
                     </tr>
@@ -185,8 +200,9 @@ class MaintenanceMasterDetail extends Component {
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
                                 <FormGroup>
-                                    <Label htmlFor="category"></Label>
+                                    <Label>Category Type</Label>
                                     <Input type="text" id="maintenanceId" name="category" onChange={this.onChangeHandler} value={this.state.category} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
+                                    <span className="error">{this.state.errors.category}</span>
                                 </FormGroup>
 
 
@@ -209,7 +225,7 @@ class MaintenanceMasterDetail extends Component {
 
 
 function mapStatToProps(state) {
-   console.log(state)
+  
     return {
         MaintenanceMasterReducer: state.MaintenanceMasterReducer
     }

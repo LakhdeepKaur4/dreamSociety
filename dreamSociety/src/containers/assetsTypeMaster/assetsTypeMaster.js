@@ -91,7 +91,7 @@ class AssetsTypeMaster extends Component {
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                                 <span aria-hidden="true">&times;</span>
                             </div>
-                    <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Assets Sub Type Master</h3></div>
+                    <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Assets Master</h3></div>
                     {!this.state.loading ? formData: <Spinner />} 
                    </Form>
                     </div>

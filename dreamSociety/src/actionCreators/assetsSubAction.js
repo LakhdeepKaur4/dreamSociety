@@ -6,7 +6,7 @@ export function getAssets() {
 
     const request = axios.get(`${URN}/assets/`, { headers: authHeader() })
         .then(response => response.data)
-
+        .catch(error=>error)
     return {
         type: GET_ASSETS,
         payload: request
@@ -19,9 +19,10 @@ export function addAssetsSubType(addAssetsSubType, description, assetsId) {
         assetType: addAssetsSubType,
         description: description
     }
-    console.log('dkjdkjfk', data)
+ 
     const request = axios.post(`${URN}/assetsType/`, data, { headers: authHeader() })
         .then(response => response.data)
+        .catch(error=>error)
     return {
         type: ADD_ASSETS_TYPE,
         payload: request
@@ -32,6 +33,7 @@ export function addAssetsSubType(addAssetsSubType, description, assetsId) {
 export function fetchAssets() {
     const request = axios.get(`${URN}/assetsType/`, { headers: authHeader() })
         .then(response => response.data)
+        .catch(error=>error)
     return {
         type: GET_ASSETS_SUB,
         payload: request
@@ -44,24 +46,24 @@ export function updateAssetsSub(id, assetName, description) {
         assetType: assetName,
         description: description,
     }
-    console.log("============data======",data)
+    
     const request = axios.put(`${URN}/assetsType/${id}`, data, { headers: authHeader() })
         .then(response => response.data)
-       
+        .catch(error=>error)
     return {
         type: UPDATE_ASSETS_SUB,
         payload: request
     }
 }
 export function removeAssetsSub(id) {
-    console.log('remove assets', id)
+   
     const data = {
         assetTypeId: id,
         isActive: false
     }
     const request = axios.put(`${URN}/assetsType/delete/` + id, data, { headers: authHeader() })
         .then(reponse => reponse.data)
-
+        .catch(error=>error)
     return {
         type: REMOVE_ASSETS_SUB,
         payload: request

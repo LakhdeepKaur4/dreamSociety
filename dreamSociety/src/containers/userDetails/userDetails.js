@@ -36,9 +36,9 @@ class userDetails extends Component {
         this.OnKeyPresshandlerPhone = this.OnKeyPresshandlerPhone.bind(this);
         this.OnKeyPressUserhandler = this.OnKeyPressUserhandler.bind(this);
         this.emailValid = this.emailValid.bind(this);
-        
+
     }
-    
+
 
     componentDidMount() {
         this.refreshData();
@@ -96,7 +96,7 @@ class userDetails extends Component {
     }
 
     updateUser = (e) => {
-            
+
             e.preventDefault();
             let { userId, roleName, firstName, lastName, userName, email,familyMember,towerName, floor,parking, contact,towerId } = this.state;
             let errors = {};
@@ -106,11 +106,11 @@ class userDetails extends Component {
             if(this.state.floor === '') errors.floor = "Can't be empty."
             if(this.state.parking === '') errors.parking = "Can't be empty."
             if(this.state.familyMember === '') errors.familyMember="Can't be empty."
-    
+
             if (firstName === '') errors.firstName = "Can't be empty.";
-    
+
             if (lastName === '') errors.lastName = "Can't be empty.";
-    
+
             if (userName === '') errors.userName = "Can't be empty.";
             if (email === '') errors.email = "Can't be empty.";
             if (contact === '') errors.contact = "Can't be empty.";
@@ -123,7 +123,7 @@ class userDetails extends Component {
                 })
                 this.setState({
                     editUserModal: false,loading:true,errors:{},  userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '',
-                    towerId:'' 
+                    towerId:''
                 });
             }
     }
@@ -147,11 +147,11 @@ class userDetails extends Component {
             if(x){
                 let currentRole = x.roles.map((i) => i.roleName);
                 return  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                 x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
-                 x.userName.toLowerCase().indexOf(search.toLowerCase()) !== -1 || 
+                 x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                 x.userName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.email.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  currentRole[0].toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                 x.contact.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||  
+                 x.contact.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  !search;
             }
             return <div>Not Found</div>
@@ -171,7 +171,7 @@ class userDetails extends Component {
             )
         }
     }
- 
+
 
     fetchUsers({ user }) {
         if(user) {
@@ -248,7 +248,7 @@ class userDetails extends Component {
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
-        return this.props.history.replace('/') 
+        return this.props.history.replace('/')
     }
     close=()=>{
         return this.props.history.replace('/superDashBoard')
@@ -256,7 +256,7 @@ class userDetails extends Component {
 
 
     render() {
-     
+
         let tableData;
         tableData = <Table className="table table-bordered">
 
@@ -282,7 +282,7 @@ class userDetails extends Component {
         </Table>
 
         return (
-            
+
             <div>
                 <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top w3-responsive">
@@ -294,7 +294,7 @@ class userDetails extends Component {
                                 <h3>User Master Details</h3>
                                 <Button color="primary" onClick={this.routeToAddNewUser} color="primary">Add Users</Button>
                             </div>
-                            
+
                             <EditUserModal isOpen={this.state.editUserModal}
                                 toggle={this.toggleEditUserModal.bind(this)}
                                 roleNameValue = {this.state.roleName}
@@ -351,7 +351,7 @@ class userDetails extends Component {
                             {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         </UI>
-                
+
 </div>
         )
     }
