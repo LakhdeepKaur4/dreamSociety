@@ -7,7 +7,7 @@ import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label, Table } from 'reactstrap';
 import { URN } from '../../../actions/index';
 
-import { Link } from 'react-router-dom';
+
 
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 
@@ -125,14 +125,16 @@ class displayServices extends Component {
 
     renderList = ({ item }) => {
         if (item) {
-            return item.filter(this.searchFilter(this.state.search)).map((item) => {
+            return item.filter(this.searchFilter(this.state.search)).map((item,index) => {
                 return (
-
+                    
                     <tr key={item.serviceId}>
 
-
+                        <td>{index+1}</td>
                         <td>{item.serviceName}</td>
                         <td>{item.service_detail_master.service_detail}</td>
+                        
+                        
 
 
                         <td>
@@ -171,9 +173,12 @@ class displayServices extends Component {
         <Table className="table table-bordered">
         <thead>
             <tr>
+         
+                <th>#</th>
                 <th>Service Type</th>
                 <th>Service Details</th>
                 <th>Actions</th>
+             
             </tr>
         </thead>
 

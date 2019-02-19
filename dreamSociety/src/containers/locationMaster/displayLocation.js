@@ -86,9 +86,11 @@ toggleModal = () => {
 
 renderList=({details})=>{
     if(details){
-        return details.filter(this.searchFilter(this.state.search)).map((item)=>{
+        return details.filter(this.searchFilter(this.state.search)).map((item,index)=>{
             return(
+
                 <tr key={item.locationId}>
+                <td>{index+1}</td>
                 <td>{item.country_master.countryName}</td>
                 <td>{item.state_master.stateName}</td>
                 <td>{item.city_master.cityName}</td>
@@ -187,6 +189,7 @@ render(){
     <Table className="table table-bordered">
     <thead>
     <tr>
+        <th>#</th>
         <th>Country Name</th>
         <th>State Name</th>
         <th>City Name</th>

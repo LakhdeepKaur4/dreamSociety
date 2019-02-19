@@ -186,8 +186,8 @@ class MaintenanceMasterDetail extends Component {
                 <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
+                            <span aria-hidden="true">&times;</span>
+                    </div>
                         <div className="top-details">
                             <h3>Maintenance Category</h3>
                             <Button onClick={this.routeToAddNewMaintence} color="primary">Add Category</Button>

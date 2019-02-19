@@ -134,7 +134,7 @@ class Registration extends Component {
             .catch(err => {
                 console.log(err.response.data.message);
                 this.setState({emailServerError: err.response.data.message, userNameServerError:err.response.data.message, loading: false})
-            })
+            });
         }
     }
 
@@ -193,7 +193,7 @@ class Registration extends Component {
         return this.props.history.replace('/') 
     }
     close=()=>{
-        return this.props.history.replace('/superDashBoard')
+        return this.props.history.replace('/superDashBoard');
     }
 
 

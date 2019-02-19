@@ -138,12 +138,18 @@ class MaintenanceSubMasterDetails extends Component{
         }
     }
 
+    rateChange = (e) => {
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+            this.setState({[e.target.name]:e.target.value});
+        }
+    }
+
     fetchMaintenanceType({maintenanceType}){
         if(maintenanceType){
            return maintenanceType.maintenance.map((item) => {
                return (
                    <option key={item.maintenanceId} value={item.maintenanceId}>{item.category}</option>
-               )
+               );
            })
         }
     }
@@ -201,7 +207,7 @@ class MaintenanceSubMasterDetails extends Component{
                             <FormGroup>
                                 <Label>Price</Label>
                                 <Input name="rate" type="text" value={this.state.rate}
-                                onChange={this.editInputChange} />
+                                onChange={this.rateChange} />
                                 {!this.state.rate ? <span className="error">{this.state.errors.rate}</span>: null}
                             </FormGroup>
                             <FormGroup>
@@ -209,7 +215,6 @@ class MaintenanceSubMasterDetails extends Component{
                                 <Button color="danger" onClick={this.toggleEditSubMaintenanceModal.bind(this)}>Cancel</Button>
                             </FormGroup>
                         </ModalBody>
-                        
                     </Modal>
                     <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />

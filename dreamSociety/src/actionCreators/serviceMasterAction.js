@@ -20,6 +20,9 @@ export function getServiceType(){
     }
 }
 
+
+
+
 export function addServiceType(values){
     const request = axios.post(`${URN}/service`,values, {headers:authHeader()})
     .then()

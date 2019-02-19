@@ -134,12 +134,12 @@ push=()=>{
 renderList =({details})=>{
     
     if(details){
-        return details.flatDetail.filter(this.searchFilter(this.state.search)).map((item,j) =>{
+        return details.flatDetail.filter(this.searchFilter(this.state.search)).map((item,index) =>{
         
             return(
                    
-                    <tr  key={j}>
-                                          
+                    <tr  key={item.flatDetailId}>
+                            <td>{index+1}</td>             
                             <td>{item.flatNo}</td>
                             <td>{item.flat_master.flatType}</td>
                             <td>{item.floor}</td>
@@ -188,6 +188,7 @@ render(){
     <Table className="table table-bordered">
     <thead>
     <tr>
+        <th>#</th>
         <th>Flat No</th>
         <th>Flat Type</th>
         <th>Floor</th>

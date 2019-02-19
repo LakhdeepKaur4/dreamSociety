@@ -4,6 +4,7 @@ export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
 export const DELETE_USER='delete_user';
+export const DELETE_SELECTED_USERS = 'DELETE_SELECTED_USERS';
 export const ADD_USER='add_user';
 export const ADD_TOWER='add_tower';
 export const GET_TOWER='get_tower';
@@ -90,6 +91,11 @@ export const UPDATE_PERSON1= 'update_person';
 export const UPDATE_LOCATION='update_location';
 export const DELETE_LOCATION='delete_location';
 export const DELETE_DETAILS='delete-details';
+export const ADD_INVENTORY='add_inventory';
+export const GET_INVENTORY='get_inventory';
+export const UPDATE_INVENTORY='update_inventory';
+export const REMOVE_INVENTORY='REMOVE_INVENTORY';
+export const PlaceHolder='--Select--';
 export const ADD_MAINTENANCE ='add_maintenance';
 export const GET_MAINTENANCE ='get_maintenance';
 export const DELETE_MAINTENANCE ='delete_maintenance';
@@ -109,5 +115,6 @@ export const DELETE_SUB_MAINTENANCE_DETAILS = 'DELETE_SUB_MAINTENANCE_DETAILS';
 export const GET_MAINTENANCE_TYPE = 'GET_MAINTENANCE_TYPE';
 export const UPDATE_SUB_MAINTENANCE_DETAILS = 'UPDATE_SUB_MAINTENANCE_DETAILS';
 export const DELETE_SELECTEDCITY= 'DELETE_SELECTEDCITY'
+export const GET_RATE_TYPE='get_rate_type';
 
 

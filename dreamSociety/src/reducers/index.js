@@ -19,6 +19,7 @@ import employeeDetails from './employeeTypeMasterReducer/employeeTypeMasterReduc
 import AssetsReducer from './assetsReducer/assetsReducer';
 import AssetsTypeReducer from './assetsReducer/assetsTypeReducer';
 import countryDetails from './countryReducers/countryReducer';
+import Inventory from './inventoryReducer/inventoryReducer';
 import MaintenanceMasterReducer from './maintenanceMasterReducer/maintenanceMasterReducer';
 import MaintenanceSubMaster from './maintenanceSubMasterReducer/maintenanceSubMasterReducer';
 
@@ -42,6 +43,7 @@ const rootReducer = combineReducers({
     flatDetailMasterReducer,
     locationMasterReducer,
     countryDetails,
+    Inventory,
     MaintenanceMasterReducer,
     employeeDetails,
     MaintenanceSubMaster

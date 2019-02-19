@@ -9,7 +9,7 @@ export function addAssets(assets, description) {
     }
     const request = axios.post(`${URN}/assets/`, data , { headers: authHeader() })
         .then(response => response.data)
-
+        .catch(error=>error)
     return {
         type: ADD_ASSETS,
         payload: request
@@ -20,7 +20,7 @@ export function addAssets(assets, description) {
 export function getAssets(){
     const request=axios.get(`${URN}/assets/`,{headers:authHeader()})
     .then(response=>response.data)
-
+    .catch(error=>error)
     return {
         type:GET_ASSETS,
         payload:request
@@ -34,7 +34,7 @@ export function updateAssets(id,assetName,description){
     }
     const request=axios.put(`${URN}/assets/`+id,data,{headers:authHeader()})
     .then(response=>response.data)
-
+    .catch(error=>error)
     return{
         type:UDATE_ASSETS,
         payload:request
@@ -50,7 +50,7 @@ export function removeAssets(id){
     }
     const request=axios.put(`${URN}/assets/delete/`+id,data,{headers:authHeader()})
     .then(reponse=>reponse.data)
-
+    .catch(error=>error)
     return{
         type:REMOVE_ASSETS,
         payload:request
