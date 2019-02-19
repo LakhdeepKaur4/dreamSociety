@@ -94,5 +94,6 @@ export const ADD_MAINTENANCE ='add_maintenance';
 export const GET_MAINTENANCE ='get_maintenance';
 export const DELETE_MAINTENANCE ='delete_maintenance';
 export const UPDATE_MAINTENANCE ='update_maintenance';
+export const GET_RATE_TYPE='get_rate_type';
 
 

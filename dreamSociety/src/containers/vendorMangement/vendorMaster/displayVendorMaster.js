@@ -263,7 +263,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getVendorMaster, getServiceType }, dispatch);
+    return bindActionCreators({ getVendorMaster, getServiceType}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(displayVendorMaster);

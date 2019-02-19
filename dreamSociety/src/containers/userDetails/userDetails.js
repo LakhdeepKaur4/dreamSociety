@@ -176,11 +176,12 @@ class userDetails extends Component {
     fetchUsers({ user }) {
         if(user) {
             let currentRole;
-            return user.filter(this.searchFilter(this.state.search)).map((item) => {
+            return user.filter(this.searchFilter(this.state.search)).map((item, index) => {
                 let currentTower = item.tower_master.towerName;
                 let currentTowerId = item.towerId
                 return (
                     <tr key={item.userId}>
+                        <td>{index + 1}</td>
                         <td>{item.roles.map((i) => {
                             currentRole = i.roleName
                             return currentRole
@@ -261,6 +262,7 @@ class userDetails extends Component {
 
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Roles</th>
                     <th>First Name</th>
                     <th>Last Name</th>
