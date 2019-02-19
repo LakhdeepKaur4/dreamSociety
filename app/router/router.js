@@ -53,6 +53,8 @@ module.exports = function(app) {
 
 	app.get('/api/user/:id', userController.getById);
 
+	app.put('/api/user/delete/deleteSelected',[authJwt.verifyToken], userController.deleteSelected);
+
 	app.put('/api/user/delete/:id',[authJwt.verifyToken], userController.delete);
 	
 	app.get('/api/test/owner', [authJwt.verifyToken, authJwt.isOwnerOrTenant], userController.managementBoard);
@@ -66,6 +68,8 @@ module.exports = function(app) {
 	app.get('/api/city/:id', [authJwt.verifyToken], cityController.getById);
 
 	app.put('/api/city/:id',[authJwt.verifyToken], cityController.update);
+
+	// app.delete('/api/city/:id',[authJwt.verifyToken],cityController.deleteById);
   
 	app.delete('/api/city/:id',[authJwt.verifyToken],cityController.deleteById)
 
@@ -291,7 +295,7 @@ module.exports = function(app) {
 
 	app.get('/api/designation',[authJwt.verifyToken],designationController.get);
 
-	// app.put('/api/designation',[authJwt.verifyToken],designationController.update);
+	// app.put('/api/designation/:id',[authJwt.verifyToken],designationController.update);
 
 	// app.put('/api/designation',[authJwt.verifyToken],designationController.delete);
 }

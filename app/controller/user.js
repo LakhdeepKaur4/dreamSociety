@@ -456,12 +456,14 @@ exports.search = async (req, res, next) => {
 	try {
 		console.log("in here search api")
 		console.log("req.query", req.query);
-		if(req.query.roleName){
+		if (req.query.roleName) {
 			const user = await User.findAll({
 				include: [{
 					model: Role,
-					where:{isActive:true,
-						[Op.like]: '%' + req.query.roleName + '%'},
+					where: {
+						isActive: true,
+						[Op.like]: '%' + req.query.roleName + '%'
+					},
 				}],
 			})
 			if (user.length > 0) {
@@ -469,54 +471,54 @@ exports.search = async (req, res, next) => {
 			} else {
 				return res.json({ message: 'No Users Found', users: user })
 			}
-		}else{
-		// const role = await Role.findAll({
-		// 	where:{roleName:req.query.roleName}
-		// });
-		// console.log("Roless==>",role)
-		const user = await User.findAll({
-			limit: 10,
-			 include: [{
-				model: Role,
-				attributes: ['id', 'roleName'],
-			}],
-			where: {
-				isActive: true,
-				[Op.or]: [
-					{
-						firstName: {
-							[Op.like]: '%' + req.query.firstName + '%'
-						}
-					},
-					{
-						lastName: {
-							[Op.like]: '%' + req.query.lastName + '%'
-						}
-					},
-					{
-						userName: {
-							[Op.like]: '%' + req.query.userName + '%'
-						}
-					},
-					{
-						contact: {
-							[Op.like]: '%' + req.query.contact + '%'
-						}
-					},
-					{
-						email: {
-							[Op.like]: '%' + req.query.email + '%'
-						}
-					},
-				]
-			}
-		})
-		if (user.length > 0) {
-			return res.json({ message: 'Search results', users: user })
 		} else {
-			return res.json({ message: 'No Users Found', users: user })
+			// const role = await Role.findAll({
+			// 	where:{roleName:req.query.roleName}
+			// });
+			// console.log("Roless==>",role)
+			const user = await User.findAll({
+				limit: 10,
+				include: [{
+					model: Role,
+					attributes: ['id', 'roleName'],
+				}],
+				where: {
+					isActive: true,
+					[Op.or]: [
+						{
+							firstName: {
+								[Op.like]: '%' + req.query.firstName + '%'
+							}
+						},
+						{
+							lastName: {
+								[Op.like]: '%' + req.query.lastName + '%'
+							}
+						},
+						{
+							userName: {
+								[Op.like]: '%' + req.query.userName + '%'
+							}
+						},
+						{
+							contact: {
+								[Op.like]: '%' + req.query.contact + '%'
+							}
+						},
+						{
+							email: {
+								[Op.like]: '%' + req.query.email + '%'
+							}
+						},
+					]
+				}
+			})
+			if (user.length > 0) {
+				return res.json({ message: 'Search results', users: user })
+			} else {
+				return res.json({ message: 'No Users Found', users: user })
+			}
 		}
-	}
 	} catch (error) {
 		console.log(error)
 		res.status(httpStatus.INTERNAL_SERVER_ERROR).send({ error: error });
@@ -611,6 +613,28 @@ exports.encryptData = async (req, res, next) => {
 	} catch (error) {
 		console.log("eroor===>", error)
 		res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+	}
+}
+
+exports.deleteSelected = async (req, res, next) => {
+	try {
+
+		const deleteSelected = req.body.ids;
+		console.log("delete selected==>", deleteSelected);
+		const update = { isActive: false };
+		if (!deleteSelected) {
+			return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
+		}
+		const updatedUser = await User.update(update, { where: { userId: { [Op.in]: deleteSelected } } })
+		console.log("updated user==>", updatedUser)
+		if (updatedUser) {
+			return res.status(httpStatus.OK).json({
+				message: "Users deleted successfully",
+			});
+		}
+	} catch (error) {
+		console.log(error)
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
 	}
 }
 
