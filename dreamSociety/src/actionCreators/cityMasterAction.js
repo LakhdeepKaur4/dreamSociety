@@ -91,9 +91,9 @@ export const deleteCity=(cityId)=>{
  
  }
 
- export const deleteSelectCity=(Ids)=>{
+ export const deleteSelectCity=(ids)=>{
     
-    const request = axios.put(`${URN}/city/delete/deleteSelected`,Ids, {headers:authHeader()})
+    const request = axios.put(`${URN}/city/delete/deleteSelected`,{ids}, {headers:authHeader()})
      .then(response => response.data)
  
    

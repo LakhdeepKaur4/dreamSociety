@@ -113,6 +113,14 @@ class CityMasterDetail extends Component {
 
     }
 
+    deleteSelected(ids){
+        this.setState({loading:true});
+        this.props.deleteSelectCity(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
+    }
+
+
    
 
 
@@ -130,14 +138,7 @@ class CityMasterDetail extends Component {
         }
     }
 
-    selectChange=(e)=>{
-        let id= e.target.value
-
-        console.log(id)
-        this.setState({
-            ids: id
-        })
-    }
+    
    
         
     
@@ -149,7 +150,18 @@ class CityMasterDetail extends Component {
 
                 return (
                     <tr key={item.cityId}>
-                        <td> <Input addon type="checkbox" id={this.state.ids}  onChange={this.selectChange}/></td>
+                        <td><input type="checkbox" name="ids" value={item.cityId}
+                         onChange={(e, i) => {
+                            const {cityId} = item
+                            if(!e.target.checked){
+                                let indexOfId = this.state.ids.indexOf(cityId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                            }
+                            else this.setState({ids: [...this.state.ids, cityId]})
+                                
+                             }}/></td>
                         <td>{index+1}</td>
                         <td>{item.country_master.countryName}</td>
                         <td>{item.state_master.stateName}</td>
@@ -230,7 +242,7 @@ class CityMasterDetail extends Component {
         <Table className="table table-bordered">
             <thead>
                 <tr>
-                    <th>Select All</th>
+                    <th>Select</th>
                     <th>#</th>
                     <th>Country Name</th>
                     <th>State Name</th>
@@ -257,7 +269,7 @@ class CityMasterDetail extends Component {
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
                             
-                            <Button color="danger"  >Delete All</Button>
+                            <Button color="danger" className="mb-2" onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
                             {!this.state.loading ? tableData : <Spinner />}
                             <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                                 <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
