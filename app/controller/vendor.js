@@ -83,27 +83,27 @@ exports.create = async (req, res, next) => {
                 serviceId: body.serviceId3
             })
         }
-        if(req.files){
-            for(let i =0 ;i<req.files.profilePicture.length;i++){
-                  profileImage = req.files.profilePicture[i].filename;
+        if (req.files) {
+            for (let i = 0; i < req.files.profilePicture.length; i++) {
+                profileImage = req.files.profilePicture[i].filename;
             }
-                const updateImage = {
-                  picture:  profileImage
-                };
-                const imageUpdate = await Vendor.find({ where: { vendorId: vendorId } }).then(vendor => {
-                    return vendor.updateAttributes(updateImage)
-                }) 
-                    documentOne = req.files.document[0].filename;
-                    documentTwo = req.files.document[1].filename;
-                 const updateDocument = {
-                    documentOne:  documentOne,
-                    documentTwo:documentTwo
-                  }; 
-                
-              const documentUpdate = await Vendor.find({ where: { vendorId: vendorId } }).then(vendor => {
+            const updateImage = {
+                picture: profileImage
+            };
+            const imageUpdate = await Vendor.find({ where: { vendorId: vendorId } }).then(vendor => {
+                return vendor.updateAttributes(updateImage)
+            })
+            documentOne = req.files.document[0].filename;
+            documentTwo = req.files.document[1].filename;
+            const updateDocument = {
+                documentOne: documentOne,
+                documentTwo: documentTwo
+            };
+
+            const documentUpdate = await Vendor.find({ where: { vendorId: vendorId } }).then(vendor => {
                 return vendor.updateAttributes(updateDocument)
-              }) 
-            }
+            })
+        }
         const message = `Welcome to Dream society your username is ${userName} and password is ${password}.Do not share with anyone.`
         // nexmo.message.sendSms(config.number, body.contact, message, { type: 'text' }, (err, resp) => {
         //     if (err) {
@@ -124,11 +124,9 @@ exports.create = async (req, res, next) => {
 
 exports.get = async (req, res, next) => {
     try {
-        const vendor = await Vendor.findAll({
-            where: { isActive: true }, include: [{
-                model: Service,
-                attributes: ['serviceId', 'serviceName'],
-            }]
+        const vendor = await VendorService.findAll({
+            where: { isActive: true }, include: [
+            { model: Vendor }]
         });
         if (vendor) {
             return res.status(httpStatus.CREATED).json({
@@ -137,6 +135,7 @@ exports.get = async (req, res, next) => {
             });
         }
     } catch (error) {
+        console.log(error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
@@ -191,10 +190,10 @@ exports.delete = async (req, res, next) => {
     }
 }
 
-exports.uploadPicture = async(req,res,next) => {
-    try{
+exports.uploadPicture = async (req, res, next) => {
+    try {
         console.log("file info ", req.file);
-    }catch(error){
+    } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
@@ -211,7 +210,7 @@ exports.uploadPicture = async(req,res,next) => {
 //             if (err) {
 //               return res.status(500).send(err)
 //             }
-      
+
 //             res.json({
 //               file: `public/${req.files.file.name}`,
 //             })
@@ -265,7 +264,7 @@ exports.uploadPicture = async(req,res,next) => {
 //         // console.log("file info ", req.file);
 //         // var name = req.files.profileImage.name;
 //         // console.log("name===>",name);
-        
+
 //     }catch(error){
 //         console.log(error)
 //     }

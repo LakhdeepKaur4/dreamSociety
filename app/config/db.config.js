@@ -48,6 +48,8 @@ db.employeeWorkType = require('../model/employeeWorkType.model')(sequelize,Seque
 db.employeeDetail = require('../model/employeeDetail.model')(sequelize,Sequelize);
 db.vendorService = require('../model/vendorService.model')(sequelize,Sequelize);
 db.inventory = require('../model/inventory.model')(sequelize,Sequelize);
+db.employee = require('../model/employee.model')(sequelize,Sequelize);
+db.designation = require('../model/designation.model')(sequelize,Sequelize);
 
  
 db.role.belongsToMany(db.user, { through: 'user_roles', foreignKey: 'roleId', otherKey: 'userId'});
@@ -93,7 +95,7 @@ db.employeeDetail.belongsTo(db.employeeType,{foreignKey:'employeeTypeId'})
 db.employeeDetail.belongsTo(db.employeeWorkType,{foreignKey:'employeeWorkTypeId'})
 db.employeeDetail.belongsTo(db.user,{foreignKey:'userId'});
 db.vendor.hasMany(db.vendorService, {foreignKey: 'vendorId'});
-db.vendorService.belongsTo(db.vendorService, {foreignKey: 'vendorId'});
+db.vendorService.belongsTo(db.vendor, {foreignKey: 'vendorId'});
 db.vendorService.belongsTo(db.serviceDetail,{foreignKey:'serviceDetailId'});
 db.vendorService.belongsTo(db.rate,{foreignKey:'rateId'});
 db.vendorService.belongsTo(db.user,{foreignKey:'userId'});
@@ -101,5 +103,12 @@ db.vendorService.belongsTo(db.service,{foreignKey:'serviceId'});
 db.inventory.belongsTo(db.assets,{foreignKey:'assetId'});
 db.inventory.belongsTo(db.assetsType,{foreignKey:'assetTypeId'});
 db.inventory.belongsTo(db.user,{foreignKey:'userId'});
+db.employee.belongsTo(db.user,{foreignKey:'userId'});
+db.employee.belongsTo(db.user,{foreignKey:'userId'});
+db.employee.belongsTo(db.country,{foreignKey:'countryId'});
+db.employee.belongsTo(db.state,{foreignKey:'stateId'});
+db.employee.belongsTo(db.city,{foreignKey:'cityId'});
+db.employee.belongsTo(db.location,{foreignKey:'locationId'});
+db.designation.belongsTo(db.user,{foreignKey:'userId'});
 
 module.exports = db;

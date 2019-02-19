@@ -49,7 +49,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(bodyParser.json());
-app.use(bodyParser());
+// app.use(bodyParser());
 // app.use(upload());
 
 

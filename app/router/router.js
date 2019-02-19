@@ -30,6 +30,7 @@ module.exports = function(app) {
 	const employeeWorkTypeController = require('../controller/employeeWorkType');
 	const employeeDetailController = require('../controller/employeeDetail');
 	const inventoryController = require('../controller/inventory');
+	const employeeController = require('../controller/employee');
 	
 	app.get('/', userController.start);
 
@@ -278,5 +279,8 @@ module.exports = function(app) {
 	app.put('/api/inventory/:id', [authJwt.verifyToken],inventoryController.update);
 
 	app.put('/api/inventory/delete/:id', [authJwt.verifyToken],inventoryController.delete);
+
+	app.post('/api/employee', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]), employeeController.create);
 	
+	app.get('/api/employee',[authJwt.verifyToken],employeeController.get);
 }
