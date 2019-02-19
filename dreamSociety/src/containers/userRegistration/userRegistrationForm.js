@@ -1,13 +1,13 @@
 import React from 'react';
 import { FormGroup, Input, Button, Label } from 'reactstrap';
+import DefaultSelect from '../../constants/defaultSelect';
 
 const userRegistrationForm = (props) => (
     <div>
-        
         <FormGroup>
                 <Label>User Type</Label>
-                <Input type="select" name={props.roleInputName} onChange={props.roleChange}>
-                    <option value=''>--Select--</option>
+                <Input type="select" defaultValue='no-value' name={props.roleInputName} onChange={props.roleChange}>
+                    <DefaultSelect />
                     {props.fetchingRole}
                 </Input>
                 <span className='error'>{props.roleError}</span>
@@ -76,9 +76,9 @@ const userRegistrationForm = (props) => (
                 <Label>Tower Name</Label>
                 <Input name={props.towerInputName}
                     type="select"
-                    value={props.towerValue}
+                    defaultValue='no-value'
                     onChange={props.towerChange} >
-                    <option>--Select--</option>
+                    <DefaultSelect />
                     {props.fetchingTower}
                 </Input>
                 <span className='error'>{props.towerError}</span>

@@ -6,7 +6,7 @@ import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner'
-import DefaultSelect from '../../constants/defaultSelectOption';
+import DefaultSelect from '../../constants/defaultSelect';
 
 
 

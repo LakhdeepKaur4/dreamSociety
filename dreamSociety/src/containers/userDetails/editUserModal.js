@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+import DefaultSelect from '../../constants/defaultSelect';
 
 const editUserModal = (props) => (
     <Modal isOpen={props.isOpen} toggle={props.toggle}>
@@ -9,7 +10,7 @@ const editUserModal = (props) => (
                 <Label>Role</Label>
                 <Input type="select" name={props.roleInputName}  id="roleName" value={props.roleNameValue} onChange={props.roleNameChange} >
                     <option value={props.selectedRoleNameValue}>{props.selectedRoleName}</option>
-                    <option disabled>Select</option>
+                    <DefaultSelect />
                     {props.fetchRoles}
                 </Input>
                 <span className="error">{props.roleNameError}</span>
@@ -54,7 +55,7 @@ const editUserModal = (props) => (
                     type="select"
                     onChange={props.towerChange} >
                     <option>{props.towerValue}</option>
-                    <option disabled>--Select--</option>
+                    <DefaultSelect />
                     {props.fetchingTower}
                 </Input>
                 {!props.towerValue ? <span className='error'>{props.towerError}</span> : null}
