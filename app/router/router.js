@@ -31,6 +31,7 @@ module.exports = function(app) {
 	const employeeDetailController = require('../controller/employeeDetail');
 	const inventoryController = require('../controller/inventory');
 	const employeeController = require('../controller/employee');
+	const designationController = require('../controller/employee');
 	
 	app.get('/', userController.start);
 
@@ -283,4 +284,12 @@ module.exports = function(app) {
 	app.post('/api/employee', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]), employeeController.create);
 	
 	app.get('/api/employee',[authJwt.verifyToken],employeeController.get);
+
+	app.get('/api/employee',[authJwt.verifyToken],employeeController.get);
+
+	app.get('/api/designation',[authJwt.verifyToken],designationController.create);
+
+	app.get('/api/designation',[authJwt.verifyToken],designationController.get);
+
+	app.get('/api/designation',[authJwt.verifyToken],designationController.update);
 }

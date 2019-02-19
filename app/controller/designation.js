@@ -72,3 +72,28 @@ exports.update = async(req,res,next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
+
+exports.delete = async(req,res,next) => {
+    try{
+        const id = req.params.id;
+    
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+        }
+        const update = req.body;
+        if(!update){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
+        }
+        const updatedDesignation = await Designation.find({where:{maintenanceId:id}}).then(designation => {
+            return designation.updateAttributes(update)
+          })
+        if(updatedDesignation){
+            return res.status(httpStatus.OK).json({
+                message: "Designation deleted successfully",
+                updatedDesignation
+            });
+        }
+    }catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
