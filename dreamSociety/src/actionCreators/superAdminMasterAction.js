@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
 
-import{URN,ADD_USER,UPDATE_USER,GET_ROLES,GET_USERS,DELETE_USER} from '../actions/index';
+import{URN,ADD_USER,UPDATE_USER,GET_ROLES,GET_USERS,DELETE_USER, DELETE_SELECTED_USERS} from '../actions/index';
 
 
 export function addUser(values) {
@@ -53,6 +53,17 @@ export function deleteUser(userId, isActive){
 
     return {
         type:DELETE_USER,
+        payload:request
+    }
+}
+
+export function deleteSelectedUsers(ids, isActive){
+    const request = axios.put(`${URN}/user/delete/deleteSelected`, { ids, isActive}, { headers: authHeader() })
+    .then((response) => response.data)
+    .then(() => this.getUsers());
+
+    return {
+        type: DELETE_SELECTED_USERS,
         payload:request
     }
 }

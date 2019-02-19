@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getUsers, getRoles, addUser, updateUser, deleteUser } from '../../actionCreators/superAdminMasterAction';
+import { getUsers, getRoles, addUser, updateUser, deleteUser, deleteSelectedUsers } from '../../actionCreators/superAdminMasterAction';
 import { bindActionCreators } from 'redux';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { connect } from 'react-redux';
@@ -15,6 +15,7 @@ class userDetails extends Component {
             super(props);
             this.state = {
                 userId: "",
+                ids: [],
                 roleName: "",
                 firstName: "",
                 lastName: "",
@@ -95,6 +96,11 @@ class userDetails extends Component {
         }
     }
 
+    onCheckBoxChange = (e) => {
+        console.log(this.state)
+        this.setState({[e.target.name]: e.target.value});
+    }
+
     updateUser = (e) => {
 
             e.preventDefault();
@@ -136,17 +142,39 @@ class userDetails extends Component {
 
     deleteUser(userId) {
         this.setState({loading:true})
-        let { isActive } = this.state
+        let { isActive } = this.state;
         this.props.deleteUser(userId, isActive)
         .then(() => this.refreshData())
         .then(() => this.setState({isActive: false}))
     }
 
+    deleteSelected(ids,e){
+        console.log(this.state.ids);
+        if(ids===[]){
+            console.log('no id is present')
+            e.preventDefault();
+        }
+        else{
+            this.setState({loading:true})
+            let { isActive } = this.state;
+            this.props.deleteSelectedUsers(ids, isActive)
+            .then(() => this.refreshData())
+            .then(() => this.setState({isActive: false}))
+            .catch(err => err.response.data.message)
+        }
+        
+    }
+
     searchFilter(search){
-        return function(x){
-            if(x){
+        return function(x, y){
+            if(x, y){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                return  y.toString().indexOf(search) !== -1 ||
+                 x.tower_master.towerName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                 x.familyMember.toString().indexOf(search)  !== -1 ||
+                 x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                 x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                 x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.userName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.email.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
@@ -181,6 +209,22 @@ class userDetails extends Component {
                 let currentTowerId = item.towerId
                 return (
                     <tr key={item.userId}>
+                        <td><input type="checkbox" name="ids" value={item.userId}
+                         onChange={(e, i) => {console.log(this.state);
+                            const {userId} = item
+                            if(e.target.checked){
+                                this.setState({ids: [...this.state.ids, userId]})
+                            }
+                            else if(!e.target.checked){
+                                console.log('is Unchecked')
+                                let indexOfId = this.state.ids.indexOf(userId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId > -1)
+                                    console.log(this.state)
+                                }
+                            }
+                                
+                             }}/></td>
                         <td>{index + 1}</td>
                         <td>{item.roles.map((i) => {
                             currentRole = i.roleName
@@ -262,6 +306,7 @@ class userDetails extends Component {
 
             <thead>
                 <tr>
+                    <th>Select</th>
                     <th>#</th>
                     <th>Roles</th>
                     <th>First Name</th>
@@ -280,6 +325,11 @@ class userDetails extends Component {
                 {this.fetchUsers(this.props.userDetail)}
             </tbody>
         </Table>
+
+        let deleteSelectedButton = <Button color="danger" className="mb-2"
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
+
+        let disabledDeleteSelectedButton = <Button disabled>Delete Selected</Button>;
 
         return (
 
@@ -348,6 +398,7 @@ class userDetails extends Component {
 
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
+                                {deleteSelectedButton}
                             {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         </UI>
@@ -371,7 +422,8 @@ function mapDispatchToProps(dispatch) {
         addUser,
         updateUser,
         viewTower,
-        deleteUser
+        deleteUser,
+        deleteSelectedUsers
     }, dispatch)
 }
 
