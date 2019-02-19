@@ -283,7 +283,7 @@ module.exports = function(app) {
 
 	app.post('/api/employee', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]), employeeController.create);
 	
-	app.get('/api/employee',[authJwt.verifyToken],employeeController.get);
+	app.get('/api/employee',[authJwt.verifyToken],employeeController.create);
 
 	app.get('/api/employee',[authJwt.verifyToken],employeeController.get);
 
