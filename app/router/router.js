@@ -1,5 +1,6 @@
 const verifySignUp = require('./verifySignUp');
 const authJwt = require('./verifyJwtToken');
+const fileUploadConfig = require('../config/multer');
 
 module.exports = function(app) {
 
@@ -22,7 +23,15 @@ module.exports = function(app) {
 	const assetsController = require('../controller/assets');
 	const assetsTypeController = require('../controller/assetType');
 	const flatDetailController = require('../controller/flatDetail');
-	
+	const maintenanceController = require('../controller/maintenance');
+	const maintenanceTypeController = require('../controller/maintenanceType');
+	const rateController = require('../controller/rate');
+	const employeeTypeController = require('../controller/employeeType');
+	const employeeWorkTypeController = require('../controller/employeeWorkType');
+	const employeeDetailController = require('../controller/employeeDetail');
+	const inventoryController = require('../controller/inventory');
+	const employeeController = require('../controller/employee');
+	const designationController = require('../controller/designation');
 	
 	app.get('/', userController.start);
 
@@ -31,6 +40,8 @@ module.exports = function(app) {
     app.post('/api/auth/signin', userController.signin);
 	
 	app.get('/api/user',[authJwt.verifyToken],userController.get);
+
+	app.get('/api/user/search',userController.search);
 	
 	// app.get('/api/user/test', [authJwt.verifyToken], userController.userContent);
 
@@ -41,6 +52,8 @@ module.exports = function(app) {
 	app.put('/api/user/:id',[authJwt.verifyToken], userController.update);
 
 	app.get('/api/user/:id', userController.getById);
+
+	app.put('/api/user/delete/deleteSelected',[authJwt.verifyToken], userController.deleteSelected);
 
 	app.put('/api/user/delete/:id',[authJwt.verifyToken], userController.delete);
 	
@@ -56,6 +69,14 @@ module.exports = function(app) {
 
 	app.put('/api/city/:id',[authJwt.verifyToken], cityController.update);
 
+	app.put('/api/city/delete/deleteSelected',[authJwt.verifyToken], cityController.deleteSelected);
+
+	// app.delete('/api/city/:id',[authJwt.verifyToken],cityController.deleteById);
+  
+	app.delete('/api/city/:id',[authJwt.verifyToken],cityController.deleteById)
+
+	app.put('/api/city/delete/:id',[authJwt.verifyToken], cityController.delete);
+
 	app.delete('/api/city/:id',[authJwt.verifyToken], cityController.delete);
 
 	app.post('/api/country',[authJwt.verifyToken],countryController.create);
@@ -66,7 +87,9 @@ module.exports = function(app) {
 
 	app.put('/api/country/:id',[authJwt.verifyToken],  countryController.update);
 
-	app.put('/api/country/:id',[authJwt.verifyToken], countryController.delete);
+	app.put('/api/country/delete/:id',[authJwt.verifyToken], countryController.delete);
+
+	app.put('/api/country/delete/deleteSelected',[authJwt.verifyToken], countryController.deleteSelected);
 
 	app.post('/api/state', [authJwt.verifyToken],stateController.create);
 
@@ -76,7 +99,9 @@ module.exports = function(app) {
 
 	app.put('/api/state/:id', [authJwt.verifyToken], stateController.update);
 
-	app.put('/api/state/:id',[authJwt.verifyToken], stateController.delete);
+	app.put('/api/state/delete/:id',[authJwt.verifyToken], stateController.delete);
+
+	app.put('/api/state/delete/deleteSelected',[authJwt.verifyToken], stateController.deleteSelected);
 
 	app.post('/api/location',[authJwt.verifyToken], locationController.create);
 
@@ -86,7 +111,9 @@ module.exports = function(app) {
 
 	app.put('/api/location/:id',[authJwt.verifyToken], locationController.update);
 
-	app.put('/api/location/:id', [authJwt.verifyToken],locationController.delete);
+	app.put('/api/location/delete:id', [authJwt.verifyToken],locationController.delete);
+
+	app.put('/api/location/delete/deleteSelected',[authJwt.verifyToken], locationController.deleteSelected);
 
 	app.post('/api/society', [authJwt.verifyToken],societyController.create);
 
@@ -96,7 +123,9 @@ module.exports = function(app) {
 
 	app.put('/api/society/:id', [authJwt.verifyToken],societyController.update);
 
-	app.put('/api/society/:id', [authJwt.verifyToken],societyController.delete);
+	app.put('/api/society/delete/:id', [authJwt.verifyToken],societyController.delete);
+
+	app.put('/api/user/society/deleteSelected',[authJwt.verifyToken], societyController.deleteSelected);
 
 	app.post('/api/tower', [authJwt.verifyToken],towerController.create);
 
@@ -106,17 +135,25 @@ module.exports = function(app) {
 
 	app.put('/api/tower/:id',[authJwt.verifyToken], towerController.update);
 
-	app.delete('/api/tower/:id',[authJwt.verifyToken], towerController.delete);
+	app.put('/api/tower/delete/:id',[authJwt.verifyToken], towerController.delete);
+
+	app.put('/api/tower/delete/deleteSelected',[authJwt.verifyToken], towerController.deleteSelected);
 
 	app.post('/api/flat',[authJwt.verifyToken],  flatController.create);
 
 	app.get('/api/flat', [authJwt.verifyToken], flatController.get);
+
+	app.get('/api/flat/:page', [authJwt.verifyToken], flatController.getFlatByPageNumber);
+
+	app.put('/api/flat/:page', [authJwt.verifyToken], flatController.getFlatByLimit);
 
 	app.get('/api/flat/:id',[authJwt.verifyToken],  flatController.getById);
 
 	app.put('/api/flat/:id', [authJwt.verifyToken], flatController.update);
 
 	app.put('/api/flat/delete/:id',[authJwt.verifyToken], flatController.delete);
+
+	app.put('/api/flat/delete/deleteSelected',[authJwt.verifyToken], flatController.deleteSelected);
 	
 	app.post('/api/service', [authJwt.verifyToken], serviceController.create);
 
@@ -128,6 +165,8 @@ module.exports = function(app) {
 
 	app.put('/api/service/:id',[authJwt.verifyToken], serviceController.delete);
 
+	app.put('/api/user/service/deleteSelected',[authJwt.verifyToken], serviceController.deleteSelected);
+
 	app.post('/api/size',[authJwt.verifyToken],  sizeController.create);
 
 	app.get('/api/size', [authJwt.verifyToken],sizeController.get);
@@ -136,7 +175,9 @@ module.exports = function(app) {
 
 	app.put('/api/size/:id',[authJwt.verifyToken], sizeController.update);
 
-	app.put('/api/size/:id',[authJwt.verifyToken], sizeController.delete);
+	app.put('/api/size/delete/deleteSelected',[authJwt.verifyToken], sizeController.deleteSelected);
+
+	// app.put('/api/size/:id',[authJwt.verifyToken], sizeController.delete);
 
 	app.post('/api/event', [authJwt.verifyToken],eventController.create);
 
@@ -145,6 +186,8 @@ module.exports = function(app) {
 	app.put('/api/event/:id',[authJwt.verifyToken], eventController.update);
 
 	app.put('/api/event/delete/:id', [authJwt.verifyToken],eventController.delete);
+
+	app.put('/api/event/delete/deleteSelected',[authJwt.verifyToken], eventController.deleteSelected);
 
 	app.post('/api/sendMessage',[authJwt.verifyToken], messageController.sendMessage);
 
@@ -166,7 +209,9 @@ module.exports = function(app) {
 
 	app.get('/api/getState/:id', [authJwt.verifyToken], stateController.getCountry);
 
-	app.post('/api/vendor', [authJwt.verifyToken], vendorController.create);
+	// app.post('/api/vendor', [authJwt.verifyToken] ,vendorController.create);
+
+	app.post('/api/vendor', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]), vendorController.create);
 
 	app.get('/api/vendor', [authJwt.verifyToken], vendorController.get);
 
@@ -174,21 +219,35 @@ module.exports = function(app) {
 
 	app.put('/api/vendor/delete/:id', [authJwt.verifyToken], vendorController.delete);
 
+	app.put('/api/vendor/delete/deleteSelected',[authJwt.verifyToken], vendorController.deleteSelected);
+
 	app.post('/api/assets', [authJwt.verifyToken], assetsController.create);
 
 	app.get('/api/assets', [authJwt.verifyToken], assetsController.get);
+
+	app.get('/api/assets/:page', [authJwt.verifyToken], assetsController.getAssetsByPageNumber);
 
 	app.put('/api/assets/:id', [authJwt.verifyToken], assetsController.update);
 
 	app.put('/api/assets/delete/:id', [authJwt.verifyToken], assetsController.delete);
 
+	app.delete('/api/assets/:id', [authJwt.verifyToken], assetsController.deleteById);
+
+	app.put('/api/assets/delete/deleteSelected',[authJwt.verifyToken], assetsController.deleteSelected);
+
 	app.post('/api/assetsType', [authJwt.verifyToken], assetsTypeController.create);
 
-	app.get('/api/assetsType', [authJwt.verifyToken], assetsTypeController.get);
+	app.get('/api/assetsType/', [authJwt.verifyToken], assetsTypeController.get);
+
+	app.get('/api/assetsType/:page', [authJwt.verifyToken], assetsTypeController.getAssetsTypeByPageNumber);
 
 	app.put('/api/assetsType/:id', [authJwt.verifyToken], assetsTypeController.update);
 
+	app.delete('/api/assetsType/:id', [authJwt.verifyToken], assetsTypeController.deleteById);
+
 	app.put('/api/assetsType/delete/:id', [authJwt.verifyToken], assetsTypeController.delete);
+
+	app.put('/api/assetsType/delete/deleteSelected',[authJwt.verifyToken], assetsTypeController.deleteSelected);
 
 	app.post('/api/user/encrypt',userController.encryptData);
 
@@ -202,5 +261,79 @@ module.exports = function(app) {
 
 	app.put('/api/flatDetail/delete/:id', [authJwt.verifyToken],flatDetailController.delete);
 
-	app.get('/api/schedule',userController.schedule);
+	app.put('/api/flatDetail/delete/deleteSelected',[authJwt.verifyToken], flatDetailController.deleteSelected);
+
+	app.post('/api/maintenance', [authJwt.verifyToken],maintenanceController.create);
+
+	app.get('/api/maintenance', [authJwt.verifyToken],maintenanceController.get);
+
+	app.put('/api/maintenance/:id', [authJwt.verifyToken],maintenanceController.update);
+
+	app.put('/api/maintenance/delete/:id', [authJwt.verifyToken],maintenanceController.delete);
+
+	app.put('/api/maintenance/delete/deleteSelected',[authJwt.verifyToken], maintenanceController.deleteSelected);
+
+	app.post('/api/maintenanceType', [authJwt.verifyToken],maintenanceTypeController.create);
+
+	app.put('/api/maintenanceType/:id', [authJwt.verifyToken],maintenanceTypeController.update);
+
+	app.put('/api/maintenanceType/delete/:id', [authJwt.verifyToken],maintenanceTypeController.delete);
+
+	app.get('/api/maintenanceType', [authJwt.verifyToken],maintenanceTypeController.get);
+
+	app.put('/api/maintenanceType/delete/deleteSelected',[authJwt.verifyToken], maintenanceTypeController.deleteSelected);
+
+	app.post('/api/rate', [authJwt.verifyToken],rateController.create);
+
+	app.get('/api/rate', [authJwt.verifyToken],rateController.get);
+
+	app.post('/api/employeeType', [authJwt.verifyToken],employeeTypeController.create);
+
+	app.get('/api/employeeType', [authJwt.verifyToken],employeeTypeController.get);
+
+	app.post('/api/employeeWorkType', [authJwt.verifyToken],employeeWorkTypeController.create);
+
+	app.get('/api/employeeWorkType', [authJwt.verifyToken],employeeWorkTypeController.get);
+
+	app.post('/api/employeeDetail', [authJwt.verifyToken],employeeDetailController.create);
+
+	app.get('/api/employeeDetail', [authJwt.verifyToken],employeeDetailController.get);
+
+	app.put('/api/employeeDetail/:id', [authJwt.verifyToken],employeeDetailController.update);
+
+	app.put('/api/employeeDetail/delete/:id', [authJwt.verifyToken],employeeDetailController.delete);
+
+	app.put('/api/employeeDetail/delete/deleteSelected',[authJwt.verifyToken], employeeDetailController.deleteSelected);
+
+	// app.post("/api/test/upload",fileUploadConfig.single('profileImage'),vendorController.uploadPicture);
+
+	// app.post("/api/test/upload",fileUploadConfig.array('photos',3),vendorController.uploadMultiple);
+
+	// app.post("/api/test/upload",fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]),vendorController.uploadMultiple)
+
+	app.post('/api/inventory', [authJwt.verifyToken],inventoryController.create);
+
+	app.get('/api/inventory', [authJwt.verifyToken],inventoryController.get);
+
+	app.put('/api/inventory/:id', [authJwt.verifyToken],inventoryController.update);
+
+	app.put('/api/inventory/delete/:id', [authJwt.verifyToken],inventoryController.delete);
+
+	app.put('/api/inventory/delete/deleteSelected',[authJwt.verifyToken], inventoryController.deleteSelected);
+
+	app.post('/api/employee', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]), employeeController.create);
+	
+	app.put('/api/employee/delete/deleteSelected',[authJwt.verifyToken], employeeController.deleteSelected);
+
+	app.get('/api/employee',[authJwt.verifyToken],employeeController.get);
+
+	app.post('/api/designation',[authJwt.verifyToken],designationController.create);
+
+	app.get('/api/designation',[authJwt.verifyToken],designationController.get);
+
+	app.put('/api/designation/:id',[authJwt.verifyToken],designationController.update);
+
+	app.put('/api/designation/delete/deleteSelected',[authJwt.verifyToken], designationController.deleteSelected);
+
+	app.put('/api/designation',[authJwt.verifyToken],designationController.delete);
 }

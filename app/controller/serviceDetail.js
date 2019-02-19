@@ -1,12 +1,13 @@
 const db = require('../config/db.config.js');
 const config = require('../config/config.js');
-const httpStatus = require('http-status')
+const httpStatus = require('http-status');
 
 const ServiceDetail = db.serviceDetail;
 
 exports.create = async (req, res, next) => {
     try {
         let body = req.body;
+        body.userId = req.userId;
         const service = await ServiceDetail.create(body);
         return res.status(httpStatus.CREATED).json({
             message: "Service Detail successfully created",
@@ -30,3 +31,4 @@ exports.get = async(req,res,next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
+
