@@ -287,9 +287,11 @@ module.exports = function(app) {
 
 	app.get('/api/employee',[authJwt.verifyToken],employeeController.get);
 
-	app.get('/api/designation',[authJwt.verifyToken],designationController.create);
+	app.post('/api/designation',[authJwt.verifyToken],designationController.create);
 
 	app.get('/api/designation',[authJwt.verifyToken],designationController.get);
 
-	app.get('/api/designation',[authJwt.verifyToken],designationController.update);
+	// app.put('/api/designation',[authJwt.verifyToken],designationController.update);
+
+	// app.put('/api/designation',[authJwt.verifyToken],designationController.delete);
 }
