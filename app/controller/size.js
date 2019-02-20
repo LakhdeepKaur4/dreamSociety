@@ -1,5 +1,6 @@
 const db = require('../config/db.config.js');
 const config = require('../config/config.js');
+const httpStatus = require('http-status')
 
 const Size = db.size;
 const Op = db.Sequelize.Op;

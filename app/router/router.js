@@ -163,7 +163,7 @@ module.exports = function(app) {
 
 	app.put('/api/service/:id',[authJwt.verifyToken], serviceController.update);
 
-	app.put('/api/user/service/deleteSelected',[authJwt.verifyToken], serviceController.deleteSelected);
+	app.put('/api/service/delete/deleteSelected',[authJwt.verifyToken], serviceController.deleteSelected);
 
 	app.put('/api/service/:id',[authJwt.verifyToken], serviceController.delete);
 

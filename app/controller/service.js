@@ -1,5 +1,6 @@
 const db = require('../config/db.config.js');
 const config = require('../config/config.js');
+const httpStatus = require('http-status')
 
 const Service = db.service;
 const ServiceDetail = db.serviceDetail;
@@ -89,6 +90,7 @@ exports.delete = (req, res) => {
 
 exports.deleteSelected = async (req, res, next) => {
   try {
+    console.log("in service--->")
     const deleteSelected = req.body.ids;
     console.log("delete selected==>", deleteSelected);
     const update = { isActive: false };
