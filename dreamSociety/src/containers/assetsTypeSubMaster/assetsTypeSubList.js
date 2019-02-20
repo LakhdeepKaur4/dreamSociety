@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchAssets, updateAssetsSub, removeAssetsSub } from '../../actionCreators/assetsSubAction';
+import { fetchAssets, updateAssetsSub, removeAssetsSub,deleteMultiple } from '../../actionCreators/assetsSubAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, Table, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
@@ -22,6 +22,7 @@ class AssetsTypeSubList extends Component {
             activePage: 1,
             loading: true,
             errors: {},
+            ids: [],
         };
     }
     onChangeHandler = (event) => {
@@ -100,6 +101,18 @@ class AssetsTypeSubList extends Component {
                 {
                     return (
                         <tr key={item.assetTypeId}>
+                         <td><input type="checkbox" name="ids" value={item.assetTypeId}
+                         onChange={(e, i) => {
+                            const {assetTypeId} = item
+                            if(!e.target.checked){
+                                let indexOfId = this.state.ids.indexOf(assetTypeId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                            }
+                            else this.setState({ids: [...this.state.ids, assetTypeId]})
+                                
+                             }}/></td>
                             <td>{index+1}</td>
                             <td>{item.asset_master.assetName}</td>
                             <td>{item.assetType}</td>
@@ -124,11 +137,19 @@ class AssetsTypeSubList extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
+    deleteSelected(ids){
+        this.setState({loading:true});
+        this.props.deleteMultiple(ids)
+        .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
+        .catch(err => err.response.data.message);
+    }
+
     render() {
         let tableData;
         tableData = <Table className="table table-bordered">
             <thead>
-                <tr>
+                <tr> 
+                    <th>Select</th>
                     <th>#</th>
                     <th>Asset Name</th>
                     <th>Assets Sub Type Name</th>
@@ -140,6 +161,8 @@ class AssetsTypeSubList extends Component {
                 {this.renderListAssets(this.props.ListOfAssets)}
             </tbody>
         </Table>
+          let deleteSelectedButton = <Button color="danger" className="mb-2"
+          onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
                 <UI onClick={this.logout}>
@@ -156,6 +179,7 @@ class AssetsTypeSubList extends Component {
                         <div>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
+                                 {deleteSelectedButton}
                             {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         <Modal isOpen={this.state.modal} toggle={this.toggles}>
@@ -191,7 +215,7 @@ function mapStatToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ fetchAssets, updateAssetsSub, removeAssetsSub }, dispatch)
+    return bindActionCreators({ fetchAssets, updateAssetsSub, removeAssetsSub,deleteMultiple }, dispatch)
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(AssetsTypeSubList);
