@@ -327,6 +327,10 @@ module.exports = function(app) {
 
 	app.get('/api/employee',[authJwt.verifyToken],employeeController.get);
 
+	app.put('/api/employee/:id',[authJwt.verifyToken],employeeController.update);
+
+	app.put('/api/employee/:id',[authJwt.verifyToken],employeeController.delete);
+
 	app.post('/api/designation',[authJwt.verifyToken],designationController.create);
 
 	app.get('/api/designation',[authJwt.verifyToken],designationController.get);

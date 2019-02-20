@@ -71,6 +71,60 @@ exports.get = async (req, res, next) => {
     }
 }
 
+exports.update = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        console.log("id==>", id)
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = req.body;
+
+        console.log("update", update)
+
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        const updatedEmployee = await EmployeeDetail.find({ where: { employeeId: id } }).then(employee => {
+            return employee.updateAttributes(update)
+        })
+        if (updatedEmployee) {
+            return res.status(httpStatus.OK).json({
+                message: "Employee Updated Page",
+                updatedEmployee
+            });
+        }
+    } catch (error) {
+        console.log("error==>", error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+
+exports.delete = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = req.body;
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        const updatedEmployee = await EmployeeDetail.find({ where: { employeeId: id } }).then(employee => {
+            return employee.updateAttributes(update)
+        })
+        if (updatedEmployee) {
+            return res.status(httpStatus.OK).json({
+                message: "Employee deleted successfully",
+                updatedEmployee
+            });
+        }
+    } catch (error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Mysql error' });
+    }
+}
+
 exports.deleteSelected = async (req, res, next) => {
     try {
         const deleteSelected = req.body.ids;
