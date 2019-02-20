@@ -166,7 +166,6 @@ class userDetails extends Component {
                  x.contact.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  !search;
             }
-            return <div>Not Found</div>
         }
     }
 
@@ -193,16 +192,18 @@ class userDetails extends Component {
                 let currentTowerId = item.towerId
                 return (
                     <tr key={item.userId}>
-                        <td><input type="checkbox" name="ids" value={item.userId}
-                         onChange={(e, i) => {
+                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.userId}
+                         onChange={(e) => {
                             const {userId} = item
                             if(!e.target.checked){
                                 let indexOfId = this.state.ids.indexOf(userId);
                                 if(indexOfId > -1){
-                                    this.state.ids.splice(indexOfId, 1)
+                                    this.state.ids.splice(indexOfId, 1);
                                 }
                             }
-                            else this.setState({ids: [...this.state.ids, userId]})
+                            else {
+                                this.setState({ids: [...this.state.ids, userId]});
+                            }
                                 
                              }}/></td>
                         <td>{index + 1}</td>
@@ -278,6 +279,25 @@ class userDetails extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
+    selectAll = () => {
+    
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                        ar.push(parseInt(selectMultiple[i].value));
+                        selectMultiple[i].checked = true;
+                }
+                this.setState({ids: ar});
+        }
+
+        unSelectAll = () =>{
+            let unSelectMultiple = document.getElementsByClassName('SelectAll');
+            for(var i = 0; i < unSelectMultiple.length; i++){
+                    unSelectMultiple[i].checked = false
+            }
+            let allIds = []
+                this.setState({ids: [ ...allIds]});
+        }
 
     render() {
 
@@ -286,7 +306,16 @@ class userDetails extends Component {
 
             <thead>
                 <tr>
-                    <th>Select</th>
+                    <th>Select All<input className="ml-2"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
                     <th>#</th>
                     <th>Roles</th>
                     <th>First Name</th>
@@ -306,7 +335,7 @@ class userDetails extends Component {
             </tbody>
         </Table>
 
-        let deleteSelectedButton = <Button color="danger" className="mb-2"
+        let deleteSelectedButton = <Button color="danger" className="mb-3"
         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
 
         return (
@@ -380,9 +409,8 @@ class userDetails extends Component {
                             {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         </UI>
-
-</div>
-        )
+            </div>
+        );
     }
 }
 

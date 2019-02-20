@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {getMaintenanceSubSizeDetails,deleteMaintenanceSubMasterDetail,
     getMaintenanceType,getMaintenanceSubSize,
-    updateMaintenanceSubMasterDetail} from '../../actionCreators/maintenanceSubMasterAction'
+    updateMaintenanceSubMasterDetail,
+    deleteSelectedMaintenanceSubMasterDetail} from '../../actionCreators/maintenanceSubMasterAction'
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
 import '../../r-css/w3.css';
@@ -15,6 +16,7 @@ class MaintenanceSubMasterDetails extends Component{
         super(props);
         this.state = {
             maintenanceTypeId:"",
+            ids:[],
             category:"",
             sizeType:"",
             rate:"",
@@ -81,10 +83,9 @@ class MaintenanceSubMasterDetails extends Component{
     }
 
     searchFilter = (search) =>{
-        return (x,y) => {
-            if(x,y){
-                return y.toString().indexOf(search) !== -1 ||
-                x.maintenance_master.category.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+        return (x) => {
+            if(x){
+                return x.maintenance_master.category.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                 x.size_master.sizeType.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                 x.rate.toString().indexOf(search) !== -1
             }
@@ -94,6 +95,7 @@ class MaintenanceSubMasterDetails extends Component{
     searchOnChange = (e) => {
         this.setState({search:e.target.value})
     }
+    
 
     fetchMaintenanceDetails({sizeDetails}) {
         if(sizeDetails){
@@ -103,6 +105,21 @@ class MaintenanceSubMasterDetails extends Component{
                 let sizeTypeId = item.size_master.sizeId;
                 return (
                     <tr key={item.maintenanceTypeId}>
+                        <td><input type="checkbox" name="ids" className="SelectAll"  value={item.maintenanceTypeId}
+                         onChange={(e) => {
+                            let {maintenanceTypeId} = item
+                            if(!e.target.checked){
+                                
+                                let indexOfId = this.state.ids.indexOf(maintenanceTypeId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                            }
+                            else {
+                                this.setState({ids: [...this.state.ids, maintenanceTypeId]});
+                            }
+                                
+                             }}/></td>
                         <td>{index + 1}</td>
                         <td>{maintenanceCategory}</td>
                         <td>{sizeType}</td>
@@ -154,16 +171,54 @@ class MaintenanceSubMasterDetails extends Component{
         }
     }
 
+    deleteSelectedSubMaintenance(ids){
+        this.setState({loading:true});
+        this.props.deleteSelectedMaintenanceSubMasterDetail(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response);
+    }
+
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
 
+    selectAll = () => {
+    
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+    }
+
+    unSelectAll = () =>{
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
+        }
+        let allIds = []
+        this.setState({ids: [ ...allIds]});
+    }
+
     render(){
         let tableData = <Table className="table table-bordered">
         <thead>
             <tr>
+                <th style={{alignContent:'baseline'}}>Select All<input className="ml-2"
+                type="checkbox" onChange={(e) => {
+                    if(e.target.checked) {
+                        this.selectAll();
+                    }
+                    else if(!e.target.checked){
+                        this.unSelectAll();
+                    } 
+                }
+                    
+                }  /></th>
                 <th>#</th>
                 <th>Maintenance Type</th>
                 <th>Size</th>
@@ -183,7 +238,7 @@ class MaintenanceSubMasterDetails extends Component{
                     </div>
                     <div className="top-details">
                         <h3>Maintenance Sub Master Details</h3>
-                        <Button color="primary" onClick={this.route} color="primary">Add Maintenance Size</Button>
+                        <Button color="primary" onClick={this.route} color="primary">Add Sub Maintenance</Button>
                     </div>
                     <Modal isOpen={this.state.editSubMaintenanceModal} toggle={this.toggleEditSubMaintenanceModal.bind(this)}>
                         <ModalHeader toggle={this.toggleEditSubMaintenanceModal.bind(this)}>Edit Sub Maintenance</ModalHeader>
@@ -218,6 +273,9 @@ class MaintenanceSubMasterDetails extends Component{
                     </Modal>
                     <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
+                    <Button color="danger"
+                    className="mb-3"
+                     onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
                     {!this.state.loading ? tableData : <Spinner />}
                 </div>
             </UI>
@@ -236,4 +294,5 @@ export default connect(mapStateToProps,
     deleteMaintenanceSubMasterDetail,
     getMaintenanceType,
     getMaintenanceSubSize,
+    deleteSelectedMaintenanceSubMasterDetail,
     updateMaintenanceSubMasterDetail})(MaintenanceSubMasterDetails);
