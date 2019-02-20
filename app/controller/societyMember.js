@@ -43,13 +43,6 @@ exports.get = async (req, res, next) => {
             return res.status(httpStatus.CREATED).json({
                 message: "Society Member Content Page",
                 societyMember: societyMember
-
-
-
-
-
-
-                
             });
         }
     } catch (error) {
@@ -70,13 +63,39 @@ exports.update = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedEvent = await Event.find({ where: { eventId: id } }).then(event => {
-            return event.updateAttributes(update)
+        const societyMember = await SocietyMember.find({ where: { societyMemberId: id } }).then(societyMember => {
+
         })
-        if (updatedEvent) {
+        if (societyMember) {
             return res.status(httpStatus.OK).json({
-                message: "Event Updated Page",
-                event: updatedEvent
+                message: "Society Member Updated Page",
+                societyMember: societyMember
+            });
+        }
+    } catch (error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+
+exports.delete = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = req.body;
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        const societyMember = await SocietyMember.find({ where: { societyMemberId: id } }).then(societyMember => {
+            return societyMember.updateAttributes(update)
+        })
+        if (societyMember) {
+            return res.status(httpStatus.OK).json({
+                message: "Society Member deleted successfully",
+                societyMember: societyMember
             });
         }
     } catch (error) {
