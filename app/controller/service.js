@@ -3,6 +3,7 @@ const config = require('../config/config.js');
 
 const Service = db.service;
 const ServiceDetail = db.serviceDetail;
+const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
   let body = req.body;

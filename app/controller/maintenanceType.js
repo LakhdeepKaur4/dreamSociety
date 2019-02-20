@@ -5,6 +5,7 @@ const httpStatus = require('http-status');
 const MaintenanceType = db.maintenanceType;
 const Maintenance = db.maintenance;
 const Size = db.size;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req, res, next) => {
     try {
@@ -48,6 +49,7 @@ exports.get = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     try {
+        console.log("maintenannce>")
         const id = req.params.id;
         console.log("id==>", id)
         if (!id) {
@@ -68,6 +70,7 @@ exports.update = async (req, res, next) => {
             });
         }
     } catch (error) {
+        console.log(error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
@@ -93,12 +96,14 @@ exports.delete = async (req, res, next) => {
             });
         }
     } catch (error) {
+        console.log(error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
 
 exports.deleteSelected = async (req, res, next) => {
     try {
+        console.log("maintenance Type delete")
         const deleteSelected = req.body.ids;
         console.log("delete selected==>", deleteSelected);
         const update = { isActive: false };

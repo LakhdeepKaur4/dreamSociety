@@ -8,6 +8,7 @@ const location = db.location;
 const Country = db.country;
 const State = db.state;
 const User = db.user;
+const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
     console.log("creating society");

@@ -4,6 +4,7 @@ const httpStatus = require('http-status')
 const Inventory = db.inventory;
 const Assets = db.assets;
 const AssetsType = db.assetsType;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req, res, next) => {
     try {

@@ -2,6 +2,7 @@ const db = require('../config/db.config.js');
 const config = require('../config/config.js');
 
 const Size = db.size;
+const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
     console.log("creating size");

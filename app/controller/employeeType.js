@@ -2,6 +2,7 @@ const db = require('../config/db.config.js');
 const httpStatus = require('http-status')
 
 const EmployeeType = db.employeeType;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req,res,next) => {
     try{

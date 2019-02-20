@@ -4,6 +4,7 @@ const httpStatus = require('http-status')
 const FlatDetail = db.flatDetail;
 const Flat = db.flat;
 const Tower = db.tower;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req, res, next) => {
     try {

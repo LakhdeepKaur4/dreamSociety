@@ -8,6 +8,7 @@ const Country = db.country;
 const City = db.city;
 const State = db.state;
 const Location = db.location;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req, res, next) => {
     try {

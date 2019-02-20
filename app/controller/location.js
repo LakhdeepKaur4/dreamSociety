@@ -5,6 +5,7 @@ const Location = db.location;
 const State = db.state;
 const Country = db.country;
 const City = db.city;
+const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
     console.log("creating city");

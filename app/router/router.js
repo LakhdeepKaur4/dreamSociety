@@ -67,9 +67,9 @@ module.exports = function(app) {
 
 	app.get('/api/city/:id', [authJwt.verifyToken], cityController.getById);
 
-	app.put('/api/city/:id',[authJwt.verifyToken], cityController.update);
-
 	app.put('/api/city/delete/deleteSelected',[authJwt.verifyToken], cityController.deleteSelected);
+
+	app.put('/api/city/:id',[authJwt.verifyToken], cityController.update);
 
 	// app.delete('/api/city/:id',[authJwt.verifyToken],cityController.deleteById);
   
@@ -87,9 +87,9 @@ module.exports = function(app) {
 
 	app.put('/api/country/:id',[authJwt.verifyToken],  countryController.update);
 
-	app.put('/api/country/delete/:id',[authJwt.verifyToken], countryController.delete);
-
 	app.put('/api/country/delete/deleteSelected',[authJwt.verifyToken], countryController.deleteSelected);
+
+	app.put('/api/country/delete/:id',[authJwt.verifyToken], countryController.delete);
 
 	app.post('/api/state', [authJwt.verifyToken],stateController.create);
 
@@ -99,9 +99,9 @@ module.exports = function(app) {
 
 	app.put('/api/state/:id', [authJwt.verifyToken], stateController.update);
 
-	app.put('/api/state/delete/:id',[authJwt.verifyToken], stateController.delete);
-
 	app.put('/api/state/delete/deleteSelected',[authJwt.verifyToken], stateController.deleteSelected);
+
+	app.put('/api/state/delete/:id',[authJwt.verifyToken], stateController.delete);
 
 	app.post('/api/location',[authJwt.verifyToken], locationController.create);
 
@@ -111,9 +111,9 @@ module.exports = function(app) {
 
 	app.put('/api/location/:id',[authJwt.verifyToken], locationController.update);
 
-	app.put('/api/location/delete:id', [authJwt.verifyToken],locationController.delete);
-
 	app.put('/api/location/delete/deleteSelected',[authJwt.verifyToken], locationController.deleteSelected);
+
+	app.put('/api/location/delete:id', [authJwt.verifyToken],locationController.delete);
 
 	app.post('/api/society', [authJwt.verifyToken],societyController.create);
 
@@ -123,9 +123,9 @@ module.exports = function(app) {
 
 	app.put('/api/society/:id', [authJwt.verifyToken],societyController.update);
 
-	app.put('/api/society/delete/:id', [authJwt.verifyToken],societyController.delete);
-
 	app.put('/api/user/society/deleteSelected',[authJwt.verifyToken], societyController.deleteSelected);
+
+	app.put('/api/society/delete/:id', [authJwt.verifyToken],societyController.delete);
 
 	app.post('/api/tower', [authJwt.verifyToken],towerController.create);
 
@@ -135,9 +135,9 @@ module.exports = function(app) {
 
 	app.put('/api/tower/:id',[authJwt.verifyToken], towerController.update);
 
-	app.put('/api/tower/delete/:id',[authJwt.verifyToken], towerController.delete);
-
 	app.put('/api/tower/delete/deleteSelected',[authJwt.verifyToken], towerController.deleteSelected);
+
+	app.put('/api/tower/delete/:id',[authJwt.verifyToken], towerController.delete);
 
 	app.post('/api/flat',[authJwt.verifyToken],  flatController.create);
 
@@ -151,9 +151,9 @@ module.exports = function(app) {
 
 	app.put('/api/flat/:id', [authJwt.verifyToken], flatController.update);
 
-	app.put('/api/flat/delete/:id',[authJwt.verifyToken], flatController.delete);
-
 	app.put('/api/flat/delete/deleteSelected',[authJwt.verifyToken], flatController.deleteSelected);
+
+	app.put('/api/flat/delete/:id',[authJwt.verifyToken], flatController.delete);
 	
 	app.post('/api/service', [authJwt.verifyToken], serviceController.create);
 
@@ -163,9 +163,9 @@ module.exports = function(app) {
 
 	app.put('/api/service/:id',[authJwt.verifyToken], serviceController.update);
 
-	app.put('/api/service/:id',[authJwt.verifyToken], serviceController.delete);
-
 	app.put('/api/user/service/deleteSelected',[authJwt.verifyToken], serviceController.deleteSelected);
+
+	app.put('/api/service/:id',[authJwt.verifyToken], serviceController.delete);
 
 	app.post('/api/size',[authJwt.verifyToken],  sizeController.create);
 
@@ -177,7 +177,7 @@ module.exports = function(app) {
 
 	app.put('/api/size/delete/deleteSelected',[authJwt.verifyToken], sizeController.deleteSelected);
 
-	// app.put('/api/size/:id',[authJwt.verifyToken], sizeController.delete);
+	app.put('/api/size/:id',[authJwt.verifyToken], sizeController.delete);
 
 	app.post('/api/event', [authJwt.verifyToken],eventController.create);
 
@@ -185,9 +185,9 @@ module.exports = function(app) {
 
 	app.put('/api/event/:id',[authJwt.verifyToken], eventController.update);
 
-	app.put('/api/event/delete/:id', [authJwt.verifyToken],eventController.delete);
-
 	app.put('/api/event/delete/deleteSelected',[authJwt.verifyToken], eventController.deleteSelected);
+
+	app.put('/api/event/delete/:id', [authJwt.verifyToken],eventController.delete);
 
 	app.post('/api/sendMessage',[authJwt.verifyToken], messageController.sendMessage);
 
@@ -217,9 +217,9 @@ module.exports = function(app) {
 
 	app.put('/api/vendor/:id', [authJwt.verifyToken], vendorController.update);
 
-	app.put('/api/vendor/delete/:id', [authJwt.verifyToken], vendorController.delete);
-
 	app.put('/api/vendor/delete/deleteSelected',[authJwt.verifyToken], vendorController.deleteSelected);
+
+	app.put('/api/vendor/delete/:id', [authJwt.verifyToken], vendorController.delete);
 
 	app.post('/api/assets', [authJwt.verifyToken], assetsController.create);
 
@@ -231,9 +231,9 @@ module.exports = function(app) {
 
 	app.put('/api/assets/delete/:id', [authJwt.verifyToken], assetsController.delete);
 
-	app.delete('/api/assets/:id', [authJwt.verifyToken], assetsController.deleteById);
-
 	app.put('/api/assets/delete/deleteSelected',[authJwt.verifyToken], assetsController.deleteSelected);
+
+	app.delete('/api/assets/:id', [authJwt.verifyToken], assetsController.deleteById);
 
 	app.post('/api/assetsType', [authJwt.verifyToken], assetsTypeController.create);
 
@@ -245,9 +245,9 @@ module.exports = function(app) {
 
 	app.delete('/api/assetsType/:id', [authJwt.verifyToken], assetsTypeController.deleteById);
 
-	app.put('/api/assetsType/delete/:id', [authJwt.verifyToken], assetsTypeController.delete);
-
 	app.put('/api/assetsType/delete/deleteSelected',[authJwt.verifyToken], assetsTypeController.deleteSelected);
+
+	app.put('/api/assetsType/delete/:id', [authJwt.verifyToken], assetsTypeController.delete);
 
 	app.post('/api/user/encrypt',userController.encryptData);
 
@@ -259,9 +259,9 @@ module.exports = function(app) {
 
 	app.put('/api/flatDetail/:id', [authJwt.verifyToken],flatDetailController.update);
 
-	app.put('/api/flatDetail/delete/:id', [authJwt.verifyToken],flatDetailController.delete);
-
 	app.put('/api/flatDetail/delete/deleteSelected',[authJwt.verifyToken], flatDetailController.deleteSelected);
+
+	app.put('/api/flatDetail/delete/:id', [authJwt.verifyToken],flatDetailController.delete);
 
 	app.post('/api/maintenance', [authJwt.verifyToken],maintenanceController.create);
 
@@ -269,19 +269,19 @@ module.exports = function(app) {
 
 	app.put('/api/maintenance/:id', [authJwt.verifyToken],maintenanceController.update);
 
-	app.put('/api/maintenance/delete/:id', [authJwt.verifyToken],maintenanceController.delete);
-
 	app.put('/api/maintenance/delete/deleteSelected',[authJwt.verifyToken], maintenanceController.deleteSelected);
+
+	app.put('/api/maintenance/delete/:id', [authJwt.verifyToken],maintenanceController.delete);
 
 	app.post('/api/maintenanceType', [authJwt.verifyToken],maintenanceTypeController.create);
 
 	app.put('/api/maintenanceType/:id', [authJwt.verifyToken],maintenanceTypeController.update);
 
+	app.put('/api/maintenanceType/delete/deleteSelected',[authJwt.verifyToken], maintenanceTypeController.deleteSelected);
+	
 	app.put('/api/maintenanceType/delete/:id', [authJwt.verifyToken],maintenanceTypeController.delete);
 
 	app.get('/api/maintenanceType', [authJwt.verifyToken],maintenanceTypeController.get);
-
-	app.put('/api/maintenanceType/delete/deleteSelected',[authJwt.verifyToken], maintenanceTypeController.deleteSelected);
 
 	app.post('/api/rate', [authJwt.verifyToken],rateController.create);
 
@@ -301,9 +301,9 @@ module.exports = function(app) {
 
 	app.put('/api/employeeDetail/:id', [authJwt.verifyToken],employeeDetailController.update);
 
-	app.put('/api/employeeDetail/delete/:id', [authJwt.verifyToken],employeeDetailController.delete);
-
 	app.put('/api/employeeDetail/delete/deleteSelected',[authJwt.verifyToken], employeeDetailController.deleteSelected);
+
+	app.put('/api/employeeDetail/delete/:id', [authJwt.verifyToken],employeeDetailController.delete);
 
 	// app.post("/api/test/upload",fileUploadConfig.single('profileImage'),vendorController.uploadPicture);
 
@@ -317,9 +317,9 @@ module.exports = function(app) {
 
 	app.put('/api/inventory/:id', [authJwt.verifyToken],inventoryController.update);
 
-	app.put('/api/inventory/delete/:id', [authJwt.verifyToken],inventoryController.delete);
-
 	app.put('/api/inventory/delete/deleteSelected',[authJwt.verifyToken], inventoryController.deleteSelected);
+
+	app.put('/api/inventory/delete/:id', [authJwt.verifyToken],inventoryController.delete);
 
 	app.post('/api/employee', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]), employeeController.create);
 	

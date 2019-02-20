@@ -4,6 +4,7 @@ const sequelize = require('sequelize');
 
 const Slots = db.slot;
 const Parking = db.parking;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req, res, next) => {
     try {

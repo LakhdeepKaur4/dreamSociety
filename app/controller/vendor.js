@@ -16,6 +16,7 @@ const nexmo = new Nexmo(
 const Vendor = db.vendor;
 const Service = db.service;
 const VendorService = db.vendorService;
+const Op = db.Sequelize.Op;
 
 exports.createVendor = async (req, res, next) => {
     try {
