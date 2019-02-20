@@ -84,7 +84,7 @@ exports.delete = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedDesignation = await Designation.find({ where: { maintenanceId: id } }).then(designation => {
+        const updatedDesignation = await Designation.find({ where: { designationId: id } }).then(designation => {
             return designation.updateAttributes(update)
         })
         if (updatedDesignation) {
@@ -98,34 +98,6 @@ exports.delete = async (req, res, next) => {
     }
 }
 
-exports.update = async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        console.log("id==>", id)
-        if (!id) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
-        }
-        const update = req.body;
-
-        console.log("update", update)
-
-        if (!update) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
-        }
-        const updatedEmployee = await EmployeeDetail.find({ where: { employeeDetailId: id } }).then(employee => {
-            return employee.updateAttributes(update)
-        })
-        if (updatedEmployee) {
-            return res.status(httpStatus.OK).json({
-                message: "Employee Updated Page",
-                updatedEmployee
-            });
-        }
-    } catch (error) {
-        console.log("error==>", error)
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-    }
-}
 
 exports.deleteSelected = async (req, res, next) => {
     try {

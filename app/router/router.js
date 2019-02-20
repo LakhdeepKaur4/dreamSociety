@@ -31,7 +31,7 @@ module.exports = function(app) {
 	const employeeDetailController = require('../controller/employeeDetail');
 	const inventoryController = require('../controller/inventory');
 	const employeeController = require('../controller/employee');
-	const designationController = require('../controller/employee');
+	const designationController = require('../controller/designation');
 	
 	app.get('/', userController.start);
 
@@ -331,9 +331,9 @@ module.exports = function(app) {
 
 	app.get('/api/designation',[authJwt.verifyToken],designationController.get);
 
+	app.put('/api/designation/:id',[authJwt.verifyToken],designationController.update);
+
 	app.put('/api/designation/delete/deleteSelected',[authJwt.verifyToken], designationController.deleteSelected);
 
-	// app.put('/api/designation/:id',[authJwt.verifyToken],designationController.update);
-
-	// app.put('/api/designation',[authJwt.verifyToken],designationController.delete);
+	app.put('/api/designation',[authJwt.verifyToken],designationController.delete);
 }
