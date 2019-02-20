@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import Spinner from   '../../components/spinner/spinner'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import {Link} from 'react-router-dom';
+
 import {  Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import  SearchFilter from '../../components/searchFilter/searchFilter';

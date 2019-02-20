@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getCountry, getState, getCity, getLocation, getSociety, detailSociety, deleteSociety, updateSociety } from './../../actionCreators/societyMasterAction';
+import { getCountry, getState, getCity, getLocation, getSociety, detailSociety, deleteSociety, updateSociety,deleteSelectSociety } from './../../actionCreators/societyMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import {Table, Button, Modal, FormGroup, ModalBody, ModalHeader,  Input, Label } from 'reactstrap';
@@ -30,7 +30,8 @@ class SocietyManagementDetail extends Component {
             search: '',
             modal: false,
             loading: true,
-            errors:{}
+            errors:{},
+            ids:[],
             
 
         };
@@ -111,6 +112,14 @@ class SocietyManagementDetail extends Component {
 
     }
 
+    deleteSelected(ids){
+        this.setState({loading:true});
+        this.props.deleteSelectSociety(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
+    }
+
+
     societyData = ({ detail_Society }) => {
      
         if (detail_Society) {
@@ -119,6 +128,18 @@ class SocietyManagementDetail extends Component {
 
                 return (
                     <tr key={item.societyId}>
+                    <td><input type="checkbox" name="ids" value={item.societyId}
+                         onChange={(e, i) => {
+                            const {societyId} = item
+                            if(!e.target.checked){
+                                let indexOfId = this.state.ids.indexOf(societyId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                            }
+                            else this.setState({ids: [...this.state.ids, societyId]})
+                                
+                             }}/></td>
                         <td>{index+1}</td>
                         <td>{item.country_master.countryName}</td>
                         <td>{item.state_master.stateName}</td>
@@ -233,6 +254,7 @@ class SocietyManagementDetail extends Component {
         <Table className="table table-bordered">
             <thead>
                 <tr>
+                    <th>Select</th>
                     <th>#</th>
                     <th>Country Name</th>
                     <th>State Name</th>
@@ -263,6 +285,7 @@ class SocietyManagementDetail extends Component {
                                 <SearchFilter type="text" value={this.state.search}
                                     onChange={this.searchOnChange} />
                             </div>
+                            <Button color="danger" className="mb-2" onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
                             {!this.state.loading ? tableData : <Spinner />}
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
@@ -347,7 +370,7 @@ function mapStatToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getCountry, getState, getCity, getLocation, getSociety, detailSociety, deleteSociety, updateSociety }, dispatch)
+    return bindActionCreators({ getCountry, getState, getCity, getLocation, getSociety, detailSociety, deleteSociety, updateSociety, deleteSelectSociety }, dispatch)
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(SocietyManagementDetail);

@@ -15,25 +15,25 @@ class vendorMaster extends Component {
         super(props);
         this.state = {
             vendorName: '',
-            contactNo:'',
+            contact:'',
             currentAddress:'',
             permanentAddress:'',                  
-            service:{
+            serviceId1:{
                 serviceId:'',
             },
-            service1:{
+            serviceId2:{
                 serviceId:''
             },
-            service2:{
+            serviceId3:{
                 serviceId:''
             },
-            rateType1:{
+            rateId1:{
                 rateId:''
             },
-            rateType2:{
+            rateId2:{
                 rateId:''
             },
-            rateType3:{
+            rateId3:{
                 rateId:''
             },
             rate1:'',
@@ -64,17 +64,25 @@ class vendorMaster extends Component {
 
     selectImages=(e)=>{
         this.setState({
-            selectedFile: e.target.files[0]
+            profilePicture: e.target.files[0]
         })
        
     }
 
-    selectImages = (picture) => {console.log(picture)
+    selectImage=(e)=>{
         this.setState({
-            profilePicture: picture.target.files[0]
-        });
-        console.log(this.state.profilePicture);
-        }
+            document: e.target.files[0]
+        })
+       
+    }
+
+
+    // selectImages = (picture) => {console.log(picture)
+    //     this.setState({
+    //         profilePicture: picture.target.files[0]
+    //     });
+    //     console.log(this.state.profilePicture);
+    //     }
 
     componentDidMount() {
         this.props.getServiceType();
@@ -119,25 +127,25 @@ class vendorMaster extends Component {
         this.setState(
             {
                 vendorName: '',
-                contactNo:'',
+                contact:'',
                 currentAddress:'',
                 permanentAddress:'',                  
-                service:{
+                serviceId1:{
                     serviceId:'',
                 },
-                service1:{
+                serviceId2:{
                     serviceId:''
                 },
-                service2:{
+                serviceId3:{
                     serviceId:''
                 },
-                rateType1:{
+                rateId1:{
                     rateId:''
                 },
-                rateType2:{
+                rateId2:{
                     rateId:''
                 },
-                rateType3:{
+                rateId3:{
                     rateId:''
                 },
                 rate1:'',
@@ -148,11 +156,11 @@ class vendorMaster extends Component {
             }
 
         ) 
-        console.log(this.state.vendorName)
-        console.log(this.state.contactNo)
-        // console.log(this.state.vendorName)
-        // console.log(this.state.vendorName)
-        // this.props.history.push('/superDashboard/displayVendorMaster')
+     
+      
+      
+        
+
     }
 
 
@@ -203,15 +211,15 @@ class vendorMaster extends Component {
 
                             <FormGroup>
                                 <Label>Contact Number</Label>
-                                <Input type="text"  placeholder="Contact Number"  name="contactNo"  maxLength={10} value={this.state.contactNo}  onChange={this.handleChange}  required />
+                                <Input type="text"  placeholder="Contact Number"  name="contact"  maxLength={10} value={this.state.contact}  onChange={this.handleChange}  required />
                             </FormGroup>
 
                                 <Row form>
                                 <Col md={6}>
                                     <FormGroup>
                                         <Label> Service Type 1</Label>
-                                        <Input type="select" name="service" value={this.state.service.serviceId} onChange={(e) => {
-                                            this.setState({service:{ serviceId:  e.target.value }})
+                                        <Input type="select" name="serviceId1" value={this.state.serviceId1.serviceId} onChange={(e) => {
+                                            this.setState({serviceId1:{ serviceId:  e.target.value }})
                                             }} required >
                                             <option value="" disabled  selected>--Select--</option>
                                             {this.getDropDown(this.props.displayServiceMasterReducer)}
@@ -221,8 +229,8 @@ class vendorMaster extends Component {
                                 <Col md={4}>
                                     <FormGroup>
                                         <Label> Rate Type 1</Label>
-                                        <Input type="select" name="rateType1" value={this.state.rateType1.rateId} onChange={(e) => {
-                                            this.setState({rateType1:{ rateId:  e.target.value }})
+                                        <Input type="select" name="rateId1" value={this.state.rateId1.rateId} onChange={(e) => {
+                                            this.setState({rateId1:{ rateId:  e.target.value }})
                                             }} required>
                                             <option value="" disabled  selected>--Select--</option>
                                             {this.getRate(this.props.vendorMasterReducer)}
@@ -241,8 +249,8 @@ class vendorMaster extends Component {
                                  <Col md={6}>
                                     <FormGroup>
                                         <Label> Service Type 2</Label>
-                                        <Input type="select" name="service1" value={this.state.service1.serviceId} onChange={(e) => {
-                                            this.setState({service1:{ serviceId:  e.target.value }})
+                                        <Input type="select" name="serviceId2" value={this.state.serviceId2.serviceId} onChange={(e) => {
+                                            this.setState({serviceId2:{ serviceId:  e.target.value }})
                                             }} required >
                                             <option value="" disabled  selected>--Select--</option>
                                             {this.getDropDown(this.props.displayServiceMasterReducer)}
@@ -253,8 +261,8 @@ class vendorMaster extends Component {
                                 <Col md={4}>
                                     <FormGroup>
                                         <Label> Rate Type 2</Label>
-                                        <Input type="select" name="rateType2"  value={this.state.rateType2.rateId} onChange={(e) => {
-                                            this.setState({rateType2:{ rateId:  e.target.value }})
+                                        <Input type="select" name="rateId2"  value={this.state.rateId2.rateId} onChange={(e) => {
+                                            this.setState({rateId2:{ rateId:  e.target.value }})
                                             }} required>
                                             <option value="" disabled  selected>--Select--</option>
                                             {this.getRate(this.props.vendorMasterReducer)}
@@ -273,8 +281,8 @@ class vendorMaster extends Component {
                                 <Col md={6}>
                                 <FormGroup>
                                         <Label> Service Type 3</Label>
-                                        <Input type="select" name="service2" value={this.state.service2.serviceId} onChange={(e) => {
-                                            this.setState({service2:{ serviceId:  e.target.value }})
+                                        <Input type="select" name="serviceId3" value={this.state.serviceId3.serviceId} onChange={(e) => {
+                                            this.setState({serviceId3:{ serviceId:  e.target.value }})
                                             }} required >
                                             <option value="" disabled  selected>--Select--</option>
                                             {this.getDropDown(this.props.displayServiceMasterReducer)}
@@ -284,8 +292,8 @@ class vendorMaster extends Component {
                                 <Col md={4}>
                                 <FormGroup>
                                         <Label> Rate Type 3</Label>
-                                        <Input type="select" name="rateType3"  value={this.state.rateType3.rateId} onChange={(e) => {
-                                            this.setState({rateType3:{ rateId:  e.target.value }})
+                                        <Input type="select" name="rateId3"  value={this.state.rateId3.rateId} onChange={(e) => {
+                                            this.setState({rateId3:{ rateId:  e.target.value }})
                                             }} required>
                                             <option value="" disabled  selected>--Select--</option>
                                             {this.getRate(this.props.vendorMasterReducer)}
@@ -302,24 +310,17 @@ class vendorMaster extends Component {
 
                                 <FormGroup>
                                 <Label>Upload Your Id</Label>
-                                <Input type="file" name="document"   onChange={this.onFileHandle}  required />
+                                <Input type="file" name="document" accept='.doc,application/pdf' onChange={this.selectImage}  required />
                                 
                             </FormGroup>
 
                             <FormGroup>
                                 <Label>Upload Your Picture</Label>
-                                <Input type="file" name="profilePicture"    onChange={this.selectImages}  required />
+                                <Input type="file" name="profilePicture"  accept="image/*"  onChange={this.selectImages}  required />
                                 <p className="text-info">{this.state.message}</p>
                             </FormGroup>
                             
-                            {/* <ImageUploader  
-                                        
-                                            withIcon={true}
-                                            buttonText='Choose images'
-                                            onChange={this.selectImages}
-                                            imgExtension={['.jpg', '.gif', '.png']}
-                                            maxFileSize={5242880}
-                                        /> */}
+                       
                             <FormGroup>
                                 <Button color="success">Submit</Button>
                             </FormGroup>
