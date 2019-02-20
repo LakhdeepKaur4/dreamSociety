@@ -43,6 +43,13 @@ exports.get = async (req, res, next) => {
             return res.status(httpStatus.CREATED).json({
                 message: "Society Member Content Page",
                 societyMember: societyMember
+
+
+
+
+
+
+                
             });
         }
     } catch (error) {
@@ -59,7 +66,7 @@ exports.update = async (req, res, next) => {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
         const update = req.body;
-        console.log("update==>", update)
+        // console.log("update==>", update)
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }

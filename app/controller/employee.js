@@ -13,7 +13,7 @@ const Op = db.Sequelize.Op;
 exports.create = async (req, res, next) => {
     try {
         let body = req.body;
-        console.log("body::::::==>",body)
+        console.log("body::::::==>",body);
         body.userId = req.userId;
         const employee = await Employee.create(body);
         const employeeId = employee.employeeId;
@@ -75,13 +75,13 @@ exports.get = async (req, res, next) => {
 exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
-        console.log("id==>", id)
+        console.log("id==>", id);
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
         const update = req.body;
 
-        console.log("update", update)
+        console.log("update", update);
 
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
