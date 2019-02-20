@@ -12,6 +12,7 @@ const Location = db.location;
 exports.create = async (req, res, next) => {
     try {
         let body = req.body;
+        console.log("body::::::==>",body)
         body.userId = req.userId;
         const employee = await Employee.create(body);
         const employeeId = employee.employeeId;
