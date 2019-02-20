@@ -109,9 +109,9 @@ module.exports = function(app) {
 
 	app.get('/api/location/:id', [authJwt.verifyToken], locationController.getById);
 
-	app.put('/api/location/:id',[authJwt.verifyToken], locationController.update);
-
 	app.put('/api/location/delete/deleteSelected',[authJwt.verifyToken], locationController.deleteSelected);
+
+	app.put('/api/location/:id',[authJwt.verifyToken], locationController.update);
 
 	app.put('/api/location/delete:id', [authJwt.verifyToken],locationController.delete);
 
