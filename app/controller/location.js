@@ -6,88 +6,110 @@ const State = db.state;
 const Country = db.country;
 const City = db.city;
 
-exports.create = (req,res) => {
+exports.create = (req, res) => {
     console.log("creating city");
     let body = req.body;
     Location.create({
-        locationName:body.locationName,
-        countryId:body.countryId,
-        stateId:body.stateId,
-        cityId:body.cityId,
-        userId:req.userId
-    }).then(location =>{
-        res.json({message:"Location added successfully!",location:location});
+        locationName: body.locationName,
+        countryId: body.countryId,
+        stateId: body.stateId,
+        cityId: body.cityId,
+        userId: req.userId
+    }).then(location => {
+        res.json({ message: "Location added successfully!", location: location });
     }).catch(err => {
-    res.status(500).json("Fail! Error -> " + err);
-})
+        res.status(500).json("Fail! Error -> " + err);
+    })
 }
 
 exports.get = (req, res) => {
-    Location.findAll({where:{isActive:true},
-        include:[{model:State,attributes:['stateId','stateName']},
-        {model:Country,attributes:['countryId','countryName']},
-        {model:City,attributes:['cityId','cityName']},
-    ]
-    })
-      .then(location => {
-        res.json(location);
-      });
-    }
-
-exports.getById = (req,res) => {
     Location.findAll({
-       where: {cityId: req.params.id},
-   }).then(location => {
-    res.status(200).json(
-       location
-    );
-}).catch(err => {
-    res.status(500).json({
-        "description": "Can not Location Page",
-        "error": err
-    });
-})
+        where: { isActive: true },
+        order: [['createdAt', 'DESC']],
+        include: [{ model: State, attributes: ['stateId', 'stateName'] },
+        { model: Country, attributes: ['countryId', 'countryName'] },
+        { model: City, attributes: ['cityId', 'cityName'] },
+        ]
+    })
+        .then(location => {
+            res.json(location);
+        });
 }
 
-exports.update = (req,res) => {
+exports.getById = (req, res) => {
+    Location.findAll({
+        where: { cityId: req.params.id },
+    }).then(location => {
+        res.status(200).json(
+            location
+        );
+    }).catch(err => {
+        res.status(500).json({
+            "description": "Can not Location Page",
+            "error": err
+        });
+    })
+}
+
+exports.update = (req, res) => {
     const id = req.params.id;
-    if(!id){
+    if (!id) {
         res.json("Please enter id");
     }
     const updates = req.body;
     Location.find({
         where: { locationId: id }
-      })
-      .then(location => {
-        return location.updateAttributes(updates)
-      })
-      .then(updatedLocation => {
-        res.json({message:"Location updated successfully!",updatedLocation:updatedLocation});
-      });
+    })
+        .then(location => {
+            return location.updateAttributes(updates)
+        })
+        .then(updatedLocation => {
+            res.json({ message: "Location updated successfully!", updatedLocation: updatedLocation });
+        });
 }
 
-exports.delete = async(req,res,next) => {
-    try{
+exports.delete = async (req, res, next) => {
+    try {
         const id = req.params.id;
-    
-        if(!id){
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Id is missing"});
+
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
         const update = req.body;
-        if(!update){
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:"Please try again "});
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedLocation = await City.find({where:{locationId:id}}).then(location => {
+        const updatedLocation = await City.find({ where: { locationId: id } }).then(location => {
             return location.updateAttributes(update)
-          })
-        if(updatedLocation){
+        })
+        if (updatedLocation) {
             return res.status(httpStatus.OK).json({
                 message: "Location deleted successfully",
-                location:updatedLocation
+                location: updatedLocation
             });
         }
-    }catch(error){
+    } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.deleteSelected = async (req, res, next) => {
+    try {
+        const deleteSelected = req.body.ids;
+        console.log("delete selected==>", deleteSelected);
+        const update = { isActive: false };
+        if (!deleteSelected) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
+        }
+        const updatedLocation = await Location.update(update, { where: { locationId: { [Op.in]: deleteSelected } } })
+        if (updatedLocation) {
+            return res.status(httpStatus.OK).json({
+                message: "Locations deleted successfully",
+            });
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
 

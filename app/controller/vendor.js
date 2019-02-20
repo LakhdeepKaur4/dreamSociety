@@ -125,7 +125,9 @@ exports.create = async (req, res, next) => {
 exports.get = async (req, res, next) => {
     try {
         const vendor = await VendorService.findAll({
-            where: { isActive: true }, include: [
+            where: { isActive: true },
+            order: [['createdAt', 'DESC']],
+            include: [
             { model: Vendor }]
         });
         if (vendor) {
@@ -198,75 +200,23 @@ exports.uploadPicture = async (req, res, next) => {
     }
 }
 
-// exports.uploadPicture = async (req,res,next) => {
-//     try{
-//         console.log(req.body.pictures)
-//         console.log("request picture==>",req.files)
-//         let uploadFile = req.files.picture
-//         const fileName = req.files.file.name
-//         uploadFile.mv(
-//           `${__dirname}/public/profilePictures/${fileName}`,
-//           function (err) {
-//             if (err) {
-//               return res.status(500).send(err)
-//             }
-
-//             res.json({
-//               file: `public/${req.files.file.name}`,
-//             })
-//           },
-//         )
-//     }catch(error){
-//         console.log(error)
-//     }
-// }
-
-// function uploadFile(data, callback) {
-//     try {
-//         if (data.file) {
-//             file.upload(data.file, isFileUpload => {
-//                 if (!isFileUpload) {
-//                     callback(false);
-//                 }
-//             })
-//         }
-//         if (data.picture) {
-//             file.upload(data.picture, isFileUpload => {
-//                 if (!isFileUpload) {
-//                     callback(false);
-//                 }
-//             })
-//         }
-//         callback(true);
-//     } catch (err) {
-//         console.log(':: err in uploadFile ', err)
-//         callback(false);
-//     }
-// }
-
-// exports.upload =async(req,res,next) => {
-//     try{
-//         console.log(body.fileData);
-//         const fileUrl = `/profilePictures/`;
-//         // create file url from server directory
-//         url = `${process.env["PWD"]}/public${fileUrl}`;
-//         const documentFile = { url, fileData: body.fileData };
-//         console.log('fileUrl',fileUrl);
-//         console.log("filedocumentUrl===",documentFile);
-//         file.upload(documentFile, (isFileUpload) => {
-//             // check file upload on server successfully or not
-//             if (isFileUpload) {
-//                 // update  file url in db
-//         console.log("successfully uploaded");
-//             }
-//             console.log("resp 2", resp)
-//         });
-//         // console.log("file info ", req.file);
-//         // var name = req.files.profileImage.name;
-//         // console.log("name===>",name);
-
-//     }catch(error){
-//         console.log(error)
-//     }
-// }
+exports.deleteSelected = async (req, res, next) => {
+	try {
+		const deleteSelected = req.body.ids;
+		console.log("delete selected==>", deleteSelected);
+		const update = { isActive: false };
+		if (!deleteSelected) {
+			return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
+		}
+		const updatedVendor = await Vendor.update(update, { where: { vendorId: { [Op.in]: deleteSelected } } })
+		if (updatedVendor) {
+			return res.status(httpStatus.OK).json({
+				message: "Vendors deleted successfully",
+			});
+		}
+	} catch (error) {
+		console.log(error)
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+	}
+}
 

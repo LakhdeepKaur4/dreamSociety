@@ -31,6 +31,7 @@ exports.get = (req, res) => {
         where: {
             isActive: true
         },
+        order: [['createdAt', 'DESC']],
         include: [
             {
                 model: Society,
@@ -138,12 +139,12 @@ exports.getFlatByPageNumber = async (req, res, next) => {
 
 exports.getFlatByLimit = async (req, res, next) => {
     try {
-        console.log("body",req.body.limit)
+        console.log("body", req.body.limit)
         let limit = req.body.limit;
         let offset = 0;
         let page = req.params.page;
         offset = limit * (page - 1);
-        const count = await Flat.findAndCountAll({where:{isActive:true}});
+        const count = await Flat.findAndCountAll({ where: { isActive: true } });
         // let pages = Math.ceil(data.count / limit);
         const flat = await Flat.findAll({
             where: { isActive: true },
@@ -163,12 +164,32 @@ exports.getFlatByLimit = async (req, res, next) => {
         if (flat) {
             return res.status(httpStatus.CREATED).json({
                 message: "Flat Content Page",
-                totalCount:count.count,
+                totalCount: count.count,
                 flat: flat
             });
         }
     } catch (error) {
         console.log("error==>", error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.deleteSelected = async (req, res, next) => {
+    try {
+        const deleteSelected = req.body.ids;
+        console.log("delete selected==>", deleteSelected);
+        const update = { isActive: false };
+        if (!deleteSelected) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
+        }
+        const updatedFlat = await Flat.update(update, { where: { flatId: { [Op.in]: deleteSelected } } })
+        if (updatedFlat) {
+            return res.status(httpStatus.OK).json({
+                message: "Flats deleted successfully",
+            });
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }

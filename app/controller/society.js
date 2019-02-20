@@ -29,6 +29,7 @@ exports.get = (req, res) => {
     Society.findAll(
         {
             where: { isActive: true },
+            order: [['createdAt', 'DESC']],
             include: [
                 {
                     model: City,
@@ -141,5 +142,25 @@ exports.delete = async (req, res, next) => {
         }
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.deleteSelected = async (req, res, next) => {
+    try {
+        const deleteSelected = req.body.ids;
+        console.log("delete selected==>", deleteSelected);
+        const update = { isActive: false };
+        if (!deleteSelected) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
+        }
+        const updatedSociety = await Society.update(update, { where: { societyId: { [Op.in]: deleteSelected } } })
+        if (updatedSociety) {
+            return res.status(httpStatus.OK).json({
+                message: "Societies deleted successfully",
+            });
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }

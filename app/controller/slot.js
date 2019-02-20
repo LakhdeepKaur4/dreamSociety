@@ -11,7 +11,7 @@ exports.create = async (req, res, next) => {
         let body = req.body;
         body.userId = req.userId;
         let slot;
-        const start = body.numberOfSlots;  
+        const start = body.numberOfSlots;
         const parkingId = body.parkingId;
         for (let slots = 1; slots <= start; slots++) {
             slot = await Slots.create({
@@ -19,10 +19,10 @@ exports.create = async (req, res, next) => {
                 parkingId: parkingId
             });
         }
-        if(slot){
-        res.status(httpStatus.CREATED).json({
+        if (slot) {
+            res.status(httpStatus.CREATED).json({
                 message: "Parking successfully created"
-          })
+            })
         }
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -30,23 +30,24 @@ exports.create = async (req, res, next) => {
 }
 
 
-exports.get = async(req,res,next) => {
-    try{
+exports.get = async (req, res, next) => {
+    try {
         const slot = await Slots.findAll({
-        attributes: ['slots', [sequelize.fn('count', sequelize.col('slots')), 'count']],
-        include : [{model : Parking,attributes:['parkingName']}],
-        group : ['slot_master.parkingId'],
-        raw: false,
-        order: sequelize.literal('count DESC')
-      });
-        if(slot){
+            attributes: ['slots', [sequelize.fn('count', sequelize.col('slots')), 'count']],
+            include: [{ model: Parking, attributes: ['parkingName'] }],
+            group: ['slot_master.parkingId'],
+            order: [['createdAt', 'DESC']],
+            raw: false,
+            order: sequelize.literal('count DESC')
+        });
+        if (slot) {
             return res.status(httpStatus.OK).json({
                 message: "Slot Content Page",
-                slot:slot
+                slot: slot
             });
         }
-    }catch(error){
-        console.log("error-->",error)
+    } catch (error) {
+        console.log("error-->", error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
@@ -54,7 +55,7 @@ exports.get = async(req,res,next) => {
 
 exports.getItemSaleCount = () => SaleItem.findAll({
     attributes: ['itemId', [sequelize.fn('count', sequelize.col('itemId')), 'count']],
-    group : ['SaleItem.itemId'],
+    group: ['SaleItem.itemId'],
     raw: true,
     order: sequelize.literal('count DESC')
-  });
+});

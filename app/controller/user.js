@@ -179,6 +179,7 @@ exports.get = (req, res) => {
 			where: {
 				isActive: true
 			},
+			order: [['createdAt', 'DESC']],
 			include: [{
 				model: Role,
 				attributes: ['id', 'roleName'],

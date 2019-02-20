@@ -31,3 +31,4 @@ exports.get = async(req,res,next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
+
