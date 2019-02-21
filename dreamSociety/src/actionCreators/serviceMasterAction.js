@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {authHeader} from '../helper/authHeader';
-import {URN,GET_DETAIL,GET_SERVICE,ADD_SERVICE} from '../actions/index';
+import {URN,GET_DETAIL,GET_SERVICE,ADD_SERVICE,DELETE_SERVICE_IDS,DELETE_SERVICE} from '../actions/index';
 
 export function getServiceDetail(){
     const request=axios.get(`${URN}/serviceDetail`,{headers:authHeader()})
@@ -32,3 +32,33 @@ export function addServiceType(values){
     }
  
 }
+
+export function deleteSelectedService(ids){
+    const request= axios.put(`${URN}/service/delete/deleteSelected`,{ids},{headers:authHeader()})
+    .then((response) => response.data)
+    .then(() => this.getServiceType());
+
+    return{
+        type:DELETE_SERVICE_IDS,
+        payload:request
+    }
+}
+
+
+export const deleteService=(serviceId)=>{
+    const data={
+        serviceId,
+        isActive:false
+    }
+
+    const request = axios.put(`${URN}/service/${serviceId}`,data, {headers:authHeader()})
+     .then(response => response.data)
+ 
+     // .then(getDetails())
+     return{
+ 
+         type:DELETE_SERVICE,
+         payload: request 
+     }
+ 
+ }

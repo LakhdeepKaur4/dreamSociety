@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN, GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS} from '../actions/index';
+import {URN, GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT_DETAIL_IDS} from '../actions/index';
 
 
 
@@ -31,11 +31,22 @@ export function getFlatDetails(){
     }
 }   
 
-export function addFlatDetails(values){console.log("hiiiii")
+export function addFlatDetails(values){
     const request = axios.post(`${URN}/flatDetail`,values,{headers:authHeader()},{method:'POST'})
-    .then()
+    .then(getFlatDetails());
     return{
         type:ADD_FLAT_DETAILS,
         payload:request
     }
+}
+
+export function deleteSelectedFlat(ids){
+const request= axios.put(`${URN}/flatDetail/delete/deleteSelected`,{ids},{headers:authHeader()})
+.then((response) => response.data)
+.then(() => this.getFlatDetails());
+
+return{
+    type:DELETE_FLAT_DETAIL_IDS,
+    payload:request
+}
 }
