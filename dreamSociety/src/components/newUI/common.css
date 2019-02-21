@@ -12,6 +12,11 @@
 .error{
     color: red;
 }
+.w3-container{
+    width: 109%;
+    margin-left: 35px;
+    
+}
 
 .w3-margin-top{
     background: #f3f3f3 !important;

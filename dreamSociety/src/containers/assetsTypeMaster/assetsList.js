@@ -122,7 +122,8 @@ class AssetList extends Component {
 
 
     deleteSelected(ids){
-        this.setState({loading:true});
+        this.setState({loading:true,
+            isDisabled:true});
         this.props.deleteMultipleAssets(ids)
         .then(() => {this.props.getAssets()
          .then(()=>this.setState({loading:false}))})
