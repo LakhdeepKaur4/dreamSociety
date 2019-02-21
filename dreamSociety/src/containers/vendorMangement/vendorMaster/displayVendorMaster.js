@@ -6,33 +6,56 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader,Table, Input, Label } from 'reactstrap';
 import axios from 'axios';
-import { URN } from '../../../actions/index';
+import { URN,UR } from '../../../actions/index';
 
 
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/vendorDashboardInside';
 import Spinner from '../../../components/spinner/spinner';
 
-class displayVendorMaster extends Component {
+class DisplayVendorMaster extends Component {
 
 
 
     state = {
         editVendorData: {
-            vendorId: '',
             vendorName: '',
-            serviceName: '',
-            serviceId: '',
-            description: '',
+            contact: '',
+            currentAddress: '',
+            permanentAddress: '',
+            serviceId1: {
+                serviceId: '',
+            },
+            serviceId2: {
+                serviceId: ''
+            },
+            serviceId3: {
+                serviceId: ''
+            },
+            rateId1: {
+                rateId: ''
+            },
+            rateId2: {
+                rateId: ''
+            },
+            rateId3: {
+                rateId: ''
+            },
+            rate1: '',
+            rate2: '',
+            rate3: '',
+            documentOne: null,
+            documentTwo:null,
+            profilePicture: '',
+            },
             isActive: false,
-            menuVisible: false
-        },
-        editVendorModal: false,
-        loading:true,
-        search: ''
-
-    }
-
+            menuVisible: false,
+            editVendorModal: false,
+            loading:true,
+            search: ''
+        
+ 
+        }
     componentDidMount() {
        this.refreshData();
     }
@@ -48,13 +71,13 @@ class displayVendorMaster extends Component {
     }
 
 
-    editUser(vendorId, vendorName, serviceName, serviceId, description) {
-        this.setState({
+    // editUser(vendorId, vendorName, serviceName, serviceId, description) {
+    //     this.setState({
 
-            editVendorData: { vendorId, vendorName, serviceName, serviceId, description }, editVendorModal: !this.state.editVendorModal
-        });
+    //         editVendorData: { vendorId, vendorName, serviceName, serviceId, description }, editVendorModal: !this.state.editVendorModal
+    //     });
 
-    }
+    // }
 
     searchFilter(search) {
         return function (x) {
@@ -66,69 +89,78 @@ class displayVendorMaster extends Component {
         this.setState({ search: e.target.value })
     }
 
-    getDropdown = ({ item }) => {
-        if (item) {
-            return item.map((item) => {
-                return (
-                    <option key={item.serviceId} value={item.serviceId}>
-                        {item.serviceName}
-                    </option>
-                )
-            })
-        }
-    }
+    // getDropdown = ({ item }) => {
+    //     if (item) {
+    //         return item.map((item) => {
+    //             return (
+    //                 <option key={item.serviceId} value={item.serviceId}>
+    //                     {item.serviceName}
+    //                 </option>
+    //             )
+    //         })
+    //     }
+    // }
 
 
-    deleteService(vendorId) {
-        this.setState({loading:true})
-        let { isActive } = this.state.editVendorData;
-        axios.put(`${URN}/vendor/delete/` + vendorId, { isActive }, { headers: authHeader() }).then((response) => {
-            this.refreshData()
-            this.setState({ editVendorData: { isActive: false } })
+    // deleteService(vendorId) {
+    //     this.setState({loading:true})
+    //     let { isActive } = this.state.editVendorData;
+    //     axios.put(`${URN}/vendor/delete/` + vendorId, { isActive }, { headers: authHeader() }).then((response) => {
+    //         this.refreshData()
+    //         this.setState({ editVendorData: { isActive: false } })
 
-        })
-    }
+    //     })
+    // }
 
 
-    updateServices() {
-        let { vendorName, serviceName, serviceId, description } = this.state.editVendorData;
+    // updateServices() {
+    //     let { vendorName, serviceName, serviceId, description } = this.state.editVendorData;
 
-        axios.put(`${URN}/vendor/` + this.state.editVendorData.vendorId, {
-            vendorName, serviceName, serviceId, description
-        }, { headers: authHeader() }).then((response) => {
-            this.refreshData();
-            this.setState({
-                editVendorModal: false,loading:true, editVendorData: { vendorId: '', vendorName: '', serviceName: '', serviceId: '', description: '' }
-            })
-        });
-    }
+    //     axios.put(`${URN}/vendor/` + this.state.editVendorData.vendorId, {
+    //         vendorName, serviceName, serviceId, description
+    //     }, { headers: authHeader() }).then((response) => {
+    //         this.refreshData();
+    //         this.setState({
+    //             editVendorModal: false,loading:true, editVendorData: { vendorId: '', vendorName: '', serviceName: '', serviceId: '', description: '' }
+    //         })
+    //     });
+    // }
 
-    toggleEditVendorModal() {
-        this.setState({
-            editVendorModal: !this.state.editVendorModal
-        });
+    // toggleEditVendorModal() {
+    //     this.setState({
+    //         editVendorModal: !this.state.editVendorModal
+    //     });
 
-    }
+    // }
 
-    renderList = ({ vendors }) => {
+    renderList = ({ vendors }) => {console.log(vendors)
 
 
         if (vendors) {
-            return vendors.vendor.filter(this.searchFilter(this.state.search)).map((vendors) => {
+            return vendors.vendor.map((vendors) => {
                 return (
 
-                    <tr key={vendors.vendorId}>
+                    <tr key={vendors.vendorServiceId}>
 
 
-                        <td>{vendors.vendorName}</td>
-                        <td>{vendors.service_master.serviceName}</td>
-                        <td>{vendors.description}</td>
+                        <td>{vendors.vendor_master.vendorName}</td>
+                        <td>{vendors.vendor_master.currentAddress}</td>
+                        <td>{vendors.vendor_master.permanentAddress}</td>
+                        <td>{vendors.vendor_master.contact}</td>
+                        <td>{vendors.serviceId}</td>
+                        <td>{vendors.rateId}</td>
+                        <td>{vendors.rate}</td>
+                        {/* <td><img src={UR+ vendors.vendor_master.documentOne}></img></td>
+                        <td><img src={UR+ vendors.vendor_master.documentTwo}></img></td>
+                        <td><img src={UR+ vendors.vendor_master.picture} ></img></td> */}
+                     
+
 
 
                         <td>
-                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, vendors.vendorId, vendors.vendorName, vendors.serviceName, vendors.serviceId, vendors.description)}>Edit</Button>
+                            {/* <Button color="success" className="mr-2" onClick={this.editUser.bind(this, vendors.vendorId, vendors.vendorName, vendors.serviceName, vendors.serviceId, vendors.description)}>Edit</Button> */}
                        
-                            <Button color="danger" onClick={this.deleteService.bind(this, vendors.vendorId)}>Delete</Button>
+                            {/* <Button color="danger" onClick={this.deleteService.bind(this, vendors.vendorId)}>Delete</Button> */}
                         </td>
                     </tr>
 
@@ -161,31 +193,41 @@ class displayVendorMaster extends Component {
 
 
     render() {
-        let tableData;
-        tableData=
+     
+        return (
+            
+            <div>
+                 <UI onClick={this.logout}>
+                <div className="w3-container w3-margin-top w3-responsive">
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+
         <Table className="table table-bordered">
         <thead>
             <tr>
                 <th>Vendor Name</th>
-                <th>Service Type</th>
-                <th>Description</th>
+                <th>Current Address</th>
+                <th>Permanent Address</th>
+                <th>Contact</th>
+                <th>Serice Types</th>
+                <th>Rate Types</th>
+                <th>Rates</th>
+                <th>Document 1</th>
+                <th>Document 2</th>
+                <th>Profile Picture</th>
                 <th>Actions</th>
+              
             </tr>
+         
         </thead>
 
         <tbody>
             {this.renderList(this.props.vendorMasterReducer)}
         </tbody>
     </Table>
-        return (
-            <div>
-                <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top w3-responsive">
-                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
 
-                    <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
+                    {/* <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
                         <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}>Edit a Vendor</ModalHeader>
                         <ModalBody>
                             <FormGroup>
@@ -242,11 +284,13 @@ class displayVendorMaster extends Component {
                  
                  
                     </div>
+                </UI> */}
+                </div>
                 </UI>
-              
+               
 
             </div>
-        )
+         )
     }
 
 
@@ -266,4 +310,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ getVendorMaster, getServiceType}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(displayVendorMaster);
+export default connect(mapStateToProps, mapDispatchToProps)(DisplayVendorMaster);

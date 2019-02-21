@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getServiceType, getServiceDetail } from '../../../actionCreators/serviceMasterAction';
+import { getServiceType, getServiceDetail,deleteSelectedService,deleteService } from '../../../actionCreators/serviceMasterAction';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { authHeader } from '../../../helper/authHeader';
@@ -29,7 +29,7 @@ class displayServices extends Component {
             serviceDetailId: '',           
             isActive: false
         },
-     
+        ids:[], 
         menuVisible: false,
         editServiceModal: false,
         search: '',
@@ -54,14 +54,32 @@ class displayServices extends Component {
 
 
 
-    deleteService(serviceId) {
-        this.setState({loading:true})
-        let { isActive } = this.state.editServiceData;
-        axios.put(`${URN}/service/` + serviceId, { isActive }, { headers: authHeader() }).then((response) => {
-            this.refreshData()
-            this.setState({ editServiceData: { isActive: false } })
+    // deleteService(serviceId) {
+    //     this.setState({loading:true})
+    //     let { isActive } = this.state.editServiceData;
+    //     axios.put(`${URN}/service/` + serviceId, { isActive }, { headers: authHeader() }).then((response) => {
+    //         this.refreshData()
+    //         this.setState({ editServiceData: { isActive: false } })
 
-        })
+    //     })
+    // }
+
+
+    deleteService(serviceId){
+        this.setState({loading:true})
+        let {isActive } =this.state.editServiceData;  
+        this.props.deleteService(serviceId,isActive)
+            .then(() => this.refreshData())
+            this.setState({editServiceData:{isActive:false}})
+    }
+    
+
+
+    deleteSelected(ids){
+        this.setState({loading:true});
+        this.props.deleteSelectedService(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
     }
 
   
@@ -130,6 +148,16 @@ class displayServices extends Component {
                 return (
                     
                     <tr key={item.serviceId}>
+                        <td><input type="checkbox" name="ids" value={item.serviceId} onChange={(event,i) => {console.log(item.serviceId)
+                            const {serviceId}= item;
+                            if(!event.target.checked){
+                                let index= this.state.ids.indexOf(serviceId);
+                                if(index >-1){
+                                    this.state.ids.splice(index,1)
+                                }
+                            }
+                            else this.setState({ids:[...this.state.ids,serviceId]})
+                        }} /></td>
 
                         <td>{index+1}</td>
                         <td>{item.serviceName}</td>
@@ -143,9 +171,7 @@ class displayServices extends Component {
                         
                             <Button color="danger" onClick={this.deleteService.bind(this, item.serviceId)}>Delete</Button>
                         </td>
-                        <td>
-                        <input type="checkbox"></input>
-                        </td>
+                        
                     </tr>
                     
 
@@ -178,12 +204,12 @@ class displayServices extends Component {
         <Table className="table table-bordered">
         <thead>
             <tr>
-         
+                <th>Select All</th>
                 <th>#</th>
                 <th>Service Type</th>
                 <th>Service Details</th>
                 <th>Actions</th>
-                <th>Select All</th>
+                
              
             </tr>
         </thead>
@@ -192,6 +218,8 @@ class displayServices extends Component {
             {this.renderList(this.props.displayServiceMasterReducer)}
         </tbody>
     </Table>
+           let deleteSelectedButton = <Button color="danger" className="mb-2"
+           onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
 
             <div>
@@ -240,10 +268,11 @@ class displayServices extends Component {
                     </Modal>
                     <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Service Details</h3>
                     <Button color="primary" type="button" onClick={this.push}>Add Services</Button></div>
-                    <Button color="danger" onClick={this.deleteAll}>Delete All</Button>
+                
              
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
+                             {deleteSelectedButton}
                            {!this.state.loading ? tableData : <Spinner />}
                  
                      
@@ -266,7 +295,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getServiceType, getServiceDetail }, dispatch);
+    return bindActionCreators({ getServiceType, getServiceDetail,deleteSelectedService,deleteService}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(displayServices);      

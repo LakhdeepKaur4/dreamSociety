@@ -1,5 +1,6 @@
 
-export  const URN = 'http://192.168.1.102:5000/api';
+export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export const UR= 'https://dreamsociety.herokuapp.com/';
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
@@ -28,7 +29,7 @@ export const FETCH_SIZEMASTER_DROP='fetch_sizemaster_drop';
 export const GET_DETAIL='get_detail';
 export const GET_SERVICE='get_service';
 export const ADD_SERVICE='add_service';
-export const REMOVE_SERVICE='remove_service';
+export const DELETE_SERVICE='delete_service';
 export const GET_SERVICE_TYPE ='get_service_type'
 export const GET_QR='get_qr';
 export const FETCH_BASEMENT = 'FETCH_BASEMENT';
@@ -78,7 +79,6 @@ export const UPDATE_COUNTRY='update-country';
 export const DELETE_COUNTRY='delete-country';
 export const ADD_STATE='add-state';
 export const  GET_COUNTRY_DETAILS1='get-country-details1';
-// export const DELETE_DETAILS ='delete-details';
 export const UPDATE_DETAILS='update-details';
 export const DELETE_EVENT ='delete_event';
 export const UPDATE_EVENT ='update_event';
@@ -115,5 +115,7 @@ export const DELETE_SUB_MAINTENANCE_DETAILS = 'DELETE_SUB_MAINTENANCE_DETAILS';
 export const GET_MAINTENANCE_TYPE = 'GET_MAINTENANCE_TYPE';
 export const UPDATE_SUB_MAINTENANCE_DETAILS = 'UPDATE_SUB_MAINTENANCE_DETAILS';
 export const GET_RATE_TYPE='get_rate_type';
-
+export const DELETE_SERVICE_IDS='get_service_ids';
+export const DELETE_FLAT_DETAIL_IDS='delete_flat_detail_ids';
+export const DELETE_LOCATION_IDS='delete_location_ids';
 

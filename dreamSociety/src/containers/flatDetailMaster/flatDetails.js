@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {getFlatDetails,getFlatType,getTowerName} from '../../actionCreators/flatDetailMasterAction';
+import {getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat} from '../../actionCreators/flatDetailMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Table,Input, Label } from 'reactstrap';
@@ -23,6 +23,7 @@ class flatDetails extends Component{
             towerName:'',
             isActive: false
     },
+    ids:[],
     editFlatModal: false,
     search:'',
     loading:true,
@@ -96,6 +97,16 @@ delete(flatDetailId){
     })
 }
 
+
+deleteSelected(ids){console.log("jgjhgkj",ids)
+this.setState({loading:true});
+this.props.deleteSelectedFlat(ids)
+.then(() => this.refreshData())
+.catch(err => err.response.data.message);
+} 
+
+
+
 toggleEditFlatModal(){
     this.setState({
         editFlatModal: ! this.state.editFlatModal
@@ -139,6 +150,16 @@ renderList =({details})=>{
             return(
                    
                     <tr  key={item.flatDetailId}>
+                            <td><input type="checkbox" name="ids" value={item.flatDetailId} onChange={(event,i) => {console.log(item.flatDetailId)
+                                const {flatDetailId}= item;
+                                if(!event.target.checked){
+                                    let index= this.state.ids.indexOf(flatDetailId);
+                                    if(index >-1){
+                                        this.state.ids.splice(index,1)
+                                    }
+                                }
+                                else this.setState({ids:[...this.state.ids,flatDetailId]})
+                                }} /></td>
                             <td>{index+1}</td>             
                             <td>{item.flatNo}</td>
                             <td>{item.flat_master.flatType}</td>
@@ -188,6 +209,7 @@ render(){
     <Table className="table table-bordered">
     <thead>
     <tr>
+        <th>Select All</th>
         <th>#</th>
         <th>Flat No</th>
         <th>Flat Type</th>
@@ -201,6 +223,8 @@ render(){
     {this.renderList(this.props.flatDetailMasterReducer)}
     </tbody>
 </Table>    
+             let deleteSelectedButton = <Button color="danger" className="mb-2"
+             onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
 
     return(
         <div>
@@ -276,6 +300,7 @@ render(){
                 </div>
                     <SearchFilter  type="text" value={this.state.search}
                                             onChange={this.searchOnChange} />
+                                            {deleteSelectedButton}
                                                  {!this.state.loading ? tableData : <Spinner />}
           
         </div>
@@ -293,7 +318,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({getFlatDetails,getFlatType,getTowerName},dispatch)
+    return bindActionCreators({getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat},dispatch)
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(flatDetails);

@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN, GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME,ADD_LOCATION_DETAILS,GET_LOCATION_NAME,GET_LOCATION,DELETE_LOCATION,UPDATE_LOCATION} from '../actions/index';
+import {URN, GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME,ADD_LOCATION_DETAILS,GET_LOCATION_NAME,GET_LOCATION,DELETE_LOCATION_IDS,DELETE_LOCATION,UPDATE_LOCATION} from '../actions/index';
 
 
 
@@ -92,3 +92,12 @@ export const deleteLocation=(locationId)=>{
      }
  
  }
+
+ export function deleteSelectedLocation(ids){
+    const request= axios.put(`${URN}/location/delete/deleteSelected`,{ids},{headers:authHeader()})
+
+    return{
+        type:DELETE_LOCATION_IDS,
+        payload:request
+    }
+}

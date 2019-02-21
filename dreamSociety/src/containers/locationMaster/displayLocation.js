@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {getLocation,getStateName,getCountryName,getCityName,getLocationName,updateLocation,deleteLocation} from '../../actionCreators/locationMasterAction';
+import {getLocation,getStateName,getCountryName,getCityName,getLocationName,updateLocation,deleteLocation,deleteSelectedLocation} from '../../actionCreators/locationMasterAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody,Table, ModalHeader, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -22,6 +22,7 @@ class DisplayLocation extends Component {
                 locationId: '',
                 isActive:false
             },
+            ids:[],
             menuVisible: false,
             search: '',
             modal: false,
@@ -80,6 +81,15 @@ delete = (locationId) => {
         this.setState({editLocation:{isActive:false}})
 }
 
+deleteSelected (ids){
+    this.setState({loading:true});
+    this.props.deleteSelectedLocation(ids)
+    .then(() => this.refreshData())
+    .then(() => this.setState({loading:false}))
+    .catch(err => err);
+}
+
+
 toggleModal = () => {
     this.setState({ modal: !this.state.modal })
 }
@@ -90,6 +100,15 @@ renderList=({details})=>{
             return(
 
                 <tr key={item.locationId}>
+                 <td><input type="checkbox" name="ids" value={item.locationId} onChange={(event,i) => {                                const {locationId}= item;
+                                if(!event.target.checked){
+                                    let index= this.state.ids.indexOf(locationId);
+                                    if(index >-1){
+                                        this.state.ids.splice(index,1)
+                                    }
+                                }
+                                else this.setState({ids:[...this.state.ids,locationId]})
+                                }} /></td>
                 <td>{index+1}</td>
                 <td>{item.country_master.countryName}</td>
                 <td>{item.state_master.stateName}</td>
@@ -187,21 +206,25 @@ render(){
     let tableData;
     tableData=
     <Table className="table table-bordered">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Country Name</th>
-        <th>State Name</th>
-        <th>City Name</th>
-        <th>Location Name</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    
-    <tbody>
-    {this.renderList(this.props.locationMasterReducer)}
-    </tbody>
-</Table> 
+        <thead>
+        <tr>
+            <th>Select All</th>
+            <th>#</th>
+            <th>Country Name</th>
+            <th>State Name</th>
+            <th>City Name</th>
+            <th>Location Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        
+        <tbody>
+        {this.renderList(this.props.locationMasterReducer)}
+        </tbody>
+    </Table> 
+        let deleteSelectedButton = <Button color="danger" className="mb-2"
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
+
     return(
         <div>
         <UI onClick={this.logout}>
@@ -274,6 +297,7 @@ render(){
              </div>
              <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
+                        {deleteSelectedButton}
                            {!this.state.loading ? tableData : <Spinner />}
                        
                                 
@@ -294,7 +318,7 @@ render(){
     }
     
     function mapDispatchToProps(dispatch) {
-        return bindActionCreators({getLocation,getStateName,getCountryName,getCityName,getLocationName,updateLocation,deleteLocation}, dispatch)
+        return bindActionCreators({getLocation,getStateName,getCountryName,getCityName,getLocationName,deleteSelectedLocation,updateLocation,deleteLocation}, dispatch)
     }
     
     export default connect(mapStatToProps, mapDispatchToProps)(DisplayLocation);
