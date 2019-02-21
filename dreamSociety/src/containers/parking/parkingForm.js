@@ -1,12 +1,13 @@
 import React from 'react';
 import { FormGroup, Label, Input, Button } from 'reactstrap';
+import DefaultSelect from '../../constants/defaultSelect';
 
 const parkingForm = (props) => (
     <div>
         <FormGroup>
                 <Label>Parking Name</Label>
-                <Input type="select" name={props.parkingName} onChange={props.parkingChange}>
-                    <option value=''>--Select--</option>
+                <Input type="select" defaultValue="no-value" name={props.parkingName} onChange={props.parkingChange}>
+                    <DefaultSelect />
                     {props.fetchParkingName}
                 </Input>
                 <span className='error'>{props.parkingError}</span>

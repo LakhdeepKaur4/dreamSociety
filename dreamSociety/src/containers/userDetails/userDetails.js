@@ -144,7 +144,7 @@ class userDetails extends Component {
     }
 
     deleteSelected(ids){
-        this.setState({loading:true});
+        this.setState({loading:true, isDisabled: true});
         this.props.deleteSelectedUsers(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
