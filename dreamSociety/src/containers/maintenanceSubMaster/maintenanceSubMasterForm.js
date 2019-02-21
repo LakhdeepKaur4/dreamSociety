@@ -27,8 +27,7 @@ class MaintenanceSubMasterForm extends Component{
 
     fetchSize({size}){
         if(size){
-            console.log(size)
-            return size.map((sizeItem) => {console.log(sizeItem.sizeType)
+            return size.map((sizeItem) => {
                 return (
                     <option key={sizeItem.sizeId} value={sizeItem.sizeId}>{sizeItem.sizeType}</option>
                 );
@@ -37,7 +36,6 @@ class MaintenanceSubMasterForm extends Component{
     }
 
     fetchMaintenanceType({maintenanceType}){
-        console.log(maintenanceType)
         if(maintenanceType){
            return maintenanceType.maintenance.map((item) => {
                return (
@@ -145,7 +143,6 @@ class MaintenanceSubMasterForm extends Component{
 }
 
 const mapStateToProps = (state) => {
-    console.log(state);
     return {
         MaintenanceSubMaster: state.MaintenanceSubMaster
     }
