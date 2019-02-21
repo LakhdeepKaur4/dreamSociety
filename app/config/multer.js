@@ -7,14 +7,17 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         console.log("upload image path--->", file.fieldname)
         if (file.fieldname == 'profilePicture') {
+            console.log(file.fieldname)
             console.log(uploadImagePath);
             cb(null, uploadImagePath);
         }
         if (file.fieldname == 'documentOne') {
+            console.log(file.fieldname)
             console.log(uploadDocumentPath);
             cb(null, uploadDocumentPath);
         }
         if (file.fieldname == 'documentTwo') {
+            console.log(file.fieldname)
             console.log(uploadDocumentPath);
             cb(null, uploadDocumentPath);
         }

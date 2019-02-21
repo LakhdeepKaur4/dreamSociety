@@ -28,21 +28,6 @@ const path = require('path');
 var upload = require('express-fileupload');
 console.log('server started');
 
-
-// app.get('/',function(req,res){
-// 	console.log("dirname==>",__dirname);
-// 	res.sendFile(__dirname+"/index.html")
-// })
-
-// app.post('/',(req,res)=>{
-// 	console.log(":in here ==>",req.files)
-// 	if(req.files){
-// 		console.log(req.files);
-// 	}else{
-// 		console.log('no file selected')
-// 	}
-// })
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.urlencoded({

@@ -36,7 +36,7 @@ exports.createVendor = async (req, res, next) => {
 exports.create = async (req, res, next) => {
     try {
         let body = req.body;
-        console.log("body===>",body)
+        console.log("body===>",body);
         const userName = req.body.vendorName += Math.floor((Math.random() * 100) + 1);
         const password = passwordGenerator.generate({
             length: 10,
@@ -51,7 +51,7 @@ exports.create = async (req, res, next) => {
             picture: body.picture,
             contact: body.contact,
             userId: req.userId,
-            document: body.document
+            // document: body.document
         });
         const vendorId = vendor.vendorId;
         if (body.rate1) {
@@ -84,17 +84,17 @@ exports.create = async (req, res, next) => {
         }
         console.log("req.files===>",req.files)
         if (req.files) {
-            for (let i = 0; i < req.files.profilePicture.length; i++) {
-                profileImage = req.files.profilePicture[i].path;
-            }
+            // for (let i = 0; i < req.files.profilePicture.length; i++) {
+                profileImage = req.files.profilePicture[0].path;
+            // }
             const updateImage = {
                 picture: profileImage
             };
             const imageUpdate = await Vendor.find({ where: { vendorId: vendorId } }).then(vendor => {
                 return vendor.updateAttributes(updateImage)
             })
-            documentOne = req.files.document[0].path;
-            documentTwo = req.files.document[1].path;
+            documentOne = req.files.documentOne[0].path;
+            documentTwo = req.files.documentTwo[0].path;
             const updateDocument = {
                 documentOne: documentOne,
                 documentTwo: documentTwo
@@ -203,7 +203,8 @@ exports.uploadPicture = async (req, res, next) => {
 exports.deleteSelected = async (req, res, next) => {
 	try {
 		const deleteSelected = req.body.ids;
-		console.log("delete selected==>", deleteSelected);
+        console.log("delete selected==>", deleteSelected);
+         
 		const update = { isActive: false };
 		if (!deleteSelected) {
 			return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });

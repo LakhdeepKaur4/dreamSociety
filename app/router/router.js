@@ -123,7 +123,7 @@ module.exports = function(app) {
 
 	app.put('/api/society/:id', [authJwt.verifyToken],societyController.update);
 
-	app.put('/api/user/society/deleteSelected',[authJwt.verifyToken], societyController.deleteSelected);
+	app.put('/api/society/deleteSelected',[authJwt.verifyToken], societyController.deleteSelected);
 
 	app.put('/api/society/delete/:id', [authJwt.verifyToken],societyController.delete);
 
@@ -211,7 +211,7 @@ module.exports = function(app) {
 
 	// app.post('/api/vendor', [authJwt.verifyToken] ,vendorController.create);
 
-	app.post('/api/vendor', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]), vendorController.create);
+	app.post('/api/vendor', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'documentOne',maxCount:1},{name:'documentTwo',maxCount:1}]), vendorController.create);
 
 	app.get('/api/vendor', [authJwt.verifyToken], vendorController.get);
 
