@@ -31,9 +31,9 @@ export function getFlatDetails(){
     }
 }   
 
-export function addFlatDetails(values){console.log("hiiiii")
+export function addFlatDetails(values){
     const request = axios.post(`${URN}/flatDetail`,values,{headers:authHeader()},{method:'POST'})
-    .then()
+    .then(getFlatDetails());
     return{
         type:ADD_FLAT_DETAILS,
         payload:request

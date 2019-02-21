@@ -84,7 +84,7 @@ export const deleteLocation=(locationId)=>{
     const request = axios.put(`${URN}/location/${locationId}`,data, {headers:authHeader()})
      .then(response => response.data)
  
-     // .then(getDetails())
+     
      return{
  
          type:DELETE_LOCATION,

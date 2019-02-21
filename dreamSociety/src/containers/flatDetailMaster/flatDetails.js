@@ -25,6 +25,7 @@ class flatDetails extends Component{
     },
     ids:[],
     editFlatModal: false,
+    isDisabled:true,
     search:'',
     loading:true,
 }
@@ -98,11 +99,12 @@ delete(flatDetailId){
 }
 
 
-deleteSelected(ids){console.log("jgjhgkj",ids)
-this.setState({loading:true});
-this.props.deleteSelectedFlat(ids)
-.then(() => this.refreshData())
-.catch(err => err.response.data.message);
+deleteSelected(ids){
+    this.setState({loading:true,
+    isDisabled:true});
+    this.props.deleteSelectedFlat(ids)
+    .then(() => this.refreshData())
+    .catch(err => err.response.data.message);
 } 
 
 
@@ -150,16 +152,27 @@ renderList =({details})=>{
             return(
                    
                     <tr  key={item.flatDetailId}>
-                            <td><input type="checkbox" name="ids" value={item.flatDetailId} onChange={(event,i) => {console.log(item.flatDetailId)
-                                const {flatDetailId}= item;
-                                if(!event.target.checked){
-                                    let index= this.state.ids.indexOf(flatDetailId);
-                                    if(index >-1){
-                                        this.state.ids.splice(index,1)
-                                    }
+                            <td><input type="checkbox" name="ids" className="SelectAll" value={item.flatDetailId}
+                         onChange={(e) => {
+                            const {flatDetailId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(flatDetailId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1);
                                 }
-                                else this.setState({ids:[...this.state.ids,flatDetailId]})
-                                }} /></td>
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
+                                }
+                            }
+                            else {
+                                this.setState({ids: [...this.state.ids, flatDetailId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                                
+                             }}/></td>
                             <td>{index+1}</td>             
                             <td>{item.flatNo}</td>
                             <td>{item.flat_master.flatType}</td>
@@ -194,6 +207,34 @@ OnKeyPressUserhandler(event) {
     }
 }
 
+selectAll = () => {
+    let selectMultiple = document.getElementsByClassName('SelectAll');
+    let ar =[];
+        for(var i = 0; i < selectMultiple.length; i++){
+                ar.push(parseInt(selectMultiple[i].value));
+                selectMultiple[i].checked = true;
+        }
+        this.setState({ids: ar});
+        if(ar.length > 0){
+            this.setState({isDisabled: false});
+        }
+}
+
+unSelectAll = () =>{
+    
+    let unSelectMultiple = document.getElementsByClassName('SelectAll');
+    let allIds = [];
+    for(var i = 0; i < unSelectMultiple.length; i++){
+            unSelectMultiple[i].checked = false
+    }
+    
+    this.setState({ids: [ ...allIds]});
+    if(allIds.length === 0){
+        this.setState({isDisabled: true});
+    }
+    
+}
+
 
 logout=()=>{
     localStorage.removeItem('token');
@@ -209,7 +250,17 @@ render(){
     <Table className="table table-bordered">
     <thead>
     <tr>
-        <th>Select All</th>
+    <th>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
         <th>#</th>
         <th>Flat No</th>
         <th>Flat Type</th>
@@ -224,7 +275,7 @@ render(){
     </tbody>
 </Table>    
              let deleteSelectedButton = <Button color="danger" className="mb-2"
-             onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
+             onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
 
     return(
         <div>

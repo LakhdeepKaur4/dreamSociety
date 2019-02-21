@@ -16,7 +16,8 @@ import SuperDashboard from './containers/superDashboard/superDashboard';
 import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
 import VendorDashboard from './containers/vendorDashboard/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
-
+import EmployeeMaster from './containers/employeeMaster/employeeMaster';
+import DisplayEmployeeMaster from './containers/employeeMaster/displayEmployeeMaster';
 import SocietyManagement from './containers/societyManagement/societyMangement';
 import TowerMaster from './containers/towerMaster/towerMaster';
 import DisplayTowerMaster from './containers/towerMaster/displayTowerMaster';
@@ -54,8 +55,10 @@ import InventoryDetails from './containers/inventory/inventoryDetails'
 import MaintenanceMaster from './containers/maintenanceMaster/maintenanceMaster';
 import MaintenanceMasterDetail from './containers/maintenanceMaster/maintenanceMasterDetail';
 import DisplayEmployeeTypeMaster from './containers/employeeTypeMaster/displayEmployeeTypeMaster';
+
 import MaintenanceSubMasterForm from './containers/maintenanceSubMaster/maintenanceSubMasterForm';
 import MaintenanceSubMasterDetails from './containers/maintenanceSubMaster/maintenanceSubMasterDetails'
+import DesignationMaster from './containers/designationMaster/designationMaster';
 import EmployeeTypeMaster from './containers/employeeTypeMaster/employeeTypeMaster';
 
 
@@ -114,8 +117,11 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/inventory' component={Inventory}/>
             <PrivateRoute  path ='/superDashboard/employeeType' component ={EmployeeTypeMaster}/>
             <PrivateRoute path='/superDashboard/displayEmployeeType' component ={DisplayEmployeeTypeMaster}/>
+            <PrivateRoute path='/superDashboard/employee' component ={EmployeeMaster}/>
+            <PrivateRoute path ='/superDashboard/displayEmployee' component={DisplayEmployeeMaster}/>
             <PrivateRoute path='/superDashboard/MaintenanceSubMasterForm' component={MaintenanceSubMasterForm} />
             <PrivateRoute path='/superDashboard/MaintenanceSubMasterDetails' component={MaintenanceSubMasterDetails} />
+            <PrivateRoute path='/superDashboard/designationMaster' component={DesignationMaster} />
           </Switch>
         </div>
         

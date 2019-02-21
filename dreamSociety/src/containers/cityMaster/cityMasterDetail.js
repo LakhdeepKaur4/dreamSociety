@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getCountry, getState, getCity, detailCity, deleteCity, updateCity } from './../../actionCreators/cityMasterAction';
+import { getCountry, getState, getCity, detailCity, deleteCity, updateCity, deleteSelectCity } from './../../actionCreators/cityMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -26,7 +26,9 @@ class CityMasterDetail extends Component {
             search: '',
             modal: false,
             loading: true,
-            errors:{}
+            errors:{},
+            ids:[],
+           
 
         };
     }
@@ -111,6 +113,16 @@ class CityMasterDetail extends Component {
 
     }
 
+    deleteSelected(ids){
+        this.setState({loading:true});
+        this.props.deleteSelectCity(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
+    }
+
+
+   
+
 
 
     searchOnChange = (e) => {
@@ -127,6 +139,10 @@ class CityMasterDetail extends Component {
     }
 
     
+   
+        
+    
+
     renderCity = ({ city }) => {
 
         if (city) {
@@ -134,6 +150,18 @@ class CityMasterDetail extends Component {
 
                 return (
                     <tr key={item.cityId}>
+                        <td><input type="checkbox" name="ids" value={item.cityId}
+                         onChange={(e, i) => {
+                            const {cityId} = item
+                            if(!e.target.checked){
+                                let indexOfId = this.state.ids.indexOf(cityId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                            }
+                            else this.setState({ids: [...this.state.ids, cityId]})
+                                
+                             }}/></td>
                         <td>{index+1}</td>
                         <td>{item.country_master.countryName}</td>
                         <td>{item.state_master.stateName}</td>
@@ -206,13 +234,16 @@ class CityMasterDetail extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
+  
     render() {
+     
         let tableData;
         tableData= <div style={{backgroundColor:'lightgray'}}>
         <Table className="table table-bordered">
             <thead>
                 <tr>
-                   <th>#</th>
+                    <th>Select</th>
+                    <th>#</th>
                     <th>Country Name</th>
                     <th>State Name</th>
                     <th>City Name</th>
@@ -237,7 +268,8 @@ class CityMasterDetail extends Component {
                             </div>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                        
+                            
+                            <Button color="danger" className="mb-2" onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
                             {!this.state.loading ? tableData : <Spinner />}
                             <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                                 <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
@@ -307,7 +339,7 @@ function mapStatToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getCountry, getState, getCity, detailCity, deleteCity, updateCity }, dispatch)
+    return bindActionCreators({ getCountry, getState, getCity, detailCity, deleteCity, updateCity,deleteSelectCity }, dispatch)
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(CityMasterDetail);

@@ -4,13 +4,9 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { authHeader } from '../../../helper/authHeader';
 import { bindActionCreators } from 'redux';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label, Table } from 'reactstrap';
+import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table } from 'reactstrap';
 import { URN } from '../../../actions/index';
-
-
-
 import SearchFilter from '../../../components/searchFilter/searchFilter';
-
 import UI from '../../../components/newUI/vendorDashboardInside';
 import Spinner from '../../../components/spinner/spinner';
 
@@ -32,6 +28,7 @@ class displayServices extends Component {
         ids:[], 
         menuVisible: false,
         editServiceModal: false,
+        isDisabled:true,
         search: '',
         loading:true,
 
@@ -54,16 +51,7 @@ class displayServices extends Component {
 
 
 
-    // deleteService(serviceId) {
-    //     this.setState({loading:true})
-    //     let { isActive } = this.state.editServiceData;
-    //     axios.put(`${URN}/service/` + serviceId, { isActive }, { headers: authHeader() }).then((response) => {
-    //         this.refreshData()
-    //         this.setState({ editServiceData: { isActive: false } })
-
-    //     })
-    // }
-
+   
 
     deleteService(serviceId){
         this.setState({loading:true})
@@ -76,7 +64,8 @@ class displayServices extends Component {
 
 
     deleteSelected(ids){
-        this.setState({loading:true});
+        this.setState({loading:true,
+        isDisabled:true});
         this.props.deleteSelectedService(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
@@ -148,17 +137,27 @@ class displayServices extends Component {
                 return (
                     
                     <tr key={item.serviceId}>
-                        <td><input type="checkbox" name="ids" value={item.serviceId} onChange={(event,i) => {console.log(item.serviceId)
-                            const {serviceId}= item;
-                            if(!event.target.checked){
-                                let index= this.state.ids.indexOf(serviceId);
-                                if(index >-1){
-                                    this.state.ids.splice(index,1)
+                          <td><input type="checkbox" name="ids" className="SelectAll" value={item.serviceId}
+                         onChange={(e) => {
+                            const {serviceId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(serviceId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1);
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
                                 }
                             }
-                            else this.setState({ids:[...this.state.ids,serviceId]})
-                        }} /></td>
-
+                            else {
+                                this.setState({ids: [...this.state.ids, serviceId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                                
+                             }}/></td>
                         <td>{index+1}</td>
                         <td>{item.serviceName}</td>
                         <td>{item.service_detail_master.service_detail}</td>
@@ -179,6 +178,37 @@ class displayServices extends Component {
             })
         }
     }
+
+    
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
+    }
+
+    unSelectAll = () =>{
+        
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
+        }
+        
+        this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
+    }
+
+
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
@@ -204,7 +234,17 @@ class displayServices extends Component {
         <Table className="table table-bordered">
         <thead>
             <tr>
-                <th>Select All</th>
+            <th>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
                 <th>#</th>
                 <th>Service Type</th>
                 <th>Service Details</th>
@@ -219,7 +259,7 @@ class displayServices extends Component {
         </tbody>
     </Table>
            let deleteSelectedButton = <Button color="danger" className="mb-2"
-           onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
+           onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
         return (
 
             <div>

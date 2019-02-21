@@ -1,5 +1,6 @@
 import { GET_SUB_MAINTENANCE,GET_SUB_MAINTENANCE_DETAILS,GET_MAINTENANCE_TYPE,UPDATE_SUB_MAINTENANCE_DETAILS,
-     POST_SUB_MAINTENANCE,DELETE_SUB_MAINTENANCE_DETAILS, URN } from '../actions';
+     POST_SUB_MAINTENANCE,DELETE_SUB_MAINTENANCE_DETAILS,
+     DELETE_MULTIPLE_SUB_MAINTENANCE_DETAILS, URN } from '../actions';
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
 
@@ -49,6 +50,17 @@ export function deleteMaintenanceSubMasterDetail(maintenanceTypeId){
     .then(() => this.getMaintenanceSubSizeDetails())
     return {
         type: DELETE_SUB_MAINTENANCE_DETAILS,
+        payload: request
+    }
+}
+
+export function deleteSelectedMaintenanceSubMasterDetail(ids){
+    const request = axios.put(`${URN}/maintenanceType/delete/deleteSelected`, {ids}, {headers: authHeader()})
+    .then(() => this.getMaintenanceSubSizeDetails())
+    .catch(err => err)
+
+    return {
+        type: DELETE_MULTIPLE_SUB_MAINTENANCE_DETAILS,
         payload: request
     }
 }

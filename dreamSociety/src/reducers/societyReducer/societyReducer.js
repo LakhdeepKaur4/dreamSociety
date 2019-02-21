@@ -1,4 +1,4 @@
-import {GET_COUNTRY, GET_STATE, GET_CITY, GET_LOCATION_DETAIL, POST_SOCIETY,GET_SOCIETY,DETAIL_SOCIETY, DELETE_SOCIETY, UPDATE_SOCIETY } from '../../actions/index';
+import {GET_COUNTRY, GET_STATE, GET_CITY, GET_LOCATION_DETAIL, POST_SOCIETY,GET_SOCIETY,DETAIL_SOCIETY, DELETE_SOCIETY, UPDATE_SOCIETY, DELETE_SELECTEDSOCIETY } from '../../actions/index';
 export default function(state={},action){
    
     switch(action.type){
@@ -27,6 +27,9 @@ export default function(state={},action){
 
     case DELETE_SOCIETY:
     return {  ...state, delete_Society: action.payload};
+
+    case  DELETE_SELECTEDSOCIETY:
+    return {  ...state, deleteSelect_Society: action.payload};
 
     case UPDATE_SOCIETY:
     return {  ...state, update_Society: action.payload};
