@@ -9,8 +9,6 @@ import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 
-const data = []
-
 class InventoryDetails extends Component {
     constructor(props) {
         super(props);
@@ -30,6 +28,7 @@ class InventoryDetails extends Component {
             errors: {},
             disabled: true,
             multiDelete: [],
+            ids: [],
 
         };
     }
@@ -122,43 +121,30 @@ class InventoryDetails extends Component {
         }
 
     }
-    multipleDelete = () => {
-        const data = this.state.multiDelete
-        this.props.multipleDelete(data)
-            .then(() => {
-                this.props.getInventory()
-                    .then(() => this.setState({ loading: false }))
-            })
-        this.setState({
-            disabled: true
-        })
-    }
-    onchangeMultiDelete = (value, e) => {
-        if (e.target.checked === true) {
-            data.push(value)
-            this.setState({
-                multiDelete: data,
-                disabled: false
-            })
-        }
-        else if (e.target.checked === false) {
-            if (this.state.multiDelete.length === 1) {
-                this.setState({
-                    disabled: true
-                })
-            }
-            const index = this.state.multiDelete.indexOf(value)
-            if (index > -1) {
-                this.state.multiDelete.splice(index, 1)
-            }
-        }
+    deleteSelected(ids) {
+        this.setState({ loading: true });
+        this.props.multipleDelete(ids)
+            .then(() => this.props.getInventory().then(() => this.setState({ loading: false })))
+            .catch(err => err.response.data.message);
     }
     renderList = ({ getInventory }) => {
         if (getInventory) {
             return getInventory.inventory.filter(this.searchFilter(this.state.search)).map((items, index) => {
                 return (
                     <tr key={items.inventoryId}>
-                        <td><input onChange={this.onchangeMultiDelete.bind(this, items.inventoryId)} type="checkbox"/></td>
+                        <td><input type="checkbox" name="ids" value={items.inventoryId} className="SelectAll"
+                            onChange={(e, i) => {
+                                const { inventoryId } = items
+                                if (!e.target.checked) {
+                                    let indexOfId = this.state.ids.indexOf(inventoryId);
+                                    if (indexOfId > -1) {
+                                        this.state.ids.splice(indexOfId, 1)
+                                    }
+                                }
+                                else this.setState({ ids: [...this.state.ids, inventoryId] })
+
+                            }} /></td>
+
                         <td>{index + 1}</td>
                         <td>{items.asset_master.assetName}</td>
                         <td>{items.asset_type_master.assetType}</td>
@@ -183,15 +169,41 @@ class InventoryDetails extends Component {
     close = () => {
         return this.props.history.replace('/superDashBoard')
     }
-    SelectAll=()=>{
-        console.log('select all')
+    selectAll = () => {
+
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        console.log('selectMultiple', selectMultiple)
+        let ar = [];
+        for (var i = 0; i < selectMultiple.length; i++) {
+            ar.push(parseInt(selectMultiple[i].value));
+            selectMultiple[i].checked = true;
+        }
+        this.setState({ ids: ar });
     }
+    unSelectAll = () => {
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        for (var i = 0; i < unSelectMultiple.length; i++) {
+            unSelectMultiple[i].checked = false
+        }
+        let allIds = []
+        this.setState({ ids: [...allIds] });
+    }
+
     render() {
         let tableData;
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
-                    <th>select All<input type="checkbox" onClick={this.SelectAll} /></th>
+                    <th>Select All <input className="ml-2"
+                        type="checkbox" onChange={(e) => {
+                            if (e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if (!e.target.checked) {
+                                this.unSelectAll();
+                            }
+                        }
+                        } /></th>
                     <th>#</th>
                     <th>Asset Type</th>
                     <th>Asset Sub Type</th>
@@ -205,6 +217,8 @@ class InventoryDetails extends Component {
                 {this.renderList(this.props.inventory)}
             </tbody>
         </Table>
+        let deleteSelectedButton = <Button color="danger" className="mb-2"
+            onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
                 <UI onClick={this.logout}>
@@ -219,7 +233,7 @@ class InventoryDetails extends Component {
                         <div>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                            <Button color="danger" className="mb-2" onClick={this.multipleDelete} disabled={this.state.disabled}> Delete Selected</Button>
+                            {deleteSelectedButton}
                             {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         <Modal isOpen={this.state.modal} toggle={this.toggles}>

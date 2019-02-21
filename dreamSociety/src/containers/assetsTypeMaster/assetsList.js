@@ -84,7 +84,7 @@ class AssetList extends Component {
                 return (
 
                     <tr key={items.assetId}>
-                      <td><input type="checkbox" name="ids" value={items.assetId}
+                      <td><input type="checkbox" name="ids" value={items.assetId} className="SelectAll"
                          onChange={(e, i) => {
                             const {assetId} = items
                             if(!e.target.checked){
@@ -126,12 +126,40 @@ class AssetList extends Component {
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
+    selectAll = () => {
+    
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                        ar.push(parseInt(selectMultiple[i].value));
+                        selectMultiple[i].checked = true;
+                }
+                this.setState({ids: ar});
+        }
+        unSelectAll = () =>{
+            let unSelectMultiple = document.getElementsByClassName('SelectAll');
+            for(var i = 0; i < unSelectMultiple.length; i++){
+                    unSelectMultiple[i].checked = false
+            }
+            let allIds = []
+                this.setState({ids: [ ...allIds]});
+        }
+
     render() {
         let tableData;
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
-                    <th>Select</th>
+                    <th>Select All <input className="ml-2"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
                     <th>#</th>
                     <th>Asset Name</th>
                     <th>Description</th>
