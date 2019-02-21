@@ -28,6 +28,7 @@ class CityMasterDetail extends Component {
             loading: true,
             errors:{},
             ids:[],
+            isChecked: false,
            
 
         };
@@ -139,6 +140,26 @@ class CityMasterDetail extends Component {
     }
 
     
+    selectAll = () => {
+        this.setState({isChecked: true});
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+    }
+
+    unSelectAll = () =>{
+        this.setState({isChecked: false});
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
+        }
+        let allIds = []
+        this.setState({ids: [ ...allIds]});
+    }
    
         
     
@@ -150,16 +171,20 @@ class CityMasterDetail extends Component {
 
                 return (
                     <tr key={item.cityId}>
-                        <td><input type="checkbox" name="ids" value={item.cityId}
+                        <td><input type="checkbox" className="SelectAll" name="ids" value={item.cityId}
                          onChange={(e, i) => {
                             const {cityId} = item
                             if(!e.target.checked){
+                                this.setState({isChecked: false});
                                 let indexOfId = this.state.ids.indexOf(cityId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1)
                                 }
                             }
-                            else this.setState({ids: [...this.state.ids, cityId]})
+                            else{ 
+                                this.setState({isChecked: true});
+                                this.setState({ids: [...this.state.ids, cityId]})
+                              }
                                 
                              }}/></td>
                         <td>{index+1}</td>
@@ -230,6 +255,7 @@ class CityMasterDetail extends Component {
         }
     }
 
+
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
@@ -242,7 +268,19 @@ class CityMasterDetail extends Component {
         <Table className="table table-bordered">
             <thead>
                 <tr>
-                    <th>Select</th>
+                <th style={{alignContent:'baseline'}}>Select All<input className="ml-2"
+                type="checkbox" onChange={(e) => {
+                    if(e.target.checked) {
+                        this.setState({isChecked: true});
+                        this.selectAll();
+                    }
+                    else if(!e.target.checked){
+                        this.setState({isChecked: false});
+                        this.unSelectAll();
+                    } 
+                }
+                    
+                }  /></th>
                     <th>#</th>
                     <th>Country Name</th>
                     <th>State Name</th>
@@ -269,7 +307,7 @@ class CityMasterDetail extends Component {
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
                             
-                            <Button color="danger" className="mb-2" onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+                            <Button color="danger" className="mb-2" onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={!this.state.isChecked}>Delete Selected</Button>
                             {!this.state.loading ? tableData : <Spinner />}
                             <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                                 <ModalHeader toggle={this.toggle}>Edit</ModalHeader>

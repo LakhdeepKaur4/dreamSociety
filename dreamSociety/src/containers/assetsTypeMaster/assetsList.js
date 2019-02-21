@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getAssets, updateAssets, removeAssets } from '../../actionCreators/assetsAction';
+import { getAssets, updateAssets, removeAssets,deleteMultipleAssets } from '../../actionCreators/assetsAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Table, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
@@ -19,6 +19,7 @@ class AssetList extends Component {
             modal: false,
             loading: true,
             errors: {},
+            ids: [],
         };
     }
     onChangeHandler = (event) => {
@@ -83,6 +84,18 @@ class AssetList extends Component {
                 return (
 
                     <tr key={items.assetId}>
+                      <td><input type="checkbox" name="ids" value={items.assetId}
+                         onChange={(e, i) => {
+                            const {assetId} = items
+                            if(!e.target.checked){
+                                let indexOfId = this.state.ids.indexOf(assetId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                            }
+                            else this.setState({ids: [...this.state.ids, assetId]})
+                                
+                             }}/></td>
                     <td>{index+1}</td>
                         <td>{items.assetName}</td>
                         <td>{items.description}</td>
@@ -97,6 +110,14 @@ class AssetList extends Component {
     }
 
 
+    deleteSelected(ids){
+        this.setState({loading:true});
+        this.props.deleteMultipleAssets(ids)
+        .then(() => {this.props.getAssets()
+         .then(()=>this.setState({loading:false}))})
+         .catch(err => err.response.data.message);
+    }
+
     logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
@@ -110,6 +131,7 @@ class AssetList extends Component {
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
+                    <th>Select</th>
                     <th>#</th>
                     <th>Asset Name</th>
                     <th>Description</th>
@@ -120,6 +142,8 @@ class AssetList extends Component {
                 {this.renderList(this.props.List)}
             </tbody>
         </Table>
+         let deleteSelectedButton = <Button color="danger" className="mb-2"
+         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
                 <UI onClick={this.logout}>
@@ -134,6 +158,7 @@ class AssetList extends Component {
                         <div>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
+                                 {deleteSelectedButton}
                             {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         <Modal isOpen={this.state.modal} toggle={this.toggles}>
@@ -167,7 +192,7 @@ function mapStatToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getAssets, updateAssets, removeAssets }, dispatch);
+    return bindActionCreators({ getAssets, updateAssets, removeAssets,deleteMultipleAssets }, dispatch);
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(AssetList);

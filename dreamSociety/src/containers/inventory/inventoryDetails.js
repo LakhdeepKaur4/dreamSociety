@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getAssets } from '../../actionCreators/assetsAction';
 import { fetchAssets } from '../../actionCreators/assetsSubAction'
-import { getInventory, updateInventory, removeInventory } from '../../actionCreators/inventoryAction';
+import { getInventory, updateInventory, removeInventory, multipleDelete } from '../../actionCreators/inventoryAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
+
+const data = []
 
 class InventoryDetails extends Component {
     constructor(props) {
@@ -26,6 +28,9 @@ class InventoryDetails extends Component {
             modal: false,
             loading: true,
             errors: {},
+            disabled: true,
+            multiDelete: [],
+
         };
     }
     onChangeHandler = (event) => {
@@ -93,7 +98,7 @@ class InventoryDetails extends Component {
     searchFilter(search) {
         return function (x) {
             return x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||
-                 x.serialNumber.toLowerCase().includes(search.toLowerCase()) ||
+                x.serialNumber.toLowerCase().includes(search.toLowerCase()) ||
                 x.asset_type_master.assetType.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
@@ -117,13 +122,43 @@ class InventoryDetails extends Component {
         }
 
     }
-
+    multipleDelete = () => {
+        const data = this.state.multiDelete
+        this.props.multipleDelete(data)
+            .then(() => {
+                this.props.getInventory()
+                    .then(() => this.setState({ loading: false }))
+            })
+        this.setState({
+            disabled: true
+        })
+    }
+    onchangeMultiDelete = (value, e) => {
+        if (e.target.checked === true) {
+            data.push(value)
+            this.setState({
+                multiDelete: data,
+                disabled: false
+            })
+        }
+        else if (e.target.checked === false) {
+            if (this.state.multiDelete.length === 1) {
+                this.setState({
+                    disabled: true
+                })
+            }
+            const index = this.state.multiDelete.indexOf(value)
+            if (index > -1) {
+                this.state.multiDelete.splice(index, 1)
+            }
+        }
+    }
     renderList = ({ getInventory }) => {
         if (getInventory) {
             return getInventory.inventory.filter(this.searchFilter(this.state.search)).map((items, index) => {
                 return (
-
                     <tr key={items.inventoryId}>
+                        <td><input onChange={this.onchangeMultiDelete.bind(this, items.inventoryId)} type="checkbox"/></td>
                         <td>{index + 1}</td>
                         <td>{items.asset_master.assetName}</td>
                         <td>{items.asset_type_master.assetType}</td>
@@ -148,11 +183,15 @@ class InventoryDetails extends Component {
     close = () => {
         return this.props.history.replace('/superDashBoard')
     }
+    SelectAll=()=>{
+        console.log('select all')
+    }
     render() {
         let tableData;
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
+                    <th>select All<input type="checkbox" onClick={this.SelectAll} /></th>
                     <th>#</th>
                     <th>Asset Type</th>
                     <th>Asset Sub Type</th>
@@ -180,6 +219,7 @@ class InventoryDetails extends Component {
                         <div>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
+                            <Button color="danger" className="mb-2" onClick={this.multipleDelete} disabled={this.state.disabled}> Delete Selected</Button>
                             {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         <Modal isOpen={this.state.modal} toggle={this.toggles}>
@@ -188,13 +228,11 @@ class InventoryDetails extends Component {
                                 <FormGroup>
                                     <Label>Asset Type</Label>
                                     <Input maxLength={30} type="select" id="assetId" name="assetId" onChange={this.onChangeHandler} value={this.state.assetId}>
-
                                         {this.assetsName(this.props.AssetName)}
                                     </Input>
                                     <div className="error">{this.state.errors.assetId}</div>
                                     <Label>Asset Sub Type</Label>
                                     <Input maxLength={30} type="select" id="assetTypeId" name="assetTypeId" onChange={this.onChangeHandler} value={this.state.assetTypeId}>
-
                                         {this.assetsType(this.props.AssetType)}
                                     </Input>
                                     <div className="error">{this.state.errors.assetTypeId}</div>
@@ -212,7 +250,6 @@ class InventoryDetails extends Component {
                             </ModalBody>
                         </Modal>
                     </div>
-
                 </UI>
             </div>
         );
@@ -226,6 +263,6 @@ function mapStatToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getInventory, getAssets, fetchAssets, updateInventory, removeInventory }, dispatch);
+    return bindActionCreators({ getInventory, getAssets, fetchAssets, updateInventory, removeInventory, multipleDelete }, dispatch);
 }
 export default connect(mapStatToProps, mapDispatchToProps)(InventoryDetails);

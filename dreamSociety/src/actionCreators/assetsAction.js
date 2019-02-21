@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { URN, ADD_ASSETS,GET_ASSETS,UDATE_ASSETS,REMOVE_ASSETS } from '../actions/index';
+import { URN, ADD_ASSETS,GET_ASSETS,UDATE_ASSETS,REMOVE_ASSETS,DELETE_MULTIPLE_ASSETS_LIST } from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
 export function addAssets(assets, description) {
@@ -55,4 +55,13 @@ export function removeAssets(id){
         type:REMOVE_ASSETS,
         payload:request
     }
+}
+export function deleteMultipleAssets(ids){
+    const request=axios.put(`${URN}/assets/delete/deleteSelected`,{ids},{ headers: authHeader() })
+    .then(response=>response.data)
+    .catch(error=>error)
+    return{
+        type:DELETE_MULTIPLE_ASSETS_LIST,
+        payload:request
+    } 
 }

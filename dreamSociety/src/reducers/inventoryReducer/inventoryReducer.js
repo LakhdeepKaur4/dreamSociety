@@ -1,7 +1,6 @@
 import {ADD_INVENTORY,GET_INVENTORY,UPDATE_INVENTORY,REMOVE_INVENTORY} from '../../actions/index';
 
 export default function(state={},action){
-    console.log(action.type)
     switch(action.type){
         case ADD_INVENTORY:
         return {...state,addInventory:action.payload}
