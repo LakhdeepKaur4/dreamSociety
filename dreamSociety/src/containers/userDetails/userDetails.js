@@ -28,7 +28,7 @@ class userDetails extends Component {
                 parking:"",
                 contact: "",
                 errors:{},
-                isChecked: false,
+                isDisabled: true,
                 isActive: false,
                 editUserModal: false,
                 loading:true,
@@ -197,15 +197,20 @@ class userDetails extends Component {
                          onChange={(e) => {
                             const {userId} = item
                             if(!e.target.checked){
-                                this.setState({isChecked: false});
+                                document.getElementById('allSelect').checked=false;
                                 let indexOfId = this.state.ids.indexOf(userId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1);
                                 }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
+                                }
                             }
                             else {
-                                this.setState({isChecked: true});
                                 this.setState({ids: [...this.state.ids, userId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
                             }
                                 
                              }}/></td>
@@ -283,25 +288,32 @@ class userDetails extends Component {
     }
 
     selectAll = () => {
-        this.setState({isChecked: true});
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar =[];
             for(var i = 0; i < selectMultiple.length; i++){
                     ar.push(parseInt(selectMultiple[i].value));
                     selectMultiple[i].checked = true;
-                }
-                this.setState({ids: ar});
-        }
-
-        unSelectAll = () =>{
-            this.setState({isChecked: false});
-            let unSelectMultiple = document.getElementsByClassName('SelectAll');
-            for(var i = 0; i < unSelectMultiple.length; i++){
-                    unSelectMultiple[i].checked = false
             }
-            let allIds = []
-                this.setState({ids: [ ...allIds]});
+            this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
+    }
+
+    unSelectAll = () =>{
+        
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
         }
+        
+        this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
+    }
 
     render() {
 
@@ -311,6 +323,7 @@ class userDetails extends Component {
             <thead>
                 <tr>
                     <th>Select All<input className="ml-2"
+                    id="allSelect"
                     type="checkbox" onChange={(e) => {
                             if(e.target.checked) {
                                 this.selectAll();
@@ -339,7 +352,7 @@ class userDetails extends Component {
             </tbody>
         </Table>
 
-        let deleteSelectedButton = <Button color="danger" disabled={!this.state.isChecked} className="mb-3"
+        let deleteSelectedButton = <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
 
         return (
