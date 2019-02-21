@@ -23,6 +23,7 @@ class MaintenanceSubMasterDetails extends Component{
             maintenanceId:"",
             sizeId:"",
             search: "",
+            isChecked: false,
             loading:true,
             errors:{},
             editSubMaintenanceModal: false
@@ -109,13 +110,14 @@ class MaintenanceSubMasterDetails extends Component{
                          onChange={(e) => {
                             let {maintenanceTypeId} = item
                             if(!e.target.checked){
-                                
+                                this.setState({isChecked: false});
                                 let indexOfId = this.state.ids.indexOf(maintenanceTypeId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1)
                                 }
                             }
                             else {
+                                this.setState({isChecked: true});
                                 this.setState({ids: [...this.state.ids, maintenanceTypeId]});
                             }
                                 
@@ -185,7 +187,7 @@ class MaintenanceSubMasterDetails extends Component{
     }
 
     selectAll = () => {
-    
+        this.setState({isChecked: true});
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar =[];
             for(var i = 0; i < selectMultiple.length; i++){
@@ -196,6 +198,7 @@ class MaintenanceSubMasterDetails extends Component{
     }
 
     unSelectAll = () =>{
+        this.setState({isChecked: false});
         let unSelectMultiple = document.getElementsByClassName('SelectAll');
         for(var i = 0; i < unSelectMultiple.length; i++){
                 unSelectMultiple[i].checked = false
@@ -211,9 +214,11 @@ class MaintenanceSubMasterDetails extends Component{
                 <th style={{alignContent:'baseline'}}>Select All<input className="ml-2"
                 type="checkbox" onChange={(e) => {
                     if(e.target.checked) {
+                        this.setState({isChecked: true});
                         this.selectAll();
                     }
                     else if(!e.target.checked){
+                        this.setState({isChecked: false});
                         this.unSelectAll();
                     } 
                 }
@@ -230,6 +235,11 @@ class MaintenanceSubMasterDetails extends Component{
             {this.fetchMaintenanceDetails(this.props.MaintenanceSubMaster)}
         </tbody>
     </Table>
+    let deleteSelectedButton = <Button
+    disabled={!this.state.isChecked}
+     color="danger"
+    className="mb-3"
+     onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
         return(
             <UI onClick={this.logout}>
                 <div className="w3-container w3-margin-top w3-responsive">
@@ -273,9 +283,7 @@ class MaintenanceSubMasterDetails extends Component{
                     </Modal>
                     <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                    <Button color="danger"
-                    className="mb-3"
-                     onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
+                    {deleteSelectedButton}
                     {!this.state.loading ? tableData : <Spinner />}
                 </div>
             </UI>
