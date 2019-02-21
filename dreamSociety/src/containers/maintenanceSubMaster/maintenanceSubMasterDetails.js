@@ -23,7 +23,7 @@ class MaintenanceSubMasterDetails extends Component{
             maintenanceId:"",
             sizeId:"",
             search: "",
-            isChecked: false,
+            isDisabled: true,
             loading:true,
             errors:{},
             editSubMaintenanceModal: false
@@ -79,8 +79,6 @@ class MaintenanceSubMasterDetails extends Component{
             .then(() => this.refreshData())
             this.setState({loading:true,editSubMaintenanceModal: !this.state.editSubMaintenanceModal});
         }
-       
-    
     }
 
     searchFilter = (search) =>{
@@ -110,16 +108,22 @@ class MaintenanceSubMasterDetails extends Component{
                          onChange={(e) => {
                             let {maintenanceTypeId} = item
                             if(!e.target.checked){
-                                this.setState({isChecked: false});
+                                document.getElementById('allSelect').checked=false;
                                 let indexOfId = this.state.ids.indexOf(maintenanceTypeId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1)
                                 }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true})
+                                }
                             }
-                            else {
-                                this.setState({isChecked: true});
+                            else{
                                 this.setState({ids: [...this.state.ids, maintenanceTypeId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
                             }
+                            
                                 
                              }}/></td>
                         <td>{index + 1}</td>
@@ -183,11 +187,10 @@ class MaintenanceSubMasterDetails extends Component{
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
-        return this.props.history.replace('/') 
+        return this.props.history.replace('/'); 
     }
 
     selectAll = () => {
-        this.setState({isChecked: true});
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar =[];
             for(var i = 0; i < selectMultiple.length; i++){
@@ -195,30 +198,36 @@ class MaintenanceSubMasterDetails extends Component{
                     selectMultiple[i].checked = true;
             }
             this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
     }
 
     unSelectAll = () =>{
-        this.setState({isChecked: false});
+        
         let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
         for(var i = 0; i < unSelectMultiple.length; i++){
                 unSelectMultiple[i].checked = false
         }
-        let allIds = []
+        
         this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
     }
 
     render(){
         let tableData = <Table className="table table-bordered">
         <thead>
             <tr>
-                <th style={{alignContent:'baseline'}}>Select All<input className="ml-2"
-                type="checkbox" onChange={(e) => {
+                <th style={{alignContent:'baseline'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
                     if(e.target.checked) {
-                        this.setState({isChecked: true});
                         this.selectAll();
                     }
                     else if(!e.target.checked){
-                        this.setState({isChecked: false});
                         this.unSelectAll();
                     } 
                 }
@@ -236,7 +245,7 @@ class MaintenanceSubMasterDetails extends Component{
         </tbody>
     </Table>
     let deleteSelectedButton = <Button
-    disabled={!this.state.isChecked}
+     disabled={this.state.isDisabled}
      color="danger"
     className="mb-3"
      onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
