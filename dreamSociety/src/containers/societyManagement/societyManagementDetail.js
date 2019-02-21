@@ -112,7 +112,8 @@ class SocietyManagementDetail extends Component {
 
     }
 
-    deleteSelected(ids){
+    deleteSelected=(ids)=>{
+        console.log(ids)
         this.setState({loading:true});
         this.props.deleteSelectSociety(ids)
         .then(() => this.refreshData())

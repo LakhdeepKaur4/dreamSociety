@@ -113,7 +113,7 @@ class CityMasterDetail extends Component {
 
     }
 
-    deleteSelected(ids){
+    deleteSelected=(ids)=>{
         this.setState({loading:true});
         this.props.deleteSelectCity(ids)
         .then(() => this.refreshData())
