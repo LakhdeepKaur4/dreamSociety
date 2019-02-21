@@ -36,6 +36,7 @@ exports.createVendor = async (req, res, next) => {
 exports.create = async (req, res, next) => {
     try {
         let body = req.body;
+        console.log("body===>",body)
         const userName = req.body.vendorName += Math.floor((Math.random() * 100) + 1);
         const password = passwordGenerator.generate({
             length: 10,
@@ -81,9 +82,10 @@ exports.create = async (req, res, next) => {
                 serviceId: body.serviceId3.serviceId
             })
         }
+        console.log("req.files===>",req.files)
         if (req.files) {
             for (let i = 0; i < req.files.profilePicture.length; i++) {
-                profileImage = req.files.profilePicture[i].filename;
+                profileImage = req.files.profilePicture[i].path;
             }
             const updateImage = {
                 picture: profileImage
@@ -91,8 +93,8 @@ exports.create = async (req, res, next) => {
             const imageUpdate = await Vendor.find({ where: { vendorId: vendorId } }).then(vendor => {
                 return vendor.updateAttributes(updateImage)
             })
-            documentOne = req.files.document[0].filename;
-            documentTwo = req.files.document[1].filename;
+            documentOne = req.files.document[0].path;
+            documentTwo = req.files.document[1].path;
             const updateDocument = {
                 documentOne: documentOne,
                 documentTwo: documentTwo
