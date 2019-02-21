@@ -23,6 +23,7 @@ class AssetsTypeSubList extends Component {
             loading: true,
             errors: {},
             ids: [],
+            isChecked: false,
         };
     }
     onChangeHandler = (event) => {
@@ -103,6 +104,7 @@ class AssetsTypeSubList extends Component {
                         <tr key={item.assetTypeId}>
                          <td><input type="checkbox" name="ids" value={item.assetTypeId} className="SelectAll"
                          onChange={(e, i) => {
+                            this.setState({isChecked: false});
                             const {assetTypeId} = item
                             if(!e.target.checked){
                                 let indexOfId = this.state.ids.indexOf(assetTypeId);
@@ -110,8 +112,10 @@ class AssetsTypeSubList extends Component {
                                     this.state.ids.splice(indexOfId, 1)
                                 }
                             }
-                            else this.setState({ids: [...this.state.ids, assetTypeId]})
-                                
+                            else{ 
+                                this.setState({isChecked: true});
+                                this.setState({ids: [...this.state.ids, assetTypeId]})
+                        } 
                              }}/></td>
                             <td>{index+1}</td>
                             <td>{item.asset_master.assetName}</td>
@@ -144,7 +148,7 @@ class AssetsTypeSubList extends Component {
         .catch(err => err.response.data.message);
     }
     selectAll = () => {
-    
+        this.setState({isChecked: true});
         let selectMultiple = document.getElementsByClassName('SelectAll');
         console.log('selectMultiple',selectMultiple)
         let ar =[];
@@ -155,6 +159,7 @@ class AssetsTypeSubList extends Component {
                 this.setState({ids: ar});
         }
         unSelectAll = () =>{
+            this.setState({isChecked: false});
             let unSelectMultiple = document.getElementsByClassName('SelectAll');
             for(var i = 0; i < unSelectMultiple.length; i++){
                     unSelectMultiple[i].checked = false
@@ -189,7 +194,7 @@ class AssetsTypeSubList extends Component {
                 {this.renderListAssets(this.props.ListOfAssets)}
             </tbody>
         </Table>
-          let deleteSelectedButton = <Button color="danger" className="mb-2"
+          let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={!this.state.isChecked}
           onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>

@@ -29,6 +29,7 @@ class InventoryDetails extends Component {
             disabled: true,
             multiDelete: [],
             ids: [],
+            isChecked: false,
 
         };
     }
@@ -136,13 +137,18 @@ class InventoryDetails extends Component {
                             onChange={(e, i) => {
                                 const { inventoryId } = items
                                 if (!e.target.checked) {
+                                    if(this.state.ids.length>-1){
+                                    this.setState({isChecked: false});
                                     let indexOfId = this.state.ids.indexOf(inventoryId);
                                     if (indexOfId > -1) {
                                         this.state.ids.splice(indexOfId, 1)
                                     }
                                 }
-                                else this.setState({ ids: [...this.state.ids, inventoryId] })
-
+                                }
+                                else{ 
+                                    this.setState({isChecked: true});
+                                    this.setState({ ids: [...this.state.ids, inventoryId] })                                   
+                            }
                             }} /></td>
 
                         <td>{index + 1}</td>
@@ -170,7 +176,7 @@ class InventoryDetails extends Component {
         return this.props.history.replace('/superDashBoard')
     }
     selectAll = () => {
-
+        this.setState({isChecked: true});
         let selectMultiple = document.getElementsByClassName('SelectAll');
         console.log('selectMultiple', selectMultiple)
         let ar = [];
@@ -181,6 +187,7 @@ class InventoryDetails extends Component {
         this.setState({ ids: ar });
     }
     unSelectAll = () => {
+        this.setState({isChecked: false});
         let unSelectMultiple = document.getElementsByClassName('SelectAll');
         for (var i = 0; i < unSelectMultiple.length; i++) {
             unSelectMultiple[i].checked = false
@@ -217,7 +224,7 @@ class InventoryDetails extends Component {
                 {this.renderList(this.props.inventory)}
             </tbody>
         </Table>
-        let deleteSelectedButton = <Button color="danger" className="mb-2"
+        let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={!this.state.isChecked}
             onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
