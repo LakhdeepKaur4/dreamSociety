@@ -20,7 +20,7 @@ class AssetList extends Component {
             loading: true,
             errors: {},
             ids: [],
-            isChecked: false,
+            isDisabled: true,
         };
     }
     onChangeHandler = (event) => {
@@ -89,15 +89,22 @@ class AssetList extends Component {
                          onChange={(e, i) => {
                             const {assetId} = items
                             if(!e.target.checked){
-                                this.setState({isChecked: false});
+                                if(this.state.ids.length>-1){
+                                    document.getElementById('allSelect').checked=false;
                                 let indexOfId = this.state.ids.indexOf(assetId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1)
                                 }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true})
+                                }
                             }
+                        }
                             else {
-                                this.setState({isChecked: true});
                                 this.setState({ids: [...this.state.ids, assetId]})
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
                         } 
                              }}/></td>
                     <td>{index+1}</td>
@@ -131,7 +138,6 @@ class AssetList extends Component {
         return this.props.history.replace('/superDashBoard')
     }
     selectAll = () => {
-        this.setState({isChecked: true});
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar =[];
             for(var i = 0; i < selectMultiple.length; i++){
@@ -139,15 +145,21 @@ class AssetList extends Component {
                         selectMultiple[i].checked = true;
                 }
                 this.setState({ids: ar});
+                if(ar.length > 0){
+                    this.setState({isDisabled: false});
+                }
         }
         unSelectAll = () =>{
-            this.setState({isChecked: false});
+            let allIds = []
             let unSelectMultiple = document.getElementsByClassName('SelectAll');
             for(var i = 0; i < unSelectMultiple.length; i++){
                     unSelectMultiple[i].checked = false
             }
-            let allIds = []
+   
                 this.setState({ids: [ ...allIds]});
+                if(allIds.length === 0){
+                    this.setState({isDisabled: true});
+                }
         }
 
     render() {
@@ -155,8 +167,8 @@ class AssetList extends Component {
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
-                    <th>Select All <input className="ml-2"
-                    type="checkbox" onChange={(e) => {
+                <th style={{alignContent:'baseline'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
                             if(e.target.checked) {
                                 this.selectAll();
                             }
@@ -175,7 +187,7 @@ class AssetList extends Component {
                 {this.renderList(this.props.List)}
             </tbody>
         </Table>
-         let deleteSelectedButton = <Button color="danger" className="mb-2"  disabled={!this.state.isChecked} 
+         let deleteSelectedButton = <Button color="danger" className="mb-2"  disabled={this.state.isDisabled} 
          onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>

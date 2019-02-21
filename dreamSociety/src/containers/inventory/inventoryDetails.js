@@ -26,10 +26,9 @@ class InventoryDetails extends Component {
             modal: false,
             loading: true,
             errors: {},
-            disabled: true,
             multiDelete: [],
             ids: [],
-            isChecked: false,
+            isDisabled: true,
 
         };
     }
@@ -138,17 +137,22 @@ class InventoryDetails extends Component {
                                 const { inventoryId } = items
                                 if (!e.target.checked) {
                                     if(this.state.ids.length>-1){
-                                    this.setState({isChecked: false});
+                                        document.getElementById('allSelect').checked=false;
                                     let indexOfId = this.state.ids.indexOf(inventoryId);
                                     if (indexOfId > -1) {
                                         this.state.ids.splice(indexOfId, 1)
                                     }
+                                    if(this.state.ids.length === 0){
+                                        this.setState({isDisabled: true})
+                                    }
                                 }
                                 }
-                                else{ 
-                                    this.setState({isChecked: true});
-                                    this.setState({ ids: [...this.state.ids, inventoryId] })                                   
-                            }
+                                else{
+                                    this.setState({ids: [...this.state.ids, inventoryId]});
+                                    if(this.state.ids.length >= 0){
+                                        this.setState({isDisabled: false})
+                                    }
+                                }
                             }} /></td>
 
                         <td>{index + 1}</td>
@@ -176,7 +180,6 @@ class InventoryDetails extends Component {
         return this.props.history.replace('/superDashBoard')
     }
     selectAll = () => {
-        this.setState({isChecked: true});
         let selectMultiple = document.getElementsByClassName('SelectAll');
         console.log('selectMultiple', selectMultiple)
         let ar = [];
@@ -185,15 +188,21 @@ class InventoryDetails extends Component {
             selectMultiple[i].checked = true;
         }
         this.setState({ ids: ar });
+        if(ar.length > 0){
+            this.setState({isDisabled: false});
+        }
     }
     unSelectAll = () => {
-        this.setState({isChecked: false});
+        let allIds = []
         let unSelectMultiple = document.getElementsByClassName('SelectAll');
         for (var i = 0; i < unSelectMultiple.length; i++) {
             unSelectMultiple[i].checked = false
         }
-        let allIds = []
+      
         this.setState({ ids: [...allIds] });
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
     }
 
     render() {
@@ -201,8 +210,8 @@ class InventoryDetails extends Component {
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
-                    <th>Select All <input className="ml-2"
-                        type="checkbox" onChange={(e) => {
+                <th style={{alignContent:'baseline'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
                             if (e.target.checked) {
                                 this.selectAll();
                             }
@@ -224,7 +233,7 @@ class InventoryDetails extends Component {
                 {this.renderList(this.props.inventory)}
             </tbody>
         </Table>
-        let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={!this.state.isChecked}
+        let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
             onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
