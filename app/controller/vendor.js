@@ -58,10 +58,10 @@ exports.create = async (req, res, next) => {
         if (body.rate1) {
             const vendorService = await VendorService.create({
                 vendorId: vendorId,
-                rateId: body.rateId1.rateId,
+                rateId: body.rateId1,
                 rate: body.rate1,
                 userId: req.userId,
-                serviceId: body.serviceId1.serviceId
+                serviceId: body.serviceId1
             })
         }
         if (body.rate2) {
@@ -70,17 +70,17 @@ exports.create = async (req, res, next) => {
                 rateId: body.rateId2.rateId,
                 rate: body.rate2,
                 userId: req.userId,
-                serviceId: body.serviceId2.serviceId
+                serviceId: body.serviceId2
             })
         }
 
         if (body.rate3) {
             const vendorService = await VendorService.create({
                 vendorId: vendorId,
-                rateId: body.rateId3.rateId,
+                rateId: body.rateId3,
                 rate: body.rate3,
                 userId: req.userId,
-                serviceId: body.serviceId3.serviceId
+                serviceId: body.serviceId3
             })
         }
         console.log("req.files===>",req.files)
