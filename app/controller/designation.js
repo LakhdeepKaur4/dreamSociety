@@ -19,7 +19,7 @@ exports.create = async (req, res, next) => {
         if (designationExists) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Designation Name already Exists" })
         }
-        const designation = await designation.create(body);
+        const designation = await Designation.create(body);
         if (designation) {
             return res.status(httpStatus.CREATED).json({
                 message: "Designation successfully created",
