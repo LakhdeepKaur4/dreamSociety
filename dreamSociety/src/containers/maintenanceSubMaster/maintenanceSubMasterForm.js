@@ -5,6 +5,7 @@ import { Form, FormGroup, Button, Input, Label,  } from 'reactstrap';
 import { getMaintenanceSubSize,postMaintenanceSubMaster, getMaintenanceType } from '../../actionCreators/maintenanceSubMasterAction';
 import Spinner from '../../components/spinner/spinner';
 import '../../r-css/w3.css';
+import DefaultSelect from '../../constants/defaultSelect';
 import UI from '../../components/newUI/superAdminDashboard';
 
 class MaintenanceSubMasterForm extends Component{
@@ -102,17 +103,17 @@ class MaintenanceSubMasterForm extends Component{
     render(){
         let formData = <div>
             <FormGroup>
-                <Input type="select" name='maintenanceId' value={this.state.maintenanceType}
+                <Input type="select" defaultValue="no-value" name='maintenanceId' value={this.state.maintenanceType}
                 onChange={this.onChange}>
-                <option>-- Select Size --</option>
+                <DefaultSelect />
                 {this.fetchMaintenanceType(this.props.MaintenanceSubMaster)}
                 </Input>
                 <div><span className="error">{this.state.errors.maintenanceId}</span></div>
             </FormGroup>
             <FormGroup>
-                <Input type="select" name="sizeId" value={this.sizeId}
+                <Input type="select" defaultValue="no-value" name="sizeId" value={this.sizeId}
                     onChange={this.onChange}>
-                    <option>-- Select Size --</option>
+                    <DefaultSelect />
                     {this.fetchSize(this.props.MaintenanceSubMaster)}
                 </Input>
                 <div><span className="error">{this.state.errors.sizeId}</span></div>

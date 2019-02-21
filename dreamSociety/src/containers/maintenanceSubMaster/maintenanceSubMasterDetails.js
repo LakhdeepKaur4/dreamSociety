@@ -8,7 +8,7 @@ import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
 import '../../r-css/w3.css';
 import UI from '../../components/newUI/superAdminDashboard';
-
+import DefaultSelect from '../../constants/defaultSelect';
 import Spinner from '../../components/spinner/spinner';
 
 class MaintenanceSubMasterDetails extends Component{
@@ -178,7 +178,7 @@ class MaintenanceSubMasterDetails extends Component{
     }
 
     deleteSelectedSubMaintenance(ids){
-        this.setState({loading:true});
+        this.setState({loading:true, isDisabled: true});
         this.props.deleteSelectedMaintenanceSubMasterDetail(ids)
         .then(() => this.refreshData())
         .catch(err => err.response);
@@ -266,7 +266,7 @@ class MaintenanceSubMasterDetails extends Component{
                                 <Label>Maintenance Category</Label>
                                 <Input name="maintenanceId"  type="select" value={this.state.maintenanceId}
                                 onChange={this.editInputChange}>
-                                    <option disabled>-- Select --</option>
+                                    <DefaultSelect />
                                     {this.fetchMaintenanceType(this.props.MaintenanceSubMaster)}
                                 </Input>
                             </FormGroup>
@@ -274,7 +274,7 @@ class MaintenanceSubMasterDetails extends Component{
                                 <Label>Size Type</Label>
                                 <Input name="sizeId" type="select" value={this.state.sizeId}
                                 onChange={this.editInputChange}>
-                                    <option disabled>-- Select --</option>
+                                    <DefaultSelect />
                                     {this.fetchSize(this.props.MaintenanceSubMaster)}
                                 </Input>
                             </FormGroup>
