@@ -28,6 +28,7 @@ const path = require('path');
 var upload = require('express-fileupload');
 console.log('server started');
 
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/public',express.static(path.resolve(__dirname, 'public')));
 
 app.use(bodyParser.urlencoded({

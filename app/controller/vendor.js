@@ -67,7 +67,7 @@ exports.create = async (req, res, next) => {
         if (body.rate2) {
             const vendorService = await VendorService.create({
                 vendorId: vendorId,
-                rateId: body.rateId2.rateId,
+                rateId: body.rateId2,
                 rate: body.rate2,
                 userId: req.userId,
                 serviceId: body.serviceId2
