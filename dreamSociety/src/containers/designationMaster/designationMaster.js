@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-// import {addMaintenance} from './../../actionCreators/maintenanceMasterAction';
+import {addDesignation} from './../../actionCreators/designationMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
@@ -13,7 +13,7 @@ class DesignationMaster extends Component{
         super(props);
         this.state = {
             designationId:'',
-            category:'',
+            designationName:'',
             errors: {},
             message:'',
            
@@ -80,11 +80,12 @@ class DesignationMaster extends Component{
         <FormGroup>
             <Label><h4>Designation Name</h4></Label>
             <Input  type="text" name="designationName" value={this.state.designationName}  value={this.state.designationName} onChange={this.onDesignationChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Designation Name" maxLength={50}
-        minLength={3} required/>          
+        minLength={3} required/>
+        <span className="error">{this.state.message}</span>          
         </FormGroup>
         
         <Button color="success" className="mr-2">Submit</Button>
-        <Button color="danger" >Cancel</Button>
+        <Button color="danger"  onClick={this.designationDetails} >Cancel</Button>
         </div>
         return(
             <div>
@@ -113,7 +114,7 @@ function mapStateToProps(state) {
 
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({  }, dispatch);
+    return bindActionCreators({ addDesignation }, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(DesignationMaster));

@@ -1,4 +1,4 @@
-import {GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME,ADD_LOCATION_DETAILS,GET_LOCATION_NAME,DELETE_LOCATION,GET_LOCATION,UPDATE_LOCATION, DELETE_COUNTRY} from '../../actions/index';
+import {GET_COUNTRY_NAME,GET_STATE_NAME,GET_CITY_NAME,ADD_LOCATION_DETAILS,GET_LOCATION_NAME,DELETE_LOCATION_IDS,DELETE_LOCATION,GET_LOCATION,UPDATE_LOCATION, DELETE_COUNTRY} from '../../actions/index';
 
 export default function(state={},action){
 
@@ -48,7 +48,10 @@ export default function(state={},action){
             return{
                 ...state, delete:action.payload
             }
-
+        case DELETE_LOCATION_IDS:
+            return{
+                ...state, deleteAll: action.payload
+            }
         default:
             return state
     }

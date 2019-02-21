@@ -32,6 +32,7 @@ class SocietyManagementDetail extends Component {
             loading: true,
             errors:{},
             ids:[],
+            isDisabled: true,
             
 
         };
@@ -112,12 +113,44 @@ class SocietyManagementDetail extends Component {
 
     }
 
-    deleteSelected(ids){
-        this.setState({loading:true});
+    deleteSelected=(ids)=>{
+        console.log(ids)
+        this.setState({loading:true, isDisabled:true});
         this.props.deleteSelectSociety(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
     }
+
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
+    }
+
+    unSelectAll = () =>{
+        
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
+        }
+        
+        this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
+    }
+
+
+
 
 
     societyData = ({ detail_Society }) => {
@@ -128,16 +161,27 @@ class SocietyManagementDetail extends Component {
 
                 return (
                     <tr key={item.societyId}>
-                    <td><input type="checkbox" name="ids" value={item.societyId}
-                         onChange={(e, i) => {
+                  <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyId}
+                         onChange={(e) => {
                             const {societyId} = item
                             if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
                                 let indexOfId = this.state.ids.indexOf(societyId);
                                 if(indexOfId > -1){
-                                    this.state.ids.splice(indexOfId, 1)
+                                    this.state.ids.splice(indexOfId, 1);
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
                                 }
                             }
-                            else this.setState({ids: [...this.state.ids, societyId]})
+                            else {
+                                console.log(this.state.ids,"gfhdsfhqwgfgshq")
+                                this.setState({ids: [...this.state.ids, societyId]});
+                                
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
                                 
                              }}/></td>
                         <td>{index+1}</td>
@@ -254,7 +298,17 @@ class SocietyManagementDetail extends Component {
         <Table className="table table-bordered">
             <thead>
                 <tr>
-                    <th>Select</th>
+                <th>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
                     <th>#</th>
                     <th>Country Name</th>
                     <th>State Name</th>
@@ -285,7 +339,8 @@ class SocietyManagementDetail extends Component {
                                 <SearchFilter type="text" value={this.state.search}
                                     onChange={this.searchOnChange} />
                             </div>
-                            <Button color="danger" className="mb-2" onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+                            <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
                             {!this.state.loading ? tableData : <Spinner />}
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggle}>Edit</ModalHeader>

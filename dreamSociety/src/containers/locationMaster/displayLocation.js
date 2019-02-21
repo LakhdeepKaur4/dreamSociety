@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {getLocation,getStateName,getCountryName,getCityName,getLocationName,updateLocation,deleteLocation} from '../../actionCreators/locationMasterAction';
+import {getLocation,getStateName,getCountryName,getCityName,getLocationName,updateLocation,deleteLocation,deleteSelectedLocation} from '../../actionCreators/locationMasterAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody,Table, ModalHeader, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -22,7 +22,9 @@ class DisplayLocation extends Component {
                 locationId: '',
                 isActive:false
             },
+            ids:[],
             menuVisible: false,
+            isDisabled:true,
             search: '',
             modal: false,
             loading:true,
@@ -74,11 +76,20 @@ searchOnChange = (e) => {
 
 delete = (locationId) => {
         this.setState({loading:true})
-    let {isActive } =this.state.editLocation;  
-    this.props.deleteLocation(locationId,isActive)
+        let {isActive } =this.state.editLocation;  
+        this.props.deleteLocation(locationId,isActive)
         .then(() => this.refreshData())
         this.setState({editLocation:{isActive:false}})
 }
+
+deleteSelected (ids){
+    this.setState({loading:true,
+    isDisabled:true});
+    this.props.deleteSelectedLocation(ids)
+    .then(() => this.refreshData())  
+    .catch(err => err);
+}
+
 
 toggleModal = () => {
     this.setState({ modal: !this.state.modal })
@@ -90,6 +101,27 @@ renderList=({details})=>{
             return(
 
                 <tr key={item.locationId}>
+                <td><input type="checkbox" name="ids" className="SelectAll" value={item.locationId}
+                         onChange={(e) => {
+                            const {locationId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(locationId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1);
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
+                                }
+                            }
+                            else {
+                                this.setState({ids: [...this.state.ids, locationId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                                
+                             }}/></td>
                 <td>{index+1}</td>
                 <td>{item.country_master.countryName}</td>
                 <td>{item.state_master.stateName}</td>
@@ -182,26 +214,67 @@ close=()=>{
     return this.props.history.replace('/superDashBoard')
 }
 
+selectAll = () => {
+    let selectMultiple = document.getElementsByClassName('SelectAll');
+    let ar =[];
+        for(var i = 0; i < selectMultiple.length; i++){
+                ar.push(parseInt(selectMultiple[i].value));
+                selectMultiple[i].checked = true;
+        }
+        this.setState({ids: ar});
+        if(ar.length > 0){
+            this.setState({isDisabled: false});
+        }
+}
+
+unSelectAll = () =>{
+    
+    let unSelectMultiple = document.getElementsByClassName('SelectAll');
+    let allIds = [];
+    for(var i = 0; i < unSelectMultiple.length; i++){
+            unSelectMultiple[i].checked = false
+    }
+    
+    this.setState({ids: [ ...allIds]});
+    if(allIds.length === 0){
+        this.setState({isDisabled: true});
+    }
+    
+}
 
 render(){
     let tableData;
     tableData=
     <Table className="table table-bordered">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Country Name</th>
-        <th>State Name</th>
-        <th>City Name</th>
-        <th>Location Name</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    
-    <tbody>
-    {this.renderList(this.props.locationMasterReducer)}
-    </tbody>
-</Table> 
+        <thead>
+        <tr>
+        <th>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
+            <th>#</th>
+            <th>Country Name</th>
+            <th>State Name</th>
+            <th>City Name</th>
+            <th>Location Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        
+        <tbody>
+        {this.renderList(this.props.locationMasterReducer)}
+        </tbody>
+    </Table> 
+        let deleteSelectedButton = <Button color="danger" className="mb-2"
+        onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
+
     return(
         <div>
         <UI onClick={this.logout}>
@@ -274,6 +347,7 @@ render(){
              </div>
              <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
+                        {deleteSelectedButton}
                            {!this.state.loading ? tableData : <Spinner />}
                        
                                 
@@ -294,7 +368,7 @@ render(){
     }
     
     function mapDispatchToProps(dispatch) {
-        return bindActionCreators({getLocation,getStateName,getCountryName,getCityName,getLocationName,updateLocation,deleteLocation}, dispatch)
+        return bindActionCreators({getLocation,getStateName,getCountryName,getCityName,getLocationName,deleteSelectedLocation,updateLocation,deleteLocation}, dispatch)
     }
     
     export default connect(mapStatToProps, mapDispatchToProps)(DisplayLocation);

@@ -144,7 +144,7 @@ class userDetails extends Component {
     }
 
     deleteSelected(ids){
-        this.setState({loading:true});
+        this.setState({loading:true, isDisabled: true});
         this.props.deleteSelectedUsers(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
@@ -353,7 +353,7 @@ class userDetails extends Component {
         </Table>
 
         let deleteSelectedButton = <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
 
         return (
 
