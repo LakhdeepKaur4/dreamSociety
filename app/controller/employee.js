@@ -28,6 +28,7 @@ exports.create = async (req, res, next) => {
             const imageUpdate = await Employee.find({ where: { employeeId: employeeId } }).then(employee => {
                 return employee.updateAttributes(updateImage)
             })
+            console.log(req.files.documentOne[0].path);
             documentOne = req.files.documentOne[0].path;
             documentTwo = req.files.documentTwo[0].path;
             const updateDocument = {

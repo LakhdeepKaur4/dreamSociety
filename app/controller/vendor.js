@@ -37,7 +37,7 @@ exports.create = async (req, res, next) => {
     try {
         let body = req.body;
         console.log("body===>",body);
-        const customVendorName = body.vendorName;
+        let customVendorName = body.vendorName;
         const userName = customVendorName += Math.floor((Math.random() * 100) + 1);
         const password = passwordGenerator.generate({
             length: 10,
