@@ -123,7 +123,7 @@ module.exports = function(app) {
 
 	app.put('/api/society/:id', [authJwt.verifyToken],societyController.update);
 
-	app.put('/api/society/deleteSelected',[authJwt.verifyToken], societyController.deleteSelected);
+	app.put('/api/society/delete/deleteSelected',[authJwt.verifyToken], societyController.deleteSelected);
 
 	app.put('/api/society/delete/:id', [authJwt.verifyToken],societyController.delete);
 
