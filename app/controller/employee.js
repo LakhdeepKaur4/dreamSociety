@@ -17,18 +17,19 @@ exports.create = async (req, res, next) => {
         body.userId = req.userId;
         const employee = await Employee.create(body);
         const employeeId = employee.employeeId;
+        // console.log("filess=====>",req.files);
         if (req.files) {
-            for (let i = 0; i < req.files.profilePicture.length; i++) {
-                profileImage = req.files.profilePicture[i].filename;
-            }
+            // for (let i = 0; i < req.files.profilePicture.length; i++) {
+                profileImage = req.files.profilePicture[0].path;
+            // }
             const updateImage = {
                 picture: profileImage
             };
             const imageUpdate = await Employee.find({ where: { employeeId: employeeId } }).then(employee => {
                 return employee.updateAttributes(updateImage)
             })
-            documentOne = req.files.document[0].filename;
-            documentTwo = req.files.document[1].filename;
+            documentOne = req.files.documentOne[0].path;
+            documentTwo = req.files.documentTwo[0].path;
             const updateDocument = {
                 documentOne: documentOne,
                 documentTwo: documentTwo

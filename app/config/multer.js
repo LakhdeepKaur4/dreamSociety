@@ -4,35 +4,38 @@ let { uploadDocumentPath } = require('./config');
 const shortId = require('short-id');
 
 const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        console.log("upload image path--->",file.fieldname)
-        if(file.fieldname == 'profilePicture'){
+    destination: function (req, file, cb) {
+        console.log("upload image path--->", file.fieldname)
+        if (file.fieldname == 'profilePicture') {
             console.log(uploadImagePath);
-            cb(null,uploadImagePath);    
+            cb(null, uploadImagePath);
         }
-        if(file.fieldname == 'document')
-        {
+        if (file.fieldname == 'documentOne') {
             console.log(uploadDocumentPath);
-            cb(null,uploadDocumentPath);    
+            cb(null, uploadDocumentPath);
         }
-   
+        if (file.fieldname == 'documentTwo') {
+            console.log(uploadDocumentPath);
+            cb(null, uploadDocumentPath);
+        }
+
     },
-    filename: function(req, file, cb) {
+    filename: function (req, file, cb) {
         // cb(null, file.fieldname + '-' + Date.now())
-    cb(null,shortId.generate() + '_' + Date.now() + '_' +file.originalname);
+        cb(null, shortId.generate() + '_' + Date.now() + '_' + file.originalname);
     }
 });
 
-const fileFilter = (req,file,cb) =>  {
-    if(file.mimetype === 'image/jpeg'|| file.mimetype === 'image/png' || file.mimetype === 'image/jpg' ){
-        cb(null,true);
-    }else{ //reject a file
-        cb(null,false)
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpg') {
+        cb(null, true);
+    } else { //reject a file
+        cb(null, false)
     }
 };
 
 const fileUploadConfig = multer({
-    storage:storage,
+    storage: storage,
     // limits:{
     //     fileSize:1024 * 1024 * 5 //max file size 5mb
     // },

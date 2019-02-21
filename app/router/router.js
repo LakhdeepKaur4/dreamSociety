@@ -321,7 +321,7 @@ module.exports = function(app) {
 
 	app.put('/api/inventory/delete/:id', [authJwt.verifyToken],inventoryController.delete);
 
-	app.post('/api/employee', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]), employeeController.create);
+	app.post('/api/employee', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'documentOne',maxCount:1},{name:'documentTwo',maxCount:1}]), employeeController.create);
 	
 	app.put('/api/employee/delete/deleteSelected',[authJwt.verifyToken], employeeController.deleteSelected);
 
