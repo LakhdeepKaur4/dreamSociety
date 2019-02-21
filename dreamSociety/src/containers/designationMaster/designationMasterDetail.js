@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {  getDesignation, deleteDesignation, updateDesignation } from './../../actionCreators/designationMasterAction';
+import {  getDesignation, deleteDesignation, updateDesignation, deleteSelectDesignation } from './../../actionCreators/designationMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -24,6 +24,9 @@ class DesignationMasterDetail extends Component {
             modal: false,
             loading: true,
             errors: {},
+            isDisabled: true,
+            ids: [],
+
 
         };
     }
@@ -116,16 +119,75 @@ class DesignationMasterDetail extends Component {
         }
     }
 
+    deleteSelected(ids){
+        this.setState({loading:true,  isDisabled:true});
+        this.props.deleteSelectDesignation(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
+    }
+
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
+    }
+
+    unSelectAll = () =>{
+        
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
+        }
+        
+        this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
+    }
+
+
    
 
 
     renderDesignation = ({ designationResult }) => {
-         console.log(designationResult,"fgfjhkjkjjjjjjjjjjjj")
+        
         if (designationResult) {
             return designationResult.designation.filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                 return (
                     <tr key={item.designationId}>
+                      <td><input type="checkbox" name="ids" className="SelectAll" value={item.designationId}
+                         onChange={(e) => {
+                            const {designationId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(designationId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1);
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
+                                }
+                            }
+                            else {
+   
+                                this.setState({ids: [...this.state.ids, designationId]});
+                                
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                                
+                             }}/></td>
                         <td>{index+1}</td>
                         <td>{item.designationName}</td>
                         <td> 
@@ -171,6 +233,17 @@ class DesignationMasterDetail extends Component {
             <Table className="table table-bordered">
                 <thead>
                     <tr>
+                    <th>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
                         <th>#</th>
                         <th>Designation Position</th>
                         <th>Actions</th>
@@ -194,6 +267,9 @@ class DesignationMasterDetail extends Component {
                         </div>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
+
+<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
 
                         {!this.state.loading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
@@ -232,7 +308,7 @@ function mapStatToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getDesignation, deleteDesignation, updateDesignation }, dispatch)
+    return bindActionCreators({ getDesignation, deleteDesignation, updateDesignation,deleteSelectDesignation }, dispatch)
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(DesignationMasterDetail);

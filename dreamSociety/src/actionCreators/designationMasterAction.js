@@ -51,12 +51,11 @@ export const deleteDesignation=(designationId)=>{
  
  }
 
- export const deleteALLDesignation=(designationId)=>{
-    const data={
-        designationId,
-        isActive:false
-    }
-    const request = axios.put(`${URN}/designation/delete/deleteSelected${designationId}`,data, {headers:authHeader()})
+
+
+ export const deleteSelectDesignation=(ids)=>{
+   
+    const request = axios.put(`${URN}/designation/delete/deleteSelected`,{ids}, {headers:authHeader()})
      .then(response => response.data)
  
    

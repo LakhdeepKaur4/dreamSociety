@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URN, ADD_MAINTENANCE, GET_MAINTENANCE, DELETE_MAINTENANCE,UPDATE_MAINTENANCE } from './../actions/index'
+import { URN, ADD_MAINTENANCE, GET_MAINTENANCE, DELETE_MAINTENANCE,UPDATE_MAINTENANCE, DELETE_SELECTEDMAINTENANCE } from './../actions/index'
 import { authHeader } from './../helper/authHeader';
 
 
@@ -46,6 +46,20 @@ export const deleteMaintenance=(maintenanceId)=>{
      return{
  
          type:DELETE_MAINTENANCE,
+         payload: request 
+     }
+ 
+ }
+
+ export const deleteSelectMaintenance=(ids)=>{
+    
+    const request = axios.put(`${URN}/maintenance/delete/deleteSelected`,{ids}, {headers:authHeader()})
+     .then(response => response.data)
+ 
+   
+     return{
+ 
+         type:DELETE_SELECTEDMAINTENANCE,
          payload: request 
      }
  

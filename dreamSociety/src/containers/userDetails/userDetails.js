@@ -353,7 +353,7 @@ class userDetails extends Component {
         </Table>
 
         let deleteSelectedButton = <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
 
         return (
 

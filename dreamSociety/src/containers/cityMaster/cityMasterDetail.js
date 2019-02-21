@@ -28,7 +28,8 @@ class CityMasterDetail extends Component {
             loading: true,
             errors:{},
             ids:[],
-            isChecked: false,
+           
+            isDisabled: true,
            
 
         };
@@ -115,7 +116,7 @@ class CityMasterDetail extends Component {
     }
 
     deleteSelected=(ids)=>{
-        this.setState({loading:true});
+        this.setState({loading:true, isDisabled:true});
         this.props.deleteSelectCity(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
@@ -141,7 +142,6 @@ class CityMasterDetail extends Component {
 
     
     selectAll = () => {
-        this.setState({isChecked: true});
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar =[];
             for(var i = 0; i < selectMultiple.length; i++){
@@ -149,18 +149,26 @@ class CityMasterDetail extends Component {
                     selectMultiple[i].checked = true;
             }
             this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
     }
 
     unSelectAll = () =>{
-        this.setState({isChecked: false});
+        
         let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
         for(var i = 0; i < unSelectMultiple.length; i++){
                 unSelectMultiple[i].checked = false
         }
-        let allIds = []
+        
         this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
     }
-   
+
         
     
 
@@ -175,16 +183,22 @@ class CityMasterDetail extends Component {
                          onChange={(e, i) => {
                             const {cityId} = item
                             if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
                                 this.setState({isChecked: false});
                                 let indexOfId = this.state.ids.indexOf(cityId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1)
                                 }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
+                                }
                             }
-                            else{ 
-                                this.setState({isChecked: true});
-                                this.setState({ids: [...this.state.ids, cityId]})
-                              }
+                            else {
+                                this.setState({ids: [...this.state.ids, cityId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
                                 
                              }}/></td>
                         <td>{index+1}</td>
@@ -268,19 +282,17 @@ class CityMasterDetail extends Component {
         <Table className="table table-bordered">
             <thead>
                 <tr>
-                <th style={{alignContent:'baseline'}}>Select All<input className="ml-2"
-                type="checkbox" onChange={(e) => {
-                    if(e.target.checked) {
-                        this.setState({isChecked: true});
-                        this.selectAll();
-                    }
-                    else if(!e.target.checked){
-                        this.setState({isChecked: false});
-                        this.unSelectAll();
-                    } 
-                }
-                    
-                }  /></th>
+                <th>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
                     <th>#</th>
                     <th>Country Name</th>
                     <th>State Name</th>
@@ -307,7 +319,8 @@ class CityMasterDetail extends Component {
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
                             
-                            <Button color="danger" className="mb-2" onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={!this.state.isChecked}>Delete Selected</Button>
+                            <Button color="danger" className="mb-3" onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled} >Delete Selected</Button>
+                            
                             {!this.state.loading ? tableData : <Spinner />}
                             <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                                 <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
