@@ -64,9 +64,15 @@ class AssetList extends Component {
     }
     delete = (assetId) => {
         this.setState({loading:true})
+        if(window.confirm('Are You Sure ?')){
         this.props.removeAssets(assetId)
         .then(() => {this.props.getAssets()
         .then(()=>this.setState({loading:false}))})
+        }
+        else{
+            this.props.getAssets()
+            .then(()=>this.setState({loading:false}))
+        }
     }
 
     searchOnChange = (e) => {
@@ -124,10 +130,16 @@ class AssetList extends Component {
     deleteSelected(ids){
         this.setState({loading:true,
             isDisabled:true});
+            if(window.confirm('Are You Sure ?')){
         this.props.deleteMultipleAssets(ids)
         .then(() => {this.props.getAssets()
          .then(()=>this.setState({loading:false}))})
          .catch(err => err.response.data.message);
+        }
+        else{
+            this.props.getAssets()
+         .then(()=>this.setState({loading:false}))
+        }
     }
 
     logout = () => {
@@ -205,7 +217,7 @@ class AssetList extends Component {
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
                                  {deleteSelectedButton}
-                            {!this.state.loading ? tableData : <Spinner />}
+                            {!this.state.loading ? tableData : <Spinner/>}
                         </div>
                         <Modal isOpen={this.state.modal} toggle={this.toggles}>
                             <ModalHeader toggle={this.toggle}>Edit Assets</ModalHeader>
