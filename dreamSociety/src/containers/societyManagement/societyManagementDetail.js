@@ -371,7 +371,7 @@ class SocietyManagementDetail extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top">
+                <div className="w3-container w3-margin-top w3-responsive">
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
         <span aria-hidden="true">&times;</span>
    </div>
