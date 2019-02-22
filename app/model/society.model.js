@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
         registrationNumber: {
             type: Sequelize.STRING
         },
-        totalBoardNumbers: {
+        totalBoardMembers: {
             type: Sequelize.STRING
         },
 		isActive: {
