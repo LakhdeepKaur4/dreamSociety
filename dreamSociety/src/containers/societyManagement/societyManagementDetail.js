@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getCountry, getState, getCity, getLocation, getSociety, detailSociety, deleteSociety, updateSociety } from './../../actionCreators/societyMasterAction';
+import { getCountry, getState, getCity, getLocation, getSociety, detailSociety, deleteSociety, updateSociety,deleteSelectSociety } from './../../actionCreators/societyMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import {Table, Button, Modal, FormGroup, ModalBody, ModalHeader,  Input, Label } from 'reactstrap';
@@ -23,6 +23,10 @@ class SocietyManagementDetail extends Component {
                 locationId: '',
                 societyId: '',
                 societyName: '',
+                societyAddress:'',
+                contactNumber:'',
+                registrationNumber:'',
+                totalBoardMembers:'',
                 isActive:false,
 
             },
@@ -30,7 +34,9 @@ class SocietyManagementDetail extends Component {
             search: '',
             modal: false,
             loading: true,
-            errors:{}
+            errors:{},
+            ids:[],
+            isDisabled: true,
             
 
         };
@@ -46,7 +52,7 @@ class SocietyManagementDetail extends Component {
         }
     }
 
-    toggle = (societyId, countryName, stateName, cityName, locationName, societyName) => {
+    toggle = (societyId, countryName, stateName, cityName, locationName, societyName, societyAddress, contactNumber,registrationNumber,totalBoardMembers) => {
 
         this.setState({
             societyId,
@@ -55,6 +61,10 @@ class SocietyManagementDetail extends Component {
             cityName,
             locationName,
             societyName,
+            societyAddress,
+            contactNumber,
+            registrationNumber,
+            totalBoardMembers,
             
             modal: !this.state.modal
         })
@@ -78,23 +88,39 @@ class SocietyManagementDetail extends Component {
 
 
     editSocietyType = () => {
-        const { societyId, countryId, stateId, cityId, locationId, societyName } = this.state
+        const { societyId, countryId, stateId, cityId, locationId, societyName, societyAddress, contactNumber, registrationNumber,totalBoardMembers } = this.state
 
         let errors={};
 
         if(this.state.societyName === ''){
             errors.societyName="Society Name can't be empty"
         }
+
+        if(this.state.societyAddress === ''){
+            errors.societyAddress="Society Address can't be empty"
+        }
+
+        if(this.state.contactNumber === ''){
+            errors.contactNumber="Society Contact No. can't be empty"
+        }
+        if(this.state.registrationNumber === ''){
+            errors.registrationNumber="Registration No. can't be empty"
+        }
+
+        if(this.state.totalBoardMembers === ''){
+            errors.totalBoardMembers="Total Board Members can't be empty"
+        }
+
         this.setState({errors})
 
         const isValid= Object.keys(errors).length === 0
 
         if(isValid){
             this.setState({loading:true})
-        this.props.updateSociety(societyId, countryId, stateId, cityId, locationId, societyName)
+        this.props.updateSociety(societyId, countryId, stateId, cityId, locationId, societyName,  societyAddress, contactNumber, registrationNumber,totalBoardMembers)
             .then(() => this.refreshData())
         this.setState({
-            editSocietyData: { societyId, countryId, stateId, cityId, locationId, societyName },
+            editSocietyData: { societyId, countryId, stateId, cityId, locationId, societyName,  societyAddress, contactNumber, registrationNumber,totalBoardMembers },
             modal: !this.state.modal
         })
       }
@@ -111,6 +137,46 @@ class SocietyManagementDetail extends Component {
 
     }
 
+    deleteSelected=(ids)=>{
+        console.log(ids)
+        this.setState({loading:true, isDisabled:true});
+        this.props.deleteSelectSociety(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
+    }
+
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
+    }
+
+    unSelectAll = () =>{
+        
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
+        }
+        
+        this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
+    }
+
+
+
+
+
     societyData = ({ detail_Society }) => {
      
         if (detail_Society) {
@@ -119,14 +185,50 @@ class SocietyManagementDetail extends Component {
 
                 return (
                     <tr key={item.societyId}>
+                  <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyId}
+                         onChange={(e) => {
+                            const {societyId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(societyId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1);
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
+                                }
+                            }
+                            else {
+                                console.log(this.state.ids,"gfhdsfhqwgfgshq")
+                                this.setState({ids: [...this.state.ids, societyId]});
+                                
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                                
+                             }}/></td>
                         <td>{index+1}</td>
+                        <td>{item.societyName}</td>
                         <td>{item.country_master.countryName}</td>
                         <td>{item.state_master.stateName}</td>
                         <td>{item.city_master.cityName}</td>
                         <td>{item.location_master.locationName}</td>
-                        <td>{item.societyName}</td>
+                        <td>{item.societyAddress}</td>
+                        <td>{item.contactNumber}</td>
+                        <td>{item.registrationNumber}</td>
+                        <td>{item.totalBoardMembers}</td>
                             <td>
-                                <Button color="success mr-2" onClick={this.toggle.bind(this, item.societyId, item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, item.societyName)} >Edit</Button>
+                                <Button color="success mr-2" onClick={this.toggle.bind(this, 
+                                    item.societyId, 
+                                    item.country_master.countryName, 
+                                    item.state_master.stateName,
+                                    item.city_master.cityName, 
+                                    item.location_master.locationName, 
+                                    item.societyName,item.societyAddress, 
+                                    item.contactNumber,
+                                    item.registrationNumber,
+                                    item.totalBoardMembers)} >Edit</Button>
                             
                                 <Button color="danger" onClick={this.deleteSocietyName.bind(this, item.societyId)} >Delete</Button>
                             </td>
@@ -207,7 +309,11 @@ class SocietyManagementDetail extends Component {
                 x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) ||
                 x.state_master.stateName.toLowerCase().includes(search.toLowerCase()) ||
                 x.city_master.cityName.toLowerCase().includes(search.toLowerCase()) ||
-                x.location_master.locationName.toLowerCase().includes(search.toLowerCase())
+                x.location_master.locationName.toLowerCase().includes(search.toLowerCase()) ||
+                x.societyAddress.toLowerCase().includes(search.toLowerCase()) ||
+                x.contactNumber.toLowerCase().includes(search.toLowerCase()) ||
+                x.registrationNumber.toLowerCase().includes(search.toLowerCase()) ||
+                x.totalBoardMembers.toLowerCase().includes(search.toLowerCase()) 
                 || !search;
         }
     }
@@ -233,12 +339,27 @@ class SocietyManagementDetail extends Component {
         <Table className="table table-bordered">
             <thead>
                 <tr>
+                <th>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
                     <th>#</th>
+                    <th>Society Name</th>
                     <th>Country Name</th>
                     <th>State Name</th>
                     <th>City Name</th>
                     <th>Location Name</th>
-                    <th>Society Name</th>
+                    <th>Society Address</th>
+                    <th>ContactNo.</th>
+                    <th>RegistrationNo.</th>
+                    <th>Total Board Members</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -250,7 +371,7 @@ class SocietyManagementDetail extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top">
+                <div className="w3-container w3-margin-top w3-responsive">
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
         <span aria-hidden="true">&times;</span>
    </div>
@@ -263,6 +384,8 @@ class SocietyManagementDetail extends Component {
                                 <SearchFilter type="text" value={this.state.search}
                                     onChange={this.searchOnChange} />
                             </div>
+                            <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
                             {!this.state.loading ? tableData : <Spinner />}
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
@@ -326,7 +449,28 @@ class SocietyManagementDetail extends Component {
                             <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName}  maxLength={50}/>
                             <span className="error">{this.state.errors.societyName}</span> 
                         </FormGroup>
-                   
+                        
+                        <FormGroup>
+                            <Label>Society Address</Label>
+                            <Input type="text"  name="societyAddress" onChange={this.onChangeHandler} value={this.state.societyAddress}  maxLength={50}/>
+                            <span className="error">{this.state.errors.societyAddress}</span> 
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Contact Number</Label>
+                            <Input type="text"  name="contactNumber" onChange={this.onChangeHandler} value={this.state.contactNumber}  maxLength={50}/>
+                            <span className="error">{this.state.errors.contactNumber}</span> 
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Registration Number</Label>
+                            <Input type="text"  name="registrationNumber" onChange={this.onChangeHandler} value={this.state.registrationNumber}  maxLength={50}/>
+                            <span className="error">{this.state.errors.registrationNumber}</span> 
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label>Total Board Members</Label>
+                            <Input type="text"  name="totalBoardMembers" onChange={this.onChangeHandler} value={this.state.totalBoardMembers}  maxLength={50}/>
+                            <span className="error">{this.state.errors.totalBoardMembers}</span> 
+                        </FormGroup>
                         <Button color="primary mr-2" onClick={this.editSocietyType}>Save</Button> 
 
                         <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
@@ -347,7 +491,7 @@ function mapStatToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getCountry, getState, getCity, getLocation, getSociety, detailSociety, deleteSociety, updateSociety }, dispatch)
+    return bindActionCreators({ getCountry, getState, getCity, getLocation, getSociety, detailSociety, deleteSociety, updateSociety, deleteSelectSociety }, dispatch)
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(SocietyManagementDetail);

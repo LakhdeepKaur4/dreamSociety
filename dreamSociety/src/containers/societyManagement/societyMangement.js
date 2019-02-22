@@ -27,6 +27,10 @@ class SocietyMangement extends Component {
             cityId:'',
             locationId:'',
             societyName:'',
+            societyAddress:'',
+            contactNumber:'',
+            registrationNumber:'',
+            totalBoardMembers:'',
             errors: {},
             loading:true,
          
@@ -248,6 +252,10 @@ class SocietyMangement extends Component {
             cityId:'',
             locationId:'',
             societyName:'',
+            societyAddress:'',
+            contactNumber:'',
+            registrationNumber:'',
+            totalBoardMembers:'',
 
             
            
@@ -285,6 +293,13 @@ class SocietyMangement extends Component {
         let form;
         if(!this.state.loading && this.props.societyReducer.countryResult && this.props.societyReducer.stateResult && this.props.societyReducer.cityResult && this.props.societyReducer.locationResult && this.state.errors){
             form= <div>
+            
+            <FormGroup>
+            <Label><h4>Society Name</h4></Label>
+            <Input placeholder="Society Name" type="text" name="societyName" value={this.state.societyName} onChange={this.onChange} maxLength={30}/>
+             <span className='error'>{this.state.errors.societyName}</span>
+           </FormGroup>
+
             <FormGroup>
             <Label><h4>Country Name</h4></Label>
             <Input type="select" defaultValue='no-value' name="countryName"  onChange={this.onChangeCountry} required>
@@ -322,11 +337,34 @@ class SocietyMangement extends Component {
         </FormGroup>
 
         <FormGroup>
-            <Label><h4>Society Name</h4></Label>
-            <Input placeholder="Society Name" type="text" name="societyName" value={this.state.societyName} onChange={this.onChange} maxLength={30}/>
-             <span className='error'>{this.state.errors.societyName}</span>
+            <Label><h4>Society Address</h4></Label>
+            <Input placeholder="Society Address" type="text" name="societyAddress" value={this.state.societyAddress} onChange={this.onChange} maxLength={30}/>
+             <span className='error'>{this.state.errors.societyAddress}</span>
         </FormGroup>
-       
+
+           
+        <FormGroup>
+            <Label><h4>Society Contact No.</h4></Label>
+            <Input placeholder="Society Contact No." type="text" name="contactNumber" value={this.state.contactNumber} onChange={this.onChange} maxLength={10}/>
+             <span className='error'>{this.state.errors.contactNumber}</span>
+        </FormGroup>
+        
+
+            
+        <FormGroup>
+            <Label><h4>Society Registration No.</h4></Label>
+            <Input placeholder="Society Registration No." type="text" name="registrationNumber" value={this.state.registrationNumber} onChange={this.onChange} maxLength={30}/>
+             <span className='error'>{this.state.errors.registrationNumber}</span>
+        </FormGroup>
+
+
+        <FormGroup>
+            <Label><h4>Total Board Member</h4></Label>
+            <Input placeholder="Total Board Member" type="text" name="totalBoardMembers" value={this.state.totalBoardMembers} onChange={this.onChange} maxLength={30}/>
+             <span className='error'>{this.state.errors.totalBoardMembers}</span>
+        </FormGroup>
+
+    
       
           <Button color="success" className="mr-2">Submit</Button>
           <Button color="danger" onClick={this.societyDetails}>Cancel</Button>

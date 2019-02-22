@@ -36,6 +36,7 @@ import PersonDetails from './containers/personDetails/personDetails';
 import serviceMaster from './containers/vendorMangement/serviceMaster/serviceMaster';
 import displayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
 import vendorMaster from './containers/vendorMangement/vendorMaster/vendorMaster';
+import DisplayVendorMaster from './containers/vendorMangement/vendorMaster/displayVendorMaster';
 
 import displayPersonDetails from './containers/personDetails/displayPersonDetails';
 import AssetTypeMaster from './containers/assetsTypeMaster/assetsTypeMaster';
@@ -54,9 +55,13 @@ import InventoryDetails from './containers/inventory/inventoryDetails'
 import MaintenanceMaster from './containers/maintenanceMaster/maintenanceMaster';
 import MaintenanceMasterDetail from './containers/maintenanceMaster/maintenanceMasterDetail';
 import DisplayEmployeeTypeMaster from './containers/employeeTypeMaster/displayEmployeeTypeMaster';
+
 import MaintenanceSubMasterForm from './containers/maintenanceSubMaster/maintenanceSubMasterForm';
 import MaintenanceSubMasterDetails from './containers/maintenanceSubMaster/maintenanceSubMasterDetails'
+import DesignationMaster from './containers/designationMaster/designationMaster';
 import EmployeeTypeMaster from './containers/employeeTypeMaster/employeeTypeMaster';
+import DesignationMasterDetail from './containers/designationMaster/designationMasterDetail';
+import SocietyComponent from './components/societyComponent/societyComponent';
 
 
 class App extends Component {
@@ -94,7 +99,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/serviceMaster' component={serviceMaster} />
             <PrivateRoute path='/superDashboard/personDetails' component={PersonDetails} />
             <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster} />
-            
+            <PrivateRoute path='/superDashboard/displayVendorMaster' component={DisplayVendorMaster}/>
             <PrivateRoute path='/superDashboard/displayServices' component={displayServices} />
             <PrivateRoute path='/superDashBoard/displayPerson' exact component={displayPersonDetails} />
             <PrivateRoute path='/superDashBoard/demo' component={Demo} />
@@ -118,6 +123,9 @@ class App extends Component {
             <PrivateRoute path ='/superDashboard/displayEmployee' component={DisplayEmployeeMaster}/>
             <PrivateRoute path='/superDashboard/MaintenanceSubMasterForm' component={MaintenanceSubMasterForm} />
             <PrivateRoute path='/superDashboard/MaintenanceSubMasterDetails' component={MaintenanceSubMasterDetails} />
+            <PrivateRoute path='/superDashboard/designationMaster' component={DesignationMaster} />
+            <PrivateRoute path='/superDashboard/designationMasterDetail' component={DesignationMasterDetail} />
+            <PrivateRoute path='/superDashboard/societyComponent' component={SocietyComponent} />
           </Switch>
         </div>
         

@@ -3,9 +3,14 @@ import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
 
 
-export function addVendorMaster(values){
-    console.log(values)
-    const request=axios.post(`${URN}/vendor`,values,{headers:authHeader()})
+export function addVendorMaster(formData){
+    const config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }
+    console.log(formData)
+    const request=axios.post(`${URN}/vendor`,formData,{headers:authHeader()},config)
     .then(response=>response.data)
 
     return{

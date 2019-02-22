@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getAssets } from '../../actionCreators/assetsAction';
 import { fetchAssets } from '../../actionCreators/assetsSubAction'
-import { getInventory, updateInventory, removeInventory } from '../../actionCreators/inventoryAction';
+import { getInventory, updateInventory, removeInventory, multipleDelete } from '../../actionCreators/inventoryAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
@@ -26,6 +26,10 @@ class InventoryDetails extends Component {
             modal: false,
             loading: true,
             errors: {},
+            multiDelete: [],
+            ids: [],
+            isDisabled: true,
+
         };
     }
     onChangeHandler = (event) => {
@@ -80,11 +84,17 @@ class InventoryDetails extends Component {
     }
     delete = (inventoryId) => {
         this.setState({ loading: true })
+        if(window.confirm('Are You Sure ?')){
         this.props.removeInventory(inventoryId)
             .then(() => {
                 this.props.getInventory()
                     .then(() => this.setState({ loading: false }))
             })
+        }
+        else{
+            this.props.getInventory()
+            .then(() => this.setState({ loading: false }))
+        }
     }
 
     searchOnChange = (e) => {
@@ -93,7 +103,7 @@ class InventoryDetails extends Component {
     searchFilter(search) {
         return function (x) {
             return x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||
-                 x.serialNumber.toLowerCase().includes(search.toLowerCase()) ||
+                x.serialNumber.toLowerCase().includes(search.toLowerCase()) ||
                 x.asset_type_master.assetType.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
@@ -117,13 +127,47 @@ class InventoryDetails extends Component {
         }
 
     }
-
+    deleteSelected(ids) {
+        this.setState({ loading: true,
+         isDisabled:true });
+         if(window.confirm('Are You Sure ?')){
+        this.props.multipleDelete(ids)
+            .then(() => this.props.getInventory().then(() => this.setState({ loading: false })))
+            .catch(err => err.response.data.message);
+         }
+         else{
+            this.props.getInventory()
+            .then(() => this.setState({ loading: false }))
+         }
+    }
     renderList = ({ getInventory }) => {
         if (getInventory) {
             return getInventory.inventory.filter(this.searchFilter(this.state.search)).map((items, index) => {
                 return (
-
                     <tr key={items.inventoryId}>
+                        <td><input type="checkbox" name="ids" value={items.inventoryId} className="SelectAll"
+                            onChange={(e, i) => {
+                                const { inventoryId } = items
+                                if (!e.target.checked) {
+                                    if(this.state.ids.length>-1){
+                                        document.getElementById('allSelect').checked=false;
+                                    let indexOfId = this.state.ids.indexOf(inventoryId);
+                                    if (indexOfId > -1) {
+                                        this.state.ids.splice(indexOfId, 1)
+                                    }
+                                    if(this.state.ids.length === 0){
+                                        this.setState({isDisabled: true})
+                                    }
+                                }
+                                }
+                                else{
+                                    this.setState({ids: [...this.state.ids, inventoryId]});
+                                    if(this.state.ids.length >= 0){
+                                        this.setState({isDisabled: false})
+                                    }
+                                }
+                            }} /></td>
+
                         <td>{index + 1}</td>
                         <td>{items.asset_master.assetName}</td>
                         <td>{items.asset_type_master.assetType}</td>
@@ -148,11 +192,47 @@ class InventoryDetails extends Component {
     close = () => {
         return this.props.history.replace('/superDashBoard')
     }
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        console.log('selectMultiple', selectMultiple)
+        let ar = [];
+        for (var i = 0; i < selectMultiple.length; i++) {
+            ar.push(parseInt(selectMultiple[i].value));
+            selectMultiple[i].checked = true;
+        }
+        this.setState({ ids: ar });
+        if(ar.length > 0){
+            this.setState({isDisabled: false});
+        }
+    }
+    unSelectAll = () => {
+        let allIds = []
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        for (var i = 0; i < unSelectMultiple.length; i++) {
+            unSelectMultiple[i].checked = false
+        }
+      
+        this.setState({ ids: [...allIds] });
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+    }
+
     render() {
         let tableData;
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
+                <th style={{alignContent:'baseline'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if (e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if (!e.target.checked) {
+                                this.unSelectAll();
+                            }
+                        }
+                        } /></th>
                     <th>#</th>
                     <th>Asset Type</th>
                     <th>Asset Sub Type</th>
@@ -166,6 +246,8 @@ class InventoryDetails extends Component {
                 {this.renderList(this.props.inventory)}
             </tbody>
         </Table>
+        let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
+            onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
                 <UI onClick={this.logout}>
@@ -180,6 +262,7 @@ class InventoryDetails extends Component {
                         <div>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
+                            {deleteSelectedButton}
                             {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         <Modal isOpen={this.state.modal} toggle={this.toggles}>
@@ -188,13 +271,11 @@ class InventoryDetails extends Component {
                                 <FormGroup>
                                     <Label>Asset Type</Label>
                                     <Input maxLength={30} type="select" id="assetId" name="assetId" onChange={this.onChangeHandler} value={this.state.assetId}>
-
                                         {this.assetsName(this.props.AssetName)}
                                     </Input>
                                     <div className="error">{this.state.errors.assetId}</div>
                                     <Label>Asset Sub Type</Label>
                                     <Input maxLength={30} type="select" id="assetTypeId" name="assetTypeId" onChange={this.onChangeHandler} value={this.state.assetTypeId}>
-
                                         {this.assetsType(this.props.AssetType)}
                                     </Input>
                                     <div className="error">{this.state.errors.assetTypeId}</div>
@@ -212,7 +293,6 @@ class InventoryDetails extends Component {
                             </ModalBody>
                         </Modal>
                     </div>
-
                 </UI>
             </div>
         );
@@ -226,6 +306,6 @@ function mapStatToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getInventory, getAssets, fetchAssets, updateInventory, removeInventory }, dispatch);
+    return bindActionCreators({ getInventory, getAssets, fetchAssets, updateInventory, removeInventory, multipleDelete }, dispatch);
 }
 export default connect(mapStatToProps, mapDispatchToProps)(InventoryDetails);

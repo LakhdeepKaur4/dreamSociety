@@ -1,4 +1,4 @@
-import {COUNTRY_DETAIL,STATE_DETAIL, CITY_DETAIL, ADD_CITY, DETAIL_CITY, DELETE_CITY,UPDATE_CITY} from  './../../actions/index';
+import {COUNTRY_DETAIL,STATE_DETAIL, CITY_DETAIL, ADD_CITY, DETAIL_CITY, DELETE_CITY,UPDATE_CITY, DELETE_SELECTEDCITY} from  './../../actions/index';
 export default function(state={},action){
   
     switch(action.type){
@@ -26,6 +26,10 @@ export default function(state={},action){
    
     case UPDATE_CITY:
     return {...state, update_city: action.payload}
+
+    case DELETE_SELECTEDCITY:
+    return {...state, selected_deleteCity: action.payload}
+
    
 
     default:

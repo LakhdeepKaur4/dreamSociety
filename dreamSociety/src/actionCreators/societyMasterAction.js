@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URN, GET_COUNTRY, GET_STATE, GET_CITY, GET_LOCATION_DETAIL,  GET_SOCIETY, DETAIL_SOCIETY,POST_SOCIETY, DELETE_SOCIETY,UPDATE_SOCIETY } from '../actions/index';
+import { URN, GET_COUNTRY, GET_STATE, GET_CITY, GET_LOCATION_DETAIL,  GET_SOCIETY, DETAIL_SOCIETY,POST_SOCIETY, DELETE_SOCIETY,UPDATE_SOCIETY,DELETE_SELECTEDSOCIETY } from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
 
@@ -98,6 +98,20 @@ export const deleteSociety=(societyId)=>{
      return{
  
          type:DELETE_SOCIETY,
+         payload: request 
+     }
+ 
+ }
+
+ export const deleteSelectSociety=(ids)=>{
+    console.log(ids)
+    const request = axios.put(`${URN}/society/delete/deleteSelected`,{ids}, {headers:authHeader()})
+     .then(response => response.data)
+ 
+   
+     return{
+ 
+         type:DELETE_SELECTEDSOCIETY,
          payload: request 
      }
  

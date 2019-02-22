@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchAssets, updateAssetsSub, removeAssetsSub } from '../../actionCreators/assetsSubAction';
+import { fetchAssets, updateAssetsSub, removeAssetsSub,deleteMultiple } from '../../actionCreators/assetsSubAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, Table, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
@@ -22,6 +22,8 @@ class AssetsTypeSubList extends Component {
             activePage: 1,
             loading: true,
             errors: {},
+            ids: [],
+            isDisabled: true,
         };
     }
     onChangeHandler = (event) => {
@@ -66,18 +68,19 @@ class AssetsTypeSubList extends Component {
             .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
             this.setState({ modal: !this.state.modal })
         }
-        // this.setState({loading:true})
-        // this.props.updateAssetsSub(assetTypeId, assetType, description)
-        //     .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
-
-        // this.setState({ modal: !this.state.modal })
 
 
     }
     delete = (assetTypeId) => {
         this.setState({loading:true})
+        if(window.confirm('Are You Sure ?')){
         this.props.removeAssetsSub(assetTypeId)
             .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
+        }
+        else{
+             this.props.fetchAssets()
+             .then(()=>this.setState({loading:false}))
+        }
     }
 
     searchOnChange = (e) => {
@@ -100,6 +103,28 @@ class AssetsTypeSubList extends Component {
                 {
                     return (
                         <tr key={item.assetTypeId}>
+                         <td><input type="checkbox" name="ids" value={item.assetTypeId} className="SelectAll"
+                         onChange={(e, i) => {
+                            const {assetTypeId} = item
+                            if(!e.target.checked){
+                                if(this.state.ids.length>-1){
+                                    document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(assetTypeId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true})
+                                }
+                            }
+                            }
+                            else{
+                                this.setState({ids: [...this.state.ids, assetTypeId]})
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                        } 
+                             }}/></td>
                             <td>{index+1}</td>
                             <td>{item.asset_master.assetName}</td>
                             <td>{item.assetType}</td>
@@ -124,11 +149,59 @@ class AssetsTypeSubList extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
+    deleteSelected(ids){
+        this.setState({loading:true,
+        isDisabled:true});
+        if(window.confirm('Are You Sure ?')){
+        this.props.deleteMultiple(ids)
+        .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
+        .catch(err => err.response.data.message);
+        }
+        else{
+            this.props.fetchAssets()
+            .then(()=>this.setState({loading:false}))
+        }
+    }
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                        ar.push(parseInt(selectMultiple[i].value));
+                        selectMultiple[i].checked = true;
+                }
+                this.setState({ids: ar});
+                if(ar.length > 0){
+                    this.setState({isDisabled: false});
+                }
+        }
+        unSelectAll = () =>{
+            let allIds = []
+            let unSelectMultiple = document.getElementsByClassName('SelectAll');
+            for(var i = 0; i < unSelectMultiple.length; i++){
+                    unSelectMultiple[i].checked = false
+            }
+            
+                this.setState({ids: [ ...allIds]});
+                if(allIds.length === 0){
+                    this.setState({isDisabled: true});
+                }
+        }
+
     render() {
         let tableData;
-        tableData = <Table className="table table-bordered">
+        tableData = <Table id="table_container">
             <thead>
-                <tr>
+                <tr> 
+                <th style={{alignContent:'baseline'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
                     <th>#</th>
                     <th>Asset Name</th>
                     <th>Assets Sub Type Name</th>
@@ -140,6 +213,8 @@ class AssetsTypeSubList extends Component {
                 {this.renderListAssets(this.props.ListOfAssets)}
             </tbody>
         </Table>
+          let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
+          onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
                 <UI onClick={this.logout}>
@@ -156,6 +231,7 @@ class AssetsTypeSubList extends Component {
                         <div>
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
+                                 {deleteSelectedButton}
                             {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         <Modal isOpen={this.state.modal} toggle={this.toggles}>
@@ -191,7 +267,7 @@ function mapStatToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ fetchAssets, updateAssetsSub, removeAssetsSub }, dispatch)
+    return bindActionCreators({ fetchAssets, updateAssetsSub, removeAssetsSub,deleteMultiple }, dispatch)
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(AssetsTypeSubList);

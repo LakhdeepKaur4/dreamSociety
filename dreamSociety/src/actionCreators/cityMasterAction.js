@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URN, COUNTRY_DETAIL, STATE_DETAIL,CITY_DETAIL,  ADD_CITY,DETAIL_CITY,DELETE_CITY , UPDATE_CITY } from './../actions/index'
+import { URN, COUNTRY_DETAIL, STATE_DETAIL,CITY_DETAIL,  ADD_CITY,DETAIL_CITY,DELETE_CITY , UPDATE_CITY, DELETE_SELECTEDCITY } from './../actions/index'
 import { authHeader } from './../helper/authHeader';
 
 
@@ -90,6 +90,21 @@ export const deleteCity=(cityId)=>{
      }
  
  }
+
+ export const deleteSelectCity=(ids)=>{
+    
+    const request = axios.put(`${URN}/city/delete/deleteSelected`,{ids}, {headers:authHeader()})
+     .then(response => response.data)
+ 
+   
+     return{
+ 
+         type:DELETE_SELECTEDCITY,
+         payload: request 
+     }
+ 
+ }
+
 
  export const updateCity=(cityId, countryId, stateId, cityName)=>{
   

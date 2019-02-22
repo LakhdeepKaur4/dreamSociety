@@ -7,7 +7,6 @@ import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 
-
 class ParkingMaster extends Component {
     constructor(props){
         super(props);

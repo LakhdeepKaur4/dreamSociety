@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { addServiceType, getServiceDetail } from '../../../actionCreators/serviceMasterAction';
 import { Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
+
 
 import UI from '../../../components/newUI/vendorDashboardInside';
 

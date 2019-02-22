@@ -1,7 +1,6 @@
 import React,{Component} from 'react';
 import {connect} from 'react-redux';
 import  UI from '../../components/newUI/superAdminDashboard';
-import ImageUploader from 'react-images-upload';
 import Spinner from '../../components/spinner/spinner';
 import {getCountryName,getStateName,getCityName, getLocationName} from '../../actionCreators/locationMasterAction';
 import {AddEmployee} from '../../actionCreators/employeeMasterAction';
