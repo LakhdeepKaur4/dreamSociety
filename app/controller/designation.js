@@ -63,7 +63,7 @@ exports.update = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedDesignation = await Maintenance.find({ where: { designationId: id } }).then(designation => {
+        const updatedDesignation = await Designation.find({ where: { designationId: id } }).then(designation => {
             return designation.updateAttributes(update)
         })
         if (updatedDesignation) {
