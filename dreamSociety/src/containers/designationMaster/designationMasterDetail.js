@@ -72,7 +72,7 @@ class DesignationMasterDetail extends Component {
     }
 
 
-    editdesignation = () => {
+    editdesignationName = () => {
        
         const { designationId, designationName } = this.state
         

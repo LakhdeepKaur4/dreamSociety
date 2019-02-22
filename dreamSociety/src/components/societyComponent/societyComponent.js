@@ -1,32 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {getCountry,getState,getCity,getLocation,postSociety,getSociety} from '../../actionCreators/societyMasterAction';
+import {getCountry,getState,getCity} from '../../actionCreators/societyMasterAction';
 import _ from 'underscore';
-import UI from '../../components/newUI/superAdminDashboard';
-import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
-import Spinner from '../../components/spinner/spinner'
+
+import { FormGroup,  Input, Label } from 'reactstrap';
+
 import DefaultSelect from '../../constants/defaultSelect';
 
 
 
 
-class SocietyMangement extends Component {
+class SocietyComponent extends Component {
     constructor(props) {
         super(props);
         
         
-
         this.state = {
             cityName:'',
             countryName:'',
             stateName:'',
-            locationName:'',
             countryId:'',
             stateId:'',
             cityId:'',
-            locationId:'',
-            societyName:'',
             errors: {},
             loading:true,
          
@@ -45,14 +41,11 @@ class SocietyMangement extends Component {
            this.props.getCountry().then(()=> this.setState({loading:false}))
            this.props.getState()
            this.props.getCity()
-           this.props.getLocation()
-           this.props.getSociety()
+          
                        
     }
 
-    refreshData=()=>{
-        this.props.postSociety()
-    }
+ 
 
     onChangeCountry= (event)=>{
 
@@ -104,28 +97,11 @@ class SocietyMangement extends Component {
                 cityId:data2.cityId
             })
             
-        this.props.getLocation(data2.cityId)
+      
 
     }
 
-    onChangeLocation= (event)=>{
-       
-         let selected= event.target.value
-        var data3 = _.find(this.props.societyReducer.locationResult,function(obj){
-            return obj.locationName === selected
-            })
-
-            this.setState({
-                locationName:data3.locationName,
-                locationId:data3.locationId
-            })
-
-            this.props.getSociety(data3.locationId)
-
-           
-          
-    }
-
+  
 
 
     
@@ -179,22 +155,7 @@ class SocietyMangement extends Component {
         }
     }
 
-    locationName({locationResult}){
-        if(locationResult){
-          
-           return( 
-            locationResult.map((item) =>{ 
-                   return(
-                       <option key={item.locationId} value={item.locationName}>
-                        {item.locationName}
-                       </option>
-                   )
-               })
-           )
-            
-        }
-    }
-
+  
     
     
     onChange=(e) =>{
@@ -221,35 +182,20 @@ class SocietyMangement extends Component {
         if (this.state.cityName === '') errors.cityName = "cant be empty";
         this.setState({ errors });
 
-        if (this.state.locationName === '') errors.locationName = "cant be empty";
-        this.setState({ errors });
-
-        if (this.state.societyName === '') errors.societyName = "cant be empty";
-        this.setState({ errors });
-
 
 
         const isValid = Object.keys(errors).length === 0;
         
         if(isValid) {
-        
-         this.setState({loading:true})
-        this.props.postSociety(this.state)
-        .then(() => this.props.history.push('/superDashboard/societyManagementDetail'))
 
         this.setState({
           state:{
             countryName:'',
             stateName:'',
             cityName:'',
-            locationName:'',
             countryId:'',
             stateId:'',
             cityId:'',
-            locationId:'',
-            societyName:'',
-
-            
            
           }
         });
@@ -257,16 +203,7 @@ class SocietyMangement extends Component {
     }
 
 
-    logout=()=>{
-        localStorage.removeItem('token');
-        localStorage.removeItem('user-type');
-        return this.props.history.replace('/') 
-    }
-
-    societyDetails=()=>{
-        this.props.history.push('/superDashboard/societyManagementDetail');
-    }
-
+    
     OnKeyPressUserhandler(event) {
         const pattern = /^[a-zA-Z]+$/;
         let inputChar = String.fromCharCode(event.charCode);
@@ -275,23 +212,14 @@ class SocietyMangement extends Component {
         }
     }
        
-    close=()=>{
-        return this.props.history.replace('/superDashBoard')
-    }
-
+  
 
 
     render() {
         let form;
-        if(!this.state.loading && this.props.societyReducer.countryResult && this.props.societyReducer.stateResult && this.props.societyReducer.cityResult && this.props.societyReducer.locationResult && this.state.errors){
+        if(!this.state.loading && this.props.societyReducer.countryResult && this.props.societyReducer.stateResult && this.props.societyReducer.cityResult &&  this.state.errors){
             form= <div>
             
-            <FormGroup>
-            <Label><h4>Society Name</h4></Label>
-            <Input placeholder="Society Name" type="text" name="societyName" value={this.state.societyName} onChange={this.onChange} maxLength={30}/>
-             <span className='error'>{this.state.errors.societyName}</span>
-           </FormGroup>
-
             <FormGroup>
             <Label><h4>Country Name</h4></Label>
             <Input type="select" defaultValue='no-value' name="countryName"  onChange={this.onChangeCountry} required>
@@ -319,64 +247,18 @@ class SocietyMangement extends Component {
             <span className='error'>{this.state.errors.cityName}</span>
         </FormGroup>
 
-        <FormGroup>
-            <Label><h4>Location Name</h4></Label>
-            <Input type="select" defaultValue='no-value' name="locationName"  onChange={this.onChangeLocation} required>
-               <DefaultSelect/>
-                {this.locationName(this.props.societyReducer)}
-            </Input>
-            <span className='error'>{this.state.errors.locationName}</span>
-        </FormGroup>
-
-        <FormGroup>
-            <Label><h4>Society Address</h4></Label>
-            <Input placeholder="Society Address" type="text" name="societyAddress" value={this.state.societyAddress} onChange={this.onChange} maxLength={30}/>
-             <span className='error'>{this.state.errors.societyAddress}</span>
-        </FormGroup>
-
-           
-        <FormGroup>
-            <Label><h4>Society Contact No.</h4></Label>
-            <Input placeholder="Society Contact No." type="text" name="societyContact" value={this.state.societyContact} onChange={this.onChange} maxLength={30}/>
-             <span className='error'>{this.state.errors.societyContact}</span>
-        </FormGroup>
-        
-
-            
-        <FormGroup>
-            <Label><h4>Society Registration No.</h4></Label>
-            <Input placeholder="Society Registration No." type="text" name="societyRegistration" value={this.state.societyRegistration} onChange={this.onChange} maxLength={30}/>
-             <span className='error'>{this.state.errors.societyRegistration}</span>
-        </FormGroup>
-
-
-        <FormGroup>
-            <Label><h4>Total Board Member</h4></Label>
-            <Input placeholder="Total Board Member" type="text" name="totalBoardMember" value={this.state.totalBoardMember} onChange={this.onChange} maxLength={30}/>
-             <span className='error'>{this.state.errors.totalBoardMember}</span>
-        </FormGroup>
-
-        
-
-       
-       
-      
-          <Button color="success" className="mr-2">Submit</Button>
-          <Button color="danger" onClick={this.societyDetails}>Cancel</Button>
           </div>
    
         }
         return (
            <div>
-               <UI onClick={this.logout}>
-               <Form  onSubmit={this.handleSubmit}>
+               
                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
         <span aria-hidden="true">&times;</span>
    </div>
-                 <h3 style={{textAlign:'center', marginBottom: '10px'}}>Society Master</h3>
-                 {!this.state.loading ? form : <Spinner />}
-                </Form>
-               </UI>
+                 
+                 {form }
+               
             </div> 
         );
     }
@@ -393,7 +275,7 @@ function mapStateToProps(state) {
 
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getCountry,getState,getCity,getLocation,postSociety, getSociety}, dispatch);
+    return bindActionCreators({ getCountry,getState,getCity}, dispatch);
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(SocietyMangement));
+export default (connect(mapStateToProps, mapDispatchToProps)(SocietyComponent));

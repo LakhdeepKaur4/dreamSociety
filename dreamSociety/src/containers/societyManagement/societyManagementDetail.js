@@ -185,11 +185,11 @@ class SocietyManagementDetail extends Component {
                                 
                              }}/></td>
                         <td>{index+1}</td>
+                        <td>{item.societyName}</td>
                         <td>{item.country_master.countryName}</td>
                         <td>{item.state_master.stateName}</td>
                         <td>{item.city_master.cityName}</td>
                         <td>{item.location_master.locationName}</td>
-                        <td>{item.societyName}</td>
                             <td>
                                 <Button color="success mr-2" onClick={this.toggle.bind(this, item.societyId, item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, item.societyName)} >Edit</Button>
                             
@@ -310,11 +310,11 @@ class SocietyManagementDetail extends Component {
                         }  
                     }/></th>
                     <th>#</th>
+                    <th>Society Name</th>
                     <th>Country Name</th>
                     <th>State Name</th>
                     <th>City Name</th>
                     <th>Location Name</th>
-                    <th>Society Name</th>
                     <th>Actions</th>
                 </tr>
             </thead>
