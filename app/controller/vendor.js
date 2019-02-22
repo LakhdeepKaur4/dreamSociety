@@ -145,13 +145,17 @@ exports.get = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     try {
-        console.log("updating vendor")
+        console.log("updating vendor");
+        console.log(":::::req.body==>",req.body)
         const id = req.params.id;
+        console.log(":::::id",id)
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
         const update = req.body;
-
+        // const empty = isEmpty(update)
+        // console.log(empty)
+        
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
@@ -165,6 +169,7 @@ exports.update = async (req, res, next) => {
             });
         }
     } catch (error) {
+        console.log(error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
@@ -193,13 +198,6 @@ exports.delete = async (req, res, next) => {
     }
 }
 
-exports.uploadPicture = async (req, res, next) => {
-    try {
-        console.log("file info ", req.file);
-    } catch (error) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-    }
-}
 
 exports.deleteSelected = async (req, res, next) => {
 	try {

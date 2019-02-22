@@ -12,8 +12,11 @@ exports.create = async (req, res, next) => {
         body.userId = req.userId;
 
         const designationExists = await Designation.findOne({
-            where: {
-                designationName: req.body.designationName
+            where:{
+                [Op.and]: [
+                    { designationName: req.body.designationName },
+                    { isActive: true }
+                ]
             }
         })
         if (designationExists) {

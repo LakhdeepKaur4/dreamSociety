@@ -1,6 +1,5 @@
 const db = require('../config/db.config.js');
-const httpStatus = require('http-status');
-var fs = require('fs');
+const httpStatus = require('http-status')
 
 const Employee = db.employee;
 // const EmployeeType =db.employeeType;
@@ -65,7 +64,7 @@ exports.get = async (req, res, next) => {
         });
         if (employee) {
             return res.status(httpStatus.OK).json({
-                message: "Employee Detail Content Page",
+                message: "Employee Content Page",
                 employee
             });
         }
@@ -82,29 +81,6 @@ exports.update = async (req, res, next) => {
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
-        if(req.files){
-        if(req.files.profilePicture){
-            profileImage = req.files.profilePicture[0].path;
-            const updateImage = {
-                picture: profileImage
-            };
-            const imageUpdate = await Employee.find({ where: { employeeId: employeeId } }).then(employee => {
-                return employee.updateAttributes(updateImage);
-            })
-        }
-        if(req.files.documentOne || req.files.documentTwo){
-            documentOne = req.files.documentOne[0].path;
-            documentTwo = req.files.documentTwo[0].path;
-            const updateDocument = {
-                documentOne: documentOne,
-                documentTwo: documentTwo
-            };
-
-            const documentUpdate = await Employee.find({ where: { employeeId: employeeId } }).then(employee => {
-                return employee.updateAttributes(updateDocument)
-            })
-        }
-    }
         const update = req.body;
 
         console.log("update", update);
@@ -112,7 +88,7 @@ exports.update = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedEmployee = await EmployeeDetail.find({ where: { employeeId: id } }).then(employee => {
+        const updatedEmployee = await Employee.find({ where: { employeeId: id } }).then(employee => {
             return employee.updateAttributes(update)
         })
         if (updatedEmployee) {
@@ -129,19 +105,19 @@ exports.update = async (req, res, next) => {
 
 
 exports.deletePhoto = function (req, res) {
-    Photos.remove({_id: req.params.id}, function(err, photo) {
-      if(err) { 
-         return res.send({status: "200", response: "fail"});
-      }
-      fs.unlink(photo.path, function() {
-        res.send ({
-          status: "200",
-          responseType: "string",
-          response: "success"
-        });     
-      });
-   }); 
-  };
+  Photos.remove({_id: req.params.id}, function(err, photo) {
+    if(err) { 
+       return res.send({status: "200", response: "fail"});
+    }
+    fs.unlink(photo.path, function() {
+      res.send ({
+        status: "200",
+        responseType: "string",
+        response: "success"
+      });     
+    });
+ }); 
+};
 
 exports.delete = async (req, res, next) => {
     try {
