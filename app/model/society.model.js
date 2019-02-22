@@ -14,9 +14,6 @@ module.exports = (sequelize, Sequelize) => {
         registrationNumber: {
             type: Sequelize.STRING
         },
-        bankDetails: {
-            type: Sequelize.STRING
-        },
         totalBoardNumbers: {
             type: Sequelize.STRING
         },
