@@ -8,6 +8,18 @@ module.exports = (sequelize, Sequelize) => {
 		societyName: {
 			type: Sequelize.STRING
 		},
+		societyAddress: {
+            type: Sequelize.STRING
+        },
+        registrationNumber: {
+            type: Sequelize.STRING
+        },
+        bankDetails: {
+            type: Sequelize.STRING
+        },
+        totalBoardNumbers: {
+            type: Sequelize.STRING
+        },
 		isActive: {
 			type: Sequelize.BOOLEAN,
 			defaultValue: true

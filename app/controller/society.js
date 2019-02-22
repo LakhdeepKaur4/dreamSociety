@@ -18,6 +18,10 @@ exports.create = (req, res) => {
         countryId: req.body.countryId,
         locationId: req.body.locationId,
         stateId: req.body.stateId,
+        societyAddress: req.body.societyAddress,
+        contactNumber: req.body.contactNumber,
+        registrationNumber: req.body.registrationNumber,
+        totalBoardMembers: req.body.totalBoardMembers,
         userId: req.userId,
     }).then(society => {
         res.json({ message: "Society added successfully!", society: society });

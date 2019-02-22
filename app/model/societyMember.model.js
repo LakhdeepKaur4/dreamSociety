@@ -5,31 +5,16 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true,
             primaryKey: true
         },
-        societyName: {
+        societyMemberName: {
             type: Sequelize.STRING
         },
-        societyArea: {
+        societyMemberAddress: {
             type: Sequelize.STRING
         },
-        societyAddress: {
-            type: Sequelize.STRING
-        },
-        registrationNumber: {
+        contactNumber: {
             type: Sequelize.STRING
         },
         bankDetails: {
-            type: Sequelize.STRING
-        },
-        societyBoardNumber: {
-            type: Sequelize.STRING
-        },
-        totalBoardNumbers: {
-            type: Sequelize.STRING
-        },
-        societyMemberName:{
-            type: Sequelize.STRING
-        },
-        societyMemberAddress:{
             type: Sequelize.STRING
         },
         isActive: {

@@ -15,6 +15,7 @@ const nexmo = new Nexmo(
 
 const Vendor = db.vendor;
 const Service = db.service;
+const Rate =db.rate;
 const VendorService = db.vendorService;
 const Op = db.Sequelize.Op;
 
@@ -129,7 +130,9 @@ exports.get = async (req, res, next) => {
             where: { isActive: true },
             order: [['createdAt', 'DESC']],
             include: [
-            { model: Vendor }]
+            { model: Vendor },
+            {model:Rate},
+            {model:Service}]
         });
         if (vendor) {
             return res.status(httpStatus.CREATED).json({
