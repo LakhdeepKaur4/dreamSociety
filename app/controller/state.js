@@ -4,6 +4,7 @@ const httpStatus = require("http-status")
 
 const State = db.state;
 const Country = db.country;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req, res) => {
     console.log("creating state");

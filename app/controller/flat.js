@@ -5,6 +5,7 @@ const httpStatus = require('http-status')
 const Flat = db.flat;
 const Society = db.society;
 const Size = db.size;
+const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
     console.log("creating flat");

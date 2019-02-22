@@ -4,6 +4,7 @@ const httpStatus = require('http-status')
 const EmployeeDetail = db.employeeDetail;
 const EmployeeType = db.employeeType;
 const EmployeeWorkType = db.employeeWorkType;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req, res, next) => {
     try {

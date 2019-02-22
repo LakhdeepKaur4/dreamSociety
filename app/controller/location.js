@@ -1,14 +1,28 @@
 const db = require('../config/db.config.js');
 const config = require('../config/config.js');
+const httpStatus = require('http-status')
+
 
 const Location = db.location;
 const State = db.state;
 const Country = db.country;
 const City = db.city;
+const Op = db.Sequelize.Op;
 
-exports.create = (req, res) => {
-    console.log("creating city");
+exports.create = async (req, res) => {
+    console.log("creating location");
     let body = req.body;
+    const location = await Location.findOne({
+        where: {
+            [Op.and]: [
+                { locationName: req.body.locationName },
+                { isActive: true }
+            ]
+        }
+    })
+    if (location) {
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Location Name already Exists" })
+    }
     Location.create({
         locationName: body.locationName,
         countryId: body.countryId,

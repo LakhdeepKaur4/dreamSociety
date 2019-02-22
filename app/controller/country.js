@@ -3,6 +3,7 @@ const config = require('../config/config.js');
 const httpStatus = require('http-status');
 
 const Country = db.country;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req, res) => {
     let body = req.body;

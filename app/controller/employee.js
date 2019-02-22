@@ -8,26 +8,29 @@ const Country = db.country;
 const City = db.city;
 const State = db.state;
 const Location = db.location;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req, res, next) => {
     try {
         let body = req.body;
-        console.log("body::::::==>",body)
+        console.log("body::::::==>",body);
         body.userId = req.userId;
         const employee = await Employee.create(body);
         const employeeId = employee.employeeId;
+        // console.log("filess=====>",req.files);
         if (req.files) {
-            for (let i = 0; i < req.files.profilePicture.length; i++) {
-                profileImage = req.files.profilePicture[i].filename;
-            }
+            // for (let i = 0; i < req.files.profilePicture.length; i++) {
+                profileImage = req.files.profilePicture[0].path;
+            // }
             const updateImage = {
                 picture: profileImage
             };
             const imageUpdate = await Employee.find({ where: { employeeId: employeeId } }).then(employee => {
                 return employee.updateAttributes(updateImage)
             })
-            documentOne = req.files.document[0].filename;
-            documentTwo = req.files.document[1].filename;
+            console.log(req.files.documentOne[0].path);
+            documentOne = req.files.documentOne[0].path;
+            documentTwo = req.files.documentTwo[0].path;
             const updateDocument = {
                 documentOne: documentOne,
                 documentTwo: documentTwo
@@ -61,13 +64,82 @@ exports.get = async (req, res, next) => {
         });
         if (employee) {
             return res.status(httpStatus.OK).json({
-                message: "Employee Detail Content Page",
+                message: "Employee Content Page",
                 employee
             });
         }
     } catch (error) {
         console.log(error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.update = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        console.log("id==>", id);
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = req.body;
+
+        console.log("update", update);
+
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        const updatedEmployee = await Employee.find({ where: { employeeId: id } }).then(employee => {
+            return employee.updateAttributes(update)
+        })
+        if (updatedEmployee) {
+            return res.status(httpStatus.OK).json({
+                message: "Employee Updated Page",
+                updatedEmployee
+            });
+        }
+    } catch (error) {
+        console.log("error==>", error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+
+exports.deletePhoto = function (req, res) {
+  Photos.remove({_id: req.params.id}, function(err, photo) {
+    if(err) { 
+       return res.send({status: "200", response: "fail"});
+    }
+    fs.unlink(photo.path, function() {
+      res.send ({
+        status: "200",
+        responseType: "string",
+        response: "success"
+      });     
+    });
+ }); 
+};
+
+exports.delete = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = req.body;
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        const updatedEmployee = await EmployeeDetail.find({ where: { employeeId: id } }).then(employee => {
+            return employee.updateAttributes(update)
+        })
+        if (updatedEmployee) {
+            return res.status(httpStatus.OK).json({
+                message: "Employee deleted successfully",
+                updatedEmployee
+            });
+        }
+    } catch (error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Mysql error' });
     }
 }
 

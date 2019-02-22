@@ -8,6 +8,7 @@ const location = db.location;
 const Country = db.country;
 const State = db.state;
 const User = db.user;
+const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
     console.log("creating society");
@@ -17,6 +18,13 @@ exports.create = (req, res) => {
         countryId: req.body.countryId,
         locationId: req.body.locationId,
         stateId: req.body.stateId,
+        societyAddress: req.body.societyAddress,
+        contactNumber: req.body.contactNumber,
+        registrationNumber: req.body.registrationNumber,
+        totalBoardMembers: req.body.totalBoardMembers,
+        bankName: req.body.bankName,
+        accountHolder: req.body.accountHolder,
+        accountNumber: req.body.accountNumber,
         userId: req.userId,
     }).then(society => {
         res.json({ message: "Society added successfully!", society: society });

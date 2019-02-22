@@ -24,31 +24,20 @@ var app = express();
 var cors = require('cors');
 app.use(cors());
 var bodyParser = require('body-parser');
+const path = require('path');
 var upload = require('express-fileupload');
 console.log('server started');
-
-
-// app.get('/',function(req,res){
-// 	console.log("dirname==>",__dirname);
-// 	res.sendFile(__dirname+"/index.html")
-// })
-
-// app.post('/',(req,res)=>{
-// 	console.log(":in here ==>",req.files)
-// 	if(req.files){
-// 		console.log(req.files);
-// 	}else{
-// 		console.log('no file selected')
-// 	}
-// })
-
-
 
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
 app.use(bodyParser.json());
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/public',express.static(path.resolve(__dirname, 'public')));
+
 // app.use(bodyParser());
 // app.use(upload());
 
