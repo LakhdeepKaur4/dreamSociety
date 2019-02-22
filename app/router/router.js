@@ -32,6 +32,7 @@ module.exports = function(app) {
 	const inventoryController = require('../controller/inventory');
 	const employeeController = require('../controller/employee');
 	const designationController = require('../controller/designation');
+	const societyMemberController = require('../controller/societyMember');
 	
 	app.get('/', userController.start);
 
@@ -340,4 +341,8 @@ module.exports = function(app) {
 	app.put('/api/designation/delete/deleteSelected',[authJwt.verifyToken], designationController.deleteSelected);
 
 	app.put('/api/designation/delete/:id',[authJwt.verifyToken],designationController.delete);
+
+	app.post('/api/societyMember',[authJwt.verifyToken],societyMemberController.create);
+
+	app.get('/api/societyMember',[authJwt.verifyToken],societyMemberController.get);
 }
