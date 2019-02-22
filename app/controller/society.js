@@ -19,7 +19,7 @@ exports.create = (req, res) => {
         locationId: req.body.locationId,
         stateId: req.body.stateId,
         societyAddress: req.body.societyAddress,
-        contactNumber: req.body.contactNumber,
+        contact: req.body.contact,
         registrationNumber: req.body.registrationNumber,
         totalBoardMembers: req.body.totalBoardMembers,
         userId: req.userId,
