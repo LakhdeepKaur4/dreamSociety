@@ -1,5 +1,9 @@
 
-export  const URN = 'http://192.168.1.102:5000/api';
+export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export  const UR = 'https://dreamsociety.herokuapp.com/';
+
+// export  const URN = 'http://192.168.1.103:5000/api';
+
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
@@ -114,13 +118,9 @@ export const GET_SUB_MAINTENANCE_DETAILS = 'GET_SUB_MAINTENANCE_DETAILS';
 export const DELETE_SUB_MAINTENANCE_DETAILS = 'DELETE_SUB_MAINTENANCE_DETAILS';
 export const GET_MAINTENANCE_TYPE = 'GET_MAINTENANCE_TYPE';
 export const UPDATE_SUB_MAINTENANCE_DETAILS = 'UPDATE_SUB_MAINTENANCE_DETAILS';
-<<<<<<< Updated upstream
 export const GET_RATE_TYPE='get_rate_type';
-
-
-=======
 export const GET_EMP ='get_emp';
-export const ADD_EMP='add_emp';
 export const UPDATE_EMP ='update_emp';
-export const DELETE_EMP='delete_emp';
->>>>>>> Stashed changes
+export const DELETE_EMP ='delete_emp';
+export const ADD_EMP ='add_emp';
+

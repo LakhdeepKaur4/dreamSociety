@@ -54,10 +54,6 @@ import InventoryDetails from './containers/inventory/inventoryDetails'
 import MaintenanceMaster from './containers/maintenanceMaster/maintenanceMaster';
 import MaintenanceMasterDetail from './containers/maintenanceMaster/maintenanceMasterDetail';
 import DisplayEmployeeTypeMaster from './containers/employeeTypeMaster/displayEmployeeTypeMaster';
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 import MaintenanceSubMasterForm from './containers/maintenanceSubMaster/maintenanceSubMasterForm';
 import MaintenanceSubMasterDetails from './containers/maintenanceSubMaster/maintenanceSubMasterDetails'
 import EmployeeTypeMaster from './containers/employeeTypeMaster/employeeTypeMaster';

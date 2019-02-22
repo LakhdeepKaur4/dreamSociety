@@ -3,9 +3,12 @@ import {connect} from 'react-redux';
 import  UI from '../../components/newUI/superAdminDashboard';
 import ImageUploader from 'react-images-upload';
 import Spinner from '../../components/spinner/spinner';
-import {getCountryName,getStateName,getCityName, getLocationName,getLocation} from '../../actionCreators/locationMasterAction';
+import {getCountryName,getStateName,getCityName, getLocationName} from '../../actionCreators/locationMasterAction';
 import {AddEmployee} from '../../actionCreators/employeeMasterAction';
 import {bindActionCreators} from 'redux';
+import axios from 'axios';
+import {authHeader} from '../../helper/authHeader';
+import {URN} from'../../actions'
 import _ from 'underscore';
 
 class EmployeeMaster extends Component{
@@ -21,14 +24,17 @@ class EmployeeMaster extends Component{
         cityId: '',
         cityName:'',
         locationName:'',
-        document:'',
-        profilePicture:'',
+        locationId:'',
+        documentOne:null,
+        documentTwo:null,
+        profilePicture:null,
         firstName:'',
         middleName:'',
         lastName:'',
         startDate:'',
         endDate:'',
-        CTC:''
+        CTC:'',
+        file:''
     }
 
     
@@ -40,18 +46,31 @@ class EmployeeMaster extends Component{
 }   
     
 onFileChange=(event)=>{
+console.log('jjjjjjjjjjjj',event);
 
-          this.setState({ document: event.target.files[0]})
-               
-                 
+          this.setState({ documentOne: event.target.files[0]})
+         
      
     
     
   
     }
+
+        
+FileChange=(event)=>{
+  
+    
+              this.setState({ documentTwo: event.target.files[0]})
+             
+                     
+         
+        
+        
+      
+        }
     
     componentDidMount(){
-        this.props.getLocation();
+    
         this.props.getCountryName();
         this.props.getStateName();
         this.props.getCityName();
@@ -59,34 +78,56 @@ onFileChange=(event)=>{
       
     }
     submit=(event)=> {
-       
+        
         event.preventDefault();
+                  
+     
+        console.log("test12332",this.state.documentOne)  
+        console.log("test2321",this.state.documentTwo)   
+          
         const data = new FormData()
-        data.append('my-file', this.state.document, this.state.document.name)
+        data.append('documentOne',this.state.documentOne, this.state.documentOne.name)
+        data.append('documentTwo',this.state.documentTwo, this.state.documentTwo.name)
+        data.append('firstName',this.state.firstName)
+        data.append('middleName',this.state.middleName)
+        data.append('lastName',this.state.lastName)
+        data.append('CTC',this.state.CTC)
+        data.append('startDate',this.state.startDate)
+        data.append('endDate',this.state.endDate)
+        data.append('stateId',this.state.stateId)
+        data.append('countryId',this.state.countryId)
+        data.append('cityId',this.state.cityId)
+        data.append('locationId',this.state.locationId)
+        data.append('profilePicture',this.state.profilePicture)
          console.log(data,"image")
+         
       
-        this.props.AddEmployee({...this.state,data})
-        this.setState({
+          console.log("test12332",this.state.firstName)     
+
+        //   axios.post(`${URN}/employee`,data,{headers:authHeader(),config})
+          
+        this.props.AddEmployee(data)
+    //     this.setState({
             
-    state:{
+    // state:{
  
-        countryId:'',
-        countryName: '',
-        stateId: '',
-        stateName:'',
-        cityId: '',
-        cityName:'',
-        locationName:'',
-        document:'',
-        profilePicture:'',
-        firstName:'',
-        middleName:'',
-        lastName:'',
-        startDate:'',
-        endDate:'',
-        CTC:''
-    }
-        }),
+    //     countryId:'',
+    //     countryName: '',
+    //     stateId: '',
+    //     stateName:'',
+    //     cityId: '',
+    //     cityName:'',
+    //     locationName:'',
+    //     document:'',
+    //     profilePicture:'',
+    //     firstName:'',
+    //     middleName:'',
+    //     lastName:'',
+    //     startDate:'',
+    //     endDate:'',
+    //     CTC:''
+    // }
+    //     }),
         console.log(this.state.countryId,this.state.countryName,   this.state.stateId,   this.state.stateName, this.state.cityId,  this.state.cityName,this.state.locationName, this.state.document,  this.state.profilePicture, this.state.firstName, this.state.middleName,this.state.lastName,this.state.startDate,
             this.state.endDate,
             this.state.CTC)
@@ -184,14 +225,26 @@ onChangeCity=(event)=>{
 }
 
 
-onLocationChange=(e)=>{
-    this.setState({
-        [e.target.name]:e.target.value
-    })
+onLocationChange=(event)=>{
+    let selected= event.target.value
+    console.log(selected)
+        var data3 = _.find(this.props.locationMasterReducer.location,function(obj){
+            return obj.locationName === selected
+            })
+        
+            console.log(data3)
+            this.setState({
+                locationName:data3.locationName,
+                locationId:data3.locationId
+            })
+
+            // this.props.getSociety(data3.locationId)
+
 }
 
 
   getDropdown4=({location})=>{
+      console.log(location)
 if(location){
     return location.map((item)=>{
         return(
@@ -201,6 +254,7 @@ if(location){
 }
   }
 
+ 
     OnKeyPressNumber(event) {
         const pattern = /^[0-9]$/;
         let inputChar = String.fromCharCode(event.charCode);
@@ -220,7 +274,7 @@ form=
 
   <div>
         <label>Upload Your Image</label>
-        <input type="file" accept ="application/.doc" name="document" onChange={this.onPicChange}/>
+        <input type="file" accept ="image/*" name="file" onChange={this.onPicChange}/>
     </div>
 
     <div className="row">
@@ -252,7 +306,7 @@ form=
     <div>
     <div>
                         <label>Country Name</label>
-                        <select  required className ="form-control" name="countryName"  onChange={this.onChangeCountry} >
+                        <select   className ="form-control" name="countryName"  onChange={this.onChangeCountry} >
                         <option value="" disabled selected>--Select--</option>
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
@@ -262,21 +316,21 @@ form=
 
                     <div>    
                         <label>State Name</label>
-                        <select  required className ="form-control" name="stateName" onChange={this.onChangeState}>
+                        <select  className ="form-control" name="stateName" onChange={this.onChangeState}>
                         <option value="" disabled selected>--Select--</option>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
                     </div>
                     <div>    
                         <label>City Name</label>
-                        <select  required className ="form-control"  name="cityName" onChange={this.onChangeCity} >
+                        <select  className ="form-control"  name="cityName" onChange={this.onChangeCity} >
                         <option value="" disabled selected>--Select--</option>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
                     </div>
                     <div>    
                         <label>location</label>
-                        <select  required className ="form-control"   onChange={this.onChangeLocation} >
+                        <select  className ="form-control"   onChange={this.onLocationChange} >
                         <option value="" disabled selected>--Select--</option>
                             {this.getDropdown4(this.props.locationMasterReducer)}
                         </select>
@@ -291,7 +345,7 @@ form=
             name="startDate"
             placeholder=" event start date"
             onChange={this.onChange}
-            required
+            
           />
         </div>
 
@@ -303,20 +357,19 @@ form=
             name="endDate"
             placeholder="event end date"
             onChange={this.onChange}
-            required
+            
           />
           </div>
           </div>
         <label> upload your ID</label>
-        <input  accept='image/*' type="file"  name ="profilePicture" onChange={this.onFileChange}/>
+        <input  accept='.docx,application/pdf' type="file"      name ="documentOne" onChange={this.onFileChange}/>
     </div>
-    {/* <ImageUploader
-                withIcon={true}
-                buttonText='Choose images'
-                onChange={this.onSelect}
-                imgExtension={['.jpg', '.gif', '.png', '.gif']}
-                maxFileSize={5242880}
-            /> */}
+  
+    <div>
+        <label> upload your ID</label>
+        <input  accept='.docx,application/pdf' type="file"       name ="documentTwo" onChange={this.FileChange}/>
+    </div>
+   
 
     <button className="btn btn-success mr-2">Submit</button>
     <button className="btn btn-primary">Display Employee Master</button>
@@ -347,6 +400,6 @@ function mapStateToProps(state){
  }
 }
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({AddEmployee,getCountryName,getStateName,getCityName,getLocationName,getLocation},dispatch)
+    return bindActionCreators({AddEmployee,getCountryName,getStateName,getCityName,getLocationName},dispatch)
 }
 export default connect(mapStateToProps,mapDispatchToProps)(EmployeeMaster)

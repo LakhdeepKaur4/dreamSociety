@@ -78,6 +78,7 @@ class AssetsTypeSubMaster extends Component {
 
     render() {
         let formData;
+        
         formData = 
             <div>
                 <div>
