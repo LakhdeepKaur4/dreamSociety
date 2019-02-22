@@ -8,13 +8,25 @@ module.exports = (sequelize, Sequelize) => {
         societyMemberName: {
             type: Sequelize.STRING
         },
-        societyMemberAddress: {
+        currentAddress: {
+            type: Sequelize.STRING
+        },
+        permanentAddress: {
             type: Sequelize.STRING
         },
         contactNumber: {
             type: Sequelize.STRING
         },
         panCardNumber:{
+            type: Sequelize.STRING
+        },
+        bankName: {
+            type: Sequelize.STRING
+		},
+		accountHolderName: {
+            type: Sequelize.STRING
+		},
+		accountNumber: {
             type: Sequelize.STRING
         },
         isActive: {

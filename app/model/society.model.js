@@ -19,6 +19,15 @@ module.exports = (sequelize, Sequelize) => {
         },
         totalBoardMembers: {
             type: Sequelize.STRING
+		},
+		bankName: {
+            type: Sequelize.STRING
+		},
+		accountHolderName: {
+            type: Sequelize.STRING
+		},
+		accountNumber: {
+            type: Sequelize.STRING
         },
 		isActive: {
 			type: Sequelize.BOOLEAN,

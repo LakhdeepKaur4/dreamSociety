@@ -22,6 +22,9 @@ exports.create = (req, res) => {
         contactNumber: req.body.contactNumber,
         registrationNumber: req.body.registrationNumber,
         totalBoardMembers: req.body.totalBoardMembers,
+        bankName: req.body.bankName,
+        accountHolder: req.body.accountHolder,
+        accountNumber: req.body.accountNumber,
         userId: req.userId,
     }).then(society => {
         res.json({ message: "Society added successfully!", society: society });
