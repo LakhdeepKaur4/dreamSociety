@@ -54,7 +54,6 @@ import InventoryDetails from './containers/inventory/inventoryDetails'
 import MaintenanceMaster from './containers/maintenanceMaster/maintenanceMaster';
 import MaintenanceMasterDetail from './containers/maintenanceMaster/maintenanceMasterDetail';
 import DisplayEmployeeTypeMaster from './containers/employeeTypeMaster/displayEmployeeTypeMaster';
-
 import MaintenanceSubMasterForm from './containers/maintenanceSubMaster/maintenanceSubMasterForm';
 import MaintenanceSubMasterDetails from './containers/maintenanceSubMaster/maintenanceSubMasterDetails'
 import DesignationMaster from './containers/designationMaster/designationMaster';
