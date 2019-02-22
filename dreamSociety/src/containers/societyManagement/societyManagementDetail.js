@@ -23,6 +23,10 @@ class SocietyManagementDetail extends Component {
                 locationId: '',
                 societyId: '',
                 societyName: '',
+                societyAddress:'',
+                contactNumber:'',
+                registrationNumber:'',
+                totalBoardMembers:'',
                 isActive:false,
 
             },
@@ -48,7 +52,7 @@ class SocietyManagementDetail extends Component {
         }
     }
 
-    toggle = (societyId, countryName, stateName, cityName, locationName, societyName) => {
+    toggle = (societyId, countryName, stateName, cityName, locationName, societyName, societyAddress, contactNumber,registrationNumber,totalBoardMembers) => {
 
         this.setState({
             societyId,
@@ -57,6 +61,10 @@ class SocietyManagementDetail extends Component {
             cityName,
             locationName,
             societyName,
+            societyAddress,
+            contactNumber,
+            registrationNumber,
+            totalBoardMembers,
             
             modal: !this.state.modal
         })
@@ -80,23 +88,39 @@ class SocietyManagementDetail extends Component {
 
 
     editSocietyType = () => {
-        const { societyId, countryId, stateId, cityId, locationId, societyName } = this.state
+        const { societyId, countryId, stateId, cityId, locationId, societyName, societyAddress, contactNumber, registrationNumber,totalBoardMembers } = this.state
 
         let errors={};
 
         if(this.state.societyName === ''){
             errors.societyName="Society Name can't be empty"
         }
+
+        if(this.state.societyAddress === ''){
+            errors.societyAddress="Society Address can't be empty"
+        }
+
+        if(this.state.contactNumber === ''){
+            errors.contactNumber="Society Contact No. can't be empty"
+        }
+        if(this.state.registrationNumber === ''){
+            errors.registrationNumber="Registration No. can't be empty"
+        }
+
+        if(this.state.totalBoardMembers === ''){
+            errors.totalBoardMembers="Total Board Members can't be empty"
+        }
+
         this.setState({errors})
 
         const isValid= Object.keys(errors).length === 0
 
         if(isValid){
             this.setState({loading:true})
-        this.props.updateSociety(societyId, countryId, stateId, cityId, locationId, societyName)
+        this.props.updateSociety(societyId, countryId, stateId, cityId, locationId, societyName,  societyAddress, contactNumber, registrationNumber,totalBoardMembers)
             .then(() => this.refreshData())
         this.setState({
-            editSocietyData: { societyId, countryId, stateId, cityId, locationId, societyName },
+            editSocietyData: { societyId, countryId, stateId, cityId, locationId, societyName,  societyAddress, contactNumber, registrationNumber,totalBoardMembers },
             modal: !this.state.modal
         })
       }
@@ -190,8 +214,21 @@ class SocietyManagementDetail extends Component {
                         <td>{item.state_master.stateName}</td>
                         <td>{item.city_master.cityName}</td>
                         <td>{item.location_master.locationName}</td>
+                        <td>{item.societyAddress}</td>
+                        <td>{item.contactNumber}</td>
+                        <td>{item.registrationNumber}</td>
+                        <td>{item.totalBoardMembers}</td>
                             <td>
-                                <Button color="success mr-2" onClick={this.toggle.bind(this, item.societyId, item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, item.societyName)} >Edit</Button>
+                                <Button color="success mr-2" onClick={this.toggle.bind(this, 
+                                    item.societyId, 
+                                    item.country_master.countryName, 
+                                    item.state_master.stateName,
+                                    item.city_master.cityName, 
+                                    item.location_master.locationName, 
+                                    item.societyName,item.societyAddress, 
+                                    item.contactNumber,
+                                    item.registrationNumber,
+                                    item.totalBoardMembers)} >Edit</Button>
                             
                                 <Button color="danger" onClick={this.deleteSocietyName.bind(this, item.societyId)} >Delete</Button>
                             </td>
@@ -272,7 +309,11 @@ class SocietyManagementDetail extends Component {
                 x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) ||
                 x.state_master.stateName.toLowerCase().includes(search.toLowerCase()) ||
                 x.city_master.cityName.toLowerCase().includes(search.toLowerCase()) ||
-                x.location_master.locationName.toLowerCase().includes(search.toLowerCase())
+                x.location_master.locationName.toLowerCase().includes(search.toLowerCase()) ||
+                x.societyAddress.toLowerCase().includes(search.toLowerCase()) ||
+                x.contactNumber.toLowerCase().includes(search.toLowerCase()) ||
+                x.registrationNumber.toLowerCase().includes(search.toLowerCase()) ||
+                x.totalBoardMembers.toLowerCase().includes(search.toLowerCase()) 
                 || !search;
         }
     }
@@ -315,6 +356,10 @@ class SocietyManagementDetail extends Component {
                     <th>State Name</th>
                     <th>City Name</th>
                     <th>Location Name</th>
+                    <th>Society Address</th>
+                    <th>ContactNo.</th>
+                    <th>RegistrationNo.</th>
+                    <th>Total Board Members</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -404,7 +449,28 @@ class SocietyManagementDetail extends Component {
                             <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName}  maxLength={50}/>
                             <span className="error">{this.state.errors.societyName}</span> 
                         </FormGroup>
-                   
+                        
+                        <FormGroup>
+                            <Label>Society Address</Label>
+                            <Input type="text"  name="societyAddress" onChange={this.onChangeHandler} value={this.state.societyAddress}  maxLength={50}/>
+                            <span className="error">{this.state.errors.societyAddress}</span> 
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Contact Number</Label>
+                            <Input type="text"  name="contactNumber" onChange={this.onChangeHandler} value={this.state.contactNumber}  maxLength={50}/>
+                            <span className="error">{this.state.errors.contactNumber}</span> 
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Registration Number</Label>
+                            <Input type="text"  name="registrationNumber" onChange={this.onChangeHandler} value={this.state.registrationNumber}  maxLength={50}/>
+                            <span className="error">{this.state.errors.registrationNumber}</span> 
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label>Total Board Members</Label>
+                            <Input type="text"  name="totalBoardMembers" onChange={this.onChangeHandler} value={this.state.totalBoardMembers}  maxLength={50}/>
+                            <span className="error">{this.state.errors.totalBoardMembers}</span> 
+                        </FormGroup>
                         <Button color="primary mr-2" onClick={this.editSocietyType}>Save</Button> 
 
                         <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
