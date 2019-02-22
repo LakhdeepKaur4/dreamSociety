@@ -50,7 +50,6 @@ exports.create = async (req, res, next) => {
             vendorName: body.vendorName,
             permanentAddress: body.permanentAddress,
             currentAddress: body.currentAddress,
-            picture: body.picture,
             contact: body.contact,
             userId: req.userId,
             // document: body.document
