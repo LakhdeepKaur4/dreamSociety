@@ -111,10 +111,7 @@ db.employee.belongsTo(db.city,{foreignKey:'cityId'});
 db.employee.belongsTo(db.location,{foreignKey:'locationId'});
 db.designation.belongsTo(db.user,{foreignKey:'userId'});
 db.societyMember.belongsTo(db.user,{foreignKey:'userId'});
-db.societyMember.belongsTo(db.country,{foreignKey:'countryId'});
-db.societyMember.belongsTo(db.state,{foreignKey:'stateId'});
-db.societyMember.belongsTo(db.city,{foreignKey:'cityId'});
-db.societyMember.belongsTo(db.location,{foreignKey:'locationId'});
+db.societyMember.belongsTo(db.society,{foreignKey:'societyId'});
 db.societyMember.belongsTo(db.designation,{foreignKey:'designationId'});
 
 module.exports = db;

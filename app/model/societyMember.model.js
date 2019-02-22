@@ -14,7 +14,7 @@ module.exports = (sequelize, Sequelize) => {
         contactNumber: {
             type: Sequelize.STRING
         },
-        bankDetails: {
+        panCardNumber:{
             type: Sequelize.STRING
         },
         isActive: {

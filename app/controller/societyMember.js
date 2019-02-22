@@ -3,10 +3,7 @@ const config = require('../config/config.js');
 const httpStatus = require('http-status');
 
 const SocietyMember = db.societyMember;
-const City = db.city;
-const Location = db.location;
-const Country = db.country;
-const State = db.state;
+const Society = db.society;
 const Designation = db.designation;
 const Op = db.Sequelize.Op;
 
@@ -32,11 +29,8 @@ exports.get = async (req, res, next) => {
             where: { isActive: true },
             order: [['createdAt', 'DESC']],
             include: [
-               {model:Country},
-               {model:State},
-               {model:City},
-               {model:Location},
                {model:Designation},
+               {model:Society},
             ]
         });
         if (societyMember) {
