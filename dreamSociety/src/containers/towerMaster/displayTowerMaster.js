@@ -14,7 +14,8 @@ class DisplayTowerMaster extends Component {
 
       towerId: [],
       towerName: [],
-      isActive:false
+      isActive:false,
+      isChecked: false 
     },
     editTowerModal: false,
     menuVisible: false,
@@ -88,11 +89,13 @@ this.setState({loading:true});
   TowerMasterDetails({ tower }) {
 
     if (tower) {
+
       return tower.filter(this.searchFilter(this.state.search)).map((item,index) => {
+      
         return (
 
           <tr key={item.towerId}>
-
+             <td>  <input type="checkbox"  value="checkedall" /></td>
             <td>{index+1}</td>
             <td>{item.towerName}</td>
             <td>
@@ -100,10 +103,13 @@ this.setState({loading:true});
               <button className="btn btn-danger" onClick={this.deleteTower.bind(this, item.towerId)}>delete</button>
             </td>
           </tr>
-
+         
         )
+
       })
+ 
     }
+  
   }
 
 
@@ -127,11 +133,14 @@ close=()=>{
 
   render() {
      let tableData;
+ 
      tableData=<Table    className="table table-bordered">
    
               <thead>
                 <tr>
+                <input type="checkbox"  value="checkedall" />
                   <th> #</th>
+                  
                   <th>Tower Name</th>
 
                   <th> Actions  </th>

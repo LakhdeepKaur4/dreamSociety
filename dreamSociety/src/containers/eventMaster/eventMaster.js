@@ -4,7 +4,7 @@ import { AddEvent, GetEventOrganiser } from '../../actionCreators/eventMasterAct
 import { bindActionCreators } from 'redux';
 import { Input } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
-
+import DefaultSelect from '../../constants/defaultSelect'
 import Spinner from '../../components/spinner/spinner';
 import './event.css';
 
@@ -99,7 +99,7 @@ this.setState({loading:true})
   render() {
 
     let form1 ;
-    if(!this.state.loading && this.props.EventDetails.events){
+    if(!this.state.loading  &&this.props.EventDetails.events){
     form1=
     <div >
      
@@ -168,9 +168,10 @@ this.setState({loading:true})
             name="eventOrganiser"
             value={this.state.userId}
             onChange={this.onChange}
+            defaultValue='no-value'
             required
           >
-            <option > --Select--</option>
+           <DefaultSelect/>
             {this.getEvent(this.props.EventDetails)}
           </Input>
         </div>
@@ -188,6 +189,7 @@ this.setState({loading:true})
     return (
       <div>
     <UI onClick={this.logout}>
+  
              {form1}   
         
        </UI>

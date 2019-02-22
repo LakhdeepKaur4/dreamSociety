@@ -117,16 +117,17 @@ export const DELETE_SUB_MAINTENANCE_DETAILS = 'DELETE_SUB_MAINTENANCE_DETAILS';
 export const DELETE_MULTIPLE_SUB_MAINTENANCE_DETAILS = 'DELETE_MULTIPLE_SUB_MAINTENANCE_DETAILS';
 export const GET_MAINTENANCE_TYPE = 'GET_MAINTENANCE_TYPE';
 export const UPDATE_SUB_MAINTENANCE_DETAILS = 'UPDATE_SUB_MAINTENANCE_DETAILS';
+export const GET_RATE_TYPE='get_rate_type';
 export const DELETE_SELECTEDSOCIETY='DELETE_SELECTEDSOCIETY';
 
-export const GET_RATE_TYPE='get_rate_type';
 export const DELETE_SERVICE_IDS='get_service_ids';
 export const DELETE_FLAT_DETAIL_IDS='delete_flat_detail_ids';
 export const DELETE_LOCATION_IDS='delete_location_ids';
 
 export const GET_EMP ='get_emp';
-export const ADD_EMP='add_emp';
 export const UPDATE_EMP ='update_emp';
+export const ADD_EMP ='add_emp';
+
 export const DELETE_EMP='delete_emp';
 export const DELETE_SELECTEDCITY='DELETE_SELECTEDCITY';
 export const DELETE_MULTIPLE_ASSETS_SUB_LIST='delete_multiple_assets_sub_list';
