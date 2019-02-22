@@ -250,7 +250,7 @@ class displayServices extends Component {
                 <th>Service Details</th>
                 <th>Actions</th>
                 
-             
+            
             </tr>
         </thead>
 
