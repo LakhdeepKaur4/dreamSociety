@@ -1,4 +1,4 @@
-import {ADD_EMP,GET_EMP} from '../../actions/index'
+import {ADD_EMP,GET_EMP,GET_LOCATION_DETAIL} from '../../actions/index'
 
   export default function(state={}, action){
       switch(action.type){
@@ -7,7 +7,9 @@ import {ADD_EMP,GET_EMP} from '../../actions/index'
           return {...state,employee:action.payload}
           case GET_EMP:
           return {...state,getEmployee:action.payload}
-         
+           
+    case GET_LOCATION_DETAIL:
+    return {  ...state, locationResult: action.payload};
            default: 
            return state;
       }

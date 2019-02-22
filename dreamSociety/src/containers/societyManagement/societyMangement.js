@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import {getCountry,getState,getCity,getLocation,postSociety,getSociety} from '../../actionCreators/societyMasterAction';
 import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard';
-import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
+import {Form, Button,  FormGroup,  Input, Label, Row, Col } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner'
 import DefaultSelect from '../../constants/defaultSelect';
 
@@ -28,6 +28,11 @@ class SocietyMangement extends Component {
             locationId:'',
             societyName:'',
             societyAddress:'',
+            bankName:'',
+            accountHolderName:'',
+            accountNumber:'',
+            IFSCCode:'',
+            email:'',
             contactNumber:'',
             registrationNumber:'',
             totalBoardMembers:'',
@@ -50,8 +55,7 @@ class SocietyMangement extends Component {
            this.props.getState()
            this.props.getCity()
            this.props.getLocation()
-           this.props.getSociety()
-                       
+           this.props.getSociety()              
     }
 
     refreshData=()=>{
@@ -231,6 +235,33 @@ class SocietyMangement extends Component {
         if (this.state.societyName === '') errors.societyName = "cant be empty";
         this.setState({ errors });
 
+        if (this.state.societyAddress === '') errors.societyAddress = "cant be empty";
+        this.setState({ errors });
+
+        if (this.state.bankName === '') errors.bankName = "cant be empty";
+        this.setState({ errors });
+
+        if (this.state.accountHolderName === '') errors.accountHolderName = "cant be empty";
+        this.setState({ errors });
+
+        if (this.state.accountNumber === '') errors.accountNumber = "cant be empty";
+        this.setState({ errors });
+
+        if (this.state.IFSCCode === '') errors.IFSCCode = "cant be empty";
+        this.setState({ errors });
+
+        if (this.state.email === '') errors.email = "cant be empty";
+        this.setState({ errors });
+
+        if (this.state.contactNumber === '') errors.contactNumber = "cant be empty";
+        this.setState({ errors });
+
+        if (this.state.registrationNumber === '') errors.registrationNumber = "cant be empty";
+        this.setState({ errors });
+
+        if (this.state.totalBoardMembers === '') errors.totalBoardMembers = "cant be empty";
+        this.setState({ errors });
+
 
 
         const isValid = Object.keys(errors).length === 0;
@@ -253,6 +284,11 @@ class SocietyMangement extends Component {
             locationId:'',
             societyName:'',
             societyAddress:'',
+            bankName:'',
+            accountHolderName:'',
+            accountNumber:'',
+            IFSCCode:'',
+            email:'',
             contactNumber:'',
             registrationNumber:'',
             totalBoardMembers:'',
@@ -275,13 +311,22 @@ class SocietyMangement extends Component {
         this.props.history.push('/superDashboard/societyManagementDetail');
     }
 
-    OnKeyPressUserhandler(event) {
-        const pattern = /^[a-zA-Z]+$/;
+    onKeyPressHandler=(event)=> {
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
         }
     }
+
+    OnKeyPresshandlerPhone(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
        
     close=()=>{
         return this.props.history.replace('/superDashBoard')
@@ -290,79 +335,142 @@ class SocietyMangement extends Component {
 
 
     render() {
+        console.clear();
         let form;
         if(!this.state.loading && this.props.societyReducer.countryResult && this.props.societyReducer.stateResult && this.props.societyReducer.cityResult && this.props.societyReducer.locationResult && this.state.errors){
             form= <div>
             
             <FormGroup>
-            <Label><h4>Society Name</h4></Label>
-            <Input placeholder="Society Name" type="text" name="societyName" value={this.state.societyName} onChange={this.onChange} maxLength={30}/>
+            <Label>Society Name</Label>
+            <Input placeholder="Society Name" type="text" name="societyName" onChange={this.onChange} maxLength={30}/>
              <span className='error'>{this.state.errors.societyName}</span>
            </FormGroup>
-
+           
+           <Row form>
+            <Col md={6}>
             <FormGroup>
-            <Label><h4>Country Name</h4></Label>
-            <Input type="select" defaultValue='no-value' name="countryName"  onChange={this.onChangeCountry} required>
+            <Label>Country Name</Label>
+            <Input type="select" defaultValue='no-value' name="countryName"  onChange={this.onChangeCountry} >
                 <DefaultSelect/>
                 {this.countryName(this.props.societyReducer)}
             </Input>
             <span className='error'>{this.state.errors.countryName}</span>
         </FormGroup>
-
+        </Col>
+        
+            <Col md={6}>
         <FormGroup>
-            <Label><h4>State Name</h4></Label>
-            <Input type="select" defaultValue='no-value' name="stateName"   onChange={this.onChangeState} required>
+            <Label>State Name</Label>
+            <Input type="select" defaultValue='no-value' name="stateName"   onChange={this.onChangeState} >
            <DefaultSelect/>
                 {this.stateName(this.props.societyReducer)}
             </Input>
              <span className='error'>{this.state.errors.stateName}</span>
         </FormGroup>
-
+        </Col>
+        </Row>
+         
+        <Row form>
+            <Col md={6}>
         <FormGroup>
-            <Label><h4>City Name</h4></Label>
-            <Input type="select" defaultValue='no-value' name="cityName"  onChange={this.onChangeCity} required>
+            <Label>City Name</Label>
+            <Input type="select" defaultValue='no-value' name="cityName"  onChange={this.onChangeCity}>
            <DefaultSelect/>
                 {this.cityName(this.props.societyReducer)}  
             </Input>
             <span className='error'>{this.state.errors.cityName}</span>
         </FormGroup>
-
+        </Col>
+        
+        <Col md={6}>
         <FormGroup>
-            <Label><h4>Location Name</h4></Label>
-            <Input type="select" defaultValue='no-value' name="locationName"  onChange={this.onChangeLocation} required>
+            <Label>Location Name</Label>
+            <Input type="select" defaultValue='no-value' name="locationName"  onChange={this.onChangeLocation}>
                <DefaultSelect/>
                 {this.locationName(this.props.societyReducer)}
             </Input>
             <span className='error'>{this.state.errors.locationName}</span>
         </FormGroup>
+        </Col>
+        </Row>
 
         <FormGroup>
-            <Label><h4>Society Address</h4></Label>
-            <Input placeholder="Society Address" type="text" name="societyAddress" value={this.state.societyAddress} onChange={this.onChange} maxLength={30}/>
+            <Label>Society Address</Label>
+            <Input placeholder="Society Address" type="textarea" name="societyAddress"  onChange={this.onChange}  onKeyPress={this.onKeyPressHandler} maxLength={300}/>
              <span className='error'>{this.state.errors.societyAddress}</span>
         </FormGroup>
-
-           
+        
+        <Row form>
+            <Col md={6}>
         <FormGroup>
-            <Label><h4>Society Contact No.</h4></Label>
-            <Input placeholder="Society Contact No." type="text" name="contactNumber" value={this.state.contactNumber} onChange={this.onChange} maxLength={10}/>
+            <Label>Bank Name</Label>
+            <Input placeholder="Bank Name" type="text" name="bankName"  onChange={this.onChange}  onKeyPress={this.onKeyPressHandler} maxLength={300}/>
+             <span className='error'>{this.state.errors.bankName}</span>
+        </FormGroup>
+        </Col>
+        
+        <Col md={6}>
+        <FormGroup>
+            <Label>IFSC Code</Label>
+            <Input placeholder="IFSC Code" type="text" name="IFSCCode"  onChange={this.onChange}   maxLength={20}/>
+             <span className='error'>{this.state.errors.IFSCCode}</span>
+        </FormGroup>
+        </Col>
+        </Row>
+        
+        
+        
+        <FormGroup>
+            <Label>Account Holder Name</Label>
+            <Input placeholder="Account Holder Name" type="text" name="accountHolderName"  onChange={this.onChange}  onKeyPress={this.onKeyPressHandler} maxLength={30}/>
+             <span className='error'>{this.state.errors.accountHolderName}</span>
+        </FormGroup>
+
+        <FormGroup>
+            <Label>Account Number</Label>
+            <Input placeholder="Account Number" type="text" name="accountNumber"  onChange={this.onChange}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={30}/>
+             <span className='error'>{this.state.errors.accountNumber}</span>
+        </FormGroup>
+
+       
+         
+        <Row form>
+            <Col md={6}>
+        <FormGroup>
+            <Label>Email Id</Label>
+            <Input placeholder="Email Id" type="email" name="email"  onChange={this.onChange}   maxLength={30}/>
+             <span className='error'>{this.state.errors.email}</span>
+        </FormGroup>
+        </Col>
+
+
+        <Col md={6}>
+        <FormGroup>
+            <Label>Contact No.</Label>
+            <Input placeholder="Contact No." type="text" name="contactNumber" value={this.state.contactNumber} onChange={this.onChange} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10}/>
              <span className='error'>{this.state.errors.contactNumber}</span>
         </FormGroup>
+        </Col>
+        </Row>
         
 
-            
+        <Row form>
+            <Col md={6}>
         <FormGroup>
-            <Label><h4>Society Registration No.</h4></Label>
-            <Input placeholder="Society Registration No." type="text" name="registrationNumber" value={this.state.registrationNumber} onChange={this.onChange} maxLength={30}/>
+            <Label>Society Registration No.</Label>
+            <Input placeholder="Society Registration No." type="text" name="registrationNumber" value={this.state.registrationNumber} onChange={this.onChange}  maxLength={100}/>
              <span className='error'>{this.state.errors.registrationNumber}</span>
         </FormGroup>
+        </Col>
 
-
+        <Col md={6}>
         <FormGroup>
-            <Label><h4>Total Board Member</h4></Label>
-            <Input placeholder="Total Board Member" type="text" name="totalBoardMembers" value={this.state.totalBoardMembers} onChange={this.onChange} maxLength={30}/>
+            <Label>Total Board Members</Label>
+            <Input placeholder="Total Board Members" type="text" name="totalBoardMembers" value={this.state.totalBoardMembers} onChange={this.onChange} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10}/>
              <span className='error'>{this.state.errors.totalBoardMembers}</span>
         </FormGroup>
+        </Col>
+        </Row>
 
     
       

@@ -24,6 +24,11 @@ class SocietyManagementDetail extends Component {
                 societyId: '',
                 societyName: '',
                 societyAddress:'',
+                bankName:'',
+                accountHolderName:'',
+                accountNumber:'',
+                IFSCCode:'',
+                email:'',
                 contactNumber:'',
                 registrationNumber:'',
                 totalBoardMembers:'',
@@ -52,7 +57,15 @@ class SocietyManagementDetail extends Component {
         }
     }
 
-    toggle = (societyId, countryName, stateName, cityName, locationName, societyName, societyAddress, contactNumber,registrationNumber,totalBoardMembers) => {
+    onKeyPressHandler=(event)=> {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    toggle = (societyId, countryName, stateName, cityName, locationName, societyName, societyAddress, bankName, accountHolderName, accountNumber,IFSCCode, email, contactNumber,registrationNumber,totalBoardMembers) => {
 
         this.setState({
             societyId,
@@ -62,6 +75,11 @@ class SocietyManagementDetail extends Component {
             locationName,
             societyName,
             societyAddress,
+            bankName,
+            accountHolderName,
+            accountNumber,
+            IFSCCode,
+            email,
             contactNumber,
             registrationNumber,
             totalBoardMembers,
@@ -88,7 +106,7 @@ class SocietyManagementDetail extends Component {
 
 
     editSocietyType = () => {
-        const { societyId, countryId, stateId, cityId, locationId, societyName, societyAddress, contactNumber, registrationNumber,totalBoardMembers } = this.state
+        const { societyId, countryId, stateId, cityId, locationId, societyName, societyAddress, bankName, accountHolderName, accountNumber,IFSCCode, email, contactNumber, registrationNumber,totalBoardMembers } = this.state
 
         let errors={};
 
@@ -99,6 +117,32 @@ class SocietyManagementDetail extends Component {
         if(this.state.societyAddress === ''){
             errors.societyAddress="Society Address can't be empty"
         }
+
+        
+        if(this.state.bankName === ''){
+            errors.bankName="Bank Name can't be empty"
+        }
+        
+        
+        if(this.state.accountHolderName === ''){
+            errors.accountHolderName="Account Holder Name can't be empty"
+        }
+        
+        
+        if(this.state.accountNumber === ''){
+            errors.accountNumber="Account Number can't be empty"
+        }
+        
+        
+        if(this.state.IFSCCode === ''){
+            errors.IFSCCode="IFSC Code can't be empty"
+        }
+        
+        
+        if(this.state.email === ''){
+            errors.email="Email Id can't be empty"
+        }
+
 
         if(this.state.contactNumber === ''){
             errors.contactNumber="Society Contact No. can't be empty"
@@ -117,10 +161,10 @@ class SocietyManagementDetail extends Component {
 
         if(isValid){
             this.setState({loading:true})
-        this.props.updateSociety(societyId, countryId, stateId, cityId, locationId, societyName,  societyAddress, contactNumber, registrationNumber,totalBoardMembers)
+        this.props.updateSociety(societyId, countryId, stateId, cityId, locationId, societyName,  societyAddress, bankName, accountHolderName, accountNumber,IFSCCode, email, contactNumber, registrationNumber,totalBoardMembers)
             .then(() => this.refreshData())
         this.setState({
-            editSocietyData: { societyId, countryId, stateId, cityId, locationId, societyName,  societyAddress, contactNumber, registrationNumber,totalBoardMembers },
+            editSocietyData: { societyId, countryId, stateId, cityId, locationId, societyName,  societyAddress, bankName, accountHolderName, accountNumber,IFSCCode, email, contactNumber, registrationNumber,totalBoardMembers },
             modal: !this.state.modal
         })
       }
@@ -199,7 +243,7 @@ class SocietyManagementDetail extends Component {
                                 }
                             }
                             else {
-                                console.log(this.state.ids,"gfhdsfhqwgfgshq")
+                               
                                 this.setState({ids: [...this.state.ids, societyId]});
                                 
                                 if(this.state.ids.length >= 0){
@@ -215,6 +259,11 @@ class SocietyManagementDetail extends Component {
                         <td>{item.city_master.cityName}</td>
                         <td>{item.location_master.locationName}</td>
                         <td>{item.societyAddress}</td>
+                        <td>{item.bankName}</td>
+                        <td>{item.accountHolderName}</td>
+                        <td>{item.accountNumber}</td>
+                        <td>{item.IFSCCode}</td>
+                        <td>{item.email}</td>
                         <td>{item.contactNumber}</td>
                         <td>{item.registrationNumber}</td>
                         <td>{item.totalBoardMembers}</td>
@@ -225,7 +274,13 @@ class SocietyManagementDetail extends Component {
                                     item.state_master.stateName,
                                     item.city_master.cityName, 
                                     item.location_master.locationName, 
-                                    item.societyName,item.societyAddress, 
+                                    item.societyName,
+                                    item.societyAddress,
+                                    item.bankName,
+                                    item.accountHolderName,
+                                    item.accountNumber,
+                                    item.IFSCCode,
+                                    item.email, 
                                     item.contactNumber,
                                     item.registrationNumber,
                                     item.totalBoardMembers)} >Edit</Button>
@@ -311,6 +366,11 @@ class SocietyManagementDetail extends Component {
                 x.city_master.cityName.toLowerCase().includes(search.toLowerCase()) ||
                 x.location_master.locationName.toLowerCase().includes(search.toLowerCase()) ||
                 x.societyAddress.toLowerCase().includes(search.toLowerCase()) ||
+                x.bankName.toLowerCase().includes(search.toLowerCase()) ||
+                x.accountHolderName.toLowerCase().includes(search.toLowerCase()) ||
+                x.accountNumber.toLowerCase().includes(search.toLowerCase()) ||
+                x.IFSCCode.toLowerCase().includes(search.toLowerCase()) ||
+                x.email.toLowerCase().includes(search.toLowerCase()) ||
                 x.contactNumber.toLowerCase().includes(search.toLowerCase()) ||
                 x.registrationNumber.toLowerCase().includes(search.toLowerCase()) ||
                 x.totalBoardMembers.toLowerCase().includes(search.toLowerCase()) 
@@ -357,6 +417,11 @@ class SocietyManagementDetail extends Component {
                     <th>City Name</th>
                     <th>Location Name</th>
                     <th>Society Address</th>
+                    <th>Bank Name</th>
+                    <th>Account Holder Name</th>
+                    <th>Account Number</th>
+                    <th>IFSC Code</th>
+                    <th>Email Id</th>
                     <th>ContactNo.</th>
                     <th>RegistrationNo.</th>
                     <th>Total Board Members</th>
@@ -371,7 +436,7 @@ class SocietyManagementDetail extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top">
+                <div className="w3-container w3-margin-top w3-responsive">
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
         <span aria-hidden="true">&times;</span>
    </div>
@@ -452,9 +517,40 @@ class SocietyManagementDetail extends Component {
                         
                         <FormGroup>
                             <Label>Society Address</Label>
-                            <Input type="text"  name="societyAddress" onChange={this.onChangeHandler} value={this.state.societyAddress}  maxLength={50}/>
+                            <Input type="textarea"  name="societyAddress" onChange={this.onChangeHandler} value={this.state.societyAddress}  maxLength={500}/>
                             <span className="error">{this.state.errors.societyAddress}</span> 
                         </FormGroup>
+
+                        <FormGroup>
+                            <Label>Bank Name</Label>
+                            <Input type="text"  name="bankName" onChange={this.onChangeHandler} value={this.state.bankName}  maxLength={30}/>
+                            <span className="error">{this.state.errors.bankName}</span> 
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label>Account Holder Name</Label>
+                            <Input type="text"  name="accountHolderName" onChange={this.onChangeHandler} value={this.state.accountHolderName}  maxLength={50}/>
+                            <span className="error">{this.state.errors.accountHolderName}</span> 
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label>Account Number</Label>
+                            <Input type="text"  name="accountNumber" onChange={this.onChangeHandler} value={this.state.accountNumber}  maxLength={50}/>
+                            <span className="error">{this.state.errors.accountNumber}</span> 
+                        </FormGroup>
+
+                        <FormGroup>
+                            <Label>IFSC Code</Label>
+                            <Input type="text"  name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode}  maxLength={50}/>
+                            <span className="error">{this.state.errors.IFSCCode}</span> 
+                        </FormGroup>
+                        
+                        <FormGroup>
+                            <Label>Email Id</Label>
+                            <Input type="email"  name="email" onChange={this.onChangeHandler} value={this.state.email}  maxLength={50}/>
+                            <span className="error">{this.state.errors.email}</span> 
+                        </FormGroup>
+
                         <FormGroup>
                             <Label>Contact Number</Label>
                             <Input type="text"  name="contactNumber" onChange={this.onChangeHandler} value={this.state.contactNumber}  maxLength={50}/>

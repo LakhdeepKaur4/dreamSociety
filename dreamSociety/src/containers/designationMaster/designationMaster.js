@@ -78,7 +78,7 @@ class DesignationMaster extends Component{
         let formData;
         formData =<div>
         <FormGroup>
-            <Label><h4>Designation Name</h4></Label>
+            <Label>Designation Name</Label>
             <Input  type="text" name="designationName" value={this.state.designationName}  value={this.state.designationName} onChange={this.onDesignationChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Designation Name" maxLength={50}
         minLength={3} required/>
         <span className="error">{this.state.message}</span>          

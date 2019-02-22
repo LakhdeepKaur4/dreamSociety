@@ -130,10 +130,10 @@ export const deleteSociety=(societyId)=>{
     }
 }
 
- export const updateSociety=(societyId, countryId, stateId,cityId, locationId, societyName)=>{
+ export const updateSociety=(societyId, countryId, stateId,cityId, locationId, societyName, societyAddress, bankName, accountHolderName, accountNumber,IFSCCode, email, contactNumber,registrationNumber,totalBoardMembers)=>{
    
     
-    const request = axios.put(`${URN}/society/`+ societyId ,{countryId, stateId,cityId, locationId, societyName}, {headers:authHeader()})
+    const request = axios.put(`${URN}/society/`+ societyId ,{countryId, stateId,cityId, locationId, societyName, societyAddress, bankName, accountHolderName, accountNumber,IFSCCode, email, contactNumber,registrationNumber,totalBoardMembers}, {headers:authHeader()})
      .then(response => response.data)
  
    

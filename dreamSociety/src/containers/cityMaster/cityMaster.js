@@ -239,7 +239,7 @@ class CityMaster extends Component {
         if(!this.state.loading && this.props.cityMasterReducer.countryResult && this.props.cityMasterReducer.stateResult  &&  this.state.errors){
         formData =<div>
          <FormGroup>
-            <Label><h4>Country Name</h4></Label>
+            <Label>Country Name</Label>
             <Input type="select" defaultValue='no-value' onChange={this.onChangeCountry} required>
             <DefaultSelect/>
                 {this.countryName(this.props.cityMasterReducer)}
@@ -248,7 +248,7 @@ class CityMaster extends Component {
         </FormGroup>
         
         <FormGroup>
-            <Label><h4>State Name</h4></Label>
+            <Label>State Name</Label>
             <Input type="select" defaultValue='no-value'  onChange={this.onChangeState} required>
             <DefaultSelect/>
                 {this.stateName(this.props.cityMasterReducer)}
@@ -257,7 +257,7 @@ class CityMaster extends Component {
         </FormGroup>
 
       <FormGroup>
-            <Label><h4>City Name</h4></Label>
+            <Label>City Name</Label>
             <Input  type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler} placeholder="City Name" maxLength={30}
         minLength={3}/>
             <span className='error'>{this.state.errors.cityName}</span>

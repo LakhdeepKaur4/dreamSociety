@@ -84,11 +84,17 @@ class InventoryDetails extends Component {
     }
     delete = (inventoryId) => {
         this.setState({ loading: true })
+        if(window.confirm('Are You Sure ?')){
         this.props.removeInventory(inventoryId)
             .then(() => {
                 this.props.getInventory()
                     .then(() => this.setState({ loading: false }))
             })
+        }
+        else{
+            this.props.getInventory()
+            .then(() => this.setState({ loading: false }))
+        }
     }
 
     searchOnChange = (e) => {
@@ -124,9 +130,15 @@ class InventoryDetails extends Component {
     deleteSelected(ids) {
         this.setState({ loading: true,
          isDisabled:true });
+         if(window.confirm('Are You Sure ?')){
         this.props.multipleDelete(ids)
             .then(() => this.props.getInventory().then(() => this.setState({ loading: false })))
             .catch(err => err.response.data.message);
+         }
+         else{
+            this.props.getInventory()
+            .then(() => this.setState({ loading: false }))
+         }
     }
     renderList = ({ getInventory }) => {
         if (getInventory) {

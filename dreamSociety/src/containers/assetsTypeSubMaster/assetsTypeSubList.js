@@ -68,18 +68,19 @@ class AssetsTypeSubList extends Component {
             .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
             this.setState({ modal: !this.state.modal })
         }
-        // this.setState({loading:true})
-        // this.props.updateAssetsSub(assetTypeId, assetType, description)
-        //     .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
-
-        // this.setState({ modal: !this.state.modal })
 
 
     }
     delete = (assetTypeId) => {
         this.setState({loading:true})
+        if(window.confirm('Are You Sure ?')){
         this.props.removeAssetsSub(assetTypeId)
             .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
+        }
+        else{
+             this.props.fetchAssets()
+             .then(()=>this.setState({loading:false}))
+        }
     }
 
     searchOnChange = (e) => {
@@ -151,9 +152,15 @@ class AssetsTypeSubList extends Component {
     deleteSelected(ids){
         this.setState({loading:true,
         isDisabled:true});
+        if(window.confirm('Are You Sure ?')){
         this.props.deleteMultiple(ids)
         .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
         .catch(err => err.response.data.message);
+        }
+        else{
+            this.props.fetchAssets()
+            .then(()=>this.setState({loading:false}))
+        }
     }
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
