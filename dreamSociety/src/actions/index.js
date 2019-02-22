@@ -1,4 +1,6 @@
+
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export const UR= 'https://dreamsociety.herokuapp.com/';
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
@@ -27,7 +29,7 @@ export const FETCH_SIZEMASTER_DROP='fetch_sizemaster_drop';
 export const GET_DETAIL='get_detail';
 export const GET_SERVICE='get_service';
 export const ADD_SERVICE='add_service';
-export const REMOVE_SERVICE='remove_service';
+export const DELETE_SERVICE='delete_service';
 export const GET_SERVICE_TYPE ='get_service_type'
 export const GET_QR='get_qr';
 export const FETCH_BASEMENT = 'FETCH_BASEMENT';
@@ -77,7 +79,7 @@ export const UPDATE_COUNTRY='update-country';
 export const DELETE_COUNTRY='delete-country';
 export const ADD_STATE='add-state';
 export const  GET_COUNTRY_DETAILS1='get-country-details1';
-// export const DELETE_DETAILS ='delete-details';
+
 export const UPDATE_DETAILS='update-details';
 export const DELETE_EVENT ='delete_event';
 export const UPDATE_EVENT ='update_event';
@@ -99,6 +101,7 @@ export const ADD_MAINTENANCE ='add_maintenance';
 export const GET_MAINTENANCE ='get_maintenance';
 export const DELETE_MAINTENANCE ='delete_maintenance';
 export const UPDATE_MAINTENANCE ='update_maintenance';
+export const DELETE_SELECTEDMAINTENANCE='DELETE_SELECTEDMAINTENANCE'
 export const GET_EMPLOYEE ='get_employee';
 export const GET_EMPLOYEE_WORK_TYPE='get_employee_work_type';
 export const GET_EMPLOYEE_TYPE ='get_employee_type';
@@ -115,7 +118,12 @@ export const DELETE_MULTIPLE_SUB_MAINTENANCE_DETAILS = 'DELETE_MULTIPLE_SUB_MAIN
 export const GET_MAINTENANCE_TYPE = 'GET_MAINTENANCE_TYPE';
 export const UPDATE_SUB_MAINTENANCE_DETAILS = 'UPDATE_SUB_MAINTENANCE_DETAILS';
 export const DELETE_SELECTEDSOCIETY='DELETE_SELECTEDSOCIETY';
+
 export const GET_RATE_TYPE='get_rate_type';
+export const DELETE_SERVICE_IDS='get_service_ids';
+export const DELETE_FLAT_DETAIL_IDS='delete_flat_detail_ids';
+export const DELETE_LOCATION_IDS='delete_location_ids';
+
 export const GET_EMP ='get_emp';
 export const ADD_EMP='add_emp';
 export const UPDATE_EMP ='update_emp';
@@ -124,3 +132,9 @@ export const DELETE_SELECTEDCITY='DELETE_SELECTEDCITY';
 export const DELETE_MULTIPLE_ASSETS_SUB_LIST='delete_multiple_assets_sub_list';
 export const DELETE_MULTIPLE_ASSETS_LIST='delete_multiple_assets_list';
 export const DELETE_MULTIPLE_INVENTORY='delete_multiple_inventory';
+
+export const ADD_DESIGNATION='add_designation';
+export const GET_DESIGNATION='get_designation';
+export const DELETE_DESIGNATION='delete_designation';
+export const UPDATE_DESIGNATION='update_designation';
+export const DELETE_ALL_DESIGNATION='delete_all_designation';

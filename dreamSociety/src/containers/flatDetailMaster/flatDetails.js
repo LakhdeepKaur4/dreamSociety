@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {getFlatDetails,getFlatType,getTowerName} from '../../actionCreators/flatDetailMasterAction';
+import {getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat} from '../../actionCreators/flatDetailMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Table,Input, Label } from 'reactstrap';
@@ -23,7 +23,9 @@ class flatDetails extends Component{
             towerName:'',
             isActive: false
     },
+    ids:[],
     editFlatModal: false,
+    isDisabled:true,
     search:'',
     loading:true,
 }
@@ -96,6 +98,17 @@ delete(flatDetailId){
     })
 }
 
+
+deleteSelected(ids){
+    this.setState({loading:true,
+    isDisabled:true});
+    this.props.deleteSelectedFlat(ids)
+    .then(() => this.refreshData())
+    .catch(err => err.response.data.message);
+} 
+
+
+
 toggleEditFlatModal(){
     this.setState({
         editFlatModal: ! this.state.editFlatModal
@@ -139,6 +152,27 @@ renderList =({details})=>{
             return(
                    
                     <tr  key={item.flatDetailId}>
+                            <td><input type="checkbox" name="ids" className="SelectAll" value={item.flatDetailId}
+                         onChange={(e) => {
+                            const {flatDetailId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(flatDetailId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1);
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
+                                }
+                            }
+                            else {
+                                this.setState({ids: [...this.state.ids, flatDetailId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                                
+                             }}/></td>
                             <td>{index+1}</td>             
                             <td>{item.flatNo}</td>
                             <td>{item.flat_master.flatType}</td>
@@ -173,6 +207,34 @@ OnKeyPressUserhandler(event) {
     }
 }
 
+selectAll = () => {
+    let selectMultiple = document.getElementsByClassName('SelectAll');
+    let ar =[];
+        for(var i = 0; i < selectMultiple.length; i++){
+                ar.push(parseInt(selectMultiple[i].value));
+                selectMultiple[i].checked = true;
+        }
+        this.setState({ids: ar});
+        if(ar.length > 0){
+            this.setState({isDisabled: false});
+        }
+}
+
+unSelectAll = () =>{
+    
+    let unSelectMultiple = document.getElementsByClassName('SelectAll');
+    let allIds = [];
+    for(var i = 0; i < unSelectMultiple.length; i++){
+            unSelectMultiple[i].checked = false
+    }
+    
+    this.setState({ids: [ ...allIds]});
+    if(allIds.length === 0){
+        this.setState({isDisabled: true});
+    }
+    
+}
+
 
 logout=()=>{
     localStorage.removeItem('token');
@@ -188,6 +250,17 @@ render(){
     <Table className="table table-bordered">
     <thead>
     <tr>
+    <th>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
         <th>#</th>
         <th>Flat No</th>
         <th>Flat Type</th>
@@ -201,6 +274,8 @@ render(){
     {this.renderList(this.props.flatDetailMasterReducer)}
     </tbody>
 </Table>    
+             let deleteSelectedButton = <Button color="danger" className="mb-2"
+             onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
 
     return(
         <div>
@@ -276,6 +351,7 @@ render(){
                 </div>
                     <SearchFilter  type="text" value={this.state.search}
                                             onChange={this.searchOnChange} />
+                                            {deleteSelectedButton}
                                                  {!this.state.loading ? tableData : <Spinner />}
           
         </div>
@@ -293,7 +369,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({getFlatDetails,getFlatType,getTowerName},dispatch)
+    return bindActionCreators({getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat},dispatch)
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(flatDetails);

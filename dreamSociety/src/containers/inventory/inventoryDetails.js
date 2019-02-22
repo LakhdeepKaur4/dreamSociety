@@ -122,7 +122,8 @@ class InventoryDetails extends Component {
 
     }
     deleteSelected(ids) {
-        this.setState({ loading: true });
+        this.setState({ loading: true,
+         isDisabled:true });
         this.props.multipleDelete(ids)
             .then(() => this.props.getInventory().then(() => this.setState({ loading: false })))
             .catch(err => err.response.data.message);

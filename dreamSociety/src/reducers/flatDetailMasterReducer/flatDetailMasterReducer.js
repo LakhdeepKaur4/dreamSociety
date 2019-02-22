@@ -1,4 +1,4 @@
-import{GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS} from '../../actions/index';
+import{GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT_DETAIL_IDS} from '../../actions/index';
 
 export default function(state={},action){
 
@@ -23,6 +23,10 @@ export default function(state={},action){
                 ...state, details:action.payload
             }    
                      
+        case DELETE_FLAT_DETAIL_IDS:
+            return{
+                ...state, delete: action.payload
+            }
             default:
             return state
     }

@@ -149,7 +149,8 @@ class AssetsTypeSubList extends Component {
     }
 
     deleteSelected(ids){
-        this.setState({loading:true});
+        this.setState({loading:true,
+        isDisabled:true});
         this.props.deleteMultiple(ids)
         .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
         .catch(err => err.response.data.message);
@@ -181,7 +182,7 @@ class AssetsTypeSubList extends Component {
 
     render() {
         let tableData;
-        tableData = <Table className="table table-bordered">
+        tableData = <Table id="table_container">
             <thead>
                 <tr> 
                 <th style={{alignContent:'baseline'}}>Select All<input
