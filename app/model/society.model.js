@@ -10,6 +10,9 @@ module.exports = (sequelize, Sequelize) => {
 		},
 		societyAddress: {
             type: Sequelize.STRING
+		},
+	    contactNumber: {
+            type: Sequelize.STRING
         },
         registrationNumber: {
             type: Sequelize.STRING
