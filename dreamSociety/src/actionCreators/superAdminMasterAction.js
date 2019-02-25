@@ -5,7 +5,6 @@ import{URN,ADD_USER,UPDATE_USER,GET_ROLES,GET_USERS,DELETE_USER, DELETE_SELECTED
 
 
 export function addUser(values) {
-    let message;
     const request = axios.post(`${URN}/auth/signup`, values, {headers: authHeader() })
                     return {
                         type: ADD_USER,

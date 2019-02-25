@@ -282,7 +282,7 @@ class userDetails extends Component {
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
-        return this.props.history.replace('/')
+        return this.props.history.replace('/');
     }
     close=()=>{
         return this.props.history.replace('/superDashBoard')

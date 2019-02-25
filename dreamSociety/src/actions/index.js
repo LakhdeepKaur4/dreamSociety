@@ -145,3 +145,5 @@ export const GET_RELATION='get_relation';
 export const DELETE_RELATION='delete_realtion';
 export const UPDATE_RELATION='update_relation';
 export const DELETE_ALL_RELATION='delete_all_relation';
+export const ADD_SOCIETY_MEMBER_DETAIL='ADD_SOCIETY_MEMBER_DETAIL';
+export const GET_SOCIETY_MEMBER_DESIGNATION_DETAIL='GET_SOCIETY_MEMBER_DESIGNATION_DETAIL';

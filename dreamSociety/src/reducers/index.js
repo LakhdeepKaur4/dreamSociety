@@ -25,6 +25,7 @@ import MaintenanceSubMaster from './maintenanceSubMasterReducer/maintenanceSubMa
 import EmpDetails from './employeeMasterReducer/employeeMasterReducer';
 import DesignationMasterReducer from './designationMasterReducer/designationMasterReducer';
 import RelationMasterReducer from './relationMasterReducer/relationMasterReducer'
+import societyMemberReducer from './societyMemberReducer/societyMemberReducer';
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -52,7 +53,7 @@ const rootReducer = combineReducers({
     MaintenanceSubMaster,
     EmpDetails,
     DesignationMasterReducer,
-    RelationMasterReducer
-
+    RelationMasterReducer,
+    societyMemberReducer
 })
 export default rootReducer;
