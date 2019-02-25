@@ -62,6 +62,8 @@ import DesignationMaster from './containers/designationMaster/designationMaster'
 import EmployeeTypeMaster from './containers/employeeTypeMaster/employeeTypeMaster';
 import DesignationMasterDetail from './containers/designationMaster/designationMasterDetail';
 import SocietyComponent from './components/societyComponent/societyComponent';
+import RelationshipMaster from './containers/relationshipMaster/relationshipMaster';
+import RelationshipMasterDetail from './containers/relationshipMaster/relationshipMasterDetail';
 
 
 class App extends Component {
@@ -126,6 +128,8 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/designationMaster' component={DesignationMaster} />
             <PrivateRoute path='/superDashboard/designationMasterDetail' component={DesignationMasterDetail} />
             <PrivateRoute path='/superDashboard/societyComponent' component={SocietyComponent} />
+            <PrivateRoute path='/superDashboard/relationshipMaster' component={RelationshipMaster} />
+            <PrivateRoute path='/superDashboard/relationshipMasterDetail' component={RelationshipMasterDetail} />
           </Switch>
         </div>
         

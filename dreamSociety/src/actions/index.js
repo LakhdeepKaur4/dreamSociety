@@ -139,3 +139,9 @@ export const GET_DESIGNATION='get_designation';
 export const DELETE_DESIGNATION='delete_designation';
 export const UPDATE_DESIGNATION='update_designation';
 export const DELETE_ALL_DESIGNATION='delete_all_designation';
+
+export const ADD_RELATION='add_relation';
+export const GET_RELATION='get_relation';
+export const DELETE_RELATION='delete_realtion';
+export const UPDATE_RELATION='update_relation';
+export const DELETE_ALL_RELATION='delete_all_relation';

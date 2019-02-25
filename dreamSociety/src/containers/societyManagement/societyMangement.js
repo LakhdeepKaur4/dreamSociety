@@ -18,9 +18,9 @@ class SocietyMangement extends Component {
         
 
         this.state = {
-            cityName:'',
             countryName:'',
             stateName:'',
+            cityName:'',
             locationName:'',
             countryId:'',
             stateId:'',
@@ -129,9 +129,7 @@ class SocietyMangement extends Component {
             })
 
             this.props.getSociety(data3.locationId)
-
-           
-          
+  
     }
 
 

@@ -38,12 +38,24 @@ class CityMasterDetail extends Component {
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
-            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+            this.setState({ [event.target.name]: event.target.value, errors });
         }
         else {
-            this.setState({ [event.target.name]: event.target.value.trim('') });
+            this.setState({ [event.target.name]: event.target.value});
         }
     }
+
+
+    onKeyPressHandler=(event)=> {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    
+
 
 
     toggle = (cityId, countryName, stateName, cityName) => {
@@ -328,7 +340,7 @@ class CityMasterDetail extends Component {
                                     <FormGroup>
                                         <Label>Country Name</Label>
 
-                                        <Input type="select" id="countryId" name="countryName" onChange={(e) => {
+                                        <Input type="select" id="countryId" name="countryName"  onChange={(e) => {
 
                                             let { countryId } = this.state;
                                             countryId = e.target.value;
@@ -359,7 +371,7 @@ class CityMasterDetail extends Component {
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>City Name</Label>
-                                        <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} value={this.state.cityName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler}/>
+                                        <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} onKeyPress={this.onKeyPressHandler} value={this.state.cityName} maxLength={50} />
                                         <span className="error">{this.state.errors.cityName}</span>
                                     </FormGroup>
 

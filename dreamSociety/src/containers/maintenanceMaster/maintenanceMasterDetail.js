@@ -34,10 +34,10 @@ class MaintenanceMasterDetail extends Component {
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
-            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+            this.setState({ [event.target.name]: event.target.value, errors });
         }
         else {
-            this.setState({ [event.target.name]: event.target.value.trim('') });
+            this.setState({ [event.target.name]: event.target.value });
         }
     }
 
@@ -215,7 +215,7 @@ class MaintenanceMasterDetail extends Component {
 
 
     OnKeyPressUserhandler(event) {
-        const pattern = /^[a-zA-Z]+$/;
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();

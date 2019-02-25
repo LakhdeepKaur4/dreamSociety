@@ -35,10 +35,10 @@ class DesignationMasterDetail extends Component {
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
-            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+            this.setState({ [event.target.name]: event.target.value, errors });
         }
         else {
-            this.setState({ [event.target.name]: event.target.value.trim('') });
+            this.setState({ [event.target.name]: event.target.value });
         }
     }
 
@@ -215,8 +215,9 @@ class DesignationMasterDetail extends Component {
     }
 
 
-    OnKeyPressUserhandler(event) {
-        const pattern = /^[a-zA-Z]+$/;
+    
+    onKeyPressHandler=(event)=> {
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -277,7 +278,7 @@ class DesignationMasterDetail extends Component {
                             <ModalBody>
                                 <FormGroup>
                                     <Label>Designation Type</Label>
-                                    <Input type="text" id="designationId" name="designationName" onChange={this.onChangeHandler} value={this.state.designationName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
+                                    <Input type="text" id="designationId" name="designationName" onChange={this.onChangeHandler} value={this.state.designationName} maxLength={50} onKeyPress={this.onKeyPressHandler} />
                                     <span className="error">{this.state.errors.designationName}</span>
                                 </FormGroup>
 

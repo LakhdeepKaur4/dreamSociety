@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './superDashboard.css';
-import Logo from '../../assets/2.jpg';
-import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
-import Demo from '../demo';
+
+
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {userLogout} from '../../actionCreators/loginAction';
