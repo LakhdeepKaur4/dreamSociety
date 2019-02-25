@@ -3,6 +3,7 @@ const httpStatus = require('http-status');
 const config = require('../config/config');
 const cron = require('node-schedule');
 const crypto = require('crypto');
+var path = require('path');
 
 const Employee = db.employee;
 // const EmployeeType =db.employeeType;
@@ -262,8 +263,9 @@ exports.getDecrypt = (req, res, next) => {
         const employee = [];
         Employee.findAll({
             where: {
-                isActive: true
+                isActive: true,
             },
+            order: [['createdAt', 'DESC']],
             include: [
                 { model: City },
                 { model: State },
@@ -298,6 +300,127 @@ exports.getDecrypt = (req, res, next) => {
     }
 }
 
+
+exports.updateEncrypt = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        let profileImage;
+        let documentOne;
+        let documentTwo;
+        let employee;
+
+        console.log("ID ===>", id);
+
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = req.body;
+        update.userId = req.userId;
+
+        console.log("Update ===>", update);
+
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        if (req.files) {
+            
+            
+            await Employee.find({
+                where: {
+                    employeeId: id
+                }
+            })
+            .then(emp => {
+                employee = emp;
+            })
+            console.log(employee);
+            if (req.files.profilePicture[0].path) {
+                profileImage = decrypt(employee.picture)
+                fs.unlink(profileImage, err => {
+                    if (err) throw err
+                    console.log('success');
+                })
+                profileImage = encrypt(req.files.profilePicture[0].path);
+            }
+            else {
+                profileImage = employee.picture;
+            }
+            if (req.files.documentOne[0].path) {
+                documentOne = decrypt(employee.documentOne)
+                fs.unlink(documentOne, err => {
+                    if (err) throw err
+                    console.log('success');
+                })
+                documentOne = encrypt(req.files.documentOne[0].path);
+            }
+            else {
+                documentOne = employee.documentOne;
+            }
+            if (req.files.documentTwo[0].path) {
+                documentTwo = decrypt(employee.documentTwo)
+                fs.unlink(documentTwo, err => {
+                    if (err) throw err
+                    console.log('success');
+                })
+                documentTwo = encrypt(req.files.documentTwo[0].path);
+            }
+            else {
+                documentTwo = employee.documentTwo;
+            }
+        }
+        else {
+            profileImage = employee.picture;
+            documentOne = employee.documentOne;
+            documentTwo = employee.documentTwo;
+        }
+        const toBeUpdated = {
+            firstName: encrypt(update.firstName),
+            middleName: encrypt(update.middleName),
+            lastName: encrypt(update.lastName),
+            CTC: encrypt(update.CTC),
+            startDate: encrypt(update.startDate),
+            endDate: encrypt(update.endDate),
+            userId: update.userId,
+            countryId: update.countryId,
+            stateId: update.stateId,
+            cityId: update.cityId,
+            locationId: update.locationId,
+            picture: profileImage,
+            documentOne: documentOne,
+            documentTwo: documentTwo
+        };
+        Employee.find({
+            where: {
+                employeeId: id
+            }
+        })
+            .then(employee => {
+                return employee.updateAttributes(toBeUpdated);
+            })
+            .then(employee => {
+                employee.firstName = decrypt(employee.firstName);
+                employee.middleName = decrypt(employee.middleName);
+                employee.lastName = decrypt(employee.lastName);
+                employee.CTC = decrypt(employee.CTC);
+                employee.startDate = decrypt(employee.startDate);
+                employee.endDate = decrypt(employee.endDate);
+                employee.picture = decrypt(employee.picture);
+                employee.documentOne = decrypt(employee.documentOne);
+                employee.documentTwo = decrypt(employee.documentTwo);
+                return res.status(httpStatus.OK).json({
+                    message: "Employee Updated Page",
+                    employee
+                });
+            })
+            .catch(err => console.log(err))
+        
+
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
 
 // exports.test = async(req,res)=>{
 //     try{

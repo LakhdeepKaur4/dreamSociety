@@ -48,6 +48,9 @@ module.exports = (sequelize, Sequelize) => {
         IFSCCode: {
             type: Sequelize.STRING
         },
+        dob: {
+            type: Sequelize.DATE
+        },
         isActive: {
             type: Sequelize.BOOLEAN,
             defaultValue: true

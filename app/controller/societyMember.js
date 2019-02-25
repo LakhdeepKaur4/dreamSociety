@@ -4,6 +4,10 @@ const httpStatus = require('http-status');
 
 const SocietyMember = db.societyMember;
 const Society = db.society;
+const Country = db.country;
+const State = db.state;
+const City = db.city;
+const Location = db.location;
 const Designation = db.designation;
 const Op = db.Sequelize.Op;
 
@@ -29,8 +33,12 @@ exports.get = async (req, res, next) => {
             where: { isActive: true },
             order: [['createdAt', 'DESC']],
             include: [
-               {model:Designation},
-               {model:Society},
+               {model:Designation,attributes:['designationId','designationName']},
+               {model:Country,attributes:['countryId','countryName']},
+               {model:City,attributes:['cityId','cityName']},
+               {model:State,attributes:['stateId','stateName']},
+               {model:Location,attributes:['locationId','locationName']},
+               {model:Society,attributes:['societyId','societyName']},
             ]
         });
         if (societyMember) {

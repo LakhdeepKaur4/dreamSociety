@@ -33,6 +33,7 @@ module.exports = function(app) {
 	const employeeController = require('../controller/employee');
 	const designationController = require('../controller/designation');
 	const societyMemberController = require('../controller/societyMember');
+	const relationController = require('../controller/relation');
 	
 	app.get('/', userController.start);
 
@@ -328,7 +329,9 @@ module.exports = function(app) {
 
 	app.get('/api/employee',[authJwt.verifyToken],employeeController.getDecrypt);
 
-	app.put('/api/employee/:id',[authJwt.verifyToken],employeeController.update);
+	// app.put('/api/employee/:id',[authJwt.verifyToken],employeeController.update);
+
+	app.put('/api/employee/:id', fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), employeeController.updateEncrypt);
 
 	app.put('/api/employee/delete/:id',[authJwt.verifyToken],employeeController.delete);
 
@@ -345,4 +348,20 @@ module.exports = function(app) {
 	app.post('/api/societyMember',[authJwt.verifyToken],societyMemberController.create);
 
 	app.get('/api/societyMember',[authJwt.verifyToken],societyMemberController.get);
+
+	app.post('/api/societyMember',[authJwt.verifyToken],societyMemberController.create);
+
+	app.get('/api/societyMember',[authJwt.verifyToken],societyMemberController.get);
+
+	app.post('/api/relation',[authJwt.verifyToken],relationController.create);
+
+	app.get('/api/relation',[authJwt.verifyToken],relationController.get);
+
+	app.put('/api/relation',[authJwt.verifyToken],relationController.update);
+
+	app.put('/api/relation/:id',[authJwt.verifyToken],relationController.update);
+
+	app.put('/api/relation/delete/deleteSelected',[authJwt.verifyToken],relationController.update);
+
+	app.put('/api/relation/delete/:id',[authJwt.verifyToken],relationController.update);
 }

@@ -51,6 +51,7 @@ db.inventory = require('../model/inventory.model')(sequelize,Sequelize);
 db.employee = require('../model/employee.model')(sequelize,Sequelize);
 db.designation = require('../model/designation.model')(sequelize,Sequelize);
 db.societyMember = require('../model/societyMember.model')(sequelize,Sequelize);
+db.relation = require('../model/relation.model')(sequelize,Sequelize);
 
  
 db.role.belongsToMany(db.user, { through: 'user_roles', foreignKey: 'roleId', otherKey: 'userId'});
@@ -113,5 +114,10 @@ db.designation.belongsTo(db.user,{foreignKey:'userId'});
 db.societyMember.belongsTo(db.user,{foreignKey:'userId'});
 db.societyMember.belongsTo(db.society,{foreignKey:'societyId'});
 db.societyMember.belongsTo(db.designation,{foreignKey:'designationId'});
+db.societyMember.belongsTo(db.country,{foreignKey:'countryId'});
+db.societyMember.belongsTo(db.state,{foreignKey:'stateId'});
+db.societyMember.belongsTo(db.city,{foreignKey:'cityId'});
+db.societyMember.belongsTo(db.location,{foreignKey:'locationId'});
+db.relation.belongsTo(db.user,{foreignKey:'userId'});
 
 module.exports = db;
