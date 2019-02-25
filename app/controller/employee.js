@@ -1,6 +1,7 @@
 const db = require('../config/db.config.js');
-const config = require('../config/config');
 const httpStatus = require('http-status');
+const config = require('../config/config');
+const cron = require('node-schedule');
 const crypto = require('crypto');
 
 const Employee = db.employee;
@@ -15,14 +16,14 @@ const Op = db.Sequelize.Op;
 exports.create = async (req, res, next) => {
     try {
         let body = req.body;
-        console.log("body::::::==>", body);
+        console.log("body::::::==>",body);
         body.userId = req.userId;
         const employee = await Employee.create(body);
         const employeeId = employee.employeeId;
         // console.log("filess=====>",req.files);
         if (req.files) {
             // for (let i = 0; i < req.files.profilePicture.length; i++) {
-            profileImage = req.files.profilePicture[0].path;
+                profileImage = req.files.profilePicture[0].path;
             // }
             const updateImage = {
                 picture: profileImage
@@ -107,18 +108,18 @@ exports.update = async (req, res, next) => {
 
 
 exports.deletePhoto = function (req, res) {
-    Photos.remove({ _id: req.params.id }, function (err, photo) {
-        if (err) {
-            return res.send({ status: "200", response: "fail" });
-        }
-        fs.unlink(photo.path, function () {
-            res.send({
-                status: "200",
-                responseType: "string",
-                response: "success"
-            });
-        });
+  Photos.remove({_id: req.params.id}, function(err, photo) {
+    if(err) { 
+       return res.send({status: "200", response: "fail"});
+    }
+    fs.unlink(photo.path, function() {
+      res.send ({
+        status: "200",
+        responseType: "string",
+        response: "success"
+      });     
     });
+ }); 
 };
 
 exports.delete = async (req, res, next) => {
@@ -164,7 +165,6 @@ exports.deleteSelected = async (req, res, next) => {
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
-
 
 encrypt = (text) => {
     let key = config.secret;
@@ -298,27 +298,15 @@ exports.getDecrypt = (req, res, next) => {
     }
 }
 
-exports.updateEncrypt = (req, res, next) => {
-    try {
-        const id = req.params.id;
 
-        console.log("ID ===>", id);
+// exports.test = async(req,res)=>{
+//     try{
+//          /* run the job at 18:55:30 on Dec. 14 2018*/
+//         var date = new Date(2018, 11, 14, 18, 56, 30);
+//         cron.scheduleJob(date, function(){
+//             console.log(new Date(), "Somthing important is going to happen today!");    
+//         });
+//     }catch(error){
 
-        if(!id) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
-        }
-        const update = req.body;
-
-        console.log("Update ===>", update);
-
-        if (!update) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
-        }
-        // update.map(item => {
-        //     item.firstName = encrypt(item.firstName)
-        // })
-    } catch (error) {
-        console.log(error);
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-    }
-}
+//     }
+// }

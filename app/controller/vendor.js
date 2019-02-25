@@ -140,7 +140,7 @@ exports.get = async (req, res, next) => {
             });
         }
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }

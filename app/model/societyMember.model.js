@@ -6,27 +6,46 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true
         },
         societyMemberName: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false,
         },
         currentAddress: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false,
         },
         permanentAddress: {
             type: Sequelize.STRING
         },
         contactNumber: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            allowNull: false,
         },
-        panCardNumber:{
+        panCardNumber: {
             type: Sequelize.STRING
         },
         bankName: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        },
+        accountHolderName: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        },
+        accountNumber: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        },
+        email: {
+            type: Sequelize.STRING,
+            allowNull: false,
+        },
+        optionalMail: {
             type: Sequelize.STRING
-		},
-		accountHolderName: {
+        },
+        optionalContactNumber: {
             type: Sequelize.STRING
-		},
-		accountNumber: {
+        },
+        IFSCCode: {
             type: Sequelize.STRING
         },
         isActive: {

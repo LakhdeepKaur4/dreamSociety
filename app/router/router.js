@@ -322,19 +322,13 @@ module.exports = function(app) {
 
 	app.put('/api/inventory/delete/:id', [authJwt.verifyToken],inventoryController.delete);
 
-	app.post('/api/employee', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'documentOne',maxCount:1},{name:'documentTwo',maxCount:1}]), employeeController.create);
+	app.post('/api/employee', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'documentOne',maxCount:1},{name:'documentTwo',maxCount:1}]), employeeController.createEncrypt);
 	
-	app.post('/api/employeeEncrypt', fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), employeeController.createEncrypt);
-
 	app.put('/api/employee/delete/deleteSelected',[authJwt.verifyToken], employeeController.deleteSelected);
 
-	app.get('/api/employee',[authJwt.verifyToken],employeeController.get);
-
-	app.get('/api/employeeDecrypt', employeeController.getDecrypt);
+	app.get('/api/employee',[authJwt.verifyToken],employeeController.getDecrypt);
 
 	app.put('/api/employee/:id',[authJwt.verifyToken],employeeController.update);
-
-	app.put('/api/employee/:id', employeeController.update);
 
 	app.put('/api/employee/delete/:id',[authJwt.verifyToken],employeeController.delete);
 

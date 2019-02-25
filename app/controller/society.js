@@ -23,7 +23,8 @@ exports.create = (req, res) => {
         registrationNumber: req.body.registrationNumber,
         totalBoardMembers: req.body.totalBoardMembers,
         bankName: req.body.bankName,
-        accountHolder: req.body.accountHolder,
+        email:req.body.email,
+        accountHolderName: req.body.accountHolderName,
         accountNumber: req.body.accountNumber,
         userId: req.userId,
     }).then(society => {
