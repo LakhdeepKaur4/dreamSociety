@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+import { Menu, Icon } from 'semantic-ui-react';
 import $ from 'jquery';
 import './common.css';
 import ReactDOM from 'react-dom';
@@ -11,8 +11,6 @@ class Demo extends Component {
         $(document).ready(function () {
 
             $('#sidebarCollapse').on('click', function () {
-                // $("#sidebar").toggle().animate();
-                // $('#sidebar').toggleClass('inactive active');
                 if ($('#sidebar').hasClass('active')) {
                     $('#sidebar').removeClass('active').addClass('inactive');
                 } else {
@@ -82,6 +80,7 @@ class Demo extends Component {
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/user_details">Super Admin Registration Details</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/designationMasterDetail">Designation Master</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/societyManagementDetail">Society Management</Link></div></Menu.Item>
+                            <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/societyMemberDetails">Society Member Details</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/countrymaster/countrymasterdetails"> Country Master</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/statemaster/statemasterdetails"> State Master</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/cityMasterDetail">City Master</Link></div></Menu.Item>
@@ -93,7 +92,7 @@ class Demo extends Component {
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/parking_master">Parking Master</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/display-tower">Tower Master</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/display-event">Event Master</Link></div></Menu.Item>
-                            {/* <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/flatmaster/flatmasterdetails">Flat Master</Link></div></Menu.Item> */}
+                            <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/flatmaster/flatmasterdetails">Flat Master</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/displayPerson"> Person details</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/flatDetails"> Flat Detail Master</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/displayLocation"> Location Master</Link></div></Menu.Item>
