@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './vendorDashboard.css';
-import Logo from '../../assets/2.jpg';
-import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
+
+
 import UI from '../../components/newUI/vendorDashboard';
 
 

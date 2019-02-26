@@ -61,6 +61,8 @@ import DesignationMaster from './containers/designationMaster/designationMaster'
 import EmployeeTypeMaster from './containers/employeeTypeMaster/employeeTypeMaster';
 import DesignationMasterDetail from './containers/designationMaster/designationMasterDetail';
 import SocietyComponent from './components/societyComponent/societyComponent';
+import RelationshipMaster from './containers/relationshipMaster/relationshipMaster';
+import RelationshipMasterDetail from './containers/relationshipMaster/relationshipMasterDetail';
 import SocietyMemberRegistrationForm from './containers/societyMemberRegistration/societyMemberRegistrationForm';
 import SocietyMemberDetails from './containers/societyMemberRegistration/societyMemberDetails';
 
@@ -127,6 +129,8 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/designationMaster' component={DesignationMaster} />
             <PrivateRoute path='/superDashboard/designationMasterDetail' component={DesignationMasterDetail} />
             <PrivateRoute path='/superDashboard/societyComponent' component={SocietyComponent} />
+            <PrivateRoute path='/superDashboard/relationshipMaster' component={RelationshipMaster} />
+            <PrivateRoute path='/superDashboard/relationshipMasterDetail' component={RelationshipMasterDetail} />
             <PrivateRoute path='/superDashboard/societyMemberRegistartionForm' component={SocietyMemberRegistrationForm} />
             <PrivateRoute path='/superDashboard/societyMemberDetails' component={SocietyMemberDetails} />
           </Switch>

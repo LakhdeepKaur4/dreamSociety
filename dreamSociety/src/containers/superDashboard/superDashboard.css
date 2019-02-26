@@ -17,5 +17,5 @@
     position: relative;
 }
 .bg_img{
-    background-image: url('../../assets/2.jpg');
+    background-image: url('/assets/2.jpg');
 }

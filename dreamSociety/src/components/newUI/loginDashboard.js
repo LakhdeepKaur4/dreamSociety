@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Segment, Menu, Icon, Sidebar } from 'semantic-ui-react';
-import $ from 'jquery';
+
 import './common.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 

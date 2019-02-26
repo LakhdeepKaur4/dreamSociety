@@ -50,12 +50,16 @@ class SocietyManagementDetail extends Component {
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
-            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+            this.setState({ [event.target.name]: event.target.value, errors });
         }
         else {
-            this.setState({ [event.target.name]: event.target.value.trim('') });
+            this.setState({ [event.target.name]: event.target.value });
         }
     }
+
+    
+
+  
 
     onKeyPressHandler=(event)=> {
         const pattern = /^[a-zA-Z ]+$/;
@@ -64,6 +68,15 @@ class SocietyManagementDetail extends Component {
             event.preventDefault();
         }
     }
+
+    OnKeyPresshandlerPhone(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
 
     toggle = (societyId, countryName, stateName, cityName, locationName, societyName, societyAddress, bankName, accountHolderName, accountNumber,IFSCCode, email, contactNumber,registrationNumber,totalBoardMembers) => {
 
@@ -455,6 +468,13 @@ class SocietyManagementDetail extends Component {
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                     <ModalBody>
+
+                    <FormGroup>
+                            <Label>Society Name</Label>
+                            <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName} maxLength={50}/>
+                            <span className="error">{this.state.errors.societyName}</span> 
+                        </FormGroup>
+
                         <FormGroup>
                             <Label>Country Name</Label>
 
@@ -509,33 +529,29 @@ class SocietyManagementDetail extends Component {
                                 {this.fetchLocation(this.props.societyReducer)}
                             </Input>
                         </FormGroup>
-                        <FormGroup>
-                            <Label>Society Name</Label>
-                            <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName}  maxLength={50}/>
-                            <span className="error">{this.state.errors.societyName}</span> 
-                        </FormGroup>
+                       
                         
                         <FormGroup>
                             <Label>Society Address</Label>
-                            <Input type="textarea"  name="societyAddress" onChange={this.onChangeHandler} value={this.state.societyAddress}  maxLength={500}/>
+                            <Input type="textarea"  name="societyAddress" onChange={this.onChangeHandler} value={this.state.societyAddress}  maxLength={100}/>
                             <span className="error">{this.state.errors.societyAddress}</span> 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Bank Name</Label>
-                            <Input type="text"  name="bankName" onChange={this.onChangeHandler} value={this.state.bankName}  maxLength={30}/>
+                            <Input type="text"  name="bankName" onChange={this.onChangeHandler} value={this.state.bankName} onKeyPress={this.onKeyPressHandler} maxLength={30}/>
                             <span className="error">{this.state.errors.bankName}</span> 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Account Holder Name</Label>
-                            <Input type="text"  name="accountHolderName" onChange={this.onChangeHandler} value={this.state.accountHolderName}  maxLength={50}/>
+                            <Input type="text"  name="accountHolderName" onChange={this.onChangeHandler} value={this.state.accountHolderName} onKeyPress={this.onKeyPressHandler}  maxLength={30}/>
                             <span className="error">{this.state.errors.accountHolderName}</span> 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Account Number</Label>
-                            <Input type="text"  name="accountNumber" onChange={this.onChangeHandler} value={this.state.accountNumber}  maxLength={50}/>
+                            <Input type="text"  name="accountNumber" onChange={this.onChangeHandler} value={this.state.accountNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={50}/>
                             <span className="error">{this.state.errors.accountNumber}</span> 
                         </FormGroup>
 
@@ -547,13 +563,13 @@ class SocietyManagementDetail extends Component {
                         
                         <FormGroup>
                             <Label>Email Id</Label>
-                            <Input type="email"  name="email" onChange={this.onChangeHandler} value={this.state.email}  maxLength={50}/>
+                            <Input type="email"  name="email" onChange={this.onChangeHandler} value={this.state.email}   maxLength={50}/>
                             <span className="error">{this.state.errors.email}</span> 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Contact Number</Label>
-                            <Input type="text"  name="contactNumber" onChange={this.onChangeHandler} value={this.state.contactNumber}  maxLength={50}/>
+                            <Input type="text"  name="contactNumber" onChange={this.onChangeHandler} value={this.state.contactNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={50}/>
                             <span className="error">{this.state.errors.contactNumber}</span> 
                         </FormGroup>
                         <FormGroup>
@@ -564,7 +580,7 @@ class SocietyManagementDetail extends Component {
 
                         <FormGroup>
                             <Label>Total Board Members</Label>
-                            <Input type="text"  name="totalBoardMembers" onChange={this.onChangeHandler} value={this.state.totalBoardMembers}  maxLength={50}/>
+                            <Input type="text"  name="totalBoardMembers" onChange={this.onChangeHandler} value={this.state.totalBoardMembers}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={50}/>
                             <span className="error">{this.state.errors.totalBoardMembers}</span> 
                         </FormGroup>
                         <Button color="primary mr-2" onClick={this.editSocietyType}>Save</Button> 
