@@ -1,6 +1,6 @@
 import { authHeader } from "../helper/authHeader";
 import axios from 'axios';
-import {URN,ADD_EMPLOYEE,GET_EMPLOYEE_TYPE,GET_EMPLOYEE,GET_EMPLOYEE_WORK_TYPE,UPDATE_EMPLOYEE,DELETE_EMPLOYEE} from '../actions/index';
+import {URN,ADD_EMPLOYEE,GET_EMPLOYEE_TYPE,GET_EMPLOYEE,GET_EMPLOYEE_WORK_TYPE,UPDATE_EMPLOYEE,DELETE_EMPLOYEE,DELETE_MULTIPLE_EMPLOYEE_TYPE} from '../actions/index';
 
 
 
@@ -60,6 +60,19 @@ export function deleteEmployee(employeeDetailId,isActive){
 
     return{
         type:DELETE_EMPLOYEE,
+        payload:request
+    }
+
+
+}
+
+
+
+export function deleteMultipleEmployee(ids){
+    const request = axios.put(`${URN}/employeeDetail/delete/deleteSelected`,{ids}, {headers:authHeader()} ).then(response=>response.data)
+
+    return{
+        type:DELETE_MULTIPLE_EMPLOYEE_TYPE,
         payload:request
     }
 

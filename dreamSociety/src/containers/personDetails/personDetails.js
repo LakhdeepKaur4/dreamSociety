@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getTower,getFlat,getRoles,addPerson} from '../../actionCreators/personDetailsMasterAction';
 import Spinner from '../../components/spinner/spinner'
-
+import DefaultSelect from '../../constants/defaultSelect';
 import UI from '../../components/newUI/superAdminDashboard';
 
  class PersonDetails extends Component{
@@ -147,7 +147,7 @@ Email
 <div className="form-group">
 <label> Roles</label>
 <select  name="roles"  onChange={(e)=>{this.setState({roles:e.target.value })}}    className="form-control"  required>
-<option>  --Select--</option>
+<DefaultSelect/>
 {this.getRole(this.props.personDetails)}
 
 </select>
@@ -155,7 +155,7 @@ Email
 <div   className="form-group">
 <label>Tower</label>
 <select  name="towerId"  className="form-control" onChange ={(e)=>{this.setState({towerId:e.target.value})}}>
-<option> --Select--</option>
+<DefaultSelect/>
 {this.Tower(this.props.personDetails)}
 </select>
 </div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { displaySize,deleteSize,updateSize} from '../../actionCreators/sizeMasterAction';
+import { displaySize,deleteSize,updateSize,deleteMultipleSize} from '../../actionCreators/sizeMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -24,7 +24,9 @@ class DisplaySizeMaster extends Component {
     editSizeModal: false,
     menuVisible: false,
     search:'',
-    loading:true
+    loading:true,
+    ids: [],
+    isDisabled: true,
   }
 
   componentDidMount() {
@@ -102,7 +104,28 @@ class DisplaySizeMaster extends Component {
       return getSize.filter(this.searchFilter(this.state.search)).map((item,index) => {
         return (
           <tr key={item.sizeId}>
-
+               <td><input type="checkbox" name="ids" value={item.eventId} className="SelectAll"
+                         onChange={(e, i) => {
+                            const {sizeId} = item
+                            if(!e.target.checked){
+                                if(this.state.ids.length>-1){
+                                    document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(sizeId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true})
+                                }
+                            }
+                        }
+                            else {
+                                this.setState({ids: [...this.state.ids, sizeId]})
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                        } 
+                             }}/></td>
            <td>{index+1}</td>
 
             <td>{item.sizeType}</td>
@@ -138,12 +161,63 @@ close=()=>{
 }
 
 
+
+
+selectAll = () => {
+  let selectMultiple = document.getElementsByClassName('SelectAll');
+  let ar =[];
+      for(var i = 0; i < selectMultiple.length; i++){
+                  ar.push(parseInt(selectMultiple[i].value));
+                  selectMultiple[i].checked = true;
+          }
+          this.setState({ids: ar});
+          if(ar.length > 0){
+              this.setState({isDisabled: false});
+          }
+  }
+  unSelectAll = () =>{
+      let allIds = []
+      let unSelectMultiple = document.getElementsByClassName('SelectAll');
+      for(var i = 0; i < unSelectMultiple.length; i++){
+              unSelectMultiple[i].checked = false
+      }
+
+          this.setState({ids: [ ...allIds]});
+          if(allIds.length === 0){
+              this.setState({isDisabled: true});
+          }
+  }
+  deleteSelected(ids){
+          this.setState({loading:true,
+              isDisabled:true});
+              if(window.confirm('Are You Sure ?')){
+          this.props.deleteMultipleSize(ids)
+          .then(() => {this.props.displaySize()
+           .then(()=>this.setState({loading:false}))})
+           .catch(err => err.response.data.message);
+          }
+          else{
+              this.props.displaySize()
+           .then(()=>this.setState({loading:false}))
+          }
+      }
+
   render() {
     let tableData;
     tableData=  <Table  className ="table table-bordered" >
 
     <thead>
       <tr>
+      <th style={{alignContent:'baseline'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
         <th>#</th>
         <th>Size Details</th>
 
@@ -160,7 +234,8 @@ close=()=>{
    if(!this.props.SizeDetails.getSize){
     tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching details</Spinner></div>
   }
-
+  let deleteSelectedButton = <Button color="danger" className="mb-2"  disabled={this.state.isDisabled} 
+  onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
     return (
      
 
@@ -204,7 +279,7 @@ close=()=>{
             </Modal>
             <SearchFilter type="text" value={this.state.search}
               onChange={this.searchOnChange} />
-         
+             {deleteSelectedButton}
          {!this.state.loading?tableData:<Spinner/>}
           </div>
         </UI>
@@ -224,7 +299,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ displaySize,deleteSize,updateSize }, dispatch)
+  return bindActionCreators({ displaySize,deleteSize,updateSize,deleteMultipleSize}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplaySizeMaster)

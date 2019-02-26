@@ -5,9 +5,7 @@ import Spinner from '../../components/spinner/spinner';
 import {getCountryName,getStateName,getCityName, getLocationName} from '../../actionCreators/locationMasterAction';
 import {AddEmployee} from '../../actionCreators/employeeMasterAction';
 import {bindActionCreators} from 'redux';
-import axios from 'axios';
-import {authHeader} from '../../helper/authHeader';
-import {URN} from'../../actions'
+import DefaultSelect from '../../constants/defaultSelect'
 import _ from 'underscore';
 
 class EmployeeMaster extends Component{
@@ -306,7 +304,7 @@ form=
     <div>
                         <label>Country Name</label>
                         <select   className ="form-control" name="countryName"  onChange={this.onChangeCountry} >
-                        <option value="" disabled selected>--Select--</option>
+                        < DefaultSelect/> 
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
                     </div>
@@ -316,21 +314,21 @@ form=
                     <div>    
                         <label>State Name</label>
                         <select  className ="form-control" name="stateName" onChange={this.onChangeState}>
-                        <option value="" disabled selected>--Select--</option>
+                    <DefaultSelect/>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
                     </div>
                     <div>    
                         <label>City Name</label>
                         <select  className ="form-control"  name="cityName" onChange={this.onChangeCity} >
-                        <option value="" disabled selected>--Select--</option>
+                       <DefaultSelect/>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
                     </div>
                     <div>    
                         <label>location</label>
                         <select  className ="form-control"   onChange={this.onLocationChange} >
-                        <option value="" disabled selected>--Select--</option>
+                   <DefaultSelect/>
                             {this.getDropdown4(this.props.locationMasterReducer)}
                         </select>
                     </div>
@@ -361,7 +359,7 @@ form=
           </div>
           </div>
         <label> upload your ID</label>
-        <input  accept='.docx,application/pdf' type="file"      name ="documentOne" onChange={this.onFileChange}/>
+        <input  accept='.docx ,.doc,application/pdf' type="file"      name ="documentOne" onChange={this.onFileChange}/>
     </div>
   
     <div>

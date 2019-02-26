@@ -1,4 +1,4 @@
-import {URN,ADD_EMP,GET_EMP,UPDATE_EMP,DELETE_EMP,GET_LOCATION_DETAIL} from '../actions/index'
+import {URN,ADD_EMP,GET_EMP,UPDATE_EMP,DELETE_EMP,GET_LOCATION_DETAIL,UPDATE_EMPLOYEE} from '../actions/index'
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
 export function AddEmployee(data){
@@ -38,13 +38,7 @@ export function ViewEmployee(){
     }
 }
 
-export function updateEmployee(){
-    const request = axios.put()
-    return{
-        type:UPDATE_EMP,
-        payload:request
-    }
-}
+
 
 export function deleteEmployee(){
     const request= axios.put()
@@ -54,3 +48,17 @@ export function deleteEmployee(){
         payload:request
     }
 }
+
+
+export function updateEmployee(employeeId,picture,firstName, middleName, lastName, CTC, documentOne, documentTwo, startDate,endDate){
+    console.log(firstName);
+    const request =axios.put(`${URN}/employee/`+employeeId,{picture,firstName, middleName, lastName, CTC, documentOne, documentTwo, startDate, endDate},{headers:authHeader()})
+
+
+    return{
+        type:UPDATE_EMPLOYEE,
+        payload:request
+    }
+}
+
+ 

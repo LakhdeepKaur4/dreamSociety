@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import axios from 'axios';
+import DefaultSelect from '../../constants/defaultSelect'
 
 import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
-import { viewPerson, getFlat, getTower, getRoles, updatePerson, deletePerson } from '../../actionCreators/personDetailsMasterAction';
+import { viewPerson, getFlat, getTower, getRoles, updatePerson, deletePerson, deleteMultiplePerson } from '../../actionCreators/personDetailsMasterAction';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
 
@@ -31,7 +31,9 @@ class displayPersonDetails extends Component {
                         },
                         editPersonModal: false,
                         loading: true,
-                        search: ''
+                        search: '',
+                        ids: [],
+                        isDisabled: true,
                 }
         }
         componentDidMount() {
@@ -162,12 +164,34 @@ class displayPersonDetails extends Component {
                         console.log("xyz", person1)
                         let currentRole;
                         return (
-                                person1.filter(this.searchFilter(this.state.search)).map((item,index) => {
+                                person1.filter(this.searchFilter(this.state.search)).map((item, index) => {
                                         console.log(item.roles, "ancdd")
 
                                         return (
                                                 <tr key={item.userId}>
-                                                 <td>{index+1}</td>
+                                                <td><input type="checkbox" name="ids" value={item.eventId} className="SelectAll"
+                         onChange={(e, i) => {
+                            const {userId} = item
+                            if(!e.target.checked){
+                                if(this.state.ids.length>-1){
+                                    document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(userId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true})
+                                }
+                            }
+                        }
+                            else {
+                                this.setState({ids: [...this.state.ids, userId]})
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                        } 
+                             }}/></td>
+                                                        <td>{index + 1}</td>
                                                         <td>{item.userName}</td>
                                                         <td>{item.email}</td>
                                                         <td>{item.tower_master.towerName}</td>
@@ -206,11 +230,66 @@ class displayPersonDetails extends Component {
         }
 
 
+        selectAll = () => {
+                let selectMultiple = document.getElementsByClassName('SelectAll');
+                let ar = [];
+                for (var i = 0; i < selectMultiple.length; i++) {
+                        ar.push(parseInt(selectMultiple[i].value));
+                        selectMultiple[i].checked = true;
+                }
+                this.setState({ ids: ar });
+                if (ar.length > 0) {
+                        this.setState({ isDisabled: false });
+                }
+        }
+        unSelectAll = () => {
+                let allIds = []
+                let unSelectMultiple = document.getElementsByClassName('SelectAll');
+                for (var i = 0; i < unSelectMultiple.length; i++) {
+                        unSelectMultiple[i].checked = false
+                }
+
+                this.setState({ ids: [...allIds] });
+                if (allIds.length === 0) {
+                        this.setState({ isDisabled: true });
+                }
+        }
+        deleteSelected(ids) {
+                this.setState({
+                        loading: true,
+                        isDisabled: true
+                });
+                if (window.confirm('Are You Sure ?')) {
+                        this.props.deleteMultiplePerson(ids)
+                                .then(() => {
+                                        this.props.viewPerson()
+                                                .then(() => this.setState({ loading: false }))
+                                })
+                                .catch(err => err.response.data.message);
+                }
+                else {
+                        this.props.viewPerson()
+                                .then(() => this.setState({ loading: false }))
+                }
+        }
+
+
+
         render() {
                 let tableData;
                 tableData = <Table className="table table-bordered">
                         <thead>
                                 <tr>
+                                <th style={{alignContent:'baseline'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
                                         <th>#</th>
                                         <th>UserName</th>
                                         <th>Email</th>
@@ -227,6 +306,8 @@ class displayPersonDetails extends Component {
 
                         </tbody>
                 </Table>
+                let deleteSelectedButton = <Button color="danger" className="mb-2"  disabled={this.state.isDisabled} 
+                onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
                 return (
                         <div>
                                 <UI onClick={this.logout}>
@@ -276,7 +357,7 @@ class displayPersonDetails extends Component {
                                                                         }}
                                                                         >
 
-                                                                                <option> --Select--</option>
+                                                                              <DefaultSelect/>
                                                                                 {this.getTower(this.props.personDetails)}
                                                                         </Input>
                                                                 </FormGroup>
@@ -297,7 +378,7 @@ class displayPersonDetails extends Component {
 
                                                                         >
                                                                                 <option>{this.state.editPersonData.roleName}</option>
-                                                                                <option> --Select--</option>
+                                                                               <DefaultSelect/>
                                                                                 {this.getRole(this.props.personDetails)}
 
                                                                         </Input>
@@ -338,6 +419,7 @@ class displayPersonDetails extends Component {
                                                         <button className="btn btn-primary" onClick={this.Addperson}> Add person</button>
                                                 </div>
                                                 <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
+                                                {deleteSelectedButton}
                                                 {!this.state.loading ? tableData : <Spinner />}
 
                                         </div>
@@ -364,7 +446,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-        return bindActionCreators({ viewPerson, getFlat, getRoles, getTower, updatePerson, deletePerson }, dispatch)
+        return bindActionCreators({ viewPerson, getFlat, getRoles, getTower, updatePerson, deletePerson, deleteMultiplePerson }, dispatch)
 }
 
 
