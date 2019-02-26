@@ -351,7 +351,7 @@ module.exports = function(app) {
 
 	app.post('/api/societyMember',[authJwt.verifyToken],societyMemberController.create);
 
-	app.get('/api/societyMember',[authJwt.verifyToken],societyMemberController.get);
+	app.put('/api/societyMember/:id',[authJwt.verifyToken],societyMemberController.update);
 
 	app.post('/api/relation',[authJwt.verifyToken],relationController.create);
 
