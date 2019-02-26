@@ -241,6 +241,11 @@ unSelectAll = () =>{
     }
     
 }
+logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
 
 render(){
     let tableData;
