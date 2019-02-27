@@ -15,9 +15,9 @@ class BoardMemberDetails extends Component{
         super(props);
         this.state = {
             societyId:'',
-            societyMemberId:'',
+            societyBoardMemberId:'',
             societyName:'',
-            societyMemberName:'',
+            societyBoardMemberName:'',
             designationName:'',
             countryName:'',
             stateName:'',
@@ -58,11 +58,11 @@ class BoardMemberDetails extends Component{
         this.props.getLocation().then(() => this.setState({loading:false}));; 
     }
 
-    editMember(societyId,societyMemberId,societyName,societyMemberName,designationName,countryName,stateName,cityName,
+    editMember(societyId,societyBoardMemberId,societyName,societyBoardMemberName,designationName,countryName,stateName,cityName,
         locationName,currentAddress,permanentAddress,
         contactNumber,email,bankName,
         accountNumber,panCardNumber,dob,designationId,countryId,stateId,cityId,locationId){
-        this.setState({societyId,societyMemberId,societyName,societyMemberName,designationName,countryName,stateName,cityName,
+        this.setState({societyId,societyBoardMemberId,societyName,societyBoardMemberName,designationName,countryName,stateName,cityName,
             locationName,currentAddress,permanentAddress,
             contactNumber,email,bankName,
             accountNumber,panCardNumber,dob,designationId,countryId,stateId,cityId,locationId,editSocietyMember: !this.state.editSocietyMember});
@@ -70,15 +70,15 @@ class BoardMemberDetails extends Component{
 
     fetchMemberDetails = ({memberDetails}) => {
         if(memberDetails){
-            return memberDetails.societyMember.map((item, index) => {
+            return memberDetails.societyBoardMember.map((item, index) => {
                 return (
-                    <tr key={item.societyMemberId}>
-                        <td><input type="checkbox" name="ids" className="SelectAll"  value={item.societyMemberId}
+                    <tr key={item.societyBoardMemberId}>
+                        <td><input type="checkbox" name="ids" className="SelectAll"  value={item.societyBoardMemberId}
                          onChange={(e) => {
-                            let {societyMemberId} = item
+                            let {societyBoardMemberId} = item
                             if(!e.target.checked){
                                 document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(societyMemberId);
+                                let indexOfId = this.state.ids.indexOf(societyBoardMemberId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1)
                                 }
@@ -87,7 +87,7 @@ class BoardMemberDetails extends Component{
                                 }
                             }
                             else{
-                                this.setState({ids: [...this.state.ids, societyMemberId]});
+                                this.setState({ids: [...this.state.ids, societyBoardMemberId]});
                                 if(this.state.ids.length >= 0){
                                     this.setState({isDisabled: false})
                                 }
@@ -95,7 +95,7 @@ class BoardMemberDetails extends Component{
                              }}/></td>
                         <td>{index + 1}</td>
                         <td>{item.society_master.societyName}</td>
-                        <td>{item.societyMemberName}</td>
+                        <td>{item.societyBoardMemberName}</td>
                         <td>{item.designation_master.designationName}</td>
                         <td>{item.country_master.countryName}</td>
                         <td>{item.state_master.stateName}</td>
@@ -112,8 +112,8 @@ class BoardMemberDetails extends Component{
                         <td>
                             <Button color="success" className="mr-2" onClick={this.editMember.bind(this,
                                 item.societyId,
-                                item.societyMemberId,
-                                item.society_master.societyName,item.societyMemberName,item.designation_master.designationName,
+                                item.societyBoardMemberId,
+                                item.society_master.societyName,item.societyBoardMemberName,item.designation_master.designationName,
                                 item.country_master.countryName,
                                 item.state_master.stateName,
                                 item.city_master.cityName,
@@ -127,7 +127,7 @@ class BoardMemberDetails extends Component{
                                 item.city_master.cityId,
                                 item.location_master.locationId
                                 )} >Edit</Button>
-                            <Button color="danger" onClick={this.deleteSocietyMember.bind(this, item.societyMemberId)}>Delete</Button>
+                            <Button color="danger" onClick={this.deleteSocietyMember.bind(this, item.societyBoardMemberId)}>Delete</Button>
                         </td>
                     </tr>
                 )
@@ -135,9 +135,9 @@ class BoardMemberDetails extends Component{
         } 
     }
 
-    deleteSocietyMember(societyMemberId) {
+    deleteSocietyMember(societyBoardMemberId) {
         this.setState({loading:true, isDisabled:true})
-        this.props.deleteSocietyMemberDetail(societyMemberId)
+        this.props.deleteSocietyMemberDetail(societyBoardMemberId)
         .then(() => this.loadingInactive())
     }
 
@@ -376,12 +376,12 @@ class BoardMemberDetails extends Component{
      update = (e) => {
          console.log('hello')
         e.preventDefault();
-        let {societyId,societyMemberName,designationId,countryId,stateId,cityId,
+        let {societyId,societyBoardMemberName,designationId,countryId,stateId,cityId,
             locationId,currentAddress,permanentAddress,
             contactNumber,email,bankName,
-            accountNumber,panCardNumber,dob,societyMemberId} = this.state;
+            accountNumber,panCardNumber,dob,societyBoardMemberId} = this.state;
         let errors = {};
-        
+        if(this.state.societyBoardMemberName === '') errors.societyBoardMemberName = `Can't be empty.`
         if(this.state.currentAddress === '') {console.log('bug1'); errors.currentAddress = `Can't be empty.`;}
         if(this.state.permanentAddress === ''){console.log('bug2'); errors.permanentAddress = `Can't be empty.`;}
         if(this.state.contactNumber === '') {console.log('bug3'); errors.contactNumber = `Can't be empty.`;}
@@ -397,11 +397,11 @@ class BoardMemberDetails extends Component{
             console.log('hello1')
             this.setState({loading:true})
             
-            this.props.updateSocietyMemberDetails(societyId,societyMemberName,designationId,
+            this.props.updateSocietyMemberDetails(societyId,societyBoardMemberName,designationId,
                 countryId,stateId,cityId,
                 locationId,currentAddress,permanentAddress,
                 contactNumber,email,bankName,
-                accountNumber,panCardNumber,dob,societyMemberId)
+                accountNumber,panCardNumber,dob,societyBoardMemberId)
                 .then(() => this.loadingInactive())
                 this.setState({editSocietyMember: !this.state.editSocietyMember})
         }
@@ -477,9 +477,9 @@ class BoardMemberDetails extends Component{
                             </FormGroup>
                             <FormGroup>
                                 <Label>Society Member Name</Label>
-                                <Input name="societyMemberName" type="text" value={this.state.societyMemberName} 
+                                <Input name="societyBoardMemberName" type="text" value={this.state.societyBoardMemberName} 
                                     onChange={this.onChange} />
-                                {!this.state.societyMemberName ? <span className="error">{this.state.errors.societyMemberName}</span>: ''}
+                                {!this.state.societyBoardMemberName ? <span className="error">{this.state.errors.societyBoardMemberName}</span>: ''}
                             </FormGroup>
                             <FormGroup>
                                 <Label>Designation</Label>

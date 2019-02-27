@@ -15,7 +15,7 @@ class BoardMemberRegistrationForm extends Component {
         super(props);
         this.state = {
             societyId:'',
-            societyMemberName:'',
+            societyBoardMemberName:'',
             designationName:'',
             designationId:'',
             cityName:'',
@@ -240,8 +240,8 @@ submit = (e) => {
     e.preventDefault()
     let errors = {};
         if(!this.state.societyId) errors.societyId = `Can't be empty.`
-        if(this.state.societyMemberName === ''){
-            errors.societyMemberName = `Can't be empty.`
+        if(this.state.societyBoardMemberName === ''){
+            errors.societyBoardMemberName = `Can't be empty.`
         }
         if(!this.state.designationId){
             errors.designationId = `Please select any.`
@@ -268,7 +268,7 @@ submit = (e) => {
             .then(() => this.props.history.push('/superDashboard/boardMemberDetails'));
             this.setState({
             societyId:'',
-            societyMemberName:'',
+            societyBoardMemberName:'',
             designationName:'',
             designationId:'',
             cityName:'',
@@ -358,10 +358,10 @@ route =() =>{
                         <Label>Member Name</Label>
                         <Input type='text'
                          placeholder="Member Name"
-                         name='societyMemberName' 
+                         name='societyBoardMemberName' 
                          onChange={this.onChange}
                          onKeyPress={this.OnKeyPressUserhandler} />
-                        {!this.state.societyMemberName ? <span className="error">{this.state.errors.societyMemberName}</span>: ''}
+                        {!this.state.societyBoardMemberName ? <span className="error">{this.state.errors.societyBoardMemberName}</span>: ''}
                     </FormGroup>
                     <FormGroup>
                         <Label>Designation</Label>

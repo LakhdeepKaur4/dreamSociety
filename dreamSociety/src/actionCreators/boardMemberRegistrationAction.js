@@ -5,7 +5,7 @@ import { URN, ADD_BOARD_MEMBER_DETAIL,GET_BOARD_MEMBER_DESIGNATION_DETAIL,
 import { authHeader } from '../helper/authHeader';
 
  export function addMemberDetails(values){
-    const request = axios.post(`${URN}/societyMember`, values, {headers: authHeader()});
+    const request = axios.post(`${URN}/societyBoardMember`, values, {headers: authHeader()});
     return {
       type: ADD_BOARD_MEMBER_DETAIL,
       payload: request
@@ -22,7 +22,7 @@ import { authHeader } from '../helper/authHeader';
  }
 
  export function getMemberDetails(){
-    const request = axios.get(`${URN}/societyMember`, {headers: authHeader()})
+    const request = axios.get(`${URN}/societyBoardMember`, {headers: authHeader()})
     .then((response) => response.data);
     return {
        type: GET_BOARD_MEMBER_DETAILS,
@@ -39,15 +39,15 @@ import { authHeader } from '../helper/authHeader';
    }
 }
 
-export function updateSocietyMemberDetails(societyId,societyMemberName,designationId,countryId,stateId,cityId,
+export function updateSocietyMemberDetails(societyId,societyBoardMemberName,designationId,countryId,stateId,cityId,
    locationId,currentAddress,permanentAddress,
    contactNumber,email,bankName,
-   accountNumber,panCardNumber,dob,societyMemberId){
-   const request = axios.put(`${URN}/societyMember/` + societyMemberId, {societyId,societyMemberName,designationId
+   accountNumber,panCardNumber,dob,societyBoardMemberId){
+   const request = axios.put(`${URN}/societyBoardMember/` + societyBoardMemberId, {societyId,societyBoardMemberName,designationId
       ,countryId,stateId,cityId,
       locationId,currentAddress,permanentAddress,
       contactNumber,email,bankName,
-      accountNumber,panCardNumber,dob,societyMemberId}, {headers: authHeader()})
+      accountNumber,panCardNumber,dob,societyBoardMemberId}, {headers: authHeader()})
       .then(() => this.getMemberDetails());
 
    return {
@@ -61,7 +61,7 @@ export function deleteSocietyMemberDetail(societyMemberId){
       isActive: false
    }
    let {isActive} = data;
-   const request = axios.put(`${URN}/societyMember/delete/` + societyMemberId, {isActive}, {headers: authHeader()})
+   const request = axios.put(`${URN}/societyBoardMember/delete/` + societyMemberId, {isActive}, {headers: authHeader()})
    .then(() => this.getMemberDetails());
 
    return {
@@ -71,7 +71,7 @@ export function deleteSocietyMemberDetail(societyMemberId){
 }
 
 export function deleteMultipleSocietyMemberDetail(ids){
-   const request = axios.put(`${URN}/societyMember/delete/deleteSelected`, {ids}, {headers: authHeader()})
+   const request = axios.put(`${URN}/societyBoardMember/delete/deleteSelected`, {ids}, {headers: authHeader()})
    .then(() => this.getMemberDetails());
 
    return{
