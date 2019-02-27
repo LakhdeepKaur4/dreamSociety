@@ -154,6 +154,10 @@ ul ul a {
     margin-left: 0px !important;
 }
 
+.TextTransformToCapital{
+    text-transform: uppercase;
+}
+
 /* .modal-backdrop.show{
     opacity: 0;
 } */
