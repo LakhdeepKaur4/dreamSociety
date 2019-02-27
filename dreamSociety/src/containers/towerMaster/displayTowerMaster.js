@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { viewTower,updateTower,deleteTower } from '../../actionCreators/towerMasterAction';
+import { viewTower,updateTower,deleteTower,deleteMultipleTower } from '../../actionCreators/towerMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
@@ -15,12 +15,14 @@ class DisplayTowerMaster extends Component {
       towerId: [],
       towerName: [],
       isActive:false,
-      isChecked: false 
+      isChecked: false
     },
     editTowerModal: false,
     menuVisible: false,
     search:'',
-    loading:true
+    loading:true,
+    ids: [],
+    isDisabled: true
   }
 
   componentDidMount() {
@@ -95,7 +97,29 @@ this.setState({loading:true});
         return (
 
           <tr key={item.towerId}>
-             <td>  <input type="checkbox"  value="checkedall" /></td>
+
+<td><input type="checkbox" name="ids" value={item.eventId} className="SelectAll"
+                         onChange={(e, i) => {
+                            const {towerId} = item
+                            if(!e.target.checked){
+                                if(this.state.ids.length>-1){
+                                    document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(towerId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true})
+                                }
+                            }
+                        }
+                            else {
+                                this.setState({ids: [...this.state.ids, towerId]})
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                        } 
+                             }}/></td>
             <td>{index+1}</td>
             <td>{item.towerName}</td>
             <td>
@@ -131,6 +155,47 @@ close=()=>{
   return this.props.history.replace('/superDashBoard')
 }
 
+
+selectAll = () => {
+  let selectMultiple = document.getElementsByClassName('SelectAll');
+  let ar =[];
+      for(var i = 0; i < selectMultiple.length; i++){
+                  ar.push(parseInt(selectMultiple[i].value));
+                  selectMultiple[i].checked = true;
+          }
+          this.setState({ids: ar});
+          if(ar.length > 0){
+              this.setState({isDisabled: false});
+          }
+  }
+  unSelectAll = () =>{
+      let allIds = []
+      let unSelectMultiple = document.getElementsByClassName('SelectAll');
+      for(var i = 0; i < unSelectMultiple.length; i++){
+              unSelectMultiple[i].checked = false
+      }
+
+          this.setState({ids: [ ...allIds]});
+          if(allIds.length === 0){
+              this.setState({isDisabled: true});
+          }
+  }
+  deleteSelected(ids){
+          this.setState({loading:true,
+              isDisabled:true});
+              if(window.confirm('Are You Sure ?')){
+          this.props.deleteMultipleTower(ids)
+          .then(() => {this.props.viewTower()
+           .then(()=>this.setState({loading:false}))})
+           .catch(err => err.response.data.message);
+          }
+          else{
+              this.props.viewTower()
+           .then(()=>this.setState({loading:false}))
+          }
+      }
+
+
   render() {
      let tableData;
  
@@ -138,9 +203,19 @@ close=()=>{
    
               <thead>
                 <tr>
-                <input type="checkbox"  value="checkedall" />
+               
+                <th style={{alignContent:'baseline'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
                   <th> #</th>
-                  
+                     
                   <th>Tower Name</th>
 
                   <th> Actions  </th>
@@ -156,6 +231,8 @@ close=()=>{
               </tbody>
               
             </Table>
+             let deleteSelectedButton = <Button color="danger" className="mb-2"  disabled={this.state.isDisabled} 
+             onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
             if(!this.props.TowerDetails.tower){
               tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching Towers</Spinner></div>
             }
@@ -202,6 +279,7 @@ close=()=>{
                 </ModalBody>
             </Modal>
             <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
+            {deleteSelectedButton}
             {!this.state.loading?tableData:<Spinner/>}
           </div>
         </UI>
@@ -221,7 +299,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ viewTower,updateTower,deleteTower}, dispatch)
+  return bindActionCreators({ viewTower,updateTower,deleteTower,deleteMultipleTower}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayTowerMaster)
