@@ -5,12 +5,12 @@ import { connect } from 'react-redux';
 import _ from 'underscore';
 import { bindActionCreators } from 'redux';
 import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
-import {addMemberDetails, getMemberDesignation, getMemberDetails,getSocietyId} from '../../actionCreators/societyMemberRegistrationAction';
+import {addMemberDetails, getMemberDesignation, getMemberDetails,getSocietyId} from '../../actionCreators/boardMemberRegistrationAction';
 import { Form, FormGroup, Input, Label, Button } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 import Spinner from '../../components/spinner/spinner';
 
-class SocietyMemberRegistrationForm extends Component {
+class BoardMemberRegistrationForm extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -239,15 +239,17 @@ keyPress = (event) => {
 submit = (e) => {
     e.preventDefault()
     let errors = {};
+        if(!this.state.societyId) errors.societyId = `Can't be empty.`
         if(this.state.societyMemberName === ''){
             errors.societyMemberName = `Can't be empty.`
         }
         if(!this.state.designationId){
             errors.designationId = `Please select any.`
         }
-        if(!this.state.countryId) errors.countryName = `Please select any.`;
-        if(!this.state.stateId) errors.stateName = `Please select any.`;
-        if(!this.state.cityId) errors.cityName = `Please select any.`;
+        if(!this.state.countryId) errors.countryId = `Please select any.`;
+        if(!this.state.stateId) errors.stateId = `Please select any.`;
+        if(!this.state.cityId) errors.cityId = `Please select any.`;
+        if(!this.state.locationId) errors.locationId = `Please select any.`;
         if(this.state.currentAddress === '') errors.currentAddress = `Can't be empty.`;
         if(this.state.permanentAddress === '') errors.permanentAddress = `Can't be empty.`;
         if(this.state.contactNumber === '') errors.contactNumber = `Can't be empty.`;
@@ -263,7 +265,7 @@ submit = (e) => {
         if(isValid){
             this.setState({loading: true});
             this.props.addMemberDetails(this.state)
-            .then(() => this.props.history.push('/superDashboard/societyMemberDetails'));
+            .then(() => this.props.history.push('/superDashboard/boardMemberDetails'));
             this.setState({
             societyId:'',
             societyMemberName:'',
@@ -324,9 +326,9 @@ emailValid(event) {
     }
 }
 
-fetchSocietyId = ({societyId}) => {
-    if(societyId){
-        return societyId.map((item) => {
+fetchSocietyId = ({boardId}) => {
+    if(boardId){
+        return boardId.map((item) => {
             return (
                 <option value={item.societyId} key={item.societyId}>{item.societyName}</option>
             )
@@ -334,23 +336,23 @@ fetchSocietyId = ({societyId}) => {
     }
 }
 route =() =>{
-    this.props.history.push('/superDashboard/societyMemberDetails');
+    this.props.history.push('/superDashboard/boardMemberDetails');
 }
-
 
 
     render(){
         let formData = <div>
             <FormGroup>
-                        <Label>Society Id</Label>
+                        <Label>Society Name</Label>
                         <Input type="select"
                         name="societyId"
                         onChange={this.onChange}
                         defaultValue="no-value"
                          >
                             <DefaultSelect />
-                            {this.fetchSocietyId(this.props.societyMemberReducer)}
+                            {this.fetchSocietyId(this.props.boardMemberReducer)}
                         </Input>
+                        {!this.state.societyId ? <span className="error">{this.state.errors.societyId}</span>: ''}
                     </FormGroup>
                     <FormGroup>
                         <Label>Member Name</Label>
@@ -368,7 +370,7 @@ route =() =>{
                          name='designationId' 
                          onChange={this.onChange} >
                             <DefaultSelect />
-                            {this.fetchDesignation(this.props.societyMemberReducer)}
+                            {this.fetchDesignation(this.props.boardMemberReducer)}
                         </Input>
                         {!this.state.designationId ? <span className="error">{this.state.errors.designationId}</span> : ''}
                     </FormGroup>
@@ -383,7 +385,15 @@ route =() =>{
                         countryReducer={this.countryName(this.props.societyReducer)}
                         stateReducer={this.stateName(this.props.societyReducer)}
                         cityReducer={this.cityName(this.props.societyReducer)}
-                        locationReducer={this.locationName(this.props.societyReducer)}/>
+                        locationReducer={this.locationName(this.props.societyReducer)}
+                        countryError={this.state.errors.countryId}
+                        stateError={this.state.errors.stateId}
+                        cityError={this.state.errors.cityId}
+                        locationError={this.state.errors.locationId}
+                        countryData={this.state.countryId}
+                        stateData={this.state.stateId}
+                        cityData={this.state.cityId}
+                        locationData={this.state.locationId} />
                         
                     <FormGroup>
                         <Label>Current Address</Label>
@@ -534,7 +544,7 @@ route =() =>{
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
                     </div>
-                    <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Society Member Details</h3></div>
+                    <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Board Member Details</h3></div>
                     {!this.state.loading ? formData : <Spinner />}
                 </Form>
             </UI>
@@ -546,7 +556,7 @@ function mapStateToProps(state) {
     console.log(state);
     return {
         societyReducer: state.societyReducer,
-        societyMemberReducer: state.societyMemberReducer    
+        boardMemberReducer: state.boardMemberReducer    
     }
 }
 
@@ -555,4 +565,4 @@ function mapDispatchToProps(dispatch) {
         getMemberDesignation, getMemberDetails, getSocietyId, getLocation}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SocietyMemberRegistrationForm);
+export default connect(mapStateToProps, mapDispatchToProps)(BoardMemberRegistrationForm);
