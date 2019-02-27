@@ -20,7 +20,8 @@ export function userLogout() {
     // remove user from local storage to log user out
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
-    return this.history.go('/')
+    this.history.push('/');
+    return {type:'',payload:''};
 
 }
 

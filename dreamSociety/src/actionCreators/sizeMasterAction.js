@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN,ADD_SIZE,GET_SIZE,DELETE_SIZE, UPDATE_SIZE1} from '../actions';
+import {URN,ADD_SIZE,GET_SIZE,DELETE_SIZE, UPDATE_SIZE1,DELETE_MULTIPLE_SIZE} from '../actions';
 export   function AddSize(values){
  
     const request =axios.post(`${URN}/size`,values,{headers:authHeader()})
@@ -37,6 +37,14 @@ export function updateSize(sizeId,sizeType){
     })
     return{
         type:UPDATE_SIZE1,
+        payload:request
+    }
+}
+
+export function deleteMultipleSize(ids){
+    const request =axios.put(`${URN}/size/delete/deleteSelected` ,{ids}, { headers: authHeader() }).then(response=>response.data)
+    return{
+        type:DELETE_MULTIPLE_SIZE,
         payload:request
     }
 }
