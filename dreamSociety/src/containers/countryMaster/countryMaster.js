@@ -41,6 +41,7 @@ class Country extends Component {
         } else {
             this.setState({ [e.target.name]: e.target.value.trim('') });
         }
+        console.log(this.state.code)
 
 
     }
@@ -152,9 +153,11 @@ class Country extends Component {
                 <Input
                     type="text"
                     name="code"
+                    className="TextTransformToCapital"
                     placeholder="Country Code"
-                    onKeyPress={this.onKeyPressCode}
                     maxLength='3'
+                    onKeyPress={this. onKeyPressCode}
+                    // value={this.state.code.toUpperCase()}
                     onChange={this.onChange} />
                 <span className='error'>{this.state.errors.code}</span>
             </FormGroup>
