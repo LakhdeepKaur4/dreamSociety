@@ -122,8 +122,8 @@ class Parking extends Component {
                     <div>
                         <Form onSubmit={this.submit}>
                         <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
+                                <span aria-hidden="true">&times;</span>
+                        </div>
                             <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Parking</h3></div>
                             <div>{!this.state.loading ? formData : <Spinner />}</div>
                         </Form>

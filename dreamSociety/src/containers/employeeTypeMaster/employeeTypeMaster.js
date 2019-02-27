@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import {connect} from  'react-redux';
 import {bindActionCreators}  from 'redux';
 import UI from '../../components/newUI/superAdminDashboard';
-
+import DefaultSelect from '../../constants/defaultSelect';
 import Spinner from '../../components/spinner/spinner';
 import {AddEmployee,getEmployeeType,getEmployeeWorkType} from '../../actionCreators/employeeTypeMasterAction';
 class EmployeeTypeMaster extends Component{
@@ -98,6 +98,7 @@ render(){
        
         {this.setState({employeeTypeId:e.target.value})}
         } >
+        <DefaultSelect/>
          {this.getEmpType(this.props.employeeDetails)}
         </select>
         </div>
@@ -106,6 +107,7 @@ render(){
     <select  className="form-control" name="employeeWorkTypeId"  onChange={(e)=>{
 
         this.setState({employeeWorkTypeId:e.target.value})}}>
+        <DefaultSelect/>
         {this.getEmpWorkType(this.props.employeeDetails)}
         </select>
         </div>

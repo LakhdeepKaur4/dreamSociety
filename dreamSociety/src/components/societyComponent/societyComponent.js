@@ -11,9 +11,9 @@ const SocietyComponent = (props) =>{
         let form;
             form= <div>
             
-            <FormGroup>
+        <FormGroup>
             <Label>Country Name</Label>
-            <Input type="select" defaultValue='no-value' name="countryName"  onChange={props.onChangeCountry} required>
+            <Input type="select" defaultValue='no-value' name="countryId"  onChange={props.onChangeCountry} required>
                 <DefaultSelect/>
                 {props.countryReducer}
             </Input>
@@ -21,7 +21,7 @@ const SocietyComponent = (props) =>{
 
         <FormGroup>
             <Label>State Name</Label>
-            <Input type="select" defaultValue='no-value' name="stateName"   onChange={props.onChangeState} required>
+            <Input type="select" defaultValue='no-value' name="stateId"   onChange={props.onChangeState} required>
            <DefaultSelect/>
                 {props.stateReducer}
             </Input>
@@ -29,9 +29,17 @@ const SocietyComponent = (props) =>{
 
         <FormGroup>
             <Label>City Name</Label>
-            <Input type="select" defaultValue='no-value' name="cityName"  onChange={props.onChangeCity} required>
+            <Input type="select" defaultValue='no-value' name="cityId"  onChange={props.onChangeCity} required>
            <DefaultSelect/>
                 {props.cityReducer}  
+            </Input>
+        </FormGroup>
+
+        <FormGroup>
+            <Label>Location Name</Label>
+            <Input type="select" defaultValue='no-value' name="locationId"  onChange={props.onChangeLocation} required>
+           <DefaultSelect/>
+                {props.locationReducer}  
             </Input>
         </FormGroup>
 

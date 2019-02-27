@@ -64,6 +64,7 @@ import SocietyComponent from './components/societyComponent/societyComponent';
 import RelationshipMaster from './containers/relationshipMaster/relationshipMaster';
 import RelationshipMasterDetail from './containers/relationshipMaster/relationshipMasterDetail';
 import SocietyMemberRegistrationForm from './containers/societyMemberRegistration/societyMemberRegistrationForm';
+import SocietyMemberDetails from './containers/societyMemberRegistration/societyMemberDetails';
 
 
 class App extends Component {
@@ -131,6 +132,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/relationshipMaster' component={RelationshipMaster} />
             <PrivateRoute path='/superDashboard/relationshipMasterDetail' component={RelationshipMasterDetail} />
             <PrivateRoute path='/superDashboard/societyMemberRegistartionForm' component={SocietyMemberRegistrationForm} />
+            <PrivateRoute path='/superDashboard/societyMemberDetails' component={SocietyMemberDetails} />
           </Switch>
         </div>
         
