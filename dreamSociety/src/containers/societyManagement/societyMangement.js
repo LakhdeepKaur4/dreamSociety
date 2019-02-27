@@ -63,9 +63,8 @@ class SocietyMangement extends Component {
     }
 
     onChangeCountry= (event)=>{
-
+        this.onChange(event);
         let selected= event.target.value
-    
         var country = _.find(this.props.societyReducer.countryResult,function(obj){
             return obj.countryName === selected
             })
@@ -81,9 +80,9 @@ class SocietyMangement extends Component {
 
     
     onChangeState= (event)=>{
+        this.onChange(event);
       
-        let selected= event.target.value
-        
+        let selected= event.target.value  
         var data1 = _.find(this.props.societyReducer.stateResult,function(obj){
             return obj.stateName === selected
             })
@@ -99,7 +98,7 @@ class SocietyMangement extends Component {
     }
 
     onChangeCity= (event)=>{
-      
+        this.onChange(event);
         let selected= event.target.value
     
         var data2 = _.find(this.props.societyReducer.cityResult,function(obj){
@@ -117,7 +116,7 @@ class SocietyMangement extends Component {
     }
 
     onChangeLocation= (event)=>{
-       
+        this.onChange(event);
          let selected= event.target.value
         var data3 = _.find(this.props.societyReducer.locationResult,function(obj){
             return obj.locationName === selected
@@ -170,7 +169,6 @@ class SocietyMangement extends Component {
     cityName=({cityResult})=>{
        
         if(cityResult){
-            
            return( 
             cityResult.map((item) =>{ 
                    return(
@@ -333,7 +331,7 @@ class SocietyMangement extends Component {
 
 
     render() {
-        console.clear();
+        // console.clear();
         let form;
         if(!this.state.loading && this.props.societyReducer.countryResult && this.props.societyReducer.stateResult && this.props.societyReducer.cityResult && this.props.societyReducer.locationResult && this.state.errors){
             form= <div>

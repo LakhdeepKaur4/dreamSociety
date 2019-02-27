@@ -1,5 +1,5 @@
 import axios from 'axios'; 
-import {URN, GET_TOWER,GET_FLAT, GET_ROLES ,ADD_PERSON,GET_PERSON,DELETE_PERSON,UPDATE_PERSON1} from '../actions';
+import {URN, GET_TOWER,GET_FLAT, GET_ROLES ,ADD_PERSON,GET_PERSON,DELETE_PERSON,UPDATE_PERSON1,DELETE_MULTIPLE_PERSON } from '../actions';
 import { authHeader } from '../helper/authHeader';
 
 
@@ -80,3 +80,15 @@ export function getTower(){
             payload :request
         }
     }
+
+
+
+   export function deleteMultiplePerson(ids){
+       const request = axios.put(`${URN}/user/delete/deleteSelected` ,{ids},  { headers: authHeader() }).then((response)=>{
+
+    })
+    return{
+        type:DELETE_MULTIPLE_PERSON ,
+        payload :request
+    }
+   }

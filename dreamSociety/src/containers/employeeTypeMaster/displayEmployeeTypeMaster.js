@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
 import { bindActionCreators } from 'redux';
-import { getEmployee,getEmployeeType,getEmployeeWorkType,updateEmployee,deleteEmployee} from '../../actionCreators/employeeTypeMasterAction';
+import { getEmployee, getEmployeeType, getEmployeeWorkType, updateEmployee, deleteEmployee, deleteMultipleEmployee } from '../../actionCreators/employeeTypeMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
+import DefaultSelect from '../../constants/defaultSelect'
+import SearchFilter from '../../components/searchFilter/searchFilter';
 class DisplayEmployeeTypeMaster extends Component {
-    // constructor(props){
-    //     super(props)
-    // }
-
+  
     state = {
         editEmployeeData: {
             serviceType: '',
@@ -22,19 +21,22 @@ class DisplayEmployeeTypeMaster extends Component {
             isActive: false
         },
         editEmployeeModal: false,
-        loading:true
+        loading: true,
+        search:'',
+         ids: [],
+        isDisabled: true,
     }
     componentDidMount() {
-     
-        this.refreshData()
-       
-    }
-  
 
-    refreshData(){
-        this.props.getEmployee().then(() => this.setState({loading:false}));
-        this.props.getEmployeeType().then(() => this.setState({loading:false}));
-        this.props.getEmployeeWorkType().then(() => this.setState({loading:false}));
+        this.refreshData()
+
+    }
+
+
+    refreshData() {
+        this.props.getEmployee().then(() => this.setState({ loading: false }));
+        this.props.getEmployeeType().then(() => this.setState({ loading: false }));
+        this.props.getEmployeeWorkType().then(() => this.setState({ loading: false }));
         console.log("123", this.props.getEmployee())
     }
     toggleEditEmployeeModal() {
@@ -43,97 +45,127 @@ class DisplayEmployeeTypeMaster extends Component {
         })
     }
 
-    editEmployee( employeeDetailId,employeeTypeId, employeeWorkTypeId, serviceType) {
+    editEmployee(employeeDetailId, employeeTypeId, employeeWorkTypeId, serviceType) {
         console.log('i m in edit ', employeeTypeId, employeeWorkTypeId, serviceType);
         this.setState({
-            editEmployeeData: { employeeDetailId,employeeTypeId, employeeWorkTypeId, serviceType },
+            editEmployeeData: { employeeDetailId, employeeTypeId, employeeWorkTypeId, serviceType },
             editEmployeeModal: !this.state.editEmployeeModal
         })
     }
 
-    updateEmployee = (  ) => {
-      
-        let {employeeDetailId,employeeTypeId, employeeWorkTypeId, serviceType}=this.state.editEmployeeData;
-                            this.props.updateEmployee( employeeDetailId,employeeTypeId, employeeWorkTypeId, serviceType ).then(()=>{this.refreshData()})
-                              
-                   
-                                       
-                            
-                       this.setState({
-                               editEmployeeModal: false,  loading:true, editEmployeeData: { employeeTypeId:'', employeeWorkTypeId:'', serviceType:'' }
-                       })
-               }
+    updateEmployee = () => {
+
+        let { employeeDetailId, employeeTypeId, employeeWorkTypeId, serviceType } = this.state.editEmployeeData;
+        this.props.updateEmployee(employeeDetailId, employeeTypeId, employeeWorkTypeId, serviceType).then(() => { this.refreshData() })
 
 
 
-               deleteEmployee(employeedetailId){
-                this.setState({loading:true})
 
-                   let {isActive}=this.state.editEmployeeData;
-
-                   this.props.deleteEmployee(employeedetailId,isActive).then(()=> this.refreshData()) 
-                   this.setState({editEmployeeData:{isActive:false}}) 
-               }
-
-addEmployee =()=>{
-    this.props.history.push('/superDashboard/employeeType')
-}
+        this.setState({
+            editEmployeeModal: false, loading: true, editEmployeeData: { employeeTypeId: '', employeeWorkTypeId: '', serviceType: '' }
+        })
+    }
 
 
-    getEmpType({employeeType}){
-        console.log(employeeType,"emptype");
-        if(employeeType){
-            return(
-                employeeType.employeeType.map((item)=>{
-                    return(
-                        <option key={item.employeeTypeId} value ={item.employeeTypeId} > 
-                        {item.employeeType}
+
+    deleteEmployee(employeedetailId) {
+        this.setState({ loading: true })
+
+        let { isActive } = this.state.editEmployeeData;
+
+        this.props.deleteEmployee(employeedetailId, isActive).then(() => this.refreshData())
+        this.setState({ editEmployeeData: { isActive: false } })
+    }
+
+    addEmployee = () => {
+        this.props.history.push('/superDashboard/employeeType')
+    }
+
+
+    getEmpType({ employeeType }) {
+        console.log(employeeType, "emptype");
+        if (employeeType) {
+            return (
+                employeeType.employeeType.map((item) => {
+                    return (
+                        <option key={item.employeeTypeId} value={item.employeeTypeId} >
+                            {item.employeeType}
                         </option>
                     )
                 })
             )
         }
     }
-    
-    getEmpWorkType({employeeWorkType}){
-    console.log(employeeWorkType,"emp")
-    if(employeeWorkType){
-        return(
-            employeeWorkType.employeeWorkType.map((item)=>{
-                return(
-                    <option key={item.employeeWorkTypeId} value ={item.employeeWorkTypeId}>
-                    {item.employeeWorkType}
-                    </option>
-                )
-            })
-        )
+
+    getEmpWorkType({ employeeWorkType }) {
+        console.log(employeeWorkType, "emp")
+        if (employeeWorkType) {
+            return (
+                employeeWorkType.employeeWorkType.map((item) => {
+                    return (
+                        <option key={item.employeeWorkTypeId} value={item.employeeWorkTypeId}>
+                            {item.employeeWorkType}
+                        </option>
+                    )
+                })
+            )
+        }
+    }
+
+
+
+
+
+
+
+    searchOnChange = (e) => {
+        //  this.setState({})
+        this.setState({ search: e.target.value })
+}
+searchFilter(search) {
+    return function (x) {
+            return x.serviceType.toLowerCase().includes(search.toLowerCase()) || !search;
     }
 }
-
-
-
-
-
-
-
-
-
 
 
     getEmployee({ getEmployee }) {
         console.log(getEmployee)
         if (getEmployee) {
             return (
-                getEmployee.employeeDetail.map((item,index) => {
+                getEmployee.employeeDetail.filter(this.searchFilter(this.state.search)).map((item, index) => {
                     return (
                         <tr key={item.employeeDetailId}>
-                            <td>{index+1}</td>
+
+                            <td><input type="checkbox" name="ids" value={item.employeeDetailId} className="SelectAll"
+                                onChange={(e, i) => {
+                                    const { employeeDetailId } = item
+                                    if (!e.target.checked) {
+                                        if (this.state.ids.length > -1) {
+                                            document.getElementById('allSelect').checked = false;
+                                            let indexOfId = this.state.ids.indexOf(employeeDetailId);
+                                            if (indexOfId > -1) {
+                                                this.state.ids.splice(indexOfId, 1)
+                                            }
+                                            if (this.state.ids.length === 0) {
+                                                this.setState({ isDisabled: true })
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        this.setState({ ids: [...this.state.ids, employeeDetailId] })
+                                        if (this.state.ids.length >= 0) {
+                                            this.setState({ isDisabled: false })
+                                        }
+                                    }
+                                }} /></td>
+                            <td>{index + 1}</td>
                             <td>{item.serviceType} </td>
                             <td>{item.employee_work_type_master.employeeWorkType}</td>
                             <td>{item.employee_type_master.employeeType}</td>
                             <td>
-                                <button className="btn btn-success" onClick={this.editEmployee.bind(this,item.employeeDetailId, item.employeeTypeId, item.employeeWorkTypeId, item.serviceType)}  >Edit</button>
-                                <button className="btn btn-danger" onClick ={this.deleteEmployee.bind(this,item.employeeDetailId)}>Delete</button>
+                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeDetailId, item.employeeTypeId, item.employeeWorkTypeId, item.serviceType)}  >Edit</button>
+                                <button className="btn btn-danger" onClick={this.deleteEmployee.bind(this, item.employeeDetailId)}>Delete</button>
                             </td>
                         </tr>
 
@@ -142,12 +174,68 @@ addEmployee =()=>{
                 ))
         }
     }
+
+
+
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar = [];
+        for (var i = 0; i < selectMultiple.length; i++) {
+            ar.push(parseInt(selectMultiple[i].value));
+            selectMultiple[i].checked = true;
+        }
+        this.setState({ ids: ar });
+        if (ar.length > 0) {
+            this.setState({ isDisabled: false });
+        }
+    }
+    unSelectAll = () => {
+        let allIds = []
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        for (var i = 0; i < unSelectMultiple.length; i++) {
+            unSelectMultiple[i].checked = false
+        }
+
+        this.setState({ ids: [...allIds] });
+        if (allIds.length === 0) {
+            this.setState({ isDisabled: true });
+        }
+    }
+    deleteSelected(ids) {
+        this.setState({
+            loading: true,
+            isDisabled: true
+        });
+        if (window.confirm('Are You Sure ?')) {
+            this.props.deleteMultipleEmployee(ids)
+                .then(() => {
+                    this.props.getEmployee()
+                    .then(() => this.setState({ loading: false }))
+                })
+                .catch(err => err.response.data.message);
+        }
+        else {
+            this.props.getEmployee()
+                .then(() => this.setState({ loading: false }))
+        }
+    }
+
     render() {
         let tableData;
         tableData =
             <Table>
                 <thead>
                     <tr>
+                        <th style={{ alignContent: 'baseline' }}>Select All<input
+                            type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                                if (e.target.checked) {
+                                    this.selectAll();
+                                }
+                                else if (!e.target.checked) {
+                                    this.unSelectAll();
+                                }
+                            }
+                            } /></th>
                         <th>#</th>
                         <th>Service Type</th>
                         <th>Employee Work Type</th>
@@ -159,6 +247,8 @@ addEmployee =()=>{
                     {this.getEmployee(this.props.employeeDetails)}
                 </tbody>
             </Table>
+        let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
+            onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
 
 
@@ -173,7 +263,7 @@ addEmployee =()=>{
                         </div>
                         <div className="top-details" >
                             <h3 align="center"> Employee Details</h3>
-                            <Button  color ="primary" onClick ={this.addEmployee} > Add Employee</Button>
+                            <Button color="primary" onClick={this.addEmployee} > Add Employee</Button>
                         </div>
                         <Modal isOpen={this.state.editEmployeeModal} toggle={this.toggleEditEmployeeModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditEmployeeModal.bind(this)}>Edit  Employee Details</ModalHeader>
@@ -206,9 +296,10 @@ addEmployee =()=>{
 
                                             this.setState({ editEmployeeData });
                                         }}
-                                >
-                                 {this.getEmpWorkType(this.props.employeeDetails)}
-                                </select>
+                                    >
+                                    <DefaultSelect/>
+                                        {this.getEmpWorkType(this.props.employeeDetails)}
+                                    </select>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="eventType"> Employee Type</Label>
@@ -220,21 +311,23 @@ addEmployee =()=>{
 
                                             this.setState({ editEmployeeData });
                                         }}
-                                        
+
 
                                     >
-                                     {this.getEmpType(this.props.employeeDetails)}
+                                    <DefaultSelect/>
+                                        {this.getEmpType(this.props.employeeDetails)}
                                     </select>
                                 </FormGroup>
 
-                                
-                                                                <Button color="primary" className="mr-2" onClick={this.updateEmployee}>Save</Button>
-                                                                <Button color="danger" onClick={this.toggleEditEmployeeModal.bind(this)}>Cancel</Button>
-                                                  
+
+                                <Button color="primary" className="mr-2" onClick={this.updateEmployee}>Save</Button>
+                                <Button color="danger" onClick={this.toggleEditEmployeeModal.bind(this)}>Cancel</Button>
+
                             </ModalBody>
                         </Modal>
-
-                        {!this.state.loading? tableData:<Spinner/>}
+                        <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
+                        {deleteSelectedButton}
+                        {!this.state.loading ? tableData : <Spinner />}
 
                     </div>
 
@@ -252,7 +345,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ getEmployee,getEmployeeType,getEmployeeWorkType,updateEmployee,deleteEmployee }, dispatch)
+    return bindActionCreators({ getEmployee, getEmployeeType, getEmployeeWorkType, updateEmployee, deleteEmployee, deleteMultipleEmployee }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayEmployeeTypeMaster)

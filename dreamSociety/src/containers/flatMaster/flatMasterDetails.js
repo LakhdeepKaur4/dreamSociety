@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getDetails, AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount } from '../../actionCreators/flatMasterAction';
+import { getDetails, AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount,deleteSelectedFlatMasterDetail } from '../../actionCreators/flatMasterAction';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
@@ -16,7 +16,7 @@ class flatMasterDetails extends Component {
    constructor(props){
        super(props);
          this.state = {
-        
+            ids:[],
         flatId: '',
         societyId: '',
         societyName: '',
@@ -26,6 +26,7 @@ class flatMasterDetails extends Component {
         sizeType: '',
         sizeType1: '',
         coverArea: '',
+        isDisabled: true,
         loading:true,
         isActive: false,
         editUserModal: false,
@@ -33,9 +34,9 @@ class flatMasterDetails extends Component {
         search: '',
         errors:{},
         activePage: '1',
-        limit:'5'
+        limit:'5',
         // itemsCountPerPage :1,
-        // totalItemsCount:1
+        totalItemsCount:'15'
         }
 
    } 
@@ -150,23 +151,48 @@ class flatMasterDetails extends Component {
     fetchUsers({ list1 }) {
         
         if (list1) {
-            console.log(list1);
-            return list1.flat.filter(this.searchFilter(this.state.search)).map((item) => {
+            // console.log(list1);
+            return list1.flat.filter(this.searchFilter(this.state.search)).map((item,index) => {
+                let societyName = item.society_master.societyName;
+                let sizeType= item.size_master.sizeType;
         
                      
                 return (
                     
                     
                     <tr key={item.flatId}>
-                        <td>{item.society_master.societyName}</td>
+                      <td><input type="checkbox" name="ids" className="SelectAll"  value={item.flatId}
+                         onChange={(e) => {
+                            let {flatId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(flatId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true})
+                                }
+                            }
+                            else{
+                                this.setState({ids: [...this.state.ids, flatId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                            
+                                
+                             }}/></td>
+                        {/* <td>{index + 1}</td> */}
+                        <td>{societyName}</td>
                         <td>{item.flatType}</td>
                         <td>{item.flatSuperArea}</td>
-                        <td>{item.size_master.sizeType}</td>
+                        <td>{sizeType}</td>
                         <td>{item.coverArea}</td>
                         <td>
                             <Button color="success" size="sm" className="mr-2"
-                                onClick={this.editBook.bind(this, item.flatId, item.society_master.societyName,
-                                    item.flatType, item.flatSuperArea, item.size_master.sizeType, item.coverArea)}>Edit</Button>
+                                onClick={this.editBook.bind(this, item.flatId, societyName,
+                                    item.flatType, item.flatSuperArea, sizeType, item.coverArea)}>Edit</Button>
                             <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, item.flatId)} >Delete</Button>
                         </td>
                     </tr>
@@ -206,6 +232,12 @@ class flatMasterDetails extends Component {
 
         }
     }
+    deleteSelectedSubMaintenance(ids){
+        this.setState({loading:true, isDisabled: true});
+        this.props.deleteSelectedFlatMasterDetail(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response);
+    }
     routeToAddNewUser =() => {
         this.props.history.push('/superDashboard/flatmaster')
     }
@@ -242,24 +274,69 @@ class flatMasterDetails extends Component {
     //        e.preventDefault();
     //   }
 
-      onChange1=(e)=>{
-            e.preventDefault();
-            console.log('hii');
-            // this.setState({itemsCountPerPage:e.target.value})
-            const activePage=this.state.activePage;
-            this.state.limit=e.target.value;
-            console.log(this.state.limit,activePage)
-            let countPerPage= parseInt(this.state.limit);
-            this.props.noOfCount(countPerPage,activePage)
+    onChange1=(e)=>{
+        e.preventDefault();
+        console.log('hii');
+        // this.setState({itemsCountPerPage:e.target.value})
+        const activePage=this.state.activePage;
+        this.state.limit=`${e.target.value}`;   
+        console.log(this.state.limit,activePage)
+        // console.log(countPerPage);
+        this.props.noOfCount({limit: parseInt(this.state.limit)},activePage)
+}
+
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
     }
+
+    unSelectAll = () =>{
+        
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
+        }
+        
+        this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
+    }
+
 
     render() {
         let tableData;
        
         
-        tableData=<Table className="table table-bordered">
+        tableData= 
+        <Table className="table table-bordered">
         <thead>
+           
             <tr>
+            
+                 <th style={{alignContent:'baseline'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                    if(e.target.checked) {
+                        this.selectAll();
+                    }
+                    else if(!e.target.checked){
+                        this.unSelectAll();
+                    } 
+                }
+                    
+                }  /></th>
+                 
+                
                 <th>Society Name</th>
                 <th>Flat Type</th>
                 <th>Flat SuperArea</th>
@@ -274,16 +351,13 @@ class flatMasterDetails extends Component {
         {/* <Pagination/> */}
        
     </Table>
-   
-   
+    let deleteSelectedButton = <Button
+     disabled={this.state.isDisabled}
+     color="danger"
+    className="mb-3"
+    onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
     
-     
-     if(!this.props.flats.list1 && !this.props.flats.list2 && !this.props.flats.list3 ){
-        tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner /></div>
-    }
-    <div>
-        
-    </div>
+    
         
         return (
             <div>
@@ -375,6 +449,7 @@ class flatMasterDetails extends Component {
                                  {/* <input type="number"
                                  placeholder="enter no of entries to display"
                                  onChange={this.onChange1}/> */}
+                                 {deleteSelectedButton}
                             {!this.state.loading ? tableData : <Spinner />}
                            
                             <Pagination 
@@ -382,7 +457,7 @@ class flatMasterDetails extends Component {
                             
                              activePage={this.state.activePage}
                              itemsCountPerPage={this.state.limit}
-                             totalItemsCount={11}
+                             totalItemsCount={this.state.totalItemsCount}
                             //  pageRangeDisplayed={5}
                              onChange={this.handlePageChange}
                              itemClass='page-item'
@@ -420,7 +495,8 @@ function mapDispatchToProps(dispatch) {
         getDrop,
         getSizeDrop,
         getPageDetails,
-        noOfCount
+        noOfCount,
+        deleteSelectedFlatMasterDetail
     }, dispatch)
 }
 
