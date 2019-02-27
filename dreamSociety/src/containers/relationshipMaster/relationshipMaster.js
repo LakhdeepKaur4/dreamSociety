@@ -37,7 +37,7 @@ class RelationshipMaster extends Component{
       
   
     OnKeyPressUserhandler(event) {
-        const pattern = /[a-zA-Z_ ]/;
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -80,7 +80,7 @@ class RelationshipMaster extends Component{
         formData =<div>
         <FormGroup>
             <Label>Relation Name</Label>
-            <Input  type="text" name="relationName" value={this.state.relationName}  value={this.state.relationName} onChange={this.onRelationChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Relation Name" maxLength={50}
+            <Input  type="text" name="relationName"  onChange={this.onRelationChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Relation Name" maxLength={50}
         minLength={3} required/>
         <span className="error">{this.state.message}</span>          
         </FormGroup>

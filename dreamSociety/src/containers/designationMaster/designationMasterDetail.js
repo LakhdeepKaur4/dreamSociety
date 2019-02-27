@@ -99,10 +99,16 @@ class DesignationMasterDetail extends Component {
       deleteDesignationName = (designationId) => {
         let { isActive } = this.state.editDesignationData
         this.setState({ loading: true })
+
+        if(window.confirm('Are You Sure ?')){
         this.props.deleteDesignation(designationId, isActive)
             .then(() => this.refreshData())
         this.setState({editDesignationData: { isActive: false } })
-
+        }
+        else{
+            this.refreshData()
+          this.setState({editDesignationData: { isActive: false } })
+        }
       }
 
 
@@ -121,9 +127,15 @@ class DesignationMasterDetail extends Component {
 
     deleteSelected(ids){
         this.setState({loading:true,  isDisabled:true});
+
+        if(window.confirm('Are You Sure ?')){
         this.props.deleteSelectDesignation(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
+        }
+        else{
+            this.refreshData()
+        }
     }
 
     selectAll = () => {
