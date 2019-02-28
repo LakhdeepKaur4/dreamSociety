@@ -332,13 +332,13 @@ class vendorMaster extends Component {
 
                         <FormGroup>
                             <Label>Upload Your Id</Label>
-                            <Input type="file" name="documentOne"  accept='.doc' onChange={this.selectImage} required  />
+                            <Input type="file" name="documentOne"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage} required  />
 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Upload Another Id</Label>
-                            <Input type="file" name="documentTwo"  accept='.doc' onChange={this.selectImage2} required  />
+                            <Input type="file" name="documentTwo"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage2} required  />
 
                         </FormGroup>
 
