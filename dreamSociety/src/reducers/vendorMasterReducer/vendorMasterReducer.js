@@ -1,4 +1,4 @@
-import {ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE} from '../../actions/index';
+import {ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE,DELETE_VENDOR,UPDATE_VENDOR} from '../../actions/index';
 
 export default function(state={}, action) {
 
@@ -12,6 +12,12 @@ export default function(state={}, action) {
         case GET_RATE_TYPE:
             return {...state, rate: action.payload}    
             
+        case DELETE_VENDOR:
+            return {...state, delete: action.payload}    
+
+        case UPDATE_VENDOR:
+            return {...state, update: action.payload}    
+
         default:
             return state;
     
