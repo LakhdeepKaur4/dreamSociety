@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form, FormGroup, Button, Input, Label,  } from 'reactstrap';
+import { Form, FormGroup, Button, Input, Label  } from 'reactstrap';
 import { getMaintenanceSubSize,postMaintenanceSubMaster, getMaintenanceType } from '../../actionCreators/maintenanceSubMasterAction';
 import Spinner from '../../components/spinner/spinner';
 import '../../r-css/w3.css';
 import DefaultSelect from '../../constants/defaultSelect';
 import UI from '../../components/newUI/superAdminDashboard';
+
 
 class MaintenanceSubMasterForm extends Component{
     constructor(props){
@@ -23,6 +24,30 @@ class MaintenanceSubMasterForm extends Component{
     componentDidMount(){
         this.props.getMaintenanceSubSize().then(() => this.setState({loading: false}));
         this.props.getMaintenanceType().then(() => this.setState({loading: false}));
+    }
+
+    OnKeyPresshandlerPhone(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    OnKeyPressUserhandler(event) {
+        const pattern = /^[a-zA-Z_]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    emailValid(event) {
+        const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
     }
 
     fetchSize({size}){
@@ -58,7 +83,7 @@ class MaintenanceSubMasterForm extends Component{
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
-            this.setState({loading: true})
+            this.setState({loading: true});
             this.props.postMaintenanceSubMaster({...this.state})
             .then(() => this.props.history.replace('/superDashboard/MaintenanceSubMasterDetails'));
             this.setState({sizeId:'',rate:''});

@@ -78,7 +78,7 @@ class userDetails extends Component {
     }
 
     refreshData() {
-        this.props.getUsers().then(() => this.setState({loading:false}))
+        this.props.getUsers().then(() => this.setState({loading:false}));
         this.props.getRoles().then(() => this.setState({loading:false}));
         this.props.viewTower().then(() => this.setState({loading:false}));
     }
@@ -136,7 +136,7 @@ class userDetails extends Component {
     }
 
     deleteUser(userId) {
-        this.setState({loading:true})
+        this.setState({loading:true, isDisabled:true})
         let { isActive } = this.state;
         this.props.deleteUser(userId, isActive)
         .then(() => this.refreshData())
@@ -152,11 +152,10 @@ class userDetails extends Component {
     }
 
     searchFilter(search){
-        return function(x, y){
-            if(x, y){
+        return function(x){
+            if(x){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return  y.toString().indexOf(search) !== -1 ||
-                 x.tower_master.towerName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                return x.tower_master.towerName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.familyMember.toString().indexOf(search)  !== -1 ||
                  x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                  x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||

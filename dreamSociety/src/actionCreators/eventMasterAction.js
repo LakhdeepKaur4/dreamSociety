@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN,GET_EVENT,ADD_EVENT, GET_EVENT_ORGANISER, DELETE_EVENT,UPDATE_EVENT} from '../actions/index';
+import {URN,GET_EVENT,ADD_EVENT, GET_EVENT_ORGANISER, DELETE_EVENT,UPDATE_EVENT,DELETE_MULTIPLE_EVENT} from '../actions/index';
 
 
 export function ViewEvent(){
@@ -56,4 +56,15 @@ export function ViewEvent(){
              type:UPDATE_EVENT,
              payload:request
          }
+    }
+
+    export function deleteMultipleEvents(ids){
+        console.log('deleteMultipleEvents',ids);
+        
+        const request = axios.put(`${URN}/event/delete/deleteSelected`,{ids},{ headers: authHeader() })
+        .then(response=>response.data)
+        return{
+            type:DELETE_MULTIPLE_EVENT,
+            payload:request
+        }
     }

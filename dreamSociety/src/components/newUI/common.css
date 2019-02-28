@@ -73,6 +73,18 @@ form{
 
 }
 
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+#detailsdrop, #masterdrop {
+    cursor: pointer;
+}
+
 
 @media (max-width: 768px) {
     #sidebar.inactive {
@@ -152,6 +164,10 @@ ul ul a {
 
 .btn{
     margin-left: 0px !important;
+}
+
+.TextTransformToCapital{
+    text-transform: uppercase;
 }
 
 /* .modal-backdrop.show{

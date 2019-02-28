@@ -52,37 +52,28 @@ class CityMaster extends Component {
     }
 
     onChangeCountry= (event)=>{
-        let selected= event.target.value
        
+        this.onChange(event);
 
+        let selected= event.target.value
         var country = _.find(this.props.cityMasterReducer.countryResult,function(obj){
             return obj.countryName === selected
             })
 
-
-           
-
-
-
             this.props.getState(country.countryId).then(() => this.setState({countryId: country.countryId,
                 countryName: country.countryName}))
-
 
     }
 
 
     onChangeState= (event)=>{
         this.setState({loading: false})
+        this.onChange(event);
         let selected= event.target.value
        
-
-
         var data1 = _.find(this.props.cityMasterReducer.stateResult,function(obj){
             return obj.stateName === selected
             })
-
-            
-
 
             this.props.getCity(data1.stateId);
 
@@ -153,9 +144,6 @@ class CityMaster extends Component {
 
 
     onChange=(e) =>{
-
-      
-        
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -234,13 +222,13 @@ class CityMaster extends Component {
     }
 
     render() {
-       
+     
         let formData;
         if(!this.state.loading && this.props.cityMasterReducer.countryResult && this.props.cityMasterReducer.stateResult  &&  this.state.errors){
         formData =<div>
          <FormGroup>
             <Label>Country Name</Label>
-            <Input type="select" defaultValue='no-value' onChange={this.onChangeCountry} required>
+            <Input type="select" defaultValue='no-value' name="countryName" onChange={this.onChangeCountry}>
             <DefaultSelect/>
                 {this.countryName(this.props.cityMasterReducer)}
             </Input >
@@ -249,7 +237,7 @@ class CityMaster extends Component {
         
         <FormGroup>
             <Label>State Name</Label>
-            <Input type="select" defaultValue='no-value'  onChange={this.onChangeState} required>
+            <Input type="select" defaultValue='no-value' name="stateName" onChange={this.onChangeState}>
             <DefaultSelect/>
                 {this.stateName(this.props.cityMasterReducer)}
             </Input>

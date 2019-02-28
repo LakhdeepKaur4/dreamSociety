@@ -11,6 +11,7 @@ import UI from '../../components/newUI/superAdminDashboard';
 import DefaultSelect from '../../constants/defaultSelect';
 import Spinner from '../../components/spinner/spinner';
 
+
 class MaintenanceSubMasterDetails extends Component{
     constructor(props){
         super(props);
@@ -56,7 +57,7 @@ class MaintenanceSubMasterDetails extends Component{
     }
 
     delete(maintenanceTypeId){
-        this.setState({loading:true});
+        this.setState({loading:true, isDisabled:true});
         this.props.deleteMaintenanceSubMasterDetail(maintenanceTypeId)
         .then(() => this.refreshData())
     }
