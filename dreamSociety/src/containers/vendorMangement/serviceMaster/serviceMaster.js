@@ -11,7 +11,7 @@ import UI from '../../../components/newUI/vendorDashboardInside';
 
 
 
-class serviceMaster extends Component {
+class ServiceMaster extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -82,14 +82,14 @@ class serviceMaster extends Component {
         if (isValid) {
             this.setState({loading: true})
             this.props.addServiceType( serviceName,serviceDetailId)
-            this.props.history.push('/superDashboard/displayServices')
+            this.push();
         }
         
     }
 
 
     push=()=>{
-        this.props.history.push('/superDashboard/displayservices')
+        this.props.history.push('/superDashboard/DisplayServices')
     }
 
 
@@ -167,4 +167,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ addServiceType, getServiceDetail }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(serviceMaster);
+export default connect(mapStateToProps, mapDispatchToProps)(ServiceMaster);

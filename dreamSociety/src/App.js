@@ -33,8 +33,8 @@ import stateMaster from './containers/stateMaster/stateMaster';
 import stateMasterDetails from './containers/stateMaster/stateMasterDetails';
 
 import PersonDetails from './containers/personDetails/personDetails';
-import serviceMaster from './containers/vendorMangement/serviceMaster/serviceMaster';
-import displayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
+import ServiceMaster from './containers/vendorMangement/serviceMaster/serviceMaster';
+import DisplayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
 import vendorMaster from './containers/vendorMangement/vendorMaster/vendorMaster';
 import DisplayVendorMaster from './containers/vendorMangement/vendorMaster/displayVendorMaster';
 
@@ -100,11 +100,11 @@ class App extends Component {
             <PrivateRoute path ='/superDashboard/societyManagementDetail' component={SocietyManagementDetail}/>
             <PrivateRoute path='/superDashboard/display-event' component={DisplayEventMaster} />
             <PrivateRoute path='/superDashboard/add_parking/new' component={Parking} />
-            <PrivateRoute path='/superDashboard/serviceMaster' component={serviceMaster} />
+            <PrivateRoute path='/superDashboard/ServiceMaster' component={ServiceMaster} />
             <PrivateRoute path='/superDashboard/personDetails' component={PersonDetails} />
             <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster} />
             <PrivateRoute path='/superDashboard/displayVendorMaster' component={DisplayVendorMaster}/>
-            <PrivateRoute path='/superDashboard/displayServices' component={displayServices} />
+            <PrivateRoute path='/superDashboard/DisplayServices' component={DisplayServices} />
             <PrivateRoute path='/superDashBoard/displayPerson' exact component={displayPersonDetails} />
             <PrivateRoute path='/superDashBoard/demo' component={Demo} />
             <PrivateRoute path='/superDashBoard/assetsMaster' exact component={AssetList} />
