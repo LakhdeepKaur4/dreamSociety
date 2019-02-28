@@ -4,6 +4,7 @@ const config = require('../config/config');
 const cron = require('node-schedule');
 const crypto = require('crypto');
 var path = require('path');
+const fs = require('fs');
 
 const Employee = db.employee;
 // const EmployeeType =db.employeeType;
@@ -17,14 +18,14 @@ const Op = db.Sequelize.Op;
 exports.create = async (req, res, next) => {
     try {
         let body = req.body;
-        console.log("body::::::==>",body);
+        console.log("body::::::==>", body);
         body.userId = req.userId;
         const employee = await Employee.create(body);
         const employeeId = employee.employeeId;
         // console.log("filess=====>",req.files);
         if (req.files) {
             // for (let i = 0; i < req.files.profilePicture.length; i++) {
-                profileImage = req.files.profilePicture[0].path;
+            profileImage = req.files.profilePicture[0].path;
             // }
             const updateImage = {
                 picture: profileImage
@@ -109,18 +110,18 @@ exports.update = async (req, res, next) => {
 
 
 exports.deletePhoto = function (req, res) {
-  Photos.remove({_id: req.params.id}, function(err, photo) {
-    if(err) { 
-       return res.send({status: "200", response: "fail"});
-    }
-    fs.unlink(photo.path, function() {
-      res.send ({
-        status: "200",
-        responseType: "string",
-        response: "success"
-      });     
+    Photos.remove({ _id: req.params.id }, function (err, photo) {
+        if (err) {
+            return res.send({ status: "200", response: "fail" });
+        }
+        fs.unlink(photo.path, function () {
+            res.send({
+                status: "200",
+                responseType: "string",
+                response: "success"
+            });
+        });
     });
- }); 
 };
 
 exports.delete = async (req, res, next) => {
@@ -263,7 +264,7 @@ exports.getDecrypt = (req, res, next) => {
         const employee = [];
         Employee.findAll({
             where: {
-                isActive: true,
+                isActive: true
             },
             order: [['createdAt', 'DESC']],
             include: [
@@ -273,27 +274,27 @@ exports.getDecrypt = (req, res, next) => {
                 { model: Country }
             ]
         })
-        .then(emp => {
-            emp.map(item => {
-                item.firstName = decrypt(item.firstName);
-                item.middleName = decrypt(item.middleName);
-                item.lastName = decrypt(item.lastName);
-                item.CTC = decrypt(item.CTC);
-                item.startDate = decrypt(item.startDate);
-                item.endDate = decrypt(item.endDate);
-                item.picture = decrypt(item.picture);
-                item.documentOne = decrypt(item.documentOne);
-                item.documentTwo = decrypt(item.documentTwo);
-                employee.push(item);
+            .then(emp => {
+                emp.map(item => {
+                    item.firstName = decrypt(item.firstName);
+                    item.middleName = decrypt(item.middleName);
+                    item.lastName = decrypt(item.lastName);
+                    item.CTC = decrypt(item.CTC);
+                    item.startDate = decrypt(item.startDate);
+                    item.endDate = decrypt(item.endDate);
+                    item.picture = decrypt(item.picture);
+                    item.documentOne = decrypt(item.documentOne);
+                    item.documentTwo = decrypt(item.documentTwo);
+                    employee.push(item);
+                })
+                if (employee) {
+                    return res.status(httpStatus.OK).json({
+                        message: "Employee Content Page",
+                        employee
+                    });
+                }
             })
-            if (employee) {
-                return res.status(httpStatus.OK).json({
-                    message: "Employee Content Page",
-                    employee
-                });
-            }
-        })
-        .catch(err => console.log(err))
+            .catch(err => console.log(err))
     } catch (error) {
         console.log(error);
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -304,6 +305,7 @@ exports.getDecrypt = (req, res, next) => {
 exports.updateEncrypt = async (req, res, next) => {
     try {
         const id = req.params.id;
+        // console.log(id);
         let profileImage;
         let documentOne;
         let documentTwo;
@@ -322,19 +324,17 @@ exports.updateEncrypt = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        if (req.files) {
-            
-            
-            await Employee.find({
-                where: {
-                    employeeId: id
-                }
-            })
+        await Employee.find({
+            where: {
+                employeeId: id
+            }
+        })
             .then(emp => {
                 employee = emp;
             })
+        if (req.files) {
             console.log(employee);
-            if (req.files.profilePicture[0].path) {
+            if (("profilePicture" in req.files) && (req.files.profilePicture !== undefined)) {
                 profileImage = decrypt(employee.picture)
                 fs.unlink(profileImage, err => {
                     if (err) throw err
@@ -345,7 +345,7 @@ exports.updateEncrypt = async (req, res, next) => {
             else {
                 profileImage = employee.picture;
             }
-            if (req.files.documentOne[0].path) {
+            if (("documentOne" in req.files) && (req.files.documentOne !== undefined)) {
                 documentOne = decrypt(employee.documentOne)
                 fs.unlink(documentOne, err => {
                     if (err) throw err
@@ -356,7 +356,7 @@ exports.updateEncrypt = async (req, res, next) => {
             else {
                 documentOne = employee.documentOne;
             }
-            if (req.files.documentTwo[0].path) {
+            if (("documentTwo" in req.files) && (req.files.documentTwo !== undefined)) {
                 documentTwo = decrypt(employee.documentTwo)
                 fs.unlink(documentTwo, err => {
                     if (err) throw err
@@ -413,9 +413,9 @@ exports.updateEncrypt = async (req, res, next) => {
                 });
             })
             .catch(err => console.log(err))
-        
 
-        
+
+
     } catch (error) {
         console.log(error);
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);

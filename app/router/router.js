@@ -327,11 +327,11 @@ module.exports = function(app) {
 	
 	app.put('/api/employee/delete/deleteSelected',[authJwt.verifyToken], employeeController.deleteSelected);
 
-	app.get('/api/employee',[authJwt.verifyToken],employeeController.getDecrypt);
+	app.get('/api/employee', [authJwt.verifyToken],employeeController.getDecrypt);
 
 	// app.put('/api/employee/:id',[authJwt.verifyToken],employeeController.update);
 
-	app.put('/api/employee/:id', fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), employeeController.updateEncrypt);
+	app.put('/api/employee/:id', [authJwt.verifyToken], fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), employeeController.updateEncrypt);
 
 	app.put('/api/employee/delete/:id',[authJwt.verifyToken],employeeController.delete);
 
