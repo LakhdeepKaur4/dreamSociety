@@ -8,6 +8,8 @@ import { bindActionCreators } from 'redux';
 import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
+import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
+
 class FlatOwnerDetails extends Component {
     constructor(props) {
         super(props)
@@ -25,21 +27,28 @@ class FlatOwnerDetails extends Component {
             DOB: '',
             email: '',
             tower: '',
-            flatNumber: '',
             errors: {},
             societyName: '',
             bankName: '',
             holderName: '',
             accountNumber: '',
             panNumber: '',
-            ifscCode: ''
-
+            ifscCode: '',
+            flatNO:'',
+            flatDetailId:'',
+            memberDOB:'',
+            memberName:'',
+            relationName:'',
+            profilePic:'',
+            permanentAddress:'',
+            familyMember:''
         }
     }
     componentDidMount() {
         this.props.detailSociety();
         this.props.viewTower();
-        this.props.getRelation()
+        this.props.getRelation();
+        this.props.getFlatDetails();
     }
     logout = () => {
         localStorage.removeItem('token');
@@ -72,8 +81,13 @@ class FlatOwnerDetails extends Component {
         return [];
     }
     getflat=({details})=>{
-    console.log(details)
-
+    if(details){
+        return details.flatDetail.map((item)=>{
+            return (
+                {...item,label:item.flatNo,value:item.flatDetailId}
+            )
+        })
+   }
     }
     societyChangeHandler = (selectOption) => {
         let countryName = selectOption.country_master.countryName;
@@ -101,13 +115,19 @@ class FlatOwnerDetails extends Component {
             console.log(selectOption.towerId)
         });
     }
+    flatChangeHandler=(name,selectOption)=>{
+        this.setState({
+            [name]: selectOption.value
+        })
+        console.log(this.state.flatNO)
+    }
     relationHandler = (name, selectOption) => {
         this.setState(function (prevState, props) {
             return {
                 [name]: selectOption.value
             }
         }, function () {
-            console.log(selectOption.towerId)
+            console.log(selectOption.value)
         });
     }
     maxDate = () => {
@@ -116,7 +136,7 @@ class FlatOwnerDetails extends Component {
     }
     nextPrev = () => {
         let errors = {};
-        const { societyName, number, ownerName, DOB, email, tower, flatNumber } = this.state
+        const { societyName, number, ownerName, DOB, email, tower, flatNO } = this.state
         if (this.state.step === 1) {
             if (ownerName === '') {
                 errors.ownerName = "Owern Name can't be empty"
@@ -130,8 +150,8 @@ class FlatOwnerDetails extends Component {
             else if (email === '') {
                 errors.email = "email can't be empty"
             }
-            else if (flatNumber === '') {
-                errors.flatNumber = "flat number can't be empty"
+            else if (flatNO === '') {
+                errors.flatNO = "flat number can't be empty"
             }
             else if (tower === '') {
                 errors.tower = "tower can't be empty"
@@ -174,6 +194,7 @@ class FlatOwnerDetails extends Component {
 
     }
     onChangeHandler = (event) => {
+        console.log(this.state)
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -203,31 +224,90 @@ class FlatOwnerDetails extends Component {
             });
         }
     }
+    OnKeyPresshandlerPhone(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    onSubmit=(e)=>{
+        e.preventDefault();
+        // console.log('yyyyyyyyyyyyyyyyy',this.state)
+        const {           
+            number,
+            ownerName,
+            DOB,
+            email,
+            tower,
+            bankName,
+            holderName,
+            accountNumber,
+            panNumber,
+            ifscCode,
+            flatNO,
+            familyMember,
+            memberName,
+            memberDOB,
+            relationName,
+            profilePic,
+            permanentAddress} = this.state
+            console.log('yyyyyyyyyyyyyyyyy',this.state)
+            const data = new FormData()
+            data.append('ownerName',ownerName)
+            data.append('dob',DOB)
+            data.append('contact',number)
+            data.append('email',email)
+            data.append('societyId',ownerName)
+            data.append('permanentAddress',permanentAddress)
+            data.append('towerId',tower)
+            data.append('flatDetailId',flatNO)
+            data.append('bankName',bankName)
+            data.append('accountHolderName', holderName)
+            data.append('accountNumber', accountNumber)
+            data.append('panCardNumber', panNumber)
+            data.append('IFSCCode', ifscCode)
+            data.append('noOfMembers', familyMember)
+            data.append('memberName', memberName)
+            data.append('memberDob', memberDOB)
+            data.append('relationId', relationName)
+            data.append('profilePicture', profilePic.name)
+            // console.log('ooooooooooooooooooooooooo',data);
+        }
+    FileChange=(event)=>{
+        this.setState({ profilePic: event.target.files[0]})
+  }
     render() {
-        let userdata;
-        userdata =
-            <FormGroup>
-                <Row form>
-                    <Col md={6}>
-                        <Label>Name</Label>
-                        <Input placeholder="Name Of Member" className="input" />
-                    </Col>
-                    <Col md={6}>
-                        <Label>Relation With Owner</Label>
-                        <Select options={this.getRelationList(this.props.relationList)}
-                            onChange={this.relationHandler.bind(this)}
-                            placeholder={PlaceHolder} />
-                    </Col>
-                </Row>
-            </FormGroup>
+            
         let userDatas = [];
         for (let i = 0; i < this.state.familyMember; i++) {
-            userDatas.push(userdata);
+           
+            userDatas.push(<FormGroup key={i} >
+                <Row form>
+                    <Col md={4}>
+                        <Label>Name</Label>
+                        <Input placeholder="Name Of Member" name={`memberName${i}`} onChange={this.onChangeHandler}/>
+                    </Col>
+                    <Col md={4}>
+                        <Label>Relation With Owner</Label>
+                        <Select options={this.getRelationList(this.props.relationList)}
+                            onChange={this.relationHandler.bind(this,"relationName" )}
+                            placeholder={PlaceHolder}
+                            name={`relationId${i}`} />
+                    </Col>
+                    <Col md={4}>
+                                <Label>Date Of Birth</Label>
+                                <Input  type='date' max={this.maxDate()} name={`memberDob${i}`} onChange={this.onChangeHandler} />
+                                <span className="error">{this.state.errors.DOB}</span>
+                                </Col>
+                </Row>
+            </FormGroup>);
+          
         }
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <Form>
+                    <Form onSubmit={this.onSubmit}>
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
                         </div>
@@ -235,17 +315,17 @@ class FlatOwnerDetails extends Component {
                             <h3>Flat Owner Details</h3>
                             <FormGroup>
                                 <Label>Owner Name</Label>
-                                <Input placeholder="First Name" maxLength={50} name='ownerName' onChange={this.onChangeHandler} />
+                                <Input placeholder="Full Name" maxLength={50} name='ownerName' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.ownerName}</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Date Of Birth</Label>
-                                <Input placeholder="First Name" type='date' max={this.maxDate()} name='DOB' onChange={this.onChangeHandler} />
+                                <Input  type='date' max={this.maxDate()} name='DOB' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.DOB}</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Contact Number</Label>
-                                <Input placeholder="Contact Number" type="text" maxLength={10} value={this.state.number} onChange={this.onChangeHandler} name="number" />
+                                <Input placeholder="Contact Number" onKeyPress={this.OnKeyPresshandlerPhone} type="text" maxLength={10} value={this.state.number} onChange={this.onChangeHandler} name="number" />
                                 <span className="error">{this.state.errors.number}</span>
                             </FormGroup>
                             <FormGroup>
@@ -278,7 +358,7 @@ class FlatOwnerDetails extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <Label>Permanent Address</Label>
-                                <Input type="text" placeholder="Permanent Address" onChange={this.onChangeHandler} />
+                                <Input type="text" placeholder="Permanent Address" name="permanentAddress" onChange={this.onChangeHandler} />
                             </FormGroup >
                             <FormGroup>
                                 <Label>Tower</Label>
@@ -289,11 +369,10 @@ class FlatOwnerDetails extends Component {
                             </FormGroup >
                             <FormGroup>
                                 <Label>Flat Number</Label>
-                                {/* <Input type="text" name='flatNumber' onChange={this.onChangeHandler} value={this.state.flatNumber} /> */}
                                 <Select options={this.getflat(this.props.flatList)}
-                                    onChange={this.flatChangeHandler.bind(this, 'tower')}
+                                    onChange={this.flatChangeHandler.bind(this, 'flatNO')}
                                     placeholder={PlaceHolder} />
-                                <span className="error">{this.state.errors.flatNumber}</span>
+                                <span className="error">{this.state.errors.flatNO}</span>
                             </FormGroup >
                         </div>
                         <div style={{ 'display': this.state.step == 2 ? 'block' : 'none' }}>
@@ -310,17 +389,17 @@ class FlatOwnerDetails extends Component {
                             </FormGroup>
                             <FormGroup >
                                 <Label>Account Number</Label>
-                                <Input placeholder="Account Number" type="number" className="quantity" name='accountNumber' onChange={this.onChangeHandler} />
+                                <Input placeholder="Account Number" type="text" maxLength={18} onKeyPress={this.OnKeyPresshandlerPhone} name='accountNumber' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.accountNumber}</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>PAN Card Number</Label>
-                                <Input placeholder="Pan Number" type='text' name="panNumber" onChange={this.onChangeHandler} />
+                                <Input placeholder="Pan Number" type='text'maxLength={10} name="panNumber" onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.panNumber}</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>IFSC Code</Label>
-                                <Input placeholder="IFSC code" type='text' name="ifscCode" onChange={this.onChangeHandler} />
+                                <Input placeholder="IFSC code" type='text' maxLength={11} name="ifscCode" onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.ifscCode}</span>
                             </FormGroup>
                         </div>
@@ -328,14 +407,20 @@ class FlatOwnerDetails extends Component {
                             <h3>Owner Member Details</h3>
                             <FormGroup>
                                 <Label>Number of Member</Label>
-                                <Input placeholder="number of member" type='number' className="quantity" name="familyMember" onChange={this.userMemberHandler} />
+                                <Input placeholder="number of member" type='text' onKeyPress={this.OnKeyPresshandlerPhone} name="familyMember" onChange={this.userMemberHandler} />
                             </FormGroup>
+                    
                             {userDatas}
+                 
+                            <FormGroup>
+                            <Label>Upload Profile Pic</Label>                               
+                                <Input accept='image/*' type="file" name ="profilePic" onChange={this.FileChange} />
+                            </FormGroup>
                         </div>
                         <div>
                             <Button className="mr-2" type="button" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
                             <Button type="button" id="nextBtn" style={{ display: this.state.step == 3 ? 'none' : 'inline-block' }} disabled={this.state.step == 3} onClick={this.nextPrev}>Next</Button>
-                            <Button type="button" style={{ display: this.state.step == 3 ? 'inline-block' : 'none' }}>Submit</Button>
+                            <Button type="submit" style={{ display: this.state.step == 3 ? 'inline-block' : 'none' }}>Submit</Button>
                         </div>
                     </Form>
                 </UI>
@@ -354,7 +439,7 @@ function mapStateToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ detailSociety, viewTower, getRelation }, dispatch)
+    return bindActionCreators({ detailSociety, viewTower, getRelation,getFlatDetails }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerDetails);
 
