@@ -43,7 +43,7 @@ exports.get = (req, res) => {
                 attributes: ['sizeId', 'sizeType']
             },
         ]
-    })
+    }) 
         .then(flat => {
             res.json(flat);
         });
@@ -140,10 +140,10 @@ exports.getFlatByPageNumber = async (req, res, next) => {
 
 exports.getFlatByLimit = async (req, res, next) => {
     try {
-        console.log("body", req.body.limit)
-        let limit = req.body.limit;
+        console.log("body===>", req.body.limit)
+        let limit = parseInt(req.query.limit);
         let offset = 0;
-        let page = req.params.page;
+        let page = parseInt(req.query.page);
         offset = limit * (page - 1);
         const count = await Flat.findAndCountAll({ where: { isActive: true } });
         // let pages = Math.ceil(data.count / limit);

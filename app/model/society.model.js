@@ -42,7 +42,6 @@ module.exports = (sequelize, Sequelize) => {
 		},
 		IFSCCode: {
 			type: Sequelize.STRING,
-			allowNull: false,
 		},
 		isActive: {
 			type: Sequelize.BOOLEAN,

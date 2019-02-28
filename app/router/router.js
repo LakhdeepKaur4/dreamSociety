@@ -32,8 +32,10 @@ module.exports = function(app) {
 	const inventoryController = require('../controller/inventory');
 	const employeeController = require('../controller/employee');
 	const designationController = require('../controller/designation');
-	const societyMemberController = require('../controller/societyMember');
+	const societyBoardMemberController = require('../controller/societyBoardMember');
 	const relationController = require('../controller/relation');
+	const societyMemberEvent = require('../controller/societyMemberEvent');
+	const owner = require('../controller/owner');
 	
 	app.get('/', userController.start);
 
@@ -145,13 +147,15 @@ module.exports = function(app) {
 
 	app.get('/api/flat', [authJwt.verifyToken], flatController.get);
 
-	app.get('/api/flat/:page', [authJwt.verifyToken], flatController.getFlatByPageNumber);
+	app.put('/api/flat/:id', [authJwt.verifyToken], flatController.update);
 
-	app.put('/api/flat/:page', [authJwt.verifyToken], flatController.getFlatByLimit);
+	app.get('/api/flat/pagination/:page', [authJwt.verifyToken], flatController.getFlatByPageNumber);
+
+	app.put('/api/flat/limit/:page', [authJwt.verifyToken], flatController.getFlatByLimit);
+
+	app.get('/api/flat/test', [authJwt.verifyToken], flatController.getFlatByLimit);
 
 	app.get('/api/flat/:id',[authJwt.verifyToken],  flatController.getById);
-
-	app.put('/api/flat/:id', [authJwt.verifyToken], flatController.update);
 
 	app.put('/api/flat/delete/deleteSelected',[authJwt.verifyToken], flatController.deleteSelected);
 
@@ -213,11 +217,11 @@ module.exports = function(app) {
 
 	// app.post('/api/vendor', [authJwt.verifyToken] ,vendorController.create);
 
-	app.post('/api/vendor', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'documentOne',maxCount:1},{name:'documentTwo',maxCount:1}]), vendorController.create);
+	app.post('/api/vendor/', [authJwt.verifyToken],fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'documentOne',maxCount:1},{name:'documentTwo',maxCount:1}]), vendorController.create1);
 
-	app.get('/api/vendor', [authJwt.verifyToken], vendorController.get);
+	app.get('/api/vendor/', [authJwt.verifyToken], vendorController.get1);
 
-	app.put('/api/vendor/:id', [authJwt.verifyToken], vendorController.update);
+	app.put('/api/vendor/:id', [authJwt.verifyToken], vendorController.update1);
 
 	app.put('/api/vendor/delete/deleteSelected',[authJwt.verifyToken], vendorController.deleteSelected);
 
@@ -327,11 +331,11 @@ module.exports = function(app) {
 	
 	app.put('/api/employee/delete/deleteSelected',[authJwt.verifyToken], employeeController.deleteSelected);
 
-	app.get('/api/employee', [authJwt.verifyToken],employeeController.getDecrypt);
+	app.get('/api/employee',[authJwt.verifyToken],employeeController.getDecrypt);
 
 	// app.put('/api/employee/:id',[authJwt.verifyToken],employeeController.update);
 
-	app.put('/api/employee/:id', [authJwt.verifyToken], fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), employeeController.updateEncrypt);
+	app.put('/api/employee/:id',[authJwt.verifyToken] ,fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), employeeController.updateEncrypt);
 
 	app.put('/api/employee/delete/:id',[authJwt.verifyToken],employeeController.delete);
 
@@ -345,13 +349,15 @@ module.exports = function(app) {
 
 	app.put('/api/designation/delete/:id',[authJwt.verifyToken],designationController.delete);
 
-	app.post('/api/societyMember',[authJwt.verifyToken],societyMemberController.create);
+	app.post('/api/societyBoardMember',[authJwt.verifyToken],societyBoardMemberController.create);
 
-	app.get('/api/societyMember',[authJwt.verifyToken],societyMemberController.get);
+	app.get('/api/societyBoardMember',[authJwt.verifyToken],societyBoardMemberController.get);
 
-	app.post('/api/societyMember',[authJwt.verifyToken],societyMemberController.create);
+	app.put('/api/societyBoardMember/:id',[authJwt.verifyToken],societyBoardMemberController.update);
 
-	app.put('/api/societyMember/:id',[authJwt.verifyToken],societyMemberController.update);
+	app.put('/api/societyBoardMember/delete/deleteSelected',[authJwt.verifyToken],societyBoardMemberController.deleteSelected);
+
+	app.put('/api/societyBoardMember/delete/:id',[authJwt.verifyToken],societyBoardMemberController.delete);
 
 	app.post('/api/relation',[authJwt.verifyToken],relationController.create);
 
@@ -364,4 +370,10 @@ module.exports = function(app) {
 	app.put('/api/relation/delete/deleteSelected',[authJwt.verifyToken],relationController.update);
 
 	app.put('/api/relation/delete/:id',[authJwt.verifyToken],relationController.update);
+
+	app.post('/api/societyMemberEvent',[authJwt.verifyToken],societyMemberEvent.create);
+
+	app.get('/api/societyMemberEvent',[authJwt.verifyToken],societyMemberEvent.get);
+
+	app.post('/api/owner',[authJwt.verifyToken],owner.create);
 }

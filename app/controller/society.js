@@ -12,6 +12,7 @@ const Op = db.Sequelize.Op;
 
 exports.create = (req, res) => {
     console.log("creating society");
+    console.log("::::body==>",req.body);
     Society.create({
         societyName: req.body.societyName,
         cityId: req.body.cityId,
@@ -24,6 +25,7 @@ exports.create = (req, res) => {
         totalBoardMembers: req.body.totalBoardMembers,
         bankName: req.body.bankName,
         email:req.body.email,
+        IFSCCode:req.body.IFSCCode,
         accountHolderName: req.body.accountHolderName,
         accountNumber: req.body.accountNumber,
         userId: req.userId,
