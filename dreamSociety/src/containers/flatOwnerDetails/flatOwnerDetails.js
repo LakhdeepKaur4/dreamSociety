@@ -71,6 +71,10 @@ class FlatOwnerDetails extends Component {
         }
         return [];
     }
+    getflat=({details})=>{
+    console.log(details)
+
+    }
     societyChangeHandler = (selectOption) => {
         let countryName = selectOption.country_master.countryName;
         let stateName = selectOption.state_master.stateName;
@@ -210,7 +214,6 @@ class FlatOwnerDetails extends Component {
                     </Col>
                     <Col md={6}>
                         <Label>Relation With Owner</Label>
-                        {/* <Input placeholder="Relation" type="text"/>  */}
                         <Select options={this.getRelationList(this.props.relationList)}
                             onChange={this.relationHandler.bind(this)}
                             placeholder={PlaceHolder} />
@@ -286,7 +289,10 @@ class FlatOwnerDetails extends Component {
                             </FormGroup >
                             <FormGroup>
                                 <Label>Flat Number</Label>
-                                <Input type="text" name='flatNumber' onChange={this.onChangeHandler} value={this.state.flatNumber} />
+                                {/* <Input type="text" name='flatNumber' onChange={this.onChangeHandler} value={this.state.flatNumber} /> */}
+                                <Select options={this.getflat(this.props.flatList)}
+                                    onChange={this.flatChangeHandler.bind(this, 'tower')}
+                                    placeholder={PlaceHolder} />
                                 <span className="error">{this.state.errors.flatNumber}</span>
                             </FormGroup >
                         </div>
@@ -343,7 +349,8 @@ function mapStateToProps(state) {
     return {
         societyName: state.societyReducer,
         towerList: state.TowerDetails,
-        relationList: state.RelationMasterReducer
+        relationList: state.RelationMasterReducer,
+        flatList:state.flatDetailMasterReducer,
     }
 }
 function mapDispatchToProps(dispatch) {
