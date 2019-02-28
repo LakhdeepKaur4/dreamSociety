@@ -224,11 +224,12 @@ class displayServices extends Component {
     }
 
        
-       close=()=>{
+    close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
 
     render() {
+        
         let tableData;
         tableData=
         <Table className="table table-bordered">
@@ -250,7 +251,7 @@ class displayServices extends Component {
                 <th>Service Details</th>
                 <th>Actions</th>
                 
-            
+             
             </tr>
         </thead>
 

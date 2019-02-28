@@ -31,8 +31,8 @@ export function getFlatDetails(){
     }
 }   
 
-export function addFlatDetails(values){
-    const request = axios.post(`${URN}/flatDetail`,values,{headers:authHeader()},{method:'POST'})
+export function addFlatDetails( flatNo,flatId,floor,towerId){
+    const request = axios.post(`${URN}/flatDetail`, {flatNo,flatId,floor,towerId},{headers:authHeader()},{method:'POST'})
     .then(getFlatDetails());
     return{
         type:ADD_FLAT_DETAILS,

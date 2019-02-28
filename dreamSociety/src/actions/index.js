@@ -1,5 +1,7 @@
-
+// export const URN='http://192.168.1.103:5000/api';
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export const PicURN= 'https://dreamsociety.herokuapp.com/'; 
+export const DocURN= 'https://dreamsociety.herokuapp.com/'; 
 export const UR= 'https://dreamsociety.herokuapp.com/';
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
@@ -37,6 +39,8 @@ export const FETCH_PARKING = 'FETCH_PARKING';
 export const CREATE_PARKING = 'CREATE_PARKING';
 export const ADD_VENDOR_MASTER='add_vendor_master';
 export const GET_VENDOR_MASTER='get_vendor_master';
+export const DELETE_VENDOR='delete_vendor';
+export const UPDATE_VENDOR='update_vendor';
 export const GET_FLAT ='get_flat';
 export const ADD_PERSON ='add_person';
 export const GET_PERSON ='get_person';
