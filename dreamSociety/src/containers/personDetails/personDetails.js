@@ -146,7 +146,7 @@ Email
 </div> 
 <div className="form-group">
 <label> Roles</label>
-<select  name="roles"  onChange={(e)=>{this.setState({roles:e.target.value })}}    className="form-control"  required>
+<select  name="roles"      defaultValue='no-value'  onChange={(e)=>{this.setState({roles:e.target.value })}}    className="form-control"  required>
 <DefaultSelect/>
 {this.getRole(this.props.personDetails)}
 
@@ -154,7 +154,7 @@ Email
 </div  >  
 <div   className="form-group">
 <label>Tower</label>
-<select  name="towerId"  className="form-control" onChange ={(e)=>{this.setState({towerId:e.target.value})}}>
+<select  name="towerId"       defaultValue='no-value' className="form-control" onChange ={(e)=>{this.setState({towerId:e.target.value})}}>
 <DefaultSelect/>
 {this.Tower(this.props.personDetails)}
 </select>

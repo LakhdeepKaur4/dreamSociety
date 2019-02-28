@@ -62,7 +62,7 @@ class DisplayEmployeeTypeMaster extends Component {
 
 
         this.setState({
-            editEmployeeModal: false, loading: true, editEmployeeData: { employeeTypeId: '', employeeWorkTypeId: '', serviceType: '' }
+            editEmployeeModal: false, loading: true
         })
     }
 

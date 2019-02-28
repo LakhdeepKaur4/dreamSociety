@@ -23,7 +23,8 @@ class EventMaster extends Component {
     startDate: Date,
     endDate: Date,
     menuVisible: false,
-    loading:true
+    loading:true,
+    errors: {}
 
   }
 
@@ -40,9 +41,15 @@ class EventMaster extends Component {
     console.log("hieee", this.props.GetEventOrganiser)
   }
 
-  onChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value.trim('') });
-    console.log(this.state)
+  onChange(event) {
+    if (!!this.state.errors[event.target.name]) {
+        let errors = Object.assign({}, this.state.errors);
+        delete errors[event.target.name];
+        this.setState({ [event.target.name]: event.target.value, errors });
+    }
+    else {
+        this.setState({ [event.target.name]: event.target.value});
+    }
   }
 
   onEventChange = (e) => {
@@ -51,21 +58,46 @@ class EventMaster extends Component {
     console.log("userId", this.state.userId)
   }
   submit = (e) => {
-this.setState({loading:true})
-    console.log(this.state.eventOrganiser);
-    this.props.AddEvent({ ...this.state }).then(()=>
-    this.props.history.push('/superDashboard/display-event'))
-    this.setState({
-      state: {
-        eventType: [],
-        eventName: [],
-        eventOrganiser: [],
-        startDate: [],
-        endDate: [],
+    let errors = {};
+    const { eventType,
+    eventName,
+    eventOrganiser,
+    startDate,
+    endDate} = this.state
+    
+    if(!this.state.eventType){
+        errors.eventType = "Size Type can't be empty. Please select."
+    }
+    if(!this.state.eventName){
+      errors.eventName = "Size Type can't be empty. Please select."
+  }
+  if(!this.state.eventOrganiser){
+    errors.eventOrganiser = "Size Type can't be empty. Please select."
+}
+if(!this.state.startDate){
+  errors.startDate = "Size Type can't be empty. Please select."
+}
+if(!this.state.endDate){
+  errors.endDate = "Size Type can't be empty. Please select."
+}
 
-      }
-    })
+    this.setState({ errors });
+    const isValid = Object.keys(errors).length === 0
+
+    // const isValid = this.validate();
+    if (isValid) {
+        this.setState({loading: true})
+      
+            this.props.AddEvent(eventType,
+              eventName,
+              eventOrganiser,
+              startDate,
+              endDate).then(()=> this.props.history.push('/superDashboard/display-event')
+        
+            )
+        
    
+}
   }
 
   getEvent({ events }) {

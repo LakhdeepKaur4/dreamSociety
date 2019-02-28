@@ -15,7 +15,8 @@ class SizeMaster extends Component {
         this.state = {
             sizeType: "",
             menuVisible: false,
-            loading:true
+            loading:true,
+            errors: {}
         }
 
         this.onChange = this.onChange.bind(this);
@@ -30,8 +31,15 @@ class SizeMaster extends Component {
             this.setState({loading:false})
     }
 
-    onChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
+    onChange(event) {
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value, errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value});
+        }
     }
  onkeyPresshandle(event){
     const pattern = /[a-zA-Z _]/;
@@ -43,19 +51,32 @@ class SizeMaster extends Component {
  }
 
     submit(e) {
-this.setState({loading:true})
-        console.log(this.state);
-        this.props.AddSize(this.state).then(()=> this.props.history.push('/superDashboard/display-size')
+        e.preventDefault()
+        let errors = {};
+        const { sizeType} = this.state
+        
+        if(!this.state.sizeType){
+            errors.sizeType = "Size Type can't be empty. Please select."
+        }
+        
 
-    )
-        return this.setState({
-            state: {
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0
 
-                sizeType: ""
-            }
-        })
-           
+        // const isValid = this.validate();
+        if (isValid) {
+            this.setState({loading: true})
+          
+                this.props.AddSize(sizeType).then(()=> this.props.history.push('/superDashboard/display-size')
+            
+                )
+            
+       
     }
+
+}
+   
+   
     size=()=>{
         this.props.history.push('/superDashboard/display-size')
     }
@@ -84,7 +105,8 @@ this.setState({loading:true})
         <h3 align="center">  Add Size </h3>
             <FormGroup>
                 <Label> Size Type</Label>
-                <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={20} required/>
+                <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={20} />
+                <span className="error">{this.state.errors.sizeType}</span>
             </FormGroup>
             <FormGroup>
                 <Button type="submit" color="success">Submit</Button>

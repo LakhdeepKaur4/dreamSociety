@@ -336,7 +336,8 @@ class displayPersonDetails extends Component {
                                                                 <FormGroup>
                                                                         <Label> Email</Label>
                                                                         <Input type="text" value={this.state.editPersonData.email} onChange={(e) => {
-                                                                                let { editPersonData } = this.state
+
+                                                                               let { editPersonData } = this.state
                                                                                 editPersonData.email = e.target.value;
                                                                                 this.setState({
                                                                                         editPersonData
@@ -348,7 +349,8 @@ class displayPersonDetails extends Component {
 
                                                                 <FormGroup>
                                                                         <Label> Tower Name</Label>
-                                                                        <Input type="select" id="towerId" value={this.state.editPersonData.towerId} onChange={(e) => {
+                                                                        <Input type="select" id="towerId"   defaultValue='no-value' value={this.state.editPersonData.towerId} onChange={(e) => {
+                                                                                 
                                                                                 let { editPersonData } = this.state
                                                                                 editPersonData.towerId = e.target.value;
                                                                                 this.setState({
@@ -367,8 +369,8 @@ class displayPersonDetails extends Component {
                                                                 <FormGroup>
                                                                         <Label> Roles</Label>
 
-                                                                        <Input type="select" value={this.state.editPersonData.roleName} onChange={(e) => {
-
+                                                                        <Input type="select"   value={this.state.editPersonData.roleName} onChange={(e) => {
+                                                                             
                                                                                 let { editPersonData } = this.state
                                                                                 editPersonData.roleName = e.target.value;
                                                                                 this.setState({
@@ -377,7 +379,7 @@ class displayPersonDetails extends Component {
                                                                         }}
 
                                                                         >
-                                                                                <option>{this.state.editPersonData.roleName}</option>
+                                                                                <option      >{this.state.editPersonData.roleName}</option>
                                                                                <DefaultSelect/>
                                                                                 {this.getRole(this.props.personDetails)}
 

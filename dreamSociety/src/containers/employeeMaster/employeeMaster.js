@@ -59,11 +59,6 @@ FileChange=(event)=>{
     
               this.setState({ documentTwo: event.target.files[0]})
              
-                     
-         
-        
-        
-      
         }
     
     componentDidMount(){
@@ -235,7 +230,7 @@ onLocationChange=(event)=>{
                 locationId:data3.locationId
             })
 
-            // this.props.getSociety(data3.locationId)
+         
 
 }
 
@@ -303,7 +298,7 @@ form=
     <div>
     <div>
                         <label>Country Name</label>
-                        <select   className ="form-control" name="countryName"  onChange={this.onChangeCountry} >
+                        <select   className ="form-control" name="countryName"         defaultValue='no-value' onChange={this.onChangeCountry} >
                         < DefaultSelect/> 
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
@@ -313,21 +308,21 @@ form=
 
                     <div>    
                         <label>State Name</label>
-                        <select  className ="form-control" name="stateName" onChange={this.onChangeState}>
+                        <select  className ="form-control"         defaultValue='no-value'  name="stateName" onChange={this.onChangeState}>
                     <DefaultSelect/>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
                     </div>
                     <div>    
                         <label>City Name</label>
-                        <select  className ="form-control"  name="cityName" onChange={this.onChangeCity} >
+                        <select  className ="form-control"        defaultValue='no-value'  name="cityName" onChange={this.onChangeCity} >
                        <DefaultSelect/>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
                     </div>
                     <div>    
                         <label>location</label>
-                        <select  className ="form-control"   onChange={this.onLocationChange} >
+                        <select  className ="form-control"          defaultValue='no-value' onChange={this.onLocationChange} >
                    <DefaultSelect/>
                             {this.getDropdown4(this.props.locationMasterReducer)}
                         </select>
@@ -391,9 +386,11 @@ form=
 }
 
 function mapStateToProps(state){
+    console.log("location", state)
  return {
      empDetails:state.empDetails,
      locationMasterReducer : state.locationMasterReducer
+     
  }
 }
 function mapDispatchToProps(dispatch){

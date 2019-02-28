@@ -1,4 +1,4 @@
-
+// export  const URN = 'http://192.168.1.4:8081/api';
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export const UR= 'https://dreamsociety.herokuapp.com/';
 export const USER_LOGIN='user_login';
@@ -79,7 +79,7 @@ export const UPDATE_COUNTRY='update-country';
 export const DELETE_COUNTRY='delete-country';
 export const ADD_STATE='add-state';
 export const  GET_COUNTRY_DETAILS1='get-country-details1';
-
+export const DELETE_MULTIPLE_EMPLOYEE='DELETE_MULTIPLE_EMPLOYEE';
 export const UPDATE_DETAILS='update-details';
 export const DELETE_EVENT ='delete_event';
 export const UPDATE_EVENT ='update_event';

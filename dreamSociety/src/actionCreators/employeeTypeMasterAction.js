@@ -56,7 +56,7 @@ export function updateEmployee(employeeDetailId,employeeTypeId, employeeWorkType
     }
 }
 export function deleteEmployee(employeeDetailId,isActive){
-    const request = axios.put(`${URN}/employeeDetail/`+employeeDetailId,{isActive}, {headers:authHeader()} )
+    const request = axios.put(`${URN}/employeeDetail/delete/`+employeeDetailId,{isActive}, {headers:authHeader()} )
 
     return{
         type:DELETE_EMPLOYEE,

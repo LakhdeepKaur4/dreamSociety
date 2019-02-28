@@ -360,7 +360,7 @@ class SocietyManagementDetail extends Component {
                 locationResult.map((item) => {
                     return (
                         <option value={item.locationId} key={item.locationId}>
-                            {item.countryName}
+                            {item.locationName}
                         </option>
                     )
                 })
