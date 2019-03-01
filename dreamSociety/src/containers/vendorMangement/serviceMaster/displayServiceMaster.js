@@ -98,7 +98,7 @@ class DisplayServices extends Component {
             .then(() => this.refreshData());            
             this.setState({loading:true,
                 serviceId,serviceName, service_detail, serviceDetailId,
-            editServiceModal: !this.state.editServiceModal
+                editServiceModal: !this.state.editServiceModal
        })
         }          
         console.log(serviceId,serviceName, service_detail, serviceDetailId)  

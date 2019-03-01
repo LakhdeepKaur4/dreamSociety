@@ -413,6 +413,11 @@ class BoardMemberDetails extends Component{
         return this.props.history.replace('/');
     }
 
+    maxDate = () => {
+        var d = new Date();
+        return d.toISOString().split('T')[0];
+    }
+
     render(){
         let tableData = <Table className="table table-bordered">
             <thead>
@@ -613,7 +618,7 @@ class BoardMemberDetails extends Component{
                             </FormGroup>
                             <FormGroup>
                                 <Label>Date of Birth</Label>
-                                <Input type="date" name="dob" value={this.state.dob} onChange={this.onChange} />
+                                <Input type="date" max={this.maxDate()} name="dob" value={this.state.dob} onChange={this.onChange} />
                                 {!this.state.dob ? <span className="error">{this.state.errors.dob}</span>: ''}
                             </FormGroup>  
                             <FormGroup>
