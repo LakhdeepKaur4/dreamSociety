@@ -68,9 +68,7 @@ class DisplayVendorMaster extends Component {
     }
 
 
-    componentWillMount() {
-        this.refreshData()
-    }
+   
 
     onHandleChange=(e)=>{
         this.setState({
@@ -85,7 +83,6 @@ class DisplayVendorMaster extends Component {
     }
 
     editUser(vendorId,vendorName,currentAddress,permanentAddress,contact,serviceName,serviceId,rateType,rateId,rate,documentOne,documentTwo,picture){
-  console.log(vendorId)
     this.setState({
         vendorId,vendorName,currentAddress,permanentAddress,contact,serviceName,serviceId,rateType,rateId,rate,documentOne,documentTwo,picture
             ,editVendorModal: !this.state.editServiceModal})
@@ -151,7 +148,7 @@ class DisplayVendorMaster extends Component {
         }
     }
 
-    getDropDown1 = ({rate}) => {console.log(rate)
+    getDropDown1 = ({rate}) => {
         if (rate) {
             return rate.rate.map((item) => {
                 return (
@@ -193,9 +190,8 @@ class DisplayVendorMaster extends Component {
 
     }
 
-   updateVendor=(vendorId)=>{
-        console.log("mnc",vendorId)
-        console.log(this.state.vendorName,"mnbn")
+   updateVendor=()=>{
+       
         const formData=new FormData();   
         formData.append('vendorName',this.state.vendorName)
         formData.append('contact',this.state.contact)
@@ -213,15 +209,18 @@ class DisplayVendorMaster extends Component {
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)
+        this.props.updateVendor( this.state.vendorId,formData).then(()=>{this.refreshData})
+        this.setState({loading:true, editVendorModal: !this.state.editVendorModal});
 
-        this.props.updateVendor( this.state.vendorId,formData).then(()=>this.refreshData())
    }
-    renderList = ({ vendors }) => {console.log("priya",vendors)
+
+
+    renderList = ({ vendors }) => {
 
 
         if (vendors) {
             return vendors.vendor.map((vendors) => {
-                console.log("abc",vendors.vendorId)
+                
                 return (
 
                     <tr key={vendors.vendorServiceId}>
@@ -365,16 +364,14 @@ class DisplayVendorMaster extends Component {
                     <FormGroup>
                             <Label>Upload Your Id</Label>
                             <Input type="file" name="documentOne"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage} required  />
-
                         </FormGroup>
-
-                       
+                     
                     <FormGroup>
                     <Label> Document Two</Label>
                         <GoogleDocsViewer
                              width="400px"
-                            height="700px"
-                            fileUrl={DocURN+this.state.documentTwo}/>
+                             height="700px"
+                             fileUrl={DocURN+this.state.documentTwo}/>
                     </FormGroup>
                     <FormGroup>
                             <Label>Upload Another Id</Label>
@@ -389,10 +386,12 @@ class DisplayVendorMaster extends Component {
                     
                     <FormGroup>
                             <Button color="primary" className="mr-2" onClick={this.updateVendor}>Save </Button>
-                            {/* <Button color="danger" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button> */}
+                            <Button color="danger" onClick={this.toggleEditVendorModal.bind(this)}>Cancel</Button>
                         </FormGroup>
                 </ModalBody>
             </Modal>
+            <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Vendor Details</h3>
+            <Button color="primary" type="button" onClick={this.push}>Add Vendor</Button></div>
             {!this.state.loading ? tableData : <Spinner />}
 
             </div>

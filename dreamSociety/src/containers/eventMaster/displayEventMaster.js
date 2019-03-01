@@ -299,7 +299,7 @@ class DisplayEventMaster extends Component {
                                                                 </FormGroup>
                                                                 <FormGroup>
                                                                         <Label >Event Organiser</Label>
-                                                                        <Input type="select" value={this.state.editEventData.eventOrganiser} onChange={(e) => {
+                                                                        <Input type="select" value={this.state.editEventData.eventOrganiser} defaultValue='no-value' onChange={(e) => {
                                                                                 let { editEventData } = this.state;
                                                                                 editEventData.eventOrganiser = e.target.value;
                                                                                 console.log('vghvghyghfgh', this.state.editEventData.eventOrganiser);
@@ -308,7 +308,7 @@ class DisplayEventMaster extends Component {
 
                                                                         }} required >
 
-                                                                                <option value={this.state.editEventData.userName}>{this.state.editEventData.userName}</option>
+                                                                                <option      value={this.state.editEventData.userName}>{this.state.editEventData.userName}</option>
 
                                                                                    <DefaultSelect/>
 

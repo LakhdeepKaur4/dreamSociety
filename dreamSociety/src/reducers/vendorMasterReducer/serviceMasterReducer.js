@@ -1,4 +1,4 @@
-import {GET_DETAIL,ADD_SERVICE,DELETE_SERVICE_IDS,DELETE_SERVICE} from '../../actions/index';
+import {GET_DETAIL,ADD_SERVICE,DELETE_SERVICE_IDS,DELETE_SERVICE,UPDATE_SERVICES} from '../../actions/index';
 
 export default function(state={}, action) {
 
@@ -14,6 +14,9 @@ export default function(state={}, action) {
 
         case DELETE_SERVICE:
             return{...state,deleteService: action.payload}
+        
+        case UPDATE_SERVICES:
+            return{...state,update:action.payload}
             
         default:
             return state;

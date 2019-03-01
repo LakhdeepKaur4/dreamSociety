@@ -19,7 +19,9 @@ class TowerMaster extends Component {
 
             towerName: "",
             menuVisible: false,
-            loading:true
+            loading:true,
+            errors: {}
+
         }
 
         this.onChange = this.onChange.bind(this);
@@ -33,8 +35,16 @@ class TowerMaster extends Component {
         this.setState({loading:false})
     }
 
-    onChange(e) {
-        this.setState({ [e.target.name]: e.target.value });
+  
+    onChange(event) {
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value, errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value});
+        }
     }
     OnKeyPresshandler(event) {
         const pattern = /[a-zA-Z _]/;
@@ -44,18 +54,29 @@ class TowerMaster extends Component {
         }
     }
     onSubmit(event) {
-        this.setState({loading:true})
+        // this.setState({loading:true})
         event.preventDefault();
-        console.log(this.state)
+        let errors = {};
+        const { towerName} = this.state
+        
+        if(!this.state.towerName){
+            errors.towerName = "Tower Name can't be empty. Please select."
+        }
+        
 
-        this.props.AddTower(this.state)
-        .then(()=> this.props.history.push('/superDashboard/display-tower'));
-        return this.setState({
-            state: {
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0
 
-                towerName: ""
-            }
-        })
+        // const isValid = this.validate();
+        if (isValid) {
+            this.setState({loading: true})
+          
+                this.props.AddTower(towerName).then(()=> this.props.history.push('/superDashboard/display-tower')
+            
+                )
+            
+       
+    }
            
     }
     logout=()=>{
@@ -82,7 +103,8 @@ class TowerMaster extends Component {
         <h3 align="center">  Add Tower</h3>
             <FormGroup>
                 <Label>Tower Name</Label>
-                <Input type="text" className="form-control" placeholder="Tower Name" name="towerName"  maxLength ={20} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange} required />
+                <Input type="text" className="form-control" placeholder="Tower Name" name="towerName"  maxLength ={20} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange}  />
+                <span className="error">{this.state.errors.towerName}</span>
             </FormGroup>
             <FormGroup>
                 <Button color="success" className="mr-2">Submit</Button>

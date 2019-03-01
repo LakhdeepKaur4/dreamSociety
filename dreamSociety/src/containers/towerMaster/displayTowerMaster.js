@@ -98,7 +98,7 @@ this.setState({loading:true});
 
           <tr key={item.towerId}>
 
-<td><input type="checkbox" name="ids" value={item.eventId} className="SelectAll"
+<td><input type="checkbox" name="ids" value={item.towerId} className="SelectAll"
                          onChange={(e, i) => {
                             const {towerId} = item
                             if(!e.target.checked){

@@ -10,19 +10,16 @@ import UI from '../../components/newUI/superAdminDashboard';
 constructor(props){
     super(props)
 this.state={
-    userName:'',
-    email:'',
-  
-    towerId:'',
-
-    flatDetailId:'',    
-  roles:'',
-
-              
-menuVisible: false  ,      
-    familyMember:'',
-    parking:'',
-    loading:true
+    userName: '',
+    email: '',
+    towerId: '',
+    flatDetailId: '',
+    roles: '',
+    menuVisible: false,
+    familyMember: '',
+    parking: '',
+    loading: true,
+    errors:{}
 }                              
 
 }
@@ -60,20 +57,53 @@ OnKeyPressmail(event){
 }
 
 onChange=(e)=>{
+
+    if(!!this.state.errors[e.target.name]){
+        let errors =Object.assign({},this.state.errors)
+        delete  errors[e.target.name]
+        this.setState({[e.target.name]:e.target.value,errors});
+    }
+    else{
 this.setState({[e.target.name]:e.target.value});
+}
 }
 
 
-
-submit=()=>{
-    this.setState({loading:true})
-
-
-this.props.addPerson({...this.state})
+submit=(e)=>{
+ e.preventDefault()
+ let errors={};
+ const {userName,email,towerId,flatDetailId,roles,  familyMember,parking}= this.state 
+ if(!this.state.userName){
+    errors.userName = "  Username can't be empty. Please select."
+}
+if(!this.state.email){
+    errors.email = "  Email can't be empty. Please select."
+}
+if(!this.state.towerId){
+    errors.towerId = "  Tower Name can't be empty. Please select."
+}
+if(!this.state.flatDetailId){
+    errors.familyMember = "   Flat Number can't be empty. Please select."
+}
+if(!this.state.roles){
+    errors.roles = " Roles can't be empty. Please select."
+}
+if(!this.state.familyMember){
+    errors.familyMember = "Family Member can't be empty. Please select."
+}
+if(!this.state.parking){
+    errors.parking = "parking can't be empty. Please select."
+}
+this.setState({ errors });
+const isValid = Object.keys(errors).length === 0
+if (isValid) {
+    this.setState({loading: true})
+this.props.addPerson(userName,email,towerId,flatDetailId,roles,familyMember,parking)
 .then(()=>
 this.props.history.push('/superDashboard/displayPerson')
 );
             
+}
 }
 
 
@@ -126,51 +156,57 @@ person=()=>{
 let form1;
   if(!this.state.loading && this.props.personDetails.get && this.props.personDetails.roles){
 form1 = <form onSubmit={this.submit}>
-  <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+      <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
         <span aria-hidden="true">&times;</span>
-   </div>
+      </div>
 
       <h3 align="center">  Add Person </h3>
-            <div className="form-group">
-                <label>
-                    Username
-                    
-</label>
-<input type="text" name="userName" onChange={this.onChange} maxLength={30} className="form-control" onKeyPress={this.OnKeyPresshandler} required />
-</div>
-<div   className="form-group">
-<label>
-Email
-</label>
-<input type="email"  name="email"  onChange={this.onChange} maxLength={50}    className="form-control"  onKeyPress ={this.OnKeyPressmail} required/>
-</div> 
-<div className="form-group">
-<label> Roles</label>
-<select  name="roles"  onChange={(e)=>{this.setState({roles:e.target.value })}}    className="form-control"  required>
-<DefaultSelect/>
-{this.getRole(this.props.personDetails)}
-
-</select>
-</div  >  
-<div   className="form-group">
-<label>Tower</label>
-<select  name="towerId"  className="form-control" onChange ={(e)=>{this.setState({towerId:e.target.value})}}>
-<DefaultSelect/>
-{this.Tower(this.props.personDetails)}
-</select>
-</div>
-<div   className="form-group">
-<label> Number of members in family</label>
-<input type="text"  name ="familyMember"  className="form-control" maxLength ={2}  onChange={this.onChange} onKeyPress ={this.OnKeyPressNumber} required/>
-
-</div>
-<div   className="form-group">
-<label> parking</label>
-<input  type="text"   name ="parking" className="form-control" maxLength ={2} onChange={this.onChange}    onKeyPress ={this.OnKeyPressNumber}  required />
-</div>
-<button className="btn btn-success"> Submit</button>
-<button   className ="btn btn-danger" onClick={this.person}>Cancel</button> 
-</form>  
+          <div className="form-group">
+              <label>Username</label>
+              <input type="text" name="userName" onChange={this.onChange} maxLength={30} className="form-control" onKeyPress={this.OnKeyPresshandler}  />
+         
+              <span className="error">{this.state.errors.userName}</span>
+          </div>
+             
+          <div className="form-group">
+              <label> Email</label>
+              <input type="email" name="email" onChange={this.onChange} maxLength={50} className="form-control" onKeyPress={this.OnKeyPressmail}  />
+              <span className="error">{this.state.errors.email}</span>
+          </div>
+          
+          <div className="form-group">
+              <label> Roles</label>
+              <select name="roles" defaultValue='no-value' onChange={this.onChange} className="form-control" >
+                  <DefaultSelect />
+                  {this.getRole(this.props.personDetails)}
+                   </select>
+                   <span className="error">{this.state.errors.roles}</span>
+          </div>
+          
+          <div className="form-group">
+              <label>Tower</label>
+              <select name="towerId" defaultValue='no-value' className="form-control" onChange={this.onChange}>
+                  <DefaultSelect />
+                  {this.Tower(this.props.personDetails)}
+              </select>
+              <span className="error">{this.state.errors.towerId}</span>
+          </div>
+          
+          <div className="form-group">
+              <label> Number of members in family</label>
+              <input type="text" name="familyMember" className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
+              <span className="error">{this.state.errors.familyMember}</span>
+          </div>
+         
+          <div className="form-group">
+              <label> parking</label>
+              <input type="text" name="parking" className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
+              <span className="error">{this.state.errors.parking}</span>
+          </div>
+         
+          <button className="btn btn-success"> Submit</button>
+          <button className="btn btn-danger" onClick={this.person}>Cancel</button>
+      </form>  
      
   }
   else if(this.submit){

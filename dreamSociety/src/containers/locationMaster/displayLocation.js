@@ -74,7 +74,7 @@ searchOnChange = (e) => {
     this.setState({ search: e.target.value })
 }
 
-delete = (locationId) => {
+deleteLocation = (locationId) => {
         this.setState({loading:true})
         let {isActive } =this.state.editLocation;  
         this.props.deleteLocation(locationId,isActive)

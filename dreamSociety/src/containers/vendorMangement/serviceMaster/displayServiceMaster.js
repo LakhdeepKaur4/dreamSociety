@@ -1,36 +1,28 @@
 import React, { Component } from 'react';
-import { getServiceType, getServiceDetail,deleteSelectedService,deleteService } from '../../../actionCreators/serviceMasterAction';
+import { getServiceType, getServiceDetail,deleteSelectedService,deleteService,updateServices } from '../../../actionCreators/serviceMasterAction';
 import { connect } from 'react-redux';
-import axios from 'axios';
-import { authHeader } from '../../../helper/authHeader';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table } from 'reactstrap';
-import { URN } from '../../../actions/index';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/vendorDashboardInside';
 import Spinner from '../../../components/spinner/spinner';
+import DefaultSelect from '../../../constants/defaultSelect';
 
-
-
-class displayServices extends Component {
-
-
+class DisplayServices extends Component {
 
     state = {
-        editServiceData: {
-
             serviceId: '',
             serviceName: '',
             service_detail: '',
             serviceDetailId: '',           
-            isActive: false
-        },
-        ids:[], 
-        menuVisible: false,
-        editServiceModal: false,
-        isDisabled:true,
-        search: '',
-        loading:true,
+            isActive: false,
+            ids:[], 
+            menuVisible: false,
+            editServiceModal: false,
+            isDisabled:true,
+            search: '',
+            errors:{},
+            loading:true,
 
     }
 
@@ -40,29 +32,33 @@ class displayServices extends Component {
    
     }
 
-    componentWillMount() {
-        this.refreshData()
+
+    
+    onHandleChange=(event)=>{
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value, errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value });
+        }
     }
+
 
     refreshData() {
         this.props.getServiceType().then(()=> this.setState({loading:false}));
         this.props.getServiceDetail().then(()=> this.setState({loading:false}));
-    }
-
-
-
-   
+    }   
 
     deleteService(serviceId){
         this.setState({loading:true})
-        let {isActive } =this.state.editServiceData;  
+        let {isActive } =this.state;  
         this.props.deleteService(serviceId,isActive)
             .then(() => this.refreshData())
-            this.setState({editServiceData:{isActive:false}})
+            this.setState({isActive:false})
     }
     
-
-
     deleteSelected(ids){
         this.setState({loading:true,
         isDisabled:true});
@@ -79,7 +75,7 @@ class displayServices extends Component {
     }
 
     push=()=>{
-        this.props.history.push('/superDashboard/serviceMaster')
+        this.props.history.push('/superDashboard/ServiceMaster')
     }
 
     toggleEditServiceModal() {
@@ -88,25 +84,30 @@ class displayServices extends Component {
         });
     }
 
+
     updateServices() {
-        let { serviceName, service_detail, serviceDetailId } = this.state.editServiceData;
-
-        axios.put(`${URN}/service/` + this.state.editServiceData.serviceId, {
-            serviceName, service_detail, serviceDetailId
-        }, { headers: authHeader() }).then((response) => {
-            this.refreshData();
-
-            this.setState({
-                editServiceModal: false,loading:true, editServiceData: { serviceId: '', serviceName: '', service_detail: '', serviceDetailId: '' }
-            })
-        });
-
+        const {serviceId, serviceName, service_detail, serviceDetailId } = this.state;
+        let errors={};
+        if(this.state.serviceName===''){
+            errors.serviceName="Service Name can't be empty";
+        }
+        this.setState({errors});
+        const isValid =Object.keys(errors).length===0;
+        if(isValid){
+            this.props.updateServices(serviceId,serviceName, service_detail, serviceDetailId)
+            .then(() => this.refreshData());            
+            this.setState({loading:true,
+                serviceId,serviceName, service_detail, serviceDetailId,
+                editServiceModal: !this.state.editServiceModal
+       })
+        }          
+        console.log(serviceId,serviceName, service_detail, serviceDetailId)  
     }
 
     editUser(serviceId, serviceName, service_detail, serviceDetailId) {
         this.setState({
 
-            editServiceData: { serviceId, serviceName, service_detail, serviceDetailId }, editServiceModal: !this.state.editServiceModal
+             serviceId, serviceName, service_detail, serviceDetailId , editServiceModal: !this.state.editServiceModal
         });
 
     }
@@ -208,7 +209,6 @@ class displayServices extends Component {
         
     }
 
-
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
@@ -276,30 +276,17 @@ class displayServices extends Component {
                         <ModalBody>
                             <FormGroup>
                                 <Label for="serviceName">Service Type</Label>
-                                <Input id="serviceName" value={this.state.editServiceData.serviceName} onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={(e) => {
-                                    let { editServiceData } = this.state;
-
-                                    editServiceData.serviceName = e.target.value;
-
-                                    this.setState({ editServiceData });
-                                }}  />
+                                <Input type="text" value={this.state.serviceName} name="serviceName" onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}  />
+                                <span className="error">{this.state.errors.serviceName}</span>
                             </FormGroup>
 
                             <FormGroup>
                                 <Label for="service_detail">Service Details</Label>
-
-                                <Input type="select" value={this.state.editServiceData.serviceDetailId} onChange={(e) => {
-                                    let { editServiceData } = this.state;
-                                    editServiceData.serviceDetailId = e.target.value;
-                                    this.setState({ editServiceData })
-                                }}>
-                                    <option disabled>--SELECT--</option>
-                           
+                                <Input type="select" name="serviceDetailId" value={this.state.serviceDetailId} onChange={this.onHandleChange}> 
+                                    <DefaultSelect/>
                                     {this.getDropdown1(this.props.serviceMasterReducer)}
-
                                 </Input>
-                            </FormGroup>
-                      
+                            </FormGroup>                    
 
                         <FormGroup>
                             <Button color="primary" className="mr-2" onClick={this.updateServices.bind(this)}>Save </Button>
@@ -336,7 +323,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getServiceType, getServiceDetail,deleteSelectedService,deleteService}, dispatch);
+    return bindActionCreators({ getServiceType, getServiceDetail,deleteSelectedService,deleteService,updateServices}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(displayServices);      
+export default connect(mapStateToProps, mapDispatchToProps)(DisplayServices);      
