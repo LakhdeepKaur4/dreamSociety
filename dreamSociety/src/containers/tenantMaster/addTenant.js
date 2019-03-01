@@ -7,6 +7,7 @@ import Select from 'react-select';
 import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
+import { getTenantDetail } from '../../actionCreators/tenantMasterAction';
 
 class AddTenant extends Component{
     constructor(props) {
@@ -16,17 +17,23 @@ class AddTenant extends Component{
             tab: "none",
             step: 1,
             countryName : '',
+            countryId: '',
             stateName : '',
+            stateId: '',
             cityName : '',
+            cityId: '',
             locationName : '',
-            societyName : ''
+            locationId: '',
+            societyName : '',
+            societyId: ''
         }
     }
 
     componentDidMount() {
         this.props.detailSociety();
         this.props.viewTower();
-        this.props.getRelation()
+        this.props.getRelation();
+        this.props.getTenantDetail();
     }
 
     logout = () => {
@@ -77,10 +84,16 @@ class AddTenant extends Component{
 
     societyChangeHandler = (selectOption) => {
         console.log(this.state)
+        console.log(selectOption)
         let countryName = selectOption.country_master.countryName;
+        let countryId = selectOption.country_master.countryId;
         let stateName = selectOption.state_master.stateName;
+        let stateId = selectOption.state_master.stateId;
         let cityName = selectOption.city_master.cityName;
+        let cityId = selectOption.city_master.cityId;
         let locationName = selectOption.location_master.locationName;
+        let locationId = selectOption.location_master.locationId;
+        let societyId = selectOption.societyId;
 
         this.setState(function (prevState, props) {
             return {
@@ -88,7 +101,12 @@ class AddTenant extends Component{
                 countryName,
                 stateName,
                 cityName,
-                locationName
+                cityId,
+                stateId,
+                countryId,
+                societyId,
+                locationName,
+                locationId
             }
         }, function () {
         });
@@ -105,6 +123,11 @@ class AddTenant extends Component{
         }
         return [];
 
+    }
+
+    maxDate = () => {
+        var d = new Date();
+        return d.toISOString().split('T')[0];
     }
 
     render(){
@@ -142,7 +165,7 @@ class AddTenant extends Component{
                         </FormGroup>
                         <FormGroup>
                             <Label>Date of Birth</Label>
-                            <Input type="date" name="dob" />
+                            <Input type="date" max={this.maxDate()} name="dob" />
                         </FormGroup>
                         <FormGroup>
                             <Label>Contact Number</Label>
@@ -154,37 +177,39 @@ class AddTenant extends Component{
                         </FormGroup>
                         <FormGroup>
                             <Label>Society Name</Label>
-                            <Select placeholder="Society Name" options={this.getSociety(this.props.societyName)}
-                                    onChange={this.societyChangeHandler.bind(this)}
+                            <Select placeholder="Society Name" 
+                             options={this.getSociety(this.props.societyName)}
+                                name="societyName" 
+                                onChange={this.societyChangeHandler.bind(this)}
                                      />
                         </FormGroup>
                         <FormGroup>
                             <Label>Country</Label>
-                            <Input readOnly placeholder="Country" value={this.state.countryName}
-                             name="countryName" type='text' />
+                            <Input readOnly placeholder="Country"
+                             name="countryName" value={this.state.countryName} type='text' />
                         </FormGroup>
                         <FormGroup>
                             <Label>State</Label>
-                            <Input readOnly type="text" placeholder="StateName"
+                            <Input type="select" readOnly type="text" placeholder="StateName"
                             value={this.state.stateName} name="stateName" />
                         </FormGroup>
                         <FormGroup>
                             <Label>City</Label>
-                            <Input readOnly type="text" placeholder="CityName"
-                            value={this.state.cityName} name="cityName" />
+                            <Input type="select" readOnly type="text" placeholder="CityName" name="cityName"
+                            value={this.state.cityName} />
                         </FormGroup>
                         <FormGroup>
                             <Label>Location</Label>
-                            <Input readOnly type="text" placeholder="Location"
+                            <Input type="select" readOnly type="text" placeholder="Location"
                             value={this.state.locationName} name="locationName" />
                         </FormGroup>
                         <FormGroup>
                             <Label>Permanent Address</Label>
-                            <Input type="text" placeholder="Permanent Address" />
+                            <Input type="textarea" placeholder="Permanent Address" />
                         </FormGroup>
                         <FormGroup>
                             <Label>Correspondance Address</Label>
-                            <Input type="text" placeholder="Permanent Address" />
+                            <Input type="textarea" placeholder="Permanent Address" />
                         </FormGroup >
                         <FormGroup>
                             <Label>Tower</Label>
@@ -262,7 +287,8 @@ const mapStateToProps = (state) => {
         towerList: state.TowerDetails,
         relationList: state.RelationMasterReducer,
         flatList:state.flatDetailMasterReducer,
+        tenantReducer:state.tenantReducer
     }
 }
 
-export default connect(mapStateToProps, {detailSociety, viewTower, getRelation})(AddTenant);
+export default connect(mapStateToProps, {detailSociety, viewTower, getRelation, getTenantDetail})(AddTenant);

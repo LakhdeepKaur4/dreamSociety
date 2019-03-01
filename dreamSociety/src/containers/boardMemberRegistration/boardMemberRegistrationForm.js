@@ -339,6 +339,10 @@ route =() =>{
     this.props.history.push('/superDashboard/boardMemberDetails');
 }
 
+maxDate = () => {
+    var d = new Date();
+    return d.toISOString().split('T')[0];
+}
 
     render(){
         let formData = <div>
@@ -532,7 +536,7 @@ route =() =>{
                     </FormGroup>
                     <FormGroup>
                         <Label>Date of Birth</Label>
-                        <Input type="date" name="dob" onChange={this.onChange} />
+                        <Input type="date" max={this.maxDate()} name="dob" onChange={this.onChange} />
                         {!this.state.dob ? <span className="error">{this.state.errors.dob}</span> : ''}
                     </FormGroup>
                     <Button color="success" className="mr-2">Add Member</Button>
