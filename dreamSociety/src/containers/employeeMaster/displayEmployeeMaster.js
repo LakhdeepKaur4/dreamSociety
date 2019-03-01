@@ -347,7 +347,10 @@ class DisplayEmployeeMaster extends Component {
                 .then(() => this.setState({ loading: false }))
         }
     }
+    addEmployee =()=>{
 
+        this.props.history.push('/superDashboard/employee')
+    }
 
     render() {
         let tableData;
