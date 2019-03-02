@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat} from '../../actionCreators/flatDetailMasterAction';
+import {getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat,updateFlatDetails} from '../../actionCreators/flatDetailMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Table,Input, Label } from 'reactstrap';
@@ -13,7 +13,6 @@ import Spinner from '../../components/spinner/spinner';
 class flatDetails extends Component{
         
     state={
-        editFlatData:{
             flatDetailId:'',
             flatNo:'',
             flatId:'',
@@ -21,13 +20,13 @@ class flatDetails extends Component{
             floor:'',
             towerId:'',
             towerName:'',
-            isActive: false
-    },
-    ids:[],
-    editFlatModal: false,
-    isDisabled:true,
-    search:'',
-    loading:true,
+            isActive: false,
+            ids:[],
+            editFlatModal: false,
+            isDisabled:true,
+            search:'',
+            errors:{},
+            loading:true,
 }
 
 
@@ -41,6 +40,18 @@ componentWillMount(){
     
 }
 
+   
+onHandleChange=(event)=>{
+    if (!!this.state.errors[event.target.name]) {
+        let errors = Object.assign({}, this.state.errors);
+        delete errors[event.target.name];
+        this.setState({ [event.target.name]: event.target.value, errors });
+    }
+    else {
+        this.setState({ [event.target.name]: event.target.value });
+    }
+}
+
 refreshData(){
      this.props.getFlatDetails().then(()=> this.setState({loading:false}));
      this.props.getFlatType().then(()=> this.setState({loading:false}));
@@ -48,10 +59,9 @@ refreshData(){
 }
 
   
-edit(flatNo,flatType,floor,towerName, flatId,flatDetailId){console.log("ttttttttt",flatType)
+edit(flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName){
     this.setState({
-        editFlatData:{
-            flatNo,flatType,floor,towerName,flatId,flatDetailId},editFlatModal: !this.state.editFlatModal
+        flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName,editFlatModal: !this.state.editFlatModal
     })
 
 }
@@ -74,26 +84,34 @@ searchOnChange = (e) => {
     this.setState({search:e.target.value})
 }
 
-
 updateDetails(){
-    let { flatNo,flatId,flatType,floor,towerId,towerName} = this.state.editFlatData;
-    axios.put(`${URN}/flatDetail/` + this.state.editFlatData.flatDetailId, {
-        flatNo,flatId,flatType,floor,towerId,towerName
-    },{headers:authHeader()}).then((response) => {
-      this.refreshData();
-      this.setState({
-        editFlatModal: false,loading:true, editFlatData: {flatDetailId:'', flatNo:'',flatId:'',flatType:'',floor:'',towerId:'',towerName:''}
-      })
-    });
-}  
+    const {flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName } = this.state;
+    let errors={};
+    if(this.state.flatNo===''){
+        errors.flatNo="Flat No can't be empty";
+    }
+        else if(this.state.floor===''){
+            errors.floor="Floor can't be empty";
+        }
+            this.setState({errors});
+            const isValid =Object.keys(errors).length===0;
+            if(isValid){
+            this.props.updateFlatDetails(flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName)
+            .then(() => this.refreshData())
+            this.setState({loading:true,
+                flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName,
+                editFlatModal: !this.state.editFlatModal
+    })
+}
+}
 
 delete(flatDetailId){
     this.setState({loading:true})
-    let{isActive}=this.state.editFlatData;
+    let{isActive}=this.state;
     axios.put(`${URN}/flatDetail/delete/` +flatDetailId,{isActive},{headers:authHeader()}).then((response)=>{
         this.refreshData();
         this.setState({
-            editFlatData:{isActive:false}
+            isActive:false
         })
     })
 }
@@ -180,7 +198,7 @@ renderList =({details})=>{
                             <td>{item.tower_master.towerName}</td>
                             
                                 <td>
-                                   <Button color="success"   className="mr-2" onClick={this.edit.bind(this,item.flatNo, item.flat_master.flatType,item.floor,item.tower_master.towerName,item.flat_master.flatId, item.flatDetailId)} >Edit</Button>
+                                   <Button color="success"   className="mr-2" onClick={this.edit.bind(this,item.flatDetailId,item.flatNo,item.flat_master.flatId,item.flat_master.flatType,item.floor,item.tower_master.towerId,item.tower_master.towerName)} >Edit</Button>
                               
                                    <Button color="danger" onClick={this.delete.bind(this, item.flatDetailId)}>Delete</Button>
                                  </td>  
@@ -241,16 +259,18 @@ logout=()=>{
     localStorage.removeItem('user-type');
     return this.props.history.replace('/') 
 }
+
 close=()=>{
     return this.props.history.replace('/superDashBoard')
 }
+
 render(){
     let tableData;
     tableData=
     <Table className="table table-bordered">
-    <thead>
-    <tr>
-    <th>Select All<input className="ml-2"
+        <thead>
+        <tr>
+        <th>Select All<input className="ml-2"
                     id="allSelect"
                     type="checkbox" onChange={(e) => {
                             if(e.target.checked) {
@@ -267,13 +287,13 @@ render(){
         <th>Floor</th>
         <th>Tower Name</th>
         <th>Actions</th>
-    </tr>
-    </thead>
+        </tr>
+        </thead>
     
-    <tbody>
-    {this.renderList(this.props.flatDetailMasterReducer)}
-    </tbody>
-</Table>    
+        <tbody>
+        {this.renderList(this.props.flatDetailMasterReducer)}
+        </tbody>
+    </Table>    
              let deleteSelectedButton = <Button color="danger" className="mb-2"
              onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
 
@@ -290,69 +310,58 @@ render(){
                      <ModalBody>
                         <FormGroup>
                             <Label for="flatNo">Flat No</Label>
-                            <Input id="flatNo" value={this.state.editFlatData.flatNo} maxLength={20} onKeyPress={this.OnKeyPresshandlerPhone} onChange={(e) => {
-                            let { editFlatData } = this.state;
-
-                            editFlatData.flatNo = e.target.value;
-
-                             this.setState({ editFlatData });
-                             }} />
+                            <Input name="flatNo" value={this.state.flatNo} maxLength={6} onKeyPress={this.OnKeyPresshandlerPhone}  onChange={this.onHandleChange}/>
+                            <span className="error">{this.state.errors.flatNo}</span>
                         </FormGroup>
 
                         <FormGroup>
                             <Label for="flatType">Flat Type</Label>
-                            <Input type="select" value={this.state.editFlatData.flatId} onChange={(e)=>{
-                               let {editFlatData}=this.state;
+                            <Input type="select" name="flatId" value={this.state.flatId} onChange={(e)=>{
+                               let {flatId}=this.state;
 
-                               editFlatData.flatId=e.target.value;
+                               flatId=e.target.value;
 
-                               this.setState({editFlatData});
+                               this.setState({flatId});
                             }}>
-                                <option>{this.state.editFlatData.flatType}</option>
+                                <option>{this.state.flatType}</option>
                                 <option disabled>--SELECT--</option>
                                 {this.getDropDown1(this.props.flatDetailMasterReducer)}
                             </Input>                  
                         </FormGroup>
+
                         <FormGroup>
                             <Label for="floor">Floor</Label>
-                            <Input id="floor" value={this.state.editFlatData.floor} maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={(e) => {
-                                 let { editFlatData } = this.state;
-
-                                    editFlatData.floor = e.target.value;
-
-                                    this.setState({ editFlatData });
-                                 }} />
+                            <Input name="floor" value={this.state.floor} maxLength={10} onKeyPress={this.OnKeyPressUserhandler}  onChange={this.onHandleChange}/>
+                            <span className="error">{this.state.errors.floor}</span>
                         </FormGroup>
+
                         <FormGroup>
                             <Label>Tower Name</Label>
-                            <Input type="select" value={this.state.editFlatData.towerId} onChange={(e)=>{
-                                let{editFlatData}=this.state;
+                            <Input type="select" name="towerId" value={this.state.towerId} onChange={(e)=>{
+                                let{towerId}=this.state;
 
-                                editFlatData.towerId=e.target.value;
+                                towerId=e.target.value;
 
-                                this.setState({editFlatData});
+                                this.setState({towerId});
                             }}>
-                            <option>{this.state.editFlatData.towerName}</option>
+                            <option>{this.state.towerName}</option>
                             <option disabled>--SELECT--</option>
                             {this.getDropDown2(this.props.flatDetailMasterReducer)}
                            </Input>
                         </FormGroup>
-
                     
                          <Button color="primary" className="mr-2" onClick={this.updateDetails.bind(this)}>Save </Button>
-                         <Button color="danger" onClick={this.toggleEditFlatModal.bind(this)}>Cancel</Button>
-                  
+                         <Button color="danger" onClick={this.toggleEditFlatModal.bind(this)}>Cancel</Button>                 
                     
                     </ModalBody>
              </Modal>
-                <div className="top-details"  style={{ fontWeight: 'bold' }}><h3>Flat Details</h3>
-             
-                 <Button color="primary" type="button" onClick={this.push}> Add Flat</Button>
-                </div>
-                    <SearchFilter  type="text" value={this.state.search}
-                                            onChange={this.searchOnChange} />
-                                            {deleteSelectedButton}
-                                                 {!this.state.loading ? tableData : <Spinner />}
+                        <div className="top-details"  style={{ fontWeight: 'bold' }}><h3>Flat Details</h3>                  
+                        <Button color="primary" type="button" onClick={this.push}> Add Flat</Button>
+                        </div>
+                            <SearchFilter  type="text" value={this.state.search}  onChange={this.searchOnChange} />
+                            {deleteSelectedButton}
+                            {!this.state.loading ? tableData : <Spinner />}                    
+                                                    
           
         </div>
         </UI>
@@ -369,7 +378,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat},dispatch)
+    return bindActionCreators({getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat,updateFlatDetails},dispatch)
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(flatDetails);

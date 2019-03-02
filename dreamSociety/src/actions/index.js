@@ -1,3 +1,5 @@
+// export  const URN = 'http://192.168.1.4:8081/api';
+// export const URN='http://192.168.1.103:5000/api';
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export const PicURN= 'https://dreamsociety.herokuapp.com/'; 
 export const DocURN= 'https://dreamsociety.herokuapp.com/'; 
@@ -166,3 +168,4 @@ export const DELETE_MULTIPLE_EMPLOYEE_TYPE='DELETE_MULTIPLE_EMPLOYEE_TYPE';
 export const GET_OWNER_DETAIL_VIA_FLATID='GET_OWNER_DETAIL_VIA_FLATID';
 export const GET_OWNER_DETAIL=`GET_OWNER_DETAIL`;
 export const ADD_TENANT_DETAIL='ADD_TENANT_DETAIL';
+export const ADD_FLAT_OWNER='add_flat_owner';

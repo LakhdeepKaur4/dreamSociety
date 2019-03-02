@@ -32,7 +32,7 @@ class DisplayEmployeeTypeMaster extends Component {
 
     }
 
-
+  
     refreshData() {
         this.props.getEmployee().then(() => this.setState({ loading: false }));
         this.props.getEmployeeType().then(() => this.setState({ loading: false }));
@@ -44,7 +44,13 @@ class DisplayEmployeeTypeMaster extends Component {
             editEmployeeModal: !this.state.editEmployeeModal
         })
     }
-
+    OnKeyPresshandler(event) {
+        const pattern = /[a-zA-Z _]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
     editEmployee(employeeDetailId, employeeTypeId, employeeWorkTypeId, serviceType) {
         console.log('i m in edit ', employeeTypeId, employeeWorkTypeId, serviceType);
         this.setState({

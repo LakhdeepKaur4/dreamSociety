@@ -4,9 +4,9 @@ import {URN,ADD_EMPLOYEE,GET_EMPLOYEE_TYPE,GET_EMPLOYEE,GET_EMPLOYEE_WORK_TYPE,U
 
 
 
-export function  AddEmployee(values){
+export function  AddEmployee(serviceType,employeeTypeId,employeeWorkTypeId){
     console.log("hede");
-    const request =axios.post(`${URN}/employeeDetail`,values,{headers:authHeader()})
+    const request =axios.post(`${URN}/employeeDetail`,{serviceType,employeeTypeId,employeeWorkTypeId},{headers:authHeader()})
     .then()
     console.log(request,"drfde")
 return{

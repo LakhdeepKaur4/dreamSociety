@@ -9,6 +9,7 @@ import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
 import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
+import {addFlatOwner} from '../../actionCreators/flatOwnerAction';
 
 class FlatOwnerDetails extends Component {
     constructor(props) {
@@ -121,7 +122,7 @@ class FlatOwnerDetails extends Component {
         })
         console.log(this.state.flatNO)
     }
-    relationHandler = (name, selectOption) => {
+    relationHandler = (name,selectOption) => {
         this.setState(function (prevState, props) {
             return {
                 [name]: selectOption.value
@@ -219,6 +220,11 @@ class FlatOwnerDetails extends Component {
     }
     userMemberHandler = (e) => {
         if (e.target.value != '') {
+            for(let i = 0; i < this.state.familyMember; i++){
+              this.setState({
+                memberName:this.event.target.value
+              })
+            }
             this.setState({
                 familyMember: e.target.value
             });
@@ -233,8 +239,7 @@ class FlatOwnerDetails extends Component {
     }
     onSubmit=(e)=>{
         e.preventDefault();
-        // console.log('yyyyyyyyyyyyyyyyy',this.state)
-        const {           
+        const {          
             number,
             ownerName,
             DOB,
@@ -251,14 +256,14 @@ class FlatOwnerDetails extends Component {
             memberDOB,
             relationName,
             profilePic,
+            societyName,
             permanentAddress} = this.state
-            console.log('yyyyyyyyyyyyyyyyy',this.state)
             const data = new FormData()
             data.append('ownerName',ownerName)
             data.append('dob',DOB)
             data.append('contact',number)
             data.append('email',email)
-            data.append('societyId',ownerName)
+            data.append('societyId',societyName)
             data.append('permanentAddress',permanentAddress)
             data.append('towerId',tower)
             data.append('flatDetailId',flatNO)
@@ -268,11 +273,17 @@ class FlatOwnerDetails extends Component {
             data.append('panCardNumber', panNumber)
             data.append('IFSCCode', ifscCode)
             data.append('noOfMembers', familyMember)
-            data.append('memberName', memberName)
-            data.append('memberDob', memberDOB)
-            data.append('relationId', relationName)
+            for(let i = 0; i < this.state.familyMember; i++){
+                data.append(`memberName${i}`, this.state['memberName'+i])
+                console.log(this.state['memberName'+i]);
+                data.append(`memberDob${i}`, this.state['memberDOB'+i])
+                console.log(`memberDOB`,this.state['memberDOB'+i]);
+                data.append(`relationId${i}`, this.state['relationName'+i])
+                console.log(`relationName`, this.state['relationName'+i]);
+            }
             data.append('profilePicture', profilePic.name)
-            // console.log('ooooooooooooooooooooooooo',data);
+            console.log('jkldsjfkdfjjjjjjjjjjjjjjjjj',this.state);
+         this.props.addFlatOwner(data);                                                     
         }
     FileChange=(event)=>{
         this.setState({ profilePic: event.target.files[0]})
@@ -291,13 +302,13 @@ class FlatOwnerDetails extends Component {
                     <Col md={4}>
                         <Label>Relation With Owner</Label>
                         <Select options={this.getRelationList(this.props.relationList)}
-                            onChange={this.relationHandler.bind(this,"relationName" )}
+                            onChange={this.relationHandler.bind(this,'relationName'+i )}
                             placeholder={PlaceHolder}
-                            name={`relationId${i}`} />
+                            name={`relationName${i}`}/>
                     </Col>
                     <Col md={4}>
                                 <Label>Date Of Birth</Label>
-                                <Input  type='date' max={this.maxDate()} name={`memberDob${i}`} onChange={this.onChangeHandler} />
+                                <Input  type='date' max={this.maxDate()} name={`memberDOB${i}`} onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.DOB}</span>
                                 </Col>
                 </Row>
@@ -358,7 +369,7 @@ class FlatOwnerDetails extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <Label>Permanent Address</Label>
-                                <Input type="text" placeholder="Permanent Address" name="permanentAddress" onChange={this.onChangeHandler} />
+                                <Input type="text" style={{ 'textTransform': 'capitalize' }} placeholder="Permanent Address" name="permanentAddress" onChange={this.onChangeHandler} />
                             </FormGroup >
                             <FormGroup>
                                 <Label>Tower</Label>
@@ -439,7 +450,7 @@ function mapStateToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ detailSociety, viewTower, getRelation,getFlatDetails }, dispatch)
+    return bindActionCreators({ detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerDetails);
 
