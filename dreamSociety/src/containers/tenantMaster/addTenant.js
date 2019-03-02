@@ -7,7 +7,7 @@ import Select from 'react-select';
 import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
-import { getTenantDetail } from '../../actionCreators/tenantMasterAction';
+import { getOwnerDetailViaFlatId } from '../../actionCreators/tenantMasterAction';
 
 class AddTenant extends Component{
     constructor(props) {
@@ -16,6 +16,21 @@ class AddTenant extends Component{
             currentTab: 0,
             tab: "none",
             step: 1,
+            tenantName:'',
+            tenantId:'',
+            dob:'',
+            email:'',
+            contact:'',
+            picture:'',
+            permanentAddress:'',
+            correspondingAddress:'',
+            bankName:'',
+            accountHolderName:'',
+            accountNumber:'',
+            panCardNumber:'',
+            IFSCCode:'',
+            noOfMembers:'',
+            ownerId:'',
             countryName : '',
             countryId: '',
             stateName : '',
@@ -33,7 +48,6 @@ class AddTenant extends Component{
         this.props.detailSociety();
         this.props.viewTower();
         this.props.getRelation();
-        this.props.getTenantDetail();
     }
 
     logout = () => {
@@ -57,24 +71,30 @@ class AddTenant extends Component{
         }
     }
 
-    userMemberHandler = (e) => {
-        if (e.target.value != '') {
-            this.setState({
-                familyMember: e.target.value
-            });
-        }
-    }
-
     onChange = (e) => {
         this.setState({[e.target.name]:e.target.value});
         console.log(this.state);
     }
 
-    getSociety = ({ detail_Society }) => {
-        if (detail_Society) {
-            return detail_Society.map((item) => {
+    getTower = ({ tower }) => {
+        if (tower) {
+            return tower.map((item) => {
                 return (
-                    { ...item, label: item.societyName, value: item.societyId }
+                    { ...item, label: item.towerName, value: item.towerId }
+                )
+            }
+            );
+        }
+        return [];
+    }
+
+    getSociety = ({detail_Society}) => {
+        console.log(detail_Society)
+        if (detail_Society) {
+            console.log(detail_Society)
+            return detail_Society.map((item1) => {
+                return (
+                    { ...item1, label: item1.societyName, value: item1.societyId }
                 )
             }
             );
@@ -112,6 +132,23 @@ class AddTenant extends Component{
         });
     }
 
+    fetchFlatDetailId = ({getOwnerDetail}) => {
+        console.log(getOwnerDetail)
+        let flatDetailId = getOwnerDetail.owner.map((item) => item.flatDetailId)
+        console.log(flatDetailId)
+    }
+
+    towerChangeHandler = (selectTower) => {
+        this.props.getOwnerDetailViaFlatId(selectTower.towerId)
+        .then(() => this.fetchFlatDetailId(this.props.tenantReducer))
+        
+        console.log(this.state);
+        console.log(selectTower)
+        if(selectTower){
+
+        }
+    }
+
     getRelationList = ({ relationResult }) => {
         if (relationResult) {
             return relationResult.relation.map((item) => {
@@ -130,10 +167,18 @@ class AddTenant extends Component{
         return d.toISOString().split('T')[0];
     }
 
+    userMemberHandler = (e) => {
+        if (e.target.value != '') {
+            this.setState({
+                noOfMembers: e.target.value
+            });
+        }
+    }
+
     render(){
         
         let userDatas = [];
-        for (let i = 0; i < this.state.familyMember; i++) {
+        for (let i = 0; i < this.state.noOfMembers; i++) {
             userDatas.push(<FormGroup key={i}>
                 <Row form>
                     <Col md={4}>
@@ -161,25 +206,27 @@ class AddTenant extends Component{
                         <h3>Tenant Details</h3>
                         <FormGroup>
                             <Label>Tenant Name</Label>
-                            <Input type="text" placeholder="Name" maxLength={50} name='tenantName' />
+                            <Input type="text" placeholder="Name" onChange={this.onChange} 
+                            maxLength={50} name='tenantName' />
                         </FormGroup>
                         <FormGroup>
                             <Label>Date of Birth</Label>
-                            <Input type="date" max={this.maxDate()} name="dob" />
+                            <Input type="date" onChange={this.onChange} name="dob"
+                             max={this.maxDate()} name="dob" />
                         </FormGroup>
                         <FormGroup>
                             <Label>Contact Number</Label>
-                            <Input onKeyPress={this.numberValidation} placeholder="Contact Number" type="text" />
+                            <Input onKeyPress={this.numberValidation} onChange={this.onChange}
+                             name="contact" placeholder="Contact Number" type="text" />
                         </FormGroup>
                         <FormGroup>
                             <Label>Email</Label>
-                            <Input placeholder="Email" type="email" />
+                            <Input placeholder="Email" onChange={this.onChange} name="email" type="email" />
                         </FormGroup>
                         <FormGroup>
                             <Label>Society Name</Label>
-                            <Select placeholder="Society Name" 
-                             options={this.getSociety(this.props.societyName)}
-                                name="societyName" 
+                            <Select placeholder="Society Name"
+                             options={this.getSociety(this.props.societyReducer)}
                                 onChange={this.societyChangeHandler.bind(this)}
                                      />
                         </FormGroup>
@@ -204,39 +251,43 @@ class AddTenant extends Component{
                             value={this.state.locationName} name="locationName" />
                         </FormGroup>
                         <FormGroup>
+                            <Label>Corresponding Address</Label>
+                            <Input type="textarea" onChange={this.onChange}
+                             name="correspondingAddress" placeholder="Corresponding Address" />
+                        </FormGroup >
+                        <FormGroup>
                             <Label>Permanent Address</Label>
-                            <Input type="textarea" placeholder="Permanent Address" />
+                            <Input type="textarea" onChange={this.onChange}
+                             name="permanentAddress" placeholder="Permanent Address" />
                         </FormGroup>
-                        <FormGroup>
-                            <Label>Correspondance Address</Label>
-                            <Input type="textarea" placeholder="Permanent Address" />
-                        </FormGroup >
-                        <FormGroup>
-                            <Label>Tower</Label>
-                            <Select placeholder="Tower" />
-                        </FormGroup >
                     </div>
                     <div style={{ 'display': this.state.step == 2 ? 'block' : 'none' }}>
                         <h3>Bank Details</h3>
                         <FormGroup>
                                 <Label>Bank Name</Label>
-                                <Input placeholder="Bank Name" type="text" name="bankName" />
+                                <Input placeholder="Bank Name" onChange={this.onChange}
+                                 type="text" name="bankName" />
                         </FormGroup>
                         <FormGroup>
                             <Label>Account Holder Name</Label>
-                            <Input placeholder="Holder Name" type="text" name='holderName' />
+                            <Input placeholder="Holder Name" onChange={this.onChange}
+                             type="text" name='accountHolderName' />
                         </FormGroup>
                         <FormGroup >
                             <Label>Account Number</Label>
-                            <Input onKeyPress={this.numberValidation} placeholder="Account Number" type="text" className="quantity" name='accountNumber' />
+                            <Input onKeyPress={this.numberValidation} onChange={this.onChange}
+                             placeholder="Account Number"
+                             type="text" className="quantity" name='accountNumber' />
                         </FormGroup>
                         <FormGroup>
                             <Label>PAN Card Number</Label>
-                            <Input placeholder="Pan Number" type='text' name="panNumber" />
+                            <Input placeholder="Pan Number" onChange={this.onChange}
+                             type='text' name="panNumber" />
                         </FormGroup>
                         <FormGroup>
                             <Label>IFSC Code</Label>
-                            <Input placeholder="IFSC code" type='text' name="ifscCode" />
+                            <Input placeholder="IFSC code" onChange={this.onChange}
+                             type='text' name="IFSCSCode" />
                         </FormGroup>
                     </div>
                     <div style={{ 'display': this.state.step == 3 ? 'block' : 'none' }}>
@@ -245,27 +296,37 @@ class AddTenant extends Component{
                             <Label>Number of Member</Label>
                             <Input onKeyPress={this.numberValidation} placeholder="number of member"
                              onChange={this.userMemberHandler} type='text' 
-                             className="quantity" name="familyMember" />
+                             className="quantity" name="noOfMembers" />
                         </FormGroup>
                         {userDatas}
                     </div>
                     <div style={{ 'display': this.state.step == 4 ? 'block' : 'none' }}>
                         <h3>Flat Owner Details</h3>
                         <FormGroup>
-                            <Label>Owner Name</Label>
-                            <Input placeholder="Owner Name" type='select' name="familyMember" />
-                        </FormGroup>
+                            <Label>Tower</Label>
+                            <Select onChange={this.towerChangeHandler} placeholder="Tower" name="towerId"
+                            options={this.getTower(this.props.towerList)} />
+                        </FormGroup >
                         <FormGroup>
                             <Label>Flat No.</Label>
-                            <Input  onKeyPress={this.numberValidation} placeholder="Flat No." 
-                            type='select' name="familyMember" />
+                            <Input  onKeyPress={this.numberValidation} onChange={this.onChange}
+                             placeholder="Flat No." 
+                            type='select' name="flatName" >
+                            </Input>
                         </FormGroup>
+                        <FormGroup>
+                            <Label>Owner Name</Label>
+                            <Input placeholder="Owner Name" onChange={this.onChange}
+                             type='textarea' name="ownerName" />
+                        </FormGroup>
+                        
                     </div>
                     <div style={{ 'display': this.state.step == 5 ? 'block' : 'none' }}>
                         <h3>Upload Your Image</h3>
                         <FormGroup>
                             <Label>Image</Label>
-                            <Input placeholder="Owner Name" type='file' name="Image" />
+                            <Input placeholder="Owner Name" onChange={this.onChange}
+                             type='file' name="picture" />
                         </FormGroup>
                     </div>
                     <div>
@@ -283,7 +344,7 @@ class AddTenant extends Component{
 const mapStateToProps = (state) => {
     console.log(state);
     return {
-        societyName: state.societyReducer,
+        societyReducer: state.societyReducer,
         towerList: state.TowerDetails,
         relationList: state.RelationMasterReducer,
         flatList:state.flatDetailMasterReducer,
@@ -291,4 +352,5 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {detailSociety, viewTower, getRelation, getTenantDetail})(AddTenant);
+export default connect(mapStateToProps, {detailSociety, viewTower, getRelation,
+    getOwnerDetailViaFlatId})(AddTenant);
