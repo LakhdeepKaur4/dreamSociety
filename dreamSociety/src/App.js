@@ -65,7 +65,8 @@ import RelationshipMaster from './containers/relationshipMaster/relationshipMast
 import RelationshipMasterDetail from './containers/relationshipMaster/relationshipMasterDetail';
 import SocietyMemberRegistrationForm from './containers/societyMemberRegistration/societyMemberRegistrationForm';
 import SocietyMemberDetails from './containers/societyMemberRegistration/societyMemberDetails';
-
+import EventSpaceMaster from './containers/eventSpaceMaster/eventSpaceMaster';
+import EventSpaceMasterDetails from './containers/eventSpaceMaster/eventSpaceMasterDetails';
 
 class App extends Component {
   render() {
@@ -133,7 +134,9 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/relationshipMasterDetail' component={RelationshipMasterDetail} />
             <PrivateRoute path='/superDashboard/societyMemberRegistartionForm' component={SocietyMemberRegistrationForm} />
             <PrivateRoute path='/superDashboard/societyMemberDetails' component={SocietyMemberDetails} />
-          </Switch>
+            <PrivateRoute path='/superDashboard/eventSpaceMaster' exact component={EventSpaceMaster} />
+            <PrivateRoute path='/superDashboard/eventSpaceMaster/eventSpaceMasterDetails' component={EventSpaceMasterDetails} />} />
+                     </Switch>
         </div>
         
       </BrowserRouter>

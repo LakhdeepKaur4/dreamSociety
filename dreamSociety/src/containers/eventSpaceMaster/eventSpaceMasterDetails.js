@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { getDetails, AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount,deleteSelectedFlatMasterDetail } from '../../actionCreators/flatMasterAction';
-// import {getEventDetails} from '../../actionCreators/eventSpaceMasterAction';
+import {  AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount,deleteSelectedFlatMasterDetail } from '../../actionCreators/flatMasterAction';
+import {getEventDetails,deleteSelectedEventSpaceMasterDetail} from '../../actionCreators/eventSpaceMasterAction';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
@@ -13,20 +13,20 @@ import UI from '../../components/newUI/superAdminDashboard';
 import { URN } from '../../actions/index'
 import Pagination from "react-js-pagination";
 
-class flatMasterDetails extends Component {
+class eventSpaceMasterDetails extends Component {
    constructor(props){
        super(props);
          this.state = {
             ids:[],
-        flatId: '',
-        societyId: '',
-        societyName: '',
-        flatType: '',
-        flatSuperArea: '',
-        sizeId: '',
-        sizeType: '',
-        sizeType1: '',
-        coverArea: '',
+            eventSpaceId:'',
+            spaceName: '',
+            capacity: '',
+            spaceType:'',
+            sizeId: '',
+            // open:'',
+            // close:'',
+            area:'',
+            description:'',   
         isDisabled: true,
         loading:true,
         isActive: false,
@@ -34,10 +34,10 @@ class flatMasterDetails extends Component {
         menuVisible: false,
         search: '',
         errors:{},
-        activePage: '1',
-        limit:'5',
-        // itemsCountPerPage :1,
-        totalItemsCount:'15'
+        // activePage: '1',
+        // limit:'5',
+        // // itemsCountPerPage :1,
+        // totalItemsCount:'15'
         }
 
    } 
@@ -51,10 +51,9 @@ class flatMasterDetails extends Component {
 
 
     refreshData() {
-        const defaultPage=this.state.activePage;
-        this.props.getDetails(defaultPage).then(() => this.setState({loading:false}));
-        this.props.getDrop().then(() => this.setState({loading:false}));
-       
+        // const defaultPage=this.state.activePage;
+        this.props.getEventDetails().then(() => this.setState({loading:false}));
+      
         this.props.getSizeDrop().then(() => this.setState({loading:false}));
 
     }
@@ -64,43 +63,38 @@ class flatMasterDetails extends Component {
             editUserModal: !this.state.editUserModal
         });
     }
+    onChangeSizeType=(e)=>{
+        e.preventDefault();
+        this.setState({[e.target.name]:e.target.value})
+    }
 
-    sizeChange=(e)=>{
-        this.setState({[e.target.name]:e.target.value})
-    }
-    societyChange=(e)=>{
-        this.setState({[e.target.name]:e.target.value})
-    }
     updateBook = (e) => {
         e.preventDefault();
-       
-        let { flatId, societyId,societyName, flatType, flatSuperArea,sizeId, coverArea } = this.state
-       
-        console.log(flatId, societyId,societyName, flatType, flatSuperArea,sizeId, coverArea);
-        let errors = {};
-       
-        if (flatType === '') errors.flatType = "Cant be empty";
-        else if (flatType.length < 3) errors.flatType = "Characters should be less than four"
-        if (flatSuperArea === '') errors.flatSuperArea = "Cant be empty";
+        let { eventSpaceId, spaceName, capacity, spaceType, sizeId, area, description} = this.state
+        // console.log("gdchgdsvchgsvdccdsc",eventSpaceId,spaceName, capacity, spaceType, sizeId, area, description);
 
+        let errors = {};
         
-        if (coverArea === '') errors.coverArea = "Cant be empty";
-        else if (parseInt(coverArea) >= parseInt(flatSuperArea)) errors.coverArea=
-         "CoverArea cannot be greater then flatSuperArea";
+        if (spaceName === '') errors.spaceName = "Cant be empty";
+       
+        if (capacity === '') errors.capacity = "Cant be empty";
+
+        if (area === '') errors.area = "Cant be empty";
+        
+        if (description === '') errors.description = "Cant be empty";
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
         
-        axios.put(`${URN}/flat/` + flatId, {societyName,societyId,
-             flatType, flatSuperArea,sizeId,
-             coverArea   
+        axios.put(`${URN}/eventSpaceMaster/` +  eventSpaceId, {
+           spaceName, capacity, spaceType, sizeId, area, description
         }, { headers: authHeader() }).then((response) => {
             this.refreshData();
         })
         this.setState({
-            editUserModal: false,loading:true, flatId: '',societyId:'',societyName:'',
-            flatType: '', flatSuperArea: '',sizeId:'', CoverArea: ''
+            editUserModal: false,loading:true,  eventSpaceId:'', spaceName:'', capacity:'',  sizeId:'', area:'', 
+            description:''
         })
     }
         
@@ -122,13 +116,14 @@ class flatMasterDetails extends Component {
 
     searchFilter(search) {
         return function (x) {
-            const flatSuperArea = x.flatSuperArea.toString();
-            const coverArea = x.coverArea.toString()
-            return x.society_master.societyName.toLowerCase().includes(search.toLowerCase()) ||
-                x.flatType.toLowerCase().includes(search.toLowerCase()) ||
-                flatSuperArea.toLowerCase().includes(search.toLowerCase()) ||
+            const capacity = x.capacity.toString();
+            const area = x.area.toString()
+            return x.spaceName.toLowerCase().includes(search.toLowerCase()) ||
+                capacity.toLowerCase().includes(search.toLowerCase()) ||
+                x.spaceType.toLowerCase().includes(search.toLowerCase()) ||
                 x.size_master.sizeType.toLowerCase().includes(search.toLowerCase()) ||
-                coverArea.toLowerCase().includes(search.toLowerCase()) ||
+                area.toLowerCase().includes(search.toLowerCase()) ||
+                x.description.toLowerCase().includes(search.toLowerCase()) ||
                 !search;
             
         }
@@ -139,40 +134,42 @@ class flatMasterDetails extends Component {
     }
 
 
-    editBook(flatId, societyId,societyName, flatType, flatSuperArea, sizeId,sizeType, coverArea) {
+    editBook( eventSpaceId, spaceName,capacity, spaceType,sizeId,sizeType,area,description) {
         this.setState({
-            flatId, societyId,societyName, flatType, flatSuperArea, sizeId,sizeType, coverArea , editUserModal: !this.state.editUserModal
+            eventSpaceId, spaceName,capacity ,spaceType, sizeId, sizeType ,area, description, editUserModal: !this.state.editUserModal
         })
     }
 
-    deleteUser(flatId) {
+    deleteUser(eventSpaceId) {
         let { isActive } = this.state
-        axios.put(`${URN}/flat/delete/` + flatId, { isActive }, { headers: authHeader() }).then((response) => {
+        axios.put(`${URN}/eventSpaceMaster/delete/` + eventSpaceId, { isActive }, { headers: authHeader() }).then((response) => {
             this.refreshData()
             this.setState({ isActive: false ,loading:true })
 
         })
     }
 
-    fetchUsers({ list1 }) {
+    fetchUsers({ space }) {
+        console.log(space);
         
-        if (list1) {
-            console.log(list1);
-            return list1.flat.filter(this.searchFilter(this.state.search)).map((item,index) => {
-                let societyName = item.society_master.societyName;
-                let sizeType= item.size_master.sizeType;
+        if (space) {
+            // console.log(list1);
+            return space.societyMember.filter(this.searchFilter(this.state.search)).map((item,index) => {
+                console.log(item);
+              
+                let sizeType= item.size_master.sizeType
         
                      
-                return (
+                return ( 
                     
                     
-                    <tr key={item.flatId}>
-                      <td><input type="checkbox" name="ids" className="SelectAll"  value={item.flatId}
+                    <tr key={item.eventSpaceId}>
+                      <td><input type="checkbox" name="ids" className="SelectAll"  value={item.eventSpaceId}
                          onChange={(e) => {
-                            let {flatId} = item
+                            let {eventSpaceId} = item
                             if(!e.target.checked){
                                 document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(flatId);
+                                let indexOfId = this.state.ids.indexOf(eventSpaceId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1)
                                 }
@@ -181,7 +178,7 @@ class flatMasterDetails extends Component {
                                 }
                             }
                             else{
-                                this.setState({ids: [...this.state.ids, flatId]});
+                                this.setState({ids: [...this.state.ids, eventSpaceId]});
                                 if(this.state.ids.length >= 0){
                                     this.setState({isDisabled: false})
                                 }
@@ -189,17 +186,19 @@ class flatMasterDetails extends Component {
                             
                                 
                              }}/></td>
-                        {/* <td>{index + 1}</td> */}
-                        <td>{societyName}</td>
-                        <td>{item.flatType}</td>
-                        <td>{item.flatSuperArea}</td>
+                         
+                        <td>{item.spaceName}</td>
+                        <td>{item.capacity}</td>
+                        <td>{item.spaceType}</td>
                         <td>{sizeType}</td>
-                        <td>{item.coverArea}</td>
+                        <td>{item.area}</td>
+                      
+                        <td>{item.description}</td>
                         <td>
                             <Button color="success" size="sm" className="mr-2"
-                                onClick={this.editBook.bind(this, item.flatId,item.societyId, societyName,
-                                    item.flatType, item.flatSuperArea,item.sizeId, sizeType, item.coverArea)}>Edit</Button>
-                            <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, item.flatId)} >Delete</Button>
+                                onClick={this.editBook.bind(this, item.eventSpaceId,item.spaceName,
+                                    item.capacity,item.spaceType, item.sizeId,sizeType, item.area,item.description)}>Edit</Button>
+                            <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, item.eventSpaceId)} >Delete</Button>
                         </td>
                     </tr>
                 )
@@ -207,25 +206,24 @@ class flatMasterDetails extends Component {
             })
         }
     }
-    fetchDrop({ list2 }) {
-        console.log(list2);
+    // fetchDrop({ list2 }) {
+    //     if (list2) {
 
-        if (list2) {
+    //         return (
+    //             list2.map((item) => {
+    //                 return (
+    //                     <option key={item.societyId} value={item.societyId}>
+    //                         {item.societyName}
+    //                     </option>
+    //                 )
+    //             })
+    //         )
 
-            return (
-                list2.map((item) => {
-                    return (
-                        <option key={item.societyId} value={item.societyId}>
-                            {item.societyName}
-                        </option>
-                    )
-                })
-            )
-
-        }
-    }
+    //     }
+    // }
 
     fetchSizeDrop({ list3 }) {
+        console.log(list3)
         if (list3) {
 
             return (
@@ -242,12 +240,12 @@ class flatMasterDetails extends Component {
     }
     deleteSelectedSubMaintenance(ids){
         this.setState({loading:true, isDisabled: true});
-        this.props.deleteSelectedFlatMasterDetail(ids)
+        this.props.deleteSelectedEventSpaceMasterDetail(ids)
         .then(() => this.refreshData())
         .catch(err => err.response);
     }
     routeToAddNewUser =() => {
-        this.props.history.push('/superDashboard/flatmaster')
+        this.props.history.push('/superDashboard/eventSpaceMaster')
     }
 
     logout=()=>{
@@ -266,32 +264,32 @@ class flatMasterDetails extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
-    handlePageChange=(pageNumber)=> {
-        console.log(`active page is ${pageNumber}`);
-        // this.setState({activePage: pageNumber}) ;
-        this.state.activePage=pageNumber;        
-        const activePage=this.state.activePage;
+    // handlePageChange=(pageNumber)=> {
+    //     console.log(`active page is ${pageNumber}`);
+    //     // this.setState({activePage: pageNumber}) ;
+    //     this.state.activePage=pageNumber;        
+    //     const activePage=this.state.activePage;
         
-            this.props.getPageDetails(activePage);
+    //         this.props.getPageDetails(activePage);
         
         
       
-      }
+    //   }
 
     //   countPerPage=(e)=>{
     //        e.preventDefault();
     //   }
 
-    onChange1=(e)=>{
-        e.preventDefault();
-        console.log('hii');
-        // this.setState({itemsCountPerPage:e.target.value})
-        const activePage=this.state.activePage;
-        this.state.limit=`${e.target.value}`;   
-        console.log(this.state.limit,activePage)
-        // console.log(countPerPage);
-        this.props.noOfCount({limit: parseInt(this.state.limit)},activePage)
-}
+//     onChange1=(e)=>{
+//         e.preventDefault();
+//         console.log('hii');
+//         // this.setState({itemsCountPerPage:e.target.value})
+//         const activePage=this.state.activePage;
+//         this.state.limit=`${e.target.value}`;   
+//         console.log(this.state.limit,activePage)
+//         // console.log(countPerPage);
+//         this.props.noOfCount({limit: parseInt(this.state.limit)},activePage)
+// }
 
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
@@ -345,16 +343,17 @@ class flatMasterDetails extends Component {
                 }  /></th>
                  
                 
-                <th>Society Name</th>
-                <th>Flat Type</th>
-                <th>Flat SuperArea</th>
+                <th>Space Name</th>
+                <th>Capacity </th>
+                <th>Space Type </th>
                 <th>SizeType</th>
-                <th>Cover Area</th>
+                <th> Area</th>
+                <th>Desciption</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            {this.fetchUsers(this.props.flats)}
+            {this.fetchUsers(this.props.eventSpaceMasterReducer)}
         </tbody>
         {/* <Pagination/> */}
        
@@ -375,76 +374,108 @@ class flatMasterDetails extends Component {
                                 <span aria-hidden="true">&times;</span>
                             </div>
                             <div className="top-details">                               
-                             <h3>Flat Master Details</h3>
-                                <Button onClick={this.routeToAddNewUser} color="primary">Add Flats</Button>
+                             <h3>Event Space Master Details</h3>
+                                <Button onClick={this.routeToAddNewUser} color="primary">Add Space</Button>
                                 </div>
 
                             
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
                             <ModalBody>
+                               
                                 <FormGroup>
-                                    <Label for="roles">SocietyName</Label>
-                                    <Input type="select" 
-                                    name="societyId"
-                                            value={this.state.societyId} 
-                                            onChange={this.societyChange} >
-                                            <option>{this.state.societyName}</option>
-                                            <option disabled>Select</option>
-                                            {this.fetchDrop(this.props.flats)}     
-                                        </Input>
-                                        {/* <span  className='error'>{this.state.errors.societyId}</span> */}
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label for="roles">flatType</Label>
+                                    <Label for="roles">Space Name</Label>
                                     <Input
                                         type="textbox"
-                                        placeholder="enter  flat type"
-                                        name="flatType"
-                                        value={this.state.flatType}
+                                        placeholder="enter space name"
+                                        name="spaceName"
+                                        value={this.state.spaceName}
                                         onChange={this.onChange} 
                                         maxLength='4'/>
-                                        <span  className='error'>{this.state.errors.flatType}</span>
+                                        <span  className='error'>{this.state.errors.spaceName}</span>
                                         
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label for="firstName">Flat Super Area</Label>
+                                    <Label for="firstName">Capacity</Label>
                                     <Input
                                         type="textbox"
-                                        placeholder="enter flat super area"
-                                        name="flatSuperArea"
-                                        value={this.state.flatSuperArea}
+                                        placeholder=" enter capacity"
+                                        name="capacity"
+                                        value={this.state.capacity}
                                         onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
                                         maxLength='3' />
-                                        <span  className='error'>{this.state.errors.flatSuperArea}</span>
+                                        <span  className='error'>{this.state.errors.capacity}</span>
                                 </FormGroup>
+                                <FormGroup>
+                    <Label>Space Type</Label><br/>
+                    <div style={{display: 'flex', alignItems: 'baseline'}}>
+                    <label>Open :</label>
+                    <input className="ml-2"
+                        type="radio"
+                        name="spaceType"  
+                       
+                        value={this.state.spaceType}
+                        required
+                    
+                        
+                        onChange={this.onChange} />
+                
+                        <div className="ml-2" style={{alignItems: 'baseline'}}>
+                            <label>Close :</label>
+                            <input
+                            className="ml-2"
+                            type="radio"
+                            name="spaceType"  
+                           
+                            value={this.state.spaceType}
+                        
+                           
+                         
+                            onChange={this.onChange} />
+                        </div>
+                    </div>
+                   
+                </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">sizeType</Label>
                                     <Input type="select" 
                                     value={this.state.sizeId} 
                                     name="sizeId"
-                                    onChange={this.sizeChange}>
+                                    onChange={this.onChangeSizeType}>
                                         <option>{this.state.sizeType}</option>
                                         <option disabled>Select</option>
                                         {this.fetchSizeDrop(this.props.flats)}
                                     </Input>
-                                    {/* <span  className='error'>{this.state.errors.sizeId}</span> */}
+                                    <span  className='error'>{this.state.errors.sizeId}</span>
 
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label for="lastName">Cover Area</Label>
+                                    <Label for="lastName">Area</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter cover area"
-                                        name="coverArea"
-                                        value={this.state.coverArea}
+                                        name="area"
+                                        value={this.state.area}
                                         onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
                                         maxLength='3' />
-                                        <span  className='error'>{this.state.errors.coverArea}</span>
+                                        <span  className='error'>{this.state.errors.area}</span>
 
                                 </FormGroup>
+                                <FormGroup>
+                                     <Label>Description</Label>
+                                     <Input
+                                        type="textarea"
+                                        name="description"
+                                        placeholder="enter description"
+                                        maxLength='500'
+                                        value={this.state.description}
+                                        onChange={this.onChange} />
+                                        
+                                    <span className='error'>{this.state.errors.description}</span>
+                               </FormGroup>
+
                                 <FormGroup>
                                 <Button color="primary mr-2" onClick={this.updateBook}>Save</Button>
                                 <Button color="danger" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
@@ -460,7 +491,7 @@ class flatMasterDetails extends Component {
                                  {deleteSelectedButton}
                             {!this.state.loading ? tableData : <Spinner />}
                            
-                            <Pagination 
+                            {/* <Pagination 
                             // hideDisabled
                             
                              activePage={this.state.activePage}
@@ -469,7 +500,7 @@ class flatMasterDetails extends Component {
                             //  pageRangeDisplayed={5}
                              onChange={this.handlePageChange}
                              itemClass='page-item'
-                             linkClasss='page-link'   />      
+                             linkClasss='page-link'   />       */}
                           
                     </div>
                 
@@ -491,23 +522,23 @@ class flatMasterDetails extends Component {
 function mapStateToProps(state) {
 
     return {
-        flats: state.flats
+        eventSpaceMasterReducer: state.eventSpaceMasterReducer,
+        flats:state.flats
 
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        getDrop,
+        getEventDetails,
         AddDetails,
-        getDetails,
-      
+        getDrop,
         getSizeDrop,
         getPageDetails,
         noOfCount,
-        deleteSelectedFlatMasterDetail
+        deleteSelectedEventSpaceMasterDetail
     }, dispatch)
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(flatMasterDetails)
+export default connect(mapStateToProps, mapDispatchToProps)(eventSpaceMasterDetails)

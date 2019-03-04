@@ -118,13 +118,7 @@ class FlatMaster extends Component {
     render() {
 
          let form;
-         if(!this.state.loading && this.props.countryDetails.country1 && this.state.errors){
-            form = <Form onSubmit={this.submit}>
-              <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
-             <h3 style={{textAlign:'center', marginBottom: '10px'}}>State Master</h3>
-            {(this.onChange && this.onStateChange) ? <span className="error">{this.state.message}</span>: null}
+            form=<div>
             <FormGroup>
                 <Label>CountryName</Label>
                 <Input
@@ -156,22 +150,21 @@ class FlatMaster extends Component {
                 <Button color="success" type="submit" className="mr-2">Submit</Button>
                 <Button color="danger" onClick={this.push}>Cancel</Button>
             </FormGroup>
-        </Form>
-         }
-        
-        else if(this.submit){
-            form = <Spinner />
-        }
-        
+          </div>
 
 
         return (
             <div>
                 
                 <UI onClick={this.logout}>
-                    <div>
-                      { form}   
+                <Form onSubmit={this.submit}>
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                        <span aria-hidden="true">&times;</span>
                     </div>
+
+                    <h3 style={{textAlign:'center', marginBottom: '10px'}}> State Master</h3>
+                    {!this.state.loading ? form : <Spinner /> }
+                </Form>
                     
                 </UI>
                
