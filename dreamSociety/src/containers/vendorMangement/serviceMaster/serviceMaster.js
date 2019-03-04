@@ -42,10 +42,11 @@ class ServiceMaster extends Component {
 
     componentDidMount() {
         this.props.getServiceDetail();
+        this.refreshData() ;
     }
 
     refreshData() {
-        this.props.addServiceType();
+        this.props.getServiceDetail();
     }
 
     getDropdown = ({ detail }) => {
@@ -80,9 +81,10 @@ class ServiceMaster extends Component {
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
         if (isValid) {
-            this.setState({loading: true})
-            this.props.addServiceType( serviceName,serviceDetailId)
-            this.push();
+                    this.setState({loading: true});
+                    this.props.addServiceType( serviceName,serviceDetailId)
+                    this.push();
+                    this.refreshData();
         }
         
     }

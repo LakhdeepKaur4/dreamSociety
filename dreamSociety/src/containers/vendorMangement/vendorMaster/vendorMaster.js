@@ -145,7 +145,8 @@ class vendorMaster extends Component {
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)      
-        this.props.addVendorMaster(formData).then(()=>this.push());
+        this.props.addVendorMaster(formData);
+        this.push();
         this.setState({loading:true});
 
     }

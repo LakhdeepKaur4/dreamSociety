@@ -20,23 +20,24 @@ class locationMaster extends Component{
             cityId: '',
             cityName:'',
             locationName:'',
-            errors:{}
+            errors:{},
+            loading:true
         }
     }
 
     
 
     componentDidMount(){
-        this.props.getCountryName();
-        this.props.getStateName();
-        this.props.getCityName();
-        this.props.getLocationName();
-      
+        this.refreshData();
     }
     
     refreshData(){
         this.props.getLocation();
-        this.props.addLocationDetails();
+        this.props.getCountryName();
+        this.props.getStateName();
+        this.props.getCityName();
+        this.props.getLocationName();
+        
     }
            
 
@@ -107,8 +108,6 @@ class locationMaster extends Component{
     }
 
 
-   
-
     onChangeCity=(event)=>{
         this.onChange(event);
         let selected= event.target.value;     
@@ -141,9 +140,7 @@ class locationMaster extends Component{
         }
     }
 
-    push=()=>{
-        this.props.history.push('/superDashboard/displayLocation')
-    }
+   
 
     onSubmit=(event)=> {
        
@@ -162,17 +159,20 @@ class locationMaster extends Component{
         else if (this.state.locationName===''){
             errors.locationName="Location Name can't be empty"
         }
-        this.setState({ errors });
-
-        
+        this.setState({ errors });       
         const isValid = Object.keys(errors).length === 0;
-
         if(isValid){           
                     this.setState({loading:true});
                     this.props.addLocationDetails(countryId,stateId,cityId,locationName);
-                    this.props.history.push('/superDashboard/displayLocation');
+                    this.push();
+                    this.refreshData();
+        
                     }
         
+    }
+
+    push=()=>{
+        this.props.history.push('/superDashboard/displayLocation')
     }
 
 
@@ -232,7 +232,7 @@ class locationMaster extends Component{
                     </div>
                     <div>
                         <label>Location Name</label>
-                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  onKeyPress={this.OnKeyPressUserhandler} value={this.state.locationName}  onChange={this.onLocationChange} ></input>
+                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  value={this.state.locationName}  onChange={this.onLocationChange} ></input>
                         <span className='error'>{this.state.errors.locationName}</span>
                     </div>
              

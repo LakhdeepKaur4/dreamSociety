@@ -48,7 +48,7 @@ export function addLocationDetails( countryId,stateId,cityId,locationName){
     
 
     const request = axios.post(`${URN}/location`, {countryId,stateId,cityId,locationName},{headers:authHeader()})
-    .then(()=>getLocation())
+    
     return{
         type:ADD_LOCATION_DETAILS,
         payload:request

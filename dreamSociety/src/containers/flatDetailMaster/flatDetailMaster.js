@@ -18,14 +18,15 @@ class flatDetailMaster extends Component{
             towerId:'',
             towerName:'',
             errors:{},
-            loading:true
+            loading:true,
+            message:''
         }
     }
 
 
  
     handleChange = (event) => {
-
+        this.setState({message:'' })
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -38,12 +39,12 @@ class flatDetailMaster extends Component{
     
 
     componentDidMount(){
-        this.props.getTowerName();
-        this.props.getFlatType();
+        this.refreshData();
     }
     
     refreshData(){
-        this.props.addFlatDetails();
+        this.props.getTowerName();
+        this.props.getFlatType();
     }
 
 
@@ -84,13 +85,20 @@ class flatDetailMaster extends Component{
         const isValid=Object.keys(errors).length === 0;
         if(isValid){
             this.setState({loading:true});
-            this.props.addFlatDetails(flatNo,flatId,floor,towerId);
-            this.props.history.push('./flatDetails');
+            this.props.addFlatDetails(flatNo,flatId,floor,towerId)
+            .then(()=>
+            this.push())
+            .catch(err=>{
+                this.setState({message: err.response.data.message, loading: true})
+            
+            })
+                this.refreshData();
         }              
-        console.log( flatNo,flatId,floor,towerId)
+      
+        
     }
            
-    
+  
     getDropdown=({name})=>{
         if(name){
             return name.map((item)=>{
@@ -146,6 +154,7 @@ class flatDetailMaster extends Component{
                         <label>Flat No</label>
                         <input className ="form-control" placeholder="Flat No" type="text" name="flatNo" maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.handleChange} value={this.state.flatNo} ></input>
                         <span className="error">{this.state.errors.flatNo}</span>
+                        <span className="error">{this.state.message}</span>  
                     </div>
                     <div>
                         <label>Flat Type</label>
@@ -167,6 +176,7 @@ class flatDetailMaster extends Component{
                             {this.getDropdown(this.props.flatDetailMasterReducer)}
                         </select>
                         <span className="error">{this.state.errors.towerId}</span>
+
                     </div>
                     <div className="mt-4">
                     <Button type="submit" className="mr-2" color="success" value="submit">Submit</Button>
