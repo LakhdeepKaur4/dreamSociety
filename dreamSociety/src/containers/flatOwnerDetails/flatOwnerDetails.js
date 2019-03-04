@@ -20,9 +20,13 @@ class FlatOwnerDetails extends Component {
             step: 1,
             societyId: '',
             countryName: '',
+            countryId:'',
             stateName: '',
+            stateId:'',
             cityName: '',
+            cityId:'',
             locationName: '',
+            locationId:'',
             number: '',
             ownerName: '',
             DOB: '',
@@ -37,12 +41,14 @@ class FlatOwnerDetails extends Component {
             ifscCode: '',
             flatNO:'',
             flatDetailId:'',
-            memberDOB:'',
-            memberName:'',
-            relationName:'',
+            // memberDOB:'',
+            // memberName:'',
+            // relationName:'',
             profilePic:'',
             permanentAddress:'',
-            familyMember:''
+            familyMember:'',
+            member:[],
+
         }
     }
     componentDidMount() {
@@ -92,17 +98,24 @@ class FlatOwnerDetails extends Component {
     }
     societyChangeHandler = (selectOption) => {
         let countryName = selectOption.country_master.countryName;
+        let countryId= selectOption.country_master.countryId
         let stateName = selectOption.state_master.stateName;
+        let stateId = selectOption.state_master.stateId;
         let cityName = selectOption.city_master.cityName;
+        let cityId = selectOption.city_master.cityId;
         let locationName = selectOption.location_master.locationName;
-
+        let locationId = selectOption.location_master.locationId;
         this.setState(function (prevState, props) {
             return {
                 'societyName': selectOption.value,
                 countryName,
                 stateName,
                 cityName,
-                locationName
+                locationName,
+                locationId,
+                cityId,
+                stateId,
+                countryId
             }
         }, function () {
         });
@@ -252,41 +265,116 @@ class FlatOwnerDetails extends Component {
             ifscCode,
             flatNO,
             familyMember,
-            memberName,
-            memberDOB,
-            relationName,
+            // memberName,
+            // memberDOB,
+            // relationName,
             profilePic,
             societyName,
-            permanentAddress} = this.state
-            const data = new FormData()
-            data.append('ownerName',ownerName)
-            data.append('dob',DOB)
-            data.append('contact',number)
-            data.append('email',email)
-            data.append('societyId',societyName)
-            data.append('permanentAddress',permanentAddress)
-            data.append('towerId',tower)
-            data.append('flatDetailId',flatNO)
-            data.append('bankName',bankName)
-            data.append('accountHolderName', holderName)
-            data.append('accountNumber', accountNumber)
-            data.append('panCardNumber', panNumber)
-            data.append('IFSCCode', ifscCode)
-            data.append('noOfMembers', familyMember)
+            permanentAddress,
+            countryName,
+            stateName,
+            cityName,
+            countryId,
+            stateId,
+            cityId,
+            locationId,
+            locationName,
+            member} = this.state
+            // const data = new FormData()
+            // data.append('ownerName',ownerName)
+            // data.append('dob',DOB)
+            // data.append('contact',number)
+            // data.append('email',email)
+            // data.append('societyId',societyName)
+            // data.append('permanentAddress',permanentAddress)
+            // data.append('towerId',tower)
+            // data.append('flatDetailId',flatNO)
+            // data.append('bankName',bankName)
+            // data.append('accountHolderName', holderName)
+            // data.append('accountNumber', accountNumber)
+            // data.append('panCardNumber', panNumber)
+            // data.append('IFSCCode', ifscCode)
+            // data.append('noOfMembers', familyMember)
+            // for(let i = 0; i < this.state.familyMember; i++){
+            //     data.append(`memberName${i}`, this.state['memberName'+i])
+            //     console.log(this.state['memberName'+i]);
+            //     data.append(`memberDob${i}`, this.state['memberDOB'+i])
+            //     console.log(`memberDOB`,this.state['memberDOB'+i]);
+            //     data.append(`relationId${i}`, this.state['relationName'+i])
+            //     console.log(`relationName`, this.state['relationName'+i]);
+            // }
+            // data.append('profilePicture', profilePic.name)
+            // console.log('jkldsjfkdfjjjjjjjjjjjjjjjjj',this.state);
+        //  this.props.addFlatOwner(data);  
+        
             for(let i = 0; i < this.state.familyMember; i++){
-                data.append(`memberName${i}`, this.state['memberName'+i])
-                console.log(this.state['memberName'+i]);
-                data.append(`memberDob${i}`, this.state['memberDOB'+i])
-                console.log(`memberDOB`,this.state['memberDOB'+i]);
-                data.append(`relationId${i}`, this.state['relationName'+i])
-                console.log(`relationName`, this.state['relationName'+i]);
+                // data.append(`memberName${i}`, this.state['memberName'+i])
+                const data={
+                    memberName: this.state['memberName'+i],
+                    memberDob: this.state['memberDOB'+i],
+                    relationId: this.state['relationName'+i],
+                    gender:this.state['gender'+i]
+                }
+                this.state.member.push(data)
+                // this.state.member.push( this.state['memberDOB'+i])
+                // this.state.member.push( this.state['relationName'+i])
+                // console.log(this.state['memberName'+i]);
+                // data.append(`memberDob${i}`, this.state['memberDOB'+i])
+                // console.log(`memberDOB`,this.state['memberDOB'+i]);
+                // data.append(`relationId${i}`, this.state['relationName'+i])
+                // console.log(`relationName`, this.state['relationName'+i]);
             }
-            data.append('profilePicture', profilePic.name)
-            console.log('jkldsjfkdfjjjjjjjjjjjjjjjjj',this.state);
-         this.props.addFlatOwner(data);                                                     
+
+            console.log(this.state)
+            const FlatOwnerData={
+                number,
+                ownerName,
+                DOB,
+                email,
+                tower,
+                bankName,
+                holderName,
+                accountNumber,
+                panNumber,
+                ifscCode,
+                flatNO,
+                familyMember,
+                // memberName,
+                // memberDOB,
+                // relationName,
+                profilePic,
+                societyName,
+                permanentAddress,
+                member,
+                countryName,
+                stateName,
+                cityName,
+                countryId,
+                stateId,
+                cityId,
+                locationId,
+                locationName
+                
+            }
+            console.log(FlatOwnerData)
+            // this.props.addFlatOwner(this.state); 
+
         }
     FileChange=(event)=>{
-        this.setState({ profilePic: event.target.files[0]})
+        // this.setState({ profilePic: event.target.files[0].name})
+        const files = event.target.files;
+        const file = files[0];
+        if (files && file) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload =  () =>{
+              this.setState({
+                profilePic :  reader.result
+              })
+           
+          };
+        }
+       
   }
     render() {
             
@@ -295,21 +383,40 @@ class FlatOwnerDetails extends Component {
            
             userDatas.push(<FormGroup key={i} >
                 <Row form>
-                    <Col md={4}>
+                    <Col md={3}>
                         <Label>Name</Label>
                         <Input placeholder="Name Of Member" name={`memberName${i}`} onChange={this.onChangeHandler}/>
                     </Col>
-                    <Col md={4}>
+                    <Col md={3}>
                         <Label>Relation With Owner</Label>
                         <Select options={this.getRelationList(this.props.relationList)}
                             onChange={this.relationHandler.bind(this,'relationName'+i )}
                             placeholder={PlaceHolder}
                             name={`relationName${i}`}/>
                     </Col>
-                    <Col md={4}>
+                    <Col md={3}>
                                 <Label>Date Of Birth</Label>
                                 <Input  type='date' max={this.maxDate()} name={`memberDOB${i}`} onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.DOB}</span>
+                                </Col>
+                    <Col md={3}>
+                                <Label>Gender</Label>
+                                <div>
+                                <div>
+                                <Label style={{paddingRight:' 55px'}}>Male</Label>
+                                <span><Input type="radio" name={'gender'+i} onChange={this.onChangeHandler} value="male"/></span>
+                                </div>
+                                <div>
+                                <Label style={{paddingRight:' 35px'}}>Female</Label>
+                                <span><Input type="radio" name={'gender'+i} onChange={this.onChangeHandler} value="female"/></span>
+                                </div>
+                                <div>
+                                <Label style={{paddingRight:' 49px'}}>Other</Label>
+                                <span><Input type="radio" name={'gender'+i} onChange={this.onChangeHandler} value="other"/></span>
+                                </div>
+                                </div>
+                                {/* <Input  type='date' max={this.maxDate()} name={`memberDOB${i}`} onChange={this.onChangeHandler} /> */}
+                               
                                 </Col>
                 </Row>
             </FormGroup>);
@@ -318,7 +425,7 @@ class FlatOwnerDetails extends Component {
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <Form onSubmit={this.onSubmit}>
+                    <Form onSubmit={this.onSubmit} style={{width: '769px'}}>
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
                         </div>
