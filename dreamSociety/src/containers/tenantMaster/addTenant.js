@@ -205,7 +205,6 @@ class AddTenant extends Component{
             }
             this.state.memberDetail.push(data);
         }
-        console.log(this.state)
     }
 
     relationHandler = (name,selectOption) => {
@@ -260,7 +259,7 @@ class AddTenant extends Component{
 
         return(
             <UI onClick={this.logout}>
-                <Form onSubmit={this.onSubmit}>
+                <Form onSubmit={this.onSubmit} method="post">
                     <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                         <span aria-hidden="true">&times;</span>
                     </div>
