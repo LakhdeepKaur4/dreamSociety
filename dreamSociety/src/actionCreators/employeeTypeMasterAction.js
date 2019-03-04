@@ -4,9 +4,9 @@ import {URN,ADD_EMPLOYEE,GET_EMPLOYEE_TYPE,GET_EMPLOYEE,GET_EMPLOYEE_WORK_TYPE,U
 
 
 
-export function  AddEmployee(values){
+export function  AddEmployee(serviceType,employeeTypeId,employeeWorkTypeId){
     console.log("hede");
-    const request =axios.post(`${URN}/employeeDetail`,values,{headers:authHeader()})
+    const request =axios.post(`${URN}/employeeDetail`,{serviceType,employeeTypeId,employeeWorkTypeId},{headers:authHeader()})
     .then()
     console.log(request,"drfde")
 return{
@@ -56,7 +56,7 @@ export function updateEmployee(employeeDetailId,employeeTypeId, employeeWorkType
     }
 }
 export function deleteEmployee(employeeDetailId,isActive){
-    const request = axios.put(`${URN}/employeeDetail/`+employeeDetailId,{isActive}, {headers:authHeader()} )
+    const request = axios.put(`${URN}/employeeDetail/delete/`+employeeDetailId,{isActive}, {headers:authHeader()} )
 
     return{
         type:DELETE_EMPLOYEE,

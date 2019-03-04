@@ -1,4 +1,4 @@
-import {URN,ADD_EMP,GET_EMP,UPDATE_EMP,DELETE_EMP,GET_LOCATION_DETAIL,UPDATE_EMPLOYEE} from '../actions/index'
+import {URN,ADD_EMP,GET_EMP,UPDATE_EMP,DELETE_EMP,GET_LOCATION_DETAIL,UPDATE_EMPLOYEE,DELETE_MULTIPLE_EMPLOYEE} from '../actions/index'
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
 export function AddEmployee(data){
@@ -39,20 +39,26 @@ export function ViewEmployee(){
 }
 
 
-
-export function deleteEmployee(){
-    const request= axios.put()
+export function deleteEmployee(employeeId,isActive){
+    const request = axios.put(`${URN}/employee/delete/`+employeeId,{isActive}, {headers:authHeader()} )
 
     return{
         type:DELETE_EMP,
         payload:request
     }
+
+
 }
 
 
-export function updateEmployee(employeeId,picture,firstName, middleName, lastName, CTC, documentOne, documentTwo, startDate,endDate){
-    console.log(firstName);
-    const request =axios.put(`${URN}/employee/`+employeeId,{picture,firstName, middleName, lastName, CTC, documentOne, documentTwo, startDate, endDate},{headers:authHeader()})
+export function updateEmployee(employeeId,data){
+    const config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }
+
+    const request =axios.put(`${URN}/employee/`+employeeId,data,{headers:authHeader()},config)
 
 
     return{
@@ -61,4 +67,13 @@ export function updateEmployee(employeeId,picture,firstName, middleName, lastNam
     }
 }
 
- 
+export function deleteMultipleEmployee(ids){
+    const request = axios.put(`${URN}/employee/delete/deleteSelected`,{ids}, {headers:authHeader()} ).then(response=>response.data)
+
+    return{
+        type:DELETE_MULTIPLE_EMPLOYEE,
+        payload:request
+    }
+
+
+}

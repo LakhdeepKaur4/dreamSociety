@@ -42,7 +42,7 @@ class vendorMaster extends Component {
             documentOne: null,
             documentTwo:null,
             profilePicture: '',
- 
+            loading:false,
             menuVisible: false
         }
         this.handleChange = this.handleChange.bind(this);
@@ -90,6 +90,10 @@ class vendorMaster extends Component {
 
 
     }
+    
+    push=()=>{
+        this.props.history.push('/superDashboard/displayVendorMaster')
+    }
 
     getDropDown = ({ item }) => {
         if (item) {
@@ -122,8 +126,8 @@ class vendorMaster extends Component {
 
 
     onSubmit = (event) => {
-        console.log(event)
         event.preventDefault();
+        this.setState({loading: true})
         const formData=new FormData();
         formData.append('vendorName',this.state.vendorName)
         formData.append('contact',this.state.contact)
@@ -140,50 +144,11 @@ class vendorMaster extends Component {
         formData.append('rate3',this.state.rate3)
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
-        formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)
-    
-       
-        this.props.addVendorMaster(formData);
-        // this.setState(
-        //     {
-        //         vendorName: '',
-        //         contact: '', 
-        //         currentAddress: '',
-        //         permanentAddress: '',
-               
-        //         serviceId1: {
-        //             serviceId: '',
-        //         },
-        //         serviceId2: {
-        //             serviceId: ''
-        //         },
-        //         serviceId3: {
-        //             serviceId: ''
-        //         },
-        //         rateId1: {
-        //             rateId: ''
-        //         },
-        //         rateId2: {
-        //             rateId: ''
-        //         },
-        //         rateId3: {
-        //             rateId: ''
-        //         },
-        //         rate1: '',
-        //         rate2: '',
-        //         rate3: '',
-                
-        //         profilePicture: ''
-        //     }
-
-        // )
-
-
-
-
+        formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)      
+        this.props.addVendorMaster(formData).then(()=>this.push());
+        this.setState({loading:true});
 
     }
-
 
     logout = () => {
         localStorage.removeItem('token');
@@ -332,13 +297,13 @@ class vendorMaster extends Component {
 
                         <FormGroup>
                             <Label>Upload Your Id</Label>
-                            <Input type="file" name="documentOne"  accept='.doc' onChange={this.selectImage} required  />
+                            <Input type="file" name="documentOne"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage} required  />
 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Upload Another Id</Label>
-                            <Input type="file" name="documentTwo"  accept='.doc' onChange={this.selectImage2} required  />
+                            <Input type="file" name="documentTwo"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage2} required  />
 
                         </FormGroup>
 
@@ -349,21 +314,13 @@ class vendorMaster extends Component {
                         </FormGroup>
 
 
-                        <FormGroup>
-                            <Button color="success">Submit</Button>
-                        </FormGroup>
+                    
+                            <Button color="success" className="mr-2">Submit</Button>
+                     
+                        <Button color="danger" onClick={this.push}>Cancel</Button>
 
                     </Form>
 
-                    {/* 
-                           
-                            <div className="mt-4">
-                                <Button type="submit" color="success"  className="mr-2" value="submit">Submit</Button>
-
-                                <Link  to='/superDashboard/displayVendorMaster'>
-                                    <Button color="danger"  className="btn">Cancel</Button>
-                                </Link>
-                            </div> */}
                 </UI>
 
             </div>

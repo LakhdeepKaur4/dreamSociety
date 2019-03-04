@@ -97,11 +97,17 @@ class MaintenanceMasterDetail extends Component {
 
       deleteMaintenanceName = (maintenanceId) => {
         let { isActive } = this.state.editMaintenanceData
+
+        if(window.confirm('Are You Sure ?')){
         this.setState({ loading: true })
         this.props.deleteMaintenance(maintenanceId, isActive)
             .then(() => this.refreshData())
         this.setState({editMaintenanceData: { isActive: false } })
-
+        }
+        else{
+            this.refreshData()
+            this.setState({editMaintenanceData: { isActive: false } })
+        }
       }
 
 
@@ -120,9 +126,16 @@ class MaintenanceMasterDetail extends Component {
 
     deleteSelected(ids){
         this.setState({loading:true,  isDisabled:true});
+
+        
+        if(window.confirm('Are You Sure ?')){
         this.props.deleteSelectMaintenance(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
+        }
+        else{
+            this.refreshData()
+        }
     }
 
     selectAll = () => {

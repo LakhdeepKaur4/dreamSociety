@@ -16,17 +16,7 @@ class displayPersonDetails extends Component {
                 super(props)
                 this.state = {
                         editPersonData: {
-                                userName: '',
-                                email: '',
-
-                                towerId: [],
-                                roleName: '',
-                                flatDetailId: '',
-                                roles: [],
-                                id: '',
-                                roleId: '',
-                                familyMember: '',
-                                parking: '',
+                               
                                 isActive: false
                         },
                         editPersonModal: false,
@@ -34,6 +24,18 @@ class displayPersonDetails extends Component {
                         search: '',
                         ids: [],
                         isDisabled: true,
+                        userName: '',
+                        email: '',
+
+                        towerId: [],
+                        roleName: '',
+                        flatDetailId: '',
+                        roles: [],
+                        id: '',
+                        roleId: '',
+                        familyMember: '',
+                        parking: '',
+                        errors:{}
                 }
         }
         componentDidMount() {
@@ -41,7 +43,17 @@ class displayPersonDetails extends Component {
 
         }
 
+        onChange=(e)=>{
 
+                if(!!this.state.errors[e.target.name]){
+                    let errors =Object.assign({},this.state.errors)
+                    delete  errors[e.target.name]
+                    this.setState({[e.target.name]:e.target.value,errors});
+                }
+                else{
+            this.setState({[e.target.name]:e.target.value});
+            }
+            }
 
         OnKeyPresshandler(event) {
                 const pattern = /[a-zA-Z _]/;
@@ -53,7 +65,7 @@ class displayPersonDetails extends Component {
 
 
         OnKeyPressmail(event) {
-                const pattern = /^[a-zA-Z0-9@._]+$/;
+                const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/;
                 let inputChar = String.fromCharCode(event.charCode);
                 if (!pattern.test(inputChar)) {
                         event.preventDefault();
@@ -99,26 +111,49 @@ class displayPersonDetails extends Component {
         editPerson(userId, userName, roleName, email, towerId, id, roles, familyMember, parking, flatDetailId) {
                 console.log('i m in edit ', userName, email, towerId, id, roles, familyMember, parking);
                 this.setState({
-                        editPersonData: { userId, userName, email, towerId, id, familyMember, roleName, parking, flatDetailId },
+               userId, userName, email, towerId, id, familyMember, roleName, parking, flatDetailId,
                         editPersonModal: !this.state.editPersonModal
                 })
         }
 
         updatePerson = () => {
-
-                let { userId, userName, email, towerId, familyMember, parking, roleName } = this.state.editPersonData;
-
-                console.log("person check", userId, userName, email, towerId, familyMember, parking, roleName)
+                let errors={};
+                const {userId,userName,email,towerId,roleName,  familyMember,parking}= this.state 
+                if(!this.state.userName){
+                   errors.userName = "  Username can't be empty. Please select."
+               }
+               if(!this.state.email){
+                   errors.email = "  Email can't be empty. Please select."
+               }
+               if(!this.state.towerId){
+                   errors.towerId = "  Tower Name can't be empty. Please select."
+               }
+               if(!this.state.flatDetailId){
+                   errors.familyMember = "   Flat Number can't be empty. Please select."
+               }
+               if(!this.state.roleName){
+                   errors.roleName = " Roles can't be empty. Please select."
+               }
+               if(!this.state.familyMember){
+                   errors.familyMember = "Family Member can't be empty. Please select."
+               }
+               if(!this.state.parking){
+                   errors.parking = "parking can't be empty. Please select."
+               }
+               this.setState({ errors });
+               const isValid = Object.keys(errors).length === 0
+               if (isValid) {
+               
 
                 this.props.updatePerson(userId, userName, email, towerId, familyMember, parking, roleName).then(() => { this.refreshData() })
 
                 //   this.refreshData()
                 this.setState({
-                        editPersonModal: false, loading: true, editPersonData: { userName: '', email: '', towerId: '', familyMember: '', parking: '', roleName: '' }
-                })
+                        editPersonModal: false, loading: true
+                    })
 
         }
-
+        }
 
 
 
@@ -317,45 +352,31 @@ class displayPersonDetails extends Component {
                                                 </div>
 
                                                 <Modal isOpen={this.state.editPersonModal} toggle={this.toggleEditPersonModal.bind(this)}>
-                                                        <ModalHeader toggle={this.toggleEditPersonModal.bind(this)}>Edit  Event Details</ModalHeader>
+                                                        <ModalHeader toggle={this.toggleEditPersonModal.bind(this)}>Edit  Person Details</ModalHeader>
                                                         <ModalBody>
 
 
                                                                 <FormGroup>
                                                                         <Label>User Name</Label>
-                                                                        <Input type="text" value={this.state.editPersonData.userName} onChange={(e) => {
-                                                                                let { editPersonData } = this.state
-                                                                                editPersonData.userName = e.target.value;
-                                                                                this.setState({
-                                                                                        editPersonData
-                                                                                })
-                                                                        }}
+                                                                        <Input type="text"   name ="userName" value={this.state.userName} onChange={this.onChange}
                                                                                 onKeyPress={this.OnKeyPresshandler} maxLength={30} required
                                                                         />
+                                                                        <span className ="error"> {this.state.errors.userName}</span>
                                                                 </FormGroup>
                                                                 <FormGroup>
                                                                         <Label> Email</Label>
-                                                                        <Input type="text" value={this.state.editPersonData.email} onChange={(e) => {
-                                                                                let { editPersonData } = this.state
-                                                                                editPersonData.email = e.target.value;
-                                                                                this.setState({
-                                                                                        editPersonData
-                                                                                })
-                                                                        }}
+                                                                        <Input type="text" name="email" value={this.state.email} onChange={this.onChange}
+
                                                                                 onKeyPress={this.OnKeyPressmail} maxLength={40} required
                                                                         />
+                                                                            <span className ="error"> {this.state.errors.towerName}</span>
                                                                 </FormGroup>
 
                                                                 <FormGroup>
                                                                         <Label> Tower Name</Label>
-                                                                        <Input type="select" id="towerId" value={this.state.editPersonData.towerId} onChange={(e) => {
-                                                                                let { editPersonData } = this.state
-                                                                                editPersonData.towerId = e.target.value;
-                                                                                this.setState({
-                                                                                        editPersonData
-                                                                                })
-                                                                        }}
-                                                                        >
+                                                                        <Input type="select" id="towerId"   defaultValue='no-value' value={this.state.towerId} onChange={this.onChange}
+                                                                                 
+                                                                >
 
                                                                               <DefaultSelect/>
                                                                                 {this.getTower(this.props.personDetails)}
@@ -367,17 +388,12 @@ class displayPersonDetails extends Component {
                                                                 <FormGroup>
                                                                         <Label> Roles</Label>
 
-                                                                        <Input type="select" value={this.state.editPersonData.roleName} onChange={(e) => {
-
-                                                                                let { editPersonData } = this.state
-                                                                                editPersonData.roleName = e.target.value;
-                                                                                this.setState({
-                                                                                        editPersonData
-                                                                                })
-                                                                        }}
+                                                                        <Input type="select"   value={this.state.roleName} onChange={ this.onChange}
+                                                                             
+       
 
                                                                         >
-                                                                                <option>{this.state.editPersonData.roleName}</option>
+                                                                                <option      >{this.state.roleName}</option>
                                                                                <DefaultSelect/>
                                                                                 {this.getRole(this.props.personDetails)}
 
@@ -386,27 +402,18 @@ class displayPersonDetails extends Component {
 
                                                                 <FormGroup>
                                                                         <Label> Number of family Members</Label>
-                                                                        <Input type="text" value={this.state.editPersonData.familyMember} onChange={(e) => {
-                                                                                let { editPersonData } = this.state
-                                                                                editPersonData.familyMember = e.target.value;
-                                                                                this.setState({
-                                                                                        editPersonData
-                                                                                })
-                                                                        }}
+                                                                        <Input type="text" name="familyMember" value={this.state.familyMember} onChange={this.onChange}
                                                                                 onKeyPress={this.OnkeyPressNumber} maxLength={2} required
                                                                         />
+                                                                            <span className ="error"> {this.state.errors.familyMember}</span>
                                                                 </FormGroup>
                                                                 <FormGroup>
                                                                         <Label> Parking</Label>
-                                                                        <Input type="text" value={this.state.editPersonData.parking} onChange={(e) => {
-                                                                                let { editPersonData } = this.state
-                                                                                editPersonData.parking = e.target.value;
-                                                                                this.setState({
-                                                                                        editPersonData
-                                                                                })
-                                                                        }}
+                                                                        <Input type="text" name="parking"  value={this.state.parking} onChange={this.onChange}
+
                                                                                 onKeyPress={this.OnKeyPressNumber} maxLength={2} required
                                                                         />
+                                                                            <span className ="error"> {this.state.errors.parking}</span>
                                                                 </FormGroup>
 
 

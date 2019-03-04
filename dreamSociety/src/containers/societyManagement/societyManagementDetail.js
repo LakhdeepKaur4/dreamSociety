@@ -188,18 +188,29 @@ class SocietyManagementDetail extends Component {
         this.setState({
             loading: true
         })
+
+        if(window.confirm('Are You Sure ?')){
         this.props.deleteSociety(societyId, isActive)
             .then(() => this.refreshData())
             this.setState({editSocietyData:{isActive:false}})
-
+        }
+        else{
+            this.refreshData()
+            this.setState({editSocietyData:{isActive:false}})
+        }
     }
 
     deleteSelected=(ids)=>{
         console.log(ids)
         this.setState({loading:true, isDisabled:true});
+        if(window.confirm('Are You Sure ?')){
         this.props.deleteSelectSociety(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
+        }
+        else{
+            this.refreshData()
+        }
     }
 
     selectAll = () => {
@@ -360,7 +371,7 @@ class SocietyManagementDetail extends Component {
                 locationResult.map((item) => {
                     return (
                         <option value={item.locationId} key={item.locationId}>
-                            {item.countryName}
+                            {item.locationName}
                         </option>
                     )
                 })

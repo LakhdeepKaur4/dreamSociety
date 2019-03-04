@@ -20,10 +20,11 @@ class EventMaster extends Component {
     eventType: '',
     eventName: '',
     eventOrganiser: [],
-    startDate: Date,
-    endDate: Date,
+    startDate: '',
+    endDate: '',
     menuVisible: false,
-    loading:true
+    loading:true,
+    errors: {}
 
   }
 
@@ -40,32 +41,55 @@ class EventMaster extends Component {
     console.log("hieee", this.props.GetEventOrganiser)
   }
 
-  onChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value.trim('') });
-    console.log(this.state)
+  onChange =(event)=> {
+    if (!!this.state.errors[event.target.name]) {
+        let errors = Object.assign({}, this.state.errors);
+        delete errors[event.target.name];
+        this.setState({ [event.target.name]: event.target.value, errors });
+    }
+    else {
+        this.setState({ [event.target.name]: event.target.value});
+    }
   }
 
-  onEventChange = (e) => {
-    console.log(this.state);
-    this.setState({ userId: e.target.value })
-    console.log("userId", this.state.userId)
-  }
+
   submit = (e) => {
-this.setState({loading:true})
-    console.log(this.state.eventOrganiser);
-    this.props.AddEvent({ ...this.state }).then(()=>
-    this.props.history.push('/superDashboard/display-event'))
-    this.setState({
-      state: {
-        eventType: [],
-        eventName: [],
-        eventOrganiser: [],
-        startDate: [],
-        endDate: [],
+    e.preventDefault()
+    let errors = {};
+    const { eventType,
+    eventName,
+    eventOrganiser,
+    startDate,
+    endDate} = this.state
+    
+    if(!this.state.eventType){
+        errors.eventType = "Event Type can't be empty. Please select."
+    }
+    if(!this.state.eventName){
+      errors.eventName = "Event Name can't be empty. Please select."
+  }
+  if(!this.state.userId){
+    errors.userId = "event Organiser can't be empty. Please select."
+}
+if(!this.state.startDate){
+  errors.startDate = "Start Date can't be empty. Please select."
+}
+if(!this.state.endDate){
+  errors.endDate = "End  Date can't be empty. Please select."
+}
 
-      }
-    })
+    this.setState({ errors });
+    const isValid = Object.keys(errors).length === 0
+
+    if (isValid) {
+        this.setState({loading: true})
+      
+            this.props.AddEvent(eventType,eventName, eventOrganiser,startDate,endDate).then(()=> this.props.history.push('/superDashboard/display-event')
+        
+            )
+        
    
+}
   }
 
   getEvent({ events }) {
@@ -118,11 +142,11 @@ this.setState({loading:true})
             name="eventType"
             onChange={this.onChange}
              maxLength ={25}
-            required
+        
           />
-
+             <span className="error">{this.state.errors.eventType}</span>
         </div>
-
+      
         <div className="form-group">
           <label>Event Name</label>
           <input
@@ -133,11 +157,31 @@ this.setState({loading:true})
             name="eventName"
             onChange={this.onChange}
             maxLength ={25}
-            required
-          />
-        </div>
 
+          />
+             <span className="error">{this.state.errors.eventName}</span>
+        </div>
+     
         <div className="form-group">
+          <label >Event Organiser</label>
+          <select
+            
+            className ="form-control"
+        
+            value={this.state.userId}
+            onChange={this.onChange}
+            defaultValue='no-value'
+     
+          >
+          < DefaultSelect/>
+           {this.getEvent(this.props.EventDetails)}
+
+           
+          </select>
+          <span className="error">{this.state.errors.userId}</span>
+        </div>
+       
+         <div className="form-group">
           <label>Event Start Date</label>
           <input
             type="date"
@@ -145,10 +189,11 @@ this.setState({loading:true})
             name="startDate"
             placeholder=" event start date"
             onChange={this.onChange}
-            required
+  
           />
+             <span className="error">{this.state.errors.startDate}</span>
         </div>
-
+     
         <div className="form-group">
           <label> Event End Date</label>
           <input
@@ -157,25 +202,13 @@ this.setState({loading:true})
             name="endDate"
             placeholder="event end date"
             onChange={this.onChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label >Event Organiser</label>
-          <Input
-            type="select"
-            className="form-control"
-            name="eventOrganiser"
-            value={this.state.userId}
-            onChange={this.onChange}
-            defaultValue='no-value'
-            required
-          >
-           <DefaultSelect/>
-            {this.getEvent(this.props.EventDetails)}
-          </Input>
-        </div>
 
+          />
+                <span className="error">{this.state.errors.endDate}</span>
+        </div>
+  
+        
+  
         <button
           className="btn btn-success"
         > Submit</button>

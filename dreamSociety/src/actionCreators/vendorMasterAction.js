@@ -1,4 +1,4 @@
-import {URN,ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE} from '../actions/index';
+import {URN,ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE,DELETE_VENDOR,UPDATE_VENDOR} from '../actions/index';
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
 
@@ -10,7 +10,7 @@ export function addVendorMaster(formData){
         }
       }
     console.log(formData)
-    const request=axios.post(`${URN}/vendor`,formData,{headers:authHeader()},config)
+    const request=axios.post(`${URN}/vendor`, formData,{headers:authHeader()},config)
     .then(response=>response.data)
 
     return{
@@ -42,4 +42,36 @@ export function getRateType(){
     }
 }
 
+export function deleteVendor(vendorId,isActive){
+ 
+console.log("id",vendorId);
+    const request = axios.put(`${URN}/vendor/delete/`+vendorId,{isActive}, {headers:authHeader()})
+     .then()
+ 
+     
+     return{
+ 
+         type:DELETE_VENDOR,
+         payload: request 
+     }
+}
 
+
+export function updateVendor(vendorId,formData){
+    console.log(vendorId,"dasdfs");
+    const config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }
+        const request = axios.put(`${URN}/vendor/`+vendorId,formData, {headers:authHeader()},config)
+         .then()
+     
+         
+         return{
+     
+             type:UPDATE_VENDOR,
+             payload: request 
+         }
+    }
+    

@@ -74,7 +74,7 @@ searchOnChange = (e) => {
     this.setState({ search: e.target.value })
 }
 
-delete = (locationId) => {
+deleteLocation = (locationId) => {
         this.setState({loading:true})
         let {isActive } =this.state.editLocation;  
         this.props.deleteLocation(locationId,isActive)
@@ -240,11 +240,6 @@ unSelectAll = () =>{
         this.setState({isDisabled: true});
     }
     
-}
-logout=()=>{
-    localStorage.removeItem('token');
-    localStorage.removeItem('user-type');
-    return this.props.history.replace('/') 
 }
 
 render(){

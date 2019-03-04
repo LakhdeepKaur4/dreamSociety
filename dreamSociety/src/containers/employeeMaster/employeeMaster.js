@@ -7,7 +7,7 @@ import {AddEmployee} from '../../actionCreators/employeeMasterAction';
 import {bindActionCreators} from 'redux';
 import DefaultSelect from '../../constants/defaultSelect'
 import _ from 'underscore';
-
+import './employeeMaster.css';
 class EmployeeMaster extends Component{
 
 
@@ -31,7 +31,8 @@ class EmployeeMaster extends Component{
         startDate:'',
         endDate:'',
         CTC:'',
-        file:''
+        file:'',
+        errors:{}
     }
 
     
@@ -46,12 +47,7 @@ onFileChange=(event)=>{
 console.log('jjjjjjjjjjjj',event);
 
           this.setState({ documentOne: event.target.files[0]})
-         
-     
-    
-    
-  
-    }
+         }
 
         
 FileChange=(event)=>{
@@ -59,11 +55,6 @@ FileChange=(event)=>{
     
               this.setState({ documentTwo: event.target.files[0]})
              
-                     
-         
-        
-        
-      
         }
     
     componentDidMount(){
@@ -74,15 +65,74 @@ FileChange=(event)=>{
         this.props.getLocationName();
       
     }
+
+    OnKeyPresshandler(event) {
+        const pattern = /[a-zA-Z _]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    OnKeyPressNumber(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
     submit=(event)=> {
         
         event.preventDefault();
-                  
-     
-        console.log("test12332",this.state.documentOne)  
-        console.log("test2321",this.state.documentTwo)   
+        let errors ={};
+        // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
+       
+        if(!this.state.countryId){
+          errors.serviceType  = " service Type  can't be empty. Please select."
+         }
+         if(!this.state.stateId){
+          errors.stateId ="State Name can't be empty. Please select"
+         }
+          if(!this.state.cityId){
+          errors.cityId ="city Name can't be empty. Please select"
+         }
+         if(!this.state.locationId){
+          errors.locationId ="location Name can't be empty. Please Select"
+         }
+         if(!this.state.documentOne){
+          errors.documentOne ="please select an ID."
+         }
+         if(!this.state.documentTwo){
+            errors.documentTwo ="please select an ID"
+         }
+         if(!this.state.profilePicture){
+          errors.profilePicture =" profile picture can't be empty.please select "
+         }
+         if(!this.state.firstName){
+         errors.firstName ="first Name can't be empty. please select"
+         }
+       
+         if(!this.state.lastName){
+       errors.lastName ="last Name can't be empty.please select"
+         }
+         if(!this.state.startDate){
+          errors.startDate =" start Date can't be empty .please select"
+         }
+         if(!this.state.endDate){
+         errors.endDate ="end Date can't be empty. please select"
+         }
+         if(!this.state.CTC){
+        errors.CTC ="CTC can't be empty. please select"
+         }
           
-        const data = new FormData()
+         const data = new FormData()
+  this.setState({ errors });
+  const isValid = Object.keys(errors).length === 0
+  if (isValid) {        
+     
+
+      
         data.append('documentOne',this.state.documentOne, this.state.documentOne.name)
         data.append('documentTwo',this.state.documentTwo, this.state.documentTwo.name)
         data.append('firstName',this.state.firstName)
@@ -96,53 +146,26 @@ FileChange=(event)=>{
         data.append('cityId',this.state.cityId)
         data.append('locationId',this.state.locationId)
         data.append('profilePicture',this.state.profilePicture)
-         console.log(data,"image")
-         
-      
-          console.log("test12332",this.state.firstName)     
-
-        //   axios.post(`${URN}/employee`,data,{headers:authHeader(),config})
+        
           
         this.props.AddEmployee(data)
-    //     this.setState({
-            
-    // state:{
- 
-    //     countryId:'',
-    //     countryName: '',
-    //     stateId: '',
-    //     stateName:'',
-    //     cityId: '',
-    //     cityName:'',
-    //     locationName:'',
-    //     document:'',
-    //     profilePicture:'',
-    //     firstName:'',
-    //     middleName:'',
-    //     lastName:'',
-    //     startDate:'',
-    //     endDate:'',
-    //     CTC:''
-    // }
-    //     }),
-        console.log(this.state.countryId,this.state.countryName,   this.state.stateId,   this.state.stateName, this.state.cityId,  this.state.cityName,this.state.locationName, this.state.document,  this.state.profilePicture, this.state.firstName, this.state.middleName,this.state.lastName,this.state.startDate,
-            this.state.endDate,
-            this.state.CTC)
-    }
 
-    onChange =(e)=>{
-        this.setState({
-        [e.target.name]:e.target.value
 
-        })   
     }
-    OnKeyPresshandler(event) {
-        const pattern = /[a-zA-Z _]/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
+    }
+    
+        onChange = (e) => {
+            if(!!this.state.errors[e.target.name]){
+                let errors =Object.assign({},this.state.errors)
+                delete  errors[e.target.name]
+                this.setState({[e.target.name]:e.target.value,errors});
+            }
+            else{
+        this.setState({[e.target.name]:e.target.value});
         }
-    }
+          } 
+    
+  
          
     getDropdown1=({country})=>{
         if(country){
@@ -235,7 +258,7 @@ onLocationChange=(event)=>{
                 locationId:data3.locationId
             })
 
-            // this.props.getSociety(data3.locationId)
+         
 
 }
 
@@ -260,7 +283,9 @@ if(location){
         }
     }
 
-
+  displayEmployee=()=>{
+      this.props.history.push('/superDashboard/displayEmployee');
+  }
 render(){
 let form;
 
@@ -269,27 +294,32 @@ form=
 <form onSubmit={this.submit}>
   <h3 align="center">Employee Master </h3>
 
-  <div>
-        <label>Upload Your Image</label>
-        <input type="file" accept ="image/*" name="file" onChange={this.onPicChange}/>
+  <div class="input-container">
+        <label for ="upload-photo">Select Your Image</label>
+        <input type="file" accept ="image/*"   name="profilePicture" onChange={this.onPicChange}/>
+         
+        <span className="error">{this.state.errors.profilePicture}</span>
     </div>
 
     <div className="row">
     <div className="form-group col-md-4 ">
     <label>First Name</label>
     <input  className="form-control" name="firstName" type="text" onKeyPress={this.OnKeyPresshandler} onChange ={this.onChange}  maxLength={30}/>
+    <span className="error">{this.state.errors.firstName}</span>
     </div>
  
        
     <div className="form-group  col-md-4">
     <label> Middle Name</label>
     <input  className="form-control" type="text" name ="middleName"  onKeyPress={this.OnKeyPresshandler}  onChange ={this.onChange} maxLength={30}/>
+    <span className="error">{this.state.errors.middleName}</span>
     </div>
   
   
     <div className="form-group col-md-4">
     <label> Last Name</label>
     <input  className="form-control" type="text"  name="lastName"  onKeyPress={this.OnKeyPresshandler} onChange ={this.onChange} maxLength={30}/>
+    <span className="error">{this.state.errors.lastName}</span>
     </div>
     </div>
 
@@ -298,39 +328,45 @@ form=
     <div className="form-group">
 
         <label> CTC</label>
-        <input type="text" className="form-control" name ="CTC"  onKeyPress={this.OnKeyPressNumber}  onChange ={this.onChange} maxLength={10}/>
+       
+        <input type="text" className="form-control" name ="CTC"  onKeyPress={this.OnKeyPressNumber}  onChange ={this.onChange} maxLength={3}/>
+        <span className="error">{this.state.errors.CTC}</span>
     </div>
     <div>
     <div>
                         <label>Country Name</label>
-                        <select   className ="form-control" name="countryName"  onChange={this.onChangeCountry} >
+                        <select   className ="form-control" name="countryName"         defaultValue='no-value' onChange={this.onChangeCountry} >
                         < DefaultSelect/> 
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
+                        <span className="error">{this.state.errors.countryId}</span>
                     </div>
 
 
 
                     <div>    
                         <label>State Name</label>
-                        <select  className ="form-control" name="stateName" onChange={this.onChangeState}>
+                        <select  className ="form-control"         defaultValue='no-value'  name="stateName" onChange={this.onChangeState}>
                     <DefaultSelect/>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
+                        <span className="error">{this.state.errors.stateId}</span>
                     </div>
                     <div>    
                         <label>City Name</label>
-                        <select  className ="form-control"  name="cityName" onChange={this.onChangeCity} >
+                        <select  className ="form-control"        defaultValue='no-value'  name="cityName" onChange={this.onChangeCity} >
                        <DefaultSelect/>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
+                        <span className="error">{this.state.errors.cityId}</span>
                     </div>
                     <div>    
                         <label>location</label>
-                        <select  className ="form-control"   onChange={this.onLocationChange} >
+                        <select  className ="form-control"          defaultValue='no-value' onChange={this.onLocationChange} >
                    <DefaultSelect/>
                             {this.getDropdown4(this.props.locationMasterReducer)}
                         </select>
+                        <span className="error">{this.state.errors.locationId}</span>
                     </div>
 
         <div className="row">
@@ -344,6 +380,7 @@ form=
             onChange={this.onChange}
             
           />
+          <span className="error">{this.state.errors.startDate}</span>
         </div>
 
         <div className="form-group  col-md-6 col-sm-6">
@@ -354,22 +391,32 @@ form=
             name="endDate"
             placeholder="event end date"
             onChange={this.onChange}
-            
-          />
+             />
+             <span className="error">{this.state.errors.endDate}</span>
           </div>
           </div>
+
+          <div className ="row">
+          <div className=" input-contain  col-md-4">
         <label> upload your ID</label>
         <input  accept='.docx ,.doc,application/pdf' type="file"      name ="documentOne" onChange={this.onFileChange}/>
+        <span className="error">{this.state.errors.documentOne}</span>
     </div>
-  
-    <div>
+
+    
+   
+    <div  className="input-contain  col-md-1">
         <label> upload your ID</label>
         <input  accept='.docx,application/pdf' type="file"       name ="documentTwo" onChange={this.FileChange}/>
+        <span className="error">{this.state.errors.documentTwo}</span>
     </div>
-   
+
+
+    </div>
+    </div>
 
     <button className="btn btn-success mr-2">Submit</button>
-    <button className="btn btn-primary">Display Employee Master</button>
+    <button className="btn btn-primary"  onClick ={this.displayEmployee}>Display Employee Master</button>
     </form>
     </div>
 
@@ -391,9 +438,11 @@ form=
 }
 
 function mapStateToProps(state){
+    console.log("location", state)
  return {
      empDetails:state.empDetails,
      locationMasterReducer : state.locationMasterReducer
+     
  }
 }
 function mapDispatchToProps(dispatch){

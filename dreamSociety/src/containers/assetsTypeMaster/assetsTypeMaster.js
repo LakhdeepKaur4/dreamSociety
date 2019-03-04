@@ -66,12 +66,12 @@ class AssetsTypeMaster extends Component {
         <div>
             <div className="assetsName">
                 <Label>Assets Name</Label>
-                <Input type="text" maxLength={30} placeholder="Enter Assets Name" name="assets" onChange={this.onChangeHandler} />
+                <Input type="text" style={{ 'textTransform': 'capitalize' }} maxLength={30} placeholder="Enter Assets Name" name="assets" onChange={this.onChangeHandler} />
                 <span className="error">{this.state.errors.assets}</span>
             </div>
             <div>
                 <Label>Description</Label>
-                <textarea type="text" maxLength={30} id="Description" placeholder="Enter Description..." className="form-control" onChange={this.onChangeHandler} name='description'/>
+                <textarea type="text" style={{ 'textTransform': 'capitalize' }} maxLength={30} id="Description" placeholder="Enter Description..." className="form-control" onChange={this.onChangeHandler} name='description'/>
                 <span className="error">{this.state.errors.description}</span>
             </div>
             <div>  
