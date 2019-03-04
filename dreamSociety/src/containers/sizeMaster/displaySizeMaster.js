@@ -17,16 +17,17 @@ class DisplaySizeMaster extends Component {
 
       id: "",
       sizeId: [],
-      sizeType: [],
+ 
       isActive:false
     },
-
+    errors: {},
     editSizeModal: false,
     menuVisible: false,
     search:'',
     loading:true,
     ids: [],
     isDisabled: true,
+    sizeType: []
   }
 
   componentDidMount() {
@@ -54,15 +55,41 @@ class DisplaySizeMaster extends Component {
     }
   }
 
+  onChange=(e)=> {
+
+
+  if (!!this.state.errors[e.target.name]) {
+    let errors = Object.assign({}, this.state.errors);
+    delete errors[e.target.name];
+    this.setState({ [e.target.name]: e.target.value, errors });
+}
+else {
+    this.setState({ [e.target.name]: e.target.value });
+}
+ 
+} 
+
 
   toggleEditSizeModal() {
     this.setState({
       editSizeModal: !this.state.editSizeModal
     })
   }
-  updateSize() {
-    let { sizeId, sizeType } = this.state.editSizeData;
- 
+  updateSize(){
+
+    let errors = {};
+    const { sizeId,sizeType} = this.state
+    
+    if(!this.state.sizeType){
+        errors.sizeType = "Size Type can't be empty. Please select."
+    }
+    
+
+    this.setState({ errors });
+    const isValid = Object.keys(errors).length === 0
+
+    // const isValid = this.validate();
+    if (isValid) {
     this.props.updateSize(sizeId,sizeType).then(()=>{this.refreshData()})
 
     
@@ -70,13 +97,14 @@ class DisplaySizeMaster extends Component {
         editSizeModal: false, loading:true,editSizeData: { sizeType: '' }
       })
   }
+}
 
 
   editSize(id, sizeId, sizeType) {
     console.log('ghrehj');
 
     this.setState({
-      editSizeData: { id, sizeId, sizeType }, editSizeModal: !this.state.editSizeModal
+           id, sizeId, sizeType , editSizeModal: !this.state.editSizeModal
     })
     return <div> loading</div>
   }
@@ -258,16 +286,11 @@ selectAll = () => {
 
                 <FormGroup>
                   <Label for="lastName"> Size Type</Label>
-                  <Input id="sizeType" value={this.state.editSizeData.sizeType} onChange={(e) => {
-                    let { editSizeData } = this.state;
-
-                    editSizeData.sizeType = e.target.value;
-
-                    this.setState({ editSizeData });
-                  }}
-                  onKeyPress ={ this.OnKeyPresshandle}  required  maxLength={20}
-                   />
+                  <Input id="sizeType" name ="sizeType" value={this.state.sizeType} onChange={this.onChange}
                   
+                  onKeyPress ={ this.OnKeyPresshandle}   maxLength={20}
+                   />
+                     <span className="error">{this.state.errors.sizeType}</span>   
                 </FormGroup>
 
 

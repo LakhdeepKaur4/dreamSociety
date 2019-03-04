@@ -11,7 +11,7 @@ import UI from '../../components/newUI/superAdminDashboard'
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import defaultSelect from '../../constants/defaultSelect'
 
-
+import './employeeMaster.css'
 import GoogleDocsViewer from 'react-google-docs-viewer';
 
 class DisplayEmployeeMaster extends Component {
@@ -20,10 +20,7 @@ class DisplayEmployeeMaster extends Component {
     state = {
         editEmployeeData: {
             employeeId: '',
-            firstName: '',
-            middleName: '',
-            lastName: '',
-            CTC: '',
+           
 
             startDate: '',
             endDate: '',
@@ -49,10 +46,15 @@ class DisplayEmployeeMaster extends Component {
         cityId: '',
         locationName: '',
         locationId: '',
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        CTC: '',
         ids: [],
         isDisabled: true,
         documentOne: '',
             documentTwo:'',
+            errors:{}
 
     }
     componentDidMount() {
@@ -67,7 +69,19 @@ class DisplayEmployeeMaster extends Component {
         this.props.getLocation().then(() => this.setState({ loading: false }))
     }
 
+    onChange=(e)=> {
 
+
+        if (!!this.state.errors[e.target.name]) {
+          let errors = Object.assign({}, this.state.errors);
+          delete errors[e.target.name];
+          this.setState({ [e.target.name]: e.target.value, errors });
+      }
+      else {
+          this.setState({ [e.target.name]: e.target.value });
+      }
+       
+      } 
     openModal = (documentOne) => {
 
         this.setState({
@@ -123,7 +137,7 @@ class DisplayEmployeeMaster extends Component {
 
     editEmployee(employeeId, picture, firstName, middleName, lastName, CTC, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate, endDate) {
         console.log("first", employeeId, firstName, middleName, lastName, CTC, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate, endDate);
-        this.setState({ editEmployeeData: { employeeId, picture, firstName, middleName, lastName, CTC, documentOne, documentTwo, startDate, endDate }, countryName, stateName, cityName, locationName, editEmployeeModal: !this.state.editEmployeeModal })
+        this.setState({ editEmployeeData: { employeeId, picture,  documentOne, documentTwo, startDate, endDate },  firstName, middleName, lastName, CTC, countryName, stateName, cityName, locationName, editEmployeeModal: !this.state.editEmployeeModal })
 
     }
 
@@ -131,14 +145,34 @@ class DisplayEmployeeMaster extends Component {
         console.log(employeeId, "employeeId")
 
         console.log(this.state.documentOne, this.state.documentTwo, this.state.profilePicture, this.state.locationId, "documents");
+        let errors = {};
+        const {firstName,middleName,lastName,CTC}=this.state;
+        if(!this.state.firstName){
+            errors.firstName= "Service Type can't be empty. Please select."
+        }
+        if(!this.state.middleName){
+            errors.middleName= "Service Type can't be empty. Please select."
+        }
+        if(!this.state.lastName){
+            errors.lastName= "Service Type can't be empty. Please select."
+        }
+        if(!this.state.CTC){
+            errors.CTC= "CTC can't be empty. Please select."
+        }
+        this.setState({ errors });
 
+        const isValid = Object.keys(errors).length === 0
+    
+        // const isValid = this.validate();
+        if (isValid) {
+     
         const data = new FormData()
         data.append('documentOne', this.state.documentOne)
         data.append('documentTwo', this.state.documentTwo)
-        data.append('firstName', this.state.editEmployeeData.firstName)
-        data.append('middleName', this.state.editEmployeeData.middleName)
-        data.append('lastName', this.state.editEmployeeData.lastName)
-        data.append('CTC', this.state.editEmployeeData.CTC)
+        data.append('firstName', this.state.firstName)
+        data.append('middleName', this.state.middleName)
+        data.append('lastName', this.state.lastName)
+        data.append('CTC', this.state.CTC)
         data.append('countryId', this.state.countryId)
         data.append('stateId', this.state.stateId)
         data.append('cityId', this.state.cityId)
@@ -151,11 +185,11 @@ class DisplayEmployeeMaster extends Component {
         this.props.updateEmployee(this.state.editEmployeeData.employeeId, data).then(() => { this.refreshData() })
 
         this.setState({
-            editEmployeeModal: false
+            editEmployeeModal: false,loading:true
 
         })
 
-    }
+    }}
 
     deleteEmployee(employeeId) {
         this.setState({ loading: true })
@@ -406,76 +440,61 @@ class DisplayEmployeeMaster extends Component {
                             <ModalBody>
 
                                 <FormGroup>
+                                    <div className ="row">
+                                    <div  class="input-contain">
                                     <Label> Update your Profile photo</Label>
                                     <input accept='image/*' type="file" name="profilePicture" onChange={this.onPicChange} />
+                                    </div>
+                                    <div>
                                     <img style={{ width: "30%", height: "35%" }} src={UR + this.state.editEmployeeData.picture} alt="desc">
-                                    </img>
+                                    </ img>
+                                    </div>
+                                    </div>
                                 </FormGroup>
 
 
                                 <FormGroup>
                                     <Label > First Name</Label>
-                                    <Input value={this.state.editEmployeeData.firstName}
-                                        onChange={(e) => {
-                                            let { editEmployeeData } = this.state;
-
-                                            editEmployeeData.firstName = e.target.value;
-
-                                            this.setState({ editEmployeeData });
-                                        }}
-                                        required
+                                    <Input  name="firstName" value={this.state.firstName}
+                                        onChange={this.onChange}
+                
                                         maxLength={25}
                                         onKeyPress={this.OnKeyPresshandler}
 
                                     />
+                                    <span className="error">{this.state.errors.firstName}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label > Middle Name</Label>
-                                    <Input id="middleName" value={this.state.editEmployeeData.middleName}
-                                        onChange={(e) => {
-                                            let { editEmployeeData } = this.state;
-
-                                            editEmployeeData.middleName = e.target.value;
-
-                                            this.setState({ editEmployeeData });
-                                        }}
-                                        required
+                                    <Input name="middleName" value={this.state.middleName}
+                                        onChange={this.onChange}
+                                            
                                         maxLength={25}
                                         onKeyPress={this.OnKeyPresshandler}
 
                                     />
+                                     <span  className="error">{this.state.errors.middleName}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label > Last Name</Label>
-                                    <Input id="serviceType" value={this.state.editEmployeeData.lastName}
-                                        onChange={(e) => {
-                                            let { editEmployeeData } = this.state;
-
-                                            editEmployeeData.lastName = e.target.value;
-
-                                            this.setState({ editEmployeeData });
-                                        }}
-                                        required
+                                    <Input name="lastName" value={this.state.lastName}
+                                        onChange={this.onChange}
+                                           
                                         maxLength={25}
                                         onKeyPress={this.OnKeyPresshandler}
 
                                     />
+                                     <span  className="error">{this.state.errors.lastName}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label > CTC</Label>
-                                    <Input id="serviceType" value={this.state.editEmployeeData.CTC}
-                                        onChange={(e) => {
-                                            let { editEmployeeData } = this.state;
-
-                                            editEmployeeData.CTC = e.target.value;
-
-                                            this.setState({ editEmployeeData });
-                                        }}
-                                        required
+                                    <Input name="CTC" value={this.state.CTC}
+                                        onChange={this.onChange}
 
                                         onKeyPress={this.OnKeyPresshandler}
 
                                     />
+                                     <span  className="error" >{this.state.errors.CTC}</span>
                                     <FormGroup>
                                         <Label>Country Name</Label>
 
@@ -532,33 +551,41 @@ class DisplayEmployeeMaster extends Component {
                                     </FormGroup>
                                 </FormGroup>
                                 <FormGroup>
+                                  
                                     <Label > Document One</Label>
 
                                     <GoogleDocsViewer
                                         width="400px"
-                                        height="780px"
+                                        height="600px"
                                         fileUrl={UR + this.state.editEmployeeData.documentOne}
                                     />
-
+                                  
                                 </FormGroup>
                                 <FormGroup>
+                                <div  className="input-contain">
                                 <Label> Update your Id</Label>
                                     <input accept='.docx ,.doc,application/pdf' type="file" name="documentOne" onChange={this.onFileChange} />
+                                    </div>
                                 </FormGroup>
-                                <FormGroup>
-                                <Label> Update your Id</Label>
-                                    <input accept='.docx,application/pdf' type="file" name="documentTwo" onChange={this.FileChange} />
-                                </FormGroup>
+                                
                                 <FormGroup>
                                     <Label > Document Two</Label>
 
                                     <GoogleDocsViewer
                                         width="400px"
-                                        height="780px"
+                                        height="600px"
                                         fileUrl={UR + this.state.editEmployeeData.documentTwo}
                                     />
-
+                               
                                 </FormGroup>
+
+                                <FormGroup>
+                                <div  className="input-contain">
+                                <Label> Update your Id</Label>
+                                    <input accept='.docx,application/pdf' type="file" name="documentTwo" onChange={this.FileChange} />
+                                    </div>
+                                </FormGroup>
+
                                 <FormGroup>
                                     <Label > Start Date</Label>
                                     <Input type="date" value={this.state.editEmployeeData.startDate}

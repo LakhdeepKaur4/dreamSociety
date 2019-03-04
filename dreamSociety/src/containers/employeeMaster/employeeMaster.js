@@ -7,7 +7,7 @@ import {AddEmployee} from '../../actionCreators/employeeMasterAction';
 import {bindActionCreators} from 'redux';
 import DefaultSelect from '../../constants/defaultSelect'
 import _ from 'underscore';
-
+import './employeeMaster.css';
 class EmployeeMaster extends Component{
 
 
@@ -294,9 +294,10 @@ form=
 <form onSubmit={this.submit}>
   <h3 align="center">Employee Master </h3>
 
-  <div>
+  <div class="input-container">
         <label for ="upload-photo">Select Your Image</label>
-        <input type="file" accept ="image/*" name="profilePicture" onChange={this.onPicChange}/>
+        <input type="file" accept ="image/*"   name="profilePicture" onChange={this.onPicChange}/>
+         
         <span className="error">{this.state.errors.profilePicture}</span>
     </div>
 
@@ -394,17 +395,25 @@ form=
              <span className="error">{this.state.errors.endDate}</span>
           </div>
           </div>
+
+          <div className ="row">
+          <div className=" input-contain  col-md-4">
         <label> upload your ID</label>
         <input  accept='.docx ,.doc,application/pdf' type="file"      name ="documentOne" onChange={this.onFileChange}/>
         <span className="error">{this.state.errors.documentOne}</span>
     </div>
-  
-    <div>
+
+    
+   
+    <div  className="input-contain  col-md-1">
         <label> upload your ID</label>
         <input  accept='.docx,application/pdf' type="file"       name ="documentTwo" onChange={this.FileChange}/>
         <span className="error">{this.state.errors.documentTwo}</span>
     </div>
-   
+
+
+    </div>
+    </div>
 
     <button className="btn btn-success mr-2">Submit</button>
     <button className="btn btn-primary"  onClick ={this.displayEmployee}>Display Employee Master</button>

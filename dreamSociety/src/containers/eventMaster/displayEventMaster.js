@@ -11,23 +11,25 @@ import SearchFilter from '../../components/searchFilter/searchFilter';
 class DisplayEventMaster extends Component {
         state = {
                 editEventData: {
-                        eventId: '',
-                        userId: '',
-                        userName: '',
-                        eventType: '',
-                        eventName: '',
-                        eventOrganiser: [],
-                        startDate: Date,
-                        endDate: Date,
-                        isActive: false,
+                      
+                        isActive: false
 
                 },
+                eventId: '',
+                userId: '',
+                userName: '',
+                eventType: '',
+                eventName: '',
+                eventOrganiser: [],
+                startDate: Date,
+                endDate: Date,
                 editEventModal: false,
                 menuVisible: false,
                 search: '',
                 loading: true,
                 ids: [],
                 isDisabled: true,
+                errors:{}
         }
         componentDidMount() {
                 this.refreshData()
@@ -45,18 +47,49 @@ class DisplayEventMaster extends Component {
                         editEventModal: !this.state.editEventModal
                 })
         }
+    
+        onChange =(e)=>{
+                if (!!this.state.errors[e.target.name]) {
+                        let errors = Object.assign({}, this.state.errors);
+                        delete errors[e.target.name];
+                        this.setState({ [e.target.name]: e.target.value, errors });
+                    }
+                    else {
+                        this.setState({ [e.target.name]: e.target.value });
+                    }
+        }
 
         editEvent(eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId, userName) {
                 console.log('i m in edit ', eventId, userName, eventOrganiser);
                 this.setState({
-                        editEventData: { eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId, userName },
+                      eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId, userName ,
                         editEventModal: !this.state.editEventModal
                 })
         }
 
         updateEvent = () => {
+                let errors={};
+                let { eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId } = this.state;
+                
+                if(!this.state.eventType){
+                        errors.eventType ="Event Type cant be empty please Select"
+                          }
+                          if(!this.state.eventName){
+                                errors.eventName ="Event Name cant be empty please Select"
+                                  }
+                                  if(!this.state.eventOrganiser){
+                                        errors.eventOrganiser ="Event Organiser cant be empty please Select"
+                                          }
+                                          if(!this.state.startDate){
+                                                errors.startDate ="Start  Date cant be empty please Select"
+                                                  }
+                                                  if(!this.state.endDate){
+                                                        errors.endDate ="End Date cant be empty please Select"
+                                                          }
 
-                let { eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId } = this.state.editEventData;
+                       this.setState({errors})
+                       const isValid = Object.keys(errors).length===0
+                      if(isValid){
                 this.props.updateEvent(eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId).then(() => { this.refreshData() })
 
 
@@ -66,6 +99,8 @@ class DisplayEventMaster extends Component {
                         editEventModal: false, loading: true, editEventData: { eventId: '', eventType: '', eventName: '', eventOrganiser: '', startDate: '', endDate: '', userId: '', userName: '' }
                 })
         }
+}
+
 
         OnKeyPresshandler(event) {
                 const pattern = /[a-zA-Z _]/;
@@ -271,42 +306,28 @@ class DisplayEventMaster extends Component {
 
                                                                 <FormGroup>
                                                                         <Label for="eventType"> Event Type</Label>
-                                                                        <Input id="eventType" value={this.state.editEventData.eventType}
-                                                                                onChange={(e) => {
-                                                                                        let { editEventData } = this.state;
-
-                                                                                        editEventData.eventType = e.target.value;
-
-                                                                                        this.setState({ editEventData });
-                                                                                }}
-                                                                                required
+                                                                        <Input name="eventType" value={this.state.eventType}
+                                                                                onChange={this.onChange}
+                         
+                                                                   
                                                                                 maxLength={25}
                                                                                 onKeyPress={this.OnKeyPresshandler}
 
                                                                         />
+                                                                        <span className ="error"> {this.state.errors.eventType}</span>
                                                                 </FormGroup>
 
                                                                 <FormGroup>
                                                                         <Label for="eventName"> Event Name</Label>
-                                                                        <Input id="eventName" value={this.state.editEventData.eventName} onChange={(e) => {
-                                                                                let { editEventData } = this.state;
-                                                                                editEventData.eventName = e.target.value;
-                                                                                this.setState({ editEventData });
-                                                                        }}
+                                                                        <Input name="eventName" value={this.state.eventName} onChange={this.onChange}
                                                                                 onKeyPress={this.OnKeyPresshandler}
                                                                                 maxLength={25}
-                                                                                required />
+                                                                             />
+                                                                                   <span className ="error"> {this.state.errors.eventName}</span>
                                                                 </FormGroup>
                                                                 <FormGroup>
                                                                         <Label >Event Organiser</Label>
-                                                                        <Input type="select" value={this.state.editEventData.eventOrganiser} defaultValue='no-value' onChange={(e) => {
-                                                                                let { editEventData } = this.state;
-                                                                                editEventData.eventOrganiser = e.target.value;
-                                                                                console.log('vghvghyghfgh', this.state.editEventData.eventOrganiser);
-
-                                                                                this.setState({ editEventData })
-
-                                                                        }} required >
+                                                                        <Input type="select"  name ="eventOrganiser"  value={this.state.eventOrganiser} defaultValue='no-value' onChange={this.onChange} >
 
                                                                                 <option      value={this.state.editEventData.userName}>{this.state.editEventData.userName}</option>
 
@@ -314,25 +335,20 @@ class DisplayEventMaster extends Component {
 
                                                                                 {this.getEvent(this.props.EventDetails)}
                                                                         </Input>
+                                                                        <span className ="error"> {this.state.errors.userName}</span>
                                                                 </FormGroup>
                                                                 <FormGroup>
                                                                         <Label> Event Start Date</Label>
-                                                                        <Input type="date" id="startDate" value={this.state.editEventData.startDate} onChange={(e) => {
-                                                                                let { editEventData } = this.state
-                                                                                editEventData.startDate = e.target.value;
-                                                                                this.setState({ editEventData })
-                                                                        }} />
+                                                                        <Input type="date" id="startDate" value={this.state.startDate} onChange={this.onChange}
+                                                                            />
+                                                                                  <span className ="error"> {this.state.errors.startDate}</span>
                                                                 </FormGroup>
                                                                 <FormGroup>
                                                                         <Label>Event End Date</Label>
-                                                                        <Input type="date" id="endDate" value={this.state.editEventData.endDate} onChange={(e) => {
-                                                                                let { editEventData } = this.state
-                                                                                editEventData.endDate = e.target.value;
-                                                                                this.setState({
-                                                                                        editEventData
-                                                                                })
-                                                                        }}
+                                                                        <Input type="date" id="endDate" value={this.state.endDate} onChange={this.onChange}
+                                                                       
                                                                         />
+                                                                              <span className ="error"> {this.state.errors.endDate}</span>
                                                                 </FormGroup>
 
 
