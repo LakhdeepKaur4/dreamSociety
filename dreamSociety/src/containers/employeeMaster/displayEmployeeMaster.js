@@ -114,26 +114,46 @@ class DisplayEmployeeMaster extends Component {
             editEmployeeModal: !this.state.editEmployeeModal
         })
     }
+    onPicChange=(event)=>{
+        if(!!this.state.errors[event.target.name]){
+        
+            let errors =Object.assign({},this.state.errors)
+            delete  errors[event.target.name]
+            this.setState({[event.target.name]:event .target.files,errors});
+        }
+        else{
+      this.setState({ profilePicture : event.target.files[0]})
+       
+        }
 
-    onPicChange = (event) => {
-        this.setState({ profilePicture: event.target.files[0] })
+}   
 
 
-
-    }
-
-    onFileChange = (event) => {
-        console.log('jjjjjjjjjjjj', event);
-
-        this.setState({ documentOne: event.target.files[0] })
-    }
-
-
-    FileChange = (event) => {
-
-        this.setState({ documentTwo: event.target.files[0] })
-    }
-
+    onFileChange=(event)=>{
+        if(!!this.state.errors[event.target.name]){
+            let errors =Object.assign({},this.state.errors)
+            delete errors[event.target.name]
+            this.setState({[event.target.name]:event.target.files[0],errors});
+ 
+        }
+           else{this.setState({ documentOne: event.target.files[0]})
+     }
+          }
+ 
+         
+ FileChange=(event)=>{
+     if(!!this.state.errors[event.target.name]){
+         let errors =Object.assign({},this.state.errors)
+         delete errors[event.target.name]
+         this.setState({[event.target.name]:event.target.files[0],errors});
+     }
+   
+     else{
+               this.setState({ documentTwo: event.target.files[0]})
+              
+         }
+     }
+     
 
     editEmployee(employeeId, picture, firstName, middleName, lastName, CTC, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate, endDate) {
         console.log("first", employeeId, firstName, middleName, lastName, CTC, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate, endDate);
@@ -148,13 +168,13 @@ class DisplayEmployeeMaster extends Component {
         let errors = {};
         const {firstName,middleName,lastName,CTC}=this.state;
         if(!this.state.firstName){
-            errors.firstName= "Service Type can't be empty. Please select."
+            errors.firstName= "first Name can't be empty. Please select."
         }
         if(!this.state.middleName){
-            errors.middleName= "Service Type can't be empty. Please select."
+            errors.middleName= "middle Name can't be empty. Please select."
         }
         if(!this.state.lastName){
-            errors.lastName= "Service Type can't be empty. Please select."
+            errors.lastName= "last Name can't be empty. Please select."
         }
         if(!this.state.CTC){
             errors.CTC= "CTC can't be empty. Please select."

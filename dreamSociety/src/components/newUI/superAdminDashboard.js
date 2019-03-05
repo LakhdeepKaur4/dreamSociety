@@ -87,9 +87,9 @@ class Demo extends Component {
                         <span className="navbar-toggler-icon"></span>
                     </button>
 
-                    <div className="collapse navbar-collapse" id="navbarsExample05">
+                    <div className="collapse navbar-collapse" id="navbarsExample04">
                         <ul className="navbar-nav mr-auto mx-auto">
-                            <li className="nav-item mx-3 active">
+                            <li  className="nav-item mx-3 active">
                                 <Link className="nav-link" to="/superDashboard">Home<span className="sr-only">(current)</span></Link>
                             </li>
                             <li className="nav-item mx-3">
@@ -159,7 +159,7 @@ class Demo extends Component {
                             <div style={{ height: '10%' }}></div>
                         </div>
                     </nav>
-                    <nav id="sidebarMaster" className="bg-light inactive">
+                    <nav id="sidebarMaster" className="bg-light  inactive">
                         <div id="sidebarMaster-content">
                             <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/designationMasterDetail">Designation Master</Link></div></Menu.Item>
                             <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/countrymaster/countrymasterdetails"> Country Master</Link></div></Menu.Item>
