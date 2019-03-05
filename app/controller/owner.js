@@ -10,6 +10,8 @@ const Owner = db.owner;
 const OwnerMembersDetail = db.ownerMembersDetail;
 const FlatDetail = db.flatDetail;
 const Tower = db.tower;
+const Society = db.society;
+const User = db.user;
 
 function encrypt(key, data) {
     var cipher = crypto.createCipher('aes-256-cbc', key);
@@ -33,6 +35,7 @@ exports.create = async (req, res, next) => {
         let ownerBody = req.body;
         let memberBody = req.body;
         ownerBody.userId = req.userId;
+        console.log("owner body==>",ownerBody)
         let customVendorName = req.body.ownerName;
         const userName = customVendorName + 'O' + req.body.towerId + req.body.flatDetailId;
         console.log("userName==>", userName);
@@ -205,18 +208,56 @@ exports.get = async (req, res, next) => {
     }
 }
 
-exports.getFlat = async (req, res, next) => {
+exports.getFlatNo = async (req, res, next) => {
     try {
         console.log("req.param id==>", req.params.id)
-        const owner = await Owner.findAll({
+        const owner = await FlatDetail.findAll({
             where: { towerId: req.params.id },
             order: [['createdAt', 'DESC']],
-            include: [{
-                model: Tower,
+            include: [
+                { model: Tower },
+                // {model:FlatDetail}
                 // include: [
                 //     { model: Tower }
                 // ]
-            }]
+            ]
+        });
+        if (owner) {
+            return res.status(httpStatus.CREATED).json({
+                message: "Owner Flat Content Page",
+                owner
+            });
+        }
+    } catch (error) {
+        console.log("error==>", error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.getFlatDetail = async (req, res, next) => {
+    try {
+        console.log("req.param id==>", req.params.id)
+        const owner = await Owner.findAll({
+            where: { flatDetailId: req.params.id },
+            order: [['createdAt', 'DESC']],
+            include: [
+                {
+                    model: Tower,
+                    attributes: ['towerId', 'towerName']
+                },
+                {
+                    model: Society,
+                    attributes: ['societyId', 'societyName']
+                },
+                {
+                    model: User,
+                    attributes: ['userId', 'userName']
+                },
+
+                //     // include: [
+                //     //     { model: Tower }
+                //     // ]
+            ]
         });
         if (owner) {
             return res.status(httpStatus.CREATED).json({

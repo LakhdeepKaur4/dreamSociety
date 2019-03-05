@@ -389,7 +389,9 @@ module.exports = function(app) {
 
 	app.get('/api/owner',[authJwt.verifyToken],owner.get);
 
-	app.get('/api/owner/:id',[authJwt.verifyToken],owner.getFlat);
+	app.get('/api/owner/:id',[authJwt.verifyToken],owner.getFlatNo);
+
+	app.get('/api/owner/getFlatDetail/:id',[authJwt.verifyToken],owner.getFlatDetail);
 	
 	app.post('/api/tenant',[authJwt.verifyToken],fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }]),tenant.create);
 
