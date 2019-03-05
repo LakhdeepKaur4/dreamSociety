@@ -67,7 +67,7 @@ class Demo extends Component {
     render() {
         return (
             <div>
-                <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" style={{ zIndex: "2000" }}>
+                <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" style={{ zIndex: "1001" }}>
 
                     <div id="content">
 
