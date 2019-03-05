@@ -45,7 +45,7 @@ class FlatOwnerDetails extends Component {
             // memberDOB:'',
             // memberName:'',
             // relationName:'',
-            profilePic:'',
+            profilePicture:'',
             permanentAddress:'',
             familyMember:'',
             member:[],
@@ -269,7 +269,7 @@ class FlatOwnerDetails extends Component {
             // memberName,
             // memberDOB,
             // relationName,
-            profilePic,
+            profilePicture,
             societyName,
             permanentAddress,
             countryName,
@@ -281,7 +281,7 @@ class FlatOwnerDetails extends Component {
             locationId,
             locationName,
             member} = this.state
-            // const data = new FormData()
+            const d = new FormData()
             // data.append('ownerName',ownerName)
             // data.append('dob',DOB)
             // data.append('contact',number)
@@ -304,7 +304,8 @@ class FlatOwnerDetails extends Component {
             //     data.append(`relationId${i}`, this.state['relationName'+i])
             //     console.log(`relationName`, this.state['relationName'+i]);
             // }
-            // data.append('profilePicture', profilePic.name)
+            console.log(this.state.profilePicture)
+            d.append('profilePicture',this.state.profilePicture)
             // console.log('jkldsjfkdfjjjjjjjjjjjjjjjjj',this.state);
         //  this.props.addFlatOwner(data);  
         
@@ -343,7 +344,7 @@ class FlatOwnerDetails extends Component {
                 // memberName,
                 // memberDOB,
                 // relationName,
-                profilePic,
+                profilePicture,
                 societyName,
                 permanentAddress,
                 member,
@@ -357,24 +358,25 @@ class FlatOwnerDetails extends Component {
                 locationName
                 
             }
-            console.log(FlatOwnerData)
-            this.props.addFlatOwner(FlatOwnerData); 
+            console.log(FlatOwnerData,...d)
+            this.props.addFlatOwner(FlatOwnerData,d); 
 
         }
     FileChange=(event)=>{
-        // this.setState({ profilePic: event.target.files[0].name})
-        const files = event.target.files;
-        const file = files[0];
-        if (files && file) {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload =  () =>{
-              this.setState({
-                profilePic :  reader.result
-              })
+        console.log(event.target.files[0].name)
+        this.setState({ profilePicture: event.target.files[0]})
+        // const files = event.target.files;
+        // const file = files[0];
+        // if (files && file) {
+        //   const reader = new FileReader();
+        //   reader.readAsDataURL(file);
+        //   reader.onload =  () =>{
+        //       this.setState({
+        //         profilePic :  reader.result
+        //       })
            
-          };
-        }
+        //   };
+        // }
        
   }
     render() {
