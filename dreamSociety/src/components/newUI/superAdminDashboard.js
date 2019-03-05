@@ -67,7 +67,7 @@ class Demo extends Component {
     render() {
         return (
             <div>
-                <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" style={{ zIndex: "1" }}>
+                <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" style={{ zIndex: "1001" }}>
 
                     <div id="content">
 
@@ -87,9 +87,9 @@ class Demo extends Component {
                         <span className="navbar-toggler-icon"></span>
                     </button>
 
-                    <div className="collapse navbar-collapse" id="navbarsExample05">
+                    <div className="collapse navbar-collapse" id="navbarsExample04">
                         <ul className="navbar-nav mr-auto mx-auto">
-                            <li className="nav-item mx-3 active">
+                            <li  className="nav-item mx-3 active">
                                 <Link className="nav-link" to="/superDashboard">Home<span className="sr-only">(current)</span></Link>
                             </li>
                             <li className="nav-item mx-3">
@@ -102,10 +102,21 @@ class Demo extends Component {
                                 <Link className="nav-link" to="#">Contact Us</Link>
                             </li>
                         </ul>
-                        <h4 style={{position: 'relative',zIndex: 10000,color: 'white',paddingRight:'10px'}}> {localStorage.getItem('firstName')}</h4>
+                        {/* <div style={{ position: 'relative', zIndex: "10000", color: 'white', paddingRight: '10px' }}> {localStorage.getItem('firstName')}</div>
                         <div className="form-inline mt-2 mt-md-0">
                             <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
                                 onClick={this.props.onClick} >Logout</button>
+                        </div> */}
+                        <div className="dropdown mx-2">
+                            <button className="btn btn-outline-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {localStorage.getItem('firstName')}
+                            </button>
+                            <div className="dropdown-menu dropdown-menu-lg-right bg-dark" aria-labelledby="dropdownMenuButton">
+                                <div className="form-inline ml-lg-3 ml-md-2 ml-sm-2 mt-2 mt-md-0">
+                                    <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
+                                        onClick={this.props.onClick} >Logout</button>
+                                </div> 
+                            </div>
                         </div>
 
                     </div>
@@ -160,7 +171,7 @@ class Demo extends Component {
                             <div style={{ height: '10%' }}></div>
                         </div>
                     </nav>
-                    <nav id="sidebarMaster" className="bg-light inactive">
+                    <nav id="sidebarMaster" className="bg-light  inactive">
                         <div id="sidebarMaster-content">
                             <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/designationMasterDetail">Designation Master</Link></div></Menu.Item>
                             <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/countrymaster/countrymasterdetails"> Country Master</Link></div></Menu.Item>

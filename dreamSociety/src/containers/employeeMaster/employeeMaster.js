@@ -37,32 +37,63 @@ class EmployeeMaster extends Component{
 
     
     onPicChange=(event)=>{
+        if(!!this.state.errors[event.target.name]){
+        
+            let errors =Object.assign({},this.state.errors)
+            delete  errors[event.target.name]
+            this.setState({[event.target.name]:event.target.files,errors});
+        }
+        else{
       this.setState({ profilePicture : event.target.files[0]})
        
-    
+        }
 
 }   
+
+onChange = (e) => {
+    if(!!this.state.errors[e.target.name]){
+        let errors =Object.assign({},this.state.errors)
+        delete  errors[e.target.name]
+        this.setState({[e.target.name]:e.target.value,errors});
+    }
+    else{
+this.setState({[e.target.name]:e.target.value});
+}
+  } 
+
+
     
 onFileChange=(event)=>{
-console.log('jjjjjjjjjjjj',event);
+       if(!!this.state.errors[event.target.name]){
+           let errors =Object.assign({},this.state.errors)
+           delete errors[event.target.name]
+           this.setState({[event.target.name]:event.target.files[0],errors});
 
-          this.setState({ documentOne: event.target.files[0]})
+       }
+          else{this.setState({ documentOne: event.target.files[0]})
+    }
          }
 
         
 FileChange=(event)=>{
+    if(!!this.state.errors[event.target.name]){
+        let errors =Object.assign({},this.state.errors)
+        delete errors[event.target.name]
+        this.setState({[event.target.name]:event.target.files[0],errors});
+    }
   
-    
+    else{
               this.setState({ documentTwo: event.target.files[0]})
              
         }
+    }
     
     componentDidMount(){
     
-        this.props.getCountryName();
-        this.props.getStateName();
-        this.props.getCityName();
-        this.props.getLocationName();
+        this.props.getCountryName().then(()=>this.setState({loading:false}));
+        this.props.getStateName().then(()=>this.setState({loading:false}))
+        this.props.getCityName().then(()=>this.setState({loading:false}))
+        this.props.getLocationName().then(()=>this.setState({loading:false}))
       
     }
 
@@ -82,6 +113,8 @@ FileChange=(event)=>{
         }
     }
 
+ 
+
     submit=(event)=> {
         
         event.preventDefault();
@@ -89,7 +122,7 @@ FileChange=(event)=>{
         // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
        
         if(!this.state.countryId){
-          errors.serviceType  = " service Type  can't be empty. Please select."
+          errors.countryId = " country Id  can't be empty. Please select."
          }
          if(!this.state.stateId){
           errors.stateId ="State Name can't be empty. Please select"
@@ -131,7 +164,7 @@ FileChange=(event)=>{
   const isValid = Object.keys(errors).length === 0
   if (isValid) {        
      
-
+      this.setState({loading:true})
       
         data.append('documentOne',this.state.documentOne, this.state.documentOne.name)
         data.append('documentTwo',this.state.documentTwo, this.state.documentTwo.name)
@@ -148,23 +181,13 @@ FileChange=(event)=>{
         data.append('profilePicture',this.state.profilePicture)
         
           
-        this.props.AddEmployee(data)
+        this.props.AddEmployee(data).then(()=>this.props.history.push('/superDashboard/displayEmployee'));
 
 
     }
     }
     
-        onChange = (e) => {
-            if(!!this.state.errors[e.target.name]){
-                let errors =Object.assign({},this.state.errors)
-                delete  errors[e.target.name]
-                this.setState({[e.target.name]:e.target.value,errors});
-            }
-            else{
-        this.setState({[e.target.name]:e.target.value});
-        }
-          } 
-    
+ 
   
          
     getDropdown1=({country})=>{
@@ -288,6 +311,7 @@ if(location){
   }
 render(){
 let form;
+<Spinner/>
 
 form=
 <div>
@@ -296,7 +320,7 @@ form=
 
   <div class="input-container">
         <label for ="upload-photo">Select Your Image</label>
-        <input type="file" accept ="image/*"   name="profilePicture" onChange={this.onPicChange}/>
+        <input type="file" accept ="image/*"   data-max-size="4194304"   name="profilePicture" onChange={this.onPicChange}/>
          
         <span className="error">{this.state.errors.profilePicture}</span>
     </div>
@@ -417,6 +441,7 @@ form=
 
     <button className="btn btn-success mr-2">Submit</button>
     <button className="btn btn-primary"  onClick ={this.displayEmployee}>Display Employee Master</button>
+    {/* {!this.state.loading ? formData: <Spinner />}  */}
     </form>
     </div>
 

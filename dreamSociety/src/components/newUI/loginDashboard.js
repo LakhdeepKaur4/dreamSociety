@@ -61,7 +61,7 @@ class Demo extends Component {
                                 <Link className="nav-link" to="#">Contact Us</Link>
                             </li>
                         </ul>
-                        <div className="form-inline mt-2 mt-md-0">
+                        <div className="form-inline mt-2 ml-3 mt-md-0">
                             <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
                                 onClick={this.props.onClick}>Login</button>
                         </div>
