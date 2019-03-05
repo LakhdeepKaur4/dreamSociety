@@ -67,7 +67,7 @@ class Demo extends Component {
     render() {
         return (
             <div>
-                <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" style={{ zIndex: "1" }}>
+                <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" style={{ zIndex: "2000" }}>
 
                     <div id="content">
 
@@ -102,10 +102,21 @@ class Demo extends Component {
                                 <Link className="nav-link" to="#">Contact Us</Link>
                             </li>
                         </ul>
-                        <h4 style={{position: 'relative',zIndex: 10000,color: 'white',paddingRight:'10px'}}> {localStorage.getItem('firstName')}</h4>
+                        {/* <div style={{ position: 'relative', zIndex: "10000", color: 'white', paddingRight: '10px' }}> {localStorage.getItem('firstName')}</div>
                         <div className="form-inline mt-2 mt-md-0">
                             <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
                                 onClick={this.props.onClick} >Logout</button>
+                        </div> */}
+                        <div className="dropdown mx-2">
+                            <button className="btn btn-outline-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {localStorage.getItem('firstName')}
+                            </button>
+                            <div className="dropdown-menu dropdown-menu-lg-right bg-dark" aria-labelledby="dropdownMenuButton">
+                                <div className="form-inline ml-lg-3 ml-md-2 ml-sm-2 mt-2 mt-md-0">
+                                    <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
+                                        onClick={this.props.onClick} >Logout</button>
+                                </div> 
+                            </div>
                         </div>
 
                     </div>
