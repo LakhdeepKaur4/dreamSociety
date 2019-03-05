@@ -74,7 +74,7 @@ import AddTenant from './containers/tenantMaster/addTenant';
 class App extends Component {
   render() {
     return (
-      <BrowserRouter onUpdate={() => window.scrollTo(0, 0)}>
+      <BrowserRouter basename='dreamsociety' onUpdate={() => window.scrollTo(0, 0)}>
         
         <div>
           <Switch>
