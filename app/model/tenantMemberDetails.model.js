@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const OwnerMembersDetail = sequelize.define('owner_members_detail_master', {
+    const TenantMembersDetail = sequelize.define('tenant_members_detail_master', {
         memberId: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
@@ -29,5 +29,5 @@ module.exports = (sequelize, Sequelize) => {
             freezeTableName: true
         });
 
-    return OwnerMembersDetail;
+    return TenantMembersDetail;
 }

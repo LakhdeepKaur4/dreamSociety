@@ -1,11 +1,11 @@
 const db = require('../config/db.config.js');
 const httpStatus = require('http-status');
-const crypto = require('crypto');
 var passwordGenerator = require('generate-password');
 const Nexmo = require("nexmo");
 const config = require('../config/config.js');
-const fs = require('fs');
-
+const file = require('../handlers/fileSystem');
+const crypto = require('crypto');
+const key = config.secret;
 const nexmo = new Nexmo(
     {
         apiKey: config.api_key,
@@ -19,8 +19,6 @@ const Service = db.service;
 const Rate =db.rate;
 const VendorService = db.vendorService;
 const Op = db.Sequelize.Op;
-
-const key = config.secret;
 
 function encrypt(key, data) {
     var cipher = crypto.createCipher('aes-256-cbc', key);
@@ -142,112 +140,6 @@ exports.create = async (req, res, next) => {
     }
 }
 
-exports.get = async (req, res, next) => {
-    try {
-        const vendor = await VendorService.findAll({
-            where: { isActive: true },
-            order: [['createdAt', 'DESC']],
-            include: [
-            { model: Vendor },
-            {model:Rate},
-            {model:Service}]
-        });
-        if (vendor) {
-            return res.status(httpStatus.CREATED).json({
-                message: "Vendor Content Page",
-                vendor: vendor
-            });
-        }
-    } catch (error) {
-        console.log(error)
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-    }
-}
-
-exports.update = async (req, res, next) => {
-    try {
-        console.log("updating vendor");
-        console.log(":::::req.body==>",req.body)
-        const id = req.params.id;
-        console.log(":::::id",id)
-        if (!id) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
-        }
-        const update = req.body;
-        // const empty = isEmpty(update)
-        // console.log(empty)
-        
-        if (!update) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
-        }
-        const updatedVendor = await Vendor.find({ where: { vendorId: id } }).then(vendor => {
-            return vendor.updateAttributes(update)
-        })
-        if (updatedVendor) {
-            return res.status(httpStatus.OK).json({
-                message: "Vendor Updated Page",
-                vendor: updatedVendor
-            });
-        }
-    } catch (error) {
-        console.log(error)
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-    }
-}
-
-exports.delete = async (req, res, next) => {
-    try {
-        const id = req.params.id;
-        if (!id) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
-        }
-        const update = req.body;
-        if (!update) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
-        }
-        const updatedVendor = await Vendor.find({ where: { vendorId: id } }).then(vendor => {
-            return vendor.updateAttributes(update)
-        })
-
-        // const updatedVendorService = await VendorService.find({ where: { vendorId: id } }).then(vendorService => {
-        //     return vendorService.updateAttributes(update)
-        // })
-        const updatedVendorService = await VendorService.update(update, { where: { vendorId:id} })
-        if (updatedVendor && updatedVendorService) {
-            return res.status(httpStatus.OK).json({
-                message: "Vendor deleted successfully",
-            });
-        }
-    } catch (error) {
-        console.log("error::",error)
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-    }
-}
-
-exports.deleteSelected = async (req, res, next) => {
-	try {
-		const deleteSelected = req.body.ids;
-        console.log("delete selected==>", deleteSelected);
-         
-		const update = { isActive: false };
-		if (!deleteSelected) {
-			return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
-		}
-		const updatedVendor = await Vendor.update(update, { where: { vendorId: { [Op.in]: deleteSelected } } })
-		if (updatedVendor) {
-			return res.status(httpStatus.OK).json({
-				message: "Vendors deleted successfully",
-			});
-		}
-	} catch (error) {
-		console.log(error)
-		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-	}
-}
-
-
-
-
 exports.create1 = async (req, res, next) => {
     try {
         let body = req.body;
@@ -265,7 +157,7 @@ exports.create1 = async (req, res, next) => {
             permanentAddress: encrypt(key,body.permanentAddress),
             currentAddress: encrypt(key,body.currentAddress),
             contact: encrypt(key,body.contact),
-            userId: req.userId
+            userId: 1, //req.userId
             // document: body.document
         });
         const vendorId = vendor.vendorId;
@@ -305,9 +197,11 @@ exports.create1 = async (req, res, next) => {
             // for (let i = 0; i < req.files.profilePicture.length; i++) {
                 profileImage = req.files.profilePicture[0].path;
             // }
+            // console.log("profile Image==>",profileImage)
             const updateImage = {
                 picture: encrypt(key,profileImage)
             };
+            console.log("updatted image==>",updateImage)
             const imageUpdate = await Vendor.find({ where: { vendorId: vendorId } }).then(vendor => {
                 return vendor.updateAttributes(updateImage)
             })
@@ -330,7 +224,7 @@ exports.create1 = async (req, res, next) => {
         //         console.log(resp);
         //     }
         // });
-        console.log("vendor ==>",vendor);
+        // console.log("vendor ==>",vendor);
         decryptedVendor = {
             userName : decrypt(key,vendor.userName),
             vendorName: decrypt(key,vendor.vendorName),
@@ -347,7 +241,6 @@ exports.create1 = async (req, res, next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
-
 
 
 exports.get1 = async (req, res, next) => {
@@ -390,52 +283,29 @@ exports.get1 = async (req, res, next) => {
 }
 
 
-// let deletePhoto = function (vendor) {
-//     let x = decrypt(key,vendor.picture);
-//     // let y = x.lastIndexOf('/');
-//     // let z = x.substring(y+1);
-//     // console.log(decrypt(key,vendor.picture));
-//       fs.unlinkSync( `C:\\Users\\ATIN\\Desktop\\dream-master\\new\\dreamSociety\\${x}`) 
-//   };
+exports.get = async (req, res, next) => {
+    try {
+        const vendor = await VendorService.findAll({
+            where: { isActive: true },
+            order: [['createdAt', 'DESC']],
+            include: [
+            { model: Vendor },
+            {model:Rate},
+            {model:Service}]
+        });
+        if (vendor) {
+            return res.status(httpStatus.CREATED).json({
+                message: "Vendor Content Page",
+                vendor: vendor
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
 
-//   let deleteDocumentOne = function(vendor) {
-//     let x = decrypt(key,vendor.documentOne);
-//     fs.unlinkSync( `C:\\Users\\ATIN\\Desktop\\dream-master\\new\\dreamSociety\\${x}`) 
-
-//   }
-
-//   let deleteDocumentTwo = function(vendor) {
-//     let x = decrypt(key,vendor.documentTwo);
-//     fs.unlinkSync( `C:\\Users\\ATIN\\Desktop\\dream-master\\new\\dreamSociety\\${x}`); 
-//   }
-
-
-
-
-
-  let deletePhoto = function (vendor) {
-    let x = decrypt(key,vendor.picture);
-      fs.unlinkSync( x ); 
-  };
-
-  let deleteDocumentOne = function(vendor) {
-    let x = decrypt(key,vendor.documentOne);
-    fs.unlinkSync( x ) 
-
-  }
-
-  let deleteDocumentTwo = function(vendor) {
-    let x = decrypt(key,vendor.documentTwo);
-    fs.unlinkSync( x ); 
-  }
-
-
-
-
-exports.update1 = async (req, res, next) => {
-    let updAttr = {};
-    let attrArr = ['userName','vendorName','permanentAddress','currentAddress','contact'];
-    let attrFiles = ['profilePicture','documentOne','documentTwo'];
+exports.update = async (req, res, next) => {
     try {
         console.log("updating vendor");
         console.log(":::::req.body==>",req.body)
@@ -452,75 +322,74 @@ exports.update1 = async (req, res, next) => {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
         const updatedVendor = await Vendor.find({ where: { vendorId: id } }).then(vendor => {
-            // if(req.files.profilePicture[0]){
-            //     deletePhoto(vendor);
-            // }
-            // if(req.files.documentOne[0]){
-            //     deleteDocumentOne(vendor);
-            // }
-            // if(req.files.documentTwo[0]){
-            //     deleteDocumentTwo(vendor);
-            // }
-        //  let findAttr = (prop) => {
-        //      if(prop in req.body && req.body[prop]!==undefined) {
-        //          updAttr[prop] = encrypt(key,req.body[prop]);
-        //      }          
-        //  }
+            return vendor.updateAttributes(update)
+        })
+        if (updatedVendor) {
+            return res.status(httpStatus.OK).json({
+                message: "Vendor Updated Page",
+                vendor: updatedVendor
+            });
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
 
-        //  let findFiles = (prop) => {
-        //      if(req.files[prop] && req.files[prop]!==undefined){
-        //          if(prop === 'profilePicture'){
-        //             deletePhoto(vendor);
-        //              updAttr.picture = encrypt(key,req.files[prop][0].path);
-        //          }
-        //          if(prop === 'documentOne'){
-        //             deleteDocumentOne(vendor);
-        //             updAttr[prop] = encrypt(key,req.files[prop][0].path);
-        //          }
-        //          if(prop === 'documentTwo'){
-        //             deleteDocumentTwo(vendor);
-        //             updAttr[prop] = encrypt(key,req.files[prop][0].path);
-        //          }
-              
-        //      }
-        //  }
-        //  attrArr.forEach(attr => findAttr(attr));
-        //  attrFiles.forEach(attr => findFiles(attr));
-        //  console.log(updAttr);
-           attrArr.forEach(attr => {
-               if(attr in req.body && req.body[attr]!==undefined && req.body[attr]!==null){
-                   updAttr[attr] = encrypt(key,req.body[attr]);
-               }
-           })
-           attrFiles.forEach(attr => {
-               if(attr in req.files && req.files[attr][0]!==undefined && req.files[attr][0]!==null){
-                   if(attr === 'profilePicture'){
-                       deletePhoto(vendor);
-                       updAttr.picture = encrypt(key,req.files[attr][0].path)
-                   }
-                   else if(attr === 'documentOne'){
-                    deleteDocumentOne(vendor);
-                    updAttr.documentOne = encrypt(key,req.files[attr][0].path);
-                   }
-                   else if(attr === 'documentTwo'){
-                    deleteDocumentTwo(vendor);
-                    updAttr.documentTwo = encrypt(key,req.files[attr][0].path);
+let deletePhoto = function (vendor) {
+    let x = decrypt(key,vendor.picture);
+      fs.unlinkSync( x ); 
+  };
 
-                   }
-               }
+  let deleteDocumentOne = function(vendor) {
+    let x = decrypt(key,vendor.documentOne);
+    fs.unlinkSync( x ) 
 
-           })
-            // return vendor.updateAttributes({
-            //     userName:encrypt(key,req.body.userName),
-            //     vendorName:encrypt(key,req.body.vendorName),
-            //     picture:encrypt(key,req.files.profilePicture[0].path),
-            //     documentOne:encrypt(key,req.files.documentOne[0].path),
-            //     documentTwo:encrypt(key,req.files.documentTwo[0].path),
-            //     permanentAddress:encrypt(key,req.body.permanentAddress),
-            //     currentAddress:encrypt(key,req.body.currentAddress),
-            //     contact:encrypt(key,req.body.contact),
-            // })
-            return vendor.updateAttributes(updAttr);
+  }
+
+  let deleteDocumentTwo = function(vendor) {
+    let x = decrypt(key,vendor.documentTwo);
+    fs.unlinkSync( x ); 
+  }
+
+exports.update1 = async (req, res, next) => {
+    try {
+        console.log("updating vendor");
+        console.log(":::::req.body==>",req.body)
+        const id = req.params.id;
+        console.log(":::::id",id)
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = req.body;
+        // const empty = isEmpty(update)
+        // console.log(empty)
+        
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+
+        const updatedVendor = await Vendor.find({ where: { vendorId: id } }).then(vendor => {
+            if(req.files.profilePicture[0]){
+                deletePhoto(vendor);
+            }
+            if(req.files.documentOne[0]){
+                deleteDocumentOne(vendor);
+            }
+            if(req.files.documentTwo[0]){
+                deleteDocumentTwo(vendor);
+            }
+
+            return vendor.updateAttributes({
+                userName:encrypt(key,req.body.userName),
+                vendorName:encrypt(key,req.body.vendorName),
+                picture:encrypt(key,req.files.profilePicture[0].path),
+                documentOne:encrypt(key,req.files.documentOne[0].path),
+                documentTwo:encrypt(key,req.files.documentTwo[0].path),
+                permanentAddress:encrypt(key,req.body.permanentAddress),
+                currentAddress:encrypt(key,req.body.currentAddress),
+                contact:encrypt(key,req.body.contact),
+            })
         })
         if (updatedVendor) {
             updatedVendor.userName = decrypt(key,updatedVendor.userName)
@@ -550,6 +419,7 @@ exports.update1 = async (req, res, next) => {
                     });
                 }
             }
+
             return res.status(httpStatus.OK).json({
                 message: "Vendor Updated Page",
                 vendor: updatedVendor
@@ -561,4 +431,55 @@ exports.update1 = async (req, res, next) => {
     }
 }
 
+
+exports.delete = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = req.body;
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        const updatedVendor = await Vendor.find({ where: { vendorId: id } }).then(vendor => {
+            return vendor.updateAttributes(update)
+        })
+
+        // const updatedVendorService = await VendorService.find({ where: { vendorId: id } }).then(vendorService => {
+        //     return vendorService.updateAttributes(update)
+        // })
+        const updatedVendorService = await VendorService.update(update, { where: { vendorId:id} })
+        if (updatedVendor && updatedVendorService) {
+            return res.status(httpStatus.OK).json({
+                message: "Vendor deleted successfully",
+            });
+        }
+    } catch (error) {
+        console.log("error::",error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+
+exports.deleteSelected = async (req, res, next) => {
+	try {
+		const deleteSelected = req.body.ids;
+        console.log("delete selected==>", deleteSelected);
+         
+		const update = { isActive: false };
+		if (!deleteSelected) {
+			return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
+		}
+		const updatedVendor = await Vendor.update(update, { where: { vendorId: { [Op.in]: deleteSelected } } })
+		if (updatedVendor) {
+			return res.status(httpStatus.OK).json({
+				message: "Vendors deleted successfully",
+			});
+		}
+	} catch (error) {
+		console.log(error)
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+	}
+}
 

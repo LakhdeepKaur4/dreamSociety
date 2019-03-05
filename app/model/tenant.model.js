@@ -1,11 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
-      const Owner = sequelize.define('owner_master', {
-            ownerId: {
+      const Tenant = sequelize.define('tenant_master', {
+            tenantId: {
                   type: Sequelize.INTEGER,
                   autoIncrement: true,
                   primaryKey: true
             },
-            ownerName: {
+            tenantName: {
                   type: Sequelize.STRING,
                   allowNull: false
             },
@@ -32,10 +32,6 @@ module.exports = (sequelize, Sequelize) => {
             picture: {
                   type: Sequelize.STRING,
             },
-            gender: {
-                  type: Sequelize.STRING,
-                  allowNull: false
-            },
             permanentAddress: {
                   type: Sequelize.STRING,
                   allowNull: false
@@ -49,6 +45,10 @@ module.exports = (sequelize, Sequelize) => {
                   allowNull: false
             },
             accountNumber: {
+                  type: Sequelize.STRING,
+                  allowNull: false
+            },
+            gender: {
                   type: Sequelize.STRING,
                   allowNull: false
             },
@@ -80,5 +80,5 @@ module.exports = (sequelize, Sequelize) => {
                   freezeTableName: true
             });
 
-      return Owner;
+      return Tenant;
 }

@@ -36,6 +36,10 @@ module.exports = function(app) {
 	const relationController = require('../controller/relation');
 	const societyMemberEvent = require('../controller/societyMemberEvent');
 	const owner = require('../controller/owner');
+	const tenant = require('../controller/tenant');
+	const societyMemberEventBooking = require('../controller/societyMemberEventBooking');
+	const eventSpaceController = require('../controller/eventSpaceMaster');
+
 	
 	app.get('/', userController.start);
 
@@ -221,7 +225,7 @@ module.exports = function(app) {
 
 	app.get('/api/vendor/', [authJwt.verifyToken], vendorController.get1);
 
-	app.put('/api/vendor/:id', [authJwt.verifyToken], vendorController.update1);
+	app.put('/api/vendor/:id', [authJwt.verifyToken], fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'documentOne',maxCount:1},{name:'documentTwo',maxCount:1}]),vendorController.update1);
 
 	app.put('/api/vendor/delete/deleteSelected',[authJwt.verifyToken], vendorController.deleteSelected);
 
@@ -335,9 +339,9 @@ module.exports = function(app) {
 
 	// app.put('/api/employee/:id',[authJwt.verifyToken],employeeController.update);
 
-	app.put('/api/employee/:id',[authJwt.verifyToken] ,fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), employeeController.updateEncrypt);
-
 	app.put('/api/employee/delete/:id',[authJwt.verifyToken],employeeController.delete);
+
+	app.put('/api/employee/:id',[authJwt.verifyToken] ,fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), employeeController.updateEncrypt);
 
 	app.post('/api/designation',[authJwt.verifyToken],designationController.create);
 
@@ -375,5 +379,40 @@ module.exports = function(app) {
 
 	app.get('/api/societyMemberEvent',[authJwt.verifyToken],societyMemberEvent.get);
 
-	app.post('/api/owner',[authJwt.verifyToken],owner.create);
+	app.put('/api/societyMemberEvent/delete/deleteSelected', [authJwt.verifyToken], societyMemberEvent.deleteSelected);
+
+	app.put('/api/societyMemberEvent/delete/:id', [authJwt.verifyToken], societyMemberEvent.delete);
+
+	app.put('/api/societyMemberEvent/:id', [authJwt.verifyToken], societyMemberEvent.update);
+
+	app.post('/api/owner',[authJwt.verifyToken],fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }]),owner.create);
+
+	app.get('/api/owner',[authJwt.verifyToken],owner.get);
+
+	app.get('/api/owner/:id',[authJwt.verifyToken],owner.getFlat);
+	
+	app.post('/api/tenant',[authJwt.verifyToken],fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }]),tenant.create);
+
+	app.get('/api/tenant',[authJwt.verifyToken],tenant.get);
+
+	app.post('/api/societyMemberEventBooking', [authJwt.verifyToken], societyMemberEventBooking.create);
+
+	app.get('/api/societyMemberEventBooking', [authJwt.verifyToken], societyMemberEventBooking.get);
+
+	app.put('/api/societyMemberEventBooking/delete/deleteSelected', [authJwt.verifyToken], societyMemberEventBooking.deleteSelected);
+
+	app.put('/api/societyMemberEventBooking/delete/:id', [authJwt.verifyToken], societyMemberEventBooking.delete);
+
+	app.put('/api/societyMemberEventBooking/:id', [authJwt.verifyToken], societyMemberEventBooking.update);
+
+	app.post('/api/eventSpaceMaster', [authJwt.verifyToken], eventSpaceController.create);
+	
+	app.get('/api/eventSpaceMaster' ,[authJwt.verifyToken], eventSpaceController.get);
+
+	app.put('/api/eventSpaceMaster/:id' ,[authJwt.verifyToken], eventSpaceController.update);
+
+	app.put('/api/eventSpaceMaster/delete/deleteSelected', [authJwt.verifyToken], eventSpaceController.deleteSelected);
+
+	app.put('/api/eventSpaceMaster/delete/:id',  [authJwt.verifyToken], eventSpaceController.delete);
+
 }

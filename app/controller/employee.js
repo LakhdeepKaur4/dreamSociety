@@ -4,6 +4,7 @@ const config = require('../config/config');
 const cron = require('node-schedule');
 const crypto = require('crypto');
 var path = require('path');
+const fs = require('fs');
 
 const Employee = db.employee;
 // const EmployeeType =db.employeeType;
@@ -17,14 +18,14 @@ const Op = db.Sequelize.Op;
 exports.create = async (req, res, next) => {
     try {
         let body = req.body;
-        console.log("body::::::==>",body);
+        console.log("body::::::==>", body);
         body.userId = req.userId;
         const employee = await Employee.create(body);
         const employeeId = employee.employeeId;
         // console.log("filess=====>",req.files);
         if (req.files) {
             // for (let i = 0; i < req.files.profilePicture.length; i++) {
-                profileImage = req.files.profilePicture[0].path;
+            profileImage = req.files.profilePicture[0].path;
             // }
             const updateImage = {
                 picture: profileImage
@@ -109,31 +110,33 @@ exports.update = async (req, res, next) => {
 
 
 exports.deletePhoto = function (req, res) {
-  Photos.remove({_id: req.params.id}, function(err, photo) {
-    if(err) { 
-       return res.send({status: "200", response: "fail"});
-    }
-    fs.unlink(photo.path, function() {
-      res.send ({
-        status: "200",
-        responseType: "string",
-        response: "success"
-      });     
+    Photos.remove({ _id: req.params.id }, function (err, photo) {
+        if (err) {
+            return res.send({ status: "200", response: "fail" });
+        }
+        fs.unlink(photo.path, function () {
+            res.send({
+                status: "200",
+                responseType: "string",
+                response: "success"
+            });
+        });
     });
- }); 
 };
 
 exports.delete = async (req, res, next) => {
     try {
         const id = req.params.id;
+        console.log("id==>",id)
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
         const update = req.body;
+        console.log("update-->",update)
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedEmployee = await EmployeeDetail.find({ where: { employeeId: id } }).then(employee => {
+        const updatedEmployee = await Employee.find({ where: { employeeId: id } }).then(employee => {
             return employee.updateAttributes(update)
         })
         if (updatedEmployee) {
@@ -143,6 +146,7 @@ exports.delete = async (req, res, next) => {
             });
         }
     } catch (error) {
+        console.log(error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Mysql error' });
     }
 }
@@ -185,85 +189,112 @@ decrypt = (text) => {
     return decryptedText;
 }
 
-exports.createEncrypt = async (req, res, next) => {
-    try {
-        let body = req.body;
-        console.log('Body ===>', body);
-        body.userId = req.userId;
-        let employee;
-        let employeeId;
-        await Employee
-            .create({
-                firstName: encrypt(body.firstName),
-                middleName: encrypt(body.middleName),
-                lastName: encrypt(body.lastName),
-                CTC: encrypt(body.CTC),
-                startDate: encrypt(body.startDate),
-                endDate: encrypt(body.endDate),
-                userId: body.userId,
-                countryId: body.countryId,
-                stateId: body.stateId,
-                cityId: body.cityId,
-                locationId: body.locationId
-            })
-            .then(emp => {
-                // console.log(emp);
-                employee = emp;
-                // console.log(emp.employeeId);
-                employeeId = emp.employeeId;
+constraintCheck = (property, object) => {
+    if ((property in object) && object[property] !== undefined) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+constraintReturn = (checkConstraint, object, property, entry) => {
+    if (checkConstraint) {
+        return encrypt(object[property]);
+    }
+    else {
+        return entry[property];
+    }
+}
+
+referenceConstraintReturn = (checkConstraint, object, property, entry) => {
+    if (checkConstraint) {
+        return object[property];
+    }
+    else {
+        return entry[property];
+    }
+}
+
+    exports.createEncrypt = async (req, res, next) => {
+        try {
+            let body = req.body;
+            console.log('Body ===>', body);
+            body.userId = req.userId;
+            let employee;
+            let employeeId;
+            await Employee
+                .create({
+                    firstName: encrypt(body.firstName),
+                    middleName: encrypt(body.middleName),
+                    lastName: encrypt(body.lastName),
+                    CTC: encrypt(body.CTC),
+                    startDate: encrypt(body.startDate),
+                    endDate: encrypt(body.endDate),
+                    userId: body.userId,
+                    countryId: body.countryId,
+                    stateId: body.stateId,
+                    cityId: body.cityId,
+                    locationId: body.locationId
+                })
+                .then(emp => {
+                    // console.log(emp);
+                    employee = emp;
+                    // console.log(emp.employeeId);
+                    employeeId = emp.employeeId;
+                    // console.log(employeeId);
+                })
+                .catch(err => console.log('Creation Error ===>', err))
+
+            if (req.files) {
+
+                let profileImage;
+                // console.log(req.files.profilePicture[0].path);
+                profileImage = req.files.profilePicture[0].path;
+
+                const updateImage = {
+                    picture: encrypt(profileImage)
+                };
                 // console.log(employeeId);
-            })
-            .catch(err => console.log('Creation Error ===>', err))
-
-        if (req.files) {
-
-            let profileImage;
-            // console.log(req.files.profilePicture[0].path);
-            profileImage = req.files.profilePicture[0].path;
-
-            const updateImage = {
-                picture: encrypt(profileImage)
-            };
-            // console.log(employeeId);
-            Employee.find(
-                {
+                Employee.find(
+                    {
+                        where: {
+                            employeeId: employeeId
+                        }
+                    })
+                    .then(employee => {
+                        // console.log(employeeId);
+                        employee.updateAttributes(updateImage);
+                    })
+                    .catch(err => console.log(err))
+                documentOne = req.files.documentOne[0].path;
+                documentTwo = req.files.documentTwo[0].path;
+                const updateDocument = {
+                    documentOne: encrypt(documentOne),
+                    documentTwo: encrypt(documentTwo)
+                }
+                Employee.find({
                     where: {
                         employeeId: employeeId
                     }
                 })
-                .then(employee => {
-                    // console.log(employeeId);
-                    employee.updateAttributes(updateImage);
-                })
-                .catch(err => console.log(err))
-            documentOne = req.files.documentOne[0].path;
-            documentTwo = req.files.documentTwo[0].path;
-            const updateDocument = {
-                documentOne: encrypt(documentOne),
-                documentTwo: encrypt(documentTwo)
+                    .then(employee => {
+                        employee.updateAttributes(updateDocument)
+                    })
+                    .catch(err => console.log(err))
             }
-            Employee.find({
-                where: {
-                    employeeId: employeeId
-                }
-            })
-                .then(employee => {
-                    employee.updateAttributes(updateDocument)
-                })
-                .catch(err => console.log(err))
+        } catch (error) {
+            console.log(error);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
         }
-    } catch (error) {
-        console.log(error);
-        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
-}
 
 exports.getDecrypt = (req, res, next) => {
     try {
         const employee = [];
         Employee.findAll({
             where: {
-                isActive: true,
+                isActive: true
             },
             order: [['createdAt', 'DESC']],
             include: [
@@ -273,42 +304,44 @@ exports.getDecrypt = (req, res, next) => {
                 { model: Country }
             ]
         })
-        .then(emp => {
-            emp.map(item => {
-                item.firstName = decrypt(item.firstName);
-                item.middleName = decrypt(item.middleName);
-                item.lastName = decrypt(item.lastName);
-                item.CTC = decrypt(item.CTC);
-                item.startDate = decrypt(item.startDate);
-                item.endDate = decrypt(item.endDate);
-                item.picture = decrypt(item.picture);
-                item.documentOne = decrypt(item.documentOne);
-                item.documentTwo = decrypt(item.documentTwo);
-                employee.push(item);
+            .then(emp => {
+                emp.map(item => {
+                    item.firstName = decrypt(item.firstName);
+                    item.middleName = decrypt(item.middleName);
+                    item.lastName = decrypt(item.lastName);
+                    item.CTC = decrypt(item.CTC);
+                    item.startDate = decrypt(item.startDate);
+                    item.endDate = decrypt(item.endDate);
+                    item.picture = decrypt(item.picture);
+                    item.documentOne = decrypt(item.documentOne);
+                    item.documentTwo = decrypt(item.documentTwo);
+                    employee.push(item);
+                })
+                if (employee) {
+                    return res.status(httpStatus.OK).json({
+                        message: "Employee Content Page",
+                        employee
+                    });
+                }
             })
-            if (employee) {
-                return res.status(httpStatus.OK).json({
-                    message: "Employee Content Page",
-                    employee
-                });
-            }
-        })
-        .catch(err => console.log(err))
+            .catch(err => console.log(err))
     } catch (error) {
         console.log(error);
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
 
+
 exports.updateEncrypt = async (req, res, next) => {
     try {
         const id = req.params.id;
+        // console.log(id);
         let profileImage;
         let documentOne;
         let documentTwo;
         let employee;
 
-        console.log("ID ===>", req.params.id);
+        console.log("ID ===>", id);
 
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
@@ -321,23 +354,23 @@ exports.updateEncrypt = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        if (req.files) {
-            console.log("req.files---->",req.files)
-            console.log("console 1")
-            await Employee.find({
-                where: {
-                    employeeId: id
-                }
-            })
+        await Employee.find({
+            where: {
+                employeeId: id
+            }
+        })
             .then(emp => {
                 employee = emp;
             })
+        if (req.files) {
             console.log(employee);
-            if (req.files.profilePicture[0].path) {
-                console.log("console 2");
+            if (("profilePicture" in req.files) && (req.files.profilePicture !== undefined)) {
                 profileImage = decrypt(employee.picture)
                 fs.unlink(profileImage, err => {
-                    if (err) throw err
+                    if (err) {
+                        console.log("File Missing ===>", err);
+                        profileImage = encrypt(req.files.profilePicture[0].path);
+                    }
                     console.log('success');
                 })
                 profileImage = encrypt(req.files.profilePicture[0].path);
@@ -345,11 +378,13 @@ exports.updateEncrypt = async (req, res, next) => {
             else {
                 profileImage = employee.picture;
             }
-            if (req.files.documentOne[0].path) {
-                console.log("console 3")
+            if (("documentOne" in req.files) && (req.files.documentOne !== undefined)) {
                 documentOne = decrypt(employee.documentOne)
                 fs.unlink(documentOne, err => {
-                    if (err) throw err
+                    if (err) {
+                        console.log("File Missing ===>", err);
+                        documentOne = encrypt(req.files.documentOne[0].path);
+                    }
                     console.log('success');
                 })
                 documentOne = encrypt(req.files.documentOne[0].path);
@@ -357,11 +392,13 @@ exports.updateEncrypt = async (req, res, next) => {
             else {
                 documentOne = employee.documentOne;
             }
-            if (req.files.documentTwo[0].path) {
-                 console.log("console 1")
+            if (("documentTwo" in req.files) && (req.files.documentTwo !== undefined)) {
                 documentTwo = decrypt(employee.documentTwo)
                 fs.unlink(documentTwo, err => {
-                    if (err) throw err
+                    if (err) {
+                        console.log("File Missing ===>", err);
+                        documentTwo = encrypt(req.files.documentTwo[0].path);
+                    }
                     console.log('success');
                 })
                 documentTwo = encrypt(req.files.documentTwo[0].path);
@@ -370,30 +407,49 @@ exports.updateEncrypt = async (req, res, next) => {
                 documentTwo = employee.documentTwo;
             }
         }
-        // else {
-        //     profileImage = employee.picture;
-        //     console.log("profileImage",profileImage)
-        //     documentOne = employee.documentOne;
-        //     console.log("profileImage",documentOne)
-        //     documentTwo = employee.documentTwo;
-        //     console.log("profileImage",documentTwo)
-        // }
-        const toBeUpdated = {
-            firstName: encrypt(update.firstName),
-            middleName: encrypt(update.middleName),
-            lastName: encrypt(update.lastName),
-            CTC: encrypt(update.CTC),
-            startDate: encrypt(update.startDate),
-            endDate: encrypt(update.endDate),
-            userId: update.userId,
-            countryId: update.countryId,
-            stateId: update.stateId,
-            cityId: update.cityId,
-            locationId: update.locationId,
-            picture: profileImage,
-            documentOne: documentOne,
-            documentTwo: documentTwo
-        };
+        else {
+            profileImage = employee.picture;
+            documentOne = employee.documentOne;
+            documentTwo = employee.documentTwo;
+        }
+        firstNameCheck = constraintCheck('firstName', update);
+        middleNameCheck = constraintCheck('middleName', update);
+        lastNameCheck = constraintCheck('lastName', update);
+        CTCCheck = constraintCheck('CTC', update);
+        startDateCheck = constraintCheck('startDate', update);
+        endDateCheck = constraintCheck('endDate', update);
+        countryIdCheck = constraintCheck('countryId', update);
+        stateIdCheck = constraintCheck('stateId', update);
+        cityIdCheck = constraintCheck('cityId', update);
+        locationIdCheck = constraintCheck('locationId', update);
+
+        firstName = constraintReturn(firstNameCheck, update, 'firstName', employee);
+        middleName = constraintReturn(middleNameCheck, update, 'middleName', employee);
+        lastName = constraintReturn(lastNameCheck, update, 'lastName', employee);
+        CTC = constraintReturn(CTCCheck, update, 'CTC', employee);
+        startDate = constraintReturn(startDateCheck, update, 'startDate', employee);
+        endDate = constraintReturn(endDateCheck, update, 'endDate', employee);
+        countryId = referenceConstraintReturn(countryIdCheck, update, 'countryId', employee);
+        stateId = referenceConstraintReturn(stateIdCheck, update, 'stateId', employee);
+        cityId = referenceConstraintReturn(cityIdCheck, update, 'cityId', employee);
+        locationId = referenceConstraintReturn(locationIdCheck, update, 'locationId', employee);
+        
+            const toBeUpdated = {
+                firstName: firstName,
+                middleName: middleName,
+                lastName: lastName,
+                CTC: CTC,
+                startDate: startDate,
+                endDate: endDate,
+                userId: update.userId,
+                countryId: countryId,
+                stateId: stateId,
+                cityId: cityId,
+                locationId: locationId,
+                picture: profileImage,
+                documentOne: documentOne,
+                documentTwo: documentTwo
+            };
         Employee.find({
             where: {
                 employeeId: id
@@ -418,6 +474,9 @@ exports.updateEncrypt = async (req, res, next) => {
                 });
             })
             .catch(err => console.log(err))
+
+
+
     } catch (error) {
         console.log(error);
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);

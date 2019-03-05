@@ -1,19 +1,21 @@
 module.exports = (sequelize, Sequelize) => {
-    const OwnerMembersDetail = sequelize.define('owner_members_detail_master', {
-        memberId: {
+    const SocietyMemberEventBooking = sequelize.define('society_member_event_booking_master', {
+        societyMemberEventBookingId: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        memberName: {
+        startDate: {
             type: Sequelize.STRING,
-            allowNull:false
         },
-        memberDob: {
-            type: Sequelize.DATE,
-            allowNull:false
+        endDate: {
+            type: Sequelize.STRING,
+        },
+        numberOfGuestExpected: {
+            type: Sequelize.STRING
         },
         isActive: {
+            allowNull: false,
             type: Sequelize.BOOLEAN,
             defaultValue: true
         },
@@ -29,5 +31,5 @@ module.exports = (sequelize, Sequelize) => {
             freezeTableName: true
         });
 
-    return OwnerMembersDetail;
+    return SocietyMemberEventBooking;
 }

@@ -3,6 +3,7 @@ const config = require('../config/config.js');
 const httpStatus = require('http-status');
 
 const SocietyMemberEvent = db.societyMemberEvent;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req, res, next) => {
     try {
@@ -41,6 +42,77 @@ exports.get = async (req, res, next) => {
         }
     } catch (error) {
         console.log("error==>", error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.delete = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = req.body;
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        const updatedEvent = await SocietyMemberEvent.find({ where: { societyMemberEventId: id } }).then(event => {
+            return event.updateAttributes(update);
+        })
+        if (updatedEvent) {
+            return res.status(httpStatus.OK).json({
+                message: "Event deleted successfully",
+                updatedEvent
+            });
+        }
+    } catch (error) {
+        console.log("error==>", error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+};
+
+exports.deleteSelected = async (req, res, next) => {
+    try {
+        const deleteSelected = req.body.ids;
+        console.log(req.body.ids);
+        console.log("delete selected==>", deleteSelected);
+        const update = { isActive: false };
+        if (!deleteSelected) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
+        }
+        const updatedEvent = await SocietyMemberEvent.update(update, { where: { societyMemberEventId: { [Op.in]: deleteSelected } } })
+        if (updatedEvent) {
+            return res.status(httpStatus.OK).json({
+                message: "Events deleted successfully",
+            });
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.update = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = req.body;
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        const updatedEvent = await SocietyMemberEvent.find({ where: { societyMemberEventId: id } }).then(event => {
+            return event.updateAttributes(update);
+        })
+        if (updatedEvent) {
+            return res.status(httpStatus.OK).json({
+                message: "Event updated successfully",
+                updatedEvent
+            });
+        }
+    } catch (error) {
+        console.log("error==>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
