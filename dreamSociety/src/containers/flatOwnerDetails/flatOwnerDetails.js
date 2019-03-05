@@ -11,6 +11,7 @@ import { getRelation } from './../../actionCreators/relationMasterAction';
 import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
 import {addFlatOwner} from '../../actionCreators/flatOwnerAction';
 
+
 class FlatOwnerDetails extends Component {
     constructor(props) {
         super(props)
@@ -150,7 +151,7 @@ class FlatOwnerDetails extends Component {
     }
     nextPrev = () => {
         let errors = {};
-        const { societyName, number, ownerName, DOB, email, tower, flatNO } = this.state
+        const { societyName, number, ownerName, DOB, email, towerId, flatDetailId } = this.state
         if (this.state.step === 1) {
             if (ownerName === '') {
                 errors.ownerName = "Owern Name can't be empty"
@@ -164,10 +165,10 @@ class FlatOwnerDetails extends Component {
             else if (email === '') {
                 errors.email = "email can't be empty"
             }
-            else if (flatNO === '') {
+            else if (flatDetailId === '') {
                 errors.flatNO = "flat number can't be empty"
             }
-            else if (tower === '') {
+            else if (towerId === '') {
                 errors.tower = "tower can't be empty"
             }
             else if (societyName === '') {
@@ -181,7 +182,7 @@ class FlatOwnerDetails extends Component {
         }
         const { bankName, holderName, accountNumber, panNumber, ifscCode } = this.state
 
-        if (this.state.step == 2) {
+        if (this.state.step === 2) {
             if (bankName === '') {
                 errors.bankName = "Bank Name can't be empty"
             }
@@ -257,13 +258,13 @@ class FlatOwnerDetails extends Component {
             ownerName,
             DOB,
             email,
-            tower,
+            towerId,
             bankName,
             holderName,
             accountNumber,
             panNumber,
             ifscCode,
-            flatNO,
+            flatDetailId,
             familyMember,
             // memberName,
             // memberDOB,
@@ -331,13 +332,13 @@ class FlatOwnerDetails extends Component {
                 ownerName,
                 DOB,
                 email,
-                tower,
+                towerId,
                 bankName,
                 holderName,
                 accountNumber,
                 panNumber,
                 ifscCode,
-                flatNO,
+                flatDetailId,
                 familyMember,
                 // memberName,
                 // memberDOB,
@@ -357,7 +358,7 @@ class FlatOwnerDetails extends Component {
                 
             }
             console.log(FlatOwnerData)
-            // this.props.addFlatOwner(this.state); 
+            this.props.addFlatOwner(FlatOwnerData); 
 
         }
     FileChange=(event)=>{
@@ -481,19 +482,19 @@ class FlatOwnerDetails extends Component {
                             <FormGroup>
                                 <Label>Tower</Label>
                                 <Select options={this.getTower(this.props.towerList)}
-                                    onChange={this.towerChangeHandler.bind(this, 'tower')}
+                                    onChange={this.towerChangeHandler.bind(this, 'towerId')}
                                     placeholder={PlaceHolder} />
                                 <span className="error">{this.state.errors.tower}</span>
                             </FormGroup >
                             <FormGroup>
                                 <Label>Flat Number</Label>
                                 <Select options={this.getflat(this.props.flatList)}
-                                    onChange={this.flatChangeHandler.bind(this, 'flatNO')}
+                                    onChange={this.flatChangeHandler.bind(this, 'flatDetailId')}
                                     placeholder={PlaceHolder} />
                                 <span className="error">{this.state.errors.flatNO}</span>
                             </FormGroup >
                         </div>
-                        <div style={{ 'display': this.state.step == 2 ? 'block' : 'none' }}>
+                        <div style={{ 'display': this.state.step === 2 ? 'block' : 'none' }}>
                             <h3>Bank Details</h3>
                             <FormGroup>
                                 <Label>Bank Name</Label>
@@ -521,7 +522,7 @@ class FlatOwnerDetails extends Component {
                                 <span className="error">{this.state.errors.ifscCode}</span>
                             </FormGroup>
                         </div>
-                        <div style={{ 'display': this.state.step == 3 ? 'block' : 'none' }}>
+                        <div style={{ 'display': this.state.step === 3 ? 'block' : 'none' }}>
                             <h3>Owner Member Details</h3>
                             <FormGroup>
                                 <Label>Number of Member</Label>
@@ -536,9 +537,9 @@ class FlatOwnerDetails extends Component {
                             </FormGroup>
                         </div>
                         <div>
-                            <Button className="mr-2" type="button" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
-                            <Button type="button" id="nextBtn" style={{ display: this.state.step == 3 ? 'none' : 'inline-block' }} disabled={this.state.step == 3} onClick={this.nextPrev}>Next</Button>
-                            <Button type="submit" style={{ display: this.state.step == 3 ? 'inline-block' : 'none' }}>Submit</Button>
+                            <Button className="mr-2" color="danger" type="button" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
+                            <Button type="button" color="primary" id="nextBtn" style={{ display: this.state.step == 3 ? 'none' : 'inline-block' }} disabled={this.state.step == 3} onClick={this.nextPrev}>Next</Button>
+                            <Button type="submit" color="success" style={{ display: this.state.step == 3 ? 'inline-block' : 'none' }}>Submit</Button>
                         </div>
                     </Form>
                 </UI>

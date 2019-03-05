@@ -77,6 +77,7 @@ class Demo extends Component {
                                 <Link className="nav-link" to="#">Contact Us</Link>
                             </li>
                         </ul>
+                        <h4 style={{position: 'relative',zIndex: 10000,color: 'white',paddingRight:'10px'}}> {localStorage.getItem('firstName')}</h4>
                         <div className="form-inline mt-2 mt-md-0">
                             <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
                                 onClick={this.props.onClick} >Logout</button>
