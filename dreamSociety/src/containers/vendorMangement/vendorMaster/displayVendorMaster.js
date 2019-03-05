@@ -17,39 +17,18 @@ class DisplayVendorMaster extends Component {
 
 
     state = {
+            vendorServiceId:'',
             vendorId:'',
             vendorName: '',
             contact: '',
             currentAddress: '',
             permanentAddress: '',
-            serviceId1: {
-                serviceId: '',
-                serviceName: ''
-            },
-            serviceId2: {
-                serviceId: '',
-                serviceName: ''
-            },
-            serviceId3: {
-                serviceId: '',
-                serviceName: ''
-            },
-            rateId1: {
-                rateId: '',
-                rateType:''
-            },
-            rateId2: {
-                rateId: '',
-                rateType:''
-            },
-            rateId3: {
-                rateId: '',
-                rateType:''
-            },
-            rate1: '',
-            rate2: '',
-            rate3: '',
-            documentOne: '',
+            serviceId: '',
+            serviceName: '',
+            rateId1: '',
+            rateType:'',
+            rate1:'',
+            documentOne: null,
             documentTwo:'',
             profilePicture: '',
             isActive: false,
@@ -74,6 +53,7 @@ class DisplayVendorMaster extends Component {
         this.setState({
             [e.target.name]:e.target.value
         })
+        console.log(e.target.value)
     }
 
     refreshData() {
@@ -82,9 +62,10 @@ class DisplayVendorMaster extends Component {
         this.props.getRateType().then(()=> this.setState({loading:false}));
     }
 
-    editUser(vendorId,vendorName,currentAddress,permanentAddress,contact,serviceName,serviceId,rateType,rateId,rate,documentOne,documentTwo,picture){
+    editUser(vendorServiceId,vendorId,vendorName,currentAddress,permanentAddress,contact,serviceName,serviceId,rateType,rateId,rate1,documentOne,documentTwo,picture){
+    console.log(vendorServiceId,vendorId,vendorName,currentAddress,permanentAddress,contact,serviceName,serviceId,rateType,rateId,rate1,documentOne,documentTwo,picture)
     this.setState({
-        vendorId,vendorName,currentAddress,permanentAddress,contact,serviceName,serviceId,rateType,rateId,rate,documentOne,documentTwo,picture
+        vendorServiceId,vendorId,vendorName,currentAddress,permanentAddress,contact,serviceName,serviceId,rateType,rateId,rate1,documentOne,documentTwo,picture
             ,editVendorModal: !this.state.editServiceModal})
             
     }
@@ -116,7 +97,6 @@ class DisplayVendorMaster extends Component {
         this.setState({
             documentOne: e.target.files[0]
         })
-
     }
      
     selectImage2=(e)=>{
@@ -191,21 +171,16 @@ class DisplayVendorMaster extends Component {
     }
 
    updateVendor=()=>{
-       
-        const formData=new FormData();   
+       console.log('vendorServiceId',this.state.vendorServiceId)
+        const formData=new FormData();  
+        formData.append('vendorServiceId',this.state.vendorServiceId) 
         formData.append('vendorName',this.state.vendorName)
         formData.append('contact',this.state.contact)
         formData.append('currentAddress',this.state.currentAddress)
         formData.append('permanentAddress',this.state.permanentAddress)
-        formData.append('serviceId1',this.state.serviceId1.serviceId)
-        formData.append('serviceId2',this.state.serviceId2.serviceId)
-        formData.append('serviceId3',this.state.serviceId3.serviceId)
-        formData.append('rateId1',this.state.rateId1.rateId)
-        formData.append('rateId2',this.state.rateId2.rateId)
-        formData.append('rateId3',this.state.rateId3.rateId)
+        formData.append('serviceId',this.state.serviceId)
+        formData.append('rateId1',this.state.rateId1)
         formData.append('rate1',this.state.rate1)
-        formData.append('rate2',this.state.rate2)
-        formData.append('rate3',this.state.rate3)
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)
@@ -216,8 +191,7 @@ class DisplayVendorMaster extends Component {
 
 
     renderList = ({ vendors }) => {
-
-
+ 
         if (vendors) {
             return vendors.vendor.map((vendors) => {
                 
@@ -236,7 +210,7 @@ class DisplayVendorMaster extends Component {
                         <td><img style={{width:"100%", height:"15%"}} src={PicURN+ vendors.vendor_master.picture}></img></td>
                         
                         <td>
-                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorId, vendors.vendor_master.vendorName,vendors.vendor_master.currentAddress,vendors.vendor_master.permanentAddress,vendors.vendor_master.contact,vendors.service_master.serviceName,vendors.service_master.serviceId,vendors.rate_master.rateType,vendors.rate_master.rateId,vendors.rate,vendors.vendor_master.documentOne,vendors.vendor_master.documentTwo,vendors.vendor_master.picture)}>Edit</Button> 
+                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorServiceId,vendors.vendorId, vendors.vendor_master.vendorName,vendors.vendor_master.currentAddress,vendors.vendor_master.permanentAddress,vendors.vendor_master.contact,vendors.service_master.serviceName,vendors.service_master.serviceId,vendors.rate_master.rateType,vendors.rate_master.rateId,vendors.rate,vendors.vendor_master.documentOne,vendors.vendor_master.documentTwo,vendors.vendor_master.picture)}>Edit</Button> 
                 
                             <Button color="danger"onClick={this.delete.bind(this,vendors.vendorId)} >Delete</Button>
                         </td>
@@ -334,7 +308,7 @@ class DisplayVendorMaster extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label>Service Types</Label>
-                        <Input type="select" name="serviceId1" value={this.state.serviceName}  onChange={this.onHandleChange}>                      
+                        <Input type="select" name="serviceId" value={this.state.serviceId}  onChange={this.onHandleChange}>                      
                         <option>{this.state.serviceName}</option>
                         <DefaultSelect/>
                         {this.getDropDown(this.props.displayServiceMasterReducer)}
@@ -342,7 +316,7 @@ class DisplayVendorMaster extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label>Rate Types</Label>
-                        <Input type="select" name="rateId1" value={this.state.rateType}  onChange={this.onHandleChange}>
+                        <Input type="select" name="rateId1" value={this.state.rateId1}  onChange={this.onHandleChange}>
                         <option>{this.state.rateType}</option>
                         <DefaultSelect/>
                         {this.getDropDown1(this.props.vendorMasterReducer)}
@@ -350,7 +324,7 @@ class DisplayVendorMaster extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label> Rates</Label>
-                        <Input name="rate1" value={this.state.rate} onChange={this.onHandleChange}>
+                        <Input name="rate1" value={this.state.rate1} onChange={this.onHandleChange}>
                         </Input>
                     </FormGroup>
                     <FormGroup></FormGroup>

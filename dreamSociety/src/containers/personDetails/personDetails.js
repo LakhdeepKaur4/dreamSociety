@@ -49,7 +49,7 @@ OnKeyPressNumber(event) {
 }
 
 OnKeyPressmail(event){
-    const pattern = /^[a-zA-Z0-9@._]+$/;
+    const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
         event.preventDefault();
@@ -66,6 +66,7 @@ onChange=(e)=>{
     else{
 this.setState({[e.target.name]:e.target.value});
 }
+
 }
 
 
@@ -163,14 +164,14 @@ form1 = <form onSubmit={this.submit}>
       <h3 align="center">  Add Person </h3>
           <div className="form-group">
               <label>Username</label>
-              <input type="text" name="userName" onChange={this.onChange} maxLength={30} className="form-control" onKeyPress={this.OnKeyPresshandler}  />
+              <input type="text" name="userName"  value="this.state.userName" onChange={this.onChange} maxLength={30} className="form-control" onKeyPress={this.OnKeyPresshandler}  />
          
               <span className="error">{this.state.errors.userName}</span>
           </div>
              
           <div className="form-group">
               <label> Email</label>
-              <input type="email" name="email" onChange={this.onChange} maxLength={50} className="form-control" onKeyPress={this.OnKeyPressmail}  />
+              <input type="email" name="email"  value="this.state.email" onChange={this.onChange} maxLength={50} className="form-control" onKeyPress={this.OnKeyPressmail}  />
               <span className="error">{this.state.errors.email}</span>
           </div>
           
@@ -194,13 +195,13 @@ form1 = <form onSubmit={this.submit}>
           
           <div className="form-group">
               <label> Number of members in family</label>
-              <input type="text" name="familyMember" className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
+              <input type="text" name="familyMember"  value ="this.state.familyMember" className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
               <span className="error">{this.state.errors.familyMember}</span>
           </div>
          
           <div className="form-group">
               <label> parking</label>
-              <input type="text" name="parking" className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
+              <input type="text" name="parking"  value ="this.state.parking" className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
               <span className="error">{this.state.errors.parking}</span>
           </div>
          

@@ -13,7 +13,7 @@ class DisplayTowerMaster extends Component {
     editTowerData: {
 
       towerId: [],
-      towerName: [],
+     
       isActive:false,
       isChecked: false
     },
@@ -22,7 +22,9 @@ class DisplayTowerMaster extends Component {
     search:'',
     loading:true,
     ids: [],
-    isDisabled: true
+    isDisabled: true,
+    towerName: [],
+    errors:{}
   }
 
   componentDidMount() {
@@ -54,6 +56,27 @@ this.setState({loading:true});
 
   }
 
+ 
+  onChange=(e)=> {
+   console.log("e",e.target.name);
+   
+   console.log(!!this.state.errors[e.target.name])
+    if (!!this.state.errors[e.target.name]) {
+      let errors = Object.assign({}, this.state.errors);
+      delete errors[e.target.name];
+      this.setState({ [e.target.name]: e.target.value, errors });
+  }
+  else {
+      this.setState({ [e.target.name]: e.target.value });
+  }
+   
+  } 
+  
+
+ 
+   
+  
+
 
 
   toggleEditTowerModal() {
@@ -63,22 +86,28 @@ this.setState({loading:true});
   }
 
   updateTower() {
-    let {  towerId, towerName } = this.state.editTowerData;
-
-  
+    let errors={};
+        const {  towerId, towerName } = this.state
+    if(!this.state.towerName){
+      errors.towerName ="tower Name cant be empty please Select"
+        }
+     this.setState({errors})
+     const isValid = Object.keys(errors).length===0
+    if(isValid){
    this.props.updateTower(towerId,towerName).then(()=>{this.refreshData()})
       this.setState({
         editTowerModal: false,loading:true, editTowerData: { id: '', towerName: '' }
       })
 
   }
+}
 
 
   editTower(id, towerId, towerName) {
     console.log('efews', id, towerId, towerName);
 
     this.setState({
-      editTowerData: { id, towerId, towerName }, editTowerModal: !this.state.editTowerModal
+      id, towerId, towerName, editTowerModal: !this.state.editTowerModal
     })
   }
   searchFilter(search){
@@ -258,17 +287,11 @@ selectAll = () => {
 
                 <FormGroup>
                   <Label for="towerName">  Tower Name</Label>
-                  <Input id="towerName" value={this.state.editTowerData.towerName} onChange={(e) => {
-                    let { editTowerData } = this.state;
-
-                    editTowerData.towerName = e.target.value;
-
-                    this.setState({ editTowerData })
-
-                  }}
+                  <Input  id="towerName"  name ="towerName" value={this.state.towerName} onChange={this.onChange}
                     onKeyPress={this.OnKeyPresshandler}
                      maxLength={20}
-                    required />
+                    />
+                    <span className="error">{this.state.errors.towerName} </span>
                 </FormGroup>
 
 

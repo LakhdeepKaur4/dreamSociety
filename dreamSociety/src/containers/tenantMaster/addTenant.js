@@ -40,7 +40,8 @@ class AddTenant extends Component{
             locationName : '',
             locationId: '',
             societyName : '',
-            societyId: ''
+            societyId: '',
+            memberDetail:[]
         }
     }
 
@@ -150,10 +151,11 @@ class AddTenant extends Component{
     }
 
     getRelationList = ({ relationResult }) => {
+        console.log(this.state)
         if (relationResult) {
             return relationResult.relation.map((item) => {
                 return (
-                    { ...item, label: item.relationName, value: item.relationId }
+                    { ...item, name:"relation", label: item.relationName, value: item.relationId }
                 )
             }
             );
@@ -175,6 +177,47 @@ class AddTenant extends Component{
         }
     }
 
+    onImageChange = (e) => {
+        this.setState({[e.target.name]:e.target.value});
+        let filePath = this.state.picture;
+        console.log(this.state);
+        console.log(filePath);
+        let fileNameWithExtension = filePath.replace(/^.*[\\\/]/, 'public/profilePictures/');
+        console.log(fileNameWithExtension)
+        this.state.picture = fileNameWithExtension;
+        console.log(this.state.picture)
+    }
+
+    memberDetailChange = (e) => {
+        this.setState({[e.target.name]:e.target.value})
+        console.log(this.state)
+    }
+    onSubmit = (e) => {
+        e.preventDefault()
+        
+        for(let i = 0; i < this.state.noOfMembers; i++){
+            console.log(this.state.memberDetail)
+            const data={
+                memberName: this.state['memberName'+i],
+                dob: this.state['dob'+i],
+                relation: this.state['relation'+i],
+                gender:this.state['gender'+i]
+            }
+            this.state.memberDetail.push(data);
+        }
+    }
+
+    relationHandler = (name,selectOption) => {
+        this.setState(function (prevState, props) {
+            return {
+                [name]: selectOption.value
+            }
+        }, function () {
+            console.log(selectOption.value)
+        });
+        console.log(this.state)
+    }
+
     render(){
         
         let userDatas = [];
@@ -183,22 +226,40 @@ class AddTenant extends Component{
                 <Row form>
                     <Col md={4}>
                         <Label>Name</Label>
-                        <Input placeholder="Name Of Member" name = {`member${i}`} onChange={this.onChange} className="input" />
+                        <Input placeholder="Name Of Member" name = {`memberName${i}`} onChange={this.memberDetailChange} className="input" />
                     </Col>
-                    <Col md={4}>
+                    <Col md={5}>
                         <Label>Relation With Owner</Label>
-                        <Select name={`relation${i}`} options={this.getRelationList(this.props.relationList)}/>
+                        <Select name={`relation${i}`} options={this.getRelationList(this.props.relationList)} 
+                          onChange={this.relationHandler.bind(this,'relation'+i )}  />
                     </Col>
-                    <Col md={4}>
+                    <Col md={3} style={{display: 'flex'}}>
+                        <Col md={1}>
+                            <Label>M</Label>
+                            <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange} type="radio" value="Male" />
+                        </Col>
+                        <Col md={1}>
+                            <Label>F</Label>
+                            <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange} type="radio" value="Female" />
+                        </Col>
+                        <Col md={1}>
+                            <Label>O</Label>
+                            <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange} type="radio" value="Other" />
+                        </Col>
+                    </Col>
+                    <Col md={3}>
                         <Label>Date of Birth</Label>
-                        <Input type="date" name={`dob${i}`} onChange={this.onChange} />
+                        <Input type="date"  name={`dob${i}`} onChange={this.memberDetailChange} />
                     </Col>
                 </Row>
             </FormGroup>);
         }
+
+        
+
         return(
             <UI onClick={this.logout}>
-                <Form>
+                <Form onSubmit={this.onSubmit} method="post">
                     <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                         <span aria-hidden="true">&times;</span>
                     </div>
@@ -316,7 +377,7 @@ class AddTenant extends Component{
                         </FormGroup>
                         <FormGroup>
                             <Label>Owner Name</Label>
-                            <Input placeholder="Owner Name" onChange={this.onChange}
+                            <Input placeholder="Owner Name" onChange={this.onImageChange}
                              type='textarea' name="ownerName" />
                         </FormGroup>
                         

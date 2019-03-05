@@ -130,12 +130,7 @@ class Country extends Component {
     render() {
           
           let form;
-          if(!this.state.loading && this.state.errors){
-         form = <Form onSubmit={this.submit}>
-           <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
-          <h3 style={{textAlign:'center', marginBottom: '10px'}}>Country Master</h3>
+             form=<div>
             <FormGroup>
                 <Label>Country Name</Label>
                 <Input
@@ -191,20 +186,19 @@ class Country extends Component {
                 <Button color="success" className="mr-2">Submit</Button>
                 <Button color="danger" onClick={this.countryDetails}>Cancel</Button>
             </FormGroup>
-        </Form>
-          }
-
-          else if(this.submit){
-            form = <Spinner />
-        }
+              </div>
 
         return (
             <div>
                 <UI onClick={this.logout}>
-                    <div>
-                   
-                       {form}
+                <Form onSubmit={this.submit}>
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                        <span aria-hidden="true">&times;</span>
                     </div>
+
+                    <h3 style={{textAlign:'center', marginBottom: '10px'}}> Country Master</h3>
+                    {!this.state.loading ? form : <Spinner /> }
+                </Form>
                 </UI>
 
             </div>

@@ -11,7 +11,7 @@ class DisplayEmployeeTypeMaster extends Component {
   
     state = {
         editEmployeeData: {
-            serviceType: '',
+     
             employeeTypeId: '',
             employeeType: '',
             employeeWorkTypeId: '',
@@ -20,11 +20,13 @@ class DisplayEmployeeTypeMaster extends Component {
 
             isActive: false
         },
+        serviceType: '',
         editEmployeeModal: false,
         loading: true,
         search:'',
          ids: [],
         isDisabled: true,
+        errors:{}
     }
     componentDidMount() {
 
@@ -51,17 +53,42 @@ class DisplayEmployeeTypeMaster extends Component {
             event.preventDefault();
         }
     }
+
+    onChange=(e)=> {
+
+
+        if (!!this.state.errors[e.target.name]) {
+          let errors = Object.assign({}, this.state.errors);
+          delete errors[e.target.name];
+          this.setState({ [e.target.name]: e.target.value, errors });
+      }
+      else {
+          this.setState({ [e.target.name]: e.target.value });
+      }
+       
+      } 
     editEmployee(employeeDetailId, employeeTypeId, employeeWorkTypeId, serviceType) {
         console.log('i m in edit ', employeeTypeId, employeeWorkTypeId, serviceType);
         this.setState({
-            editEmployeeData: { employeeDetailId, employeeTypeId, employeeWorkTypeId, serviceType },
+            editEmployeeData: { employeeDetailId, employeeTypeId, employeeWorkTypeId},serviceType, 
             editEmployeeModal: !this.state.editEmployeeModal
         })
     }
 
     updateEmployee = () => {
-
-        let { employeeDetailId, employeeTypeId, employeeWorkTypeId, serviceType } = this.state.editEmployeeData;
+        let errors = {};
+        const {serviceType}=this.state;
+        if(!this.state.serviceType){
+            errors.serviceType = "Service Type can't be empty. Please select."
+        }
+        this.setState({ errors });
+        let { employeeDetailId, employeeTypeId, employeeWorkTypeId} = this.state.editEmployeeData;
+        const isValid = Object.keys(errors).length === 0
+    
+        // const isValid = this.validate();
+        if (isValid) {
+     
+      
         this.props.updateEmployee(employeeDetailId, employeeTypeId, employeeWorkTypeId, serviceType).then(() => { this.refreshData() })
 
 
@@ -71,7 +98,7 @@ class DisplayEmployeeTypeMaster extends Component {
             editEmployeeModal: false, loading: true
         })
     }
-
+    }
 
 
     deleteEmployee(employeedetailId) {
@@ -278,23 +305,18 @@ searchFilter(search) {
 
                                 <FormGroup>
                                     <Label for="eventType"> Service Type</Label>
-                                    <Input id="serviceType" value={this.state.editEmployeeData.serviceType}
-                                        onChange={(e) => {
-                                            let { editEmployeeData } = this.state;
-
-                                            editEmployeeData.serviceType = e.target.value;
-
-                                            this.setState({ editEmployeeData });
-                                        }}
-                                        required
+                                    <Input name="serviceType" value={this.state.serviceType}
+                                        onChange={this.onChange}
+                                        
                                         maxLength={25}
                                         onKeyPress={this.OnKeyPresshandler}
 
                                     />
+                                    <span className="error">{this.state.errors.serviceType}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="eventType"> Employee Work Type</Label>
-                                    <select id="serviceType" value={this.state.editEmployeeData.employeeWorkTypeId}
+                                    <select id="serviceType"  className="form-control" value={this.state.editEmployeeData.employeeWorkTypeId}
                                         onChange={(e) => {
                                             let { editEmployeeData } = this.state;
 
@@ -309,7 +331,7 @@ searchFilter(search) {
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="eventType"> Employee Type</Label>
-                                    <select id="serviceType" value={this.state.editEmployeeData.employeeTypeId}
+                                    <select id="serviceType"  className="form-control" value={this.state.editEmployeeData.employeeTypeId}
                                         onChange={(e) => {
                                             let { editEmployeeData } = this.state;
 

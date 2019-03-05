@@ -6,12 +6,12 @@ import { Button, Modal, FormGroup, ModalBody,Table, ModalHeader, Input, Label } 
 import UI from '../../components/newUI/superAdminDashboard';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import Spinner from '../../components/spinner/spinner';
+import DefaultSelect from '../../constants/defaultSelect';
 
 class DisplayLocation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            editLocation: {
                 countryId: '',
                 countryName: '',
                 stateName: '',
@@ -20,15 +20,15 @@ class DisplayLocation extends Component {
                 cityId: '',
                 locationName: '',
                 locationId: '',
-                isActive:false
-            },
-            ids:[],
-            menuVisible: false,
-            isDisabled:true,
-            search: '',
-            modal: false,
-            loading:true,
-        };
+                isActive:false,
+                ids:[],
+                menuVisible: false,
+                isDisabled:true,
+                search: '',
+                errors:{},
+                modal: false,
+                loading:true,
+            };
     }
 
 
@@ -47,8 +47,14 @@ refreshData() {
 
 
 onChangeHandler = (event) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
+    if (!!this.state.errors[event.target.name]) {
+        let errors = Object.assign({}, this.state.errors);
+        delete errors[event.target.name];
+        this.setState({ [event.target.name]: event.target.value, errors });
+    }
+    else {
+        this.setState({ [event.target.name]: event.target.value });
+    }
 }
 
 toggle = (locationId, countryName, stateName, cityName, locationName) => {
@@ -76,10 +82,10 @@ searchOnChange = (e) => {
 
 deleteLocation = (locationId) => {
         this.setState({loading:true})
-        let {isActive } =this.state.editLocation;  
+        let {isActive } =this.state;  
         this.props.deleteLocation(locationId,isActive)
         .then(() => this.refreshData())
-        this.setState({editLocation:{isActive:false}})
+        this.setState({isActive:false})
 }
 
 deleteSelected (ids){
@@ -130,7 +136,7 @@ renderList=({details})=>{
                 <td>
                     <Button color="success"  className="mr-2" onClick={this.toggle.bind(this, item.locationId, item.country_master.countryName,item.state_master.stateName,item.city_master.cityName,item.locationName)}> Edit</Button>
                
-                    <Button color="danger" onClick={this.delete.bind(this,item.locationId)}> Delete</Button>
+                    <Button color="danger" onClick={this.deleteLocation.bind(this,item.locationId)}> Delete</Button>
                 </td>
                 </tr>
                 
@@ -197,14 +203,21 @@ OnKeyPressUserhandler(event) {
 }
 
 updateLocation = () => {
-    const { locationId, countryId, stateId, cityId,locationName } = this.state
-    this.props.updateLocation(locationId, countryId, stateId, cityId,locationName)
+    const { locationId, countryId, stateId, cityId,locationName } = this.state;
+    let errors={};
+        if(this.state.locationName===''){
+            errors.locationName="Location Name can't be empty";
+        }
+        this.setState({errors});
+        const isValid =Object.keys(errors).length===0;
+        if(isValid){
+        this.props.updateLocation(locationId, countryId, stateId, cityId,locationName)
         .then(() => this.refreshData())
-    this.setState({loading:true,
-        editLocation: { locationId, countryId, stateId, cityId,locationName},
-        modal: !this.state.modal
+        this.setState({loading:true,
+            locationId, countryId, stateId, cityId,locationName,
+            modal: !this.state.modal
     })
-
+        }
 }
 
 push=()=>{
@@ -298,22 +311,21 @@ render(){
                             this.props.getStateName(countryId)
                             }} >
                             <option value={this.state.countryId}>{this.state.countryName}</option>
-                            <option disabled>Select</option>
+                            <DefaultSelect/>
                             {this.fetchCountry(this.props.locationMasterReducer)}
 
                         </Input>
                      </FormGroup>
                      <FormGroup>
                          <Label>State Name</Label>
-                         <Input type="select" id="stateId" name="stateName" onChange={(e)=>{
-                            
+                         <Input type="select" id="stateId" name="stateName" onChange={(e)=>{                          
                             let { stateId } = this.state;
                             stateId = e.target.value;
                             this.setState({ stateId });
                             this.props.getCityName(stateId)
                             }} >
                             <option value={this.state.stateId}>{this.state.stateName}</option>
-                            <option disabled>Select</option>
+                            <DefaultSelect/>
                             {this.fetchState(this.props.locationMasterReducer)}
                             
                          </Input>
@@ -327,13 +339,14 @@ render(){
                             this.props.getLocationName(cityId)
                              }} >
                             <option value={this.state.cityId}>{this.state.cityName}</option>
-                            <option disabled>Select</option>
+                            <DefaultSelect/>
                             {this.fetchCity(this.props.locationMasterReducer)}
                          </Input>
                      </FormGroup>
                      <FormGroup>
                          <Label>Location Name</Label>
                          <Input type="text" id="locationId" name="locationName" onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onChangeHandler} value={this.state.locationName} />
+                         <span className="error">{this.state.errors.locationName}</span>
                      </FormGroup> 
                  
             

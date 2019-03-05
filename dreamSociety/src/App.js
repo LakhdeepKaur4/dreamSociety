@@ -63,6 +63,8 @@ import DesignationMasterDetail from './containers/designationMaster/designationM
 import SocietyComponent from './components/societyComponent/societyComponent';
 import RelationshipMaster from './containers/relationshipMaster/relationshipMaster';
 import RelationshipMasterDetail from './containers/relationshipMaster/relationshipMasterDetail';
+import EventSpaceMaster from './containers/eventSpaceMaster/eventSpaceMaster';
+import EventSpaceMasterDetails from './containers/eventSpaceMaster/eventSpaceMasterDetails';
 import FlatOwnerDetails from './containers/flatOwnerDetails/flatOwnerDetails';
 import BoardMemberRegistrationForm from './containers/boardMemberRegistration/boardMemberRegistrationForm';
 import BoardMemberDetails from './containers/boardMemberRegistration/boardMemberDetails';
@@ -133,6 +135,8 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/societyComponent' component={SocietyComponent} />
             <PrivateRoute path='/superDashboard/relationshipMaster' component={RelationshipMaster} />
             <PrivateRoute path='/superDashboard/relationshipMasterDetail' component={RelationshipMasterDetail} />
+            <PrivateRoute path='/superDashboard/eventSpaceMaster' exact component={EventSpaceMaster} />
+            <PrivateRoute path='/superDashboard/eventSpaceMaster/eventSpaceMasterDetails' component={EventSpaceMasterDetails} />
             <PrivateRoute path='/superDashboard/flatOwnerDetail' component={FlatOwnerDetails} />
             <PrivateRoute path='/superDashboard/boardMemberRegistartionForm' component={BoardMemberRegistrationForm} />
             <PrivateRoute path='/superDashboard/boardMemberDetails' component={BoardMemberDetails} />
