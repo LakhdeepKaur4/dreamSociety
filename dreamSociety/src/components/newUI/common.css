@@ -145,6 +145,12 @@ form{
     #sidebarMaster.active {
         margin-left: 0;
     }
+    #sidebarDetails.inactive {
+        margin-left: -150px;
+    }
+    #sidebarDetails.active {
+        margin-left: 0;
+    }
     #body {
     margin-left: 150px;
     margin-right: 150px;
