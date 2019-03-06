@@ -244,7 +244,7 @@ class MemberEventsBooking extends Component {
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
                         </div>
-                        <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Personal Event Booking Master</h3>
+                        <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Events Booking Master</h3>
                         {!this.state.loading ? formData : <Spinner />}
 
                     </Form>

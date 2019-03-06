@@ -464,7 +464,7 @@ class SocietyManagementDetail extends Component {
    </div>
                 <div className="top-details">
                                 <h3>Society Details</h3>
-                                <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button>
+                                {/* <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button> */}
                             </div>
                             <div>
                               

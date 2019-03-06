@@ -278,7 +278,9 @@ class DesignationMasterDetail extends Component {
                         <th onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'designationName'}});
-                        }}>Designation Position</th>
+                        }}>Designation Position 
+                         <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                       
                         <th>Actions</th>
                     </tr>
                 </thead>
