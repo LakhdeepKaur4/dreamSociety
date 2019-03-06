@@ -80,7 +80,7 @@ class flatMasterDetails extends Component {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             console.log('no errors');
-            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+            this.setState({ [e.target.name]: e.target.value, errors });
         } else {
             console.log('hii');
             this.setState( {[e.target.name]: [e.target.value]});

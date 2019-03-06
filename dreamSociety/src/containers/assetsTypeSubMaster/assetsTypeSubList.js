@@ -261,6 +261,7 @@ class AssetsTypeSubList extends Component {
 
 
 function mapStatToProps(state) {
+    console.log('dflkjdklfjkkkkkkkkkk',state.AssetsTypeReducer)
     return {
         ListOfAssets: state.AssetsTypeReducer,
     }
