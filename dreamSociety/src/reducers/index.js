@@ -28,7 +28,7 @@ import RelationMasterReducer from './relationMasterReducer/relationMasterReducer
 import eventSpaceMasterReducer from './eventSpaceMasterReducer/eventSpaceMasterReducer';
 import boardMemberReducer from './boardMemberReducer/boardMemberReducer';
 import tenantReducer from './tenantReducer/tenantReducer';
-
+import FlatOwnerReducer from './flatOwnerReducer/flatOwnerReducer'
 const rootReducer = combineReducers({
     loginReducer,
     userDetail,
@@ -58,6 +58,7 @@ const rootReducer = combineReducers({
     RelationMasterReducer,
     eventSpaceMasterReducer,
     boardMemberReducer,
-    tenantReducer
+    tenantReducer,
+    FlatOwnerReducer
 })
 export default rootReducer;

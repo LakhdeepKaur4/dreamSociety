@@ -49,6 +49,7 @@ class FlatOwnerDetails extends Component {
             permanentAddress:'',
             familyMember:'',
             member:[],
+            ownerGender:''
 
         }
     }
@@ -234,11 +235,11 @@ class FlatOwnerDetails extends Component {
     }
     userMemberHandler = (e) => {
         if (e.target.value != '') {
-            for(let i = 0; i < this.state.familyMember; i++){
-              this.setState({
-                memberName:this.event.target.value
-              })
-            }
+            // for(let i = 0; i < this.state.familyMember; i++){
+            //   this.setState({
+            //     memberName:e.target.value
+            //   })
+            // }
             this.setState({
                 familyMember: e.target.value
             });
@@ -280,7 +281,8 @@ class FlatOwnerDetails extends Component {
             cityId,
             locationId,
             locationName,
-            member} = this.state
+            member,
+            ownerGender} = this.state
             const d = new FormData()
             // data.append('ownerName',ownerName)
             // data.append('dob',DOB)
@@ -355,28 +357,29 @@ class FlatOwnerDetails extends Component {
                 stateId,
                 cityId,
                 locationId,
-                locationName
-                
+                locationName,
+                ownerGender
             }
             console.log(FlatOwnerData,...d)
             this.props.addFlatOwner(FlatOwnerData,d); 
 
         }
     FileChange=(event)=>{
-        console.log(event.target.files[0].name)
-        this.setState({ profilePicture: event.target.files[0]})
-        // const files = event.target.files;
-        // const file = files[0];
-        // if (files && file) {
-        //   const reader = new FileReader();
-        //   reader.readAsDataURL(file);
-        //   reader.onload =  () =>{
-        //       this.setState({
-        //         profilePic :  reader.result
-        //       })
+        // console.log(event.target.files[0].name)
+        // this.setState({ profilePicture: event.target.files[0]})
+        const files = event.target.files;
+        const file = files[0];
+        if (files && file) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload =  () =>{
+              this.setState({
+                profilePicture :
+                  reader.result
+              })
            
-        //   };
-        // }
+          };
+        }
        
   }
     render() {
@@ -436,13 +439,26 @@ class FlatOwnerDetails extends Component {
                             <h3>Flat Owner Details</h3>
                             <FormGroup>
                                 <Label>Owner Name</Label>
-                                <Input placeholder="Full Name" maxLength={50} name='ownerName' onChange={this.onChangeHandler} />
+                                <Input  style={{'textTransform': 'capitalize' }} placeholder="Full Name" maxLength={50} name='ownerName' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.ownerName}</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Date Of Birth</Label>
                                 <Input  type='date' max={this.maxDate()} name='DOB' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.DOB}</span>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Gender:</Label>
+                                <Label style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
+                                <span><Input type="radio" name="ownerGender" onChange={this.onChangeHandler} value="male"/></span>
+                                
+                                
+                                <Label style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
+                                <span><Input type="radio" name="ownerGender" onChange={this.onChangeHandler} value="female"/></span>
+                               
+                               
+                                <Label style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
+                                <span><Input type="radio" name="ownerGender" onChange={this.onChangeHandler} value="other"/></span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Contact Number</Label>
@@ -505,7 +521,7 @@ class FlatOwnerDetails extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <Label>Account Holder Name</Label>
-                                <Input placeholder="Holder Name" type="text" name='holderName' onChange={this.onChangeHandler} />
+                                <Input style={{'textTransform': 'capitalize' }} placeholder="Holder Name" type="text" name='holderName' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.holderName}</span>
                             </FormGroup>
                             <FormGroup >
