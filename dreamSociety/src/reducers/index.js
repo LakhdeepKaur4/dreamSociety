@@ -32,7 +32,7 @@ import memberEventsBookingReducer from './memberEventsBookingReducer/memberEvent
 import eventSpaceMasterReducer from './eventSpaceMasterReducer/eventSpaceMasterReducer';
 import boardMemberReducer from './boardMemberReducer/boardMemberReducer';
 import tenantReducer from './tenantReducer/tenantReducer';
-
+import FlatOwnerReducer from './flatOwnerReducer/flatOwnerReducer'
 const rootReducer = combineReducers({
     loginReducer,
     userDetail,
@@ -65,6 +65,7 @@ const rootReducer = combineReducers({
     memberEventsBookingReducer,
     eventSpaceMasterReducer,
     boardMemberReducer,
-    tenantReducer
+    tenantReducer,
+    FlatOwnerReducer
 })
 export default rootReducer;

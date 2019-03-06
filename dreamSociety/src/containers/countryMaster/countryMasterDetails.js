@@ -98,7 +98,7 @@ class CountryDetails extends Component{
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             console.log('no errors');
-            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+            this.setState({ [e.target.name]: e.target.value, errors });
         } else {
             console.log('hii');
             this.setState( {[e.target.name]: [e.target.value]});
@@ -175,7 +175,7 @@ class CountryDetails extends Component{
   
 
     onKeyPressHandler=(event)=> {
-        const pattern = /^[a-zA-Z.]+$/;
+        const pattern = /^[a-zA-Z. ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -183,21 +183,21 @@ class CountryDetails extends Component{
     }
 
     onKeyPressHandle1=(event)=>{
-        const pattern = /^[a-zA-Z$]+$/;
+        const pattern = /^[a-zA-Z$ ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
         }
     }
     onKeyPressHandle=(event)=> {
-        const pattern = /^[0-9+]$/;
+        const pattern = /^[0-9+ ]$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
         }
     }   
     onKeyPressCode=(event)=>{
-        const pattern = /^[A-Z]+$/;
+        const pattern = /^[A-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();

@@ -11,7 +11,8 @@ export function addVendorMaster(formData){
       }
     console.log(formData)
     const request=axios.post(`${URN}/vendor`, formData,{headers:authHeader()},config)
-    .then(response=>response.data)
+    .then(getVendorMaster())
+
 
     return{
         type:ADD_VENDOR_MASTER,
@@ -58,14 +59,13 @@ console.log("id",vendorId);
 
 
 export function updateVendor(vendorId,formData){
-    console.log(vendorId,"dasdfs");
     const config = {
         headers: {
           'content-type': 'multipart/form-data'
         }
       }
         const request = axios.put(`${URN}/vendor/`+vendorId,formData, {headers:authHeader()},config)
-         .then()
+         .then(this.getVendorMaster());
      
          
          return{
