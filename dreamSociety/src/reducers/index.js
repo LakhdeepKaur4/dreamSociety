@@ -25,7 +25,7 @@ import MaintenanceSubMaster from './maintenanceSubMasterReducer/maintenanceSubMa
 import EmpDetails from './employeeMasterReducer/employeeMasterReducer';
 import DesignationMasterReducer from './designationMasterReducer/designationMasterReducer';
 import RelationMasterReducer from './relationMasterReducer/relationMasterReducer'
-import societyMemberReducer from './societyMemberReducer/societyMemberReducer';
+
 import societyMemberEventReducer from './societyMemberEventReducer/societyMemberEventReducer'
 import memberEventsBookingReducer from './memberEventsBookingReducer/memberEventsBookingReducer';
 
@@ -60,7 +60,7 @@ const rootReducer = combineReducers({
     EmpDetails,
     DesignationMasterReducer,
     RelationMasterReducer,
-    societyMemberReducer,
+
     societyMemberEventReducer,
     memberEventsBookingReducer,
     eventSpaceMasterReducer,
