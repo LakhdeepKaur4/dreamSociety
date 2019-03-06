@@ -27,7 +27,8 @@ exports.create = (req, res) => {
     })
 }
 
-exports.get = (req, res) => {
+exports.get = async (req, res) => {
+    const data = await Flat.findAndCountAll({where:{isActive:true}});
     Flat.findAll({
         where: {
             isActive: true
@@ -45,7 +46,7 @@ exports.get = (req, res) => {
         ]
     }) 
         .then(flat => {
-            res.json(flat);
+            res.json({count:data.count,flat});
         });
 }
 

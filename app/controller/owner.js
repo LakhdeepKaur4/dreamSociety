@@ -112,8 +112,6 @@ exports.create = async (req, res, next) => {
                 ownerId: ownerId,
                 userId: req.userId
             }
-            console.log("bodytoUpdate ==>",bodyToUpdate);
-            console.log(ownerMember.memberId);
             const updatedMember = await OwnerMembersDetail.update(bodyToUpdate, { where: { memberId: {[Op.in]:memberId}}});
             // const ownerMemberUpdate = await OwnerMembersDetail.find({ where: { memberId: ownerMember.memberId } }).then(ownerMember => {
             //     return ownerMember.updateAttributes(bodyToUpdate);

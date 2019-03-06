@@ -50,7 +50,7 @@ module.exports = (sequelize, Sequelize) => {
             },
             gender: {
                   type: Sequelize.STRING,
-                  // allowNull: false
+                  allowNull: false
             },
             panCardNumber: {
                   type: Sequelize.STRING,
