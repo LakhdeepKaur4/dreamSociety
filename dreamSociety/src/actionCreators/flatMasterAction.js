@@ -50,7 +50,7 @@ export function getPageDetails(activePage){
 export function noOfCount(countPerPage,activePage){
     let data = {flat:[]};
     console.log("InAction",countPerPage,activePage);
-    const request= axios.get(`https://192.168.1.103:5000/api/flat/test/?page=${activePage}&&limit=${countPerPage}`,{headers:authHeader()})
+    const request= axios.get(`http://192.168.1.103:5000/api/flat/test/?page=${activePage}&&limit=${countPerPage}`,{headers:authHeader()})
     
     return{
         type:GET_COUNT_PAGE,
@@ -111,6 +111,7 @@ export  function getSizeTypeDetails(){
 }
 
 export function deleteSelectedFlatMasterDetail(ids){
+    console.log(ids);
     const request = axios.put(`${URN}/flat/delete/deleteSelected`, {ids}, {headers: authHeader()})
     .catch(err => err)
 

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import {getTowerName,getFlatType,addFlatDetails} from '../../actionCreators/flatDetailMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader,Table, ModalFooter, Input, Label } from 'reactstrap';
+import DefaultSelect from '../../constants/defaultSelect';
 
 class flatDetailMaster extends Component{
     constructor(props){
@@ -15,23 +16,35 @@ class flatDetailMaster extends Component{
             flatType:'',
             floor:'',
             towerId:'',
-            towerName:''
+            towerName:'',
+            errors:{},
+            loading:true,
+            message:''
         }
     }
 
 
-    handleChange=(event)=>  {
-                   
-        this.setState({[event.target.name]:event.target.value});          
+ 
+    handleChange = (event) => {
+        this.setState({message:'' })
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value.trim('') });
+        }
     }
+    
 
     componentDidMount(){
-        this.props.getTowerName();
-        this.props.getFlatType();
+        this.refreshData();
     }
     
     refreshData(){
-        this.props.addFlatDetails();
+        this.props.getTowerName();
+        this.props.getFlatType();
     }
 
 
@@ -54,27 +67,38 @@ class flatDetailMaster extends Component{
 
     onSubmit=(event)=> {
         event.preventDefault();
-   
-        this.props.addFlatDetails(this.state)
+        const { flatNo,flatId,floor,towerId} = this.state;
+        let errors={};
+        if(this.state.flatNo===''){
+            errors.flatNo="Flat No can't be empty"
+        }
+        else if(this.state.flatId===''){
+            errors.flatId="Flat Type can't be empty"
+        }
+        else if(this.state.floor===''){
+            errors.floor="Floor can't be empty"
+        }
+        else if(this.state.towerId===''){
+            errors.towerId="Tower Name can't be empty"
+        }
+        this.setState({errors});
+        const isValid=Object.keys(errors).length === 0;
+        if(isValid){
+            this.setState({loading:true});
+            this.props.addFlatDetails(flatNo,flatId,floor,towerId)
+            .then(()=>
+            this.push())
+            .catch(err=>{
+                this.setState({message: err.response.data.message, loading: true})
+            
+            })
+                this.refreshData();
+        }              
+      
         
-        this.setState(
-        {
-            state: {
-                flatDetailId:'',
-                flatNo:'',
-                flatId:'',
-                flatType:'',
-                floor:'',
-                towerId:'',
-                towerName:''
-             
-                }
-                 
-        })  
-                this.props.history.push('./flatDetails')
     }
            
-    
+  
     getDropdown=({name})=>{
         if(name){
             return name.map((item)=>{
@@ -119,35 +143,40 @@ class flatDetailMaster extends Component{
     render (){
         return(
             <UI onClick={this.logout}>
-            <div >
+            <div>
                 <form onSubmit={this.onSubmit}>
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
+                <span aria-hidden="true">&times;</span>
+            </div>
 
                 <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Flat Details</h3></div>
-                    <div >
+                    <div>
                         <label>Flat No</label>
-                        <input className ="form-control" placeholder="Flat No" type="text" name="flatNo" maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.handleChange} value={this.state.flatNo} required></input>
+                        <input className ="form-control" placeholder="Flat No" type="text" name="flatNo" maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.handleChange} value={this.state.flatNo} ></input>
+                        <span className="error">{this.state.errors.flatNo}</span>
+                        <span className="error">{this.state.message}</span>  
                     </div>
-                    <div >
+                    <div>
                         <label>Flat Type</label>
-                        <select required className ="form-control" value={this.state.flatId} name="flatType" onChange={(e)=> 
-                            this.setState({flatId:e.target.value})}  >
-                        <option value="" disabled selected>--Select--</option>
+                        <select className ="form-control"  defaultValue='no-value' name="flatId" onChange={this.handleChange}>
+                        <DefaultSelect/>
                             {this.getDropdown1(this.props.flatDetailMasterReducer)}
                         </select>
+                        <span className="error">{this.state.errors.flatId}</span>
                     </div>
-                    <div >    
+                    <div>    
                         <label>Floor</label>
-                        <input className ="form-control" placeholder="Floor" type="text" name="floor" maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  value={this.state.floor} required></input>
+                        <input className ="form-control" placeholder="Floor" type="text" name="floor" maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  value={this.state.floor}></input>
+                        <span className="error">{this.state.errors.floor}</span>
                     </div>
-                    <div >    
+                    <div>    
                         <label>Tower Name</label>
-                        <select  required  className ="form-control" value={this.state.towerId} name="towerName" onChange={(e)=> this.setState({towerId:e.target.value})}>
-                        <option value="" disabled selected>--Select--</option>
+                        <select  required  className ="form-control"  defaultValue='no-value' name="towerId" onChange={this.handleChange}>
+                        <DefaultSelect/>
                             {this.getDropdown(this.props.flatDetailMasterReducer)}
                         </select>
+                        <span className="error">{this.state.errors.towerId}</span>
+
                     </div>
                     <div className="mt-4">
                     <Button type="submit" className="mr-2" color="success" value="submit">Submit</Button>

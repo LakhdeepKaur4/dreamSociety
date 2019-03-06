@@ -3,13 +3,15 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { addServiceType, getServiceDetail } from '../../../actionCreators/serviceMasterAction';
 import { Button } from 'reactstrap';
+import DefaultSelect from '../../../constants/defaultSelect';
 
 
 import UI from '../../../components/newUI/vendorDashboardInside';
 
 
 
-class serviceMaster extends Component {
+
+class ServiceMaster extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,7 +19,9 @@ class serviceMaster extends Component {
             serviceName: '',
             serviceDetailId: '',
             service_detail: '',
-            menuVisible: false
+            menuVisible: false,
+            errors:{},
+            loading:true
         }
 
     }
@@ -25,15 +29,24 @@ class serviceMaster extends Component {
 
     handleChange = (event) => {
 
-        this.setState({ [event.target.name]: event.target.value });
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value.trim('') });
+        }
     }
+    
 
     componentDidMount() {
         this.props.getServiceDetail();
+        this.refreshData() ;
     }
 
     refreshData() {
-        this.props.addServiceType();
+        this.props.getServiceDetail();
     }
 
     getDropdown = ({ detail }) => {
@@ -51,31 +64,34 @@ class serviceMaster extends Component {
         }
     }
 
-    onSubmit = (event) => {
-        event.preventDefault();
 
-        this.props.addServiceType(this.state)
-
-        this.setState(
-            {
-                state: {
-                    serviceName: '',
-                    serviceDetailId: '',
-                    service_detail: ''
-
-                }
-
-            })
-
-        this.props.history.push('/superDashboard/displayServices')
-
-
-
-
+    onSubmit = (e) => {
+        e.preventDefault();
+        const { serviceName,serviceDetailId} = this.state
+        
+        let errors = {};
+        if(this.state.serviceName===''){
+            errors.serviceName="Service Name can't be empty"
+        }
+      
+        else if(this.state.serviceDetailId===''){
+            errors.serviceDetailId="Service Details can't be empty"
+        }
+    
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0
+        if (isValid) {
+                    this.setState({loading: true});
+                    this.props.addServiceType( serviceName,serviceDetailId)
+                    this.push();
+                    this.refreshData();
+        }
+        
     }
 
+
     push=()=>{
-        this.props.history.push('/superDashboard/displayservices')
+        this.props.history.push('/superDashboard/DisplayServices')
     }
 
 
@@ -107,19 +123,21 @@ class serviceMaster extends Component {
                 <div>
                     <form onSubmit={this.onSubmit}>
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
+                    <span aria-hidden="true">&times;</span>
+                 </div>
                     <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Services</h3></div>
                         <div>
                             <label>Service Type</label>
-                            <input type="text" placeholder="Service Type" className="form-control" name="serviceName" maxLength={30} value={this.state.serviceName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required></input>
+                            <input type="text" placeholder="Service Type" className="form-control" name="serviceName" maxLength={30} value={this.state.serviceName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} ></input>
+                            <span className="error">{this.state.errors.serviceName}</span>
                         </div>
                         <div>
                             <label>Service Details</label>
-                            <select className="form-control" value={this.state.serviceDetailId} onChange={(e) => this.setState({ serviceDetailId: e.target.value })} required>
-                            <option value="" disabled selected>--Select--</option>
+                            <select className="form-control" name="serviceDetailId" defaultValue='no-value'  onChange={this.handleChange} >
+                            <DefaultSelect/>
                                 {this.getDropdown(this.props.serviceMasterReducer)}
                             </select>
+                            <span className="error">{this.state.errors.serviceDetailId}</span>
                         </div>
                         <div className="mt-4">
                             <Button type="submit" color="success" className="mr-2" value="submit">Submit</Button>
@@ -151,4 +169,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ addServiceType, getServiceDetail }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(serviceMaster);
+export default connect(mapStateToProps, mapDispatchToProps)(ServiceMaster);

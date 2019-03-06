@@ -91,13 +91,13 @@ class AssetsTypeSubMaster extends Component {
                     </FormGroup>
                 </div>
                 <Label>Assets Sub Type</Label>
-                <Input placeholder="Enter Assets Sub Type" maxLength={30} name='assetsSubType' onChange={this.onChangeHandler} />
+                <Input placeholder="Enter Assets Sub Type" style={{ 'textTransform': 'capitalize' }} maxLength={30} name='assetsSubType' onChange={this.onChangeHandler} />
                 <span className="error">{this.state.errors.assetsSubType}</span>
 
 
                 <div>
                     <Label>Description</Label>
-                    <textarea type="text" maxLength={100} id="Description" placeholder="Enter Description..." onChange={this.onChangeHandler} className="form-control" onChange={this.onChangeHandler} name='description' />
+                    <textarea type="text" style={{ 'textTransform': 'capitalize' }} maxLength={100} id="Description" placeholder="Enter Description..." onChange={this.onChangeHandler} className="form-control" onChange={this.onChangeHandler} name='description' />
                     <span className="error">{this.state.errors.description}</span>
                 </div>
                 <div>

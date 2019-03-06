@@ -44,9 +44,7 @@ class Login extends Component {
                 })
                 localStorage.setItem('token',loginData.payload.data.accessToken);
                 localStorage.setItem('user-type',loginData.payload.data.userType);
-                localStorage.setItem('firstName',loginData.payload.data.firstName);
-        
-                
+                localStorage.setItem('firstName',loginData.payload.data.user.firstName);
                         switch(loginData.payload.data.user.roles[0].roleName) {
                             case 'SUPER_ADMIN':
                                 return this.props.history.push('/superDashboard');

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getDetails,getCountry,updateDetails,deleteDetails} from '../../actionCreators/countryAction';
+import { getDetails,getCountry,updateDetails,deleteDetails,deleteSelectedStateMasterDetail} from '../../actionCreators/countryAction';
 
 import { bindActionCreators } from 'redux';
 
@@ -14,7 +14,7 @@ class flatMasterDetails extends Component {
    constructor(props){
       super(props);
     this.state = {
-        
+             ids:[],
             stateId:'',
             countryId:'',
             countryName:'',
@@ -48,14 +48,18 @@ class flatMasterDetails extends Component {
         });
       }
     
+      onCountryChange=(e)=>{
+          e.preventDefault();
+          this.setState({[e.target.name]:e.target.value})
+      }
       updateBook=(e)=> {
         e.preventDefault();
-        let{ stateId,countryId,stateName} =this.state;
+        let{ stateId,countryId,countryName,stateName} =this.state;
 
         let errors = {};
-        if (!countryId) {
-            errors.countryId = " select countryName again"
-        }
+        // if (!countryId) {
+        //     errors.countryId = " select countryName again"
+        // }
         if (stateName === '') errors.stateName = "Cant be empty";
     
         this.setState({ errors });
@@ -63,7 +67,7 @@ class flatMasterDetails extends Component {
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
          
-         this.props.updateDetails(stateId,countryId,stateName).then(() => this.refreshData());
+         this.props.updateDetails(stateId,countryId,countryName,stateName).then(() => this.refreshData());
          this.setState({
 
             editUserModal:false ,loading:true,stateId:'',countryId:'',stateName:''
@@ -117,9 +121,9 @@ class flatMasterDetails extends Component {
         
     //   }
       
-      editBook(stateId,countryName,stateName) {
+      editBook(stateId,countryId,countryName,stateName) {
           this.setState({
-              stateId,countryName,stateName, editUserModal: ! this.state.editUserModal
+              stateId,countryId,countryName,stateName, editUserModal: ! this.state.editUserModal
           })    
       }
 
@@ -140,15 +144,38 @@ class flatMasterDetails extends Component {
         if(country3){
           
             return country3.filter(this.searchFilter(this.state.search)).map((item) => {
+                let countryName= item.country_master.countryName;
                 
                 return (
                     <tr key={item.stateId}>
-                        <td>{item.country_master.countryName}</td>
+                     <td><input type="checkbox" name="ids" className="SelectAll"  value={item.stateId}
+                         onChange={(e) => {
+                            let {stateId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(stateId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true})
+                                }
+                            }
+                            else{
+                                this.setState({ids: [...this.state.ids, stateId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                            
+                                
+                             }}/></td>
+                        <td>{countryName}</td>
                         <td>{item.stateName}</td>
                         
                         <td>
                             <Button color="success" size="sm" className="mr-2" 
-                            onClick={this.editBook.bind(this, item.stateId,item.country_master.countryName, 
+                            onClick={this.editBook.bind(this, item.stateId,item.countryId,countryName, 
                             item.stateName)}>Edit</Button>
                             <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, item.stateId)}>Delete</Button>
                         </td>
@@ -173,6 +200,13 @@ class flatMasterDetails extends Component {
             
         }
     }
+
+    deleteSelectedSubMaintenance(ids){
+        this.setState({loading:true, isDisabled: true});
+        this.props.deleteSelectedStateMasterDetail(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response);
+    }
     routeToAddNewUser =() => {
         this.props.history.push('/superDashboard/statemaster')
     }
@@ -190,12 +224,54 @@ class flatMasterDetails extends Component {
             event.preventDefault();
         }
     }
+
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
+    }
+
+    unSelectAll = () =>{
+        
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
+        }
+        
+        this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
+    }
+
+
+
     render() {
         let tableData;
         tableData=<Table className="table table-bordered">
         
         <thead>
             <tr>
+            <th style={{alignContent:'baseline'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                    if(e.target.checked) {
+                        this.selectAll();
+                    }
+                    else if(!e.target.checked){
+                        this.unSelectAll();
+                    } 
+                }
+                    
+                }  /></th>
                 <th>Country Name</th>
                 <th>State Name</th>
                 <th>Actions</th>
@@ -207,9 +283,12 @@ class flatMasterDetails extends Component {
         </tbody>
        </Table>
        
-       if(!this.props.countryDetails.country3 && !this.props.countryDetails.country1){
-        tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner /></div>
-    }
+       let deleteSelectedButton = <Button
+     disabled={this.state.isDisabled}
+     color="danger"
+    className="mb-3"
+    onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
+    
         return (
             <div>  
                 <UI onClick={this.logout}>
@@ -229,12 +308,12 @@ class flatMasterDetails extends Component {
                                     <Label for="roles">CountryName</Label>
                                     <Input type="select"
                                     name="countryId"
-                                    value={this.state.countryId} onChange={this.onChange}>
+                                    value={this.state.countryId} onChange={this.onCountryChange}>
                                         <option>{this.state.countryName}</option>
                                         <option disabled>Select</option>
                                         {this.fetchDrop(this.props.countryDetails)}/>
                                         </Input>
-                                        <span  className='error'>{this.state.errors.countryId}</span>
+                                        {/* <span  className='error'>{this.state.errors.countryId}</span> */}
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">StateName</Label>
@@ -263,6 +342,7 @@ class flatMasterDetails extends Component {
                          
                          onChange={this.searchOnChange} 
                         />
+                        {deleteSelectedButton}
                             {!this.state.loading ? tableData : <Spinner />}
                        
                     </div>
@@ -288,7 +368,8 @@ function mapDispatchToProps(dispatch) {
     
         getCountry,
         updateDetails,
-        deleteDetails
+        deleteDetails,
+        deleteSelectedStateMasterDetail
         // AddDetails,
         // getDrop,
         // getSizeDrop

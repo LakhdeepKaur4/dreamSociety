@@ -5,6 +5,7 @@ import {getCountryName,getStateName,getCityName,addLocationDetails, getLocationN
 import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Button, Form ,FormGroup, Input, Label } from 'semantic-ui-react';
+import DefaultSelect from '../../constants/defaultSelect';
 
 
 class locationMaster extends Component{
@@ -18,23 +19,25 @@ class locationMaster extends Component{
             stateName:'',
             cityId: '',
             cityName:'',
-            locationName:''
+            locationName:'',
+            errors:{},
+            loading:true
         }
     }
 
     
 
     componentDidMount(){
+        this.refreshData();
+    }
+    
+    refreshData(){
         this.props.getLocation();
         this.props.getCountryName();
         this.props.getStateName();
         this.props.getCityName();
         this.props.getLocationName();
-      
-    }
-    
-    refreshData(){
-        this.props.addLocationDetails();
+        
     }
            
 
@@ -52,6 +55,7 @@ class locationMaster extends Component{
     }
     
     onChangeCountry=(event)=>{
+        this.onChange(event);
         let selected= event.target.value;
       
         var data = _.find(this.props.locationMasterReducer.country,function(obj){
@@ -79,7 +83,7 @@ class locationMaster extends Component{
     }
 
     onChangeState= (event)=>{
-      
+        this.onChange(event);
         let selected= event.target.value;
               
         var data1 = _.find(this.props.locationMasterReducer.state,function(obj){
@@ -104,9 +108,8 @@ class locationMaster extends Component{
     }
 
 
-   
-
     onChangeCity=(event)=>{
+        this.onChange(event);
         let selected= event.target.value;     
         
         var data2 = _.find(this.props.locationMasterReducer.city,function(obj){
@@ -119,35 +122,59 @@ class locationMaster extends Component{
     }
 
     onLocationChange=(e)=>{
+        this.onChange(e);
         this.setState({
             [e.target.name]:e.target.value
         })
+    }
+
+
+    onChange=(e)=>{
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value.trim('') });
+        }
+    }
+
+   
+
+    onSubmit=(event)=> {
+       
+        event.preventDefault();
+        const { countryId,stateId,cityId,locationName} = this.state
+        let errors = {};
+        if (!this.state.countryId) {
+            errors.countryId = "Country Name can't be empty"
+        }
+        else if (this.state.stateId === '') {
+            errors.stateId = "State Name can't be empty";
+        }
+        else if (this.state.cityId === ''){
+            errors.cityId = "City Name can't be empty";
+        }
+        else if (this.state.locationName===''){
+            errors.locationName="Location Name can't be empty"
+        }
+        this.setState({ errors });       
+        const isValid = Object.keys(errors).length === 0;
+        if(isValid){           
+                    this.setState({loading:true});
+                    this.props.addLocationDetails(countryId,stateId,cityId,locationName);
+                    this.push();
+                    this.refreshData();
+        
+                    }
+        
     }
 
     push=()=>{
         this.props.history.push('/superDashboard/displayLocation')
     }
 
-    onSubmit=(event)=> {
-       
-        event.preventDefault();
-   
-        this.props.addLocationDetails(this.state)
-        
-        this.setState(
-        {
-            state: {
-                locationId:'',
-                countryId:'',    
-                stateId: '',        
-                cityId: '',             
-                locationName:''
-             
-                }
-                 
-        })  
-        this.props.history.push('/superDashboard/displayLocation')
-    }
 
     OnKeyPressUserhandler(event) {
         const pattern = /[a-zA-Z_ ]/;
@@ -176,33 +203,37 @@ class locationMaster extends Component{
             <div>
                 <form onSubmit={this.onSubmit}>
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
+                <span aria-hidden="true">&times;</span>
+            </div>
                 <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Location</h3></div>
                     <div>
                         <label>Country Name</label>
-                        <select  required className ="form-control" name="countryName"  onChange={this.onChangeCountry} >
-                        <option value="" disabled selected>--Select--</option>
+                        <select defaultValue='no-value' className ="form-control" name="countryId"  onChange={this.onChangeCountry} >
+                        <DefaultSelect/>
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
+                        <span className='error'>{this.state.errors.countryId}</span>
                     </div>
                     <div>    
                         <label>State Name</label>
-                        <select  required className ="form-control" name="stateName" onChange={this.onChangeState}>
-                        <option value="" disabled selected>--Select--</option>
+                        <select defaultValue='no-value' className ="form-control" name="stateId" onChange={this.onChangeState}>
+                        <DefaultSelect/>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
+                        <span className='error'>{this.state.errors.stateId}</span>
                     </div>
                     <div>    
                         <label>City Name</label>
-                        <select  required className ="form-control"  name="cityName" onChange={this.onChangeCity} >
-                        <option value="" disabled selected>--Select--</option>
+                        <select defaultValue='no-value' className ="form-control"  name="cityId" onChange={this.onChangeCity} >
+                        <DefaultSelect/>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
+                        <span className='error'>{this.state.errors.cityId}</span>
                     </div>
                     <div>
                         <label>Location Name</label>
-                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  onKeyPress={this.OnKeyPressUserhandler} value={this.state.locationName}  onChange={this.onLocationChange} required></input>
+                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  value={this.state.locationName}  onChange={this.onLocationChange} ></input>
+                        <span className='error'>{this.state.errors.locationName}</span>
                     </div>
              
                     <div className="mt-4">

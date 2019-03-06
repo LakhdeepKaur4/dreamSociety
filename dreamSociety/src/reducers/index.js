@@ -29,6 +29,10 @@ import societyMemberReducer from './societyMemberReducer/societyMemberReducer';
 import societyMemberEventReducer from './societyMemberEventReducer/societyMemberEventReducer'
 import memberEventsBookingReducer from './memberEventsBookingReducer/memberEventsBookingReducer';
 
+import eventSpaceMasterReducer from './eventSpaceMasterReducer/eventSpaceMasterReducer';
+import boardMemberReducer from './boardMemberReducer/boardMemberReducer';
+import tenantReducer from './tenantReducer/tenantReducer';
+
 const rootReducer = combineReducers({
     loginReducer,
     userDetail,
@@ -58,6 +62,9 @@ const rootReducer = combineReducers({
     RelationMasterReducer,
     societyMemberReducer,
     societyMemberEventReducer,
-    memberEventsBookingReducer
+    memberEventsBookingReducer,
+    eventSpaceMasterReducer,
+    boardMemberReducer,
+    tenantReducer
 })
 export default rootReducer;

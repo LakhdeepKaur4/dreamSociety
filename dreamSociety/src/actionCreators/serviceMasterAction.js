@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {authHeader} from '../helper/authHeader';
-import {URN,GET_DETAIL,GET_SERVICE,ADD_SERVICE,DELETE_SERVICE_IDS,DELETE_SERVICE} from '../actions/index';
+import {URN,GET_DETAIL,GET_SERVICE,ADD_SERVICE,DELETE_SERVICE_IDS,DELETE_SERVICE,UPDATE_SERVICES} from '../actions/index';
 
 export function getServiceDetail(){
     const request=axios.get(`${URN}/serviceDetail`,{headers:authHeader()})
@@ -20,11 +20,19 @@ export function getServiceType(){
     }
 }
 
+export function updateServices(serviceId,serviceName, service_detail, serviceDetailId  ){
+
+    const request = axios.put(`${URN}/service/`+serviceId,{serviceName, service_detail, serviceDetailId  },{headers:authHeader()})
+    .then()
+    return{
+        type:UPDATE_SERVICES,
+        payload:request
+    }
+}
 
 
-
-export function addServiceType(values){
-    const request = axios.post(`${URN}/service`,values, {headers:authHeader()})
+export function addServiceType(serviceName,serviceDetailId){
+    const request = axios.post(`${URN}/service`,{serviceName,serviceDetailId}, {headers:authHeader()})
     .then()
     return {
         type:ADD_SERVICE,
@@ -45,13 +53,10 @@ export function deleteSelectedService(ids){
 }
 
 
-export const deleteService=(serviceId)=>{
-    const data={
-        serviceId,
-        isActive:false
-    }
+export const deleteService=(serviceId,isActive)=>{
+ 
 
-    const request = axios.put(`${URN}/service/${serviceId}`,data, {headers:authHeader()})
+    const request = axios.put(`${URN}/service/${serviceId}`,{isActive}, {headers:authHeader()})
      .then(response => response.data)
  
      // .then(getDetails())

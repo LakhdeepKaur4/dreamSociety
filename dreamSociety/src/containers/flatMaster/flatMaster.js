@@ -135,15 +135,11 @@ class FlatMaster extends Component {
 
     render() {
           let form;
-          if(!this.state.loading && this.props.flat.list0 && this.props.flat.list4 && this.state.errors){
+        
             
           
-            form = <Form onSubmit={this.submit}>
-              <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
-
-             <h3 style={{textAlign:'center', marginBottom: '10px'}}>Flat Master</h3>
+            form = <div>
+             
             <FormGroup>
                 <Label>Society Name</Label>
                 <Input
@@ -215,21 +211,23 @@ class FlatMaster extends Component {
                 <Button color="danger" onClick={this.push}>Cancel</Button>
               
             </FormGroup>
-        </Form>
-          }
+              </div>
+          
 
-          else if(this.submit){
-            form = <Spinner />
-        }
-
+        
 
         return (
             <div>
                 
                 <UI onClick={this.logout}>
-                    <div>
-                        {form}
+                <Form onSubmit={this.submit}>
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                        <span aria-hidden="true">&times;</span>
                     </div>
+
+                    <h3 style={{textAlign:'center', marginBottom: '10px'}}> Flat Master</h3>
+                    {!this.state.loading ? form : <Spinner /> }
+                </Form>
                 </UI>
                 {/* </SideBar>
                 </div> */}

@@ -1,5 +1,6 @@
 import {URN,ADD_COUNTRY,GET_COUNTRY_DETAILS,UPDATE_COUNTRY,DELETE_COUNTRY,ADD_STATE,
-     GET_COUNTRY_DETAILS1,UPDATE_DETAILS,DELETE_DETAILS} from '../actions/index';
+     GET_COUNTRY_DETAILS1,UPDATE_DETAILS,DELETE_DETAILS,DELETE_MULTIPLE_COUNTRY_DETAILS,
+     DELETE_MULTIPLE_STATEMASTER_DETAILS} from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 import axios from 'axios';
 
@@ -92,14 +93,36 @@ export function deleteDetails(stateId,isActive){
     }
 }
 
-export function updateDetails(stateId,countryId,stateName){
+export function updateDetails(stateId,countryId,countryName,stateName){
     console.log("gggggg",stateId,countryId,stateName);
-    const request =axios.put(`${URN}/state/`+ stateId,{countryId,stateName},{headers:authHeader()})
+    const request =axios.put(`${URN}/state/`+ stateId,{countryId,countryName,stateName},{headers:authHeader()})
     .then(response => response.data)
     .then(this.getDetails());
 
     return{
         type:UPDATE_DETAILS,
         payload:request
+    }
+}
+
+export function deleteSelectedCountryDetail(ids){
+    console.log(ids)
+    const request = axios.put(`${URN}/country/delete/deleteSelected`, {ids}, {headers: authHeader()})
+    .catch(err => err)
+
+    return {
+        type: DELETE_MULTIPLE_COUNTRY_DETAILS,
+        payload: request
+    }
+}
+
+export function  deleteSelectedStateMasterDetail(ids){
+    console.log(ids);
+    const request = axios.put(`${URN}/state/delete/deleteSelected`, {ids}, {headers: authHeader()})
+    .catch(err => err)
+
+    return {
+        type: DELETE_MULTIPLE_STATEMASTER_DETAILS,
+        payload: request
     }
 }

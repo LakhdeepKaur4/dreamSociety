@@ -34,7 +34,7 @@ class Demo extends Component {
     render() {
         return (
             <div>
-                <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+                <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark" style={{ zIndex: "1001" }}>
 
                     <div id="content">
 
@@ -69,11 +69,21 @@ class Demo extends Component {
                                 <Link className="nav-link" to="#">Contact Us</Link>
                             </li>
                         </ul>
-                        <div className="form-inline mt-2 mt-md-0">
+                        {/* <div className="form-inline mt-2 mt-md-0">
                             <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
                                 onClick={this.props.onClick} >Logout</button>
+                        </div> */}
+                        <div className="dropdown mx-2">
+                            <button className="btn btn-outline-success dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {localStorage.getItem('firstName')}
+                            </button>
+                            <div className="dropdown-menu dropdown-menu-lg-right bg-dark" aria-labelledby="dropdownMenuButton">
+                                <div className="form-inline ml-lg-3 ml-md-2 ml-sm-2 mt-2 mt-md-0">
+                                    <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
+                                        onClick={this.props.onClick} >Logout</button>
+                                </div>
+                            </div>
                         </div>
-
                     </div>
                 </nav>
                 <div className="wrapper">

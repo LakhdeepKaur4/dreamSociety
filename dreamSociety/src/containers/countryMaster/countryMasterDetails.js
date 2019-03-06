@@ -1,7 +1,7 @@
 import { URN } from '../../actions/index';
 import React,{ Component } from 'react';
 import { connect } from 'react-redux';
-import { getCountry,updateCountry,deleteCountry } from '../../actionCreators/countryAction';
+import { getCountry,updateCountry,deleteCountry,deleteSelectedCountryDetail } from '../../actionCreators/countryAction';
 import { authHeader } from '../../helper/authHeader';
 import { bindActionCreators } from 'redux';
 import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Input } from 'reactstrap';
@@ -15,7 +15,7 @@ class CountryDetails extends Component{
     constructor(){
         super();
        this.state = {
-            
+                 ids:[],
                 countryId:'',
                 countryName:'',
                 code:'',
@@ -122,6 +122,28 @@ class CountryDetails extends Component{
                 //  console.log('shub',item);
                 return (
                     <tr key={item.countryId}>
+                     <td><input type="checkbox" name="ids" className="SelectAll"  value={item.countryId}
+                         onChange={(e) => {
+                            let {countryId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(countryId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1)
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true})
+                                }
+                            }
+                            else{
+                                this.setState({ids: [...this.state.ids, countryId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                            
+                                
+                             }}/></td>
                         <td>{item.countryName}</td>
                         <td>{item.code}</td>
                         <td>{item.currency}</td>
@@ -136,6 +158,13 @@ class CountryDetails extends Component{
                 )
             })
         }
+    }
+
+    deleteSelectedSubMaintenance(ids){
+        this.setState({loading:true, isDisabled: true});
+        this.props.deleteSelectedCountryDetail(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response);
     }
 
     logout=()=>{
@@ -182,11 +211,54 @@ class CountryDetails extends Component{
         this.props.history.push('/superDashboard/countrymaster')
     }
 
+
+    
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
+    }
+
+    unSelectAll = () =>{
+        
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
+        }
+        
+        this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
+    }
+
+
     render(){
          let tableData;
           tableData= <Table className="table table-bordered">
         <thead>
             <tr>
+            <th style={{alignContent:'baseline'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                    if(e.target.checked) {
+                        this.selectAll();
+                    }
+                    else if(!e.target.checked){
+                        this.unSelectAll();
+                    } 
+                }
+                    
+                }  /></th>
+
                 <th>Country Name</th>
                 <th>Country Code</th>
                 <th>Currency</th>
@@ -202,9 +274,12 @@ class CountryDetails extends Component{
         </tbody>
     </Table>
 
-    if(!this.props.countryDetails.country1){
-    tableData = <div style={{textAlign:'center', fontSize:'20px'}}><Spinner /></div>
-}
+    let deleteSelectedButton = <Button
+     disabled={this.state.isDisabled}
+     color="danger"
+    className="mb-3"
+    onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
+
         return(
             <div>
                 <UI onClick={this.logout}>
@@ -277,6 +352,7 @@ class CountryDetails extends Component{
                         </Modal>
                         <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
+                                  {deleteSelectedButton}
                             {!this.state.loading ? tableData : <Spinner />}
                        
                     </div>
@@ -297,7 +373,8 @@ function mapDispatchToProps(dispatch){
     return bindActionCreators({
         getCountry,
         updateCountry,
-        deleteCountry
+        deleteCountry,
+        deleteSelectedCountryDetail
     },dispatch)
 
 }

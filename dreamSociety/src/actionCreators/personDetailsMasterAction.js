@@ -35,9 +35,10 @@ export function getTower(){
       }
      }
 
-     export function addPerson(values){
+
+export function addPerson( userName,email,towerId,flatDetailId,roles,familyMember,parking){
          
-      const request =axios.post(`${URN}/auth/signup`,values,{headers:authHeader()}) 
+      const request =axios.post(`${URN}/auth/signup`,{userName,email,towerId,flatDetailId,roles,familyMember,parking},{headers:authHeader()}) 
       .then(response => response.data)
 
       .then(viewPerson());

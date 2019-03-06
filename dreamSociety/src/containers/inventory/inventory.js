@@ -131,6 +131,7 @@ onAssetsTypeChange=(name,selectOption)=>{
     },function (){
         console.log(name)
     });
+    
 }   
 
 
@@ -152,7 +153,7 @@ onAssetsTypeChange=(name,selectOption)=>{
         <span className="error">{this.state.errors.assetSubTypeId}</span>
         <div>
             <Label>Number Of Inventory</Label>
-            <Input type="text" maxLength={1} placeholder="Enter Number" onChange={this.onChangeHandler} className="form-control"  name='numberOfInventory' />
+            <Input type="number" maxLength={1} placeholder="Enter Number" onChange={this.onChangeHandler} className="form-control"  name='numberOfInventory' />
             <span className="error">{this.state.errors.numberOfInventory}</span>
         </div>
         <div>

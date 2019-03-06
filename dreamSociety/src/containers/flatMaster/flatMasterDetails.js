@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { getDetails, AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount,deleteSelectedFlatMasterDetail } from '../../actionCreators/flatMasterAction';
+// import {getEventDetails} from '../../actionCreators/eventSpaceMasterAction';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
@@ -53,6 +54,7 @@ class flatMasterDetails extends Component {
         const defaultPage=this.state.activePage;
         this.props.getDetails(defaultPage).then(() => this.setState({loading:false}));
         this.props.getDrop().then(() => this.setState({loading:false}));
+       
         this.props.getSizeDrop().then(() => this.setState({loading:false}));
 
     }
@@ -63,21 +65,25 @@ class flatMasterDetails extends Component {
         });
     }
 
+    sizeChange=(e)=>{
+        this.setState({[e.target.name]:e.target.value})
+    }
+    societyChange=(e)=>{
+        this.setState({[e.target.name]:e.target.value})
+    }
     updateBook = (e) => {
         e.preventDefault();
-        let { flatId, societyId, flatType, flatSuperArea,sizeId,  coverArea } = this.state
-
+       
+        let { flatId, societyId,societyName, flatType, flatSuperArea,sizeId, coverArea } = this.state
+       
+        console.log(flatId, societyId,societyName, flatType, flatSuperArea,sizeId, coverArea);
         let errors = {};
-        if (!this.state.societyId) {
-            errors.societyId = "Select Society Name Again"
-        }
+       
         if (flatType === '') errors.flatType = "Cant be empty";
         else if (flatType.length < 3) errors.flatType = "Characters should be less than four"
         if (flatSuperArea === '') errors.flatSuperArea = "Cant be empty";
 
-        if (!this.state.sizeId) {
-            errors.sizeId = "Select  SizeType Again";
-        }
+        
         if (coverArea === '') errors.coverArea = "Cant be empty";
         else if (parseInt(coverArea) >= parseInt(flatSuperArea)) errors.coverArea=
          "CoverArea cannot be greater then flatSuperArea";
@@ -86,14 +92,14 @@ class flatMasterDetails extends Component {
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
         
-        axios.put(`${URN}/flat/` + flatId, {societyId,
+        axios.put(`${URN}/flat/` + flatId, {societyName,societyId,
              flatType, flatSuperArea,sizeId,
              coverArea   
         }, { headers: authHeader() }).then((response) => {
             this.refreshData();
         })
         this.setState({
-            editUserModal: false,loading:true, flatId: '',societyId:'',
+            editUserModal: false,loading:true, flatId: '',societyId:'',societyName:'',
             flatType: '', flatSuperArea: '',sizeId:'', CoverArea: ''
         })
     }
@@ -133,9 +139,9 @@ class flatMasterDetails extends Component {
     }
 
 
-    editBook(flatId, societyName, flatType, flatSuperArea, sizeType, coverArea) {
+    editBook(flatId, societyId,societyName, flatType, flatSuperArea, sizeId,sizeType, coverArea) {
         this.setState({
-            flatId, societyName, flatType, flatSuperArea, sizeType, coverArea , editUserModal: !this.state.editUserModal
+            flatId, societyId,societyName, flatType, flatSuperArea, sizeId,sizeType, coverArea , editUserModal: !this.state.editUserModal
         })
     }
 
@@ -151,7 +157,7 @@ class flatMasterDetails extends Component {
     fetchUsers({ list1 }) {
         
         if (list1) {
-            // console.log(list1);
+            console.log(list1);
             return list1.flat.filter(this.searchFilter(this.state.search)).map((item,index) => {
                 let societyName = item.society_master.societyName;
                 let sizeType= item.size_master.sizeType;
@@ -191,8 +197,8 @@ class flatMasterDetails extends Component {
                         <td>{item.coverArea}</td>
                         <td>
                             <Button color="success" size="sm" className="mr-2"
-                                onClick={this.editBook.bind(this, item.flatId, societyName,
-                                    item.flatType, item.flatSuperArea, sizeType, item.coverArea)}>Edit</Button>
+                                onClick={this.editBook.bind(this, item.flatId,item.societyId, societyName,
+                                    item.flatType, item.flatSuperArea,item.sizeId, sizeType, item.coverArea)}>Edit</Button>
                             <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, item.flatId)} >Delete</Button>
                         </td>
                     </tr>
@@ -202,6 +208,8 @@ class flatMasterDetails extends Component {
         }
     }
     fetchDrop({ list2 }) {
+        console.log(list2);
+
         if (list2) {
 
             return (
@@ -380,12 +388,12 @@ class flatMasterDetails extends Component {
                                     <Input type="select" 
                                     name="societyId"
                                             value={this.state.societyId} 
-                                            onChange={this.onChange}>
+                                            onChange={this.societyChange} >
                                             <option>{this.state.societyName}</option>
                                             <option disabled>Select</option>
                                             {this.fetchDrop(this.props.flats)}     
                                         </Input>
-                                        <span  className='error'>{this.state.errors.societyId}</span>
+                                        {/* <span  className='error'>{this.state.errors.societyId}</span> */}
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">flatType</Label>
@@ -416,12 +424,12 @@ class flatMasterDetails extends Component {
                                     <Input type="select" 
                                     value={this.state.sizeId} 
                                     name="sizeId"
-                                    onChange={this.onChange}>
+                                    onChange={this.sizeChange}>
                                         <option>{this.state.sizeType}</option>
                                         <option disabled>Select</option>
                                         {this.fetchSizeDrop(this.props.flats)}
                                     </Input>
-                                    <span  className='error'>{this.state.errors.sizeId}</span>
+                                    {/* <span  className='error'>{this.state.errors.sizeId}</span> */}
 
                                 </FormGroup>
                                 <FormGroup>
@@ -490,9 +498,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        getDetails,
-        AddDetails,
         getDrop,
+        AddDetails,
+        getDetails,
+      
         getSizeDrop,
         getPageDetails,
         noOfCount,

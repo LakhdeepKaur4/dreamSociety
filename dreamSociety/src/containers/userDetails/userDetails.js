@@ -78,7 +78,7 @@ class userDetails extends Component {
     }
 
     refreshData() {
-        this.props.getUsers().then(() => this.setState({loading:false}))
+        this.props.getUsers().then(() => this.setState({loading:false}));
         this.props.getRoles().then(() => this.setState({loading:false}));
         this.props.viewTower().then(() => this.setState({loading:false}));
     }

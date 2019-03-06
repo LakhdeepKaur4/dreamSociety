@@ -12,7 +12,8 @@ class EmployeeTypeMaster extends Component{
         employeeType:'',
         employeeWorkTypeId:'',
         employeeWorkType:'',
-        loading:true
+        loading:true,
+        errors:{}
     }
 
          
@@ -64,24 +65,49 @@ if(employeeWorkType){
 }
 
 onChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value});
-    console.log(this.state.serviceType)
+    if(!!this.state.errors[e.target.name]){
+        let errors =Object.assign({},this.state.errors)
+        delete  errors[e.target.name]
+        this.setState({[e.target.name]:e.target.value,errors});
+    }
+    else{
+this.setState({[e.target.name]:e.target.value});
+}
   }
 
 
   submit=(e)=>{
-    this.setState({loading:true})
+
       e.preventDefault();
+      let errors ={};
+      const {serviceType,employeeTypeId,employeeWorkTypeId }= this.state   
+     
+      if(!this.state.serviceType){
+        errors.serviceType  = " service Type  can't be empty. Please select."
       
-      this.props.AddEmployee({...this.state}).then(()=>this.props.history.push('/superDashboard/displayEmployeeType'))
-       this.setState({serviceType:'',employeeTypeId:'',employeeWorkTypeId:''})
+   
+    }
+    if(!this.state.employeeTypeId){
+        errors.employeeTypeId  = " Employee Type Id  can't be empty. Please select."
+    }
+    if(!this.state.employeeWorkTypeId){
+        errors.employeeWorkTypeId  = " Employee WorkType Id  can't be empty. Please select."
+    }  
+    
+this.setState({ errors });
+const isValid = Object.keys(errors).length === 0
+if (isValid) {
+    this.setState({loading:true})
+      this.props.AddEmployee(serviceType,employeeTypeId,employeeWorkTypeId).then(()=>this.props.history.push('/superDashboard/displayEmployeeType'))
+      
     console.log(this.state.serviceType,this.state.employeeTypeId,this.state.employeeWorkTypeId)
   }
-
+  }
   displayEmployee=()=>{
     
     this.props.history.push('/superDashboard/displayEmployeeType')
 }
+
 
 
 render(){
@@ -94,26 +120,24 @@ render(){
          <h3 align="center">Employee Type Master</h3>
         <div className="form-group">
         <label>Employee Type</label>
-    <select  className="form-control" name ="employeeTypeId"    onChange={(e)=>
-       
-        {this.setState({employeeTypeId:e.target.value})}
-        } >
+    <select  className="form-control"   defaultValue='no-value'  name ="employeeTypeId" onChange={this.onChange} >
         <DefaultSelect/>
          {this.getEmpType(this.props.employeeDetails)}
         </select>
+        <span className="error">{this.state.errors.employeeTypeId}</span>
         </div>
         <div  className="form-group">
         <label>Employee  Work Type</label>
-    <select  className="form-control" name="employeeWorkTypeId"  onChange={(e)=>{
-
-        this.setState({employeeWorkTypeId:e.target.value})}}>
+    <select  className="form-control" name="employeeWorkTypeId"   defaultValue='no-value' onChange={this.onChange}>
         <DefaultSelect/>
         {this.getEmpWorkType(this.props.employeeDetails)}
         </select>
+        <span className="error">{this.state.errors.employeeWorkTypeId}</span>
         </div>
     <div  className="form-group">
     <label>Employee Service Type</label>
-    <input type ="text" className="form-control" name="serviceType" placeholder="Service Type"  onChange={this.onChange} onKeyPress={this.OnKeyPresshandler}/>
+    <input type ="text" className="form-control" name="serviceType" placeholder="Service Type"  onKeyPress ={this.OnKeyPresshandler} maxLength="20" onChange={this.onChange} onKeyPress={this.OnKeyPresshandler}/>
+    <span className="error">{this.state.errors.serviceType}</span>
     </div>
     <button className="btn btn-success">Submit</button>
     <button className="btn btn-danger" onClick={this.displayEmployee}>Cancel</button>
