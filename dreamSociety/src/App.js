@@ -74,7 +74,7 @@ import FlatOwnerList from './containers/flatOwnerDetails/flatOwnerList'
 class App extends Component {
   render() {
     return (
-      <BrowserRouter onUpdate={() => window.scrollTo(0, 0)}>
+      <BrowserRouter basename='dreamsociety' onUpdate={() => window.scrollTo(0, 0)}>
         
         <div>
           <Switch>
