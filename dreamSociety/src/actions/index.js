@@ -1,4 +1,4 @@
-// export  const URN = 'http://192.168.1.4:8081/api';
+// export  const URN = 'http://192.168.1.102:8082/api';
 // export const URN='http://192.168.1.103:5000/api';
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export const PicURN= 'https://dreamsociety.herokuapp.com/'; 
