@@ -1,22 +1,20 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import {  getDesignation, deleteDesignation, updateDesignation, deleteSelectDesignation } from './../../actionCreators/designationMasterAction';
+import { getMemberEvent, deleteMemberEvent, updateMemberEvent,deleteSelectMemberEvent } from '../../actionCreators/societyMemberEventAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
-import _ from 'underscore';
 import Spinner from '../../components/spinner/spinner';
 
 
-class DesignationMasterDetail extends Component {
+class MemberEventsDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            filterName:"designationName",
-            editDesignationData: {
-                designationName: '',
-                designationId: '',
+            editMemberEventData: {
+                societyMemberEventName: '',
+                societyMemberEventId: '',
                 
                 isActive: false,
 
@@ -28,9 +26,6 @@ class DesignationMasterDetail extends Component {
             errors: {},
             isDisabled: true,
             ids: [],
-         
-            CopyData:[]
-
 
         };
     }
@@ -47,17 +42,17 @@ class DesignationMasterDetail extends Component {
     }
 
 
-    toggle = (designationId, designationName) => {
+    toggle = (societyMemberEventId,societyMemberEventName) => {
 
         this.setState({
-            designationId,
-            designationName,
+            societyMemberEventId,
+            societyMemberEventName,
            
             modal: !this.state.modal
         })
     }
 
-    
+
 
 
     toggleModal = () => {
@@ -71,18 +66,18 @@ class DesignationMasterDetail extends Component {
     }
 
     refreshData() {
-        this.props.getDesignation().then(() => this.setState({ loading: false }))
+        this.props.getMemberEvent().then(() => this.setState({ loading: false }))
        
     }
 
 
-    editdesignationName = () => {
+    editsocietyMemberEventName = () => {
        
-        const { designationId, designationName } = this.state
+        const { societyMemberEventId, societyMemberEventName } = this.state
         
         let errors = {};
-        if(this.state.designationName===''){
-            errors.designationName="designationName can't be empty"
+        if(this.state.societyMemberEventName===''){
+            errors.societyMemberEventName="societyMemberEventName can't be empty"
         }
         this.setState({errors});
         const isValid = Object.keys(errors).length === 0
@@ -91,27 +86,27 @@ class DesignationMasterDetail extends Component {
             this.setState({
                 loading: true
             })
-        this.props.updateDesignation(designationId, designationName)
+        this.props.updateMemberEvent(societyMemberEventId, societyMemberEventName)
             .then(() => this.refreshData())
         this.setState({
-            editDesignationData: { designationId, designationName },
+            editMemberEventData: { societyMemberEventId, societyMemberEventName },
             modal: !this.state.modal
         })
     }
     }
 
-      deleteDesignationName = (designationId) => {
-        let { isActive } = this.state.editDesignationData
-        this.setState({ loading: true })
+      deleteMemberEventName = (societyMemberEventId) => {
+        let { isActive } = this.state.editMemberEventData
 
         if(window.confirm('Are You Sure ?')){
-        this.props.deleteDesignation(designationId, isActive)
+        this.setState({ loading: true })
+        this.props.deleteMemberEvent(societyMemberEventId, isActive)
             .then(() => this.refreshData())
-        this.setState({editDesignationData: { isActive: false } })
+        this.setState({editMemberEventData: { isActive: false } })
         }
         else{
             this.refreshData()
-          this.setState({editDesignationData: { isActive: false } })
+            this.setState({editMemberEventData: { isActive: false } })
         }
       }
 
@@ -124,7 +119,7 @@ class DesignationMasterDetail extends Component {
     searchFilter = (search) => {
         return function (x) {
          
-            return x.designationName.toLowerCase().includes(search.toLowerCase())
+            return x.societyMemberEventName.toLowerCase().includes(search.toLowerCase())
                 || !search;
         }
     }
@@ -132,8 +127,9 @@ class DesignationMasterDetail extends Component {
     deleteSelected(ids){
         this.setState({loading:true,  isDisabled:true});
 
+        
         if(window.confirm('Are You Sure ?')){
-        this.props.deleteSelectDesignation(ids)
+        this.props.deleteSelectMemberEvent(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
         }
@@ -169,25 +165,23 @@ class DesignationMasterDetail extends Component {
         }
         
     }
-    
 
-    renderDesignation = ({ designationResult }) => {
-        if (designationResult) {
-          
-            return designationResult.designation.sort((item1,item2)=>{
-                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
-                return this.state.sortVal ? cmprVal : -cmprVal;
-            }).filter(this.searchFilter(this.state.search)).map((item, index) => {
-                   console.log(item)
-                
+   
+
+
+    renderMemberEvent = ({ memberEventsResult }) => {
+       console.log("sdhshsh", memberEventsResult);
+        if (memberEventsResult) {
+            return memberEventsResult.event.filter(this.searchFilter(this.state.search)).map((item, index) => {
+
                 return (
-                    <tr key={item.designationId}>
-                      <td><input type="checkbox" name="ids" className="SelectAll" value={item.designationId}
+                    <tr key={item.societyMemberEventId}>
+                     <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyMemberEventId}
                          onChange={(e) => {
-                            const {designationId} = item
+                            const {societyMemberEventId} = item
                             if(!e.target.checked){
                                 document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(designationId);
+                                let indexOfId = this.state.ids.indexOf(societyMemberEventId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1);
                                 }
@@ -196,8 +190,8 @@ class DesignationMasterDetail extends Component {
                                 }
                             }
                             else {
-   
-                                this.setState({ids: [...this.state.ids, designationId]});
+                      
+                                this.setState({ids: [...this.state.ids, societyMemberEventId]});
                                 
                                 if(this.state.ids.length >= 0){
                                     this.setState({isDisabled: false})
@@ -205,15 +199,15 @@ class DesignationMasterDetail extends Component {
                             }
                                 
                              }}/></td>
+                      
                         <td>{index+1}</td>
-                        <td>{item.designationName}</td>
+                        <td>{item.societyMemberEventName}</td>
                         <td> 
-                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.designationId, item.designationName)} >Edit</Button>
-                            <Button color="danger" onClick={this.deleteDesignationName.bind(this, item.designationId)} >Delete</Button>
+                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.societyMemberEventId, item.societyMemberEventName)} >Edit</Button>
+                            <Button color="danger" onClick={this.deleteMemberEventName.bind(this, item.societyMemberEventId)} >Delete</Button>
 
                         </td>
                     </tr>
-
 
                 )
             })
@@ -228,13 +222,12 @@ class DesignationMasterDetail extends Component {
         return this.props.history.replace('/')
     }
 
-    routeToAddNewDesignation = () => {
-        this.props.history.push('/superDashboard/designationMaster')
+    routeToAddNewMemberEvent = () => {
+        this.props.history.push('/superDashboard/societyMemberEvents')
     }
 
 
-    
-    onKeyPressHandler=(event)=> {
+    OnKeyPressUserhandler(event) {
         const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
@@ -247,17 +240,6 @@ class DesignationMasterDetail extends Component {
     }
 
     render() {
-        console.log(this.props.DesignationMasterReducer)
-        // console.log(this.state.CopyData)
-   
-        // var nonSortedArray = ['hi', 'yo', 'whatup', 'bye', 'lol'];
-        // var sortedArray = nonSortedArray.sort(function (a, b) {
-        //       if (a < b) return -1;
-        //       else if (a > b) return 1;
-        //       return 0;
-        //     });
-        // console.log(sortedArray);
-
         let tableData;
         tableData = <div style={{ backgroundColor: 'lightgray' }}>
             <Table className="table table-bordered">
@@ -275,16 +257,12 @@ class DesignationMasterDetail extends Component {
                         }  
                     }/></th>
                         <th>#</th>
-                        <th onClick={()=>{
-                             this.setState((state)=>{return {sortVal:!state.sortVal,
-                                filterName:'designationName'}});
-                        }}>Designation Position</th>
+                        <th>Events Name</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {this.renderDesignation(this.props.DesignationMasterReducer)}
-                
+                    {this.renderMemberEvent(this.props.societyMemberEventReducer)}
                 </tbody>
             </Table></div>
         return (
@@ -296,13 +274,12 @@ class DesignationMasterDetail extends Component {
                             <span aria-hidden="true">&times;</span>
                     </div>
                         <div className="top-details">
-                            <h3>Designation Details</h3>
-                            <Button onClick={this.routeToAddNewDesignation} color="primary">Add Designation</Button>
+                            <h3>Society Member Event Name</h3>
+                            <Button onClick={this.routeToAddNewMemberEvent} color="primary">Add EventName</Button>
                         </div>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
-
-<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+                             <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
 
                         {!this.state.loading ? tableData : <Spinner />}
@@ -310,14 +287,14 @@ class DesignationMasterDetail extends Component {
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
                                 <FormGroup>
-                                    <Label>Designation Type</Label>
-                                    <Input type="text" id="designationId" name="designationName" onChange={this.onChangeHandler} value={this.state.designationName} maxLength={50} onKeyPress={this.onKeyPressHandler} />
-                                    <span className="error">{this.state.errors.designationName}</span>
+                                    <Label>MemberEvent Type</Label>
+                                    <Input type="text" id="societyMemberEventId" name="societyMemberEventName" onChange={this.onChangeHandler} value={this.state.societyMemberEventName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
+                                    <span className="error">{this.state.errors.societyMemberEventName}</span>
                                 </FormGroup>
 
 
                                 <FormGroup>
-                                    <Button color="primary mr-2" onClick={this.editdesignationName}>Save</Button>
+                                    <Button color="primary mr-2" onClick={this.editsocietyMemberEventName}>Save</Button>
 
                                     <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
                                 </FormGroup>
@@ -335,14 +312,14 @@ class DesignationMasterDetail extends Component {
 
 
 function mapStatToProps(state) {
-     console.log(state)
+    console.log("state", state)
     return {
-        DesignationMasterReducer: state.DesignationMasterReducer
+        societyMemberEventReducer: state.societyMemberEventReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getDesignation, deleteDesignation, updateDesignation,deleteSelectDesignation }, dispatch)
+    return bindActionCreators({getMemberEvent, deleteMemberEvent, updateMemberEvent,deleteSelectMemberEvent }, dispatch)
 }
 
-export default connect(mapStatToProps, mapDispatchToProps)(DesignationMasterDetail);
+export default connect(mapStatToProps, mapDispatchToProps)(MemberEventsDetail);

@@ -65,6 +65,11 @@ import RelationshipMaster from './containers/relationshipMaster/relationshipMast
 import RelationshipMasterDetail from './containers/relationshipMaster/relationshipMasterDetail';
 import SocietyMemberRegistrationForm from './containers/societyMemberRegistration/societyMemberRegistrationForm';
 import SocietyMemberDetails from './containers/societyMemberRegistration/societyMemberDetails';
+import SocietyMemberEvents from './containers/societyMemberEvent/societyMemberEvents';
+import MemberEventsDetail from './containers/societyMemberEvent/memberEventsDetail';
+import MemberEventsBooking from './containers/societyMemberEventsBooking/memberEventsBooking';
+import MemberEventsBookingDetail from './containers/societyMemberEventsBooking/memberEventsBookingDetail';
+
 
 
 class App extends Component {
@@ -133,6 +138,11 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/relationshipMasterDetail' component={RelationshipMasterDetail} />
             <PrivateRoute path='/superDashboard/societyMemberRegistartionForm' component={SocietyMemberRegistrationForm} />
             <PrivateRoute path='/superDashboard/societyMemberDetails' component={SocietyMemberDetails} />
+            <PrivateRoute path='/superDashboard/societyMemberEvents' component={SocietyMemberEvents} />
+            <PrivateRoute path='/superDashboard/memberEventsDetail' component={MemberEventsDetail} />
+            <PrivateRoute path='/superDashboard/memberEventsBooking' component={MemberEventsBooking} />
+            <PrivateRoute path='/superDashboard/memberEventsBookingDetail' component={MemberEventsBookingDetail} />
+
           </Switch>
         </div>
         

@@ -318,8 +318,6 @@ class SocietyManagementDetail extends Component {
     }
 
     fetchCountry({ countryResult }) {
-        
-        
         if (countryResult) {
             return (
                 countryResult.map((item) => {
@@ -371,7 +369,7 @@ class SocietyManagementDetail extends Component {
                 locationResult.map((item) => {
                     return (
                         <option value={item.locationId} key={item.locationId}>
-                            {item.countryName}
+                            {item.locationName}
                         </option>
                     )
                 })
@@ -436,10 +434,10 @@ class SocietyManagementDetail extends Component {
                     }/></th>
                     <th>#</th>
                     <th>Society Name</th>
-                    <th>Country Name</th>
-                    <th>State Name</th>
-                    <th>City Name</th>
-                    <th>Location Name</th>
+                    <th>Country</th>
+                    <th>State</th>
+                    <th>City</th>
+                    <th>Location</th>
                     <th>Society Address</th>
                     <th>Bank Name</th>
                     <th>Account Holder Name</th>
