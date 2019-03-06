@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { getDetails, AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount,deleteSelectedFlatMasterDetail } from '../../actionCreators/flatMasterAction';
+import { getDetails, AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount,
+    deleteSelectedFlatMasterDetail,
+    getTotalItems } from '../../actionCreators/flatMasterAction';
 // import {getEventDetails} from '../../actionCreators/eventSpaceMasterAction';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Input } from 'reactstrap';
+import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Label,Input } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -37,13 +39,22 @@ class flatMasterDetails extends Component {
         activePage: '1',
         limit:'5',
         // itemsCountPerPage :1,
-        totalItemsCount:'15'
+        totalItemsCount:''
         }
 
    } 
+   componentWillMount(){
+       console.log('first tiume');
+       this.totalCount();
+      
+   }
+  
+
 
     componentDidMount() {
 
+       
+     
         this.refreshData()
 
     }
@@ -111,7 +122,7 @@ class flatMasterDetails extends Component {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             console.log('no errors');
-            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+            this.setState({ [e.target.name]: e.target.value, errors });
         } else {
             console.log('hii');
             this.setState( {[e.target.name]: [e.target.value]});
@@ -157,7 +168,7 @@ class flatMasterDetails extends Component {
     fetchUsers({ list1 }) {
         
         if (list1) {
-            console.log(list1);
+            // console.log(list1);
             return list1.flat.filter(this.searchFilter(this.state.search)).map((item,index) => {
                 let societyName = item.society_master.societyName;
                 let sizeType= item.size_master.sizeType;
@@ -208,7 +219,7 @@ class flatMasterDetails extends Component {
         }
     }
     fetchDrop({ list2 }) {
-        console.log(list2);
+        // console.log(list2);
 
         if (list2) {
 
@@ -256,7 +267,7 @@ class flatMasterDetails extends Component {
         return this.props.history.replace('/') 
     }
     OnKeyPresshandlerPhone=(event)=>{
-        const pattern = /^[0-9+]$/;
+        const pattern = /^[0-9+ ]$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -269,10 +280,10 @@ class flatMasterDetails extends Component {
     handlePageChange=(pageNumber)=> {
         console.log(`active page is ${pageNumber}`);
         // this.setState({activePage: pageNumber}) ;
-        this.state.activePage=pageNumber;        
-        const activePage=this.state.activePage;
+        // this.state.activePage=pageNumber;        
+        // const activePage=this.state.activePage;
         
-            this.props.getPageDetails(activePage);
+            this.props.getPageDetails(pageNumber);
         
         
       
@@ -287,10 +298,10 @@ class flatMasterDetails extends Component {
         console.log('hii');
         // this.setState({itemsCountPerPage:e.target.value})
         const activePage=this.state.activePage;
-        this.state.limit=`${e.target.value}`;   
+        // this.state.limit=`${e.target.value}`;   
         console.log(this.state.limit,activePage)
         // console.log(countPerPage);
-        this.props.noOfCount({limit: parseInt(this.state.limit)},activePage)
+        this.props.noOfCount({limit: parseInt(e.target.value)},activePage)
 }
 
     selectAll = () => {
@@ -319,6 +330,34 @@ class flatMasterDetails extends Component {
             this.setState({isDisabled: true});
         }
         
+    }
+
+    getItems=({totalItems})=>{
+
+        if(totalItems){
+            
+        console.log("get total items in db",totalItems.data.count);
+        this.state.totalItemsCount=totalItems.data.count;
+      
+        // this.setState({totalItemsCount:totalItems.data.count})
+
+        }
+       
+        // console.log('got total items');
+    }
+
+    New=()=>{
+        console.log('dahcfdsghc dsdvcdvcjdgsv cjdgtfdhcgvchgtvdc');
+    }
+
+    totalCount=(e)=>{
+        console.log('hii');
+        this.props.getTotalItems();
+         
+       
+    
+        // this.setState({totalItemsCount:'15'})
+
     }
 
 
@@ -354,7 +393,11 @@ class flatMasterDetails extends Component {
             </tr>
         </thead>
         <tbody>
+      
+      
             {this.fetchUsers(this.props.flats)}
+            {  this.getItems(this.props.flats)}
+           
         </tbody>
         {/* <Pagination/> */}
        
@@ -501,7 +544,7 @@ function mapDispatchToProps(dispatch) {
         getDrop,
         AddDetails,
         getDetails,
-      
+        getTotalItems,
         getSizeDrop,
         getPageDetails,
         noOfCount,

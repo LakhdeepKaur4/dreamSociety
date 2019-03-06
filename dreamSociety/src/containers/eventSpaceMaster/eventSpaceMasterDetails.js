@@ -105,7 +105,7 @@ class eventSpaceMasterDetails extends Component {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             console.log('no errors');
-            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+            this.setState({ [e.target.name]: e.target.value, errors });
         } else {
             console.log('hii');
             this.setState( {[e.target.name]: [e.target.value]});
@@ -254,7 +254,7 @@ class eventSpaceMasterDetails extends Component {
         return this.props.history.replace('/') 
     }
     OnKeyPresshandlerPhone=(event)=>{
-        const pattern = /^[0-9+]$/;
+        const pattern = /^[0-9+ ]$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -391,7 +391,7 @@ class eventSpaceMasterDetails extends Component {
                                         name="spaceName"
                                         value={this.state.spaceName}
                                         onChange={this.onChange} 
-                                        maxLength='4'/>
+                                        maxLength='20'/>
                                         <span  className='error'>{this.state.errors.spaceName}</span>
                                         
                                 </FormGroup>
@@ -415,7 +415,7 @@ class eventSpaceMasterDetails extends Component {
                         type="radio"
                         name="spaceType"  
                        
-                        value={this.state.spaceType}
+                        value="open"
                         required
                     
                         
@@ -428,7 +428,7 @@ class eventSpaceMasterDetails extends Component {
                             type="radio"
                             name="spaceType"  
                            
-                            value={this.state.spaceType}
+                            value="close"
                         
                            
                          
