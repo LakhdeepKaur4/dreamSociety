@@ -129,7 +129,6 @@ db.societyMemberEvent.belongsTo(db.user,{foreignKey:'userId'});
 db.inventory.belongsTo(db.assets,{foreignKey:'assetId'});
 db.owner.hasMany(db.ownerMembersDetail, {foreignKey: 'ownerId'});
 // db.owner.belongsTo(db.ownerMembersDetail,{foreignKey:'ownerMemberId',as:'member',constraints: false, allowNull:true, defaultValue:null});
-db.ownerMembersDetail.belongsTo(db.owner, {foreignKey: 'ownerId'});
 db.ownerMembersDetail.belongsTo(db.relation,{foreignKey:'relationId'});
 db.ownerMembersDetail.belongsTo(db.user,{foreignKey:'userId'});
 db.owner.belongsTo(db.user,{foreignKey:'userId'});

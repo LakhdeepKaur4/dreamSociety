@@ -13,6 +13,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DATE,
             allowNull:false
         },
+        gender: {
+            type: Sequelize.STRING,
+            allowNull: false
+      },
         isActive: {
             type: Sequelize.BOOLEAN,
             defaultValue: true

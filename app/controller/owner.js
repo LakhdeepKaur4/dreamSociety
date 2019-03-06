@@ -4,9 +4,13 @@ const httpStatus = require('http-status');
 var passwordGenerator = require('generate-password');
 const key = config.secret;
 const fs = require('fs');
-const crypto = require('crypto')
+const crypto = require('crypto');
+const Op = db.Sequelize.Op;
+const path = require('path');
+const shortId = require('short-id');
 
 const Owner = db.owner;
+
 const OwnerMembersDetail = db.ownerMembersDetail;
 const FlatDetail = db.flatDetail;
 const Tower = db.tower;
@@ -29,15 +33,32 @@ function decrypt(key, data) {
     return decrypted;
 }
 
+function saveToDisc(name,fileExt,base64String, callback){
+    console.log("HERE ",name,fileExt);
+    let d = new Date();
+    let pathFile = "../../public/profilePictures/"+shortId.generate()+name+d.getTime()+Math.floor(Math.random()*1000)+"."+fileExt;
+    let fileName = path.join(__dirname,pathFile);
+    let dataBytes = Buffer.from(base64String,'base64');
+    // console.log(base64String);
+    fs.writeFile(fileName,dataBytes , function(err) {
+        if(err) {
+            callback(err);
+        } else {
+            callback(null,pathFile);
+        }
+    });
+}  
+
 exports.create = async (req, res, next) => {
     try {
         console.log("creating owner");
         let ownerBody = req.body;
         let memberBody = req.body;
+        let memberId = [];
         ownerBody.userId = req.userId;
         console.log("owner body==>",ownerBody)
-        let customVendorName = req.body.ownerName;
-        const userName = customVendorName + 'O' + req.body.towerId + req.body.flatDetailId;
+        let customVendorName = ownerBody.ownerName;
+        const userName = customVendorName + 'O' + ownerBody.towerId + ownerBody.flatDetailId;
         console.log("userName==>", userName);
         ownerBody.userName = userName;
         const password = passwordGenerator.generate({
@@ -62,32 +83,42 @@ exports.create = async (req, res, next) => {
         // }
         const owner = await Owner.create(ownerBody);
         const ownerId = owner.ownerId;
-        if (req.files) {
-            profileImage = req.files.profilePicture[0].path;
-            // }
-            const updatedImage = {
-                picture: profileImage
-            };
-            const imageUpdate = await Owner.find({ where: { ownerId: ownerId } }).then(owner => {
-                return owner.updateAttributes(updatedImage)
-            })
+        if(req.body.profilePicture){
+        saveToDisc(ownerBody.fileName,ownerBody.fileExt,ownerBody.profilePicture,(err,resp)=>{
+            if(err){
+                console.log(err)
+            }
+            console.log(resp)
+                // }
+                const updatedImage = {
+                    picture: resp
+                };
+                Owner.update(updatedImage, { where: { ownerId: ownerId}});
+        });
         }
         if (ownerBody.noOfMembers) {
             memberBody.userId = req.userId;
             memberBody.ownerId = ownerId;
-            const ownerMember = OwnerMembersDetail.bulkCreate(req.body.memberArray, { returning: true },
+            const ownerMember =await OwnerMembersDetail.bulkCreate(ownerBody.member, { returning: true },
                 {
-                    fields: ["memberName", "memberDob", "relationId"],
+                    fields: ["memberName", "memberDob","gender", "relationId"],
                     // updateOnDuplicate: ["name"] 
                 })
-            console.log("ownerMember==>", ownerMember);
+            ownerMember.forEach(item =>{
+                memberId.push(item.memberId)
+                console.log("member id0",memberId);
+            });
             const bodyToUpdate = {
                 ownerId: ownerId,
                 userId: req.userId
             }
-            const ownerMemberUpdate = await OwnerMembersDetail.find({ where: { memberId: ownerMember.memberId } }).then(ownerMember => {
-                return ownerMember.updateAttributes(bodyToUpdate);
-            })
+            console.log("bodytoUpdate ==>",bodyToUpdate);
+            console.log(ownerMember.memberId);
+            const updatedMember = await OwnerMembersDetail.update(bodyToUpdate, { where: { memberId: {[Op.in]:memberId}}});
+            // const ownerMemberUpdate = await OwnerMembersDetail.find({ where: { memberId: ownerMember.memberId } }).then(ownerMember => {
+            //     return ownerMember.updateAttributes(bodyToUpdate);
+            // })
+
             // }
             // let encryptedMemberBody = {
             //     memberName: encrypt(key, ownerBody.contact),
@@ -208,23 +239,47 @@ exports.get = async (req, res, next) => {
     }
 }
 
+exports.testUpload = async(req,res,next) =>{
+    try{
+        res.send('hello');
+        const file = req.files.file;
+
+        // if (!req.files.file) return res.status(400).send("No files were uploaded.");
+
+        file.mv(`./public/profilePictures/${req.files.file.name}`, err => {
+            if (err) {
+                console.log(err);
+            }
+        });
+    } catch (error) {
+        console.log("error==>", error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
 exports.getFlatNo = async (req, res, next) => {
     try {
         console.log("req.param id==>", req.params.id)
         const owner = await FlatDetail.findAll({
-            where: { towerId: req.params.id },
+            // where: { towerId: req.params.id },
+            where: {
+                [Op.and]: [
+                    { towerId: req.params.id },
+                    { isActive: true }
+                ]
+            },
             order: [['createdAt', 'DESC']],
             include: [
                 { model: Tower },
-                // {model:FlatDetail}
-                // include: [
-                //     { model: Tower }
-                // ]
+            //     // {model:FlatDetail}
+            //     // include: [
+            //     //     { model: Tower }
+            //     // ]
             ]
         });
         if (owner) {
             return res.status(httpStatus.CREATED).json({
-                message: "Owner Flat Content Page",
+                message:" Flat Content Page",
                 owner
             });
         }

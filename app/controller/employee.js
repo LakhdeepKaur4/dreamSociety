@@ -216,7 +216,7 @@ referenceConstraintReturn = (checkConstraint, object, property, entry) => {
     }
 }
 
-    exports.createEncrypt = async (req, res, next) => {
+exports.createEncrypt = async (req, res, next) => {
         try {
             let body = req.body;
             console.log('Body ===>', body);

@@ -5,6 +5,7 @@ const httpStatus = require('http-status')
 const SocietyMemberEventBooking = db.societyMemberEventBooking;
 const User = db.user;
 const SocietyMemberEvent = db.societyMemberEvent;
+const EventSpaceMaster = db.eventSpace;
 // const Role = db.role;
 const Op = db.Sequelize.Op;
 
@@ -55,6 +56,9 @@ exports.get = async (req, res, next) => {
             include: [
                 {
                     model: SocietyMemberEvent
+                },
+                {
+                    model: EventSpaceMaster
                 }
             ]
         })
