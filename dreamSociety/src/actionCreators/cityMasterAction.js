@@ -49,7 +49,7 @@ export const addCity=(values)=>{
 
    const request = axios.post(`${URN}/city` , values , {headers:authHeader()})
     .then(response => response.data)
-    .catch((err)=>alert(err.response.data.message))
+   
 
     
     return{

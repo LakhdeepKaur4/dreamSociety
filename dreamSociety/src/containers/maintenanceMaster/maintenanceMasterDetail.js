@@ -245,17 +245,7 @@ class MaintenanceMasterDetail extends Component {
             <Table className="table table-bordered">
                 <thead>
                     <tr>
-                    <th>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
+                   
                         <th>#</th>
                         <th>Maintenance Category</th>
                         <th>Actions</th>
@@ -281,6 +271,17 @@ class MaintenanceMasterDetail extends Component {
                             onChange={this.searchOnChange} />
                              <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+         <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></Label>
 
                         {!this.state.loading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>

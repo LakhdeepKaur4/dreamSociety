@@ -344,8 +344,8 @@ class MemberEventsBookingDetail extends Component {
                             <span aria-hidden="true">&times;</span>
                     </div>
                         <div className="top-details">
-                            <h3>Society Member Event Name</h3>
-                            <Button onClick={this.routeToAddNewBookingEvent} color="primary">Add EventName</Button>
+                            <h3>Events Booking Detail</h3>
+                            <Button onClick={this.routeToAddNewBookingEvent} color="primary">Add Booking</Button>
                         </div>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />

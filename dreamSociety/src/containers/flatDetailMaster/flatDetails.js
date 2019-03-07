@@ -136,7 +136,7 @@ toggleEditFlatModal(){
 
 getDropDown1=({flattype})=>{
     if(flattype){
-        return flattype.map((item)=>{
+        return flattype.flat.map((item)=>{
             return(
                 <option key={item.flatId} value={item.flatId}>
                     {item.flatType}
