@@ -544,7 +544,7 @@ maxDate = () => {
         </div>
         return(
             <UI onClick={this.logout}>
-                <Form onSubmit={this.submit}>
+                <Form onSubmit={this.submit} method="POST">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
                     </div>

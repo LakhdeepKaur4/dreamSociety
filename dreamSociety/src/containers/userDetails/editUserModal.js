@@ -9,7 +9,6 @@ const editUserModal = (props) => (
             <FormGroup>
                 <Label>Role</Label>
                 <Input type="select" name={props.roleInputName}  id="roleName" value={props.roleNameValue} onChange={props.roleNameChange} >
-                    <option value={props.selectedRoleNameValue}>{props.selectedRoleName}</option>
                     <DefaultSelect />
                     {props.fetchRoles}
                 </Input>
@@ -53,8 +52,7 @@ const editUserModal = (props) => (
                 <Label>Tower Name</Label>
                 <Input name={props.towerInputName}
                     type="select"
-                    onChange={props.towerChange} >
-                    <option>{props.towerValue}</option>
+                    onChange={props.towerChange} defaultValue={props.towerValue} >
                     <DefaultSelect />
                     {props.fetchingTower}
                 </Input>

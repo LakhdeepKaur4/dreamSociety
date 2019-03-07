@@ -129,10 +129,11 @@ class userDetails extends Component {
             }
     }
 
-    editUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerName, floor,parking, contact, towerId) {
+    editUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerId, floor,parking, contact, towerName) {
         this.setState({
-             userId, roleName, firstName, lastName, userName, email,familyMember,towerName, floor,parking, contact , towerId, editUserModal: !this.state.editUserModal
+             userId, roleName, firstName, lastName, userName, email,familyMember,towerId, floor,parking, contact , towerName, editUserModal: !this.state.editUserModal
         });
+        console.log(towerName);
     }
 
     deleteUser(userId) {
@@ -155,8 +156,7 @@ class userDetails extends Component {
         return function(x){
             if(x){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return x.tower_master.towerName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                 x.familyMember.toString().indexOf(search)  !== -1 ||
+                return x.familyMember.toString().indexOf(search)  !== -1 ||
                  x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                  x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
@@ -188,55 +188,59 @@ class userDetails extends Component {
     fetchUsers({ user }) {
         if(user) {
             let currentRole;
-            return user.filter(this.searchFilter(this.state.search)).map((item, index) => {
+            return user.map((item, index) => {
                 let currentTower = item.tower_master.towerName;
                 let currentTowerId = item.towerId
-                return (
-                    <tr key={item.userId}>
-                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.userId}
-                         onChange={(e) => {
-                            const {userId} = item
-                            if(!e.target.checked){
-                                document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(userId);
-                                if(indexOfId > -1){
-                                    this.state.ids.splice(indexOfId, 1);
-                                }
-                                if(this.state.ids.length === 0){
-                                    this.setState({isDisabled: true});
-                                }
-                            }
-                            else {
-                                this.setState({ids: [...this.state.ids, userId]});
-                                if(this.state.ids.length >= 0){
-                                    this.setState({isDisabled: false})
-                                }
-                            }
-                                
-                             }}/></td>
-                        <td>{index + 1}</td>
-                        <td>{item.roles.map((i) => {
-                            currentRole = i.roleName
-                            return currentRole
-                        })}</td>
-                        <td>{item.firstName}</td>
-                        <td>{item.lastName}</td>
-                        <td>{item.userName}</td>
-                        <td>{item.email}</td>
-                        <td>{item.familyMember}</td>
-                        <td>{currentTower}</td>
-                        <td>{item.floor}</td>
-                        <td>{item.parking}</td>
-                        <td>{item.contact}</td>
-                        <td>
-                            <div className="w3-row">
-                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email,item.familyMember,
-                                currentTowerId,item.floor,item.parking, item.contact, currentTower)}>Edit</Button>
-                            <Button color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
-                            </div>
-                        </td>
-                    </tr>
-                )
+                if(item.userId || currentRole || item.firstName || item.lastName || item.userName ||
+                    item.email || item.familyMember || currentTower || item.floor || item.parking || item.contact){
+                        return (
+                            <tr key={item.userId}>
+                                <td><input type="checkbox" name="ids" className="SelectAll" value={item.userId}
+                                 onChange={(e) => {
+                                    const {userId} = item
+                                    if(!e.target.checked){
+                                        document.getElementById('allSelect').checked=false;
+                                        let indexOfId = this.state.ids.indexOf(userId);
+                                        if(indexOfId > -1){
+                                            this.state.ids.splice(indexOfId, 1);
+                                        }
+                                        if(this.state.ids.length === 0){
+                                            this.setState({isDisabled: true});
+                                        }
+                                    }
+                                    else {
+                                        this.setState({ids: [...this.state.ids, userId]});
+                                        if(this.state.ids.length >= 0){
+                                            this.setState({isDisabled: false})
+                                        }
+                                    }
+                                        
+                                     }}/></td>
+                                <td>{index + 1}</td>
+                                <td>{item.roles.map((i) => {
+                                    currentRole = i.roleName
+                                    return currentRole
+                                })}</td>
+                                <td>{item.firstName}</td>
+                                <td>{item.lastName}</td>
+                                <td>{item.userName}</td>
+                                <td>{item.email}</td>
+                                <td>{item.familyMember}</td>
+                                <td>{currentTower}</td>
+                                <td>{item.floor}</td>
+                                <td>{item.parking}</td>
+                                <td>{item.contact}</td>
+                                <td>
+                                    <div className="w3-row">
+                                    <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email,item.familyMember,
+                                        currentTowerId,item.floor,item.parking, item.contact, currentTower)}>Edit</Button>
+                                    <Button color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
+                                    </div>
+                                </td>
+                            </tr>
+                        )
+                    }
+                
             })
         }
     }
@@ -246,9 +250,11 @@ class userDetails extends Component {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({ [e.target.name]: e.target.value, errors });
+            console.log(this.state);
         }
         else {
             this.setState({ [e.target.name]: e.target.value });
+            console.log(this.state);
         }
     }
 

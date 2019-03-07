@@ -264,7 +264,7 @@ class Registration extends Component {
         <div>
             <UI onClick={this.logout}>
                 <div>
-                    <Form onSubmit={this.submit}>
+                    <Form onSubmit={this.submit} method="POST">
                     <div>
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>

@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
-import{URN,GET_OWNER_DETAIL_VIA_FLATID,GET_OWNER_DETAIL,ADD_TENANT_DETAIL} from '../actions/index';
+import{URN,GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID,ADD_TENANT_DETAIL} from '../actions/index';
 
 export function addTenantDetail(values){
+    console.log(values)
     const request = axios.post(`${URN}/tenant`, values, {headers: authHeader() })
 
     return {
@@ -21,12 +22,24 @@ export function addTenantDetail(values){
 //     }
 // }
 
+export function getFlatDetailViaTowerId(towerId){
+    console.log(towerId)
+    const request = axios.get(`${URN}/owner/${towerId}`, {headers: authHeader()})
+    .then((response) => response.data)
+
+    return {
+        type: GET_FLAT_DETAIL_VIA_TOWERID,
+        payload:request
+    }
+}
+
 export function getOwnerDetailViaFlatId(flatDetailId){
-    const request = axios.get(`${URN}/owner/${flatDetailId}`, {headers: authHeader()})
+    console.log(flatDetailId)
+    const request = axios.get(`${URN}/owner/getFlatDetail/${flatDetailId}`, {headers: authHeader()})
     .then((response) => response.data)
 
     return {
         type: GET_OWNER_DETAIL_VIA_FLATID,
-        payload:request
+        payload: request
     }
 }

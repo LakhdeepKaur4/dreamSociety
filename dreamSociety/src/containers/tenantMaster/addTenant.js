@@ -7,7 +7,7 @@ import Select from 'react-select';
 import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
-import { getOwnerDetailViaFlatId } from '../../actionCreators/tenantMasterAction';
+import { getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail } from '../../actionCreators/tenantMasterAction';
 
 class AddTenant extends Component{
     constructor(props) {
@@ -19,9 +19,10 @@ class AddTenant extends Component{
             tenantName:'',
             tenantId:'',
             dob:'',
+            gender:'',
             email:'',
             contact:'',
-            picture:'',
+            profilePicture:'',
             permanentAddress:'',
             correspondingAddress:'',
             bankName:'',
@@ -30,7 +31,6 @@ class AddTenant extends Component{
             panCardNumber:'',
             IFSCCode:'',
             noOfMembers:'',
-            ownerId:'',
             countryName : '',
             countryId: '',
             stateName : '',
@@ -39,9 +39,15 @@ class AddTenant extends Component{
             cityId: '',
             locationName : '',
             locationId: '',
+            flatNo: '',
+            flatDetailId: '',
             societyName : '',
             societyId: '',
-            memberDetail:[]
+            ownerId1: '',
+            ownerId2: '',
+            ownerId3: '',
+            member:[],
+            fileName: '',
         }
     }
 
@@ -49,6 +55,10 @@ class AddTenant extends Component{
         this.props.detailSociety();
         this.props.viewTower();
         this.props.getRelation();
+    }
+
+    componentWillReceiveProps(){
+
     }
 
     logout = () => {
@@ -133,21 +143,77 @@ class AddTenant extends Component{
         });
     }
 
-    fetchFlatDetailId = ({getOwnerDetail}) => {
-        console.log(getOwnerDetail)
-        let flatDetailId = getOwnerDetail.owner.map((item) => item.flatDetailId)
-        console.log(flatDetailId)
+    fetchFlatDetail = ({getFlatDetail}) => {
+        console.log(getFlatDetail)
+        if(getFlatDetail){
+            return getFlatDetail.owner.map((item) => {
+                return (
+                    <option value={item.flatDetailId} key={item.flatDetailId}>{item.flatNo}</option>
+                )
+            })
+        }
+        
+        
     }
 
-    towerChangeHandler = (selectTower) => {
-        this.props.getOwnerDetailViaFlatId(selectTower.towerId)
-        .then(() => this.fetchFlatDetailId(this.props.tenantReducer))
-        
-        console.log(this.state);
-        console.log(selectTower)
-        if(selectTower){
+    
 
-        }
+    towerChangeHandler = (selectTower) => {
+        
+        this.props.getFlatDetailViaTowerId(selectTower.towerId)
+    }
+
+    // fetchOwnerDetail1 = ({getOwnerDetail}) => {
+    //     console.log(getOwnerDetail)
+    //         if(getOwnerDetail){
+    //             console.log(this.state.ownerId1)
+    //             if(getOwnerDetail.owner[0]){
+    //                 return (
+    //                     <option key={getOwnerDetail.owner[0].ownerId} value={getOwnerDetail.owner[0].ownerId}>
+    //                         {getOwnerDetail.owner[0].ownerName}
+    //                     </option>
+    //                 )
+    //             }
+                
+            
+    //     }
+    // }
+
+    // fetchOwnerDetail2 = ({getOwnerDetail}) => {
+    //     console.log(getOwnerDetail)
+    //         if(getOwnerDetail){
+    //             console.log(this.state.ownerId2)
+    //             if(getOwnerDetail.owner[1]){
+    //                 return (
+    //                     <option key={getOwnerDetail.owner[1].ownerId} value={getOwnerDetail.owner[1].ownerId}>
+    //                         {getOwnerDetail.owner[1].ownerName}
+    //                     </option>
+    //                 );
+    //             }
+                
+    //         }
+    //     }
+
+    // fetchOwnerDetail3 = ({getOwnerDetail}) => {
+    //     console.log(getOwnerDetail)
+    //         if(getOwnerDetail){
+    //             console.log(this.state.ownerId3)
+    //             if(getOwnerDetail.owner[2]){
+    //                 return (
+    //                     <option key={getOwnerDetail.owner[2].ownerId} value={getOwnerDetail.owner[2].ownerId}>
+    //                         {getOwnerDetail.owner[2].ownerName}
+    //                     </option>
+    //                 )
+    //             }
+                
+          
+    //         }
+    //     }
+
+    flatChangeHandler = (e) => {
+        this.setState({flatDetailId: e.target.value});
+        console.log(this.state);
+        this.props.getOwnerDetailViaFlatId(e.target.value)
     }
 
     getRelationList = ({ relationResult }) => {
@@ -177,16 +243,7 @@ class AddTenant extends Component{
         }
     }
 
-    onImageChange = (e) => {
-        this.setState({[e.target.name]:e.target.value});
-        let filePath = this.state.picture;
-        console.log(this.state);
-        console.log(filePath);
-        let fileNameWithExtension = filePath.replace(/^.*[\\\/]/, 'public/profilePictures/');
-        console.log(fileNameWithExtension)
-        this.state.picture = fileNameWithExtension;
-        console.log(this.state.picture)
-    }
+    
 
     memberDetailChange = (e) => {
         this.setState({[e.target.name]:e.target.value})
@@ -194,17 +251,32 @@ class AddTenant extends Component{
     }
     onSubmit = (e) => {
         e.preventDefault()
-        
+        let { tenantName, dob, gender, email, contact, profilePicture, permanentAddress, correspondingAddress, bankName, 
+            accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, countryName, countryId, 
+            stateName, stateId, cityName, cityId, locationName, locationId, flatNo, flatDetailId, 
+            societyName, societyId, member, fileName } = this.state;
+        console.log(this.state)
+        let data = []
         for(let i = 0; i < this.state.noOfMembers; i++){
-            console.log(this.state.memberDetail)
-            const data={
+            console.log(this.state.member)
+             data.push({
                 memberName: this.state['memberName'+i],
                 dob: this.state['dob'+i],
                 relation: this.state['relation'+i],
                 gender:this.state['gender'+i]
-            }
-            this.state.memberDetail.push(data);
+            })
         }
+        
+        this.setState({member:data})
+        console.log(tenantName, dob, gender, email, contact, profilePicture, permanentAddress, correspondingAddress, bankName, 
+            accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, countryName, countryId, 
+            stateName, stateId, cityName, cityId, locationName, locationId, flatNo, flatDetailId, 
+            societyName, societyId, member, fileName);
+
+        this.props.addTenantDetail({tenantName, dob, gender, email, contact, profilePicture, permanentAddress, correspondingAddress, bankName, 
+            accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, countryName, countryId, 
+            stateName, stateId, cityName, cityId, locationName, locationId, flatNo, flatDetailId, 
+            societyName, societyId, member, fileName});
     }
 
     relationHandler = (name,selectOption) => {
@@ -216,6 +288,25 @@ class AddTenant extends Component{
             console.log(selectOption.value)
         });
         console.log(this.state)
+    }
+
+    imageChangeHandler = (event) => {
+        const files = event.target.files
+        const file = files[0];
+        console.log(file.name)
+        let fileName = file.name;
+        if (files && file) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload =  () =>{
+              this.setState({
+                profilePicture :  reader.result,
+                fileName
+              })
+              console.log(this.state.profilePicture)
+          };
+        }
+        
     }
 
     render(){
@@ -274,6 +365,22 @@ class AddTenant extends Component{
                             <Label>Date of Birth</Label>
                             <Input type="date" onChange={this.onChange} name="dob"
                              max={this.maxDate()} name="dob" />
+                        </FormGroup>
+                        <FormGroup>
+                            <Col md={3} style={{display: 'flex'}}>
+                                <Col md={1}>
+                                    <Label>M</Label>
+                                    <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio" value="Male" />
+                                </Col>
+                                <Col md={1}>
+                                    <Label>F</Label>
+                                    <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio" value="Female" />
+                                </Col>
+                                <Col md={1}>
+                                    <Label>O</Label>
+                                    <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio" value="Other" />
+                                </Col>
+                            </Col>
                         </FormGroup>
                         <FormGroup>
                             <Label>Contact Number</Label>
@@ -343,12 +450,12 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>PAN Card Number</Label>
                             <Input placeholder="Pan Number" onChange={this.onChange}
-                             type='text' name="panNumber" />
+                             type='text' name="panCardNumber" />
                         </FormGroup>
                         <FormGroup>
                             <Label>IFSC Code</Label>
                             <Input placeholder="IFSC code" onChange={this.onChange}
-                             type='text' name="IFSCSCode" />
+                             type='text' name="IFSCCode" />
                         </FormGroup>
                     </div>
                     <div style={{ 'display': this.state.step == 3 ? 'block' : 'none' }}>
@@ -370,24 +477,48 @@ class AddTenant extends Component{
                         </FormGroup >
                         <FormGroup>
                             <Label>Flat No.</Label>
-                            <Input  onKeyPress={this.numberValidation} onChange={this.onChange}
-                             placeholder="Flat No." 
-                            type='select' name="flatName" >
+                            <Input onKeyPress={this.numberValidation} onChange={this.flatChangeHandler}
+                             placeholder="Flat No." defaultValue="no-value"
+                            type='select' name="flatDetailId" >
+                            <DefaultSelect />
+                            {/* {this.getFlats(this.props.tenantReducer)} */}
+                            {this.fetchFlatDetail(this.props.tenantReducer)}
                             </Input>
                         </FormGroup>
-                        <FormGroup>
-                            <Label>Owner Name</Label>
-                            <Input placeholder="Owner Name" onChange={this.onImageChange}
-                             type='textarea' name="ownerName" />
+                        {/* <FormGroup>
+                            <Label>Owner Name 1</Label>
+                            <Input placeholder="Owner Name"
+                             onChange={this.onChange}
+                             type='select' name='ownerId1' defaultValue="no-value">
+                                <DefaultSelect />
+                                {this.fetchOwnerDetail1(this.props.tenantReducer)}
+                             </Input>
                         </FormGroup>
-                        
+                        <FormGroup>
+                            <Label>Owner Name 2</Label>
+                            <Input placeholder="Owner Name"
+                             onChange={this.onChange}
+                             type='select' name='ownerId2' defaultValue="no-value">
+                                <DefaultSelect />
+                                {this.fetchOwnerDetail2(this.props.tenantReducer)}
+                             </Input>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Owner Name 3</Label>
+                            <Input placeholder="Owner Name"
+                             onChange={this.onChange}
+                             type='select' name='ownerId3' defaultValue="no-value">
+                                <DefaultSelect />
+                                {this.fetchOwnerDetail3(this.props.tenantReducer)}
+                             </Input>
+                        </FormGroup> */}
                     </div>
                     <div style={{ 'display': this.state.step == 5 ? 'block' : 'none' }}>
                         <h3>Upload Your Image</h3>
                         <FormGroup>
                             <Label>Image</Label>
-                            <Input placeholder="Owner Name" onChange={this.onChange}
-                             type='file' name="picture" />
+                            <Input accept='image/*' placeholder="Owner Name" onChange={this.imageChangeHandler}
+                             type='file' name="profilePicture" />
                         </FormGroup>
                     </div>
                     <div>
@@ -409,9 +540,9 @@ const mapStateToProps = (state) => {
         towerList: state.TowerDetails,
         relationList: state.RelationMasterReducer,
         flatList:state.flatDetailMasterReducer,
-        tenantReducer:state.tenantReducer
+        tenantReducer:state.tenantReducer,
     }
 }
 
 export default connect(mapStateToProps, {detailSociety, viewTower, getRelation,
-    getOwnerDetailViaFlatId})(AddTenant);
+    getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail})(AddTenant);
