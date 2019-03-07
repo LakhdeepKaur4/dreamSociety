@@ -243,3 +243,8 @@ ul ul a {
 .modal-content{
     height:0px;
 } */
+
+#sortArrow{
+    position: relative;
+    margin-left: 40px;
+}

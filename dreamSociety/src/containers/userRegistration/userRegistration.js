@@ -32,7 +32,9 @@ class Registration extends Component {
             menuVisible: false,
             emailServerError:'',
             userNameServerError:'',
+            contactServerError:'',
             loading: true,
+            emailValidError:'',
             errors: {}
         };
         this.onChange = this.onChange.bind(this);
@@ -93,6 +95,18 @@ class Registration extends Component {
         }
     }
 
+    emailChange = (e) => {
+        console.log(this.state.email)
+        
+        if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
+            this.setState({[e.target.name]:e.target.value});
+            console.log(this.state.email)
+            this.setState({emailValidError: ''})
+        }
+        else{ this.setState({emailValidError: 'Invalid Email.'})}
+        
+    }
+
 
     submit(e) {
         
@@ -124,7 +138,7 @@ class Registration extends Component {
         const isValid = Object.keys(errors).length === 0
 
         // const isValid = this.validate();
-        if (isValid) {
+        if (isValid && this.state.emailValidError==='') {
             this.setState({loading: true})
             this.props.addUser(this.state).then(() =>{
                     this.props.history.push('/superDashboard/user_details')
@@ -133,7 +147,8 @@ class Registration extends Component {
             )
             .catch(err => {
                 console.log(err.response.data.message);
-                this.setState({emailServerError: err.response.data.message, userNameServerError:err.response.data.message, loading: false})
+                this.setState({emailServerError: err.response.data.message, userNameServerError:err.response.data.message,
+                    contactServerError: err.response.data.message, loading: false})
             });
         }
     }
@@ -143,6 +158,7 @@ class Registration extends Component {
             this.setState({
                 emailServerError:'',
                 userNameServerError:'',
+                contactServerError:''
             })
         
         
@@ -221,7 +237,7 @@ class Registration extends Component {
                 userNameError = {this.state.errors.userName}
                 emailInputName="email"
                 emailValue={this.state.email}
-                emailChange={this.onChange}
+                emailChange={this.emailChange}
                 emailError={this.state.errors.email}
                 emailKeyPress={this.emailValid}
                 contactInputName="contact"
@@ -231,6 +247,7 @@ class Registration extends Component {
                 familyValue={this.state.familyMember}
                 familyChange={this.onChange}
                 familyError={this.state.errors.familyMember}
+                contactError={this.state.contactError}
                 parkingInputName="parking"
                 parkingAndFloorKeyPress = {this.parkingAndFloorKeyPress}
                 parkingValue={this.state.parking}
@@ -258,6 +275,9 @@ class Registration extends Component {
                 routeToUserDetails={this.routeToUserDetails}
                 emailServerValidationError={this.state.emailServerError}
                 userNameServerValidationError={this.state.userNameServerError}
+                contactServerValidationError={this.state.contactServerError}
+                emailKeyPress={this.emailValid}
+                InValidEmailFormatError={this.state.emailValidError}
                 />
         
         return (

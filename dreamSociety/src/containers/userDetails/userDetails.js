@@ -33,6 +33,7 @@ class userDetails extends Component {
                 editUserModal: false,
                 loading:true,
                 dropdownOpen: false,
+                emailValidError:'',
                 search:''
         }
         this.OnKeyPresshandlerPhone = this.OnKeyPresshandlerPhone.bind(this);
@@ -117,7 +118,7 @@ class userDetails extends Component {
             if (contact === '') errors.contact = "Can't be empty.";
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0;
-            if (isValid) {
+            if (isValid && this.state.emailValidError==='') {
                 this.props.updateUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerName,floor,parking, contact,towerId)
                 .then(() => {
                     this.refreshData()
@@ -191,56 +192,52 @@ class userDetails extends Component {
             return user.map((item, index) => {
                 let currentTower = item.tower_master.towerName;
                 let currentTowerId = item.towerId
-                if(item.userId || currentRole || item.firstName || item.lastName || item.userName ||
-                    item.email || item.familyMember || currentTower || item.floor || item.parking || item.contact){
-                        return (
-                            <tr key={item.userId}>
-                                <td><input type="checkbox" name="ids" className="SelectAll" value={item.userId}
-                                 onChange={(e) => {
-                                    const {userId} = item
-                                    if(!e.target.checked){
-                                        document.getElementById('allSelect').checked=false;
-                                        let indexOfId = this.state.ids.indexOf(userId);
-                                        if(indexOfId > -1){
-                                            this.state.ids.splice(indexOfId, 1);
-                                        }
-                                        if(this.state.ids.length === 0){
-                                            this.setState({isDisabled: true});
-                                        }
-                                    }
-                                    else {
-                                        this.setState({ids: [...this.state.ids, userId]});
-                                        if(this.state.ids.length >= 0){
-                                            this.setState({isDisabled: false})
-                                        }
-                                    }
-                                        
-                                     }}/></td>
-                                <td>{index + 1}</td>
-                                <td>{item.roles.map((i) => {
-                                    currentRole = i.roleName
-                                    return currentRole
-                                })}</td>
-                                <td>{item.firstName}</td>
-                                <td>{item.lastName}</td>
-                                <td>{item.userName}</td>
-                                <td>{item.email}</td>
-                                <td>{item.familyMember}</td>
-                                <td>{currentTower}</td>
-                                <td>{item.floor}</td>
-                                <td>{item.parking}</td>
-                                <td>{item.contact}</td>
-                                <td>
-                                    <div className="w3-row">
-                                    <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email,item.familyMember,
-                                        currentTowerId,item.floor,item.parking, item.contact, currentTower)}>Edit</Button>
-                                    <Button color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
-                                    </div>
-                                </td>
-                            </tr>
-                        )
-                    }
-                
+                return (
+                    <tr key={item.userId}>
+                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.userId}
+                         onChange={(e) => {
+                            const {userId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(userId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1);
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
+                                }
+                            }
+                            else {
+                                this.setState({ids: [...this.state.ids, userId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                                
+                             }}/></td>
+                        <td>{index + 1}</td>
+                        <td>{item.roles.map((i) => {
+                            currentRole = i.roleName
+                            return currentRole
+                        })}</td>
+                        <td>{item.firstName}</td>
+                        <td>{item.lastName}</td>
+                        <td>{item.userName}</td>
+                        <td>{item.email}</td>
+                        <td>{item.familyMember}</td>
+                        <td>{currentTower}</td>
+                        <td>{item.floor}</td>
+                        <td>{item.parking}</td>
+                        <td>{item.contact}</td>
+                        <td>
+                            <div className="w3-row">
+                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email,item.familyMember,
+                                currentTowerId,item.floor,item.parking, item.contact, currentTower)}>Edit</Button>
+                            <Button color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
+                            </div>
+                        </td>
+                    </tr>
+                )
             })
         }
     }
@@ -318,6 +315,18 @@ class userDetails extends Component {
         if(allIds.length === 0){
             this.setState({isDisabled: true});
         }
+        
+    }
+
+    emailChange = (e) => {
+        console.log(this.state.email)
+        this.setState({email:e.target.value})
+        if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
+            this.setState({[e.target.name]:e.target.value});
+            console.log(this.state.email)
+            this.setState({emailValidError: ''})
+        }
+        else{ this.setState({emailValidError: 'Invalid Email.'})}
         
     }
 
@@ -400,7 +409,7 @@ class userDetails extends Component {
                                 emailValue = {this.state.email}
                                 emailError = {this.state.errors.email}
                                 emailKeyPress={this.emailValid}
-                                emailValueChange = {this.onChange}
+                                emailValueChange = {this.emailChange}
                                 familyInputName="familyMember"
                                 familyValue={this.state.familyMember}
                                 familyChange={this.onChange}
@@ -424,6 +433,7 @@ class userDetails extends Component {
                                 contactValidation = {this.OnKeyPresshandlerPhone}
                                 contactValueChange = {this.onChange}
                                 updateUserClick={this.updateUser}
+                                inValidEmailFormatError={this.state.emailValidError}
                                  />
 
                             <SearchFilter type="text" value={this.state.search}

@@ -24,11 +24,15 @@ import MaintenanceMasterReducer from './maintenanceMasterReducer/maintenanceMast
 import MaintenanceSubMaster from './maintenanceSubMasterReducer/maintenanceSubMasterReducer';
 import EmpDetails from './employeeMasterReducer/employeeMasterReducer';
 import DesignationMasterReducer from './designationMasterReducer/designationMasterReducer';
-import RelationMasterReducer from './relationMasterReducer/relationMasterReducer';
+import RelationMasterReducer from './relationMasterReducer/relationMasterReducer'
+
+import societyMemberEventReducer from './societyMemberEventReducer/societyMemberEventReducer'
+import memberEventsBookingReducer from './memberEventsBookingReducer/memberEventsBookingReducer';
+
 import eventSpaceMasterReducer from './eventSpaceMasterReducer/eventSpaceMasterReducer';
 import boardMemberReducer from './boardMemberReducer/boardMemberReducer';
 import tenantReducer from './tenantReducer/tenantReducer';
-
+import FlatOwnerReducer from './flatOwnerReducer/flatOwnerReducer'
 const rootReducer = combineReducers({
     loginReducer,
     userDetail,
@@ -56,8 +60,12 @@ const rootReducer = combineReducers({
     EmpDetails,
     DesignationMasterReducer,
     RelationMasterReducer,
+
+    societyMemberEventReducer,
+    memberEventsBookingReducer,
     eventSpaceMasterReducer,
     boardMemberReducer,
-    tenantReducer
+    tenantReducer,
+    FlatOwnerReducer
 })
 export default rootReducer;

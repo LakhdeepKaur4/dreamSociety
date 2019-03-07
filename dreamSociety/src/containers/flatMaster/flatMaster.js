@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './flatMaster.css';
+
 import { connect } from 'react-redux';
 import { AddDetails, getSocietyNameDetails, getSizeTypeDetails, getDetails } from '../../actionCreators/flatMasterAction';
 import { bindActionCreators } from 'redux';
@@ -150,7 +150,7 @@ class FlatMaster extends Component {
                     <option >--Select--</option>
                     {this.societyName(this.props.flat)}
                 </Input>
-                <span  className='error'>{this.state.errors.societyId}</span>
+                <span   style={{color:'red'}}>{this.state.errors.societyId}</span>
 
             </FormGroup>
 
@@ -165,7 +165,7 @@ class FlatMaster extends Component {
                     value={this.state.flatType}
                     onChange={this.onChange} />
                     
-                <span className='error'>{this.state.errors.flatType}</span>
+                <span style={{color:'red'}}>{this.state.errors.flatType}</span>
             </FormGroup>
 
             <FormGroup>
@@ -178,7 +178,7 @@ class FlatMaster extends Component {
                     onKeyPress = {this.OnKeyPresshandlerPhone}
                     maxLength='3'
                     onChange={this.onChange} />
-                <span className='error'>{this.state.errors.flatSuperArea}</span>
+                <span  style={{color:'red'}}>{this.state.errors.flatSuperArea}</span>
             </FormGroup>
 
             <FormGroup>
@@ -190,7 +190,7 @@ class FlatMaster extends Component {
                     <option>--SELECT--</option>
                     {this.sizeType(this.props.flat)}
                 </Input>
-                <span className='error'>{this.state.errors.sizeId}</span>
+                <span  style={{color:'red'}}>{this.state.errors.sizeId}</span>
             </FormGroup>
 
             <FormGroup>
@@ -203,7 +203,7 @@ class FlatMaster extends Component {
                     onKeyPress = {this.OnKeyPresshandlerPhone}
                     maxLength='3'
                     onChange={this.onChange} />
-                <span  className='error'>{this.state.errors.coverArea}</span>
+                <span  style={{color:'red'}}>{this.state.errors.coverArea}</span>
             </FormGroup>
 
             <FormGroup>

@@ -48,7 +48,7 @@ class ServiceMaster extends Component {
     refreshData() {
         this.props.getServiceDetail();
     }
-
+  
     getDropdown = ({ detail }) => {
         if (detail) {
             return detail.service.map((item) => {
@@ -96,12 +96,14 @@ class ServiceMaster extends Component {
 
 
     OnKeyPressUserhandler(event) {
-        const pattern = /[a-zA-Z_ ]/;
+        const pattern = /[a-zA-Z_ ]/ ; 
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
         }
     }
+
+
     
     logout=()=>{
         localStorage.removeItem('token');
@@ -128,7 +130,7 @@ class ServiceMaster extends Component {
                     <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Services</h3></div>
                         <div>
                             <label>Service Type</label>
-                            <input type="text" placeholder="Service Type" className="form-control" name="serviceName" maxLength={30} value={this.state.serviceName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} ></input>
+                            <input type="text" placeholder="Service Type" className="form-control" name="serviceName" maxLength={30}  onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} ></input>
                             <span className="error">{this.state.errors.serviceName}</span>
                         </div>
                         <div>

@@ -24,7 +24,7 @@ class CityMaster extends Component {
             stateId:'',
             loading: true,
             errors: {},
-            message:{},
+            message:'',
            
 
             menuVisible: false,
@@ -52,7 +52,7 @@ class CityMaster extends Component {
     }
 
     onChangeCountry= (event)=>{
-       
+      
         this.onChange(event);
 
         let selected= event.target.value
@@ -144,6 +144,7 @@ class CityMaster extends Component {
 
 
     onChange=(e) =>{
+        this.setState({message:'' })
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -185,6 +186,9 @@ class CityMaster extends Component {
                     this.setState({loading:true})
                     this.props.addCity(this.state)
                     .then(()=>this.props.history.push('/superDashboard/cityMasterDetail'))
+                    .catch(err=>{
+                        this.setState({message: err.response.data.message, loading: false})
+                    })
                     
                     
                     this.setState({
@@ -249,6 +253,7 @@ class CityMaster extends Component {
             <Input  type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler} placeholder="City Name" maxLength={30}
         minLength={3}/>
             <span className='error'>{this.state.errors.cityName}</span>
+            <span className="error">{this.state.message}</span>
         </FormGroup>
          
         <Button color="success" className="mr-2">Submit</Button>

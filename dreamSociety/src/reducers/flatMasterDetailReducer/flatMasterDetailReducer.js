@@ -1,5 +1,5 @@
 import {FETCH_DETAILS,FETCH_DROP,ADD_DETAILS,FETCH_SIZE_DROP,GET_ACTIVE_PAGE,GET_COUNT_PAGE,
-    DELETE_MULTIPLE_FLATMASTER_DETAILS} from '../../actions';
+    GET_TOTAL_ITEMS} from '../../actions';
 export default function(state={},action){
 
     switch(action.type){
@@ -15,8 +15,9 @@ export default function(state={},action){
             return{...state,list1:action.payload}
         case GET_COUNT_PAGE:    
             return{...state,noOfCount:action.payload}
-        // case DELETE_MULTIPLE_FLATMASTER_DETAILS:    
-        //     return{...state,list1:action.payload}    
+        case GET_TOTAL_ITEMS:    
+            return{...state,totalItems:action.payload}
+           
         default:
             return state;
     }

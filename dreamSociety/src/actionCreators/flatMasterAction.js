@@ -2,14 +2,14 @@ import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
 import {URN,GET_DETAILS,FETCH_DETAILS,FETCH_DROP,FETCH_SIZE_DROP,FETCH_SOCIETY_DROP,FETCH_SIZEMASTER_DROP,
     GET_ACTIVE_PAGE,GET_COUNT_PAGE,
-    DELETE_MULTIPLE_FLATMASTER_DETAILS,} from '../actions/index';
+    DELETE_MULTIPLE_FLATMASTER_DETAILS,GET_TOTAL_ITEMS} from '../actions/index';
 
 
 export  function AddDetails(values){
   
-    const request= axios.post(`${URN}/flat/`,values,{headers:authHeader()})
+    const request= axios.post(`${URN}/flat`,values,{headers:authHeader()})
     .then(response => response.data)
-    .then(getDetails())
+    // .then(getDetails())
     // .then(getDetails())
  
     // this.setState({flatId:response,flatType:response,flatSize:response})
@@ -117,6 +117,18 @@ export function deleteSelectedFlatMasterDetail(ids){
 
     return {
         type: DELETE_MULTIPLE_FLATMASTER_DETAILS,
+        payload: request
+    }
+}
+
+export function getTotalItems(){
+    console.log("action call")
+
+    const request = axios.get(`${URN}/flat`, {headers: authHeader()})
+    .catch(err => err)
+
+    return {
+        type: GET_TOTAL_ITEMS,
         payload: request
     }
 }

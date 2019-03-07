@@ -255,14 +255,14 @@ class EventSpaceMaster extends Component {
             <div>
                 
                 <UI onClick={this.logout}>
-                <Form onSubmit={this.submit}>
-                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                        <span aria-hidden="true">&times;</span>
-                    </div>
+                    <Form onSubmit={this.submit}>
+                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                            <span aria-hidden="true">&times;</span>
+                        </div>
 
-                    <h3 style={{textAlign:'center', marginBottom: '10px'}}> Event Space Master</h3>
-                    {!this.state.loading ? form : <Spinner /> }
-                </Form>
+                        <h3 style={{textAlign:'center', marginBottom: '10px'}}> Event Space Master</h3>
+                        {!this.state.loading ? form : <Spinner /> }
+                    </Form>
                 </UI>
                 {/* </SideBar>
                 </div> */}

@@ -63,13 +63,20 @@ import DesignationMasterDetail from './containers/designationMaster/designationM
 import SocietyComponent from './components/societyComponent/societyComponent';
 import RelationshipMaster from './containers/relationshipMaster/relationshipMaster';
 import RelationshipMasterDetail from './containers/relationshipMaster/relationshipMasterDetail';
+
+
+import SocietyMemberEvents from './containers/societyMemberEvent/societyMemberEvents';
+import MemberEventsDetail from './containers/societyMemberEvent/memberEventsDetail';
+import MemberEventsBooking from './containers/societyMemberEventsBooking/memberEventsBooking';
+import MemberEventsBookingDetail from './containers/societyMemberEventsBooking/memberEventsBookingDetail';
+
 import EventSpaceMaster from './containers/eventSpaceMaster/eventSpaceMaster';
 import EventSpaceMasterDetails from './containers/eventSpaceMaster/eventSpaceMasterDetails';
 import FlatOwnerDetails from './containers/flatOwnerDetails/flatOwnerDetails';
 import BoardMemberRegistrationForm from './containers/boardMemberRegistration/boardMemberRegistrationForm';
 import BoardMemberDetails from './containers/boardMemberRegistration/boardMemberDetails';
 import AddTenant from './containers/tenantMaster/addTenant';
-
+import FlatOwnerList from './containers/flatOwnerDetails/flatOwnerList'
 
 class App extends Component {
   render() {
@@ -135,12 +142,20 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/societyComponent' component={SocietyComponent} />
             <PrivateRoute path='/superDashboard/relationshipMaster' component={RelationshipMaster} />
             <PrivateRoute path='/superDashboard/relationshipMasterDetail' component={RelationshipMasterDetail} />
+         
+        
+            <PrivateRoute path='/superDashboard/societyMemberEvents' component={SocietyMemberEvents} />
+            <PrivateRoute path='/superDashboard/memberEventsDetail' component={MemberEventsDetail} />
+            <PrivateRoute path='/superDashboard/memberEventsBooking' component={MemberEventsBooking} />
+            <PrivateRoute path='/superDashboard/memberEventsBookingDetail' component={MemberEventsBookingDetail} />
+
             <PrivateRoute path='/superDashboard/eventSpaceMaster' exact component={EventSpaceMaster} />
             <PrivateRoute path='/superDashboard/eventSpaceMaster/eventSpaceMasterDetails' component={EventSpaceMasterDetails} />
             <PrivateRoute path='/superDashboard/flatOwnerDetail' component={FlatOwnerDetails} />
             <PrivateRoute path='/superDashboard/boardMemberRegistartionForm' component={BoardMemberRegistrationForm} />
             <PrivateRoute path='/superDashboard/boardMemberDetails' component={BoardMemberDetails} />
             <PrivateRoute path='/superDashboard/addTenant' component={AddTenant} />
+            <PrivateRoute path='/superDashboard/flatOwnerList' component={FlatOwnerList} />
           </Switch>
         </div>
         

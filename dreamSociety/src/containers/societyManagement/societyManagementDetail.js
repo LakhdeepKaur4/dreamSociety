@@ -249,11 +249,11 @@ class SocietyManagementDetail extends Component {
      
         if (detail_Society) {
             return detail_Society.filter(this.searchFilter(this.state.search)).map((item,index) => {
-              
+               
 
                 return (
                     <tr key={item.societyId}>
-                  <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyId}
+                  {/* <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyId}
                          onChange={(e) => {
                             const {societyId} = item
                             if(!e.target.checked){
@@ -275,13 +275,13 @@ class SocietyManagementDetail extends Component {
                                 }
                             }
                                 
-                             }}/></td>
+                             }}/></td> */}
                         <td>{index+1}</td>
                         <td>{item.societyName}</td>
-                        <td>{item.country_master.countryName}</td>
-                        <td>{item.state_master.stateName}</td>
-                        <td>{item.city_master.cityName}</td>
-                        <td>{item.location_master.locationName}</td>
+                        <td>{item.country_master?item.country_master.countryName:''}</td>
+                        <td>{item.state_master ? item.state_master.stateName:''}</td>
+                        <td>{item.city_master ? item.city_master.cityName:''}</td>
+                        <td>{item.location_master?item.location_master.locationName:''}</td>
                         <td>{item.societyAddress}</td>
                         <td>{item.bankName}</td>
                         <td>{item.accountHolderName}</td>
@@ -294,10 +294,10 @@ class SocietyManagementDetail extends Component {
                             <td>
                                 <Button color="success mr-2" onClick={this.toggle.bind(this, 
                                     item.societyId, 
-                                    item.country_master.countryName, 
-                                    item.state_master.stateName,
-                                    item.city_master.cityName, 
-                                    item.location_master.locationName, 
+                                    item.country_master ? item.country_master.countryName:'', 
+                                    item.state_master?item.state_master.stateName:'',
+                                    item.city_master?item.city_master.cityName:'', 
+                                    item.location_master?item.location_master.locationName:'', 
                                     item.societyName,
                                     item.societyAddress,
                                     item.bankName,
@@ -309,7 +309,8 @@ class SocietyManagementDetail extends Component {
                                     item.registrationNumber,
                                     item.totalBoardMembers)} >Edit</Button>
                             
-                                <Button color="danger" onClick={this.deleteSocietyName.bind(this, item.societyId)} >Delete</Button>
+                                {/* <Button color="danger" onClick={this.deleteSocietyName.bind(this, item.societyId)} >Delete</Button> */}
+                                
                             </td>
                     </tr>
                 )
@@ -318,8 +319,6 @@ class SocietyManagementDetail extends Component {
     }
 
     fetchCountry({ countryResult }) {
-        
-        
         if (countryResult) {
             return (
                 countryResult.map((item) => {
@@ -423,7 +422,7 @@ class SocietyManagementDetail extends Component {
         <Table className="table table-bordered">
             <thead>
                 <tr>
-                <th>Select All<input className="ml-2"
+                {/* <th>Select All<input className="ml-2"
                     id="allSelect"
                     type="checkbox" onChange={(e) => {
                             if(e.target.checked) {
@@ -433,13 +432,13 @@ class SocietyManagementDetail extends Component {
                                 this.unSelectAll();
                             } 
                         }  
-                    }/></th>
+                    }/></th> */}
                     <th>#</th>
                     <th>Society Name</th>
-                    <th>Country Name</th>
-                    <th>State Name</th>
-                    <th>City Name</th>
-                    <th>Location Name</th>
+                    <th>Country</th>
+                    <th>State</th>
+                    <th>City</th>
+                    <th>Location</th>
                     <th>Society Address</th>
                     <th>Bank Name</th>
                     <th>Account Holder Name</th>
@@ -466,15 +465,15 @@ class SocietyManagementDetail extends Component {
    </div>
                 <div className="top-details">
                                 <h3>Society Details</h3>
-                                <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button>
+                                {/* <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button> */}
                             </div>
                             <div>
                               
                                 <SearchFilter type="text" value={this.state.search}
                                     onChange={this.searchOnChange} />
                             </div>
-                            <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+                            {/* <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button> */}
                             {!this.state.loading ? tableData : <Spinner />}
                 <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                     <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
@@ -482,7 +481,7 @@ class SocietyManagementDetail extends Component {
 
                     <FormGroup>
                             <Label>Society Name</Label>
-                            <Input type="text" id="societyId" name="societyName" onChange={this.onChangeHandler} value={this.state.societyName} maxLength={50}/>
+                            <Input type="text" id="societyId" name="societyName"  value={this.state.societyName} onKeyPress={this.onKeyPressHandler} maxLength={100}/>
                             <span className="error">{this.state.errors.societyName}</span> 
                         </FormGroup>
 
@@ -544,34 +543,36 @@ class SocietyManagementDetail extends Component {
                         
                         <FormGroup>
                             <Label>Society Address</Label>
-                            <Input type="textarea"  name="societyAddress" onChange={this.onChangeHandler} value={this.state.societyAddress}  maxLength={100}/>
+                            <Input type="textarea"  name="societyAddress" onChange={this.onChangeHandler} value={this.state.societyAddress}  maxLength={300}/>
                             <span className="error">{this.state.errors.societyAddress}</span> 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Bank Name</Label>
-                            <Input type="text"  name="bankName" onChange={this.onChangeHandler} value={this.state.bankName} onKeyPress={this.onKeyPressHandler} maxLength={30}/>
+                            <Input type="text"  name="bankName" onChange={this.onChangeHandler} value={this.state.bankName} onKeyPress={this.onKeyPressHandler} maxLength={50}/>
                             <span className="error">{this.state.errors.bankName}</span> 
                         </FormGroup>
 
+                        
+                        <FormGroup>
+                            <Label>IFSC Code</Label>
+                            <Input type="text"  name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode}  maxLength={20}/>
+                            <span className="error">{this.state.errors.IFSCCode}</span> 
+                        </FormGroup>
+                        
+
                         <FormGroup>
                             <Label>Account Holder Name</Label>
-                            <Input type="text"  name="accountHolderName" onChange={this.onChangeHandler} value={this.state.accountHolderName} onKeyPress={this.onKeyPressHandler}  maxLength={30}/>
+                            <Input type="text"  name="accountHolderName" onChange={this.onChangeHandler} value={this.state.accountHolderName} onKeyPress={this.onKeyPressHandler}  maxLength={200}/>
                             <span className="error">{this.state.errors.accountHolderName}</span> 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Account Number</Label>
-                            <Input type="text"  name="accountNumber" onChange={this.onChangeHandler} value={this.state.accountNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={50}/>
+                            <Input type="text"  name="accountNumber" onChange={this.onChangeHandler} value={this.state.accountNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={20}/>
                             <span className="error">{this.state.errors.accountNumber}</span> 
                         </FormGroup>
 
-                        <FormGroup>
-                            <Label>IFSC Code</Label>
-                            <Input type="text"  name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode}  maxLength={50}/>
-                            <span className="error">{this.state.errors.IFSCCode}</span> 
-                        </FormGroup>
-                        
                         <FormGroup>
                             <Label>Email Id</Label>
                             <Input type="email"  name="email" onChange={this.onChangeHandler} value={this.state.email}   maxLength={50}/>
@@ -580,7 +581,7 @@ class SocietyManagementDetail extends Component {
 
                         <FormGroup>
                             <Label>Contact Number</Label>
-                            <Input type="text"  name="contactNumber" onChange={this.onChangeHandler} value={this.state.contactNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={50}/>
+                            <Input type="text"  name="contactNumber" onChange={this.onChangeHandler} value={this.state.contactNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10}/>
                             <span className="error">{this.state.errors.contactNumber}</span> 
                         </FormGroup>
                         <FormGroup>
@@ -591,7 +592,7 @@ class SocietyManagementDetail extends Component {
 
                         <FormGroup>
                             <Label>Total Board Members</Label>
-                            <Input type="text"  name="totalBoardMembers" onChange={this.onChangeHandler} value={this.state.totalBoardMembers}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={50}/>
+                            <Input type="text"  name="totalBoardMembers" onChange={this.onChangeHandler} value={this.state.totalBoardMembers}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={3}/>
                             <span className="error">{this.state.errors.totalBoardMembers}</span> 
                         </FormGroup>
                         <Button color="primary mr-2" onClick={this.editSocietyType}>Save</Button> 

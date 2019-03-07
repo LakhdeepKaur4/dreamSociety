@@ -16,7 +16,8 @@ class SizeMaster extends Component {
             sizeType: "",
             menuVisible: false,
             loading:true,
-            errors: {}
+            errors: {},
+            message:''
         }
 
         this.onChange = this.onChange.bind(this);
@@ -32,6 +33,7 @@ class SizeMaster extends Component {
     }
 
     onChange(event) {
+        this.setState({message:'' })
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -67,13 +69,20 @@ class SizeMaster extends Component {
         if (isValid) {
             this.setState({loading: true})
           
-                this.props.AddSize(sizeType).then(()=> this.props.history.push('/superDashboard/display-size')
+                this.props.AddSize(sizeType).then(()=> this.props.history.push('/superDashboard/display-size')).catch(err=>{
+                    this.setState({message: err.response.data.message, loading: false})
+                })
             
-                )
+            
+           
             
        
     }
 
+}
+
+push=()=>{
+    this.props.history.push('/superDashboard/display-size')
 }
    
    
@@ -107,6 +116,7 @@ class SizeMaster extends Component {
                 <Label> Size Type</Label>
                 <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={20} />
                 <span className="error">{this.state.errors.sizeType}</span>
+                <span className="error">{this.state.message}</span>    
             </FormGroup>
             <FormGroup>
                 <Button type="submit" color="success">Submit</Button>

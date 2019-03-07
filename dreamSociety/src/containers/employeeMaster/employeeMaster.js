@@ -8,6 +8,7 @@ import {bindActionCreators} from 'redux';
 import DefaultSelect from '../../constants/defaultSelect'
 import _ from 'underscore';
 import './employeeMaster.css';
+import OnKeyPresshandler from '../../constants/validation';
 class EmployeeMaster extends Component{
 
 
@@ -22,6 +23,7 @@ class EmployeeMaster extends Component{
         cityName:'',
         locationName:'',
         locationId:'',
+        address:'',
         documentOne:null,
         documentTwo:null,
         profilePicture:null,
@@ -30,7 +32,7 @@ class EmployeeMaster extends Component{
         lastName:'',
         startDate:'',
         endDate:'',
-        CTC:'',
+        salary:'',
         file:'',
         errors:{}
     }
@@ -97,13 +99,7 @@ FileChange=(event)=>{
       
     }
 
-    OnKeyPresshandler(event) {
-        const pattern = /[a-zA-Z _]/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
-    }
+  
 
     OnKeyPressNumber(event) {
         const pattern = /^[0-9]$/;
@@ -122,16 +118,16 @@ FileChange=(event)=>{
         // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
        
         if(!this.state.countryId){
-          errors.countryId = " country Id  can't be empty. Please select."
+          errors.countryId = " Country Id  can't be empty. "
          }
          if(!this.state.stateId){
-          errors.stateId ="State Name can't be empty. Please select"
+          errors.stateId ="State Name can't be empty. "
          }
           if(!this.state.cityId){
-          errors.cityId ="city Name can't be empty. Please select"
+          errors.cityId ="City Name can't be empty."
          }
          if(!this.state.locationId){
-          errors.locationId ="location Name can't be empty. Please Select"
+          errors.locationId ="Location Name can't be empty."
          }
          if(!this.state.documentOne){
           errors.documentOne ="please select an ID."
@@ -140,26 +136,26 @@ FileChange=(event)=>{
             errors.documentTwo ="please select an ID"
          }
          if(!this.state.profilePicture){
-          errors.profilePicture =" profile picture can't be empty.please select "
+          errors.profilePicture =" Profile picture can't be empty."
          }
          if(!this.state.firstName){
-         errors.firstName ="first Name can't be empty. please select"
+         errors.firstName ="First Name can't be empty. "
          }
        
          if(!this.state.lastName){
-       errors.lastName ="last Name can't be empty.please select"
+       errors.lastName ="Last Name can't be empty."
          }
          if(!this.state.startDate){
-          errors.startDate =" start Date can't be empty .please select"
+          errors.startDate =" Start Date can't be empty ."
          }
          if(!this.state.endDate){
-         errors.endDate ="end Date can't be empty. please select"
+         errors.endDate ="End Date can't be empty."
          }
          if(!this.state.CTC){
-        errors.CTC ="CTC can't be empty. please select"
+        errors.CTC ="CTC can't be empty."
          }
           
-         const data = new FormData()
+         const data = new FormData() 
   this.setState({ errors });
   const isValid = Object.keys(errors).length === 0
   if (isValid) {        
@@ -320,7 +316,7 @@ form=
 
   <div class="input-container">
         <label for ="upload-photo">Select Your Image</label>
-        <input type="file" accept ="image/*"   data-max-size="4194304"   name="profilePicture" onChange={this.onPicChange}/>
+        <input type="file" accept =".png, .jpg, .jpeg"   data-max-size="4194304"   name="profilePicture" onChange={this.onPicChange}/>
          
         <span className="error">{this.state.errors.profilePicture}</span>
     </div>
@@ -328,7 +324,8 @@ form=
     <div className="row">
     <div className="form-group col-md-4 ">
     <label>First Name</label>
-    <input  className="form-control" name="firstName" type="text" onKeyPress={this.OnKeyPresshandler} onChange ={this.onChange}  maxLength={30}/>
+    <input  className="form-control" name="firstName" type="text"  onChange ={this.onChange}  maxLength={30}/>
+     
     <span className="error">{this.state.errors.firstName}</span>
     </div>
  
@@ -351,93 +348,88 @@ form=
 
     <div className="form-group">
 
-        <label> CTC</label>
+        <label> Salary</label>
        
-        <input type="text" className="form-control" name ="CTC"  onKeyPress={this.OnKeyPressNumber}  onChange ={this.onChange} maxLength={3}/>
-        <span className="error">{this.state.errors.CTC}</span>
+        <input type="text" className="form-control" name ="salary" onChange ={this.onChange} maxLength={3}/>
+        <span className="error">{this.state.errors.salary}</span>
     </div>
-    <div>
-    <div>
-                        <label>Country Name</label>
-                        <select   className ="form-control" name="countryName"         defaultValue='no-value' onChange={this.onChangeCountry} >
-                        < DefaultSelect/> 
+    <div  className="row">
+                    <div className="col-md-3">
+                            <label>Country Name</label>
+                           <select   className ="form-control" name="countryName"         defaultValue='no-value' onChange={this.onChangeCountry} >
+                        <    DefaultSelect/> 
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
-                        <span className="error">{this.state.errors.countryId}</span>
+                           <span className="error">{this.state.errors.countryId}</span>
                     </div>
 
 
 
-                    <div>    
+                    <div className="col-md-3">    
                         <label>State Name</label>
-                        <select  className ="form-control"         defaultValue='no-value'  name="stateName" onChange={this.onChangeState}>
-                    <DefaultSelect/>
+                        <select  className ="form-control"  defaultValue='no-value'  name="stateName" onChange={this.onChangeState}>
+                               <DefaultSelect/>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
                         <span className="error">{this.state.errors.stateId}</span>
                     </div>
-                    <div>    
+
+                      <div  className="col-md-3">    
                         <label>City Name</label>
-                        <select  className ="form-control"        defaultValue='no-value'  name="cityName" onChange={this.onChangeCity} >
-                       <DefaultSelect/>
+                        <select  className ="form-control" defaultValue='no-value'  name="cityName" onChange={this.onChangeCity} >
+                            <DefaultSelect/>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
                         <span className="error">{this.state.errors.cityId}</span>
-                    </div>
-                    <div>    
+                     </div>
+                     <div  className="col-md-3" >    
                         <label>location</label>
-                        <select  className ="form-control"          defaultValue='no-value' onChange={this.onLocationChange} >
-                   <DefaultSelect/>
+                        <select  className ="form-control" defaultValue='no-value' onChange={this.onLocationChange} >
+                             <DefaultSelect/>
                             {this.getDropdown4(this.props.locationMasterReducer)}
                         </select>
                         <span className="error">{this.state.errors.locationId}</span>
-                    </div>
+                      </div>
+                     </div>
+                      
 
-        <div className="row">
+              <div className="form-group">
+                <label> Address</label>
+                <input type="text" className="form-control" name ="address"  onKeyPress={this.OnKeyPressNumber}  onChange ={this.onChange} maxLength={3}/>
+                <span className="error">{this.state.errors.address}</span>
+              </div>
+
+
         <div className="form-group col-md-6 col-sm-6">
-          <label> Start Date</label>
+          <label> Employment Start Date</label>
           <input
             type="date"
             className="form-control"
             name="startDate"
-            placeholder=" event start date"
             onChange={this.onChange}
-            
-          />
+            />
           <span className="error">{this.state.errors.startDate}</span>
         </div>
 
-        <div className="form-group  col-md-6 col-sm-6">
-          <label> Event End Date</label>
-          <input
-            type="date"
-            className=" form-control"
-            name="endDate"
-            placeholder="event end date"
-            onChange={this.onChange}
-             />
-             <span className="error">{this.state.errors.endDate}</span>
-          </div>
-          </div>
+     
 
           <div className ="row">
           <div className=" input-contain  col-md-4">
-        <label> upload your ID</label>
-        <input  accept='.docx ,.doc,application/pdf' type="file"      name ="documentOne" onChange={this.onFileChange}/>
+          <label> upload your ID</label>
+         <input  accept='.docx ,.doc,application/pdf' type="file"  name ="documentOne" onChange={this.onFileChange}/>
         <span className="error">{this.state.errors.documentOne}</span>
-    </div>
+        </div>
 
     
    
-    <div  className="input-contain  col-md-1">
-        <label> upload your ID</label>
-        <input  accept='.docx,application/pdf' type="file"       name ="documentTwo" onChange={this.FileChange}/>
+        <div  className="input-contain  col-md-1">
+        <label> upload your ID</label>  
+        <input  accept='.docx,application/pdf' type="file" name ="documentTwo" onChange={this.FileChange}/>
         <span className="error">{this.state.errors.documentTwo}</span>
-    </div>
-
-
-    </div>
-    </div>
+        </div>
+  </div>
+   
+ 
 
     <button className="btn btn-success mr-2">Submit</button>
     <button className="btn btn-primary"  onClick ={this.displayEmployee}>Display Employee Master</button>

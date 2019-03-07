@@ -10,7 +10,7 @@ import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
 import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
 import {addFlatOwner} from '../../actionCreators/flatOwnerAction';
-
+import {Link} from 'react-router-dom';
 
 class FlatOwnerDetails extends Component {
     constructor(props) {
@@ -49,7 +49,8 @@ class FlatOwnerDetails extends Component {
             permanentAddress:'',
             familyMember:'',
             member:[],
-
+            ownerGender:'',
+            message:''
         }
     }
     componentDidMount() {
@@ -98,11 +99,11 @@ class FlatOwnerDetails extends Component {
    }
     }
     societyChangeHandler = (selectOption) => {
-        let countryName = selectOption.country_master.countryName;
-        let countryId= selectOption.country_master.countryId
-        let stateName = selectOption.state_master.stateName;
+        let countryName = selectOption.country_master?selectOption.country_master.countryName:'';
+        let countryId= selectOption.country_master?selectOption.country_master.countryId:'';
+        let stateName = selectOption.state_master?selectOption.state_master.stateName:'';
         let stateId = selectOption.state_master.stateId;
-        let cityName = selectOption.city_master.cityName;
+        let cityName = selectOption.city_master.cityName?selectOption.city_master.cityName:'';
         let cityId = selectOption.city_master.cityId;
         let locationName = selectOption.location_master.locationName;
         let locationId = selectOption.location_master.locationId;
@@ -210,6 +211,7 @@ class FlatOwnerDetails extends Component {
     }
     onChangeHandler = (event) => {
         console.log(this.state)
+        this.setState({message:''})
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -234,11 +236,11 @@ class FlatOwnerDetails extends Component {
     }
     userMemberHandler = (e) => {
         if (e.target.value != '') {
-            for(let i = 0; i < this.state.familyMember; i++){
-              this.setState({
-                memberName:this.event.target.value
-              })
-            }
+            // for(let i = 0; i < this.state.familyMember; i++){
+            //   this.setState({
+            //     memberName:e.target.value
+            //   })
+            // }
             this.setState({
                 familyMember: e.target.value
             });
@@ -280,7 +282,8 @@ class FlatOwnerDetails extends Component {
             cityId,
             locationId,
             locationName,
-            member} = this.state
+            member,
+            ownerGender} = this.state
             const d = new FormData()
             // data.append('ownerName',ownerName)
             // data.append('dob',DOB)
@@ -355,28 +358,36 @@ class FlatOwnerDetails extends Component {
                 stateId,
                 cityId,
                 locationId,
-                locationName
-                
+                locationName,
+                ownerGender
             }
             console.log(FlatOwnerData,...d)
-            this.props.addFlatOwner(FlatOwnerData,d); 
+            this.props.addFlatOwner(FlatOwnerData,d)
+            .then(() => this.props.history.push('/superDashBoard/flatOwnerList'))
+            .catch(err=>{
+                console.log(err)
+                this.setState({message:err.response.data.message})
+            })
 
         }
     FileChange=(event)=>{
-        console.log(event.target.files[0].name)
-        this.setState({ profilePicture: event.target.files[0]})
-        // const files = event.target.files;
-        // const file = files[0];
-        // if (files && file) {
-        //   const reader = new FileReader();
-        //   reader.readAsDataURL(file);
-        //   reader.onload =  () =>{
-        //       this.setState({
-        //         profilePic :  reader.result
-        //       })
+        // console.log(event.target.files[0].name)
+        // this.setState({ profilePicture: event.target.files[0]})
+        const files = event.target.files;
+        const file = files[0];
+        const fileName=file.name
+        if (files && file) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload =  () =>{
+              this.setState({
+                profilePicture :
+                  reader.result,
+                  fileName
+              })
            
-        //   };
-        // }
+          };
+        }
        
   }
     render() {
@@ -435,14 +446,28 @@ class FlatOwnerDetails extends Component {
                         <div style={{ 'display': this.state.step == 1 ? 'block' : 'none' }}>
                             <h3>Flat Owner Details</h3>
                             <FormGroup>
+                                <span className="error">{this.state.message}</span>
                                 <Label>Owner Name</Label>
-                                <Input placeholder="Full Name" maxLength={50} name='ownerName' onChange={this.onChangeHandler} />
+                                <Input  style={{'textTransform': 'capitalize' }} placeholder="Full Name" maxLength={50} name='ownerName' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.ownerName}</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Date Of Birth</Label>
                                 <Input  type='date' max={this.maxDate()} name='DOB' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.DOB}</span>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Gender:</Label>
+                                <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
+                                <span><Input type="radio" id="Gender1" name="ownerGender" onChange={this.onChangeHandler} value="male"/></span>
+                                
+                                
+                                <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
+                                <span><Input type="radio" id="Gender2" name="ownerGender" onChange={this.onChangeHandler} value="female"/></span>
+                               
+                               
+                                <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
+                                <span><Input type="radio" id="Gender3" name="ownerGender" onChange={this.onChangeHandler} value="other"/></span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Contact Number</Label>
@@ -505,7 +530,7 @@ class FlatOwnerDetails extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <Label>Account Holder Name</Label>
-                                <Input placeholder="Holder Name" type="text" name='holderName' onChange={this.onChangeHandler} />
+                                <Input style={{'textTransform': 'capitalize' }} placeholder="Holder Name" type="text" name='holderName' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.holderName}</span>
                             </FormGroup>
                             <FormGroup >
@@ -539,9 +564,13 @@ class FlatOwnerDetails extends Component {
                             </FormGroup>
                         </div>
                         <div>
+                        <Link to='/superDashBoard/flatOwnerList'>
+                <Button color="danger" className="mr-2" style={{ display: this.state.step == 1 ? 'inline-block' : 'none', marginLeft: '20px'}} >Cancel</Button>
+                              </Link>
                             <Button className="mr-2" color="danger" type="button" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
                             <Button type="button" color="primary" id="nextBtn" style={{ display: this.state.step == 3 ? 'none' : 'inline-block' }} disabled={this.state.step == 3} onClick={this.nextPrev}>Next</Button>
                             <Button type="submit" color="success" style={{ display: this.state.step == 3 ? 'inline-block' : 'none' }}>Submit</Button>
+
                         </div>
                     </Form>
                 </UI>

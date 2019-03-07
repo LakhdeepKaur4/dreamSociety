@@ -34,6 +34,7 @@ class BoardMemberRegistrationForm extends Component {
             contactNumber:'',
             IFSCCode:'',
             panCardNumber:'',
+            emailValidError:'',
             optionalContactNumber: '',
             stateId:'',
             cityId:'',
@@ -196,7 +197,7 @@ logout=()=>{
 
 onChange = (e) => {
     console.log(this.state);
-    this.setState({[e.target.name]:e.target.value});
+    this.setState({[e.target.name]:e.target.value.trim()});
     
 }
 
@@ -262,7 +263,7 @@ submit = (e) => {
         if(this.state.dob === '') errors.dob = `Can't be empty.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
-        if(isValid){
+        if(isValid && this.state.emailValidError===''){
             this.setState({loading: true});
             this.props.addMemberDetails(this.state)
             .then(() => this.props.history.push('/superDashboard/boardMemberDetails'));
@@ -324,6 +325,18 @@ emailValid(event) {
     if (!pattern.test(inputChar)) {
         event.preventDefault();
     }
+}
+
+emailChange = (e) => {
+    console.log(this.state.email)
+    
+    if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
+        this.setState({[e.target.name]:e.target.value});
+        console.log(this.state.email)
+        this.setState({emailValidError: ''})
+    }
+    else{ this.setState({emailValidError: 'Invalid Email.'})}
+    
 }
 
 fetchSocietyId = ({boardId}) => {
@@ -453,9 +466,10 @@ maxDate = () => {
                         placeholder="Email" 
                         type="email" 
                         name="email" 
-                        onChange={this.onChange}
+                        onChange={this.emailChange}
                         onKeyPress={this.emailValid} />
                         {!this.state.email ? <span className="error">{this.state.errors.email}</span> : ''}
+                        {<span className="error">{this.state.emailValidError}</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label>Optional Mail</Label>

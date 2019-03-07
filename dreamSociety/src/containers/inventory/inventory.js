@@ -133,6 +133,13 @@ onAssetsTypeChange=(name,selectOption)=>{
     });
     
 }   
+OnKeyPresshandlerPhone(event) {
+    const pattern = /^[0-9]$/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
+    }
+}
 
 
     render() {
@@ -153,12 +160,12 @@ onAssetsTypeChange=(name,selectOption)=>{
         <span className="error">{this.state.errors.assetSubTypeId}</span>
         <div>
             <Label>Number Of Inventory</Label>
-            <Input type="number" maxLength={1} placeholder="Enter Number" onChange={this.onChangeHandler} className="form-control"  name='numberOfInventory' />
+            <Input type="text" onKeyPress={this.OnKeyPresshandlerPhone} maxLength={2} placeholder="Enter Number" onChange={this.onChangeHandler} className="form-control"  name='numberOfInventory' />
             <span className="error">{this.state.errors.numberOfInventory}</span>
         </div>
         <div>
             <Label>Rate Per Inventory</Label>
-            <Input type="text" maxLength={10}  placeholder="Enter Rate" onChange={this.onChangeHandler} className="form-control"  name='ratePerInventory' />
+            <Input type="text" onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10}  placeholder="Enter Rate" onChange={this.onChangeHandler} className="form-control"  name='ratePerInventory' />
             <span className="error">{this.state.errors.ratePerInventory}</span>
         </div>   
         {/* <div>
