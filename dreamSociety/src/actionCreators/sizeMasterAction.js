@@ -22,7 +22,7 @@ export function displaySize(){
 }
 
 export function deleteSize(sizeId,isActive){
-    const request =axios.put(`${URN}/size/` + sizeId,{isActive}, { headers: authHeader() }).then()
+    const request =axios.put(`${URN}/size/`+sizeId,{isActive}, { headers: authHeader() }).then()
     return{
         type:DELETE_SIZE,
         payload:request

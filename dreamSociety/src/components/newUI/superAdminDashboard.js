@@ -121,7 +121,8 @@ class Demo extends Component {
 
                     </div>
                 </nav>
-                <div className="wrapper"  style={{'backgroundImage':`url('assets/society.jpg')`}}>
+                {/* const  abc ="style={{'backgroundImage':`url('assets/society.jpg')`}}"; */}
+                <div className="wrapper"  >
                     <nav id="sidebar" className="bg-dark inactive">
                         <div id="sidebar-content">
 
