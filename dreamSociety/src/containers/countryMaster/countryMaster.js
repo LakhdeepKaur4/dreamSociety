@@ -15,7 +15,7 @@ class Country extends Component {
         this.state = {
             countryName: '',
             code: '',
-            currency: '',
+            currency: '', 
             phoneCode: '',
             errors: {},
             isSubmit: false,

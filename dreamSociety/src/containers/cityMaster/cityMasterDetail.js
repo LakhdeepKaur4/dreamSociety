@@ -303,7 +303,7 @@ class CityMasterDetail extends Component {
 
 
     render() {
-        console.clear();
+  
         let tableData;
         tableData = <div style={{ backgroundColor: 'lightgray' }}>
             <Table className="table table-bordered">

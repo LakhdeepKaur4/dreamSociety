@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getServiceType } from '../../../actionCreators/serviceMasterAction';
-import { addVendorMaster, getRateType } from '../../../actionCreators/vendorMasterAction';
+import { addVendorMaster, getRateType,getVendorMaster } from '../../../actionCreators/vendorMasterAction';
 import { Col, Row, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import UI from '../../../components/newUI/vendorDashboardInside';
 
@@ -85,14 +85,18 @@ class vendorMaster extends Component {
   
 
     componentDidMount() {
-        this.props.getServiceType();
-        this.props.getRateType();
-
-
+        this.refreshData();
     }
     
+    refreshData=()=>{
+        this.props.getVendorMaster();
+        this.props.getServiceType();
+        this.props.getRateType();
+    }
+
     push=()=>{
-        this.props.history.push('/superDashboard/displayVendorMaster')
+        this.props.history.push('/superDashboard/displayVendorMaster');
+     
     }
 
     getDropDown = ({ item }) => {
@@ -123,7 +127,7 @@ class vendorMaster extends Component {
 
     }
 
-
+   
 
     onSubmit = (event) => {
         event.preventDefault();
@@ -144,10 +148,10 @@ class vendorMaster extends Component {
         formData.append('rate3',this.state.rate3)
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
-        formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)      
-        this.props.addVendorMaster(formData);
-        this.push();
-        this.setState({loading:true});
+        formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)     
+        this.props.addVendorMaster(formData).then(()=>this.push());  
+        this.refreshData();
+        console.log(this.state.serviceId1.serviceId,this.state.rateId1.rateId)
 
     }
 
@@ -168,7 +172,7 @@ class vendorMaster extends Component {
 
 
     render() {
-        console.log("==================", this.state)
+    
         return (
             <div>
                 <UI onClick={this.logout}>
@@ -182,24 +186,24 @@ class vendorMaster extends Component {
 
                         <FormGroup>
                             <Label>Vendor Name</Label>
-                            <Input type="text" placeholder="Vendor Name" name="vendorName" maxLength={20} value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} required />
+                            <Input type="text" placeholder="Vendor Name" name="vendorName" maxLength={20} value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  />
                         </FormGroup>
 
 
                         <FormGroup>
                             <Label>Current Address</Label>
-                            <Input type="text" placeholder="Current Address" name="currentAddress" maxLength={50} value={this.state.currentAddress} onChange={this.handleChange} required />
+                            <Input type="text" placeholder="Current Address" name="currentAddress" maxLength={50} value={this.state.currentAddress} onChange={this.handleChange} />
                         </FormGroup>
 
 
                         <FormGroup>
                             <Label>Permanent Address</Label>
-                            <Input type="text" placeholder="Permanent Address" name="permanentAddress" maxLength={50} value={this.state.permanentAddress} onChange={this.handleChange} required />
+                            <Input type="text" placeholder="Permanent Address" name="permanentAddress" maxLength={50} value={this.state.permanentAddress} onChange={this.handleChange} />
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Contact Number</Label>
-                            <Input type="text" placeholder="Contact Number" name="contact" maxLength={10} value={this.state.contact} onChange={this.handleChange} required />
+                            <Input type="text" placeholder="Contact Number" name="contact" maxLength={10} value={this.state.contact} onChange={this.handleChange} />
                         </FormGroup>
 
                         <Row form>
@@ -208,7 +212,7 @@ class vendorMaster extends Component {
                                     <Label> Service Type 1</Label>
                                     <Input type="select" name="serviceId1" value={this.state.serviceId1.serviceId} onChange={(e) => {
                                         this.setState({ serviceId1: { serviceId: e.target.value } })
-                                    }} required >
+                                    }} >
                                         <option value="" disabled selected>--Select--</option>
                                         {this.getDropDown(this.props.displayServiceMasterReducer)}
                                     </Input>
@@ -219,7 +223,7 @@ class vendorMaster extends Component {
                                     <Label> Rate Type 1</Label>
                                     <Input type="select" name="rateId1" value={this.state.rateId1.rateId} onChange={(e) => {
                                         this.setState({ rateId1: { rateId: e.target.value } })
-                                    }} required>
+                                    }} >
                                         <option value="" disabled selected>--Select--</option>
                                         {this.getRate(this.props.vendorMasterReducer)}
                                     </Input>
@@ -228,7 +232,7 @@ class vendorMaster extends Component {
                             <Col md={2}>
                                 <FormGroup>
                                     <Label> Rate 1</Label>
-                                    <Input type="text" placeholder="Rate" name="rate1" maxLength={4} value={this.state.rate1} onChange={this.handleChange} required />
+                                    <Input type="text" placeholder="Rate" name="rate1" maxLength={4} value={this.state.rate1} onChange={this.handleChange} />
                                 </FormGroup>
                             </Col>
                         </Row>
@@ -239,7 +243,7 @@ class vendorMaster extends Component {
                                     <Label> Service Type 2</Label>
                                     <Input type="select" name="serviceId2" value={this.state.serviceId2.serviceId} onChange={(e) => {
                                         this.setState({ serviceId2: { serviceId: e.target.value } })
-                                    }} required >
+                                    }}  >
                                         <option value="" disabled selected>--Select--</option>
                                         {this.getDropDown(this.props.displayServiceMasterReducer)}
                                     </Input>
@@ -251,7 +255,7 @@ class vendorMaster extends Component {
                                     <Label> Rate Type 2</Label>
                                     <Input type="select" name="rateId2" value={this.state.rateId2.rateId} onChange={(e) => {
                                         this.setState({ rateId2: { rateId: e.target.value } })
-                                    }} required>
+                                    }}>
                                         <option value="" disabled selected>--Select--</option>
                                         {this.getRate(this.props.vendorMasterReducer)}
                                     </Input>
@@ -260,7 +264,7 @@ class vendorMaster extends Component {
                             <Col md={2}>
                                 <FormGroup>
                                     <Label> Rate 2</Label>
-                                    <Input type="text" placeholder="Rate" name="rate2" maxLength={4} value={this.state.rate2} onChange={this.handleChange} required />
+                                    <Input type="text" placeholder="Rate" name="rate2" maxLength={4} value={this.state.rate2} onChange={this.handleChange}/>
                                 </FormGroup>
                             </Col>
                         </Row>
@@ -271,7 +275,7 @@ class vendorMaster extends Component {
                                     <Label> Service Type 3</Label>
                                     <Input type="select" name="serviceId3" value={this.state.serviceId3.serviceId} onChange={(e) => {
                                         this.setState({ serviceId3: { serviceId: e.target.value } })
-                                    }} required >
+                                    }}>
                                         <option value="" disabled selected>--Select--</option>
                                         {this.getDropDown(this.props.displayServiceMasterReducer)}
                                     </Input>
@@ -282,7 +286,7 @@ class vendorMaster extends Component {
                                     <Label> Rate Type 3</Label>
                                     <Input type="select" name="rateId3" value={this.state.rateId3.rateId} onChange={(e) => {
                                         this.setState({ rateId3: { rateId: e.target.value } })
-                                    }} required>
+                                    }}>
                                         <option value="" disabled selected>--Select--</option>
                                         {this.getRate(this.props.vendorMasterReducer)}
                                     </Input>
@@ -291,26 +295,26 @@ class vendorMaster extends Component {
                             <Col md={2}>
                                 <FormGroup>
                                     <Label> Rate 3</Label>
-                                    <Input type="text" placeholder="Rate" name="rate3" maxLength={4} value={this.state.rate3} onChange={this.handleChange} required />
+                                    <Input type="text" placeholder="Rate" name="rate3" maxLength={4} value={this.state.rate3} onChange={this.handleChange}/>
                                 </FormGroup>
                             </Col>
                         </Row>
 
                         <FormGroup>
                             <Label>Upload Your Id</Label>
-                            <Input type="file" name="documentOne"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage} required  />
+                            <Input type="file" name="documentOne"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage}/>
 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Upload Another Id</Label>
-                            <Input type="file" name="documentTwo"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage2} required  />
+                            <Input type="file" name="documentTwo"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage2}/>
 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Upload Your Picture</Label>
-                            <Input type="file" name="profilePicture" accept="image/*" onChange={this.selectImages} required />
+                            <Input type="file" name="profilePicture" accept="image/*" onChange={this.selectImages} />
                         
                         </FormGroup>
 
@@ -339,7 +343,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ getServiceType, addVendorMaster, getRateType }, dispatch);
+    return bindActionCreators({ getServiceType, addVendorMaster, getRateType ,getVendorMaster}, dispatch);
 }
 
 

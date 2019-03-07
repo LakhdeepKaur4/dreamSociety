@@ -21,6 +21,8 @@ class DesignationMaster extends Component{
             menuVisible: false,
          }
     }
+
+
     
     onDesignationChange=(e)=> {
         this.setState({message:'' })
@@ -47,6 +49,7 @@ class DesignationMaster extends Component{
     handleSubmit=(e)=>{
         e.preventDefault();
         let errors={};
+        
 
         const isValid=Object.keys(errors).length === 0
 
@@ -75,6 +78,8 @@ class DesignationMaster extends Component{
     return this.props.history.replace('/superDashBoard')
     }
     render(){
+
+    
         let formData;
         formData =<div>
         <FormGroup>
@@ -83,6 +88,9 @@ class DesignationMaster extends Component{
         minLength={3} required/>
         <span className="error">{this.state.message}</span>          
         </FormGroup>
+
+       
+
         
         <Button color="success" className="mr-2">Submit</Button>
         <Button color="danger"  onClick={this.designationDetails} >Cancel</Button>
@@ -98,6 +106,7 @@ class DesignationMaster extends Component{
                    
                     {!this.state.loading ? formData: <Spinner />}
                 </Form>
+                
                 </UI>
             </div>
         )

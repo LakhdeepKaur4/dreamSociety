@@ -318,8 +318,6 @@ class SocietyManagementDetail extends Component {
     }
 
     fetchCountry({ countryResult }) {
-        
-        
         if (countryResult) {
             return (
                 countryResult.map((item) => {
@@ -436,10 +434,10 @@ class SocietyManagementDetail extends Component {
                     }/></th>
                     <th>#</th>
                     <th>Society Name</th>
-                    <th>Country Name</th>
-                    <th>State Name</th>
-                    <th>City Name</th>
-                    <th>Location Name</th>
+                    <th>Country</th>
+                    <th>State</th>
+                    <th>City</th>
+                    <th>Location</th>
                     <th>Society Address</th>
                     <th>Bank Name</th>
                     <th>Account Holder Name</th>
@@ -466,7 +464,7 @@ class SocietyManagementDetail extends Component {
    </div>
                 <div className="top-details">
                                 <h3>Society Details</h3>
-                                <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button>
+                                {/* <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button> */}
                             </div>
                             <div>
                               
