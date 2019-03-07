@@ -47,7 +47,7 @@ return {
 export function getOwnerList(){
     console.log('getflatOwnerlist')
     const request=axios.get(`${URN}/owner`,{ headers: authHeader()})
-    .then(response=>console.log(response.data))
+    .then(response=>response.data)
     return{
         type:GET_FLAT_OWNER,
         payload:request
