@@ -9,6 +9,7 @@ import {URN} from '../../actions/index';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
+import DefaultSelect from '../../constants/defaultSelect';
 
 class flatDetails extends Component{
         
@@ -27,6 +28,7 @@ class flatDetails extends Component{
             search:'',
             errors:{},
             loading:true,
+            message:''
 }
 
 
@@ -101,6 +103,9 @@ updateDetails(){
             this.setState({loading:true,
                 flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName,
                 editFlatModal: !this.state.editFlatModal
+    }).catch(err=>{
+        this.setState({message: err.response.data.message, loading: true})
+    
     })
 }
 }
@@ -136,7 +141,7 @@ toggleEditFlatModal(){
 
 getDropDown1=({flattype})=>{
     if(flattype){
-        return flattype.map((item)=>{
+        return flattype.flat.map((item)=>{
             return(
                 <option key={item.flatId} value={item.flatId}>
                     {item.flatType}
@@ -312,6 +317,7 @@ render(){
                             <Label for="flatNo">Flat No</Label>
                             <Input name="flatNo" value={this.state.flatNo} maxLength={6} onKeyPress={this.OnKeyPresshandlerPhone}  onChange={this.onHandleChange}/>
                             <span className="error">{this.state.errors.flatNo}</span>
+                            <span className="error">{this.state.message}</span>  
                         </FormGroup>
 
                         <FormGroup>
@@ -324,7 +330,7 @@ render(){
                                this.setState({flatId});
                             }}>
                                 <option>{this.state.flatType}</option>
-                                <option disabled>--SELECT--</option>
+                                <DefaultSelect/>
                                 {this.getDropDown1(this.props.flatDetailMasterReducer)}
                             </Input>                  
                         </FormGroup>
@@ -345,7 +351,7 @@ render(){
                                 this.setState({towerId});
                             }}>
                             <option>{this.state.towerName}</option>
-                            <option disabled>--SELECT--</option>
+                            <DefaultSelect/>
                             {this.getDropDown2(this.props.flatDetailMasterReducer)}
                            </Input>
                         </FormGroup>

@@ -100,8 +100,7 @@ class DisplayServices extends Component {
                 serviceId,serviceName, service_detail, serviceDetailId,
                 editServiceModal: !this.state.editServiceModal
        })
-        }          
-        console.log(serviceId,serviceName, service_detail, serviceDetailId)  
+        }         
     }
 
     editUser(serviceId, serviceName, service_detail, serviceDetailId) {
