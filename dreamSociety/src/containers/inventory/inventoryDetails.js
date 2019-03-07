@@ -168,12 +168,12 @@ class InventoryDetails extends Component {
                                 }
                             }} /></td>
 
-                        <td>{index + 1}</td>
-                        <td>{items.asset_master.assetName}</td>
-                        <td>{items.asset_type_master.assetType}</td>
-                        <td>{items.number}</td>
-                        <td>{items.rate}</td>
-                        <td>{items.serialNumber}</td>
+                        <td style={{textAlign:"center"}}>{index + 1}</td>
+                        <td style={{textAlign:"center"}}>{items.asset_master.assetName}</td>
+                        <td style={{textAlign:"center"}}>{items.asset_type_master.assetType}</td>
+                        <td style={{textAlign:"center"}}>{items.number}</td>
+                        <td style={{textAlign:"center"}}>{items.rate}</td>
+                        <td style={{textAlign:"center"}}>{items.serialNumber}</td>
                         <td>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.inventoryId, items.assetId, items.number, items.rate, items.assetTypeId, items.serialNumber)} >Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.inventoryId)} >Delete</button>
@@ -223,7 +223,7 @@ class InventoryDetails extends Component {
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
-                <th style={{alignContent:'baseline'}}>Select All<input
+                {/* <th style={{alignContent:'baseline'}}>Select All<input
                 type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
                             if (e.target.checked) {
                                 this.selectAll();
@@ -232,14 +232,15 @@ class InventoryDetails extends Component {
                                 this.unSelectAll();
                             }
                         }
-                        } /></th>
-                    <th>#</th>
-                    <th>Asset Type</th>
-                    <th>Asset Sub Type</th>
-                    <th>Number Of Inventory</th>
-                    <th>Rate Per Inventory</th>
-                    <th>Serial Number Of Inventory</th>
-                    <th>Actions</th>
+                        } /></th> */}
+                    <th style={{width:"4%"}}></th>
+                    <th style={{textAlign:"center",width:"4%"}}>#</th>
+                    <th style={{textAlign:"center"}}>Asset Type</th>
+                    <th style={{textAlign:"center"}}>Asset Sub Type</th>
+                    <th style={{width:"10%"}}>Number Of Inventory</th>
+                    <th style={{width:"10%"}}>Rate Per Inventory</th>
+                    <th style={{width:"10%"}}>Serial Number Of Inventory</th>
+                    <th style={{width:"15%",textAlign:"center"}}>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -263,6 +264,16 @@ class InventoryDetails extends Component {
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
                             {deleteSelectedButton}
+                                 <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if (e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if (!e.target.checked) {
+                                this.unSelectAll();
+                            }
+                        }
+                        } /></Label>
                             {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         <Modal isOpen={this.state.modal} toggle={this.toggles}>
