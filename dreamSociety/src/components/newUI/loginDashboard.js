@@ -69,7 +69,9 @@ class Demo extends Component {
                     </div>
                 </nav>
                   {/* <div className="wrapper" > */}
-                <div className="wrapper" >
+                <div className="wrapper" style={{'backgroundImage':`url('assets/society.jpg')`}}>
+                
+              
 
                     {/* <nav id="sidebar" className="bg-dark inactive">
                         <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/registration">Super Admin Register</Link></div></Menu.Item>
