@@ -36,15 +36,16 @@ class DesignationMaster extends Component{
     }
 }
 
-      
-  
-    OnKeyPressUserhandler(event) {
-        const pattern = /[a-zA-Z_ ]/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
+
+OnKeyPressUserhandler(event) {
+    const pattern = /^[a-zA-Z ]+$/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
     }
+}
+
+    
     
     handleSubmit=(e)=>{
         e.preventDefault();
@@ -82,9 +83,10 @@ class DesignationMaster extends Component{
     
         let formData;
         formData =<div>
+
         <FormGroup>
             <Label>Designation Name</Label>
-            <Input  type="text" name="designationName" value={this.state.designationName}  value={this.state.designationName} onChange={this.onDesignationChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Designation Name" maxLength={50}
+            <Input  type="text" name="designationName"    onChange={this.onDesignationChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Designation Name" maxLength={50}
         minLength={3} required/>
         <span className="error">{this.state.message}</span>          
         </FormGroup>

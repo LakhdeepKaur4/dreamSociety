@@ -275,7 +275,7 @@ class MemberEventsDetail extends Component {
                     </div>
                         <div className="top-details">
                             <h3>Society Member Event Name</h3>
-                            <Button onClick={this.routeToAddNewMemberEvent} color="primary">Add EventName</Button>
+                            <Button onClick={this.routeToAddNewMemberEvent} color="primary">Add Event</Button>
                         </div>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />

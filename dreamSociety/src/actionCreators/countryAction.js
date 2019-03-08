@@ -58,7 +58,7 @@ export function updateCountry(countryId,countryName,code,currency,phoneCode){
 
 export function deleteCountry(countryId,isActive){
     console.log(countryId,isActive);
-    const request=axios.put(`${URN}/country/` + countryId, {countryId,isActive}, {headers:authHeader()})
+    const request=axios.put(`${URN}/country/delete/` + countryId, {isActive}, {headers:authHeader()})
     .then(response => response.data)
     .then(getCountry());
     

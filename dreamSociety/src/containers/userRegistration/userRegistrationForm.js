@@ -53,13 +53,15 @@ const userRegistrationForm = (props) => (
                 <Input name={props.emailInputName}
                     type="email"
                     placeholder="Email"
-                    value={props.emailValue}
                     onChange={props.emailChange}
+                    onKeyPress={props.emailKeyPress}
                     maxLength='40'
                     minLength='10'
                     onKeyPress={props.emailKeyPress}  />
                 <span className='error'>{props.emailError}</span>
                 <span className="error">{props.emailServerValidationError}</span>
+                <span className="error">{props.InValidEmailFormatError}</span>
+                
             </FormGroup>
             <FormGroup>
                 <Label>No. of Family Members</Label>
@@ -118,6 +120,7 @@ const userRegistrationForm = (props) => (
                     maxLength='10'
                     minLength='10' />
                 <span className='error'>{props.contactError}</span>
+                <span className='error'>{props.contactServerValidationError}</span>
             </FormGroup>
             <FormGroup>
                 <Label>Password</Label>

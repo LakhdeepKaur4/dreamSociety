@@ -122,7 +122,7 @@ export function deleteSelectedFlatMasterDetail(ids){
 }
 
 export function getTotalItems(){
-    console.log("action call")
+    console.log("action callx")
 
     const request = axios.get(`${URN}/flat`, {headers: authHeader()})
     .catch(err => err)

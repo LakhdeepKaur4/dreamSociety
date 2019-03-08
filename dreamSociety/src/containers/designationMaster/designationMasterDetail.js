@@ -103,17 +103,11 @@ class DesignationMasterDetail extends Component {
     deleteDesignationName = (designationId) => {
         let { isActive } = this.state.editDesignationData
         this.setState({ loading: true })
-
-        if (window.confirm('Are You Sure ?')) {
-            this.props.deleteDesignation(designationId, isActive)
-                .then(() => this.refreshData())
-            this.setState({ editDesignationData: { isActive: false } })
-        }
-        else {
-            this.refreshData()
-            this.setState({ editDesignationData: { isActive: false } })
-        }
-    }
+        this.props.deleteDesignation(designationId, isActive)
+            .then(() => this.refreshData())
+        this.setState({editDesignationData: { isActive: false } })
+       
+      }
 
 
 
@@ -132,17 +126,15 @@ class DesignationMasterDetail extends Component {
     deleteSelected(ids) {
         this.setState({ loading: true, isDisabled: true });
 
-        if (window.confirm('Are You Sure ?')) {
-            this.props.deleteSelectDesignation(ids)
-                .then(() => this.refreshData())
-                .catch(err => err.response.data.message);
-        }
-        else {
-            this.refreshData()
-        }
+        
+        this.props.deleteSelectDesignation(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+      
     }
 
-    selectAll = () => {
+    selectAll = () => {                                                                                                                                                                                                                                                                                                         
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar = [];
         for (var i = 0; i < selectMultiple.length; i++) {
@@ -181,19 +173,15 @@ class DesignationMasterDetail extends Component {
                 console.log(item)
 
                 return (
-                    <tr key={item.designationId}>
-                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.designationId}
-                            onChange={(e) => {
-                                const { designationId } = item
-                                if (!e.target.checked) {
-                                    document.getElementById('allSelect').checked = false;
-                                    let indexOfId = this.state.ids.indexOf(designationId);
-                                    if (indexOfId > -1) {
-                                        this.state.ids.splice(indexOfId, 1);
-                                    }
-                                    if (this.state.ids.length === 0) {
-                                        this.setState({ isDisabled: true });
-                                    }
+                    <tr key={item.designationId} >
+                      <td><input type="checkbox" name="ids" className="SelectAll" value={item.designationId}
+                         onChange={(e) => {
+                            const {designationId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(designationId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1);
                                 }
                                 else {
 
@@ -203,9 +191,10 @@ class DesignationMasterDetail extends Component {
                                         this.setState({ isDisabled: false })
                                     }
                                 }
-
-                            }} /></td>
-                        <td>{index + 1}</td>
+                            }
+                                
+                             }}/></td>
+                        <td >{index+1}</td>
                         <td>{item.designationName}</td>
                         <td>
                             <Button color="success mr-2" onClick={this.toggle.bind(this, item.designationId, item.designationName)} >Edit</Button>
@@ -247,44 +236,22 @@ class DesignationMasterDetail extends Component {
     }
 
     render() {
-        console.log(this.props.DesignationMasterReducer)
-        // console.log(this.state.CopyData)
 
-        // var nonSortedArray = ['hi', 'yo', 'whatup', 'bye', 'lol'];
-        // var sortedArray = nonSortedArray.sort(function (a, b) {
-        //       if (a < b) return -1;
-        //       else if (a > b) return 1;
-        //       return 0;
-        //     });
-        // console.log(sortedArray);
+   
 
         let tableData;
         tableData = <div style={{ backgroundColor: 'lightgray' }}>
             <Table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Select All<input className="ml-2"
-                            id="allSelect"
-                            type="checkbox" onChange={(e) => {
-                                if (e.target.checked) {
-                                    this.selectAll();
-                                }
-                                else if (!e.target.checked) {
-                                    this.unSelectAll();
-                                }
-                            }
-                            } /></th>
+                        <th style={{width: "4%"}}></th>
                         <th>#</th>
-                        <th onClick={() => {
-                            this.setState((state) => {
-                                return {
-                                    sortVal: !state.sortVal,
-                                    filterName: 'designationName'
-                                }
-                            });
-                        }}>Designation Position
-                         <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-
+                        <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'designationName'}});
+                        }}>Designation Position 
+                         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                       
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -308,9 +275,19 @@ class DesignationMasterDetail extends Component {
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
 
-                        <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-                            onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
-
+<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+                           <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></Label>
                         {!this.state.loading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>

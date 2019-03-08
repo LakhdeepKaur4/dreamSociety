@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Input } from 'reactstrap';
+import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, Label,Input } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -20,6 +20,8 @@ class flatMasterDetails extends Component {
             countryName:'',
             stateName:'',
             coverArea:'',
+            message:'',
+            isDisabled:true,
             loading:true,
             isActive:false,
             editUserModal: false,
@@ -67,7 +69,12 @@ class flatMasterDetails extends Component {
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
          
-         this.props.updateDetails(stateId,countryId,countryName,stateName).then(() => this.refreshData());
+         this.props.updateDetails(stateId,countryId,countryName,stateName).then(() => this.refreshData())
+         .catch((err)=>{console.log(err.response.data.message)
+            this.setState({loading:false, message:err.response.data.message})});;
+            if(this.state.message === ''){
+                this.setState({editUserModal: false})
+            }
          this.setState({
 
             editUserModal:false ,loading:true,stateId:'',countryId:'',stateName:''
@@ -143,7 +150,7 @@ class flatMasterDetails extends Component {
         console.log(country3)
         if(country3){
           
-            return country3.filter(this.searchFilter(this.state.search)).map((item) => {
+            return country3.filter(this.searchFilter(this.state.search)).map((item,index) => {
                 let countryName= item.country_master.countryName;
                 
                 return (
@@ -170,6 +177,7 @@ class flatMasterDetails extends Component {
                             
                                 
                              }}/></td>
+                             <td>{index+1}</td>
                         <td>{countryName}</td>
                         <td>{item.stateName}</td>
                         
@@ -229,7 +237,7 @@ class flatMasterDetails extends Component {
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar =[];
             for(var i = 0; i < selectMultiple.length; i++){
-                    ar.push(parseInt(selectMultiple[i].value));
+                    ar.push(parseInt(selectMultiple[i].value,10));
                     selectMultiple[i].checked = true;
             }
             this.setState({ids: ar});
@@ -261,17 +269,8 @@ class flatMasterDetails extends Component {
         
         <thead>
             <tr>
-            <th style={{alignContent:'baseline'}}>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                    if(e.target.checked) {
-                        this.selectAll();
-                    }
-                    else if(!e.target.checked){
-                        this.unSelectAll();
-                    } 
-                }
-                    
-                }  /></th>
+                <th> </th>
+                <th>#</th>
                 <th>Country Name</th>
                 <th>State Name</th>
                 <th>Actions</th>
@@ -308,9 +307,11 @@ class flatMasterDetails extends Component {
                                     <Label for="roles">CountryName</Label>
                                     <Input type="select"
                                     name="countryId"
-                                    value={this.state.countryId} onChange={this.onCountryChange}>
-                                        <option>{this.state.countryName}</option>
+                                    value={this.state.countryId}
+                                     onChange={this.onCountryChange}>
+                                        {/* <option>{this.state.countryName}</option> */}
                                         <option disabled>Select</option>
+
                                         {this.fetchDrop(this.props.countryDetails)}/>
                                         </Input>
                                         {/* <span  className='error'>{this.state.errors.countryId}</span> */}
@@ -326,6 +327,7 @@ class flatMasterDetails extends Component {
                                         maxLength='50'
                                         onKeyPress={this.onStateChange} />
                                         <span  className='error'>{this.state.errors.stateName}</span>
+                                        <span className='error'>{this.state.message}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Button color="primary" className="mr-2" onClick={this.updateBook} >Save</Button>
@@ -343,6 +345,17 @@ class flatMasterDetails extends Component {
                          onChange={this.searchOnChange} 
                         />
                         {deleteSelectedButton}
+                        <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:'10px',fontWeight:'700'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                    if(e.target.checked) {
+                        this.selectAll();
+                    }
+                    else if(!e.target.checked){
+                        this.unSelectAll();
+                    } 
+                }
+                    
+                }  /></Label>
                             {!this.state.loading ? tableData : <Spinner />}
                        
                     </div>

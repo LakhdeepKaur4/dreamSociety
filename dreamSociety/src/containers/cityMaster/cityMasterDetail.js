@@ -196,16 +196,16 @@ class CityMasterDetail extends Component {
 
     }
 
-
+    // return city && city.length ? city.filter(this.searchFilter(this.state.search)).map((item, index) => {
 
 
     renderCity = ({ city }) => {
 
         if (city) {
             return city.filter(this.searchFilter(this.state.search)).map((item, index) => {
-
+                
                 return (
-                    <tr key={item.cityId}>
+                    <tr key={item.cityId}  >
                         <td><input type="checkbox" className="SelectAll" name="ids" value={item.cityId}
                             onChange={(e, i) => {
                                 const { cityId } = item
@@ -229,11 +229,11 @@ class CityMasterDetail extends Component {
 
                             }} /></td>
                         <td>{index + 1}</td>
-                        <td>{item.country_master.countryName}</td>
-                        <td>{item.state_master.stateName}</td>
+                        <td>{item.country_master?item.country_master.countryName:''}</td>
+                        <td>{item.state_master?item.state_master.stateName:''}</td>
                         <td>{item.cityName}</td>
                         <td>
-                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.cityId, item.country_master.countryName, item.state_master.stateName, item.cityName)} >Edit</Button>
+                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.cityId, item.country_master?item.country_master.countryName:'', item.state_master?item.state_master.stateName:'', item.cityName)} >Edit</Button>
 
                             <Button color="danger" onClick={this.deleteCityName.bind(this, item.cityId)} >Delete</Button>
 
@@ -241,6 +241,7 @@ class CityMasterDetail extends Component {
                     </tr>
 
                 )
+                        
             })
         }
     }
@@ -308,18 +309,8 @@ class CityMasterDetail extends Component {
         tableData = <div style={{ backgroundColor: 'lightgray' }}>
             <Table className="table table-bordered">
                 <thead>
-                    <tr>
-                        <th>Select All<input className="ml-2"
-                            id="allSelect"
-                            type="checkbox" onChange={(e) => {
-                                if (e.target.checked) {
-                                    this.selectAll();
-                                }
-                                else if (!e.target.checked) {
-                                    this.unSelectAll();
-                                }
-                            }
-                            } /></th>
+                    <tr  >
+                        <th style={{width:'4%'}}></th>
                         <th>#</th>
                         <th>Country Name</th>
                         <th>State Name</th>
@@ -347,6 +338,17 @@ class CityMasterDetail extends Component {
                             onChange={this.searchOnChange} />
 
                         <Button color="danger" className="mb-3" onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled} >Delete Selected</Button>
+                        <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></Label>
 
                         {!this.state.loading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>

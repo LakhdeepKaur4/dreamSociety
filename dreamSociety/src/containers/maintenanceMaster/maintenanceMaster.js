@@ -91,7 +91,7 @@ class MaintenanceMaster extends Component {
         formData =<div>
       <FormGroup>
             <Label>Maintenance Category</Label>
-            <Input  type="text" name="category" value={this.state.category}   onChange={this.onMaintenanceChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Maintenance Category" maxLength={50}
+            <Input  type="text" name="category" value={this.state.category}  onChange={this.onMaintenanceChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Maintenance Category" maxLength={50}
         minLength={3} required/>
           <span className="error">{this.state.message}</span>
                      

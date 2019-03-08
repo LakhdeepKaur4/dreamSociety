@@ -9,7 +9,6 @@ const editUserModal = (props) => (
             <FormGroup>
                 <Label>Role</Label>
                 <Input type="select" name={props.roleInputName}  id="roleName" value={props.roleNameValue} onChange={props.roleNameChange} >
-                    <option value={props.selectedRoleNameValue}>{props.selectedRoleName}</option>
                     <DefaultSelect />
                     {props.fetchRoles}
                 </Input>
@@ -45,16 +44,17 @@ const editUserModal = (props) => (
                 <Input type="email" name="email" id="email"
                  maxLength='40'
                  minLength='6'
+                 value={props.emailValue}
                  onKeyPress={props.emailKeyPress}
-                 name={props.emailInputName} value={props.emailValue} onChange={props.emailValueChange}/>
+                 name={props.emailInputName} onChange={props.emailValueChange} />
                 {!props.emailValue ? <span className="error">{props.emailError}</span> : null}
+                {<span className="error">{props.inValidEmailFormatError}</span>}
             </FormGroup>
             <FormGroup>
                 <Label>Tower Name</Label>
                 <Input name={props.towerInputName}
                     type="select"
-                    onChange={props.towerChange} >
-                    <option>{props.towerValue}</option>
+                    onChange={props.towerChange} defaultValue={props.towerValue} >
                     <DefaultSelect />
                     {props.fetchingTower}
                 </Input>
