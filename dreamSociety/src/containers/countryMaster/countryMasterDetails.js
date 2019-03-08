@@ -53,10 +53,10 @@ class CountryDetails extends Component{
     editCountry(countryId,countryName,code,currency,phoneCode) {
         this.setState({
             countryId,countryName,code,currency,phoneCode, editUserModal: ! this.state.editUserModal
-        })    
+        })
     }
 
-    
+
     searchFilter(search) {
         return function (x) {
             return x.countryName.toLowerCase().includes(search.toLowerCase()) ||
@@ -72,21 +72,21 @@ class CountryDetails extends Component{
 
 
     updateBook=(e)=> {
-        
+
         e.preventDefault();
         let { countryId, countryName, code, currency,phoneCode} = this.state
 
         let errors = {};
-        
+
         if (countryName === '') errors.countryName = "Cant be empty";
-       
+
         if (code === '') errors.code = "Cant be empty";
 
         if (currency === '') errors.currency = "Cant be empty";
 
-       
+
         if (phoneCode === '') errors.phoneCode = "Cant be empty";
-        
+
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
@@ -104,7 +104,7 @@ class CountryDetails extends Component{
            modalLoading: true
        })
     }
-   
+
    }
     onChange=(e)=>{
         this.setState({message: ''})
@@ -126,7 +126,7 @@ class CountryDetails extends Component{
         let { isActive } = this.state
         this.props.deleteCountry(countryId, isActive).then(() => this.refreshData())
         .then(() => this.setState({isActive: false}))
-    
+
 }
 
    getCountryDetails({country1}){
@@ -159,8 +159,8 @@ class CountryDetails extends Component{
                                     this.setState({isDisabled: false})
                                 }
                             }
-                            
-                                
+
+
                              }}/>
                              </td>
                         <td>{index+1}</td>
@@ -168,9 +168,9 @@ class CountryDetails extends Component{
                         <td>{item.code}</td>
                         <td>{item.currency}</td>
                         <td>{item.phoneCode}</td>
-                        
+
                         <td>
-                            <Button color="success" size="sm" className="mr-2"onClick={this.editCountry.bind(this, item.countryId,item.countryName, 
+                            <Button color="success" size="sm" className="mr-2"onClick={this.editCountry.bind(this, item.countryId,item.countryName,
                             item.code, item.currency,item.phoneCode)}>Edit</Button>
                             <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, item.countryId)} >Delete</Button>
                         </td>
@@ -190,9 +190,9 @@ class CountryDetails extends Component{
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
-        return this.props.history.replace('/') 
+        return this.props.history.replace('/')
     }
-  
+
 
     onKeyPressHandler=(event)=> {
         const pattern = /^[a-zA-Z. ]+$/;
@@ -215,7 +215,7 @@ class CountryDetails extends Component{
         if (!pattern.test(inputChar)) {
             event.preventDefault();
         }
-    }   
+    }
     // onKeyPressCode=(event)=>{
     //     const pattern = /^[A-Z ]+$/;
     //     let inputChar = String.fromCharCode(event.charCode);
@@ -232,7 +232,7 @@ class CountryDetails extends Component{
     }
 
 
-    
+
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar =[];
@@ -247,18 +247,18 @@ class CountryDetails extends Component{
     }
 
     unSelectAll = () =>{
-        
+
         let unSelectMultiple = document.getElementsByClassName('SelectAll');
         let allIds = [];
         for(var i = 0; i < unSelectMultiple.length; i++){
                 unSelectMultiple[i].checked = false
         }
-        
+
         this.setState({ids: [ ...allIds]});
         if(allIds.length === 0){
             this.setState({isDisabled: true});
         }
-        
+
     }
     onChangeCountry=(e)=>{
        this.setState({code:e.target.value.toUpperCase()})
@@ -268,7 +268,7 @@ class CountryDetails extends Component{
 
     render(){
          let tableData;
-         
+
           tableData= <Table className="table table-bordered">
         <thead>
             <tr>
@@ -284,7 +284,7 @@ class CountryDetails extends Component{
                 <th>Currency</th>
                 <th>Phone Code</th>
                 <th>Action</th>
-                
+
 
 
             </tr>
@@ -373,7 +373,7 @@ class CountryDetails extends Component{
                             <ModalBody>
                                 {!this.state.modalLoading  ? modalData : <Spinner />}
                             </ModalBody>
-                           
+
                         </Modal>
                         <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
@@ -385,15 +385,15 @@ class CountryDetails extends Component{
                                                               }
                     else if(!e.target.checked){
                         this.unSelectAll();
-                    } 
+                    }
                 }
-                    
+
                 }  /></Label>
                             {(this.state.loading) ? <Spinner /> : tableData}
                        
                     </div>
                 </UI>
-            
+
             </div>
         )
     }

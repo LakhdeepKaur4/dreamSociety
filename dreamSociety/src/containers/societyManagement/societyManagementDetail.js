@@ -42,6 +42,7 @@ class SocietyManagementDetail extends Component {
             errors:{},
             ids:[],
             isDisabled: true,
+            emailValidError:''
             
 
         };
@@ -58,6 +59,17 @@ class SocietyManagementDetail extends Component {
     }
 
     
+    emailChange = (e) => {
+        console.log(this.state.email)
+        this.setState({email:e.target.value})
+        if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
+            this.setState({[e.target.name]:e.target.value});
+            console.log(this.state.email)
+            this.setState({emailValidError: ''})
+        }
+        else{ this.setState({emailValidError: 'Invalid Email.'})}
+        
+    }
 
   
 
@@ -172,7 +184,7 @@ class SocietyManagementDetail extends Component {
 
         const isValid= Object.keys(errors).length === 0
 
-        if(isValid){
+        if(isValid && this.state.emailValidError===''){
             this.setState({loading:true})
         this.props.updateSociety(societyId, countryId, stateId, cityId, locationId, societyName,  societyAddress, bankName, accountHolderName, accountNumber,IFSCCode, email, contactNumber, registrationNumber,totalBoardMembers)
             .then(() => this.refreshData())
@@ -189,28 +201,22 @@ class SocietyManagementDetail extends Component {
             loading: true
         })
 
-        if(window.confirm('Are You Sure ?')){
+        
         this.props.deleteSociety(societyId, isActive)
             .then(() => this.refreshData())
             this.setState({editSocietyData:{isActive:false}})
-        }
-        else{
-            this.refreshData()
-            this.setState({editSocietyData:{isActive:false}})
-        }
+    
+        
     }
 
     deleteSelected=(ids)=>{
         console.log(ids)
         this.setState({loading:true, isDisabled:true});
-        if(window.confirm('Are You Sure ?')){
+        
         this.props.deleteSelectSociety(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
-        }
-        else{
-            this.refreshData()
-        }
+        
     }
 
     selectAll = () => {
@@ -575,8 +581,10 @@ class SocietyManagementDetail extends Component {
 
                         <FormGroup>
                             <Label>Email Id</Label>
-                            <Input type="email"  name="email" onChange={this.onChangeHandler} value={this.state.email}   maxLength={50}/>
-                            <span className="error">{this.state.errors.email}</span> 
+                            <Input type="email"  name="email" onChange={this.onChangeHandler} onKeyPress={this.emailChange} value={this.state.email}   maxLength={50}/>
+                            <span className="error">{this.state.errors.email}</span>
+                            <span className="error">{this.state.emailValidError}</span>
+                             
                         </FormGroup>
 
                         <FormGroup>
@@ -596,7 +604,6 @@ class SocietyManagementDetail extends Component {
                             <span className="error">{this.state.errors.totalBoardMembers}</span> 
                         </FormGroup>
                         <Button color="primary mr-2" onClick={this.editSocietyType}>Save</Button> 
-
                         <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
                     </ModalBody>
                 </Modal>
