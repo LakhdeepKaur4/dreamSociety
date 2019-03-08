@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {addMaintenance} from './../../actionCreators/maintenanceMasterAction';
+import {addSocietyMemberEvents} from '../../actionCreators/societyMemberEventAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 
 
 
-class MaintenanceMaster extends Component {
+class SocietyMemberEvent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            maintenanceId:'',
-            category:'',
+            societyMemberEventId:'',
+            societyMemberEventName:'',
             errors: {},
             message:'',
            
@@ -25,7 +25,7 @@ class MaintenanceMaster extends Component {
 
     }
 
-    onMaintenanceChange=(e)=> {
+    onMemberEventChange=(e)=> {
             this.setState({
                 message:''
             })
@@ -61,8 +61,8 @@ class MaintenanceMaster extends Component {
         if (isValid) {
         this.setState({loading:true})
 
-        this.props.addMaintenance(this.state)
-        .then(()=>this.props.history.push('/superDashboard/maintenanceMasterDetail'))
+        this.props.addSocietyMemberEvents(this.state)
+        .then(()=>this.props.history.push('/superDashboard/memberEventsDetail'))
         .catch(err => {
             this.setState({message: err.response.data.message, loading: false})
         })
@@ -77,8 +77,8 @@ class MaintenanceMaster extends Component {
                 return this.props.history.replace('/') 
             }
 
-    maintenanceDetails=()=>{
-        this.props.history.push('/superDashboard/maintenanceMasterDetail');
+    memberEventDetails=()=>{
+        this.props.history.push('/superDashboard/memberEventsDetail');
     }
 
     close=()=>{
@@ -90,15 +90,15 @@ class MaintenanceMaster extends Component {
         
         formData =<div>
       <FormGroup>
-            <Label>Maintenance Category</Label>
-            <Input  type="text" name="category" value={this.state.category}  onChange={this.onMaintenanceChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Maintenance Category" maxLength={50}
+            <Label>Member Event Type</Label>
+            <Input  type="text" name="societyMemberEventName" value={this.state.societyMemberEventName}   onChange={this.onMemberEventChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Member Event Type" maxLength={50}
         minLength={3} required/>
           <span className="error">{this.state.message}</span>
                      
         </FormGroup>
          
         <Button color="success" className="mr-2">Submit</Button>
-        <Button color="danger" onClick={this.maintenanceDetails}>Cancel</Button>
+        <Button color="danger" onClick={this.memberEventDetails}>Cancel</Button>
         </div>
 
        
@@ -109,7 +109,7 @@ class MaintenanceMaster extends Component {
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
         <span aria-hidden="true">&times;</span>
    </div>
-                    <h3 style={{textAlign:'center', marginBottom: '10px'}}>Maintenance Master</h3>
+                    <h3 style={{textAlign:'center', marginBottom: '10px'}}>Society Member Events</h3>
                    
                     {!this.state.loading ? formData: <Spinner />}
                 </Form>
@@ -121,16 +121,16 @@ class MaintenanceMaster extends Component {
 }
 
 function mapStateToProps(state) {
-
+    console.log("========", state)
     return {
-        MaintenanceMasterReducer: state.MaintenanceMasterReducer
+        societyMemberEventReducer: state.societyMemberEventReducer
     }
 
 
 
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ addMaintenance }, dispatch);
+    return bindActionCreators({addSocietyMemberEvents }, dispatch);
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(MaintenanceMaster));
+export default (connect(mapStateToProps, mapDispatchToProps)(SocietyMemberEvent));

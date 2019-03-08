@@ -33,6 +33,7 @@ class userDetails extends Component {
                 editUserModal: false,
                 loading:true,
                 dropdownOpen: false,
+                emailValidError:'',
                 search:''
         }
         this.OnKeyPresshandlerPhone = this.OnKeyPresshandlerPhone.bind(this);
@@ -117,7 +118,7 @@ class userDetails extends Component {
             if (contact === '') errors.contact = "Can't be empty.";
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0;
-            if (isValid) {
+            if (isValid && this.state.emailValidError==='') {
                 this.props.updateUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerName,floor,parking, contact,towerId)
                 .then(() => {
                     this.refreshData()
@@ -129,10 +130,11 @@ class userDetails extends Component {
             }
     }
 
-    editUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerName, floor,parking, contact, towerId) {
+    editUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerId, floor,parking, contact, towerName) {
         this.setState({
-             userId, roleName, firstName, lastName, userName, email,familyMember,towerName, floor,parking, contact , towerId, editUserModal: !this.state.editUserModal
+             userId, roleName, firstName, lastName, userName, email,familyMember,towerId, floor,parking, contact , towerName, editUserModal: !this.state.editUserModal
         });
+        console.log(towerName);
     }
 
     deleteUser(userId) {
@@ -155,8 +157,7 @@ class userDetails extends Component {
         return function(x){
             if(x){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return x.tower_master.towerName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                 x.familyMember.toString().indexOf(search)  !== -1 ||
+                return x.familyMember.toString().indexOf(search)  !== -1 ||
                  x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                  x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
@@ -188,7 +189,7 @@ class userDetails extends Component {
     fetchUsers({ user }) {
         if(user) {
             let currentRole;
-            return user.filter(this.searchFilter(this.state.search)).map((item, index) => {
+            return user.map((item, index) => {
                 let currentTower = item.tower_master.towerName;
                 let currentTowerId = item.towerId
                 return (
@@ -246,9 +247,11 @@ class userDetails extends Component {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({ [e.target.name]: e.target.value, errors });
+            console.log(this.state);
         }
         else {
             this.setState({ [e.target.name]: e.target.value });
+            console.log(this.state);
         }
     }
 
@@ -312,6 +315,18 @@ class userDetails extends Component {
         if(allIds.length === 0){
             this.setState({isDisabled: true});
         }
+        
+    }
+
+    emailChange = (e) => {
+        console.log(this.state.email)
+        this.setState({email:e.target.value})
+        if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
+            this.setState({[e.target.name]:e.target.value});
+            console.log(this.state.email)
+            this.setState({emailValidError: ''})
+        }
+        else{ this.setState({emailValidError: 'Invalid Email.'})}
         
     }
 
@@ -394,7 +409,7 @@ class userDetails extends Component {
                                 emailValue = {this.state.email}
                                 emailError = {this.state.errors.email}
                                 emailKeyPress={this.emailValid}
-                                emailValueChange = {this.onChange}
+                                emailValueChange = {this.emailChange}
                                 familyInputName="familyMember"
                                 familyValue={this.state.familyMember}
                                 familyChange={this.onChange}
@@ -418,6 +433,7 @@ class userDetails extends Component {
                                 contactValidation = {this.OnKeyPresshandlerPhone}
                                 contactValueChange = {this.onChange}
                                 updateUserClick={this.updateUser}
+                                inValidEmailFormatError={this.state.emailValidError}
                                  />
 
                             <SearchFilter type="text" value={this.state.search}

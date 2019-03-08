@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { getMaintenance, deleteMaintenance, updateMaintenance,deleteSelectMaintenance } from './../../actionCreators/maintenanceMasterAction';
+import { getMemberEvent, deleteMemberEvent, updateMemberEvent,deleteSelectMemberEvent } from '../../actionCreators/societyMemberEventAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -8,13 +8,13 @@ import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label }
 import Spinner from '../../components/spinner/spinner';
 
 
-class MaintenanceMasterDetail extends Component {
+class MemberEventsDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            editMaintenanceData: {
-                category: '',
-                maintenanceId: '',
+            editMemberEventData: {
+                societyMemberEventName: '',
+                societyMemberEventId: '',
                 
                 isActive: false,
 
@@ -42,11 +42,11 @@ class MaintenanceMasterDetail extends Component {
     }
 
 
-    toggle = (maintenanceId,category) => {
+    toggle = (societyMemberEventId,societyMemberEventName) => {
 
         this.setState({
-            maintenanceId,
-            category,
+            societyMemberEventId,
+            societyMemberEventName,
            
             modal: !this.state.modal
         })
@@ -66,18 +66,18 @@ class MaintenanceMasterDetail extends Component {
     }
 
     refreshData() {
-        this.props.getMaintenance().then(() => this.setState({ loading: false }))
+        this.props.getMemberEvent().then(() => this.setState({ loading: false }))
        
     }
 
 
-    editcategory = () => {
+    editsocietyMemberEventName = () => {
        
-        const { maintenanceId, category } = this.state
+        const { societyMemberEventId, societyMemberEventName } = this.state
         
         let errors = {};
-        if(this.state.category===''){
-            errors.category="category can't be empty"
+        if(this.state.societyMemberEventName===''){
+            errors.societyMemberEventName="societyMemberEventName can't be empty"
         }
         this.setState({errors});
         const isValid = Object.keys(errors).length === 0
@@ -86,27 +86,27 @@ class MaintenanceMasterDetail extends Component {
             this.setState({
                 loading: true
             })
-        this.props.updateMaintenance(maintenanceId, category)
+        this.props.updateMemberEvent(societyMemberEventId, societyMemberEventName)
             .then(() => this.refreshData())
         this.setState({
-            editMaintenanceData: { maintenanceId, category },
+            editMemberEventData: { societyMemberEventId, societyMemberEventName },
             modal: !this.state.modal
         })
     }
     }
 
-      deleteMaintenanceName = (maintenanceId) => {
-        let { isActive } = this.state.editMaintenanceData
+      deleteMemberEventName = (societyMemberEventId) => {
+        let { isActive } = this.state.editMemberEventData
 
         if(window.confirm('Are You Sure ?')){
         this.setState({ loading: true })
-        this.props.deleteMaintenance(maintenanceId, isActive)
+        this.props.deleteMemberEvent(societyMemberEventId, isActive)
             .then(() => this.refreshData())
-        this.setState({editMaintenanceData: { isActive: false } })
+        this.setState({editMemberEventData: { isActive: false } })
         }
         else{
             this.refreshData()
-            this.setState({editMaintenanceData: { isActive: false } })
+            this.setState({editMemberEventData: { isActive: false } })
         }
       }
 
@@ -119,7 +119,7 @@ class MaintenanceMasterDetail extends Component {
     searchFilter = (search) => {
         return function (x) {
          
-            return x.category.toLowerCase().includes(search.toLowerCase())
+            return x.societyMemberEventName.toLowerCase().includes(search.toLowerCase())
                 || !search;
         }
     }
@@ -129,7 +129,7 @@ class MaintenanceMasterDetail extends Component {
 
         
         if(window.confirm('Are You Sure ?')){
-        this.props.deleteSelectMaintenance(ids)
+        this.props.deleteSelectMemberEvent(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
         }
@@ -169,19 +169,19 @@ class MaintenanceMasterDetail extends Component {
    
 
 
-    renderMaintenance = ({ maintenanceResult }) => {
-       
-        if (maintenanceResult) {
-            return maintenanceResult.maintenance.filter(this.searchFilter(this.state.search)).map((item, index) => {
+    renderMemberEvent = ({ memberEventsResult }) => {
+       console.log("sdhshsh", memberEventsResult);
+        if (memberEventsResult) {
+            return memberEventsResult.event.filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                 return (
-                    <tr key={item.maintenanceId}>
-                     <td><input type="checkbox" name="ids" className="SelectAll" value={item.maintenanceId}
+                    <tr key={item.societyMemberEventId}>
+                     <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyMemberEventId}
                          onChange={(e) => {
-                            const {maintenanceId} = item
+                            const {societyMemberEventId} = item
                             if(!e.target.checked){
                                 document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(maintenanceId);
+                                let indexOfId = this.state.ids.indexOf(societyMemberEventId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1);
                                 }
@@ -191,7 +191,7 @@ class MaintenanceMasterDetail extends Component {
                             }
                             else {
                       
-                                this.setState({ids: [...this.state.ids, maintenanceId]});
+                                this.setState({ids: [...this.state.ids, societyMemberEventId]});
                                 
                                 if(this.state.ids.length >= 0){
                                     this.setState({isDisabled: false})
@@ -201,10 +201,10 @@ class MaintenanceMasterDetail extends Component {
                              }}/></td>
                       
                         <td>{index+1}</td>
-                        <td>{item.category}</td>
+                        <td>{item.societyMemberEventName}</td>
                         <td> 
-                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.maintenanceId, item.category)} >Edit</Button>
-                            <Button color="danger" onClick={this.deleteMaintenanceName.bind(this, item.maintenanceId)} >Delete</Button>
+                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.societyMemberEventId, item.societyMemberEventName)} >Edit</Button>
+                            <Button color="danger" onClick={this.deleteMemberEventName.bind(this, item.societyMemberEventId)} >Delete</Button>
 
                         </td>
                     </tr>
@@ -222,8 +222,8 @@ class MaintenanceMasterDetail extends Component {
         return this.props.history.replace('/')
     }
 
-    routeToAddNewMaintence = () => {
-        this.props.history.push('/superDashboard/maintenanceMaster')
+    routeToAddNewMemberEvent = () => {
+        this.props.history.push('/superDashboard/societyMemberEvents')
     }
 
 
@@ -245,14 +245,24 @@ class MaintenanceMasterDetail extends Component {
             <Table className="table table-bordered">
                 <thead>
                     <tr>
-                   
+                    <th>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></th>
                         <th>#</th>
-                        <th>Maintenance Category</th>
+                        <th>Events Name</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {this.renderMaintenance(this.props.MaintenanceMasterReducer)}
+                    {this.renderMemberEvent(this.props.societyMemberEventReducer)}
                 </tbody>
             </Table></div>
         return (
@@ -264,38 +274,27 @@ class MaintenanceMasterDetail extends Component {
                             <span aria-hidden="true">&times;</span>
                     </div>
                         <div className="top-details">
-                            <h3>Maintenance Category</h3>
-                            <Button onClick={this.routeToAddNewMaintence} color="primary">Add Category</Button>
+                            <h3>Society Member Event Name</h3>
+                            <Button onClick={this.routeToAddNewMemberEvent} color="primary">Add Event</Button>
                         </div>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
                              <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
-         <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></Label>
 
                         {!this.state.loading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
                                 <FormGroup>
-                                    <Label>Category Type</Label>
-                                    <Input type="text" id="maintenanceId" name="category" onChange={this.onChangeHandler} value={this.state.category} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
-                                    <span className="error">{this.state.errors.category}</span>
+                                    <Label>MemberEvent Type</Label>
+                                    <Input type="text" id="societyMemberEventId" name="societyMemberEventName" onChange={this.onChangeHandler} value={this.state.societyMemberEventName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
+                                    <span className="error">{this.state.errors.societyMemberEventName}</span>
                                 </FormGroup>
 
 
                                 <FormGroup>
-                                    <Button color="primary mr-2" onClick={this.editcategory}>Save</Button>
+                                    <Button color="primary mr-2" onClick={this.editsocietyMemberEventName}>Save</Button>
 
                                     <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
                                 </FormGroup>
@@ -313,14 +312,14 @@ class MaintenanceMasterDetail extends Component {
 
 
 function mapStatToProps(state) {
-  
+    console.log("state", state)
     return {
-        MaintenanceMasterReducer: state.MaintenanceMasterReducer
+        societyMemberEventReducer: state.societyMemberEventReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({getMaintenance,deleteMaintenance, updateMaintenance, deleteSelectMaintenance }, dispatch)
+    return bindActionCreators({getMemberEvent, deleteMemberEvent, updateMemberEvent,deleteSelectMemberEvent }, dispatch)
 }
 
-export default connect(mapStatToProps, mapDispatchToProps)(MaintenanceMasterDetail);
+export default connect(mapStatToProps, mapDispatchToProps)(MemberEventsDetail);

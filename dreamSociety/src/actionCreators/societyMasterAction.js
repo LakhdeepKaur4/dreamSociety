@@ -63,7 +63,7 @@ export const postSociety = (values) => {
    
     const request = axios.post(`${URN}/society`,values, { headers: authHeader() })
         .then(response => response.data)
-        .catch((err)=>alert(err.response.data.message))
+      
 
     return {
         type: POST_SOCIETY,

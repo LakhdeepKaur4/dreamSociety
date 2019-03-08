@@ -186,6 +186,7 @@ class DisplayVendorMaster extends Component {
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)
         this.props.updateVendor( this.state.vendorId,formData).then(()=>{this.refreshData})
         this.setState({loading:true, editVendorModal: !this.state.editVendorModal});
+        this.refreshData();
 
    }
 

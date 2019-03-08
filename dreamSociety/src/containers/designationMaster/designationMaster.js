@@ -21,6 +21,8 @@ class DesignationMaster extends Component{
             menuVisible: false,
          }
     }
+
+
     
     onDesignationChange=(e)=> {
         this.setState({message:'' })
@@ -34,19 +36,21 @@ class DesignationMaster extends Component{
     }
 }
 
-      
-  
-    OnKeyPressUserhandler(event) {
-        const pattern = /[a-zA-Z_ ]/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
+
+OnKeyPressUserhandler(event) {
+    const pattern = /^[a-zA-Z ]+$/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
     }
+}
+
+    
     
     handleSubmit=(e)=>{
         e.preventDefault();
         let errors={};
+        
 
         const isValid=Object.keys(errors).length === 0
 
@@ -75,14 +79,20 @@ class DesignationMaster extends Component{
     return this.props.history.replace('/superDashBoard')
     }
     render(){
+
+    
         let formData;
         formData =<div>
+
         <FormGroup>
             <Label>Designation Name</Label>
-            <Input  type="text" name="designationName" value={this.state.designationName}  value={this.state.designationName} onChange={this.onDesignationChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Designation Name" maxLength={50}
+            <Input  type="text" name="designationName"    onChange={this.onDesignationChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Designation Name" maxLength={50}
         minLength={3} required/>
         <span className="error">{this.state.message}</span>          
         </FormGroup>
+
+       
+
         
         <Button color="success" className="mr-2">Submit</Button>
         <Button color="danger"  onClick={this.designationDetails} >Cancel</Button>
@@ -98,6 +108,7 @@ class DesignationMaster extends Component{
                    
                     {!this.state.loading ? formData: <Spinner />}
                 </Form>
+                
                 </UI>
             </div>
         )

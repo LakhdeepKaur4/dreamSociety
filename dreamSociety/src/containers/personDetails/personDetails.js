@@ -83,9 +83,9 @@ if(!this.state.email){
 if(!this.state.towerId){
     errors.towerId = "  Tower Name can't be empty. Please select."
 }
-if(!this.state.flatDetailId){
-    errors.familyMember = "   Flat Number can't be empty. Please select."
-}
+// if(!this.state.flatDetailId){
+//     errors.familyMember = "   Family Members  can't be empty. Please select."
+// }
 if(!this.state.roles){
     errors.roles = " Roles can't be empty. Please select."
 }
@@ -164,14 +164,14 @@ form1 = <form onSubmit={this.submit}>
       <h3 align="center">  Add Person </h3>
           <div className="form-group">
               <label>Username</label>
-              <input type="text" name="userName"  value="this.state.userName" onChange={this.onChange} maxLength={30} className="form-control" onKeyPress={this.OnKeyPresshandler}  />
+              <input type="text" name="userName" placeholder="Username"  onChange={this.onChange} maxLength={30} className="form-control" onKeyPress={this.OnKeyPresshandler}  />
          
               <span className="error">{this.state.errors.userName}</span>
           </div>
              
           <div className="form-group">
               <label> Email</label>
-              <input type="email" name="email"  value="this.state.email" onChange={this.onChange} maxLength={50} className="form-control" onKeyPress={this.OnKeyPressmail}  />
+              <input type="email" name="email"  placeholder="Email" onChange={this.onChange} maxLength={50} className="form-control" onKeyPress={this.OnKeyPressmail}  />
               <span className="error">{this.state.errors.email}</span>
           </div>
           
@@ -195,13 +195,13 @@ form1 = <form onSubmit={this.submit}>
           
           <div className="form-group">
               <label> Number of members in family</label>
-              <input type="text" name="familyMember"  value ="this.state.familyMember" className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
+              <input type="text" name="familyMember"  placeholder="Family Member"  className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
               <span className="error">{this.state.errors.familyMember}</span>
           </div>
          
           <div className="form-group">
               <label> parking</label>
-              <input type="text" name="parking"  value ="this.state.parking" className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
+              <input type="text" name="parking" placeholder="Parking"   className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
               <span className="error">{this.state.errors.parking}</span>
           </div>
          

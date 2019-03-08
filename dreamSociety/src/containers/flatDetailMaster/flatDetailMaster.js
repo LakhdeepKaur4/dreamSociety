@@ -116,7 +116,7 @@ class flatDetailMaster extends Component{
 
     getDropdown1=({flattype})=>{
         if(flattype){
-            return flattype.map((items)=>{
+            return flattype.flat.map((items)=>{
                 return(
                     <option key={items.flatId} value={items.flatId}>
                     {items.flatType}

@@ -212,6 +212,8 @@ class SocietyMangement extends Component {
         }
     }
 
+   
+
     handleSubmit=(e)=>{
         e.preventDefault();
 
@@ -315,6 +317,16 @@ class SocietyMangement extends Component {
         }
     }
 
+    onKeyPressSociety=(event)=> {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+
+
     OnKeyPresshandlerPhone(event) {
         const pattern = /^[0-9]$/;
         let inputChar = String.fromCharCode(event.charCode);
@@ -338,7 +350,7 @@ class SocietyMangement extends Component {
             
             <FormGroup>
             <Label>Society Name</Label>
-            <Input placeholder="Society Name" type="text" name="societyName" onChange={this.onChange} maxLength={30}/>
+            <Input placeholder="Society Name" type="text" name="societyName" onChange={this.onChange} onKeyPress={this.onKeyPressSociety} maxLength={100}/>
              <span className='error'>{this.state.errors.societyName}</span>
            </FormGroup>
            
@@ -400,7 +412,7 @@ class SocietyMangement extends Component {
             <Col md={6}>
         <FormGroup>
             <Label>Bank Name</Label>
-            <Input placeholder="Bank Name" type="text" name="bankName"  onChange={this.onChange}  onKeyPress={this.onKeyPressHandler} maxLength={300}/>
+            <Input placeholder="Bank Name" type="text" name="bankName"  onChange={this.onChange}  onKeyPress={this.onKeyPressHandler} maxLength={50}/>
              <span className='error'>{this.state.errors.bankName}</span>
         </FormGroup>
         </Col>
@@ -418,13 +430,13 @@ class SocietyMangement extends Component {
         
         <FormGroup>
             <Label>Account Holder Name</Label>
-            <Input placeholder="Account Holder Name" type="text" name="accountHolderName"  onChange={this.onChange}  onKeyPress={this.onKeyPressHandler} maxLength={30}/>
+            <Input placeholder="Account Holder Name" type="text" name="accountHolderName"  onChange={this.onChange}  onKeyPress={this.onKeyPressHandler} maxLength={200}/>
              <span className='error'>{this.state.errors.accountHolderName}</span>
         </FormGroup>
 
         <FormGroup>
             <Label>Account Number</Label>
-            <Input placeholder="Account Number" type="text" name="accountNumber"  onChange={this.onChange}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={30}/>
+            <Input placeholder="Account Number" type="text" name="accountNumber"  onChange={this.onChange}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={20}/>
              <span className='error'>{this.state.errors.accountNumber}</span>
         </FormGroup>
 
@@ -434,7 +446,7 @@ class SocietyMangement extends Component {
             <Col md={6}>
         <FormGroup>
             <Label>Email Id</Label>
-            <Input placeholder="Email Id" type="email" name="email"  onChange={this.onChange}   maxLength={30}/>
+            <Input placeholder="Email Id" type="email" name="email"  onChange={this.onChange}  maxLength={200} required/>
              <span className='error'>{this.state.errors.email}</span>
         </FormGroup>
         </Col>
@@ -453,8 +465,8 @@ class SocietyMangement extends Component {
         <Row form>
             <Col md={6}>
         <FormGroup>
-            <Label>Society Registration No.</Label>
-            <Input placeholder="Society Registration No." type="text" name="registrationNumber" value={this.state.registrationNumber} onChange={this.onChange}  maxLength={100}/>
+            <Label>Registration No.</Label>
+            <Input placeholder="Society Registration No." type="text" name="registrationNumber" value={this.state.registrationNumber} onChange={this.onChange}  maxLength={50}/>
              <span className='error'>{this.state.errors.registrationNumber}</span>
         </FormGroup>
         </Col>
@@ -462,7 +474,7 @@ class SocietyMangement extends Component {
         <Col md={6}>
         <FormGroup>
             <Label>Total Board Members</Label>
-            <Input placeholder="Total Board Members" type="text" name="totalBoardMembers" value={this.state.totalBoardMembers} onChange={this.onChange} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10}/>
+            <Input placeholder="Total Board Members" type="text" name="totalBoardMembers" value={this.state.totalBoardMembers} onChange={this.onChange} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={3}/>
              <span className='error'>{this.state.errors.totalBoardMembers}</span>
         </FormGroup>
         </Col>

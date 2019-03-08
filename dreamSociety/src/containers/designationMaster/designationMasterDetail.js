@@ -5,6 +5,7 @@ import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
+import _ from 'underscore';
 import Spinner from '../../components/spinner/spinner';
 
 
@@ -12,6 +13,7 @@ class DesignationMasterDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            filterName:"designationName",
             editDesignationData: {
                 designationName: '',
                 designationId: '',
@@ -26,6 +28,8 @@ class DesignationMasterDetail extends Component {
             errors: {},
             isDisabled: true,
             ids: [],
+         
+            CopyData:[]
 
 
         };
@@ -53,7 +57,7 @@ class DesignationMasterDetail extends Component {
         })
     }
 
-
+    
 
 
     toggleModal = () => {
@@ -99,16 +103,10 @@ class DesignationMasterDetail extends Component {
       deleteDesignationName = (designationId) => {
         let { isActive } = this.state.editDesignationData
         this.setState({ loading: true })
-
-        if(window.confirm('Are You Sure ?')){
         this.props.deleteDesignation(designationId, isActive)
             .then(() => this.refreshData())
         this.setState({editDesignationData: { isActive: false } })
-        }
-        else{
-            this.refreshData()
-          this.setState({editDesignationData: { isActive: false } })
-        }
+       
       }
 
 
@@ -128,17 +126,15 @@ class DesignationMasterDetail extends Component {
     deleteSelected(ids){
         this.setState({loading:true,  isDisabled:true});
 
-        if(window.confirm('Are You Sure ?')){
+        
         this.props.deleteSelectDesignation(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
-        }
-        else{
-            this.refreshData()
-        }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+      
     }
 
-    selectAll = () => {
+    selectAll = () => {                                                                                                                                                                                                                                                                                                         
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar =[];
             for(var i = 0; i < selectMultiple.length; i++){
@@ -165,18 +161,19 @@ class DesignationMasterDetail extends Component {
         }
         
     }
-
-
-   
-
+    
 
     renderDesignation = ({ designationResult }) => {
-        
         if (designationResult) {
-            return designationResult.designation.filter(this.searchFilter(this.state.search)).map((item, index) => {
-
+          
+            return designationResult.designation.sort((item1,item2)=>{
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item, index) => {
+                   console.log(item)
+                
                 return (
-                    <tr key={item.designationId}>
+                    <tr key={item.designationId} >
                       <td><input type="checkbox" name="ids" className="SelectAll" value={item.designationId}
                          onChange={(e) => {
                             const {designationId} = item
@@ -200,7 +197,7 @@ class DesignationMasterDetail extends Component {
                             }
                                 
                              }}/></td>
-                        <td>{index+1}</td>
+                        <td >{index+1}</td>
                         <td>{item.designationName}</td>
                         <td> 
                             <Button color="success mr-2" onClick={this.toggle.bind(this, item.designationId, item.designationName)} >Edit</Button>
@@ -208,6 +205,7 @@ class DesignationMasterDetail extends Component {
 
                         </td>
                     </tr>
+
 
                 )
             })
@@ -241,29 +239,28 @@ class DesignationMasterDetail extends Component {
     }
 
     render() {
+
+   
+
         let tableData;
         tableData = <div style={{ backgroundColor: 'lightgray' }}>
             <Table className="table table-bordered">
                 <thead>
                     <tr>
-                    <th>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
+                        <th style={{width: "4%"}}></th>
                         <th>#</th>
-                        <th>Designation Position</th>
+                        <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'designationName'}});
+                        }}>Designation Position 
+                         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                       
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {this.renderDesignation(this.props.DesignationMasterReducer)}
+                
                 </tbody>
             </Table></div>
         return (
@@ -283,7 +280,17 @@ class DesignationMasterDetail extends Component {
 
 <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
-
+                           <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></Label>
                         {!this.state.loading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>

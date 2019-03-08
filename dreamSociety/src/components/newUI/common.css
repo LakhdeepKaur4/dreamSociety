@@ -3,7 +3,7 @@
 .wrapper {
     display: flex;
     align-items: stretch;
-    /* background-image: url('/assets/society.jpg'); */
+    background-image: url('/assets/society.jpg');
     background-size: cover;
     max-height: inherit;
     min-height: 100vh;
@@ -243,3 +243,8 @@ ul ul a {
 .modal-content{
     height:0px;
 } */
+
+#sortArrow{
+    position: relative;
+    margin-left: 40px;
+}

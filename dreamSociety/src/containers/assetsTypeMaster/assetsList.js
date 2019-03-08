@@ -91,7 +91,7 @@ class AssetList extends Component {
                 return (
 
                     <tr key={items.assetId}>
-                      <td><input type="checkbox" name="ids" value={items.assetId} className="SelectAll"
+                      <td style={{textAlign:"center"}}><input type="checkbox" name="ids" value={items.assetId} className="SelectAll"
                          onChange={(e, i) => {
                             const {assetId} = items
                             if(!e.target.checked){
@@ -113,10 +113,10 @@ class AssetList extends Component {
                                 }
                         } 
                              }}/></td>
-                    <td>{index+1}</td>
-                        <td>{items.assetName}</td>
-                        <td>{items.description}</td>
-                        <td>
+                        <td style={{textAlign:"center"}}>{index+1}</td>
+                        <td style={{textAlign:"center"}}>{items.assetName}</td>
+                        <td style={{textAlign:"center"}}>{items.description}</td>
+                        <td style={{textAlign:"center"}}>
                         <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.assetId, items.assetName, items.description)} >Edit</button>
                         <button className="btn btn-danger" onClick={this.delete.bind(this, items.assetId)} >Delete</button>
                         </td>
@@ -180,7 +180,7 @@ class AssetList extends Component {
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
-                <th style={{alignContent:'baseline'}}>Select All<input
+                {/* <th style={{alignContent:'baseline'}}>Select All<input
                 type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
                             if(e.target.checked) {
                                 this.selectAll();
@@ -189,11 +189,12 @@ class AssetList extends Component {
                                 this.unSelectAll();
                             } 
                         }  
-                    }/></th>
-                    <th>#</th>
-                    <th>Asset Name</th>
-                    <th>Description</th>
-                    <th>Actions</th>
+                    }/></th> */}
+                    <th style={{width:"4%"}}></th>
+                    <th style={{textAlign:"center",width:"4%"}}>#</th>
+                    <th style={{textAlign:"center"}}>Asset Name</th>
+                    <th style={{textAlign:"center"}}>Description</th>
+                    <th style={{textAlign:"center"}}>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -217,6 +218,16 @@ class AssetList extends Component {
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
                                  {deleteSelectedButton}
+                                    <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></Label>
                             {!this.state.loading ? tableData : <Spinner/>}
                         </div>
                         <Modal isOpen={this.state.modal} toggle={this.toggles}>
@@ -224,10 +235,10 @@ class AssetList extends Component {
                             <ModalBody>
                                 <FormGroup>
                                     <Label htmlFor="AssetName">Assets Name</Label>
-                                    <Input maxLength={30} type="text" id="AssetName" name="assets" onChange={this.onChangeHandler} value={this.state.assets}/>
+                                    <Input  style={{'textTransform': 'capitalize' }} maxLength={30} type="text" id="AssetName" name="assets" onChange={this.onChangeHandler} value={this.state.assets}/>
                                     <div className="error">{this.state.errors.assets}</div>
                                     <Label htmlFor="description">Description</Label>
-                                    <Input maxLength={30} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description}/>
+                                    <Input  style={{'textTransform': 'capitalize' }} maxLength={30} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description}/>
                                     <span className="error">{this.state.errors.description}</span>
                                 </FormGroup>
                           
