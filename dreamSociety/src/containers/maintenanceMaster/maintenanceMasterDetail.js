@@ -19,6 +19,7 @@ class MaintenanceMasterDetail extends Component {
                 isActive: false,
 
             },
+            filterName:'category',
             menuVisible: false,
             search: '',
             modal: false,
@@ -26,6 +27,7 @@ class MaintenanceMasterDetail extends Component {
             errors: {},
             isDisabled: true,
             ids: [],
+            message:''
 
         };
     }
@@ -56,7 +58,7 @@ class MaintenanceMasterDetail extends Component {
 
 
     toggleModal = () => {
-        this.setState({ modal: !this.state.modal })
+        this.setState({ modal: !this.state.modal, message:'' })
     }
 
 
@@ -82,15 +84,24 @@ class MaintenanceMasterDetail extends Component {
         this.setState({errors});
         const isValid = Object.keys(errors).length === 0
         
-        if (isValid) {
+        if (isValid && this.state.message==='') {
             this.setState({
                 loading: true
             })
         this.props.updateMaintenance(maintenanceId, category)
             .then(() => this.refreshData())
+            .catch(err=>{ console.log(err.response.data.message)
+                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                })
+                if(this.state.message === ''){
+                    this.setState({modal: true})
+                }
+                else {
+                    this.setState({modal: false})
+                }
+        
         this.setState({
-            editMaintenanceData: { maintenanceId, category },
-            modal: !this.state.modal
+            modalLoading: true
         })
     }
     }
@@ -98,16 +109,13 @@ class MaintenanceMasterDetail extends Component {
       deleteMaintenanceName = (maintenanceId) => {
         let { isActive } = this.state.editMaintenanceData
 
-        if(window.confirm('Are You Sure ?')){
+      
         this.setState({ loading: true })
         this.props.deleteMaintenance(maintenanceId, isActive)
             .then(() => this.refreshData())
         this.setState({editMaintenanceData: { isActive: false } })
-        }
-        else{
-            this.refreshData()
-            this.setState({editMaintenanceData: { isActive: false } })
-        }
+     
+       
       }
 
 
@@ -126,16 +134,10 @@ class MaintenanceMasterDetail extends Component {
 
     deleteSelected(ids){
         this.setState({loading:true,  isDisabled:true});
-
-        
-        if(window.confirm('Are You Sure ?')){
         this.props.deleteSelectMaintenance(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
-        }
-        else{
-            this.refreshData()
-        }
+        
     }
 
     selectAll = () => {
@@ -172,7 +174,10 @@ class MaintenanceMasterDetail extends Component {
     renderMaintenance = ({ maintenanceResult }) => {
        
         if (maintenanceResult) {
-            return maintenanceResult.maintenance.filter(this.searchFilter(this.state.search)).map((item, index) => {
+            return maintenanceResult.maintenance.sort((item1,item2)=>{
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                 return (
                     <tr key={item.maintenanceId}>
@@ -245,9 +250,14 @@ class MaintenanceMasterDetail extends Component {
             <Table className="table table-bordered">
                 <thead>
                     <tr>
-                   
+                        <th style={{width:'4%'}}></th>
                         <th>#</th>
-                        <th>Maintenance Category</th>
+                        <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'category'}});
+                        }}>Maintenance Category 
+                         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                        
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -291,6 +301,7 @@ class MaintenanceMasterDetail extends Component {
                                     <Label>Category Type</Label>
                                     <Input type="text" id="maintenanceId" name="category" onChange={this.onChangeHandler} value={this.state.category} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
                                     <span className="error">{this.state.errors.category}</span>
+                                    <span className="error">{this.state.message}</span>
                                 </FormGroup>
 
 

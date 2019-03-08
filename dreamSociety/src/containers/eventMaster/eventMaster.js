@@ -24,7 +24,9 @@ class EventMaster extends Component {
     endDate: '',
     menuVisible: false,
     loading:true,
-    errors: {}
+    errors: {},
+    userId:'',
+    message:''
 
   }
 
@@ -42,6 +44,7 @@ class EventMaster extends Component {
   }
 
   onChange =(event)=> {
+    this.setState({message:'' })
     if (!!this.state.errors[event.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[event.target.name];
@@ -68,8 +71,8 @@ class EventMaster extends Component {
     if(!this.state.eventName){
       errors.eventName = "Event Name can't be empty. Please select."
   }
-  if(!this.state.userId){
-    errors.userId = "event Organiser can't be empty. Please select."
+  if(!this.state.eventOrganiser){
+    errors.eventOrganiser = "event Organiser can't be empty. Please select."
 }
 if(!this.state.startDate){
   errors.startDate = "Start Date can't be empty. Please select."
@@ -84,9 +87,9 @@ if(!this.state.endDate){
     if (isValid) {
         this.setState({loading: true})
       
-            this.props.AddEvent(eventType,eventName, eventOrganiser,startDate,endDate).then(()=> this.props.history.push('/superDashboard/display-event')
+            this.props.AddEvent(eventType,eventName, eventOrganiser,startDate,endDate).then(()=> this.props.history.push('/superDashboard/display-event')).catch((err)=>this.setState({message: err.response.data.message, loading: false}))
         
-            )
+            
         
    
 }
@@ -160,23 +163,21 @@ if(!this.state.endDate){
 
           />
              <span className="error">{this.state.errors.eventName}</span>
+             <span className="error">{this.state.message}</span>   
         </div>
      
         <div className="form-group">
           <label >Event Organiser</label>
           <select
-            
-            className ="form-control"
-        
-            value={this.state.userId}
+            className="form-control"  
+            name="eventOrganiser"
             onChange={this.onChange}
-            defaultValue='no-value'
-     
-          >
-          < DefaultSelect/>
+          
+            defaultValue='no-value'>
+          <DefaultSelect/>
            {this.getEvent(this.props.EventDetails)}
 
-           
+        
           </select>
           <span className="error">{this.state.errors.userId}</span>
         </div>

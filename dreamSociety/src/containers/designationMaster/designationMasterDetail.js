@@ -21,8 +21,11 @@ class DesignationMasterDetail extends Component {
                 isActive: false,
 
             },
+            
+            message:'',
             menuVisible: false,
             search: '',
+            modalLoading: false,
             modal: false,
             loading: true,
             errors: {},
@@ -52,7 +55,8 @@ class DesignationMasterDetail extends Component {
         this.setState({
             designationId,
             designationName,
-
+         
+           
             modal: !this.state.modal
         })
     }
@@ -61,7 +65,8 @@ class DesignationMasterDetail extends Component {
 
 
     toggleModal = () => {
-        this.setState({ modal: !this.state.modal })
+        
+        this.setState({ modal: !this.state.modal, message:'', })
     }
 
 
@@ -71,13 +76,14 @@ class DesignationMasterDetail extends Component {
     }
 
     refreshData() {
-        this.props.getDesignation().then(() => this.setState({ loading: false }))
-
+        this.props.getDesignation().then(() => this.setState({ loading: false,  modalLoading: false, modal:false }))
+       
     }
 
 
-    editdesignationName = () => {
-
+    editdesignationName = (e) => {
+        e.preventDefault();
+    
         const { designationId, designationName } = this.state
 
         let errors = {};
@@ -86,18 +92,25 @@ class DesignationMasterDetail extends Component {
         }
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
-
-        if (isValid) {
-            this.setState({
-                loading: true
-            })
-            this.props.updateDesignation(designationId, designationName)
-                .then(() => this.refreshData())
-            this.setState({
-                editDesignationData: { designationId, designationName },
-                modal: !this.state.modal
-            })
-        }
+        
+        if (isValid &&  this.state.message === '') {
+           
+        this.props.updateDesignation(designationId, designationName)
+            .then(() => this.refreshData())
+            .catch(err=>{ console.log(err.response.data.message)
+                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                })
+                if(this.state.message === ''){
+                    this.setState({modal: true})
+                }
+                else {
+                    this.setState({modal: false})
+                }
+        
+        this.setState({
+            modalLoading: true
+        })
+    }
     }
 
     deleteDesignationName = (designationId) => {
@@ -106,7 +119,7 @@ class DesignationMasterDetail extends Component {
         this.props.deleteDesignation(designationId, isActive)
             .then(() => this.refreshData())
         this.setState({editDesignationData: { isActive: false } })
-       
+      
       }
 
 
@@ -288,7 +301,7 @@ class DesignationMasterDetail extends Component {
                             } 
                         }  
                     }/></Label>
-                        {!this.state.loading ? tableData : <Spinner />}
+                        {!this.state.modalLoading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
@@ -296,6 +309,7 @@ class DesignationMasterDetail extends Component {
                                     <Label>Designation Type</Label>
                                     <Input type="text" id="designationId" name="designationName" onChange={this.onChangeHandler} value={this.state.designationName} maxLength={50} onKeyPress={this.onKeyPressHandler} />
                                     <span className="error">{this.state.errors.designationName}</span>
+                                    <span className="error">{this.state.message}</span>
                                 </FormGroup>
 
 

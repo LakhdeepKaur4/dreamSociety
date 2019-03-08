@@ -31,7 +31,7 @@ class EmployeeMaster extends Component{
         middleName:'',
         lastName:'',
         startDate:'',
-        endDate:'',
+       
         salary:'',
         file:'',
         errors:{}
@@ -63,7 +63,8 @@ this.setState({[e.target.name]:e.target.value});
 }
   } 
 
-
+  
+ 
     
 onFileChange=(event)=>{
        if(!!this.state.errors[event.target.name]){
@@ -114,75 +115,75 @@ FileChange=(event)=>{
     submit=(event)=> {
         
         event.preventDefault();
-        let errors ={};
-        // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
+//         let errors ={};
+//         // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
        
-        if(!this.state.countryId){
-          errors.countryId = " Country Id  can't be empty. "
-         }
-         if(!this.state.stateId){
-          errors.stateId ="State Name can't be empty. "
-         }
-          if(!this.state.cityId){
-          errors.cityId ="City Name can't be empty."
-         }
-         if(!this.state.locationId){
-          errors.locationId ="Location Name can't be empty."
-         }
-         if(!this.state.documentOne){
-          errors.documentOne ="please select an ID."
-         }
-         if(!this.state.documentTwo){
-            errors.documentTwo ="please select an ID"
-         }
-         if(!this.state.profilePicture){
-          errors.profilePicture =" Profile picture can't be empty."
-         }
-         if(!this.state.firstName){
-         errors.firstName ="First Name can't be empty. "
-         }
+//         if(!this.state.countryId){
+//           errors.countryId = " Country Id  can't be empty. "
+//          }
+//          if(!this.state.stateId){
+//           errors.stateId ="State Name can't be empty. "
+//          }
+//           if(!this.state.cityId){
+//           errors.cityId ="City Name can't be empty."
+//          }
+//          if(!this.state.locationId){
+//           errors.locationId ="Location Name can't be empty."
+//          }
+//          if(!this.state.documentOne){
+//           errors.documentOne ="please select an ID."
+//          }
+//          if(!this.state.documentTwo){
+//             errors.documentTwo ="please select an ID"
+//          }
+//          if(!this.state.profilePicture){
+//           errors.profilePicture =" Profile picture can't be empty."
+//          }
+//          if(!this.state.firstName){
+//          errors.firstName ="First Name can't be empty. "
+//          }
        
-         if(!this.state.lastName){
-       errors.lastName ="Last Name can't be empty."
-         }
-         if(!this.state.startDate){
-          errors.startDate =" Start Date can't be empty ."
-         }
-         if(!this.state.endDate){
-         errors.endDate ="End Date can't be empty."
-         }
-         if(!this.state.CTC){
-        errors.CTC ="CTC can't be empty."
-         }
-          
-         const data = new FormData() 
-  this.setState({ errors });
-  const isValid = Object.keys(errors).length === 0
-  if (isValid) {        
+//          if(!this.state.lastName){
+//        errors.lastName ="Last Name can't be empty."
+//          }
+//          if(!this.state.startDate){
+//           errors.startDate =" Start Date can't be empty ."
+//          }
+//          if(!this.state.endDate){
+//          errors.endDate ="End Date can't be empty."
+//          }
+//          if(!this.state.CTC){
+//         errors.CTC ="CTC can't be empty."
+//          }
+        
+//         console.log(this.state.salary,"salary")
+//   this.setState({ errors });
+//   const isValid = Object.keys(errors).length === 0
+//   if (isValid) {        
      
       this.setState({loading:true})
-      
+      const data = new FormData() 
+      data.append('profilePicture',this.state.profilePicture)
         data.append('documentOne',this.state.documentOne, this.state.documentOne.name)
         data.append('documentTwo',this.state.documentTwo, this.state.documentTwo.name)
         data.append('firstName',this.state.firstName)
         data.append('middleName',this.state.middleName)
         data.append('lastName',this.state.lastName)
-        data.append('CTC',this.state.CTC)
+        data.append('salary',this.state.salary)
         data.append('startDate',this.state.startDate)
-        data.append('endDate',this.state.endDate)
+        data.append('address',this.state.address)
         data.append('stateId',this.state.stateId)
         data.append('countryId',this.state.countryId)
         data.append('cityId',this.state.cityId)
         data.append('locationId',this.state.locationId)
-        data.append('profilePicture',this.state.profilePicture)
+       
         
           
         this.props.AddEmployee(data).then(()=>this.props.history.push('/superDashboard/displayEmployee'));
 
 
     }
-    }
-    
+    // }
  
   
          
@@ -350,7 +351,7 @@ form=
 
         <label> Salary</label>
        
-        <input type="text" className="form-control" name ="salary" onChange ={this.onChange} maxLength={3}/>
+        <input type="text" className="form-control" name ="salary" onChange ={this.onChange} maxLength={30}/>
         <span className="error">{this.state.errors.salary}</span>
     </div>
     <div  className="row">
@@ -395,7 +396,7 @@ form=
 
               <div className="form-group">
                 <label> Address</label>
-                <input type="text" className="form-control" name ="address"  onKeyPress={this.OnKeyPressNumber}  onChange ={this.onChange} maxLength={3}/>
+                <input type="text" className="form-control" name ="address"  onKeyPress={this.OnKeyPressNumber}  onChange ={this.onChange} maxLength={30}/>
                 <span className="error">{this.state.errors.address}</span>
               </div>
 

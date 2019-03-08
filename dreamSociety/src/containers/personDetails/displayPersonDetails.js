@@ -35,7 +35,8 @@ class displayPersonDetails extends Component {
                         roleId: '',
                         familyMember: '',
                         parking: '',
-                        errors:{}
+                        errors:{},
+                        filterName:"userName",
                 }
         }
         componentDidMount() {
@@ -199,7 +200,9 @@ class displayPersonDetails extends Component {
                         console.log("xyz", person1)
                         let currentRole;
                         return (
-                                person1.filter(this.searchFilter(this.state.search)).map((item, index) => {
+                                person1.sort((item1,item2) =>{
+                                        var cmprVal=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                                        return this.state.sortVal ?cmprVal:-cmprVal}).filter(this.searchFilter(this.state.search)).map((item, index) => {
                                         console.log(item.roles, "ancdd")
 
                                         return (
@@ -315,18 +318,10 @@ class displayPersonDetails extends Component {
                 tableData = <Table className="table table-bordered">
                         <thead>
                                 <tr>
-                                <th style={{alignContent:'baseline'}}>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
+                                <th style={{width:'4px'}}></th>
                                         <th>#</th>
-                                        <th>UserName</th>
+                                        <th onClick={()=>{this.setState((state)=>{return{sortVal:!state.sortVal,filterName:"userName"}})}}>userName
+        <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                                         <th>Email</th>
                                         <th>Tower Name </th>
                                         <th>Roles</th>
@@ -426,6 +421,17 @@ class displayPersonDetails extends Component {
                                                         <button className="btn btn-primary" onClick={this.Addperson}> Add person</button>
                                                 </div>
                                                 <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
+                                                
+                                                <label>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></label>
                                                 {deleteSelectedButton}
                                                 {!this.state.loading ? tableData : <Spinner />}
 

@@ -20,7 +20,8 @@ class TowerMaster extends Component {
             towerName: "",
             menuVisible: false,
             loading:true,
-            errors: {}
+            errors: {},
+            message:''
 
         }
 
@@ -37,6 +38,7 @@ class TowerMaster extends Component {
 
   
     onChange(event) {
+        this.setState({message:'' })
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -73,10 +75,10 @@ class TowerMaster extends Component {
           
                 this.props.AddTower(towerName).then(()=> this.props.history.push('/superDashboard/display-tower')
             
-                )
+                ).catch((err)=>this.setState({message: err.response.data.message, loading: false})
             
-       
-    }
+                )
+        }
            
     }
     logout=()=>{
@@ -105,6 +107,7 @@ class TowerMaster extends Component {
                 <Label>Tower Name</Label>
                 <Input type="text" className="form-control" placeholder="Tower Name" name="towerName"  maxLength ={20} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange}  />
                 <span className="error">{this.state.errors.towerName}</span>
+                <span className="error">{this.state.message}</span>    
             </FormGroup>
             <FormGroup>
                 <Button color="success" className="mr-2">Submit</Button>
