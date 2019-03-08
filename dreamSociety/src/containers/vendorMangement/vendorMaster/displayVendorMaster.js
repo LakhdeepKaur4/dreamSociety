@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getVendorMaster,getRateType,deleteVendor,updateVendor } from '../../../actionCreators/vendorMasterAction';
+import { getVendorMaster,getRateType,deleteVendor,updateVendor,deleteSelectedVendor} from '../../../actionCreators/vendorMasterAction';
 import { getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -17,6 +17,7 @@ class DisplayVendorMaster extends Component {
 
 
     state = {
+            filterName:"vendorName",
             vendorServiceId:'',
             vendorId:'',
             vendorName: '',
@@ -38,22 +39,35 @@ class DisplayVendorMaster extends Component {
             search: '',
             modal: false,
             modalIsOpen: false,
-
-        
- 
+            search: '', 
+            ids:[],
+            isDisabled:true,    
+            errors:{}
         }
+
     componentDidMount() {
        this.refreshData();
     }
 
-
-   
-
     onHandleChange=(e)=>{
-        this.setState({
-            [e.target.name]:e.target.value
-        })
-        console.log(e.target.value)
+        if(!!this.state.errors[e.target.name]){
+            let errors =Object.assign({},this.state.errors)
+            delete  errors[e.target.name]
+            this.setState({[e.target.name]:e.target.value,errors});
+        }
+        else{
+            this.setState({[e.target.name]:e.target.value});
+            }
+    }
+
+    searchFilter(search) {
+        return function (x) {
+            return x.vendorName.toLowerCase().includes(search.toLowerCase()) || !search;
+        }
+    }
+
+    searchOnChange = (e) => {
+        this.setState({ search: e.target.value })
     }
 
     refreshData() {
@@ -108,7 +122,7 @@ class DisplayVendorMaster extends Component {
     
     searchFilter(search) {
         return function (x) {
-            return x.vendorName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.vendor_master.vendorName.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
   
@@ -170,9 +184,36 @@ class DisplayVendorMaster extends Component {
 
     }
 
+    deleteSelected(ids){
+        this.setState({loading:true,
+        isDisabled:true});
+        this.props.deleteSelectedVendor(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
+    }
+
    updateVendor=()=>{
-       console.log('vendorServiceId',this.state.vendorServiceId)
-        const formData=new FormData();  
+        let errors = {};
+        if(this.state.vendorName===''){
+            errors.vendorName="Vendor Name can't be empty"
+        }
+           else if(this.state.currentAddress===''){
+                errors.currentAddress="Current Address can't be empty"
+            }
+            else if(this.state.permanentAddress===''){
+                errors.permanentAddress="Permanent Address can't be empty"
+            }
+            else if(this.state.contact===''){
+                errors.contact="Contact can't be empty"                
+            }
+            else if(this.state.rate1===''){
+                errors.rate1="Rate can't be empty"                
+            } 
+        const formData=new FormData();
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0
+        if (isValid) {
+        this.setState({loading: true})
         formData.append('vendorServiceId',this.state.vendorServiceId) 
         formData.append('vendorName',this.state.vendorName)
         formData.append('contact',this.state.contact)
@@ -184,21 +225,45 @@ class DisplayVendorMaster extends Component {
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)
-        this.props.updateVendor( this.state.vendorId,formData).then(()=>{this.refreshData})
-        this.setState({loading:true, editVendorModal: !this.state.editVendorModal});
-        this.refreshData();
-
+        this.props.updateVendor( this.state.vendorId,formData).then(() => this.refreshData());   
+        this.setState({ editVendorModal: !this.state.editVendorModal});
+        }
    }
 
 
     renderList = ({ vendors }) => {
  
         if (vendors) {
-            return vendors.vendor.map((vendors) => {
+            return vendors.vendor.sort((item1,item2)=>{
+                var cmprVal = (item1.vendor_master[this.state.filterName].localeCompare(item2.vendor_master[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+                }).filter(this.searchFilter(this.state.search)).map((vendors,index) => {
                 
                 return (
 
                     <tr key={vendors.vendorServiceId}>
+                        <td><input type="checkbox" name="ids" className="SelectAll" value={vendors.vendorId}
+                         onChange={(e) => {
+                            const {vendorId} = vendors;
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(vendorId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1);
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
+                                }
+                            }
+                            else {
+                                this.setState({ids: [...this.state.ids, vendorId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                                
+                             }}/></td>
+                        <td>{index+1}</td>
                         <td>{vendors.vendor_master.vendorName}</td>
                         <td>{vendors.vendor_master.currentAddress}</td>
                         <td>{vendors.vendor_master.permanentAddress}</td>
@@ -235,6 +300,37 @@ class DisplayVendorMaster extends Component {
             event.preventDefault();
         }
     }
+
+    
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
+            console.log(this.state)
+    }
+
+    unSelectAll = () =>{
+        
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
+        }
+        
+        this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
+    }
+
     
 
     push=()=>{
@@ -245,6 +341,29 @@ class DisplayVendorMaster extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
+    OnKeyPressUserhandler(event) {
+        const pattern = /[a-zA-Z_ ]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    
+    OnKeyPresshandlerPhone(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    
+    onRateChange=(e)=>{
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+            this.setState({[e.target.name]:e.target.value});
+            
+        }}
+
 
     render() {
      
@@ -254,7 +373,12 @@ class DisplayVendorMaster extends Component {
             <Table className="table table-bordered">
         <thead>
             <tr>
-                <th>Vendor Name</th>
+                <th  style={{width:'4%'}}></th>
+                <th  style={{width:'4%'}}>#</th>
+                <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:"vendorName"}});
+                        }}>Vendor Name  <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Current Address</th>
                 <th>Permanent Address</th>
                 <th>Contact</th>
@@ -274,6 +398,8 @@ class DisplayVendorMaster extends Component {
             {this.renderList(this.props.vendorMasterReducer)}
         </tbody>
     </Table>
+        let deleteSelectedButton = <Button color="danger" className="mb-2"
+        onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
             return(
             <div>
                  <UI onClick={this.logout}>
@@ -288,24 +414,27 @@ class DisplayVendorMaster extends Component {
                 <ModalBody>
                     <FormGroup>
                         <Label> Vendor Name</Label>
-                        <Input name="vendorName" value={this.state.vendorName} onChange={this.onHandleChange}>
+                        <Input name="vendorName" value={this.state.vendorName}  onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}>
                         </Input>
+                        <span className="error">{this.state.errors.vendorName}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label> Current Address</Label>
                         <Input name="currentAddress" value={this.state.currentAddress} onChange={this.onHandleChange}>
                         </Input>
+                        <span className="error">{this.state.errors.currentAddress}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label>Permanent Address</Label>
                         <Input name="permanentAddress" value={this.state.permanentAddress} onChange={this.onHandleChange}>
                         </Input>
+                        <span className="error">{this.state.errors.permanentAddress}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label>Contact</Label>
-
-                        <Input name="contact" value={this.state.contact} onChange={this.onHandleChange}>
+                        <Input name="contact" value={this.state.contact} onKeyPress={this.OnKeyPresshandlerPhone}  maxLength={10} onChange={this.onHandleChange}>
                         </Input>
+                        <span className="error">{this.state.errors.contact}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label>Service Types</Label>
@@ -325,8 +454,9 @@ class DisplayVendorMaster extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label> Rates</Label>
-                        <Input name="rate1" value={this.state.rate1} onChange={this.onHandleChange}>
+                        <Input name="rate1" value={this.state.rate1} onChange={this.onRateChange}>
                         </Input>
+                        <div>{!this.state.rate1 ? <span className="error">{this.state.errors.rate1}</span>: null}</div>
                     </FormGroup>
                     <FormGroup></FormGroup>
                     <FormGroup>
@@ -367,8 +497,22 @@ class DisplayVendorMaster extends Component {
             </Modal>
             <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Vendor Details</h3>
             <Button color="primary" type="button" onClick={this.push}>Add Vendor</Button></div>
-            {!this.state.loading ? tableData : <Spinner />}
+            <SearchFilter type="text" value={this.state.search}
+                        onChange={this.searchOnChange} />
 
+                     {deleteSelectedButton}
+                     <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                        id="allSelect"
+                        type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        } }/>
+                    </Label>
+                         {!this.state.loading ? tableData : <Spinner />}
             </div>
 
                 <Modal 
@@ -409,7 +553,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getVendorMaster, getServiceType,getRateType,deleteVendor,updateVendor}, dispatch);
+    return bindActionCreators({ getVendorMaster, getServiceType,getRateType,deleteVendor,updateVendor,deleteSelectedVendor}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayVendorMaster);

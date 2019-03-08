@@ -155,7 +155,7 @@ class CityMaster extends Component {
         }
     }
     OnKeyPressUserhandler(event) {
-        const pattern = /^[a-zA-Z]+$/;
+        const pattern = /[a-zA-Z_ ]/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -250,7 +250,7 @@ class CityMaster extends Component {
 
       <FormGroup>
             <Label>City Name</Label>
-            <Input  type="text" name="cityName" value={this.state.cityName} onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler} placeholder="City Name" maxLength={30}
+            <Input  type="text" name="cityName"  onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler} placeholder="City Name" maxLength={30}
         minLength={3}/>
             <span className='error'>{this.state.errors.cityName}</span>
             <span className="error">{this.state.message}</span>

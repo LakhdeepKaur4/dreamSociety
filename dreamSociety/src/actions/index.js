@@ -43,6 +43,7 @@ export const CREATE_PARKING = 'CREATE_PARKING';
 export const ADD_VENDOR_MASTER='add_vendor_master';
 export const GET_VENDOR_MASTER='get_vendor_master';
 export const DELETE_VENDOR='delete_vendor';
+export const DELETE_VENDOR_IDS='delete_selected_vendor';
 export const UPDATE_VENDOR='update_vendor';
 export const GET_FLAT ='get_flat';
 export const ADD_PERSON ='add_person';

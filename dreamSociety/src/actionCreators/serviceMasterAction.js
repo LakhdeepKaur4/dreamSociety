@@ -33,7 +33,7 @@ export function updateServices(serviceId,serviceName, service_detail, serviceDet
 
 export function addServiceType(serviceName,serviceDetailId){
     const request = axios.post(`${URN}/service`,{serviceName,serviceDetailId}, {headers:authHeader()})
-    .then()
+   
     return {
         type:ADD_SERVICE,
         payload:request

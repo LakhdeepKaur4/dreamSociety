@@ -11,6 +11,7 @@ import DefaultSelect from '../../../constants/defaultSelect';
 class DisplayServices extends Component {
 
     state = {
+            filterName:"serviceName",
             serviceId: '',
             serviceName: '',
             service_detail: '',
@@ -32,8 +33,6 @@ class DisplayServices extends Component {
    
     }
 
-
-    
     onHandleChange=(event)=>{
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
@@ -133,7 +132,11 @@ class DisplayServices extends Component {
 
     renderList = ({ item }) => {
         if (item) {
-            return item.filter(this.searchFilter(this.state.search)).map((item,index) => {
+            
+            return item.sort((item1,item2)=>{
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+                }).filter(this.searchFilter(this.state.search)).map((item,index) => {
                 return (
                     
                     <tr key={item.serviceId}>
@@ -160,11 +163,7 @@ class DisplayServices extends Component {
                              }}/></td>
                         <td>{index+1}</td>
                         <td>{item.serviceName}</td>
-                        <td>{item.service_detail_master.service_detail}</td>
-                        
-                        
-
-
+                        <td>{item.service_detail_master.service_detail}</td>                                                
                         <td>
                             <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</Button>
                         
@@ -234,19 +233,12 @@ class DisplayServices extends Component {
         <Table className="table table-bordered">
         <thead>
             <tr>
-            <th>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
-                <th>#</th>
-                <th>Service Type</th>
+            <th style={{width:'4%'}}></th>
+                <th style={{width:'4%'}}>#</th>
+                <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'serviceName'}});
+                        }}>Service Type <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Service Details</th>
                 <th>Actions</th>
                 
@@ -299,7 +291,19 @@ class DisplayServices extends Component {
              
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
+                 
                              {deleteSelectedButton}
+                    <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                        id="allSelect"
+                        type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        } }/>
+                    </Label>
                            {!this.state.loading ? tableData : <Spinner />}
                  
                      
