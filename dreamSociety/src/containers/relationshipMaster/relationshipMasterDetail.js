@@ -21,12 +21,14 @@ class RelationshipMasterDetail extends Component {
             },
             filterName:'relationName',
             menuVisible: false,
+            modalLoading: false,
             search: '',
             modal: false,
             loading: true,
             errors: {},
             isDisabled: true,
             ids: [],
+            message:''
 
 
         };
@@ -58,7 +60,7 @@ class RelationshipMasterDetail extends Component {
 
 
     toggleModal = () => {
-        this.setState({ modal: !this.state.modal })
+        this.setState({ modal: !this.state.modal, message:'' })
     }
 
 
@@ -68,13 +70,13 @@ class RelationshipMasterDetail extends Component {
     }
 
     refreshData() {
-        this.props.getRelation().then(() => this.setState({ loading: false }))
+        this.props.getRelation().then(() => this.setState({ loading: false, modalLoading: false , modal: false}))
        
     }
 
 
-    editrelationName = () => {
-       
+    editrelationName = (e) => {
+        e.preventDefault();
         const { relationId, relationName } = this.state
         
         let errors = {};
@@ -84,16 +86,23 @@ class RelationshipMasterDetail extends Component {
         this.setState({errors});
         const isValid = Object.keys(errors).length === 0
         
-        if (isValid) {
-            this.setState({
-                loading: true
-            })
+        if (isValid &&  this.state.message === '') {
+           
         this.props.updateRelation(relationId, relationName)
             .then(() => this.refreshData())
-        this.setState({
-            editRelationData: { relationId, relationName },
-            modal: !this.state.modal
-        })
+            .catch(err=>{ console.log(err.response.data.message)
+                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                })
+                if(this.state.message === ''){
+                    this.setState({modal: true})
+                }
+                else {
+                    this.setState({modal: false})
+                }
+                this.setState({
+                    modalLoading: true
+                })
+       
     }
     }
 
@@ -101,15 +110,12 @@ class RelationshipMasterDetail extends Component {
         let { isActive } = this.state.editRelationData
         this.setState({ loading: true })
 
-        if(window.confirm('Are You Sure ?')){
+       
         this.props.deleteRelation(relationId, isActive)
             .then(() => this.refreshData())
         this.setState({editRelationData: { isActive: false } })
-        }
-        else{
-            this.refreshData()
-        this.setState({editRelationData: { isActive: false } })
-        }
+       
+       
       }
 
 
@@ -129,14 +135,12 @@ class RelationshipMasterDetail extends Component {
     deleteSelected(ids){
         this.setState({loading:true,  isDisabled:true});
 
-        if(window.confirm('Are You Sure ?')){
+       
         this.props.deleteSelectRelation(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
-        }
-        else{
-            this.refreshData()
-        }
+       
+       
     }
 
     selectAll = () => {
@@ -293,7 +297,7 @@ class RelationshipMasterDetail extends Component {
                         }  
                     }/></Label>
 
-                        {!this.state.loading ? tableData : <Spinner />}
+                        {!this.state.modalLoading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
@@ -301,6 +305,7 @@ class RelationshipMasterDetail extends Component {
                                     <Label>Relation Name</Label>
                                     <Input type="text" id="relationId" name="relationName" onChange={this.onChangeHandler} value={this.state.relationName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
                                     <span className="error">{this.state.errors.relationName}</span>
+                                    <span className="error">{this.state.message}</span>
                                 </FormGroup>
 
 

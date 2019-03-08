@@ -99,16 +99,13 @@ class MemberEventsDetail extends Component {
       deleteMemberEventName = (societyMemberEventId) => {
         let { isActive } = this.state.editMemberEventData
 
-        if(window.confirm('Are You Sure ?')){
+       
+        
         this.setState({ loading: true })
         this.props.deleteMemberEvent(societyMemberEventId, isActive)
             .then(() => this.refreshData())
         this.setState({editMemberEventData: { isActive: false } })
-        }
-        else{
-            this.refreshData()
-            this.setState({editMemberEventData: { isActive: false } })
-        }
+       
       }
 
 

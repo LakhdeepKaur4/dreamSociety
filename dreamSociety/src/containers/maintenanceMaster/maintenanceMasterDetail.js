@@ -27,6 +27,7 @@ class MaintenanceMasterDetail extends Component {
             errors: {},
             isDisabled: true,
             ids: [],
+            message:''
 
         };
     }
@@ -57,7 +58,7 @@ class MaintenanceMasterDetail extends Component {
 
 
     toggleModal = () => {
-        this.setState({ modal: !this.state.modal })
+        this.setState({ modal: !this.state.modal, message:'' })
     }
 
 
@@ -83,15 +84,24 @@ class MaintenanceMasterDetail extends Component {
         this.setState({errors});
         const isValid = Object.keys(errors).length === 0
         
-        if (isValid) {
+        if (isValid && this.state.message==='') {
             this.setState({
                 loading: true
             })
         this.props.updateMaintenance(maintenanceId, category)
             .then(() => this.refreshData())
+            .catch(err=>{ console.log(err.response.data.message)
+                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                })
+                if(this.state.message === ''){
+                    this.setState({modal: true})
+                }
+                else {
+                    this.setState({modal: false})
+                }
+        
         this.setState({
-            editMaintenanceData: { maintenanceId, category },
-            modal: !this.state.modal
+            modalLoading: true
         })
     }
     }
@@ -99,16 +109,13 @@ class MaintenanceMasterDetail extends Component {
       deleteMaintenanceName = (maintenanceId) => {
         let { isActive } = this.state.editMaintenanceData
 
-        if(window.confirm('Are You Sure ?')){
+      
         this.setState({ loading: true })
         this.props.deleteMaintenance(maintenanceId, isActive)
             .then(() => this.refreshData())
         this.setState({editMaintenanceData: { isActive: false } })
-        }
-        else{
-            this.refreshData()
-            this.setState({editMaintenanceData: { isActive: false } })
-        }
+     
+       
       }
 
 
@@ -127,16 +134,10 @@ class MaintenanceMasterDetail extends Component {
 
     deleteSelected(ids){
         this.setState({loading:true,  isDisabled:true});
-
-        
-        if(window.confirm('Are You Sure ?')){
         this.props.deleteSelectMaintenance(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
-        }
-        else{
-            this.refreshData()
-        }
+        
     }
 
     selectAll = () => {
@@ -300,6 +301,7 @@ class MaintenanceMasterDetail extends Component {
                                     <Label>Category Type</Label>
                                     <Input type="text" id="maintenanceId" name="category" onChange={this.onChangeHandler} value={this.state.category} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
                                     <span className="error">{this.state.errors.category}</span>
+                                    <span className="error">{this.state.message}</span>
                                 </FormGroup>
 
 

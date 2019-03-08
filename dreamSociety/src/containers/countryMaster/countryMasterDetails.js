@@ -25,11 +25,13 @@ class CountryDetails extends Component{
                 isDisabled:true,
                 loading:true,
                 isActive:false ,
+                modalLoading: false,
                 editUserModal: false,
                  menuVisible: false,
                  search: '',
                  errors:'',
-                 message:''
+                 filterName:"countryName",
+
         }
     }
 
@@ -38,22 +40,23 @@ class CountryDetails extends Component{
    }
 
      refreshData(){
-    this.props.getCountry().then(() => this.setState({loading:false}));
-    }  
+    this.props.getCountry().then(() => this.setState({loading:false, modalLoading: false, editUserModal: false}));
+    }
 
     toggleEditUserModal() {
         this.setState({
-          editUserModal: ! this.state.editUserModal
+          editUserModal: ! this.state.editUserModal,
+          message: ''
         });
       }
 
     editCountry(countryId,countryName,code,currency,phoneCode) {
         this.setState({
             countryId,countryName,code,currency,phoneCode, editUserModal: ! this.state.editUserModal
-        })    
+        })
     }
 
-    
+
     searchFilter(search) {
         return function (x) {
             return x.countryName.toLowerCase().includes(search.toLowerCase()) ||
@@ -69,38 +72,42 @@ class CountryDetails extends Component{
 
 
     updateBook=(e)=> {
-        
+
         e.preventDefault();
         let { countryId, countryName, code, currency,phoneCode} = this.state
 
         let errors = {};
-        
+
         if (countryName === '') errors.countryName = "Cant be empty";
-       
+
         if (code === '') errors.code = "Cant be empty";
 
         if (currency === '') errors.currency = "Cant be empty";
 
-       
+
         if (phoneCode === '') errors.phoneCode = "Cant be empty";
-        
+
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.message === ''){
         this.props.updateCountry(countryId,countryName,code,currency,phoneCode).then(() => this.refreshData())
         .catch((err)=>{console.log(err.response.data.message)
-            this.setState({loading:false, message:err.response.data.message})});;
+            this.setState({modalLoading:false, message:err.response.data.message})});
             if(this.state.message === ''){
                 this.setState({editUserModal: true})
             }
+            else {
+                this.setState({editUserModal: false})
+            }
          this.setState({
-           loading:true, countryId: '',countryName:'',code:'',currency:'', phoneCode: '' ,
+           modalLoading: true
        })
     }
-   
+
    }
     onChange=(e)=>{
+        this.setState({message: ''})
         if (!this.state.errors[e.target.value]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -119,13 +126,16 @@ class CountryDetails extends Component{
         let { isActive } = this.state
         this.props.deleteCountry(countryId, isActive).then(() => this.refreshData())
         .then(() => this.setState({isActive: false}))
-    
+
 }
 
    getCountryDetails({country1}){
     //    console.log('dcdcdcdc',country1);
        if(country1){
-            return country1.filter(this.searchFilter(this.state.search)).map((item,index) =>{
+            return country1.sort((item1,item2)=>{
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item,index) =>{
                 //  console.log('shub',item);
                 return (
                     <tr key={item.countryId}>
@@ -149,8 +159,8 @@ class CountryDetails extends Component{
                                     this.setState({isDisabled: false})
                                 }
                             }
-                            
-                                
+
+
                              }}/>
                              </td>
                         <td>{index+1}</td>
@@ -158,9 +168,9 @@ class CountryDetails extends Component{
                         <td>{item.code}</td>
                         <td>{item.currency}</td>
                         <td>{item.phoneCode}</td>
-                        
+
                         <td>
-                            <Button color="success" size="sm" className="mr-2"onClick={this.editCountry.bind(this, item.countryId,item.countryName, 
+                            <Button color="success" size="sm" className="mr-2"onClick={this.editCountry.bind(this, item.countryId,item.countryName,
                             item.code, item.currency,item.phoneCode)}>Edit</Button>
                             <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, item.countryId)} >Delete</Button>
                         </td>
@@ -180,9 +190,9 @@ class CountryDetails extends Component{
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
-        return this.props.history.replace('/') 
+        return this.props.history.replace('/')
     }
-  
+
 
     onKeyPressHandler=(event)=> {
         const pattern = /^[a-zA-Z. ]+$/;
@@ -205,7 +215,7 @@ class CountryDetails extends Component{
         if (!pattern.test(inputChar)) {
             event.preventDefault();
         }
-    }   
+    }
     // onKeyPressCode=(event)=>{
     //     const pattern = /^[A-Z ]+$/;
     //     let inputChar = String.fromCharCode(event.charCode);
@@ -222,7 +232,7 @@ class CountryDetails extends Component{
     }
 
 
-    
+
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar =[];
@@ -237,18 +247,18 @@ class CountryDetails extends Component{
     }
 
     unSelectAll = () =>{
-        
+
         let unSelectMultiple = document.getElementsByClassName('SelectAll');
         let allIds = [];
         for(var i = 0; i < unSelectMultiple.length; i++){
                 unSelectMultiple[i].checked = false
         }
-        
+
         this.setState({ids: [ ...allIds]});
         if(allIds.length === 0){
             this.setState({isDisabled: true});
         }
-        
+
     }
     onChangeCountry=(e)=>{
        this.setState({code:e.target.value.toUpperCase()})
@@ -258,19 +268,23 @@ class CountryDetails extends Component{
 
     render(){
          let tableData;
-         
+
           tableData= <Table className="table table-bordered">
         <thead>
             <tr>
-         
-                <th> </th>
-                <th>#</th>
-                <th>Country Name</th>
+            <th style={{width: "4%"}}></th>
+                        <th>#</th>
+                        <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'countryName'}});
+                        }}>Country Name
+                         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+
                 <th>Country Code</th>
                 <th>Currency</th>
                 <th>Phone Code</th>
                 <th>Action</th>
-                
+
 
 
             </tr>
@@ -285,23 +299,9 @@ class CountryDetails extends Component{
      color="danger"
     className="mb-3"
     onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
-    
 
-        return(
-            <div>
-                <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top w3-responsive">
-                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true">&times;</span>
-                            </div>
-                        <div className="top-details">
-                                <h3>Country Master Details</h3>
-                                <Button onClick={this.routeToAddNewUser} color="primary">Add Country</Button>
-                            </div>
-                        <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
-                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
-                            <ModalBody>
-                                <FormGroup>
+    let modalData = <div>
+        <FormGroup>
                                     <Label for="roles">countryName</Label>
                                     <Input
                                         type="textbox"
@@ -313,7 +313,7 @@ class CountryDetails extends Component{
                                         onChange={this.onChange}
                                          />
                                          <span  className='error'>{this.state.errors.countryName}</span>
-                                         <span className='error'>{this.state.message}</span>
+                                         {this.state.message ? <span className='error'>{this.state.message}</span> : ''}
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">code</Label>
@@ -355,8 +355,25 @@ class CountryDetails extends Component{
                                 <Button color="primary mr-2" onClick={this.updateBook}>Save</Button>
                                 <Button color="danger" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
                                 </FormGroup>
+    </div>
+
+        return(
+            <div>
+                <UI onClick={this.logout}>
+                <div className="w3-container w3-margin-top w3-responsive">
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
+                        <div className="top-details">
+                                <h3>Country Master Details</h3>
+                                <Button onClick={this.routeToAddNewUser} color="primary">Add Country</Button>
+                            </div>
+                        <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
+                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
+                            <ModalBody>
+                                {!this.state.modalLoading  ? modalData : <Spinner />}
                             </ModalBody>
-                           
+
                         </Modal>
                         <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
@@ -368,15 +385,15 @@ class CountryDetails extends Component{
                                                               }
                     else if(!e.target.checked){
                         this.unSelectAll();
-                    } 
+                    }
                 }
-                    
+
                 }  /></Label>
-                            {!this.state.loading ? tableData : <Spinner />}
-                       
+                            {(this.state.loading) ? <Spinner /> : tableData}
+
                     </div>
                 </UI>
-            
+
             </div>
         )
     }
