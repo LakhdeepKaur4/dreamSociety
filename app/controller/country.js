@@ -5,18 +5,24 @@ const httpStatus = require('http-status');
 const Country = db.country;
 const Op = db.Sequelize.Op;
 
+
 exports.create = async (req, res) => {
     let body = req.body;
-    const country = await Country.findOne({
+    let countryName = body.countryName.replace(/ +/g, "");
+
+    const countries = await Country.findAll({
         where: {
-            countryName: body.countryName
+            isActive: true
         }
     })
-
-    if (country) {
+    console.log(countries);
+    let error = countries.some(country => {
+        return country.countryName.toLowerCase().replace(/ /g, '') == req.body.countryName.toLowerCase().replace(/ /g, '');
+    });
+    if (error) {
+        console.log("inside country");
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Country Name already Exists" })
     }
-
 
     Country.create({
         countryName: body.countryName,
@@ -25,10 +31,11 @@ exports.create = async (req, res) => {
         phoneCode: body.phoneCode,
         userId: req.userId
     }).then(country => {
-        res.status(200).json({ message: "Country added successfully!", country: country });
+        return res.status(200).json({ message: "Country added successfully!", country: country });
     }).catch(err => {
-        res.status(500).json("Fail! Error -> " + err);
+        return res.status(500).json("Fail! Error -> " + err);
     })
+
 }
 
 exports.get = (req, res) => {
@@ -54,14 +61,42 @@ exports.getById = (req, res) => {
     })
 }
 
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     const id = req.params.id;
     if (!id) {
         res.json("Please enter id");
     }
     const updates = req.body;
+
+    const countries = await Country.findAll({
+        where: {
+            isActive: true
+        }
+    })
+    console.log(countries);
+    let error = countries.some(country => {
+        return country.countryName.toLowerCase().replace(/ /g, '') == req.body.countryName.toLowerCase().replace(/ /g, '');
+    });
+    if (error) {
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Country Name already Exists" })
+    }
+    // const countries = await Country.findAll({
+    //     where: {
+    //         isActive: true
+    //     }
+    // })
+    // console.log(countries);
+    // let error = countries.some(country => {
+    //     return country.countryName.toLowerCase().replace(/ /g, '') == req.body.countryName.toLowerCase().replace(/ /g, '');
+    // });
+    // if (error) {
+    //     console.log("inside country");
+    //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Country Name already Exists" })
+    // }
     Country.find({
-        where: { countryId: id }
+        where: { 
+            isActive:true,
+            countryId: id }
     })
         .then(country => {
             return country.updateAttributes(updates)
@@ -82,7 +117,7 @@ exports.delete = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedCountry = await Country.find({ where: { countryId: id } }).then(event => {
+        const updatedCountry = await Country.find({ where: { countryId: id } }).then(country => {
             return country.updateAttributes(update)
         })
         if (updatedCountry) {

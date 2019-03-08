@@ -12,15 +12,33 @@ const Op = db.Sequelize.Op;
 exports.create = async (req, res) => {
     console.log("creating location");
     let body = req.body;
-    const location = await Location.findOne({
+    // const location = await Location.findOne({
+    //     where: {
+    //         [Op.and]: [
+    //             { locationName: req.body.locationName },
+    //             { isActive: true }
+    //         ]
+    //     }
+    // })
+    // if (location) {
+    //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Location Name already Exists" })
+    // }
+    const locations = await Location.findAll({
         where: {
-            [Op.and]: [
-                { locationName: req.body.locationName },
-                { isActive: true }
+            [Op.and]:[
+                {isActive: true},
+                { stateId: req.body.stateId },
+                { countryId: req.body.countryId },
+                { cityId: req.body.cityId },
             ]
         }
     })
-    if (location) {
+    // console.log(cities);
+    let error = locations.some(location => {
+        return location.locationName.toLowerCase().replace(/ /g, '') == req.body.locationName.toLowerCase().replace(/ /g, '');
+    });
+    if (error) {
+        console.log("inside state");
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Location Name already Exists" })
     }
     Location.create({
@@ -65,10 +83,28 @@ exports.getById = (req, res) => {
     })
 }
 
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     const id = req.params.id;
     if (!id) {
         res.json("Please enter id");
+    }
+    const locations = await Location.findAll({
+        where: {
+            [Op.and]:[
+                {isActive: true},
+                { stateId: req.body.stateId },
+                { countryId: req.body.countryId },
+                { cityId: req.body.cityId },
+            ]
+        }
+    })
+    // console.log(cities);
+    let error = locations.some(location => {
+        return location.locationName.toLowerCase().replace(/ /g, '') == req.body.locationName.toLowerCase().replace(/ /g, '');
+    });
+    if (error) {
+        console.log("inside state");
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Location Name already Exists" })
     }
     const updates = req.body;
     Location.find({

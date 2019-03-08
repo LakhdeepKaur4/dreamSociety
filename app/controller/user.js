@@ -10,6 +10,11 @@ const User = db.user;
 const Role = db.role;
 const Test = db.test;
 const Tower = db.tower;
+const Society = db.society;
+const City = db.city;
+const Country = db.country;
+const State = db.state;
+const Location = db.location;
 
 const Op = db.Sequelize.Op;
 
@@ -21,7 +26,7 @@ exports.start = (req, res) => {
 	res.send('Dream Society Api Running');
 }
 
-exports.signup = (req, res) => {
+exports.signup = async (req, res) => {
 	// Save User to Database
 	console.log("Processing func -> SignUp");
 	console.log("req.body===>", req.body)
@@ -31,6 +36,19 @@ exports.signup = (req, res) => {
 	let roleName = [];
 	if (roles) {
 		roleName.push(roles);
+	}
+	const user = await User.findAll({
+		where:{
+			[Op.and]: [
+				{ userName: req.body.userName },
+				{ contact: req.body.contact },
+				{ email: req.body.email },
+				{ isActive: true }
+			]
+		}
+	})
+	if(user){
+		return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:'User Already Exists'});
 	}
 	if (!body.userName || !body.email || !body.roles) {
 		return res.json({
@@ -74,10 +92,10 @@ exports.signup = (req, res) => {
 			});
 		});
 	}).catch(err => {
-		console.log("err==>", err)
+		console.log("err==>", err.name)
 		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
 			status: 500,
-			message: err
+			message: err.name
 		});
 	})
 }
@@ -109,8 +127,34 @@ exports.update = (req, res) => {
 		})
 }
 
-exports.signin = (req, res) => {
+exports.signin = async (req, res) => {
 	console.log("Sign-In", req.body);
+	 const society = await Society.findOne({where:{isActive:true},
+		attributes:['societyId','societyName'],
+		include: [
+			{
+				model: City,
+				attributes: ['cityId', 'cityName']
+			},
+			{
+				model: Country,
+				attributes: ['countryId', 'countryName']
+			},
+			{
+				model: State,
+				attributes: ['stateId', 'stateName']
+			},
+			{
+				model: User,
+				attributes: ['userId', 'userName']
+			},
+			{
+				model: Location,
+				attributes: ['locationId', 'locationName']
+			},
+		]
+	});
+	 console.log(society);
 	// let userName = '%'+req.body.userName;
 	// console.log(userName)
 	if (!req.body.userName) {
@@ -125,7 +169,11 @@ exports.signin = (req, res) => {
 	}
 	User.findOne({
 		where: {
-			userName: req.body.userName
+			[Op.and]:[
+				{userName: req.body.userName},
+			    {isActive:true}
+			]
+		
 		}, include: [{
 			model: Role,
 			attributes: ['id', 'roleName'],
@@ -164,6 +212,7 @@ exports.signin = (req, res) => {
 			auth: true,
 			accessToken: token,
 			user: user,
+			society:society,
 			message: "Successfully Logged In"
 		});
 

@@ -246,8 +246,6 @@ exports.deleteSelected = async (req, res, next) => {
 }
 
 
-
-
 exports.create1 = async (req, res, next) => {
     try {
         let body = req.body;

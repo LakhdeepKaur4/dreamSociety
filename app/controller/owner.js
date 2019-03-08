@@ -1,13 +1,13 @@
-const db = require('../config/db.config.js');
-const config = require('../config/config.js');
-const httpStatus = require('http-status');
-var passwordGenerator = require('generate-password');
+const db = require("../config/db.config.js");
+const config = require("../config/config.js");
+const httpStatus = require("http-status");
+var passwordGenerator = require("generate-password");
 const key = config.secret;
-const fs = require('fs');
-const crypto = require('crypto');
+const fs = require("fs");
+const crypto = require("crypto");
 const Op = db.Sequelize.Op;
-const path = require('path');
-const shortId = require('short-id');
+const path = require("path");
+const shortId = require("short-id");
 
 const Owner = db.owner;
 
@@ -18,308 +18,660 @@ const Society = db.society;
 const User = db.user;
 
 function encrypt(key, data) {
-    var cipher = crypto.createCipher('aes-256-cbc', key);
-    var crypted = cipher.update(data, 'utf-8', 'hex');
-    crypted += cipher.final('hex');
+  var cipher = crypto.createCipher("aes-256-cbc", key);
+  var crypted = cipher.update(data, "utf-8", "hex");
+  crypted += cipher.final("hex");
 
-    return crypted;
+  return crypted;
 }
 
 function decrypt(key, data) {
-    var decipher = crypto.createDecipher('aes-256-cbc', key);
-    var decrypted = decipher.update(data, 'hex', 'utf-8');
-    decrypted += decipher.final('utf-8');
+  var decipher = crypto.createDecipher("aes-256-cbc", key);
+  var decrypted = decipher.update(data, "hex", "utf-8");
+  decrypted += decipher.final("utf-8");
 
-    return decrypted;
+  return decrypted;
 }
 
-function saveToDisc(name,fileExt,base64String, callback){
-    console.log("HERE ",name,fileExt);
-    let d = new Date();
-    let pathFile = "../../public/profilePictures/"+shortId.generate()+name+d.getTime()+Math.floor(Math.random()*1000)+"."+fileExt;
-    let fileName = path.join(__dirname,pathFile);
-    let dataBytes = Buffer.from(base64String,'base64');
-    // console.log(base64String);
-    fs.writeFile(fileName,dataBytes , function(err) {
-        if(err) {
-            callback(err);
-        } else {
-            callback(null,pathFile);
-        }
-    });
-}  
+function saveToDisc(name, fileExt, base64String, callback) {
+  console.log("HERE ", name, fileExt);
+  let d = new Date();
+  let pathFile =
+    "../../public/profilePictures/" +
+    shortId.generate() +
+    name +
+    d.getTime() +
+    Math.floor(Math.random() * 1000) +
+    "." +
+    fileExt;
+  // pathFile = encrypt(key,pathFile);
+  let fileName = path.join(__dirname, pathFile);
+  let dataBytes = Buffer.from(base64String, "base64");
+  // console.log(base64String);
+  fs.writeFile(fileName, dataBytes, function(err) {
+    if (err) {
+      callback(err);
+    } else {
+      callback(null, pathFile);
+    }
+  });
+}
 
 exports.create = async (req, res, next) => {
-    try {
-        console.log("creating owner");
-        let ownerBody = req.body;
-        let memberBody = req.body;
-        let memberId = [];
-        ownerBody.userId = req.userId;
-        console.log("owner body==>",ownerBody)
-        let customVendorName = ownerBody.ownerName;
-        const userName = customVendorName + 'O' + ownerBody.towerId + ownerBody.flatDetailId;
-        console.log("userName==>", userName);
-        ownerBody.userName = userName;
-        const password = passwordGenerator.generate({
-            length: 10,
-            numbers: true
-        });
-        ownerBody.password = password;
-        // userName: encrypt(key,userName),
-        // let encryptedOwnerBody = {
-        //     userName: encrypt(key, userName),
-        //     password: password,
-        //     ownerName: encrypt(key, ownerBody.ownerName),
-        //     dob: encrypt(key, ownerBody.dob),
-        //     email: encrypt(key, ownerBody.email),
-        //     contact: encrypt(key, ownerBody.contact),
-        //     picture: encrypt(key, ownerBody.picture),
-        //     bankName: encrypt(key, ownerBody.bankName),
-        //     accountHolderName: encrypt(key, ownerBody.accountHolderName),
-        //     accountNumber: encrypt(key, ownerBody.accountNumber),
-        //     IFSCCode: encrypt(key, ownerBody.IFSCCode),
-        //     panCardNumber: encrypt(key, ownerBody.panCardNumber),
-        // }
-        const owner = await Owner.create(ownerBody);
-        const ownerId = owner.ownerId;
-        if(req.body.profilePicture){
-        saveToDisc(ownerBody.fileName,ownerBody.fileExt,ownerBody.profilePicture,(err,resp)=>{
-            if(err){
-                console.log(err)
-            }
-            console.log(resp)
-                // }
-                const updatedImage = {
-                    picture: resp
-                };
-                Owner.update(updatedImage, { where: { ownerId: ownerId}});
-        });
-        }
-        if (ownerBody.noOfMembers) {
-            memberBody.userId = req.userId;
-            memberBody.ownerId = ownerId;
-            const ownerMember =await OwnerMembersDetail.bulkCreate(ownerBody.member, { returning: true },
-                {
-                    fields: ["memberName", "memberDob","gender", "relationId"],
-                    // updateOnDuplicate: ["name"] 
-                })
-            ownerMember.forEach(item =>{
-                memberId.push(item.memberId)
-                console.log("member id0",memberId);
-            });
-            const bodyToUpdate = {
-                ownerId: ownerId,
-                userId: req.userId
-            }
-            const updatedMember = await OwnerMembersDetail.update(bodyToUpdate, { where: { memberId: {[Op.in]:memberId}}});
-            // const ownerMemberUpdate = await OwnerMembersDetail.find({ where: { memberId: ownerMember.memberId } }).then(ownerMember => {
-            //     return ownerMember.updateAttributes(bodyToUpdate);
-            // })
+  try {
+    console.log("creating owner");
+    let ownerBody = req.body;
+    let memberBody = req.body;
+    let memberId = [];
+    ownerBody.userId = req.userId;
+    console.log("owner body==>", ownerBody);
+    let customVendorName = ownerBody.ownerName;
+    const userName =
+      customVendorName + "O" + ownerBody.towerId + ownerBody.flatDetailId;
+    console.log("userName==>", userName);
+    ownerBody.userName = userName;
+    const password = passwordGenerator.generate({
+      length: 10,
+      numbers: true
+    });
+    ownerBody.password = password;
 
-            // }
-            // let encryptedMemberBody = {
-            //     memberName: encrypt(key, ownerBody.contact),
-            //     memberDob: encrypt(key, ownerBody.picture),
-            //     userId: req.userId,
-            // }
-            // const ownerMember = await OwnerMembersDetail.create(memberBody);
-            //    }
+    const owner = await Owner.create(ownerBody);
+    const ownerId = owner.ownerId;
+    if (req.body.profilePicture) {
+      saveToDisc(
+        ownerBody.fileName,
+        ownerBody.fileExt,
+        ownerBody.profilePicture,
+        (err, resp) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log(resp);
+          // }
+          const updatedImage = {
+            picture: resp
+          };
+          Owner.update(updatedImage, { where: { ownerId: ownerId } });
         }
-        return res.status(httpStatus.CREATED).json({
-            message: "Owner successfully created",
-            owner
-        });
-    } catch (error) {
-        console.log("error==>", error);
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+      );
     }
-}
-
-exports.test = async (req, res, next) => {
-    try {
-        console.log("creating owner");
-        let ownerBody = req.body;
-        let memberBody = req.body;
-        ownerBody.userId = req.userId;
-        let customVendorName = req.body.ownerName;
-        const userName = customVendorName + 'O' + req.body.towerId + req.body.flatDetailId;
-        console.log("userName==>", userName);
-        ownerBody.userName = userName;
-        const password = passwordGenerator.generate({
-            length: 10,
-            numbers: true
-        });
-        ownerBody.password = password;
-        const owner = await Owner.create(ownerBody);
-        const ownerId = owner.ownerId;
-        if (req.files) {
-            profileImage = req.files.profilePicture[0].path;
-            // }
-            const updatedImage = {
-                picture: profileImage
-            };
-            const imageUpdate = await Owner.find({ where: { ownerId: ownerId } }).then(owner => {
-                return owner.updateAttributes(updatedImage)
-            })
+    if (ownerBody.noOfMembers) {
+      memberBody.userId = req.userId;
+      memberBody.ownerId = ownerId;
+      const ownerMember = await OwnerMembersDetail.bulkCreate(
+        ownerBody.member,
+        { returning: true },
+        {
+          fields: ["memberName", "memberDob", "gender", "relationId"]
+          // updateOnDuplicate: ["name"]
         }
-        if (ownerBody.noOfMembers) {
+      );
+      ownerMember.forEach(item => {
+        memberId.push(item.memberId);
+        console.log("member id0", memberId);
+      });
+      const bodyToUpdate = {
+        ownerId: ownerId,
+        userId: req.userId
+      };
+      console.log("bodytoUpdate ==>", bodyToUpdate);
+      console.log(ownerMember.memberId);
+      const updatedMember = await OwnerMembersDetail.update(bodyToUpdate, {
+        where: { memberId: { [Op.in]: memberId } }
+      });
+      // const ownerMemberUpdate = await OwnerMembersDetail.find({ where: { memberId: ownerMember.memberId } }).then(ownerMember => {
+      //     return ownerMember.updateAttributes(bodyToUpdate);
+      // })
 
-            // let result = [];
-            // console.log("no of members===",ownerBody.noOfMembers);
-            // result = Object.keys(ownerBody);
-            // for (i = 1; i <= ownerBody.noOfMembers; i++) {
-            //  result.forEach(item => {
-            //      let memberName = item + [i];
-            //      console.log(memberName);
-            // if(item === 'memberName+[i]'){
-
-            // }
-            //      })
-            // // let ownerMemberBody = {};
-            // // let test = ownerBody.memberName1;
-            // // console.log(test)
-            // // console.log(test + [i])
-            // // console.log(ownerBody.memberName+[i]);
-            // // //  const body= {
-            // // //         ownerId = ownerId,
-            // // //         userId = req.userId,
-            // //     }
-            memberBody.userId = req.userId;
-            memberBody.ownerId = ownerId;
-            const ownerMember = await OwnerMembersDetail.create(memberBody);
-            //    }
-        }
-        //    const ownerMember =  OwnerMembersDetail.bulkCreate(req.body.memberArray, 
-        //         {
-        //             fields:["memberName", "memberDob", "relationId"] ,
-        //             // updateOnDuplicate: ["name"] 
-        //         } )
-        //         console.log("ownerMember==>",ownerMember);
-        //         const bodyToUpdate = {
-        //         ownerId :ownerId,
-        //         userId:req.userId
-        //         }
-        //         const ownerMemberUpdate = await OwnerMember.find({ where: { memberId: ownerMember.memberId } }).then(ownerMember => {
-        //             return ownerMember.updateAttributes(bodyToUpdate);
-        //         })
-        // }
-        return res.status(httpStatus.CREATED).json({
-            message: "Owner successfully created",
-            owner
-        });
-    } catch (error) {
-        console.log("error==>", error);
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+      // }
+      // let encryptedMemberBody = {
+      //     memberName: encrypt(key, ownerBody.contact),
+      //     memberDob: encrypt(key, ownerBody.picture),
+      //     userId: req.userId,
+      // }
+      // const ownerMember = await OwnerMembersDetail.create(memberBody);
+      //    }
     }
-}
+    return res.status(httpStatus.CREATED).json({
+      message: "Owner successfully created",
+      owner
+    });
+  } catch (error) {
+    console.log("error==>", error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
+
+exports.create1 = async (req, res, next) => {
+  try {
+    // console.log("creating owner");
+    // console.log(req.body);
+    let existingOwner = await Owner.find({
+      where: { email: encrypt(key, req.body.email) }
+    });
+    if (existingOwner) {
+      res.send("email already exist");
+    }
+    let existingOwner1 = await Owner.find({
+      where: { contact: encrypt(key, req.body.contact) }
+    });
+    if (existingOwner1) {
+      res.send("contact already exist");
+    }
+    let ownerBody = req.body;
+    let memberBody = req.body;
+    let memberId = [];
+    ownerBody.userId = 1;
+    let customVendorName = req.body.ownerName;
+    const userName =
+      customVendorName + "O" + req.body.towerId + req.body.flatDetailId;
+    // console.log("userName==>", userName);
+    ownerBody.userName = userName;
+    const password = passwordGenerator.generate({
+      length: 10,
+      numbers: true
+    });
+    ownerBody.password = password;
+    const owner = await Owner.create({
+      ownerName: encrypt(key, ownerBody.ownerName),
+      userName: encrypt(key, ownerBody.userName),
+      dob: ownerBody.dob,
+      email: encrypt(key, ownerBody.email),
+      contact: encrypt(key, ownerBody.contact),
+      password: ownerBody.password,
+      gender: encrypt(key, ownerBody.gender),
+      permanentAddress: encrypt(key, ownerBody.permanentAddress),
+      bankName: encrypt(key, ownerBody.bankName),
+      accountHolderName: encrypt(key, ownerBody.accountHolderName),
+      accountNumber: encrypt(key, ownerBody.accountHolderName),
+      panCardNumber: encrypt(key, ownerBody.panCardNumber),
+      IFSCCode: encrypt(key, ownerBody.IFSCCode),
+      noOfMembers: ownerBody.noOfMembers,
+      userId: ownerBody.userId,
+      societyId: ownerBody.societyId,
+      towerId: ownerBody.towerId,
+      flatDetailId: ownerBody.flatDetailId
+    });
+    const ownerId = owner.ownerId;
+    if (req.body.profilePicture) {
+      let fileName = ownerBody.fileName.split(".")[0];
+      let fileExt = ownerBody.fileName.split(".")[1];
+      saveToDisc(
+        fileName,
+        fileExt,
+        ownerBody.profilePicture,
+        (err, resp) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log(resp);
+          // }
+          const updatedImage = {
+            picture: encrypt(key, resp)
+          };
+          Owner.update(updatedImage, { where: { ownerId: ownerId } });
+        }
+      );
+    }
+    if (ownerBody.noOfMembers) {
+      let ids = [];
+      let memberNewArray = [];
+      memberBody.userId = req.userId;
+      memberBody.ownerId = ownerId;
+
+      req.body.member.map(member => {
+        member.memberName = encrypt(key, member.memberName);
+        member.gender = encrypt(key, member.gender);
+        memberNewArray.push(member);
+      });
+      console.log("hello", memberNewArray);
+      const ownerMember = await OwnerMembersDetail.bulkCreate(
+        memberNewArray,
+        { returning: true },
+        {
+          fields: ["memberName", "memberDob", "gender", "relationId"]
+          // updateOnDuplicate: ["name"]
+        }
+      );
+
+      ownerMember.map(x => ids.push(x.memberId));
+      const bodyToUpdate = {
+        ownerId: ownerId,
+        userId: req.userId,
+        relationId: req.body.relationId
+      };
+      console.log("bodytoUpdate ==>", bodyToUpdate);
+      console.log(ownerMember.memberId);
+      const updatedMember = await OwnerMembersDetail.update(bodyToUpdate, {
+        where: { memberId: { [Op.in]: ids } }
+      });
+      // const ownerMemberUpdate = await OwnerMembersDetail.find({ where: { memberId: ownerMember.memberId } }).then(ownerMember => {
+      //     return ownerMember.updateAttributes(bodyToUpdate);
+      // })
+
+      // }
+      // let encryptedMemberBody = {
+      //     memberName: encrypt(key, ownerBody.contact),
+      //     memberDob: encrypt(key, ownerBody.picture),
+      //     userId: req.userId,
+      // }
+      // const ownerMember = await OwnerMembersDetail.create(memberBody);
+      //    }
+    }
+    return res.status(httpStatus.CREATED).json({
+      message: "Owner successfully created",
+      owner
+    });
+  } catch (error) {
+    console.log("error==>", error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
+
+// exports.test = async (req, res, next) => {
+//     try {
+//         console.log("creating owner");
+//         let ownerBody = req.body;
+//         let memberBody = req.body;
+//         ownerBody.userId = req.userId;
+//         let customVendorName = req.body.ownerName;
+//         const userName = customVendorName + 'O' + req.body.towerId + req.body.flatDetailId;
+//         console.log("userName==>", userName);
+//         ownerBody.userName = userName;
+//         const password = passwordGenerator.generate({
+//             length: 10,
+//             numbers: true
+//         });
+//         ownerBody.password = password;
+//         const owner = await Owner.create(ownerBody);
+//         const ownerId = owner.ownerId;
+//         if (req.files) {
+//             profileImage = req.files.profilePicture[0].path;
+//             // }
+//             const updatedImage = {
+//                 picture: profileImage
+//             };
+//             const imageUpdate = await Owner.find({ where: { ownerId: ownerId } }).then(owner => {
+//                 return owner.updateAttributes(updatedImage)
+//             })
+//         }
+//         if (ownerBody.noOfMembers) {
+
+//             // let result = [];
+//             // console.log("no of members===",ownerBody.noOfMembers);
+//             // result = Object.keys(ownerBody);
+//             // for (i = 1; i <= ownerBody.noOfMembers; i++) {
+//             //  result.forEach(item => {
+//             //      let memberName = item + [i];
+//             //      console.log(memberName);
+//             // if(item === 'memberName+[i]'){
+
+//             // }
+//             //      })
+//             // // let ownerMemberBody = {};
+//             // // let test = ownerBody.memberName1;
+//             // // console.log(test)
+//             // // console.log(test + [i])
+//             // // console.log(ownerBody.memberName+[i]);
+//             // // //  const body= {
+//             // // //         ownerId = ownerId,
+//             // // //         userId = req.userId,
+//             // //     }
+//             memberBody.userId = req.userId;
+//             memberBody.ownerId = ownerId;
+//             const ownerMember = await OwnerMembersDetail.create(memberBody);
+//             //    }
+//         }
+//         //    const ownerMember =  OwnerMembersDetail.bulkCreate(req.body.memberArray,
+//         //         {
+//         //             fields:["memberName", "memberDob", "relationId"] ,
+//         //             // updateOnDuplicate: ["name"]
+//         //         } )
+//         //         console.log("ownerMember==>",ownerMember);
+//         //         const bodyToUpdate = {
+//         //         ownerId :ownerId,
+//         //         userId:req.userId
+//         //         }
+//         //         const ownerMemberUpdate = await OwnerMember.find({ where: { memberId: ownerMember.memberId } }).then(ownerMember => {
+//         //             return ownerMember.updateAttributes(bodyToUpdate);
+//         //         })
+//         // }
+//         return res.status(httpStatus.CREATED).json({
+//             message: "Owner successfully created",
+//             owner
+//         });
+//     } catch (error) {
+//         console.log("error==>", error);
+//         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+//     }
+// }
 
 exports.get = async (req, res, next) => {
-    try {
-        const owner = await Owner.findAll({
-            // where: { isActive: true },
-            order: [['createdAt', 'DESC']],
-            // include: [{
-            //     model: User,
-            //     as: 'organiser',
-            //     attributes: ['userId', 'userName'],
-            // }]
-        });
-        if (owner) {
-            return res.status(httpStatus.CREATED).json({
-                message: "Owner Content Page",
-                owner
-            });
-        }
-    } catch (error) {
-        console.log("error==>", error)
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  try {
+    const owner = await Owner.findAll({
+      // where: { isActive: true },
+      order: [["createdAt", "DESC"]]
+      // include: [{
+      //     model: User,
+      //     as: 'organiser',
+      //     attributes: ['userId', 'userName'],
+      // }]
+    });
+    if (owner) {
+      return res.status(httpStatus.CREATED).json({
+        message: "Owner Content Page",
+        owner
+      });
     }
-}
+  } catch (error) {
+    console.log("error==>", error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
 
-exports.testUpload = async(req,res,next) =>{
-    try{
-        res.send('hello');
-        const file = req.files.file;
+exports.get1 = async (req, res, next) => {
+  let getOwners = [];
+  try {
+    const owners = await Owner.findAll({
+      where: { isActive: true },
+      order: [["createdAt", "DESC"]],
 
-        // if (!req.files.file) return res.status(400).send("No files were uploaded.");
+      include: [
+        {
+          model: OwnerMembersDetail
+        },
+        { model: FlatDetail },
+        { model: Society },
+        { model: Tower }
+      ]
+    });
 
-        file.mv(`./public/profilePictures/${req.files.file.name}`, err => {
-            if (err) {
-                console.log(err);
-            }
-        });
-    } catch (error) {
-        console.log("error==>", error)
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    console.log(owners);
+
+    owners.map(owner => {
+      owner.ownerName = decrypt(key, owner.ownerName);
+      owner.userName = decrypt(key, owner.userName);
+      owner.email = decrypt(key, owner.email);
+      owner.contact = decrypt(key, owner.contact);
+      owner.gender = decrypt(key, owner.gender);
+      owner.permanentAddress = decrypt(key, owner.permanentAddress);
+      owner.picture = decrypt(key, owner.picture);
+      owner.picture = owner.picture.replace('../','');
+      owner.picture = owner.picture.replace('../','');
+      owner.bankName = decrypt(key, owner.bankName);
+      owner.accountHolderName = decrypt(key, owner.accountHolderName);
+      owner.accountNumber = decrypt(key, owner.accountNumber);
+      owner.panCardNumber = decrypt(key, owner.panCardNumber);
+      owner.IFSCCode = decrypt(key, owner.IFSCCode);
+      owner.owner_members_detail_masters.forEach(x => {
+        x.memberName = decrypt(key, x.memberName);
+      });
+      getOwners.push(owner);
+    });
+    console.log(getOwners);
+    if (owners) {
+      return res.status(httpStatus.CREATED).json({
+        message: "Owner Content Page",
+        getOwners
+      });
     }
-}
+  } catch (error) {
+    console.log("error==>", error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
+
+// exports.testUpload = async(req,res,next) =>{
+//     try{
+//         res.send('hello');
+//         const file = req.files.file;
+
+//         // if (!req.files.file) return res.status(400).send("No files were uploaded.");
+
+//         file.mv(`./public/profilePictures/${req.files.file.name}`, err => {
+//             if (err) {
+//                 console.log(err);
+//             }
+//         });
+//     } catch (error) {
+//         console.log("error==>", error)
+//         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+//     }
+// }
 
 exports.getFlatNo = async (req, res, next) => {
-    try {
-        console.log("req.param id==>", req.params.id)
-        const owner = await FlatDetail.findAll({
-            // where: { towerId: req.params.id },
-            where: {
-                [Op.and]: [
-                    { towerId: req.params.id },
-                    { isActive: true }
-                ]
-            },
-            order: [['createdAt', 'DESC']],
-            include: [
-                { model: Tower },
-            //     // {model:FlatDetail}
-            //     // include: [
-            //     //     { model: Tower }
-            //     // ]
-            ]
-        });
-        if (owner) {
-            return res.status(httpStatus.CREATED).json({
-                message:" Flat Content Page",
-                owner
-            });
-        }
-    } catch (error) {
-        console.log("error==>", error)
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  try {
+    console.log("req.param id==>", req.params.id);
+    const owner = await FlatDetail.findAll({
+      // where: { towerId: req.params.id },
+      where: {
+        [Op.and]: [{ towerId: req.params.id }, { isActive: true }]
+      },
+      order: [["createdAt", "DESC"]],
+      include: [
+        { model: Tower }
+        //     // {model:FlatDetail}
+        //     // include: [
+        //     //     { model: Tower }
+        //     // ]
+      ]
+    });
+    if (owner) {
+      return res.status(httpStatus.CREATED).json({
+        message: " Flat Content Page",
+        owner
+      });
     }
-}
+  } catch (error) {
+    console.log("error==>", error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
 
 exports.getFlatDetail = async (req, res, next) => {
-    try {
-        console.log("req.param id==>", req.params.id)
-        const owner = await Owner.findAll({
-            where: { flatDetailId: req.params.id },
-            order: [['createdAt', 'DESC']],
-            include: [
-                {
-                    model: Tower,
-                    attributes: ['towerId', 'towerName']
-                },
-                {
-                    model: Society,
-                    attributes: ['societyId', 'societyName']
-                },
-                {
-                    model: User,
-                    attributes: ['userId', 'userName']
-                },
-
-                //     // include: [
-                //     //     { model: Tower }
-                //     // ]
-            ]
-        });
-        if (owner) {
-            return res.status(httpStatus.CREATED).json({
-                message: "Owner Flat Content Page",
-                owner
-            });
+  try {
+    console.log("req.param id==>", req.params.id);
+    const owner = await Owner.findAll({
+      where: { flatDetailId: req.params.id },
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: Tower,
+          attributes: ["towerId", "towerName"]
+        },
+        {
+          model: Society,
+          attributes: ["societyId", "societyName"]
+        },
+        {
+          model: User,
+          attributes: ["userId", "userName"]
         }
-    } catch (error) {
-        console.log("error==>", error)
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+
+        //     // include: [
+        //     //     { model: Tower }
+        //     // ]
+      ]
+    });
+    if (owner) {
+      return res.status(httpStatus.CREATED).json({
+        message: "Owner Flat Content Page",
+        owner
+      });
     }
+  } catch (error) {
+    console.log("error==>", error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
+
+let deletePhoto = async function(owner) {
+  let x = decrypt(key, owner.picture);
+  console.log(x);
+ x = x.replace('../','');
+ x = x.replace('../','');
+  let y = await fs.unlink(x);
+};
+
+exports.update1 = async (req, res, next) => {
+  let updAttr = {};
+  let attrArr = [
+    "userName",
+    "email",
+    "contact",
+    "gender",
+    "bankName",
+    "accountHolderName",
+    "accountNumber",
+    "panCardNumber",
+    "IFSCCode",
+    "permanentAddress",
+    "currentAddress",
+    "contact"
+  ];
+  let ids = ["flatDetailId", "societyId", "towerId"];
+  let others = ["dob","noOfMembers"];
+  try {
+    console.log("updating vendor");
+    console.log(":::::req.body==>", req.body);
+    const id = req.params.id;
+    console.log(":::::id", id);
+    if (!id) {
+      return res
+        .status(httpStatus.UNPROCESSABLE_ENTITY)
+        .json({ message: "Id is missing" });
+    }
+    const update = req.body;
+    // const empty = isEmpty(update)
+    // console.log(empty)
+
+    if (!update) {
+      return res
+        .status(httpStatus.UNPROCESSABLE_ENTITY)
+        .json({ message: "Please try again " });
+    }
+    const updatedOwner = await Owner.find({
+      where: { ownerId: id, isActive: false }
+    });
+    attrArr.forEach(attr => {
+      if (
+        attr in req.body &&
+        req.body[attr] !== undefined &&
+        req.body[attr] !== null
+      ) {
+        updAttr[attr] = encrypt(key, req.body[attr]);
+      }
+    });
+    others.forEach(attr => {
+      if (
+        attr in req.body &&
+        req.body[attr] !== undefined &&
+        req.body[attr] !== null
+      ) {
+        updAttr[attr] = req.body[attr];
+      }
+    });
+    ids.forEach(attr => {
+      if (
+        attr in req.body &&
+        req.body[attr] !== undefined &&
+        req.body[attr] !== null
+      ) {
+        updAttr[attr] = req.body[attr];
+      }
+    });
+    if (
+      req.body.profilePicture !== undefined &&
+      req.body.profilePicture !== null &&
+      req.body.fileName !== undefined &&
+      req.body.fileName !== null 
+    ) {
+      let fileName = req.body.fileName.split(".")[0];
+      let fileExt = req.body.fileName.split(".")[1];
+      deletePhoto(updatedOwner);
+      saveToDisc(
+        fileName,
+        fileExt,
+        req.body.profilePicture,
+        async (err, resp) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log(resp);
+          // }
+          const updatedImage = {
+            picture: encrypt(key, resp)
+          };
+          await Owner.update(updatedImage, { where: { ownerId: id } });
+        }
+      );
+    }
+    let updatedOwner1 = await updatedOwner.updateAttributes(updAttr);
+
+    if (updatedOwner1) {
+      updatedOwner1.userName = decrypt(key, updatedOwner1.userName);
+      updatedOwner1.ownerName = decrypt(key, updatedOwner1.ownerName);
+      updatedOwner1.picture = decrypt(key, updatedOwner1.picture);
+      updatedOwner1.permanentAddress = decrypt(
+        key,
+        updatedOwner1.permanentAddress
+      );
+      updatedOwner1.contact = decrypt(key, updatedOwner1.contact);
+      updatedOwner1.gender = decrypt(key, updatedOwner1.gender);
+
+      if (req.body.memberId !== undefined && req.body.memberId !== null) {
+        let vendorService = await OwnerMembersDetail.find({
+          where: {
+            ownerId: id,
+            memberId: req.body.memberId
+          }
+        });
+        OwnerMembersDetail.updateAttributes({});
+        // if(req.body.serviceId){
+        //     vendorService.updateAttributes({
+        //         serviceId:req.body.serviceId
+        //     });
+        // }
+      }
+
+      return res.status(httpStatus.OK).json({
+        message: "Owner Updated Page",
+        vendor: updatedOwner1
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  }
+};
+
+
+exports.delete = async (req,res,next) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+    }
+    const update = req.body;
+    if (!update) {
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+    }
+    const updatedOwner = await Owner.find({ where: { ownerId: id } }).then(owner => {
+        return owner.updateAttributes(update)
+    })
+
+    // const updatedVendorService = await VendorService.find({ where: { vendorId: id } }).then(vendorService => {
+    //     return vendorService.updateAttributes(update)
+    // })
+    const updatedOwnerMembersDetail = await OwnerMembersDetail.update(update, { where: { ownerId:id} })
+    if (updatedOwner && updatedOwnerMembersDetail) {
+        return res.status(httpStatus.OK).json({
+            message: "Owner deleted successfully",
+        });
+    }
+} catch (error) {
+    console.log("error::",error)
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+}
 }

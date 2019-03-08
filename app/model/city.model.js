@@ -6,7 +6,9 @@ module.exports = (sequelize, Sequelize) => {
 			primaryKey:true
 		},
 	  cityName: {
-		  type: Sequelize.STRING
+		  type: Sequelize.STRING,
+		  unique: true,
+		  unique:'compositeIndex'
 	  },
 		isActive:{
 			type:Sequelize.BOOLEAN,

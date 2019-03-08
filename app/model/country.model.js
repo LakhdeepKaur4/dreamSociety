@@ -6,7 +6,8 @@ module.exports = (sequelize, Sequelize) => {
 			primaryKey:true
 		},
 	  countryName: {
-		  type: Sequelize.STRING
+			type: Sequelize.STRING,
+			unique:'compositeIndex'
 		},
 		code: {
 		  type: Sequelize.STRING

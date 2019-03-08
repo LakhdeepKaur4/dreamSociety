@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
 		flatId: {
 			type: Sequelize.INTEGER,
 			autoIncrement: true,
-			primaryKey: true
+			primaryKey: true,
 		},
 		flatType: {
 			type: Sequelize.STRING

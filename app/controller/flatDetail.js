@@ -10,32 +10,33 @@ exports.create = async (req, res, next) => {
     try {
         let body = req.body;
         body.userId = req.userId;
-        const flatNo = await FlatDetail.findOne({
+        const flat = await FlatDetail.findOne({
             where: {
                 [Op.and]: [
                     { flatNo: body.flatNo },
-                    { isActive: true }
-                ]
-            }
-        })
-        if (flatNo) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                message: "Flat number already exists",
-            });
-        }
-        const towerId = await FlatDetail.findOne({
-            where: {
-                [Op.and]: [
                     { towerId: body.towerId },
                     { isActive: true }
                 ]
             }
         })
-        if (towerId) {
+        if (flat) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                message: "Tower already exists",
+                message: "Flat already exists",
             });
         }
+        // const towerId = await FlatDetail.findOne({
+        //     where: {
+        //         [Op.and]: [
+        //             { towerId: body.towerId },
+        //             { isActive: true }
+        //         ]
+        //     }
+        // })
+        // if (towerId) {
+        //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+        //         message: "Tower already exists",
+        //     });
+        // }
         const flatDetail = await FlatDetail.create(body);
         return res.status(httpStatus.CREATED).json({
             message: "FlatDetail successfully created",
@@ -79,6 +80,20 @@ exports.update = async (req, res, next) => {
         console.log("update==>", update)
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        const flatNo = await FlatDetail.findOne({
+            where: {
+                [Op.and]: [
+                    { flatNo: req.body.flatNo },
+                    { towerId: req.body.towerId },
+                    { isActive: true }
+                ]
+            }
+        })
+        if (flatNo) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                message: "Flat number already exists",
+            });
         }
         const updatedFlatDetail = await FlatDetail.find({ where: { flatDetailId: id } }).then(flatDetail => {
             return flatDetail.updateAttributes(update)

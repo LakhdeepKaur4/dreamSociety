@@ -43,7 +43,7 @@ module.exports = function(app) {
 	
 	app.get('/', userController.start);
 
-	app.post('/api/auth/signup', [verifySignUp.checkDuplicateEmail,verifySignUp.checkRolesExisted,verifySignUp.checkDuplicateUserName], userController.signup);
+	app.post('/api/auth/signup', [verifySignUp.checkRolesExisted], userController.signup);
 	
     app.post('/api/auth/signin', userController.signin);
 	
@@ -187,7 +187,7 @@ module.exports = function(app) {
 
 	app.put('/api/size/delete/deleteSelected',[authJwt.verifyToken], sizeController.deleteSelected);
 
-	app.put('/api/size/:id',[authJwt.verifyToken], sizeController.delete);
+	app.put('/api/size/delete/:id',[authJwt.verifyToken], sizeController.delete);
 
 	app.post('/api/event', [authJwt.verifyToken],eventController.create);
 
@@ -385,19 +385,17 @@ module.exports = function(app) {
 
 	app.put('/api/societyMemberEvent/:id', [authJwt.verifyToken], societyMemberEvent.update);
 
-	app.post('/api/owner',[authJwt.verifyToken],owner.create);
+	app.post('/api/owner',[authJwt.verifyToken],owner.create1);
 
-	app.get('/api/owner',[authJwt.verifyToken],owner.get);
+	app.get('/api/owner',[authJwt.verifyToken],owner.get1);
 
 	app.get('/api/owner/:id',[authJwt.verifyToken],owner.getFlatNo);
 
 	app.get('/api/owner/getFlatDetail/:id',[authJwt.verifyToken],owner.getFlatDetail);
-
-	app.post('/api/owner/upload',owner.testUpload);
 	
-	app.post('/api/tenant',[authJwt.verifyToken],fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }]),tenant.create);
+	app.post('/api/tenant',[authJwt.verifyToken],tenant.createEncrypted);
 
-	app.get('/api/tenant',[authJwt.verifyToken],tenant.get);
+	app.get('/api/tenant',[authJwt.verifyToken],tenant.getDecrypted);
 
 	app.post('/api/societyMemberEventBooking', [authJwt.verifyToken], societyMemberEventBooking.create);
 

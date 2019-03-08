@@ -9,14 +9,37 @@ const Op = db.Sequelize.Op;
 
 exports.create = async (req, res) => {
     console.log("creating city");
+    // const city = await City.findOne({
+    //     where: {
+    //         // cityName: req.body.cityName
+    //         [Op.and]: [
+    //             { stateId: req.body.stateId },
+    //             { countryId: req.body.countryId },
+    //             { cityName: req.body.cityName },
+    //             { isActive: true }
+    //         ]
+    //     }
+    // })
+    //  console.log(city);
+    // if (city) {
+    //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "City Name already Exists" })
+    // }
 
-    const city = await City.findOne({
+    const cities = await City.findAll({
         where: {
-            cityName: req.body.cityName
+            [Op.and]:[
+                {isActive: true},
+                { stateId: req.body.stateId },
+                { countryId: req.body.countryId },
+            ]
         }
     })
-
-    if (city) {
+    // console.log(cities);
+    let error = cities.some(city => {
+        return city.cityName.toLowerCase().replace(/ /g, '') == req.body.cityName.toLowerCase().replace(/ /g, '');
+    });
+    if (error) {
+        console.log("inside state");
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "City Name already Exists" })
     }
 
@@ -66,10 +89,28 @@ exports.getById = (req, res) => {
     })
 }
 
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     const id = req.params.id;
     if (!id) {
         res.json("Please enter id");
+    }
+    const cities = await City.findAll({
+        where: {
+            [Op.and]:[
+                {isActive: true},
+                { stateId: req.body.stateId },
+                { countryId: req.body.countryId },
+            ]
+        }
+    })
+    console.log(cities);
+    let error = cities.some(city => {
+        return city.cityName.toLowerCase().replace(/ /g, '') == req.body.cityName.toLowerCase().replace(/ /g, '');
+    });
+    console.log(error);
+    if (error) {
+        console.log("inside city");
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "City Name already Exists" })
     }
     const updates = req.body;
     City.find({

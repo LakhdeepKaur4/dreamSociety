@@ -127,12 +127,12 @@ exports.deletePhoto = function (req, res) {
 exports.delete = async (req, res, next) => {
     try {
         const id = req.params.id;
-        console.log("id==>",id)
+        console.log("id==>", id)
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
         const update = req.body;
-        console.log("update-->",update)
+        console.log("update-->", update)
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
@@ -217,79 +217,103 @@ referenceConstraintReturn = (checkConstraint, object, property, entry) => {
 }
 
 exports.createEncrypt = async (req, res, next) => {
-        try {
-            let body = req.body;
-            console.log('Body ===>', body);
-            body.userId = req.userId;
-            let employee;
-            let employeeId;
-            await Employee
-                .create({
-                    firstName: encrypt(body.firstName),
-                    middleName: encrypt(body.middleName),
-                    lastName: encrypt(body.lastName),
-                    CTC: encrypt(body.CTC),
-                    startDate: encrypt(body.startDate),
-                    endDate: encrypt(body.endDate),
-                    userId: body.userId,
-                    countryId: body.countryId,
-                    stateId: body.stateId,
-                    cityId: body.cityId,
-                    locationId: body.locationId
-                })
-                .then(emp => {
-                    // console.log(emp);
-                    employee = emp;
-                    // console.log(emp.employeeId);
-                    employeeId = emp.employeeId;
-                    // console.log(employeeId);
-                })
-                .catch(err => console.log('Creation Error ===>', err))
-
-            if (req.files) {
-
-                let profileImage;
-                // console.log(req.files.profilePicture[0].path);
-                profileImage = req.files.profilePicture[0].path;
-
-                const updateImage = {
-                    picture: encrypt(profileImage)
-                };
+    try {
+        let body = req.body;
+        console.log('Body ===>', body);
+        body.userId = req.userId;
+        let employee;
+        let employeeId;
+        await Employee
+            .create({
+                firstName: encrypt(body.firstName),
+                middleName: encrypt(body.middleName),
+                lastName: encrypt(body.lastName),
+                salary: encrypt(body.salary),
+                address: encrypt(body.address),
+                startDate: encrypt(body.startDate),
+                // // endDate: encrypt(body.endDate),
+                userId: body.userId,
+                countryId: body.countryId,
+                stateId: body.stateId,
+                cityId: body.cityId,
+                locationId: body.locationId
+            })
+            .then(emp => {
+                // console.log(emp);
+                employee = emp;
+                // console.log(emp.employeeId);
+                employeeId = emp.employeeId;
                 // console.log(employeeId);
-                Employee.find(
-                    {
-                        where: {
-                            employeeId: employeeId
-                        }
-                    })
-                    .then(employee => {
-                        // console.log(employeeId);
-                        employee.updateAttributes(updateImage);
-                    })
-                    .catch(err => console.log(err))
-                documentOne = req.files.documentOne[0].path;
-                documentTwo = req.files.documentTwo[0].path;
-                const updateDocument = {
-                    documentOne: encrypt(documentOne),
-                    documentTwo: encrypt(documentTwo)
-                }
-                Employee.find({
+            })
+            .catch(err => console.log('Creation Error ===>', err))
+
+        if (req.files) {
+
+            let profileImage;
+            // console.log(req.files.profilePicture[0].path);
+            profileImage = req.files.profilePicture[0].path;
+
+            const updateImage = {
+                picture: encrypt(profileImage)
+            };
+            // console.log(employeeId);
+            await Employee.find(
+                {
                     where: {
                         employeeId: employeeId
                     }
                 })
-                    .then(employee => {
-                        employee.updateAttributes(updateDocument)
-                    })
-                    .catch(err => console.log(err))
+                .then(employee => {
+                    // console.log(employeeId);
+                    employee.updateAttributes(updateImage);
+                })
+                .catch(err => console.log(err))
+            documentOne = req.files.documentOne[0].path;
+            documentTwo = req.files.documentTwo[0].path;
+            const updateDocument = {
+                documentOne: encrypt(documentOne),
+                documentTwo: encrypt(documentTwo)
             }
-        } catch (error) {
-            console.log(error);
-            return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-        }
-    }
+            await Employee.find({
+                where: {
+                    employeeId: employeeId
+                }
+            })
+                .then(employee => {
+                    employee.updateAttributes(updateDocument);
+                })
+                .catch(err => console.log(err))
 
-exports.getDecrypt = (req, res, next) => {
+            Employee.find({
+                where: {
+                    employeeId: employeeId
+                }
+            })
+                .then(employee => {
+                    employee.firstName = decrypt(employee.firstName);
+                    employee.middleName = decrypt(employee.middleName);
+                    employee.lastName = decrypt(employee.lastName);
+                    employee.salary = decrypt(employee.salary);
+                    employee.address = decrypt(employee.address);
+                    employee.startDate = decrypt(employee.startDate);
+                    // // employee.endDate = decrypt(employee.endDate);
+                    employee.picture = decrypt(employee.picture);
+                    employee.documentOne = decrypt(employee.documentOne);
+                    employee.documentTwo = decrypt(employee.documentTwo);
+                    return res.status(httpStatus.OK).json({
+                        message: "Employee Updated Page",
+                        employee
+                    });
+                })
+                .catch(err => console.log(err))
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.getDecrypt = async (req, res, next) => {
     try {
         const employee = [];
         Employee.findAll({
@@ -305,13 +329,15 @@ exports.getDecrypt = (req, res, next) => {
             ]
         })
             .then(emp => {
+                // console.log(emp);
                 emp.map(item => {
                     item.firstName = decrypt(item.firstName);
                     item.middleName = decrypt(item.middleName);
                     item.lastName = decrypt(item.lastName);
-                    item.CTC = decrypt(item.CTC);
+                    item.salary = decrypt(item.salary);
+                    item.address = decrypt(item.address);
                     item.startDate = decrypt(item.startDate);
-                    item.endDate = decrypt(item.endDate);
+                    // // item.endDate = decrypt(item.endDate);
                     item.picture = decrypt(item.picture);
                     item.documentOne = decrypt(item.documentOne);
                     item.documentTwo = decrypt(item.documentTwo);
@@ -415,9 +441,10 @@ exports.updateEncrypt = async (req, res, next) => {
         firstNameCheck = constraintCheck('firstName', update);
         middleNameCheck = constraintCheck('middleName', update);
         lastNameCheck = constraintCheck('lastName', update);
-        CTCCheck = constraintCheck('CTC', update);
+        salaryCheck = constraintCheck('salary', update);
+        addressCheck = constraintCheck('address', update);
         startDateCheck = constraintCheck('startDate', update);
-        endDateCheck = constraintCheck('endDate', update);
+        // // endDateCheck = constraintCheck('endDate', update);
         countryIdCheck = constraintCheck('countryId', update);
         stateIdCheck = constraintCheck('stateId', update);
         cityIdCheck = constraintCheck('cityId', update);
@@ -426,30 +453,32 @@ exports.updateEncrypt = async (req, res, next) => {
         firstName = constraintReturn(firstNameCheck, update, 'firstName', employee);
         middleName = constraintReturn(middleNameCheck, update, 'middleName', employee);
         lastName = constraintReturn(lastNameCheck, update, 'lastName', employee);
-        CTC = constraintReturn(CTCCheck, update, 'CTC', employee);
+        salary = constraintReturn(salaryCheck, update, 'salary', employee);
+        address = constraintReturn(addressCheck, update, 'address', employee);
         startDate = constraintReturn(startDateCheck, update, 'startDate', employee);
-        endDate = constraintReturn(endDateCheck, update, 'endDate', employee);
+        // // // endDate = constraintReturn(endDateCheck, update, 'endDate', employee);
         countryId = referenceConstraintReturn(countryIdCheck, update, 'countryId', employee);
         stateId = referenceConstraintReturn(stateIdCheck, update, 'stateId', employee);
         cityId = referenceConstraintReturn(cityIdCheck, update, 'cityId', employee);
         locationId = referenceConstraintReturn(locationIdCheck, update, 'locationId', employee);
-        
-            const toBeUpdated = {
-                firstName: firstName,
-                middleName: middleName,
-                lastName: lastName,
-                CTC: CTC,
-                startDate: startDate,
-                endDate: endDate,
-                userId: update.userId,
-                countryId: countryId,
-                stateId: stateId,
-                cityId: cityId,
-                locationId: locationId,
-                picture: profileImage,
-                documentOne: documentOne,
-                documentTwo: documentTwo
-            };
+
+        const toBeUpdated = {
+            firstName: firstName,
+            middleName: middleName,
+            lastName: lastName,
+            salary: salary,
+            address: address,
+            startDate: startDate,
+            // // endDate: endDate,
+            userId: update.userId,
+            countryId: countryId,
+            stateId: stateId,
+            cityId: cityId,
+            locationId: locationId,
+            picture: profileImage,
+            documentOne: documentOne,
+            documentTwo: documentTwo
+        };
         Employee.find({
             where: {
                 employeeId: id
@@ -462,9 +491,10 @@ exports.updateEncrypt = async (req, res, next) => {
                 employee.firstName = decrypt(employee.firstName);
                 employee.middleName = decrypt(employee.middleName);
                 employee.lastName = decrypt(employee.lastName);
-                employee.CTC = decrypt(employee.CTC);
+                employee.salary = decrypt(employee.salary);
+                employee.address = decrypt(employee.address);
                 employee.startDate = decrypt(employee.startDate);
-                employee.endDate = decrypt(employee.endDate);
+                // // employee.endDate = decrypt(employee.endDate);
                 employee.picture = decrypt(employee.picture);
                 employee.documentOne = decrypt(employee.documentOne);
                 employee.documentTwo = decrypt(employee.documentTwo);

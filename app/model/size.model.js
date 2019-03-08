@@ -6,7 +6,8 @@ module.exports = (sequelize, Sequelize) => {
 			primaryKey: true
 		},
 		sizeType: {
-			type: Sequelize.STRING
+			type: Sequelize.STRING,
+			unique:'compositeIndex'
 		},
 		isActive: {
 			type: Sequelize.BOOLEAN,

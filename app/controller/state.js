@@ -9,15 +9,32 @@ const Op = db.Sequelize.Op;
 exports.create = async (req, res) => {
     console.log("creating state");
 
-    const state = await State.findOne({
+    // const state = await State.findOne({
+    //     where: {
+    //         isActive:true,
+    //         countryId:req.body.countryId,
+    //         stateName: req.body.stateName
+    //     }
+    // })
+    // if (state) {
+    //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "State Name already Exists" })
+    // }
+    const states = await State.findAll({
         where: {
-            stateName: req.body.stateName
+            [Op.and]:[
+                {isActive: true},
+                {countryId:req.body.countryId}
+            ]
         }
     })
-    if (state) {
+    console.log(states);
+    let error = states.some(state => {
+        return state.stateName.toLowerCase().replace(/ /g, '') == req.body.stateName.toLowerCase().replace(/ /g, '');
+    });
+    if (error) {
+        console.log("inside state");
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "State Name already Exists" })
     }
-
     State.create({
         stateName: req.body.stateName,
         stateId: req.body.stateId,
@@ -58,9 +75,12 @@ exports.getById = (req, res) => {
 }
 
 exports.getCountry = (req, res) => {
-    State.findAll({
-        where: { countryId: req.params.id },
-    }).then(state => {
+    State.findAll({where:{
+        [Op.and]: [
+            { countryId: req.params.id },
+            { isActive: true }
+        ]
+   }}).then(state => {
         res.status(200).json(state);
     }).catch(err => {
         res.status(500).json({
@@ -70,10 +90,26 @@ exports.getCountry = (req, res) => {
     })
 }
 
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     const id = req.params.id;
     if (!id) {
         res.json("Please enter id");
+    }
+    const states = await State.findAll({
+        where: {
+            [Op.and]:[
+                {isActive: true},
+                {countryId:req.body.countryId}
+            ]
+        }
+    })
+    console.log(states);
+    let error = states.some(state => {
+        return state.stateName.toLowerCase().replace(/ /g, '') == req.body.stateName.toLowerCase().replace(/ /g, '');
+    });
+    if (error) {
+        console.log("inside state");
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "State Name already Exists" })
     }
     const updates = req.body;
     State.find({

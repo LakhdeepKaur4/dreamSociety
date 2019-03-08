@@ -6,7 +6,8 @@ module.exports = (sequelize, Sequelize) => {
 			primaryKey: true
 		},
 		flatNo: {
-			type: Sequelize.STRING
+			type: Sequelize.STRING,
+			// unique:'compositeIndex'
 		},
 		floor: {
 			type: Sequelize.STRING
