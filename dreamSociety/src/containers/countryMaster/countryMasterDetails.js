@@ -26,7 +26,8 @@ class CountryDetails extends Component{
                 editUserModal: false,
                  menuVisible: false,
                  search: '',
-                 errors:''
+                 errors:'',
+                 message:''
         }
     }
 
@@ -85,7 +86,10 @@ class CountryDetails extends Component{
 
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
-        this.props.updateCountry(countryId,countryName,code,currency,phoneCode).then(() => this.refreshData());;
+        this.props.updateCountry(countryId,countryName,code,currency,phoneCode).then(() => this.refreshData())
+        .catch(err=>{ console.log(err.response.data.message)
+         this.setState({message: err.response.data.message, loading: false})
+         })
   
          this.setState({
            editUserModal: false,loading:true, countryId: '',countryName:'',code:'',currency:'', phoneCode: '' 
@@ -306,6 +310,7 @@ class CountryDetails extends Component{
                                         onChange={this.onChange}
                                          />
                                          <span  className='error'>{this.state.errors.countryName}</span>
+                                         <span className="error">{this.state.message}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">code</Label>

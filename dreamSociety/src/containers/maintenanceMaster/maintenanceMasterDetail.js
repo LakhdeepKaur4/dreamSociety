@@ -19,6 +19,7 @@ class MaintenanceMasterDetail extends Component {
                 isActive: false,
 
             },
+            filterName:'category',
             menuVisible: false,
             search: '',
             modal: false,
@@ -172,7 +173,10 @@ class MaintenanceMasterDetail extends Component {
     renderMaintenance = ({ maintenanceResult }) => {
        
         if (maintenanceResult) {
-            return maintenanceResult.maintenance.filter(this.searchFilter(this.state.search)).map((item, index) => {
+            return maintenanceResult.maintenance.sort((item1,item2)=>{
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                 return (
                     <tr key={item.maintenanceId}>
@@ -245,9 +249,14 @@ class MaintenanceMasterDetail extends Component {
             <Table className="table table-bordered">
                 <thead>
                     <tr>
-                   
+                        <th style={{width:'4%'}}></th>
                         <th>#</th>
-                        <th>Maintenance Category</th>
+                        <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'category'}});
+                        }}>Maintenance Category 
+                         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                        
                         <th>Actions</th>
                     </tr>
                 </thead>

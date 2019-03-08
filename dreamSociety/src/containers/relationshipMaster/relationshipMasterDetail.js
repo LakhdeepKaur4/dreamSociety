@@ -19,6 +19,7 @@ class RelationshipMasterDetail extends Component {
                 isActive: false,
 
             },
+            filterName:'relationName',
             menuVisible: false,
             search: '',
             modal: false,
@@ -173,7 +174,10 @@ class RelationshipMasterDetail extends Component {
     renderRelation = ({ relationResult }) => {
         
         if (relationResult) {
-            return relationResult.relation.filter(this.searchFilter(this.state.search)).map((item, index) => {
+            return relationResult.relation.sort((item1,item2)=>{
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                 return (
                     <tr key={item.relationId}>
@@ -247,7 +251,12 @@ class RelationshipMasterDetail extends Component {
                     <tr>
                         <th style={{width:"4%"}}></th>
                         <th>#</th>
-                        <th>Relation Name</th>
+                        <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'relationName'}});
+                        }}>Relation Name 
+                         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                        
                         <th>Actions</th>
                     </tr>
                 </thead>

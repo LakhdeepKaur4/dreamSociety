@@ -21,6 +21,7 @@ class DesignationMasterDetail extends Component {
                 isActive: false,
 
             },
+            message:'',
             menuVisible: false,
             search: '',
             modal: false,
@@ -93,6 +94,9 @@ class DesignationMasterDetail extends Component {
             })
         this.props.updateDesignation(designationId, designationName)
             .then(() => this.refreshData())
+            .catch(err=>{ console.log(err.response.data.message)
+                this.setState({message: err.response.data.message, loading: false})
+                })
         this.setState({
             editDesignationData: { designationId, designationName },
             modal: !this.state.modal
@@ -299,6 +303,7 @@ class DesignationMasterDetail extends Component {
                                     <Label>Designation Type</Label>
                                     <Input type="text" id="designationId" name="designationName" onChange={this.onChangeHandler} value={this.state.designationName} maxLength={50} onKeyPress={this.onKeyPressHandler} />
                                     <span className="error">{this.state.errors.designationName}</span>
+                                    <span className="error">{this.state.message}</span>
                                 </FormGroup>
 
 
