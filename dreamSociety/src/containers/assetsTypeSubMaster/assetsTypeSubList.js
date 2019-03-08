@@ -10,6 +10,7 @@ class AssetsTypeSubList extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            filterName: "assetType",
             pageData: [],
             activePage: 0,
             assetTypeId: '',
@@ -99,7 +100,10 @@ class AssetsTypeSubList extends Component {
     renderListAssets = ({ getAssetsType }) => {
 
         if (getAssetsType) {
-            return getAssetsType.assetsType.filter(this.searchFilter(this.state.search)).map((item,index) => {
+            return getAssetsType.assetsType.sort((item1,item2)=>{
+                let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal?cmpValue: -cmpValue;
+            }).filter(this.searchFilter(this.state.search)).map((item,index) => {
                 {
                     return (
                         <tr key={item.assetTypeId}>
@@ -204,7 +208,14 @@ class AssetsTypeSubList extends Component {
                     }/></th> */}
                     <th style={{width:"4%"}}></th>
                     <th style={{textAlign:"center",width:"4%"}}>#</th>
-                    <th style={{textAlign:"center"}}>Asset Name</th>
+                    <th  onClick={() => {
+                            this.setState((state) => {
+                                return {
+                                    sortVal: !state.sortVal,
+                                    filterName: 'assetType'
+                                }
+                            });
+                        }} style={{textAlign:"center"}}>Asset Name  <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th style={{textAlign:"center"}}>Assets Sub Type Name</th>
                     <th style={{textAlign:"center"}}>Description</th>
                     <th style={{textAlign:"center"}}>Actions</th>

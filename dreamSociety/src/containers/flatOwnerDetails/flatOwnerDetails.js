@@ -253,6 +253,13 @@ class FlatOwnerDetails extends Component {
             event.preventDefault();
         }
     }
+    // OnKeyPresshandlerEmail(event){
+    //     const pattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    //     let inputChar = String.fromCharCode(event.charCode);
+    //     if (!pattern.test(inputChar)) {
+    //         event.preventDefault();
+    //     }
+    // }
     onSubmit=(e)=>{
         e.preventDefault();
         const {          
@@ -283,6 +290,7 @@ class FlatOwnerDetails extends Component {
             locationId,
             locationName,
             member,
+            fileName,
             ownerGender} = this.state
             const d = new FormData()
             // data.append('ownerName',ownerName)
@@ -359,7 +367,8 @@ class FlatOwnerDetails extends Component {
                 cityId,
                 locationId,
                 locationName,
-                ownerGender
+                ownerGender,
+                fileName
             }
             console.log(FlatOwnerData,...d)
             this.props.addFlatOwner(FlatOwnerData,d)
@@ -476,7 +485,7 @@ class FlatOwnerDetails extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <Label>Email </Label>
-                                <Input placeholder="Email" type='email' name='email' onChange={this.onChangeHandler} />
+                                <Input placeholder="Email" type='email' name='email' onChange={this.onChangeHandler} onKeyPress={this.OnKeyPresshandlerEmail} />
                                 <span className="error">{this.state.errors.email}</span>
                             </FormGroup>
                             <FormGroup>

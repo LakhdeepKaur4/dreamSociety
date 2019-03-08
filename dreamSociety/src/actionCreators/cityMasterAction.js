@@ -49,7 +49,7 @@ export const addCity=(values)=>{
 
    const request = axios.post(`${URN}/city` , values , {headers:authHeader()})
     .then(response => response.data)
-    .catch((err)=>alert(err.response.data.message))
+   
 
     
     return{
@@ -111,7 +111,8 @@ export const deleteCity=(cityId)=>{
     
     const request = axios.put(`${URN}/city/`+ cityId ,{countryId, stateId, cityName}, {headers:authHeader()})
      .then(response => response.data)
-     .catch((err)=>alert(err.response.data.message))
+    
+           
  
      
      return{

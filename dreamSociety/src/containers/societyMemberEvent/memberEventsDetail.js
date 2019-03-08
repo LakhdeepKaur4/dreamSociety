@@ -19,6 +19,7 @@ class MemberEventsDetail extends Component {
                 isActive: false,
 
             },
+            filterName:'societyMemberEventName',
             menuVisible: false,
             search: '',
             modal: false,
@@ -98,16 +99,13 @@ class MemberEventsDetail extends Component {
       deleteMemberEventName = (societyMemberEventId) => {
         let { isActive } = this.state.editMemberEventData
 
-        if(window.confirm('Are You Sure ?')){
+       
+        
         this.setState({ loading: true })
         this.props.deleteMemberEvent(societyMemberEventId, isActive)
             .then(() => this.refreshData())
         this.setState({editMemberEventData: { isActive: false } })
-        }
-        else{
-            this.refreshData()
-            this.setState({editMemberEventData: { isActive: false } })
-        }
+       
       }
 
 
@@ -172,7 +170,10 @@ class MemberEventsDetail extends Component {
     renderMemberEvent = ({ memberEventsResult }) => {
        console.log("sdhshsh", memberEventsResult);
         if (memberEventsResult) {
-            return memberEventsResult.event.filter(this.searchFilter(this.state.search)).map((item, index) => {
+            return memberEventsResult.event.sort((item1,item2)=>{
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                 return (
                     <tr key={item.societyMemberEventId}>
@@ -245,19 +246,13 @@ class MemberEventsDetail extends Component {
             <Table className="table table-bordered">
                 <thead>
                     <tr>
-                    <th>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
+                    <th style={{width:'4%'}}></th>
                         <th>#</th>
-                        <th>Events Name</th>
+                        <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'societyMemberEventName'}});
+                        }}>Events Name 
+                         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -275,12 +270,23 @@ class MemberEventsDetail extends Component {
                     </div>
                         <div className="top-details">
                             <h3>Society Member Event Name</h3>
-                            <Button onClick={this.routeToAddNewMemberEvent} color="primary">Add EventName</Button>
+                            <Button onClick={this.routeToAddNewMemberEvent} color="primary">Add Event</Button>
                         </div>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
                              <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+         <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></Label>
 
                         {!this.state.loading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>

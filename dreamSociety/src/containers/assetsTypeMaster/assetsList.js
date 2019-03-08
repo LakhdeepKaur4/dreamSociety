@@ -11,6 +11,7 @@ class AssetList extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            filterName: "assetName",
             assetId: '',
             assets: '',
             description: '',
@@ -87,7 +88,10 @@ class AssetList extends Component {
 
     renderList = ({ AssetsList }) => {
         if (AssetsList) {
-            return AssetsList.assets.filter(this.searchFilter(this.state.search)).map((items,index) => {
+            return AssetsList.assets.sort((item1,item2)=>{
+                let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal?cmpValue: -cmpValue;
+            }).filter(this.searchFilter(this.state.search)).map((items,index) => {
                 return (
 
                     <tr key={items.assetId}>
@@ -192,7 +196,14 @@ class AssetList extends Component {
                     }/></th> */}
                     <th style={{width:"4%"}}></th>
                     <th style={{textAlign:"center",width:"4%"}}>#</th>
-                    <th style={{textAlign:"center"}}>Asset Name</th>
+                    <th onClick={() => {
+                            this.setState((state) => {
+                                return {
+                                    sortVal: !state.sortVal,
+                                    filterName: 'assetName'
+                                }
+                            });
+                        }} style={{textAlign:"center"}}>Asset Name  <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th style={{textAlign:"center"}}>Description</th>
                     <th style={{textAlign:"center"}}>Actions</th>
                 </tr>
