@@ -7,6 +7,7 @@ import Select from 'react-select';
 import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
+import Spinner from '../../components/spinner/spinner';
 import { getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail } from '../../actionCreators/tenantMasterAction';
 
 class AddTenant extends Component{
@@ -39,7 +40,8 @@ class AddTenant extends Component{
             fileName: '',
             imageSizeError:'',
             errors:{},
-            emailValidError:''
+            emailValidError:'',
+            loading: false,
         }
     }
 
@@ -174,10 +176,14 @@ class AddTenant extends Component{
         console.log(this.state)
     }
     onSubmit = (e) => {
+        let abc = localStorage.getItem('societyId')
+        console.log(abc);
+        this.setState({...this.state.societyId,societyId: abc})
+        console.log(this.state.societyId)
         e.preventDefault()
         let { tenantName, dob, gender, email, contact, profilePicture, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, societyId, member, fileName } = this.state;
+            societyName, member, fileName, societyId } = this.state;
         console.log(this.state)
         let data = []
         for(let i = 0; i < this.state.noOfMembers; i++){
@@ -197,8 +203,7 @@ class AddTenant extends Component{
 
         if(this.state.imageSizeError === ''){
             this.props.addTenantDetail({tenantName, dob, gender, email, contact, profilePicture, permanentAddress, bankName, 
-                accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-                societyName, societyId, member, fileName});
+                accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, societyId, member, fileName});
         }
     }
 
@@ -238,14 +243,13 @@ class AddTenant extends Component{
 
     nextPrev = () => {
         let errors = {};
-        const {tenantName, dob, gender, contact, email, societyId, correspondingAddress, permanentAddress} = this.state;
+        const {tenantName, dob, gender, contact, email, correspondingAddress, permanentAddress} = this.state;
         if(this.state.step === 1){
             if(tenantName === '') errors.tenantName = `Tenant Name can't be empty.`;
             if(dob === '') errors.dob = `Date of Birth can't be empty.`;
             if(gender === '') errors.gender = `Gender can't be empty`;
             if(contact === '') errors.contact= `Contact can't be empty.`;
             if(email === '') errors.email = `Email can't be empty.`;
-            if(!societyId) errors.societyId = `Society can't be empty.`
             if(correspondingAddress === '') errors.correspondingAddress = `Corresponding Address can't be empty.`;
             if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
             const isValid = Object.keys(errors).length === 0
@@ -341,6 +345,7 @@ class AddTenant extends Component{
                           onChange={this.relationHandler.bind(this,'relationId'+i )}  required/>
                     </Col>
                     <Col md={3} style={{display: 'flex'}}>
+                    <Label>Gender: </Label>
                         <Col md={1}>
                             <Label>M</Label>
                             <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange} 
@@ -365,15 +370,8 @@ class AddTenant extends Component{
             </FormGroup>);
         }
 
-        
-
-        return(
-            <UI onClick={this.logout}>
-                <Form onSubmit={this.onSubmit} method="post">
-                    <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
-                        <span aria-hidden="true">&times;</span>
-                    </div>
-                    <div style={{ 'display': this.state.step == 1 ? 'block' : 'none' }}>
+        let formData = <div>
+            <div style={{ 'display': this.state.step == 1 ? 'block' : 'none' }}>
                         <h3>Tenant Details</h3>
                         <FormGroup>
                             <Label>Tenant Name</Label>
@@ -429,7 +427,7 @@ class AddTenant extends Component{
                             </span> : ''}
                             {<span className="error">{this.state.emailValidError}</span>}
                         </FormGroup>
-                        <FormGroup>
+                        {/* <FormGroup>
                             <Label>Society Name</Label>
                             <Select placeholder="Society Name"
                              options={this.getSociety(this.props.societyReducer)}
@@ -438,7 +436,7 @@ class AddTenant extends Component{
                             {!this.state.societyId ? <span className="error">
                                 {this.state.errors.societyId}
                             </span> : ''}
-                        </FormGroup>
+                        </FormGroup> */}
                         <FormGroup>
                             <Label>Corresponding Address</Label>
                             <Input type="textarea" onChange={this.onChange}
@@ -545,6 +543,15 @@ class AddTenant extends Component{
                         <Button color="success" className="mr-2" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
                         <Button color="danger" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Cancel</Button>
                     </div>
+        </div>
+
+        return(
+            <UI onClick={this.logout}>
+                <Form onSubmit={this.onSubmit} method="post">
+                    <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                        <span aria-hidden="true">&times;</span>
+                    </div>
+                    {!this.state.loading ? formData : <Spinner />}
                 </Form>
             </UI>
         );
