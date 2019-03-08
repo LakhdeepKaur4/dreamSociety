@@ -23,8 +23,8 @@ class eventSpaceMasterDetails extends Component {
             capacity: '',
             spaceType:'',
             sizeId: '',
-            // open:'',
-            // close:'',
+            open:'open',
+            close:'close',
             area:'',
             description:'',   
         isDisabled: true,
@@ -135,6 +135,7 @@ class eventSpaceMasterDetails extends Component {
 
 
     editBook( eventSpaceId, spaceName,capacity, spaceType,sizeId,sizeType,area,description) {
+        console.log(spaceType,"space")
         this.setState({
             eventSpaceId, spaceName,capacity ,spaceType, sizeId, sizeType ,area, description, editUserModal: !this.state.editUserModal
         })
@@ -186,7 +187,7 @@ class eventSpaceMasterDetails extends Component {
                             
                                 
                              }}/></td>
-                         
+                         <td>{index+1}</td>
                         <td>{item.spaceName}</td>
                         <td>{item.capacity}</td>
                         <td>{item.spaceType}</td>
@@ -254,7 +255,14 @@ class eventSpaceMasterDetails extends Component {
         return this.props.history.replace('/') 
     }
     OnKeyPresshandlerPhone=(event)=>{
-        const pattern = /^[0-9+ ]$/;
+        const pattern = /^[0-9+]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    onKeyPressHandler=(event)=> {
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -342,7 +350,7 @@ class eventSpaceMasterDetails extends Component {
                     
                 }  /></th>
                  
-                
+                 <th>#</th>
                 <th>Space Name</th>
                 <th>Capacity </th>
                 <th>Space Type </th>
@@ -390,6 +398,7 @@ class eventSpaceMasterDetails extends Component {
                                         placeholder="enter space name"
                                         name="spaceName"
                                         value={this.state.spaceName}
+                                        onKeyPress={this.onKeyPressHandler}
                                         onChange={this.onChange} 
                                         maxLength='20'/>
                                         <span  className='error'>{this.state.errors.spaceName}</span>
@@ -402,6 +411,7 @@ class eventSpaceMasterDetails extends Component {
                                         placeholder=" enter capacity"
                                         name="capacity"
                                         value={this.state.capacity}
+                                        onKeyPress = {this.OnKeyPresshandlerPhone}
                                         onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
                                         maxLength='3' />
@@ -415,7 +425,8 @@ class eventSpaceMasterDetails extends Component {
                         type="radio"
                         name="spaceType"  
                        
-                        value="open"
+                        value={this.state.open}
+                        checked={this.state.open=== this.state.spaceType ? true: false}
                         required
                     
                         
@@ -427,8 +438,8 @@ class eventSpaceMasterDetails extends Component {
                             className="ml-2"
                             type="radio"
                             name="spaceType"  
-                           
-                            value="close"
+                            checked={this.state.close=== this.state.spaceType  ? true : false}
+                            value={this.state.close}
                         
                            
                          
@@ -443,7 +454,7 @@ class eventSpaceMasterDetails extends Component {
                                     value={this.state.sizeId} 
                                     name="sizeId"
                                     onChange={this.onChangeSizeType}>
-                                        <option>{this.state.sizeType}</option>
+                                       
                                         <option disabled>Select</option>
                                         {this.fetchSizeDrop(this.props.flats)}
                                     </Input>
@@ -457,6 +468,7 @@ class eventSpaceMasterDetails extends Component {
                                         placeholder="enter cover area"
                                         name="area"
                                         value={this.state.area}
+                                        onKeyPress = {this.OnKeyPresshandlerPhone}
                                         onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
                                         maxLength='3' />

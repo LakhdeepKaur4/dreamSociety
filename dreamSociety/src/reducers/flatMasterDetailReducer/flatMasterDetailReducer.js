@@ -14,7 +14,7 @@ export default function(state={},action){
         case GET_ACTIVE_PAGE:
             return{...state,list1:action.payload}
         case GET_COUNT_PAGE:    
-            return{...state,noOfCount:action.payload}
+            return{...state,list1:action.payload}
         case GET_TOTAL_ITEMS:    
             return{...state,totalItems:action.payload}
            

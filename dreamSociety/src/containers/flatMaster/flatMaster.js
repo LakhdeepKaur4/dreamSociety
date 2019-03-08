@@ -13,7 +13,7 @@ class FlatMaster extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            societyId: '',
+            // societyId: '',
             flatType: '',
             flatSuperArea: '',
             sizeId: '',
@@ -35,9 +35,9 @@ class FlatMaster extends Component {
     submit = (e) => {
         e.preventDefault();
         let errors = {};
-        if (!this.state.societyId) {
-            errors.societyId = "Society Name cannot be empty"
-        }
+        // if (!this.state.societyId) {
+        //     errors.societyId = "Society Name cannot be empty"
+        // }
         if (this.state.flatType === '') errors.flatType = "Cant be empty";
         else if (this.state.flatType.length < 3) errors.flatType = "Characters should be less than four"
         if (this.state.flatSuperArea === '') errors.flatSuperArea = "Cant be empty";
@@ -57,7 +57,7 @@ class FlatMaster extends Component {
             this.props.AddDetails({ ...this.state })
             .then(() => this.props.history.push('/superDashboard/flatmaster/flatmasterdetails'));
             this.setState({
-                societyId: "",
+                // societyId: "",
                 flatType: '',
                 flatSuperArea: '',
                 sizeId: '',
@@ -79,22 +79,22 @@ class FlatMaster extends Component {
 
         console.log(this.state)
     }
-    societyName({ list0 }) {
-        console.log(list0)
-        if (list0) {
+    // societyName({ list0 }) {
+    //     console.log(list0)
+    //     if (list0) {
 
-            return (
-                list0.map((item) => {
-                    return (
-                        <option key={item.societyId} value={item.societyId}>
-                            {item.societyName}
-                        </option>
-                    )
-                })
-            )
+    //         return (
+    //             list0.map((item) => {
+    //                 return (
+    //                     <option key={item.societyId} value={item.societyId}>
+    //                         {item.societyName}
+    //                     </option>
+    //                 )
+    //             })
+    //         )
 
-        }
-    }
+    //     }
+    // }
     sizeType({ list4 }) {
         if (list4) {
 
@@ -140,7 +140,7 @@ class FlatMaster extends Component {
           
             form = <div>
              
-            <FormGroup>
+            {/* <FormGroup>
                 <Label>Society Name</Label>
                 <Input
                     type="select"
@@ -152,7 +152,7 @@ class FlatMaster extends Component {
                 </Input>
                 <span   style={{color:'red'}}>{this.state.errors.societyId}</span>
 
-            </FormGroup>
+            </FormGroup> */}
 
 
             <FormGroup>

@@ -18,6 +18,7 @@ class FlatMaster extends Component {
             stateName: '',
 
             errors: {},
+            message:'',
             isSubmit: false,
             loading:true,
             message:'',
@@ -139,11 +140,12 @@ class FlatMaster extends Component {
                     type="text"
                     name="stateName"
                     placeholder='StateName'
-                    maxLength='50'
+                    maxLength='35'
                     onKeyPress={this.onStateChange}
                     // value={this.state.flatType} 
                     onChange={this.onChange} />
                 <span className='error'>{this.state.errors.stateName}</span>
+                <span className='error'>{this.state.message}</span>
             </FormGroup>
 
             <FormGroup>

@@ -86,7 +86,7 @@ class App extends Component {
             <PrivateRoute path='/tenantDashboard' component={TenantDashboard} />
             <PrivateRoute path='/vendorDashboard' component={VendorDashboard} />
             <PrivateRoute path='/superDashboard/registration' component={Registration} />
-            <PrivateRoute path={'/superDashboard/user_details'} component={UserDetails} />
+            <PrivateRoute path='/superDashboard/user_details' component={UserDetails} />
             <PrivateRoute path='/superDashboard/parking_master' component={ParkingMaster} />
             <PrivateRoute path='/superDashboard/display-tower' component={DisplayTowerMaster} />
             <PrivateRoute path='/superDashboard/display-size' component={DisplaySizeMaster} />
