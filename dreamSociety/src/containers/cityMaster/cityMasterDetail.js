@@ -22,6 +22,8 @@ class CityMasterDetail extends Component {
                 isActive: false,
 
             },
+            message:'',
+            filterName:"cityName",
             menuVisible: false,
             search: '',
             modal: false,
@@ -35,6 +37,7 @@ class CityMasterDetail extends Component {
         };
     }
     onChangeHandler = (event) => {
+        this.setState({message:'' })
         this.setState({
             [event.target.name]:event.target.value
   
@@ -51,7 +54,7 @@ class CityMasterDetail extends Component {
 
 
     onKeyPressHandler = (event) => {
-        const pattern = /^[a-zA-Z ]+$/;
+        const pattern = /^[a-zA-Z -]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -114,6 +117,9 @@ class CityMasterDetail extends Component {
 
             this.props.updateCity(cityId, countryId, stateId, cityName)
                 .then(() => this.refreshData())
+                // .catch(err=>{ console.log(err.response.data.message)
+                //     this.setState({message: err.response.data.message, loading: false})
+                //     })
             this.setState({
                 editCityData: { cityId, countryId, stateId, cityName },
                 modal: !this.state.modal
@@ -196,13 +202,16 @@ class CityMasterDetail extends Component {
 
     }
 
-    // return city && city.length ? city.filter(this.searchFilter(this.state.search)).map((item, index) => {
-
+    
 
     renderCity = ({ city }) => {
 
         if (city) {
-            return city.filter(this.searchFilter(this.state.search)).map((item, index) => {
+            
+       return city.sort((item1,item2)=>{
+        var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+        return this.state.sortVal ? cmprVal : -cmprVal;
+    }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
                 
                 return (
                     <tr key={item.cityId}  >
@@ -290,7 +299,7 @@ class CityMasterDetail extends Component {
 
 
     OnKeyPressUserhandler(event) {
-        const pattern = /^[a-zA-Z]+$/;
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -314,7 +323,12 @@ class CityMasterDetail extends Component {
                         <th>#</th>
                         <th>Country Name</th>
                         <th>State Name</th>
-                        <th>City Name</th>
+                      
+                        <th  onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'cityName'}});
+                        }} >City Name <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                        
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -358,7 +372,7 @@ class CityMasterDetail extends Component {
                                     <Label>Country Name</Label>
 
                                     <Input type="select" id="countryId" name="countryName" onChange={(e) => {
-
+                                         
                                         let { countryId } = this.state;
                                         countryId = e.target.value;
                                         this.setState({ countryId });
@@ -390,6 +404,7 @@ class CityMasterDetail extends Component {
                                     <Label>City Name</Label>
                                     <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} onKeyPress={this.onKeyPressHandler} value={this.state.cityName} maxLength={50} />
                                     <span className="error">{this.state.errors.cityName}</span>
+                                    <span className="error">{this.state.message}</span>
                                 </FormGroup>
 
 

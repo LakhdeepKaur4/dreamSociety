@@ -174,16 +174,6 @@ class locationMaster extends Component{
     }
 
 
-    OnKeyPressUserhandler(event) {
-        const pattern = /[a-zA-Z_ ]/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
-    }
-
-
-
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');

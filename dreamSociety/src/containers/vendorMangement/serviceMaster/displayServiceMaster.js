@@ -24,6 +24,8 @@ class DisplayServices extends Component {
             search: '',
             errors:{},
             loading:true,
+            modalLoading: false,
+            message:''
 
     }
 
@@ -46,7 +48,7 @@ class DisplayServices extends Component {
 
 
     refreshData() {
-        this.props.getServiceType().then(()=> this.setState({loading:false}));
+        this.props.getServiceType().then(()=> this.setState({loading:false, modalLoading: false, editServiceModal:false}));
         this.props.getServiceDetail().then(()=> this.setState({loading:false}));
     }   
 
@@ -79,7 +81,7 @@ class DisplayServices extends Component {
 
     toggleEditServiceModal() {
         this.setState({
-            editServiceModal: !this.state.editServiceModal
+            editServiceModal: !this.state.editServiceModal, message:''
         });
     }
 
@@ -92,13 +94,23 @@ class DisplayServices extends Component {
         }
         this.setState({errors});
         const isValid =Object.keys(errors).length===0;
-        if(isValid){
+        if(isValid &&  this.state.message === ''){
+
             this.props.updateServices(serviceId,serviceName, service_detail, serviceDetailId)
-            .then(() => this.refreshData());            
-            this.setState({loading:true,
-                serviceId,serviceName, service_detail, serviceDetailId,
-                editServiceModal: !this.state.editServiceModal
+            .then(() => this.refreshData())
+            .catch(err=>{
+                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                })
+                if(this.state.message === ''){
+                    this.setState({editServiceModal: true})
+                }
+                else {
+                    this.setState({editServiceModal: false})
+                }       
+            this.setState({ modalLoading: true,
+                serviceId,serviceName, service_detail, serviceDetailId
        })
+
         }         
     }
 
@@ -269,6 +281,7 @@ class DisplayServices extends Component {
                                 <Label for="serviceName">Service Type</Label>
                                 <Input type="text" value={this.state.serviceName} name="serviceName" onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}  />
                                 <span className="error">{this.state.errors.serviceName}</span>
+                                <span className="error">{this.state.message}</span>
                             </FormGroup>
 
                             <FormGroup>
@@ -304,7 +317,7 @@ class DisplayServices extends Component {
                             } 
                         } }/>
                     </Label>
-                           {!this.state.loading ? tableData : <Spinner />}
+                           {!this.state.modalLoading ? tableData : <Spinner />}
                  
                      
                     

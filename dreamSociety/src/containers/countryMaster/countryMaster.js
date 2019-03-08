@@ -18,6 +18,7 @@ class Country extends Component {
             currency: '', 
             phoneCode: '',
             errors: {},
+            message:'',
             isSubmit: false,
             loading:false,
             menuVisible: false
@@ -59,21 +60,27 @@ class Country extends Component {
         //   console.log(this.state);
         let errors = {};
 
-        if (this.state.countryName === '') errors.countryName = "cant be empty";
+        if (this.state.countryName === '') errors.countryName = "Cant be empty";
 
-        if (this.state.code === '') errors.code = "cant be empty";
+        if (this.state.code === '') errors.code = "Cant be empty";
+        // else if(this.state.code.length.<98) errors.code ="Country code should be in captital";
         else if (this.state.code.length < 3) errors.code = "Characters should be less than four"
-        if (this.state.currency === '') errors.currency = "cant be empty";
+        if (this.state.currency === '') errors.currency = "Cant be empty";
 
-        if (this.state.phoneCode === '') errors.phoneCode = "cant be empty";
+        if (this.state.phoneCode === '') errors.phoneCode = "Cant be empty";
 
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
+        // let codeChar = this.state.code.toUpperCase();
         if (isValid) {
+
             this.setState({ loading: true })
             this.props.AddCountry({ ...this.state })
-            .then(() => this.props.history.push('/superDashboard/countrymaster/countrymasterdetails'));
+            .then(() => this.props.history.push('/superDashboard/countrymaster/countrymasterdetails'))
+            .catch((err)=>{console.log(err.response.data.message)
+                this.setState({loading:false, message:err.response.data.message})})
+
             this.setState({
                 countryName: '',
                 code: '',
@@ -122,6 +129,11 @@ class Country extends Component {
             event.preventDefault();
         }
     }
+    onChangeCountry=(e)=>{
+        // let codeDetails= e.target.value.toUpperCase();
+        this.setState({code:e.target.value.toUpperCase()})
+
+    }
          
     close=()=>{
         return this.props.history.replace('/superDashBoard')
@@ -138,22 +150,25 @@ class Country extends Component {
                     placeholder="Country Name"
                     name="countryName"
                     onKeyPress={this.onKeyPressHandler}
-                    maxLength='30'
+                    maxLength='50'
                     onChange={this.onChange} />
                 <span className='error'>{this.state.errors.countryName}</span>
+                <span className='error'>{this.state.message}</span>
             </FormGroup>
 
             <FormGroup>
                 <Label>Country Code</Label>
                 <Input
-                    type="text"
                     name="code"
+                    type="text"
                     className="TextTransformToCapital"
                     placeholder="Country Code"
                     maxLength='3'
-                    onKeyPress={this. onKeyPressCode}
                     // value={this.state.code.toUpperCase()}
-                    onChange={this.onChange} />
+                  
+                    // onKeyPress={this. onKeyPressCode}
+                    // value={this.state.code.toUpperCase()}
+                    onChange={this.onChangeCountry} />
                 <span className='error'>{this.state.errors.code}</span>
             </FormGroup>
 

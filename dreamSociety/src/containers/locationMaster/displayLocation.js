@@ -28,7 +28,7 @@ class DisplayLocation extends Component {
                 search: '',
                 errors:{},
                 modal: false,
-                loading:true,
+                loading:true
             };
     }
 
@@ -81,7 +81,7 @@ searchOnChange = (e) => {
     this.setState({ search: e.target.value })
 }
 
-deleteLocation = (locationId) => {
+deleteLocation = (locationId) => {console.log(locationId)
         this.setState({loading:true})
         let {isActive } =this.state;  
         this.props.deleteLocation(locationId,isActive)
@@ -342,8 +342,9 @@ render(){
                      </FormGroup>
                      <FormGroup>
                          <Label>Location Name</Label>
-                         <Input type="text" id="locationId" name="locationName" onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onChangeHandler} value={this.state.locationName} />
+                         <Input type="text" id="locationId" name="locationName" maxLength={20} onChange={this.onChangeHandler} value={this.state.locationName} />
                          <span className="error">{this.state.errors.locationName}</span>
+                         
                      </FormGroup> 
                  
             

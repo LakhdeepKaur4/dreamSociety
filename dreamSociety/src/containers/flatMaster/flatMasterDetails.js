@@ -43,18 +43,13 @@ class flatMasterDetails extends Component {
         }
 
    } 
-   componentWillMount(){
-       console.log('first tiume');
-       this.totalCount();
-      
-   }
   
 
 
     componentDidMount() {
 
        
-     
+        this.totalCount()
         this.refreshData()
 
     }
@@ -62,6 +57,7 @@ class flatMasterDetails extends Component {
 
 
     refreshData() {
+       console.log('done')
         const defaultPage=this.state.activePage;
         this.props.getDetails(defaultPage).then(() => this.setState({loading:false}));
         this.props.getDrop().then(() => this.setState({loading:false}));
@@ -85,9 +81,11 @@ class flatMasterDetails extends Component {
     updateBook = (e) => {
         e.preventDefault();
        
-        let { flatId, societyId,societyName, flatType, flatSuperArea,sizeId, coverArea } = this.state
+        let { flatId, 
+            // societyId,societyName,
+             flatType, flatSuperArea,sizeId, coverArea } = this.state
        
-        console.log(flatId, societyId,societyName, flatType, flatSuperArea,sizeId, coverArea);
+        // console.log(flatId, societyId,societyName, flatType, flatSuperArea,sizeId, coverArea);
         let errors = {};
        
         if (flatType === '') errors.flatType = "Cant be empty";
@@ -96,21 +94,22 @@ class flatMasterDetails extends Component {
 
         
         if (coverArea === '') errors.coverArea = "Cant be empty";
-        else if (parseInt(coverArea) >= parseInt(flatSuperArea)) errors.coverArea=
-         "CoverArea cannot be greater then flatSuperArea";
+        else if (parseInt(coverArea,10) >= parseInt(flatSuperArea,10)) errors.coverArea= "CoverArea cannot be greater then flatSuperArea";
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
         
-        axios.put(`${URN}/flat/` + flatId, {societyName,societyId,
+        axios.put(`${URN}/flat/` + flatId, {
+            // societyName,societyId,
              flatType, flatSuperArea,sizeId,
              coverArea   
         }, { headers: authHeader() }).then((response) => {
             this.refreshData();
         })
         this.setState({
-            editUserModal: false,loading:true, flatId: '',societyId:'',societyName:'',
+            editUserModal: false,loading:true, flatId: '',
+            // societyId:'',societyName:'',
             flatType: '', flatSuperArea: '',sizeId:'', CoverArea: ''
         })
     }
@@ -135,8 +134,7 @@ class flatMasterDetails extends Component {
         return function (x) {
             const flatSuperArea = x.flatSuperArea.toString();
             const coverArea = x.coverArea.toString()
-            return x.society_master.societyName.toLowerCase().includes(search.toLowerCase()) ||
-                x.flatType.toLowerCase().includes(search.toLowerCase()) ||
+            return x.flatType.toLowerCase().includes(search.toLowerCase()) ||
                 flatSuperArea.toLowerCase().includes(search.toLowerCase()) ||
                 x.size_master.sizeType.toLowerCase().includes(search.toLowerCase()) ||
                 coverArea.toLowerCase().includes(search.toLowerCase()) ||
@@ -150,9 +148,13 @@ class flatMasterDetails extends Component {
     }
 
 
-    editBook(flatId, societyId,societyName, flatType, flatSuperArea, sizeId,sizeType, coverArea) {
+    editBook(flatId, 
+        // societyId,societyName,
+         flatType, flatSuperArea, sizeId,sizeType, coverArea) {
         this.setState({
-            flatId, societyId,societyName, flatType, flatSuperArea, sizeId,sizeType, coverArea , editUserModal: !this.state.editUserModal
+            flatId,
+            //  societyId,societyName,
+              flatType, flatSuperArea, sizeId,sizeType, coverArea , editUserModal: !this.state.editUserModal
         })
     }
 
@@ -160,17 +162,18 @@ class flatMasterDetails extends Component {
         let { isActive } = this.state
         axios.put(`${URN}/flat/delete/` + flatId, { isActive }, { headers: authHeader() }).then((response) => {
             this.refreshData()
+            // .this.getItems(this.props.flats)
             this.setState({ isActive: false ,loading:true })
 
-        })
+        }).then(()=>this.totalCount())
     }
 
     fetchUsers({ list1 }) {
         
         if (list1) {
-            // console.log(list1);
+            console.log(list1);
             return list1.flat.filter(this.searchFilter(this.state.search)).map((item,index) => {
-                let societyName = item.society_master.societyName;
+                // let societyName = item.society_master.societyName;
                 let sizeType= item.size_master.sizeType;
         
                      
@@ -200,15 +203,17 @@ class flatMasterDetails extends Component {
                             
                                 
                              }}/></td>
-                        {/* <td>{index + 1}</td> */}
-                        <td>{societyName}</td>
+                        <td>{index + 1}</td>
+                        {/* <td>{societyName}</td> */}
                         <td>{item.flatType}</td>
                         <td>{item.flatSuperArea}</td>
                         <td>{sizeType}</td>
                         <td>{item.coverArea}</td>
                         <td>
                             <Button color="success" size="sm" className="mr-2"
-                                onClick={this.editBook.bind(this, item.flatId,item.societyId, societyName,
+                                onClick={this.editBook.bind(this, item.flatId,
+                                    // item.societyId, societyName
+                                    
                                     item.flatType, item.flatSuperArea,item.sizeId, sizeType, item.coverArea)}>Edit</Button>
                             <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, item.flatId)} >Delete</Button>
                         </td>
@@ -301,7 +306,8 @@ class flatMasterDetails extends Component {
         // this.state.limit=`${e.target.value}`;   
         console.log(this.state.limit,activePage)
         // console.log(countPerPage);
-        this.props.noOfCount({limit: parseInt(e.target.value)},activePage)
+        this.props.noOfCount({limit: parseInt(e.target.value,10)},activePage).then(this.fetchUsers(this.props.flats))
+        .then(() => this.refreshData());
 }
 
     selectAll = () => {
@@ -333,13 +339,14 @@ class flatMasterDetails extends Component {
     }
 
     getItems=({totalItems})=>{
+        console.log('textbox wrkign');
 
         if(totalItems){
             
         console.log("get total items in db",totalItems.data.count);
-        this.state.totalItemsCount=totalItems.data.count;
+        // this.state.totalItemsCount=totalItems.data.count;
       
-        // this.setState({totalItemsCount:totalItems.data.count})
+        this.setState({totalItemsCount:totalItems.data.count})
 
         }
        
@@ -352,8 +359,8 @@ class flatMasterDetails extends Component {
 
     totalCount=(e)=>{
         console.log('hii');
-        this.props.getTotalItems();
-         
+        this.props.getTotalItems().then(()=> this.getItems(this.props.flats));
+      
        
     
         // this.setState({totalItemsCount:'15'})
@@ -371,20 +378,10 @@ class flatMasterDetails extends Component {
            
             <tr>
             
-                 <th style={{alignContent:'baseline'}}>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                    if(e.target.checked) {
-                        this.selectAll();
-                    }
-                    else if(!e.target.checked){
-                        this.unSelectAll();
-                    } 
-                }
-                    
-                }  /></th>
-                 
                 
-                <th>Society Name</th>
+                 
+                 <th>#</th>
+                {/* <th>Society Name</th> */}
                 <th>Flat Type</th>
                 <th>Flat SuperArea</th>
                 <th>SizeType</th>
@@ -396,7 +393,7 @@ class flatMasterDetails extends Component {
       
       
             {this.fetchUsers(this.props.flats)}
-            {  this.getItems(this.props.flats)}
+            
            
         </tbody>
         {/* <Pagination/> */}
@@ -432,8 +429,9 @@ class flatMasterDetails extends Component {
                                     name="societyId"
                                             value={this.state.societyId} 
                                             onChange={this.societyChange} >
-                                            <option>{this.state.societyName}</option>
+                                            
                                             <option disabled>Select</option>
+                                            
                                             {this.fetchDrop(this.props.flats)}     
                                         </Input>
                                         {/* <span  className='error'>{this.state.errors.societyId}</span> */}
@@ -468,7 +466,7 @@ class flatMasterDetails extends Component {
                                     value={this.state.sizeId} 
                                     name="sizeId"
                                     onChange={this.sizeChange}>
-                                        <option>{this.state.sizeType}</option>
+                                       
                                         <option disabled>Select</option>
                                         {this.fetchSizeDrop(this.props.flats)}
                                     </Input>
@@ -497,10 +495,21 @@ class flatMasterDetails extends Component {
                         </Modal>
                         <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                                 {/* <input type="number"
+                                 <input type="number"
                                  placeholder="enter no of entries to display"
-                                 onChange={this.onChange1}/> */}
+                                 onChange={this.onChange1}/>
                                  {deleteSelectedButton}
+                                 <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:'10px',fontWeight:'700'}}>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                    if(e.target.checked) {
+                        this.selectAll();
+                    }
+                    else if(!e.target.checked){
+                        this.unSelectAll();
+                    } 
+                }
+                    
+                }  /></Label>
                             {!this.state.loading ? tableData : <Spinner />}
                            
                             <Pagination 

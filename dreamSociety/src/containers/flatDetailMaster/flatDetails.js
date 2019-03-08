@@ -29,7 +29,8 @@ class flatDetails extends Component{
             search:'',
             errors:{},
             loading:true,
-            message:''
+            message:'',
+            modalLoading: false,
 }
 
 
@@ -56,7 +57,7 @@ onHandleChange=(event)=>{
 }
 
 refreshData(){
-     this.props.getFlatDetails().then(()=> this.setState({loading:false}));
+     this.props.getFlatDetails().then(()=> this.setState({loading:false, modalLoading: false,editFlatModal:false}));
      this.props.getFlatType().then(()=> this.setState({loading:false}));
      this.props.getTowerName().then(()=> this.setState({loading:false}));
 }
@@ -98,15 +99,21 @@ updateDetails(){
         }
             this.setState({errors});
             const isValid =Object.keys(errors).length===0;
-            if(isValid){
+            if(isValid &&  this.state.message === ''){
+
             this.props.updateFlatDetails(flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName)
             .then(() => this.refreshData())
-            this.setState({loading:true,
-                flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName,
-                editFlatModal: !this.state.editFlatModal
-    }).catch(err=>{
-        this.setState({message: err.response.data.message, loading: true})
-    
+            .catch(err=>{
+                this.setState({modalLoading:false,message: err.response.data.message, loading: true})           
+            })
+            if(this.state.message === ''){
+                this.setState({editFlatModal: true})
+            }
+            else {
+                this.setState({editFlatModal: false})
+            }  
+            this.setState({modalLoading:true,
+                flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName
     })
 }
 }
@@ -135,7 +142,7 @@ deleteSelected(ids){
 
 toggleEditFlatModal(){
     this.setState({
-        editFlatModal: ! this.state.editFlatModal
+        editFlatModal: ! this.state.editFlatModal, message:''
     });
 }
 
@@ -376,7 +383,7 @@ render(){
                                     }  
                                 }/>
                             </Label>
-                            {!this.state.loading ? tableData : <Spinner />}                    
+                            {!this.state.modalLoading ?  tableData : <Spinner />}                    
                                                     
           
         </div>
