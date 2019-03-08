@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER } from '../actions/index';
+import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER } from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
 export function addFlatOwner(data){
@@ -23,7 +23,8 @@ export function addFlatOwner(data){
         noOfMembers:data.familyMember,
         member:data.member,
         profilePicture:data.profilePicture,
-        gender:data.ownerGender
+        gender:data.ownerGender,
+        fileName:data.fileName
     }
     // const data2={
     //     data1,
@@ -50,6 +51,31 @@ export function getOwnerList(){
     .then(response=>response.data)
     return{
         type:GET_FLAT_OWNER,
+        payload:request
+    }
+}
+export function multipleDelete(ids){
+
+    const request=axios.put(`${URN}/owner/delete/deleteSelected`,{ids},{ headers: authHeader() })
+    .then(response=>response.data)
+    return{
+        type:DELETE_MULTIPLE_OWNER,
+        payload:request
+    }
+}
+
+
+export function removeOwner(id){
+    
+    const data={
+        // assetsId:id,
+        isActive:false
+    }
+    const request=axios.put(`${URN}/owner/delete/`+id,data,{headers:authHeader()})
+    .then(reponse=>reponse.data)
+    .catch(error=>error)
+    return{
+        type:REMOVE_OWNER,
         payload:request
     }
 }

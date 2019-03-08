@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import UI from '../../components/newUI/superAdminDashboard';
+import {URN1,PicURN} from '../../actions/index'
 import Spinner from '../../components/spinner/spinner';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Table, Label } from 'reactstrap';
-import {getOwnerList} from '../../actionCreators/flatOwnerAction'
+import {getOwnerList,multipleDelete,removeOwner} from '../../actionCreators/flatOwnerAction'
 class FlatOwnerList extends Component {
     constructor(props){
         super(props);
@@ -42,15 +43,16 @@ class FlatOwnerList extends Component {
             modal: !this.state.modal
         })
     }
-    delete = (assetId) => {
+    delete = (ownerId) => {
+        console.log(ownerId)
         this.setState({loading:true})
         if(window.confirm('Are You Sure ?')){
-        this.props.removeAssets(assetId)
-        .then(() => {this.props.getAssets()
+        this.props.removeOwner(ownerId)
+        .then(() => {this.props.getOwnerList()
         .then(()=>this.setState({loading:false}))})
         }
         else{
-            this.props.getAssets()
+            this.props.getOwnerList()
             .then(()=>this.setState({loading:false}))
         }
     }
@@ -91,12 +93,13 @@ class FlatOwnerList extends Component {
         this.setState({ loading: true,
          isDisabled:true });
          if(window.confirm('Are You Sure ?')){
+             console.log(ids)
         this.props.multipleDelete(ids)
-            .then(() => this.props.getInventory().then(() => this.setState({ loading: false })))
+            .then(() => this.props.getOwnerList().then(() => this.setState({ loading: false })))
             .catch(err => err.response.data.message);
          }
          else{
-            this.props.getInventory()
+            this.props.getOwnerList()
             .then(() => this.setState({ loading: false }))
          }
     }
@@ -130,7 +133,7 @@ class FlatOwnerList extends Component {
                         } 
                              }}/></td>
                     <td>{index+1}</td>
-                    <td > <img style={{ width: "70%", height: "35%" }} src={items.picture} alt="Profile Pic">
+                    <td > <img style={{ width: "70%", height: "35%" }} src={PicURN+items.picture} alt="Profile Pic">
                             </img></td>
                         <td style={{textAlign:"center",width:'10px'}}>{items.ownerName}</td>
                         <td>{items.contact}</td>
@@ -223,7 +226,7 @@ function mapStateToProps(state){
     }
 }
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({ getOwnerList },dispatch)
+    return bindActionCreators({ getOwnerList,multipleDelete,removeOwner },dispatch)
 }
 
 export default  connect(mapStateToProps,mapDispatchToProps)(FlatOwnerList);
