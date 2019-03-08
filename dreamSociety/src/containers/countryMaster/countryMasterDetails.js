@@ -21,6 +21,8 @@ class CountryDetails extends Component{
                 code:'',
                 currency:'',
                 phoneCode:'',
+                message:'',
+                isDisabled:true,
                 loading:true,
                 isActive:false ,
                 editUserModal: false,
@@ -85,14 +87,15 @@ class CountryDetails extends Component{
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
-        if(isValid){
+        if(isValid && this.state.message === ''){
         this.props.updateCountry(countryId,countryName,code,currency,phoneCode).then(() => this.refreshData())
-        .catch(err=>{ console.log(err.response.data.message)
-         this.setState({message: err.response.data.message, loading: false})
-         })
-  
+        .catch((err)=>{console.log(err.response.data.message)
+            this.setState({loading:false, message:err.response.data.message})});;
+            if(this.state.message === ''){
+                this.setState({editUserModal: true})
+            }
          this.setState({
-           editUserModal: false,loading:true, countryId: '',countryName:'',code:'',currency:'', phoneCode: '' 
+           loading:true, countryId: '',countryName:'',code:'',currency:'', phoneCode: '' ,
        })
     }
    
@@ -122,11 +125,12 @@ class CountryDetails extends Component{
    getCountryDetails({country1}){
     //    console.log('dcdcdcdc',country1);
        if(country1){
-            return country1.filter(this.searchFilter(this.state.search)).map((item) =>{
+            return country1.filter(this.searchFilter(this.state.search)).map((item,index) =>{
                 //  console.log('shub',item);
                 return (
                     <tr key={item.countryId}>
-                     <td><input type="checkbox" name="ids" className="SelectAll"  value={item.countryId}
+                     <td>
+                         <input type="checkbox" name="ids" className="SelectAll"  value={item.countryId}
                          onChange={(e) => {
                             let {countryId} = item
                             if(!e.target.checked){
@@ -147,7 +151,9 @@ class CountryDetails extends Component{
                             }
                             
                                 
-                             }}/></td>
+                             }}/>
+                             </td>
+                        <td>{index+1}</td>
                         <td>{item.countryName}</td>
                         <td>{item.code}</td>
                         <td>{item.currency}</td>
@@ -200,13 +206,13 @@ class CountryDetails extends Component{
             event.preventDefault();
         }
     }   
-    onKeyPressCode=(event)=>{
-        const pattern = /^[A-Z ]+$/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
-    }
+    // onKeyPressCode=(event)=>{
+    //     const pattern = /^[A-Z ]+$/;
+    //     let inputChar = String.fromCharCode(event.charCode);
+    //     if (!pattern.test(inputChar)) {
+    //         event.preventDefault();
+    //     }
+    // }
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
@@ -244,25 +250,21 @@ class CountryDetails extends Component{
         }
         
     }
+    onChangeCountry=(e)=>{
+       this.setState({code:e.target.value.toUpperCase()})
+
+    }
 
 
     render(){
          let tableData;
+         
           tableData= <Table className="table table-bordered">
         <thead>
             <tr>
-            <th style={{alignContent:'baseline'}}>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                    if(e.target.checked) {
-                        this.selectAll();
-                    }
-                    else if(!e.target.checked){
-                        this.unSelectAll();
-                    } 
-                }
-                    
-                }  /></th>
-
+         
+                <th> </th>
+                <th>#</th>
                 <th>Country Name</th>
                 <th>Country Code</th>
                 <th>Currency</th>
@@ -283,6 +285,7 @@ class CountryDetails extends Component{
      color="danger"
     className="mb-3"
     onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
+    
 
         return(
             <div>
@@ -305,12 +308,12 @@ class CountryDetails extends Component{
                                         placeholder="enter countryName"
                                         name="countryName"
                                         value={this.state.countryName}
-                                        maxLength='20'
+                                        maxLength='35'
                                         onKeyPress={this.onKeyPressHandler}
                                         onChange={this.onChange}
                                          />
                                          <span  className='error'>{this.state.errors.countryName}</span>
-                                         <span className="error">{this.state.message}</span>
+                                         <span className='error'>{this.state.message}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label for="roles">code</Label>
@@ -320,8 +323,8 @@ class CountryDetails extends Component{
                                         name="code"
                                         value={this.state.code}
                                         maxLength='3'
-                                        onKeyPress={this.onKeyPressCode}
-                                        onChange={this.onChange} />
+                                        // onKeyPress={this.onKeyPressCode}
+                                        onChange={this.onChangeCountry} />
                                          <span  className='error'>{this.state.errors.code}</span>
                                 </FormGroup>
                                 <FormGroup>
@@ -358,6 +361,17 @@ class CountryDetails extends Component{
                         <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
                                   {deleteSelectedButton}
+                                   <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:'10px',fontWeight:'700'}}>Select All<input
+                                          type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                                           if(e.target.checked) {
+                                         this.selectAll();
+                                                              }
+                    else if(!e.target.checked){
+                        this.unSelectAll();
+                    } 
+                }
+                    
+                }  /></Label>
                             {!this.state.loading ? tableData : <Spinner />}
                        
                     </div>

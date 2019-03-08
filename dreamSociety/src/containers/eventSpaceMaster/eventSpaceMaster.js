@@ -127,13 +127,20 @@ class EventSpaceMaster extends Component {
         return this.props.history.replace('/') 
     }
 
-    // OnKeyPresshandlerPhone=(event)=>{
-    //     const pattern = /^[0-9+]$/;
-    //     let inputChar = String.fromCharCode(event.charCode);
-    //     if (!pattern.test(inputChar)) {
-    //         event.preventDefault();
-    //     }
-    // }
+    OnKeyPresshandlerPhone=(event)=>{
+        const pattern = /^[0-9+]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    onKeyPressHandler=(event)=> {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
     
     close=()=>{
         return this.props.history.replace('/superDashBoard')
@@ -153,6 +160,7 @@ class EventSpaceMaster extends Component {
                     name="spaceName"
                     placeholder="enter space name"
                     maxLength='40'
+                    onKeyPress={this.onKeyPressHandler}
                     // value={this.state.spaceName}
                     onChange={this.onChange} />
                     
@@ -222,6 +230,7 @@ class EventSpaceMaster extends Component {
                     name="area"
                     placeholder="enter area"
                     maxLength='3'
+                    onKeyPress = {this.OnKeyPresshandlerPhone}
                     // value={this.state.area}
                     onChange={this.onChange} />
                     

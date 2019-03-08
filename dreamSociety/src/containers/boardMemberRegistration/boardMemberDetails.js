@@ -40,7 +40,8 @@ class BoardMemberDetails extends Component{
             isDisabled: true,
             errors: {},
             loading:true,
-            editSocietyMember: false
+            editSocietyMember: false,
+            emailValidError: ''
         }
     }
 
@@ -369,6 +370,18 @@ class BoardMemberDetails extends Component{
         }
     }
 
+    emailChange = (e) => {
+        console.log(this.state.email)
+        this.setState({email:e.target.value})
+        if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
+            this.setState({[e.target.name]:e.target.value});
+            console.log(this.state.email)
+            this.setState({emailValidError: ''})
+        }
+        else{ this.setState({emailValidError: 'Invalid Email.'})}
+        
+    }
+
      loadingInactive = () => {
          this.setState({loading: false})
      }
@@ -393,7 +406,7 @@ class BoardMemberDetails extends Component{
         if(this.state.dob === '') {console.log('bug10'); errors.dob = `Can't be empty.`};
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
-        if(isValid){
+        if(isValid && this.state.emailValidError===''){
             console.log('hello1')
             this.setState({loading:true})
             
@@ -569,9 +582,10 @@ class BoardMemberDetails extends Component{
                                 type="email" 
                                 value={this.state.email}
                                 name="email" 
-                                onChange={this.onChange}
+                                onChange={this.emailChange}
                                 onKeyPress={this.emailValid} />
                                 {!this.state.email ? <span className="error">{this.state.errors.email}</span>: ''}
+                                {<span className="error">{this.state.emailValidError}</span>}
                             </FormGroup>
                             <FormGroup>
                                 <Label>Bank Name</Label>
