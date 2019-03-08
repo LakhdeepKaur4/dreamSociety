@@ -14,6 +14,7 @@ class FlatMaster extends Component {
         super(props);
         this.state = {
             // societyId: '',
+            societyName:'',
             flatType: '',
             flatSuperArea: '',
             sizeId: '',
@@ -79,17 +80,22 @@ class FlatMaster extends Component {
 
         console.log(this.state)
     }
-    // societyName({ list0 }) {
+    // societyName=({ list0 })=> {
     //     console.log(list0)
     //     if (list0) {
+    //         // const name =list0.societyName
+    //         // console.log(name)
 
     //         return (
     //             list0.map((item) => {
-    //                 return (
-    //                     <option key={item.societyId} value={item.societyId}>
-    //                         {item.societyName}
-    //                     </option>
-    //                 )
+                    
+                      
+    //                     console.log(item)
+    //             //    this.state.societyName=name
+    //                     // <option key{item.societyId} value={item.societyId}>
+    //                     //     {item.societyName}
+    //                     // </option>
+            
     //             })
     //         )
 
@@ -140,19 +146,17 @@ class FlatMaster extends Component {
           
             form = <div>
              
-            {/* <FormGroup>
-                <Label>Society Name</Label>
-                <Input
-                    type="select"
+             {/* <FormGroup>
+               <Label>Society Name</Label>
+                 <Input
+                    type="text"
                     name="societyId"
-                  
+                    value={this.societyName(this.props.flat)}
                     onChange={this.onChange}>
-                    <option >--Select--</option>
-                    {this.societyName(this.props.flat)}
                 </Input>
-                <span   style={{color:'red'}}>{this.state.errors.societyId}</span>
+                <span   style={{color:'red'}}>{this.state.errors.societyId}</span>  
 
-            </FormGroup> */}
+            </FormGroup>  */}
 
 
             <FormGroup>
