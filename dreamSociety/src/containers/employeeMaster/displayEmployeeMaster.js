@@ -34,7 +34,7 @@ class DisplayEmployeeMaster extends Component {
             isActive: false
         },
 
-        profilePicture: null,
+        profilePicture: '',
         editEmployeeModal: false,
         loading: true,
         search: '',
@@ -49,12 +49,14 @@ class DisplayEmployeeMaster extends Component {
         firstName: '',
         middleName: '',
         lastName: '',
-        CTC: '',
+        salary: '',
+        address:'',
         ids: [],
         isDisabled: true,
         documentOne: '',
             documentTwo:'',
-            errors:{}
+            errors:{},
+            filterName:"firstName"
 
     }
     componentDidMount() {
@@ -155,36 +157,36 @@ class DisplayEmployeeMaster extends Component {
      }
      
 
-    editEmployee(employeeId, picture, firstName, middleName, lastName, CTC, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate, endDate) {
-        console.log("first", employeeId, firstName, middleName, lastName, CTC, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate, endDate);
-        this.setState({ editEmployeeData: { employeeId, picture,  documentOne, documentTwo, startDate, endDate },  firstName, middleName, lastName, CTC, countryName, stateName, cityName, locationName, editEmployeeModal: !this.state.editEmployeeModal })
+    editEmployee(employeeId, picture, firstName, middleName, lastName, salary,address, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate) {
+
+        this.setState({ editEmployeeData: { employeeId, picture,  documentOne, documentTwo, startDate },  firstName, middleName, lastName, salary, address,countryName, stateName, cityName, locationName, editEmployeeModal: !this.state.editEmployeeModal })
 
     }
 
     updateEmployee = (employeeId) => {
         console.log(employeeId, "employeeId")
 
-        console.log(this.state.documentOne, this.state.documentTwo, this.state.profilePicture, this.state.locationId, "documents");
-        let errors = {};
-        const {firstName,middleName,lastName,CTC}=this.state;
-        if(!this.state.firstName){
-            errors.firstName= "first Name can't be empty. Please select."
-        }
-        if(!this.state.middleName){
-            errors.middleName= "middle Name can't be empty. Please select."
-        }
-        if(!this.state.lastName){
-            errors.lastName= "last Name can't be empty. Please select."
-        }
-        if(!this.state.CTC){
-            errors.CTC= "CTC can't be empty. Please select."
-        }
-        this.setState({ errors });
+        // console.log(this.state.documentOne, this.state.documentTwo, this.state.profilePicture, this.state.locationId, "documents");
+        // let errors = {};
+        // const {firstName,middleName,lastName,CTC}=this.state;
+        // if(!this.state.firstName){
+        //     errors.firstName= "first Name can't be empty. Please select."
+        // }
+        // if(!this.state.middleName){
+        //     errors.middleName= "middle Name can't be empty. Please select."
+        // }
+        // if(!this.state.lastName){
+        //     errors.lastName= "last Name can't be empty. Please select."
+        // }
+        // if(!this.state.CTC){
+        //     errors.CTC= "CTC can't be empty. Please select."
+        // }
+        // this.setState({ errors });
 
-        const isValid = Object.keys(errors).length === 0
+        // const isValid = Object.keys(errors).length === 0
     
-        // const isValid = this.validate();
-        if (isValid) {
+        // // const isValid = this.validate();
+        // if (isValid) {
      
         const data = new FormData()
         data.append('documentOne', this.state.documentOne)
@@ -192,24 +194,26 @@ class DisplayEmployeeMaster extends Component {
         data.append('firstName', this.state.firstName)
         data.append('middleName', this.state.middleName)
         data.append('lastName', this.state.lastName)
-        data.append('CTC', this.state.CTC)
+        data.append('salary',this.state.salary)
+        data.append('address',this.state.address)
         data.append('countryId', this.state.countryId)
         data.append('stateId', this.state.stateId)
         data.append('cityId', this.state.cityId)
         data.append('locationId', this.state.locationId)
         data.append('startDate', this.state.editEmployeeData.startDate)
-        data.append('endDate', this.state.editEmployeeData.endDate)
+    
         data.append('profilePicture', this.state.profilePicture)
         console.log(this.state.editEmployeeData.picture, "picture")
 
-        this.props.updateEmployee(this.state.editEmployeeData.employeeId, data).then(() => { this.refreshData() })
+        this.props.updateEmployee(this.state.editEmployeeData.employeeId,data).then(() =>  this.refreshData())
 
         this.setState({
             editEmployeeModal: false,loading:true
 
         })
 
-    }}
+    }
+// }
 
     deleteEmployee(employeeId) {
         this.setState({ loading: true })
@@ -235,7 +239,10 @@ class DisplayEmployeeMaster extends Component {
         console.log(getEmployee, "1223");
         if (getEmployee) {
             return (
-                getEmployee.data.employee.filter(this.searchFilter(this.state.search)).map((item, index) => {
+                getEmployee.data.employee.sort((item1,item2)=>{
+                    var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                    return this.state.sortVal ? cmprVal : -cmprVal;
+                }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                     return (
                         <tr key={item.employeeId}>
@@ -267,9 +274,9 @@ class DisplayEmployeeMaster extends Component {
                             <td >{item.firstName}</td>
                             <td>{item.middleName}</td>
                             <td>{item.lastName}</td>
-                            <td>{item.CTC}</td>
+                            <td>{item.salary}</td>
 
-                            <td>{item.location_master.locationName},{item.city_master.cityName},{item.state_master.stateName},{item.country_master.countryName}</td>
+                            <td> {item.address},{item.location_master.locationName},{item.city_master.cityName},{item.state_master.stateName},{item.country_master.countryName}</td>
 
                             <td>
                                 <button className="btn btn-light" onClick={this.openModal.bind(this, item.documentOne)}>View Document</button>
@@ -277,10 +284,10 @@ class DisplayEmployeeMaster extends Component {
                             <td>  <button className="btn btn-light" onClick={this.Modal.bind(this, item.documentTwo)}>View Document </button></td>
 
                             <td>{item.startDate}</td>
-                            <td>{item.endDate}</td>
+                            
 
                             <td>
-                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeId, item.picture, item.firstName, item.middleName, item.lastName, item.CTC, item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, item.documentOne, item.documentTwo, item.startDate, item.endDate)} >Edit</button>
+                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeId, item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.address,item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, item.documentOne, item.documentTwo, item.startDate)} >Edit</button>
                                 <button className="btn btn-danger" onClick={this.deleteEmployee.bind(this, item.employeeId)}> Delete</button>
                             </td>
 
@@ -413,29 +420,21 @@ class DisplayEmployeeMaster extends Component {
             <Table >
                 <thead>
                     <tr>
-                    <th style={{alignContent:'baseline'}}>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
-                        <th>#</th>
+                    <th style={{width:"4px"}}></th>
+                        <th style={{width:"4px"}}>#</th>
                         <th>Profile Picture</th>
-                        <th> First Name</th>
+                        <th  onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'firstName'}})
+                        }} >First Name      <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                         <th> Middle Name</th>
                         <th> Last Name</th>
-                        <th> CTC</th>
+                        <th> salary</th>
                         <th>Address</th>
                         <th>ID</th>
                         <th>ID2</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-
-                        <th> Actions  </th>
+                        <th> Employment Start Date</th>
+                          <th> Actions  </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -507,14 +506,15 @@ class DisplayEmployeeMaster extends Component {
                                      <span  className="error">{this.state.errors.lastName}</span>
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label > CTC</Label>
-                                    <Input name="CTC" value={this.state.CTC}
+                                    <Label > Salary</Label>
+                                    <Input name="salary" value={this.state.salary}
                                         onChange={this.onChange}
 
                                         onKeyPress={this.OnKeyPresshandler}
 
                                     />
-                                     <span  className="error" >{this.state.errors.CTC}</span>
+                                     <span  className="error" >{this.state.errors.salary}</span>
+                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Country Name</Label>
 
@@ -569,7 +569,16 @@ class DisplayEmployeeMaster extends Component {
                                             {this.fetchLocation(this.props.societyReducer)}
                                         </Input>
                                     </FormGroup>
-                                </FormGroup>
+                                    <FormGroup>
+                                    <Label > Address</Label>
+                                    <Input name="address" value={this.state.address}
+                                        onChange={this.onChange}
+
+                                        onKeyPress={this.OnKeyPresshandler}
+
+                                    />
+                                     <span  className="error" >{this.state.errors.address}</span>
+                                     </FormGroup>
                                 <FormGroup>
                                   
                                     <Label > Document One</Label>
@@ -622,22 +631,7 @@ class DisplayEmployeeMaster extends Component {
 
                                     />
                                 </FormGroup>
-                                <FormGroup>
-                                    <Label > End Date</Label>
-                                    <Input type="date" value={this.state.editEmployeeData.endDate}
-                                        onChange={(e) => {
-                                            let { editEmployeeData } = this.state;
-
-                                            editEmployeeData.endDate = e.target.value;
-
-                                            this.setState({ editEmployeeData });
-                                        }}
-                                        required
-
-                                        onKeyPress={this.OnKeyPresshandler}
-
-                                    />
-                                </FormGroup>
+                              
 
 
 
@@ -647,6 +641,16 @@ class DisplayEmployeeMaster extends Component {
                             </ModalBody>
                         </Modal>
                         <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
+                         <label>Select All<input
+                          type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></label>
                         {deleteSelectedButton}
                         {!this.state.loading ? tableData : <Spinner />}
                     </div>

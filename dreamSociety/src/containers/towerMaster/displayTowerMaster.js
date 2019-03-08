@@ -17,6 +17,7 @@ class DisplayTowerMaster extends Component {
       isActive:false,
       isChecked: false
     },
+    filterName:"towerName",
     editTowerModal: false,
     menuVisible: false,
     search:'',
@@ -120,8 +121,11 @@ this.setState({loading:true});
   TowerMasterDetails({ tower }) {
 
     if (tower) {
-
-      return tower.filter(this.searchFilter(this.state.search)).map((item,index) => {
+      return tower.sort((item1,item2)=>{
+        var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+        return this.state.sortVal ? cmprVal : -cmprVal;
+    }).filter(this.searchFilter(this.state.search)).map((item, index) => {
+     
       
         return (
 
@@ -162,6 +166,7 @@ this.setState({loading:true});
       })
  
     }
+  
   
   }
 
@@ -212,7 +217,7 @@ selectAll = () => {
   deleteSelected(ids){
           this.setState({loading:true,
               isDisabled:true});
-              if(window.confirm('Are You Sure ?')){
+              if(window){
           this.props.deleteMultipleTower(ids)
           .then(() => {this.props.viewTower()
            .then(()=>this.setState({loading:false}))})
@@ -233,19 +238,13 @@ selectAll = () => {
               <thead>
                 <tr>
                
-                <th style={{alignContent:'baseline'}}>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
+                <th style={{alignContent:'baseline'}}></th>
                   <th> #</th>
                      
-                  <th>Tower Name</th>
+                  <th  onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'towerName'}})
+                        }} >Tower Name      <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
 
                   <th> Actions  </th>
                 </tr>
@@ -302,6 +301,16 @@ selectAll = () => {
                 </ModalBody>
             </Modal>
             <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
+            <label>Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></label>
             {deleteSelectedButton}
             {!this.state.loading?tableData:<Spinner/>}
           </div>
