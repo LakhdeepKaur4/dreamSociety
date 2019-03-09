@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { connect } from 'react-redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import { Table, Button } from 'reactstrap';
+import { Table, Button, Label } from 'reactstrap';
 import '../../r-css/w3.css';
 import EditUserModal from './editUserModal';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -34,7 +34,8 @@ class userDetails extends Component {
                 loading:true,
                 dropdownOpen: false,
                 emailValidError:'',
-                search:''
+                search:'',
+                filterName:'firstName'
         }
         this.OnKeyPresshandlerPhone = this.OnKeyPresshandlerPhone.bind(this);
         this.OnKeyPressUserhandler = this.OnKeyPressUserhandler.bind(this);
@@ -105,17 +106,17 @@ class userDetails extends Component {
             if(!this.state.towerName){
                 errors.towerName = "Tower can't be empty. Please select."
             }
-            if(this.state.floor === '') errors.floor = "Can't be empty."
-            if(this.state.parking === '') errors.parking = "Can't be empty."
-            if(this.state.familyMember === '') errors.familyMember="Can't be empty."
+            if(this.state.floor === '') errors.floor = "Floor can't be empty."
+            if(this.state.parking === '') errors.parking = "State can't be empty."
+            if(this.state.familyMember === '') errors.familyMember="family Member can't be empty."
 
-            if (firstName === '') errors.firstName = "Can't be empty.";
+            if (firstName === '') errors.firstName = "First Name can't be empty.";
 
-            if (lastName === '') errors.lastName = "Can't be empty.";
+            if (lastName === '') errors.lastName = "Last Name can't be empty.";
 
-            if (userName === '') errors.userName = "Can't be empty.";
-            if (email === '') errors.email = "Can't be empty.";
-            if (contact === '') errors.contact = "Can't be empty.";
+            if (userName === '') errors.userName = "User Name can't be empty.";
+            if (email === '') errors.email = "Email can't be empty.";
+            if (contact === '') errors.contact = "Contact can't be empty.";
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0;
             if (isValid && this.state.emailValidError==='') {
@@ -157,8 +158,8 @@ class userDetails extends Component {
         return function(x){
             if(x){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return x.familyMember.toString().indexOf(search)  !== -1 ||
-                 x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                return  x.familyMember ? x.familyMember.toString().indexOf(search.toString())  !== -1: x   ||
+                 x.floor ? x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1: x ||
                  x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
@@ -189,7 +190,11 @@ class userDetails extends Component {
     fetchUsers({ user }) {
         if(user) {
             let currentRole;
-            return user.map((item, index) => {
+            return user.sort((item1,item2)=>{
+                console.log(item1, item2)
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item, index) => {
                 let currentTower = item.tower_master.towerName;
                 let currentTowerId = item.towerId
                 return (
@@ -224,7 +229,7 @@ class userDetails extends Component {
                         <td>{item.lastName}</td>
                         <td>{item.userName}</td>
                         <td>{item.email}</td>
-                        <td>{item.familyMember}</td>
+                        <td>{item.familyMember ? item.familyMember : ''}</td>
                         <td>{currentTower}</td>
                         <td>{item.floor}</td>
                         <td>{item.parking}</td>
@@ -337,20 +342,13 @@ class userDetails extends Component {
 
             <thead>
                 <tr>
-                    <th>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
+                    <th></th>
                     <th>#</th>
                     <th>Roles</th>
-                    <th>First Name</th>
+                    <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'firstName'}});
+                        }}>First Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th>Last Name</th>
                     <th>Username</th>
                     <th>Email</th>
@@ -439,6 +437,17 @@ class userDetails extends Component {
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
                                 {deleteSelectedButton}
+                                <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
+                                id="allSelect"
+                                type="checkbox" onChange={(e) => {
+                                        if(e.target.checked) {
+                                            this.selectAll();
+                                        }
+                                        else if(!e.target.checked){
+                                            this.unSelectAll();
+                                        } 
+                                    }  
+                                }/></Label>
                             {!this.state.loading ? tableData : <Spinner />}
                         </div>
                         </UI>

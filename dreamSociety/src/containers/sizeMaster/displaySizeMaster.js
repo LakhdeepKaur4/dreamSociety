@@ -27,7 +27,8 @@ class DisplaySizeMaster extends Component {
     loading:true,
     ids: [],
     isDisabled: true,
-    sizeType: []
+    sizeType: [],
+    filterName:"sizeType"
   }
 
   componentDidMount() {
@@ -129,7 +130,11 @@ else {
   TowerMasterDetails({ getSize }) {
     console.log("getSize ", getSize);
     if (getSize) {
-      return getSize.filter(this.searchFilter(this.state.search)).map((item,index) => {
+
+
+      return getSize.sort((item1,item2) =>{
+       var cmprVal=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+       return this.state.sortVal ?cmprVal:-cmprVal}).filter(this.searchFilter(this.state.search)).map((item,index) => {
         return (
           <tr key={item.sizeId}>
                <td><input type="checkbox" name="ids" value={item.eventId} className="SelectAll"
@@ -236,18 +241,10 @@ selectAll = () => {
 
     <thead>
       <tr>
-      <th style={{alignContent:'baseline'}}>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
+      <th style={{width:"4%"}}></th>
         <th>#</th>
-        <th>Size Details</th>
+        <th onClick={()=>{this.setState((state)=>{return{sortVal:!state.sortVal,filterName:"sizeType"}})}}>Size Details
+        <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
 
         <th> Actions  </th>
       </tr>
@@ -302,6 +299,16 @@ selectAll = () => {
             </Modal>
             <SearchFilter type="text" value={this.state.search}
               onChange={this.searchOnChange} />
+             <input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/><label>Select All</label>
              {deleteSelectedButton}
          {!this.state.loading?tableData:<Spinner/>}
           </div>

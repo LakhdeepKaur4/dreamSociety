@@ -23,9 +23,12 @@ class flatMasterDetails extends Component {
             message:'',
             isDisabled:true,
             loading:true,
+            modalLoading: false,
+           
             isActive:false,
             editUserModal: false,
             menuVisible: false,
+            filterName:"stateName",
             search:'',
             errors:{}
       }
@@ -39,14 +42,15 @@ class flatMasterDetails extends Component {
 
     refreshData=()=>{
         console.log('data is refreshed')
-        this.props.getDetails().then(() => this.setState({loading:false}));
-        this.props.getCountry().then(() => this.setState({loading:false}));
+        this.props.getDetails().then(() => this.setState({loading:false ,modalLoading: false, editUserModal: false}));
+        this.props.getCountry().then(() => this.setState({loading:false, modalLoading: false, editUserModal: false}));
         
     }
 
     toggleEditUserModal() {
         this.setState({
-          editUserModal: ! this.state.editUserModal
+          editUserModal: ! this.state.editUserModal,
+          message: ''
         });
       }
     
@@ -67,22 +71,26 @@ class flatMasterDetails extends Component {
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
-        if(isValid){
+        if(isValid && this.state.message === ''){
          
          this.props.updateDetails(stateId,countryId,countryName,stateName).then(() => this.refreshData())
          .catch((err)=>{console.log(err.response.data.message)
-            this.setState({loading:false, message:err.response.data.message})});;
+            this.setState({modalLoading:false, message:err.response.data.message})});;
             if(this.state.message === ''){
+                this.setState({editUserModal: true})
+            }
+            else {
                 this.setState({editUserModal: false})
             }
          this.setState({
 
-            editUserModal:false ,loading:true,stateId:'',countryId:'',stateName:''
+           modalLoading:true
          })
         }
     
     }
     onChange=(e)=>{
+        this.setState({message: ''})
         if (!this.state.errors[e.target.value]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -150,7 +158,10 @@ class flatMasterDetails extends Component {
         console.log(country3)
         if(country3){
           
-            return country3.filter(this.searchFilter(this.state.search)).map((item,index) => {
+            return country3.sort((item1,item2)=>{
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item,index) => {
                 let countryName= item.country_master.countryName;
                 
                 return (
@@ -269,10 +280,14 @@ class flatMasterDetails extends Component {
         
         <thead>
             <tr>
-                <th> </th>
-                <th>#</th>
+            <th style={{width: "4%"}}></th>
+                        <th>#</th>
                 <th>Country Name</th>
-                <th>State Name</th>
+                <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'stateName'}});
+                        }}>State Name 
+                         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Actions</th>
 
             </tr>
@@ -287,23 +302,9 @@ class flatMasterDetails extends Component {
      color="danger"
     className="mb-3"
     onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
-    
-        return (
-            <div>  
-                <UI onClick={this.logout}>
-                    <div className="w3-container w3-margin-top  w3-responsive">
-                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
 
-                        <div className="top-details">
-                                <h3>State Master Details</h3>
-                                <Button onClick={this.routeToAddNewUser} color="primary">Add State</Button>
-                            </div>
-                        <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
-                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit Details</ModalHeader>
-                            <ModalBody>
-                                <FormGroup>
+    let modalData = <div>
+                 <FormGroup>
                                     <Label for="roles">CountryName</Label>
                                     <Input type="select"
                                     name="countryId"
@@ -334,6 +335,25 @@ class flatMasterDetails extends Component {
                                     <Button color="danger" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
                                 </FormGroup>
 
+    </div>
+    
+        return (
+            <div>  
+                <UI onClick={this.logout}>
+                    <div className="w3-container w3-margin-top  w3-responsive">
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+
+                        <div className="top-details">
+                                <h3>State Master Details</h3>
+                                <Button onClick={this.routeToAddNewUser} color="primary">Add State</Button>
+                            </div>
+                        <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
+                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit Details</ModalHeader>
+                            <ModalBody>
+                            {!this.state.modalLoading  ? modalData : <Spinner />}
+
                             </ModalBody>
                             
                             
@@ -356,7 +376,7 @@ class flatMasterDetails extends Component {
                 }
                     
                 }  /></Label>
-                            {!this.state.loading ? tableData : <Spinner />}
+                               {(this.state.loading) ? <Spinner /> : tableData}
                        
                     </div>
                 </UI>

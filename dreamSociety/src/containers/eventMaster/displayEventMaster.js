@@ -29,6 +29,7 @@ class DisplayEventMaster extends Component {
                 loading: true,
                 ids: [],
                 isDisabled: true,
+                filterName:"eventName",
                 errors:{}
         }
         componentDidMount() {
@@ -152,7 +153,9 @@ class DisplayEventMaster extends Component {
                 console.log(getEvent);
                 if (getEvent) {
                         return (
-                                getEvent.event.filter(this.searchFilter(this.state.search)).map((item, index) => {
+                                getEvent.event.sort((item1,item2) =>{
+                                        var cmprVal=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                                        return this.state.sortVal ?cmprVal:-cmprVal}).filter(this.searchFilter(this.state.search)).map((item, index) => {
                                         return (
                                                 <tr key={item.eventId}>
                                                  <td><input type="checkbox" name="ids" value={item.eventId} className="SelectAll"
@@ -259,19 +262,12 @@ class DisplayEventMaster extends Component {
                 tableData = <Table className="table table-bordered">
                         <thead>
                                 <tr>
-                                <th style={{alignContent:'baseline'}}>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
-                                        <th>#</th>
+                                <th style={{width:'4px'}}></th>
+                                        <th style={{width:'4px'}}>#</th>
                                         <th>Event Type</th>
-                                        <th>Event Name</th>
+                                        <th onClick={()=>{this.setState((state)=>{return{sortVal:!state.sortVal,filterName:"eventName"}})}}>Event Name
+        <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+
                                         <th>Event Organiser</th>
                                         <th>Event Start Date</th>
                                         <th>Event End Date</th>
@@ -359,6 +355,16 @@ class DisplayEventMaster extends Component {
                                                         </ModalBody>
                                                 </Modal>
                                                 <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
+                                               <label> Select All<input
+                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></label>
                                                 {deleteSelectedButton}
                                                 {!this.state.loading ? tableData : <Spinner />}
                                                 

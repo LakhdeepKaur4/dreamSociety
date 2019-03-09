@@ -59,7 +59,7 @@ const userRegistrationForm = (props) => (
                     minLength='10'
                     onKeyPress={props.emailKeyPress}  />
                 <span className='error'>{props.emailError}</span>
-                <span className="error">{props.emailServerValidationError}</span>
+                {props.emailServerValidationError ? <span className="error">{props.emailServerValidationError}</span>: ''}
                 <span className="error">{props.InValidEmailFormatError}</span>
                 
             </FormGroup>

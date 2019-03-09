@@ -3,8 +3,7 @@ import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import {getCountryName,getStateName,getCityName,addLocationDetails, getLocationName,getLocation} from '../../actionCreators/locationMasterAction';
 import _ from 'underscore';
-import UI from '../../components/newUI/superAdminDashboard';
-import { Button, Form ,FormGroup, Input, Label } from 'semantic-ui-react';
+import UI from '../../components/newUI/superAdminDashboard'; 
 import DefaultSelect from '../../constants/defaultSelect';
 
 
@@ -21,7 +20,8 @@ class locationMaster extends Component{
             cityName:'',
             locationName:'',
             errors:{},
-            loading:true
+            loading:true,
+            message:''
         }
     }
 
@@ -165,25 +165,13 @@ class locationMaster extends Component{
                     this.setState({loading:true});
                     this.props.addLocationDetails(countryId,stateId,cityId,locationName);
                     this.push();
-                    this.refreshData();
-        
-                    }
-        
+                    this.refreshData();     
+                    }      
     }
 
     push=()=>{
         this.props.history.push('/superDashboard/displayLocation')
     }
-
-
-    OnKeyPressUserhandler(event) {
-        const pattern = /[a-zA-Z_ ]/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
-    }
-
 
 
     logout=()=>{

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addServiceType, getServiceDetail } from '../../../actionCreators/serviceMasterAction';
+import { addServiceType, getServiceDetail,getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { Button } from 'reactstrap';
 import DefaultSelect from '../../../constants/defaultSelect';
 
@@ -21,7 +21,8 @@ class ServiceMaster extends Component {
             service_detail: '',
             menuVisible: false,
             errors:{},
-            loading:true
+            loading:true,
+            message:''
         }
 
     }
@@ -41,12 +42,12 @@ class ServiceMaster extends Component {
     
 
     componentDidMount() {
-        this.props.getServiceDetail();
         this.refreshData() ;
     }
 
     refreshData() {
         this.props.getServiceDetail();
+        this.props.getServiceType();
     }
   
     getDropdown = ({ detail }) => {
@@ -83,7 +84,12 @@ class ServiceMaster extends Component {
         if (isValid) {
                     this.setState({loading: true});
                     this.props.addServiceType( serviceName,serviceDetailId)
-                    this.push();
+                    .then(()=>
+                    this.push())
+                    .catch(err=>{
+                        this.setState({message: err.response.data.message, loading: true})
+                    
+                    })
                     this.refreshData();
         }
         
@@ -132,6 +138,7 @@ class ServiceMaster extends Component {
                             <label>Service Type</label>
                             <input type="text" placeholder="Service Type" className="form-control" name="serviceName" maxLength={30}  onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} ></input>
                             <span className="error">{this.state.errors.serviceName}</span>
+                            <span className="error">{this.state.message}</span>
                         </div>
                         <div>
                             <label>Service Details</label>
@@ -162,13 +169,14 @@ class ServiceMaster extends Component {
 function mapStateToProps(state) {
     console.log(state);
     return {
-        serviceMasterReducer: state.serviceMasterReducer
+        serviceMasterReducer: state.serviceMasterReducer,
+        displayServiceMasterReducer:state.displayServiceMasterReducer
 
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ addServiceType, getServiceDetail }, dispatch);
+    return bindActionCreators({ addServiceType, getServiceDetail,getServiceType }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServiceMaster);

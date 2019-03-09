@@ -24,7 +24,7 @@ class EventSpaceMaster extends Component {
             description:'',            
             errors: {},
             isSubmit: false,
-            loading:true,
+            loading:false,
             menuVisible: false
         };
         this.onChange = this.onChange.bind(this);
@@ -60,21 +60,25 @@ class EventSpaceMaster extends Component {
         if (isValid) {
             this.setState({ loading: true })
             this.props.AddEventDetails({ ...this.state })
-            .then(() => this.props.history.push('/superDashboard/eventSpaceMaster/eventSpaceMasterDetails'));
+            .then(() => this.props.history.push('/superDashboard/eventSpaceMaster/eventSpaceMasterDetails'))
+            .catch((err)=>{console.log(err.response.data.message)
+                this.setState({loading:false, message:err.response.data.message})});
             this.setState({
                 spaceName: '',
                 capacity: '',
                 sizeId: '',
+               
                 // open:'',
                 // close:'',
                 area:'',
                 description:'',
                 isSubmit: true,
-                menuVisible: false
+                // menuVisible: false
             });
         }
     }
     onChange(e){
+        this.setState({message: ''})
         if (!this.state.errors[e.target.value]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -165,6 +169,7 @@ class EventSpaceMaster extends Component {
                     onChange={this.onChange} />
                     
                 <span className='error'>{this.state.errors.spaceName}</span>
+                <span className='error'>{this.state.message}</span>
             </FormGroup>
 
             <FormGroup>

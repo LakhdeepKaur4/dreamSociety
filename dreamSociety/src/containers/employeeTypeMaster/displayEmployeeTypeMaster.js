@@ -26,7 +26,8 @@ class DisplayEmployeeTypeMaster extends Component {
         search:'',
          ids: [],
         isDisabled: true,
-        errors:{}
+        errors:{},
+        filterName:"serviceType"
     }
     componentDidMount() {
 
@@ -166,7 +167,9 @@ searchFilter(search) {
         console.log(getEmployee)
         if (getEmployee) {
             return (
-                getEmployee.employeeDetail.filter(this.searchFilter(this.state.search)).map((item, index) => {
+                getEmployee.employeeDetail.sort((item1,item2) =>{
+                    var cmprVal=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                    return this.state.sortVal ?cmprVal:-cmprVal}).filter(this.searchFilter(this.state.search)).map((item, index) => {
                     return (
                         <tr key={item.employeeDetailId}>
 
@@ -259,18 +262,10 @@ searchFilter(search) {
             <Table>
                 <thead>
                     <tr>
-                        <th style={{ alignContent: 'baseline' }}>Select All<input
-                            type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                                if (e.target.checked) {
-                                    this.selectAll();
-                                }
-                                else if (!e.target.checked) {
-                                    this.unSelectAll();
-                                }
-                            }
-                            } /></th>
-                        <th>#</th>
-                        <th>Service Type</th>
+                        <th style={{width:"4px" }}></th>
+                        <th style={{width:"4px" }}>#</th>
+                        <th onClick={()=>{this.setState((state)=>{return{sortVal:!state.sortVal,filterName:"serviceType"}})}}>Service Type
+        <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                         <th>Employee Work Type</th>
                         <th>Employee Type</th>
                         <th> Actions  </th>
@@ -354,6 +349,16 @@ searchFilter(search) {
                             </ModalBody>
                         </Modal>
                         <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
+                         <label>Select All<input
+                            type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                                if (e.target.checked) {
+                                    this.selectAll();
+                                }
+                                else if (!e.target.checked) {
+                                    this.unSelectAll();
+                                }
+                            }
+                            } /></label>
                         {deleteSelectedButton}
                         {!this.state.loading ? tableData : <Spinner />}
 

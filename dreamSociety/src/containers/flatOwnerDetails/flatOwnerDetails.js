@@ -50,7 +50,8 @@ class FlatOwnerDetails extends Component {
             familyMember:'',
             member:[],
             ownerGender:'',
-            message:''
+            message:'',
+            emailError:false
         }
     }
     componentDidMount() {
@@ -253,13 +254,21 @@ class FlatOwnerDetails extends Component {
             event.preventDefault();
         }
     }
-    // OnKeyPresshandlerEmail(event){
-    //     const pattern = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    //     let inputChar = String.fromCharCode(event.charCode);
-    //     if (!pattern.test(inputChar)) {
-    //         event.preventDefault();
-    //     }
-    // }
+OnKeyPresshandlerEmail=(event)=> {
+    const pattern = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
+    let inputChar = event.target.value;
+    if (!pattern.test(inputChar)) {
+        // event.preventDefault();
+        this.setState({
+            emailError:true
+        })
+    }
+    else{
+        this.setState({
+            emailError:false
+        })
+    }
+}
     onSubmit=(e)=>{
         e.preventDefault();
         const {          
@@ -485,8 +494,12 @@ class FlatOwnerDetails extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <Label>Email </Label>
-                                <Input placeholder="Email" type='email' name='email' onChange={this.onChangeHandler} onKeyPress={this.OnKeyPresshandlerEmail} />
+                                <Input placeholder="Email" type='email' name='email' 
+                                onChange={this.onChangeHandler} 
+                                onBlur={this.OnKeyPresshandlerEmail}
+                                onKeyPress={this.OnKeyPresshandlerEmail} />
                                 <span className="error">{this.state.errors.email}</span>
+                                <span style={{display:this.state.emailError?'block':'none'}}>email is not valid</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Society Name</Label>
@@ -513,7 +526,7 @@ class FlatOwnerDetails extends Component {
                             </FormGroup>
                             <FormGroup>
                                 <Label>Permanent Address</Label>
-                                <Input type="text" style={{ 'textTransform': 'capitalize' }} placeholder="Permanent Address" name="permanentAddress" onChange={this.onChangeHandler} />
+                                <Input type="text" style={{ 'textTransform': 'capitalize' }} maxLength={100} placeholder="Permanent Address" name="permanentAddress" onChange={this.onChangeHandler} />
                             </FormGroup >
                             <FormGroup>
                                 <Label>Tower</Label>

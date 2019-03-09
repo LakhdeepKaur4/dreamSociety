@@ -202,6 +202,7 @@ onChange = (e) => {
 }
 
 fetchDesignation = ({designation}) => {
+    console.log(designation)
     if(designation){
        return designation.designation.map((item) => {
             return (
@@ -239,8 +240,8 @@ keyPress = (event) => {
 
 submit = (e) => {
     e.preventDefault()
+            
     let errors = {};
-        if(!this.state.societyId) errors.societyId = `Can't be empty.`
         if(this.state.societyBoardMemberName === ''){
             errors.societyBoardMemberName = `Can't be empty.`
         }
@@ -264,6 +265,12 @@ submit = (e) => {
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.emailValidError===''){
+            let societyId = localStorage.getItem('societyId')
+            console.log(societyId);
+            this.setState({societyId})
+            console.log(this.state.societyId)
+            this.setState({societyId: localStorage.getItem('societyId')})
+            console.log(this.state.societyId)
             this.setState({loading: true});
             this.props.addMemberDetails(this.state)
             .then(() => this.props.history.push('/superDashboard/boardMemberDetails'));
@@ -359,7 +366,7 @@ maxDate = () => {
 
     render(){
         let formData = <div>
-            <FormGroup>
+            {/* <FormGroup>
                         <Label>Society Name</Label>
                         <Input type="select"
                         name="societyId"
@@ -370,7 +377,7 @@ maxDate = () => {
                             {this.fetchSocietyId(this.props.boardMemberReducer)}
                         </Input>
                         {!this.state.societyId ? <span className="error">{this.state.errors.societyId}</span>: ''}
-                    </FormGroup>
+                    </FormGroup> */}
                     <FormGroup>
                         <Label>Member Name</Label>
                         <Input type='text'
