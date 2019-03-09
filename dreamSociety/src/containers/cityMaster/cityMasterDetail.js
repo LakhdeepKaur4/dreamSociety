@@ -6,6 +6,7 @@ import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
+import DefaultSelect from './../../constants/defaultSelect';
 
 
 class CityMasterDetail extends Component {
@@ -60,7 +61,7 @@ class CityMasterDetail extends Component {
             event.preventDefault();
         }
     }
-
+ 
 
 
 
@@ -371,32 +372,39 @@ class CityMasterDetail extends Component {
                                 <FormGroup>
                                     <Label>Country Name</Label>
 
-                                    <Input type="select" id="countryId" name="countryName" onChange={(e) => {
-                                         
+                                    <Input type="select"  value={this.state.value} id="countryId" name="countryName" onChange={(e) => {
+                                         console.log(this.state);
                                         let { countryId } = this.state;
                                         countryId = e.target.value;
-                                        this.setState({ countryId });
+                                        console.log(countryId)
+                                        this.setState({ 
+                                            countryId,
+
+                                         });
                                         this.props.getState(countryId)
                                     }} >
                                         <option value={this.state.countryId}>{this.state.countryName}</option>
-                                        <option disabled>Select</option>
+                                        <DefaultSelect/>
                                         {this.fetchCountry(this.props.cityMasterReducer)}
                                     </Input>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label>State Name</Label>
 
-                                    <Input type="select" id="stateId" name="stateName" onChange={(e) => {
+                                    <Input type="select" value={this.state.value} id="stateId" name="stateName" onChange={(e) => {
 
                                         let { stateId } = this.state;
 
                                         stateId = e.target.value;
 
-                                        this.setState({ stateId });
+                                        this.setState({ 
+                                            stateId,
+                                            
+                                         });
                                         this.props.getCity(stateId);
                                     }} >
                                         <option value={this.state.stateId}>{this.state.stateName}</option>
-                                        <option>Select</option>
+                                        <DefaultSelect/>
                                         {this.fetchState(this.props.cityMasterReducer)}
                                     </Input>
                                 </FormGroup>

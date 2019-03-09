@@ -73,6 +73,8 @@ class SocietyManagementDetail extends Component {
 
   
 
+  
+
     onKeyPressHandler=(event)=> {
         const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
