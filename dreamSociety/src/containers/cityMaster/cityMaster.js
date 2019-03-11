@@ -38,12 +38,8 @@ class CityMaster extends Component {
 
 
     componentDidMount=()=>{
-           this.refreshData()
-
-          
+           this.refreshData()     
     }
-
-    
 
     refreshData=()=>{
         this.props.getCountry().then(() => this.setState({loading: false}));

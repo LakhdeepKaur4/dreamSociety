@@ -12,6 +12,7 @@ class DisplayLocation extends Component {
     constructor(props) {
         super(props);
         this.state = {
+                filterName:'locationName',
                 countryId: '',
                 countryName: '',
                 stateName: '',
@@ -27,7 +28,7 @@ class DisplayLocation extends Component {
                 search: '',
                 errors:{},
                 modal: false,
-                loading:true,
+                loading:true
             };
     }
 
@@ -80,7 +81,7 @@ searchOnChange = (e) => {
     this.setState({ search: e.target.value })
 }
 
-deleteLocation = (locationId) => {
+deleteLocation = (locationId) => {console.log(locationId)
         this.setState({loading:true})
         let {isActive } =this.state;  
         this.props.deleteLocation(locationId,isActive)
@@ -103,7 +104,10 @@ toggleModal = () => {
 
 renderList=({details})=>{
     if(details){
-        return details.filter(this.searchFilter(this.state.search)).map((item,index)=>{
+        return details.sort((item1,item2)=>{
+            var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+            return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item,index)=>{
             return(
 
                 <tr key={item.locationId}>
@@ -261,22 +265,15 @@ render(){
     <Table className="table table-bordered">
         <thead>
         <tr>
-        <th>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
-            <th>#</th>
+        <th  style={{width:'4%'}}></th>
+            <th  style={{width:'4%'}}>#</th>
             <th>Country Name</th>
             <th>State Name</th>
             <th>City Name</th>
-            <th>Location Name</th>
+            <th  onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'locationName'}});
+                        }}>Location Name <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -345,8 +342,9 @@ render(){
                      </FormGroup>
                      <FormGroup>
                          <Label>Location Name</Label>
-                         <Input type="text" id="locationId" name="locationName" onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onChangeHandler} value={this.state.locationName} />
+                         <Input type="text" id="locationId" name="locationName" maxLength={20} onChange={this.onChangeHandler} value={this.state.locationName} />
                          <span className="error">{this.state.errors.locationName}</span>
+                         
                      </FormGroup> 
                  
             
@@ -361,6 +359,18 @@ render(){
              <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
                         {deleteSelectedButton}
+                        <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                                id="allSelect"
+                                type="checkbox" onChange={(e) => {
+                                        if(e.target.checked) {
+                                            this.selectAll();
+                                        }
+                                        else if(!e.target.checked){
+                                            this.unSelectAll();
+                                        } 
+                                    }  
+                                }/>
+                            </Label>
                            {!this.state.loading ? tableData : <Spinner />}
                        
                                 

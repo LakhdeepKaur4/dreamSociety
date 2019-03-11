@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addEventBooking, getSpaceName } from './../../actionCreators/memberEventsBookingAction';
+import { addEventBooking } from './../../actionCreators/memberEventsBookingAction';
 import { getMemberEvent } from './../../actionCreators/societyMemberEventAction';
+import {getEventDetails} from './../../actionCreators/eventSpaceMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import _ from 'underscore';
 import Spinner from '../../components/spinner/spinner'
@@ -24,7 +25,6 @@ class MemberEventsBooking extends Component {
             endDate: '',
             numberOfGuestExpected: '',
             eventSpaceId: '',
-         
 
             loading: true,
             errors: {},
@@ -51,7 +51,7 @@ class MemberEventsBooking extends Component {
 
     refreshData = () => {
         this.props.getMemberEvent().then(() => this.setState({ loading: false }));
-        this.props.getSpaceName().then(() => this.setState({ loading: false }));
+        this.props.getEventDetails().then(() => this.setState({ loading: false }));
 
     }
 
@@ -76,11 +76,11 @@ class MemberEventsBooking extends Component {
     }
 
 
-    spaceName({ spaceNameResult }) {
-    
-        if (spaceNameResult) {
+    spaceName({ space }) {
+          console.log(space)
+        if (space) {
             return (
-                spaceNameResult.societyMember.map((item) => {
+                space.societyMember.map((item) => {
                     return (
                         <option key={item.eventSpaceId} value={item.eventSpaceId}>
                             {item.spaceName}
@@ -226,7 +226,7 @@ class MemberEventsBooking extends Component {
                 <Label>Space Name</Label>
                 <Input type="select" defaultValue='no-value' name="eventSpaceId"  onChange={this.onChange}>
                     <DefaultSelect />
-                    {this.spaceName(this.props.memberEventsBookingReducer)}
+                    {this.spaceName(this.props.eventSpaceMasterReducer)}
                 </Input >
                 <span className='error'>{this.state.errors.eventSpaceId}</span>
             </FormGroup>
@@ -260,7 +260,8 @@ function mapStateToProps(state) {
 
     return {
         memberEventsBookingReducer: state.memberEventsBookingReducer,
-        societyMemberEventReducer: state.societyMemberEventReducer
+        societyMemberEventReducer: state.societyMemberEventReducer,
+        eventSpaceMasterReducer: state.eventSpaceMasterReducer
 
     }
 
@@ -268,7 +269,7 @@ function mapStateToProps(state) {
 
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getMemberEvent, addEventBooking, getSpaceName }, dispatch);
+    return bindActionCreators({ getMemberEvent, addEventBooking, getEventDetails }, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(MemberEventsBooking));

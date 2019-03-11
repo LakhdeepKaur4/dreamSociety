@@ -14,6 +14,7 @@ import DefaultSelect from '../../constants/defaultSelect';
 class flatDetails extends Component{
         
     state={
+            filterName:'flatNo',
             flatDetailId:'',
             flatNo:'',
             flatId:'',
@@ -28,7 +29,8 @@ class flatDetails extends Component{
             search:'',
             errors:{},
             loading:true,
-            message:''
+            message:'',
+            modalLoading: false,
 }
 
 
@@ -55,7 +57,7 @@ onHandleChange=(event)=>{
 }
 
 refreshData(){
-     this.props.getFlatDetails().then(()=> this.setState({loading:false}));
+     this.props.getFlatDetails().then(()=> this.setState({loading:false, modalLoading: false,editFlatModal:false}));
      this.props.getFlatType().then(()=> this.setState({loading:false}));
      this.props.getTowerName().then(()=> this.setState({loading:false}));
 }
@@ -97,15 +99,21 @@ updateDetails(){
         }
             this.setState({errors});
             const isValid =Object.keys(errors).length===0;
-            if(isValid){
+            if(isValid &&  this.state.message === ''){
+
             this.props.updateFlatDetails(flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName)
             .then(() => this.refreshData())
-            this.setState({loading:true,
-                flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName,
-                editFlatModal: !this.state.editFlatModal
-    }).catch(err=>{
-        this.setState({message: err.response.data.message, loading: true})
-    
+            .catch(err=>{
+                this.setState({modalLoading:false,message: err.response.data.message, loading: true})           
+            })
+            if(this.state.message === ''){
+                this.setState({editFlatModal: true})
+            }
+            else {
+                this.setState({editFlatModal: false})
+            }  
+            this.setState({modalLoading:true,
+                flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName
     })
 }
 }
@@ -134,7 +142,7 @@ deleteSelected(ids){
 
 toggleEditFlatModal(){
     this.setState({
-        editFlatModal: ! this.state.editFlatModal
+        editFlatModal: ! this.state.editFlatModal, message:''
     });
 }
 
@@ -170,7 +178,10 @@ push=()=>{
 renderList =({details})=>{
     
     if(details){
-        return details.flatDetail.filter(this.searchFilter(this.state.search)).map((item,index) =>{
+        return details.flatDetail.sort((item1,item2)=>{
+            var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+            return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item,index) =>{
         
             return(
                    
@@ -198,12 +209,12 @@ renderList =({details})=>{
                              }}/></td>
                             <td>{index+1}</td>             
                             <td>{item.flatNo}</td>
-                            <td>{item.flat_master.flatType}</td>
+                            <td>{item.flat_master?item.flat_master.flatType:''}</td>
                             <td>{item.floor}</td>
                             <td>{item.tower_master.towerName}</td>
                             
                                 <td>
-                                   <Button color="success"   className="mr-2" onClick={this.edit.bind(this,item.flatDetailId,item.flatNo,item.flat_master.flatId,item.flat_master.flatType,item.floor,item.tower_master.towerId,item.tower_master.towerName)} >Edit</Button>
+                                   <Button color="success"   className="mr-2" onClick={this.edit.bind(this,item.flatDetailId,item.flatNo,item.flat_master.flatId,item.flat_master?item.flat_master.flatType:'',item.floor,item.tower_master.towerId,item.tower_master.towerName)} >Edit</Button>
                               
                                    <Button color="danger" onClick={this.delete.bind(this, item.flatDetailId)}>Delete</Button>
                                  </td>  
@@ -275,19 +286,12 @@ render(){
     <Table className="table table-bordered">
         <thead>
         <tr>
-        <th>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
-        <th>#</th>
-        <th>Flat No</th>
+        <th  style={{width:'4%'}}></th>
+        <th  style={{width:'4%'}}>#</th>
+        <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'flatNo'}});
+                        }}>Flat No <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
         <th>Flat Type</th>
         <th>Floor</th>
         <th>Tower Name</th>
@@ -365,8 +369,21 @@ render(){
                         <Button color="primary" type="button" onClick={this.push}> Add Flat</Button>
                         </div>
                             <SearchFilter  type="text" value={this.state.search}  onChange={this.searchOnChange} />
+                          
                             {deleteSelectedButton}
-                            {!this.state.loading ? tableData : <Spinner />}                    
+                            <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                                id="allSelect"
+                                type="checkbox" onChange={(e) => {
+                                        if(e.target.checked) {
+                                            this.selectAll();
+                                        }
+                                        else if(!e.target.checked){
+                                            this.unSelectAll();
+                                        } 
+                                    }  
+                                }/>
+                            </Label>
+                            {!this.state.modalLoading ?  tableData : <Spinner />}                    
                                                     
           
         </div>

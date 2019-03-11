@@ -1,30 +1,29 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { getEventBooking, deleteEventBooking, updateEventBooking, deleteSelectEventBooking, getSpaceName } from '../../actionCreators/memberEventsBookingAction';
+import { getEventBooking, deleteEventBooking, updateEventBooking, deleteSelectEventBooking } from '../../actionCreators/memberEventsBookingAction';
 import { getMemberEvent } from './../../actionCreators/societyMemberEventAction';
+import {getEventDetails} from './../../actionCreators/eventSpaceMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
+import DefaultSelect from './../../constants/defaultSelect';
 
 
 class MemberEventsBookingDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            editMemberEventData: {
-                societyMemberBookingId:'',
-                societyMemberEventName:'',
-                societyMemberEventId: '',
-                startDate:'',
-                endDate:'',
-                numberOfGuestExpected:'',
-                eventSpaceId:'',
-                spaceName:'',
-                isActive: false,
-
-            },
+            societyMemberEventBookingId:'',
+            societyMemberEventName:'',
+            societyMemberEventId: '',
+            startDate:'',
+            endDate:'',
+            numberOfGuestExpected:'',
+            eventSpaceId:'',
+            spaceName:'',
+            isActive: false,
             filterName:'societyMemberEventName',
             menuVisible: false,
             search: '',
@@ -80,14 +79,14 @@ class MemberEventsBookingDetail extends Component {
     refreshData() {
         this.props.getEventBooking().then(() => this.setState({ loading: false }))
         this.props.getMemberEvent().then(() => this.setState({loading: false}))
-        this.props.getSpaceName().then(() => this.setState({loading: false}))
+        this.props.getEventDetails().then(() => this.setState({loading: false}))
        
     }
 
 
     editsocietyMemberEventName = () => {
        
-        const {societyMemberEventBookingId, societyMemberEventId,startDate,endDate,numberOfGuestExpected, eventSpaceId } = this.state
+        const { societyMemberEventId,startDate,endDate,numberOfGuestExpected, eventSpaceId } = this.state
         
         let errors = {};
        
@@ -114,23 +113,21 @@ class MemberEventsBookingDetail extends Component {
             this.setState({
                 loading: true
             })
-        this.props.updateEventBooking(societyMemberEventBookingId,societyMemberEventId, startDate, endDate,numberOfGuestExpected, eventSpaceId)
+        this.props.updateEventBooking(societyMemberEventId, startDate, endDate,numberOfGuestExpected, eventSpaceId)
             .then(() => this.refreshData())
         this.setState({
-            editMemberEventData: {societyMemberEventBookingId, societyMemberEventId,startDate,endDate,numberOfGuestExpected, eventSpaceId },
+           societyMemberEventId,startDate,endDate,numberOfGuestExpected, eventSpaceId ,
             modal: !this.state.modal
         })
     }
     }
 
-      deleteMemberEventName = (societyMemberBookingId) => {
-        let { isActive } = this.state.editMemberEventData
-
-       
+      deleteMemberEventName = (societyMemberEventBookingId) => {
+        let { isActive } = this.state
         this.setState({ loading: true })
-        this.props.deleteEventBooking(societyMemberBookingId, isActive)
+        this.props.deleteEventBooking(societyMemberEventBookingId, isActive)
             .then(() => this.refreshData())
-        this.setState({editMemberEventData: { isActive: false } })
+        this.setState({ isActive: false })
       
       }
 
@@ -142,7 +139,7 @@ class MemberEventsBookingDetail extends Component {
 
     searchFilter = (search) => {
         return function (x) {
-            console.log(x)
+           
             return x.society_member_event_master.societyMemberEventName.toLowerCase().includes(search.toLowerCase()) ||
                    x.startDate.toLowerCase().includes(search.toLowerCase())  ||
                    x.endDate.toLowerCase().includes(search.toLowerCase())  ||
@@ -195,9 +192,10 @@ class MemberEventsBookingDetail extends Component {
     }
 
     fetchEventName=({ memberEventsResult })=> {
+        
         if (memberEventsResult) {
             return (
-                memberEventsResult.event.map((item) => {
+                memberEventsResult.event.map((item) => { 
                     return (
                         <option value={item.societyMemberEventId} key={item.societyMemberEventId}>
                             {item.societyMemberEventName}
@@ -208,11 +206,11 @@ class MemberEventsBookingDetail extends Component {
         }
     }
 
-    fetchSpaceName=({ memberEventsResult })=> {
-        console.log(memberEventsResult)
-        if ( memberEventsResult) {
+    fetchSpaceName=({ space })=> {
+       
+        if ( space) {
             return (
-                memberEventsResult.events.map((item) => {
+                space.societyMember.map((item) => {
                     return (
                         <option value={item.eventSpaceId} key={item.eventSpaceId}>
                             {item.spaceName}
@@ -229,21 +227,21 @@ class MemberEventsBookingDetail extends Component {
 
 
     renderBookingEvent = ({ memberEventsResult }) => {
-       console.log("sdhshsh", memberEventsResult);
+        console.log(memberEventsResult)
         if (memberEventsResult) {
-            return memberEventsResult.events.sort((item1,item2)=>{
-                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+            return memberEventsResult.events.sort((item1,item2)=>{ console.log(item1, item2)
+                var cmprVal = (item1.society_member_event_master[this.state.filterName].localeCompare(item2.society_member_event_master[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                 return (
-                    <tr key={item.societyMemberEventBookingId}>
-                     <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyMemberEventBookingId}
+                    <tr key={item.societyMemberEventId}>
+                     <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyMemberEventId}
                          onChange={(e) => {
-                            const {societyMemberEventBookingId} = item
+                            const {societyMemberEventId} = item
                             if(!e.target.checked){
                                 document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(societyMemberEventBookingId);
+                                let indexOfId = this.state.ids.indexOf(societyMemberEventId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1);
                                 }
@@ -253,7 +251,7 @@ class MemberEventsBookingDetail extends Component {
                             }
                             else {
                       
-                                this.setState({ids: [...this.state.ids, societyMemberEventBookingId]});
+                                this.setState({ids: [...this.state.ids, societyMemberEventId]});
                                 
                                 if(this.state.ids.length >= 0){
                                     this.setState({isDisabled: false})
@@ -263,13 +261,13 @@ class MemberEventsBookingDetail extends Component {
                              }}/></td>
                       
                         <td>{index+1}</td>
-                        <td>{item.society_member_event_master.societyMemberEventName}</td>
+                        <td>{item.society_member_event_master?item.society_member_event_master.societyMemberEventName:''}</td>
                         <td>{item.startDate}</td>
                         <td>{item.endDate}</td>
                         <td>{item.numberOfGuestExpected}</td>
-                        <td>{item.event_space_master ?item.event_space_master.spaceName:''}</td>
+                        <td>{item.event_space_master ? item.event_space_master.spaceName:''}</td>
                         <td> 
-                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.societyMemberEventBookingId, item.society_member_event_master.societyMemberEventName,item.startDate,item.endDate,item.numberOfGuestExpected, item.event_space_master ?item.event_space_master.spaceName:'')}>Edit</Button>
+                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.societyMemberEventId, item.society_member_event_master?item.society_member_event_master.societyMemberEventName:'',item.startDate,item.endDate,item.numberOfGuestExpected, item.event_space_master ?item.event_space_master.spaceName:'')}>Edit</Button>
                             <Button color="danger"  >Delete</Button>
 
                         </td>
@@ -364,6 +362,9 @@ class MemberEventsBookingDetail extends Component {
                                 <FormGroup>
                                     <Label>Event Type</Label>
                                     <Input type="select"  name="societyMemberEventName"  onChange={this.onChangeHandler} value={this.state.societyMemberEventName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler}>
+                                   
+                                    <option value={this.state.societyMemberEventId}>{this.state.societyMemberEventName}</option>
+                                    <DefaultSelect/>
                                      {this.fetchEventName(this.props.societyMemberEventReducer)}
                                     </Input>
                                     <span className="error">{this.state.errors.societyMemberEventId}</span>
@@ -393,8 +394,10 @@ class MemberEventsBookingDetail extends Component {
 
                                 <FormGroup>
                                     <Label>Space Name</Label>
-                                    <Input type="text"  name="spaceName"  onChange={this.onChangeHandler} value={this.state.spaceName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler}>
-                                     {this.fetchSpaceName(this.props.memberEventsBookingReducer)}
+                                    <Input type="select"  name="spaceName"  onChange={this.onChangeHandler} value={this.state.spaceName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler}>
+                                    <option value={this.state.eventSpaceId}>{this.state.spaceName}</option>
+                                    <DefaultSelect/>
+                                     {this.fetchSpaceName(this.props.eventSpaceMasterReducer)}
                                     </Input>
                                     <span className="error">{this.state.errors.eventSpaceId}</span>
                                 </FormGroup>
@@ -422,15 +425,16 @@ class MemberEventsBookingDetail extends Component {
 
 
 function mapStatToProps(state) {
-    console.log("state", state)
+   console.log("hzcxhvzchvh",state)
     return {
         memberEventsBookingReducer: state.memberEventsBookingReducer,
-        societyMemberEventReducer: state.societyMemberEventReducer
+        societyMemberEventReducer: state.societyMemberEventReducer,
+        eventSpaceMasterReducer: state.eventSpaceMasterReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getEventBooking, deleteEventBooking, updateEventBooking, deleteSelectEventBooking,getMemberEvent, getSpaceName }, dispatch)
+    return bindActionCreators({ getEventBooking, deleteEventBooking, updateEventBooking, deleteSelectEventBooking,getMemberEvent, getEventDetails }, dispatch)
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(MemberEventsBookingDetail);

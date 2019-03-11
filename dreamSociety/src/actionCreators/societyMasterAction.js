@@ -71,10 +71,10 @@ export const postSociety = (values) => {
     }
 }
 
-export const getSociety = (locationId) => {
+export const getSociety = () => {
 
   
-    const request = axios.get(`${URN}/society/${locationId}`, { headers: authHeader() })
+    const request = axios.get(`${URN}/society`, { headers: authHeader() })
         .then(response => response.data)
         .catch(error =>  error)
 
