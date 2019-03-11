@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {  AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount,deleteSelectedFlatMasterDetail } from '../../actionCreators/flatMasterAction';
-import {getEventDetails,deleteSelectedEventSpaceMasterDetail} from '../../actionCreators/eventSpaceMasterAction';
+import {getEventDetails,deleteSelectedEventSpaceMasterDetail,updateEventSpace} from '../../actionCreators/eventSpaceMasterAction';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
@@ -54,7 +54,7 @@ class eventSpaceMasterDetails extends Component {
 
 
     refreshData() {
-        // const defaultPage=this.state.activePage;
+      console.log('reaching');
         this.props.getEventDetails().then(() => this.setState({loading:false, modalLoading: false,editUserModal: false}));
       
         this.props.getSizeDrop().then(() => this.setState({loading:false, modalLoading: false,editUserModal: false}));
@@ -75,7 +75,7 @@ class eventSpaceMasterDetails extends Component {
     updateBook = (e) => {
         e.preventDefault();
         let { eventSpaceId, spaceName, capacity, spaceType, sizeId, area, description} = this.state
-        // console.log("gdchgdsvchgsvdccdsc",eventSpaceId,spaceName, capacity, spaceType, sizeId, area, description);
+     
 
         let errors = {};
         
@@ -89,13 +89,10 @@ class eventSpaceMasterDetails extends Component {
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
-        if(isValid &&this.state.message === ''){
-        
-        axios.put(`${URN}/eventSpaceMaster/` +  eventSpaceId, {
-           spaceName, capacity, spaceType, sizeId, area, description
-        }, { headers: authHeader()}).then((response) => {
-            this.refreshData();
-        }).catch((err)=>{console.log(err.response.data.message)
+        if(isValid && this.state.message === ''){
+
+            this.props.updateEventSpace(eventSpaceId, spaceName, capacity, spaceType, sizeId, area, description).then(() => this.refreshData())
+            .catch((err)=>{console.log(err.response.data.message)
             this.setState({modalLoading:false, message:err.response.data.message})});;
             if(this.state.message === ''){
                 this.setState({editUserModal: true})
@@ -220,21 +217,6 @@ class eventSpaceMasterDetails extends Component {
             })
         }
     }
-    // fetchDrop({ list2 }) {
-    //     if (list2) {
-
-    //         return (
-    //             list2.map((item) => {
-    //                 return (
-    //                     <option key={item.societyId} value={item.societyId}>
-    //                         {item.societyName}
-    //                     </option>
-    //                 )
-    //             })
-    //         )
-
-    //     }
-    // }
 
     fetchSizeDrop({ list3 }) {
         console.log(list3)
@@ -284,33 +266,6 @@ class eventSpaceMasterDetails extends Component {
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
-
-    // handlePageChange=(pageNumber)=> {
-    //     console.log(`active page is ${pageNumber}`);
-    //     // this.setState({activePage: pageNumber}) ;
-    //     this.state.activePage=pageNumber;        
-    //     const activePage=this.state.activePage;
-        
-    //         this.props.getPageDetails(activePage);
-        
-        
-      
-    //   }
-
-    //   countPerPage=(e)=>{
-    //        e.preventDefault();
-    //   }
-
-//     onChange1=(e)=>{
-//         e.preventDefault();
-//         console.log('hii');
-//         // this.setState({itemsCountPerPage:e.target.value})
-//         const activePage=this.state.activePage;
-//         this.state.limit=`${e.target.value}`;   
-//         console.log(this.state.limit,activePage)
-//         // console.log(countPerPage);
-//         this.props.noOfCount({limit: parseInt(this.state.limit)},activePage)
-// }
 
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
@@ -500,7 +455,7 @@ class eventSpaceMasterDetails extends Component {
 
                             
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
-                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
+                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit SpaceName</ModalHeader>
                             <ModalBody>
                                
                             {!this.state.modalLoading  ? modalData : <Spinner />}
@@ -568,6 +523,7 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getEventDetails,
         AddDetails,
+        updateEventSpace,
         getDrop,
         getSizeDrop,
         getPageDetails,

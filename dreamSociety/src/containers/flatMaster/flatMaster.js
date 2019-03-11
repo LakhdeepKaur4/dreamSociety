@@ -13,7 +13,7 @@ class FlatMaster extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // societyId: '',
+            societyId: '',
             societyName:'',
             flatType: '',
             flatSuperArea: '',
@@ -29,7 +29,9 @@ class FlatMaster extends Component {
     }
 
     componentDidMount() {
-        this.props.getSocietyNameDetails().then(()=> this.setState({loading:false}))
+        console.log(localStorage.getItem('societyId'));
+        this.setState({societyId: localStorage.getItem('societyId')})
+        // this.props.getSocietyNameDetails().then(()=> this.setState({loading:false}))
         this.props.getSizeTypeDetails().then(()=> this.setState({loading:false}))
     }
 
