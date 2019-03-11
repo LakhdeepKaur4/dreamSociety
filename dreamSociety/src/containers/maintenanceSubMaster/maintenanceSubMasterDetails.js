@@ -16,6 +16,7 @@ class MaintenanceSubMasterDetails extends Component{
     constructor(props){
         super(props);
         this.state = {
+            filterName: 'category',
             maintenanceTypeId:"",
             ids:[],
             category:"",
@@ -99,9 +100,12 @@ class MaintenanceSubMasterDetails extends Component{
 
     fetchMaintenanceDetails({sizeDetails}) {
         if(sizeDetails){
-            return sizeDetails.maintenanceType.filter(this.searchFilter(this.state.search)).map((item, index) => {
+            return sizeDetails.maintenanceType.sort((item1,item2)=>{
+                var cmprVal = (item1.maintenance_master[this.state.filterName].localeCompare(item2.maintenance_master[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item, index) => {
                 let maintenanceCategory = item.maintenance_master.category;
-                let sizeType = item.size_master.sizeType;
+                let sizeType= item.size_master.sizeType;
                 let sizeTypeId = item.size_master.sizeId;
                 return (
                     <tr key={item.maintenanceTypeId}>
@@ -220,22 +224,16 @@ class MaintenanceSubMasterDetails extends Component{
     }
 
     render(){
+        console.log(this.props)
         let tableData = <Table className="table table-bordered">
         <thead>
             <tr>
-                <th style={{alignContent:'baseline'}}>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                    if(e.target.checked) {
-                        this.selectAll();
-                    }
-                    else if(!e.target.checked){
-                        this.unSelectAll();
-                    } 
-                }
-                    
-                }  /></th>
+                <th style={{alignContent:'baseline'}}></th>
                 <th>#</th>
-                <th>Maintenance Type</th>
+                <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'category'}});
+                        }}>Maintenance Type<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Size</th>
                 <th>Price</th>
                 <th>Actions</th>
@@ -294,6 +292,17 @@ class MaintenanceSubMasterDetails extends Component{
                     <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
                     {deleteSelectedButton}
+                    <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></Label>
                     {!this.state.loading ? tableData : <Spinner />}
                 </div>
             </UI>

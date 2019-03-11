@@ -77,7 +77,7 @@ class MaintenanceSubMasterForm extends Component{
             errors.sizeId = `Please select size.`
         }
         if(!this.state.maintenanceId){
-            errors.maintenanceId = `Please select.`
+            errors.maintenanceId = `Please select Maintenance Type.`
         }
         if(this.state.rate === '') errors.rate = `Please write price.`
         this.setState({ errors });

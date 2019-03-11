@@ -55,6 +55,12 @@ class SocietyMemberEvent extends Component {
     handleSubmit=(e)=>{
         e.preventDefault();
         let errors = {};
+        
+        if (this.state.societyMemberEventName ==='') {
+            errors.societyMemberEventName = "cant be empty"
+        }
+
+        this.setState({errors})
 
         const isValid = Object.keys(errors).length === 0
     
@@ -87,12 +93,13 @@ class SocietyMemberEvent extends Component {
 
     render() {
         let formData;
-        
+        if(!this.state.loading && this.props.societyMemberEventReducer  &&  this.state.errors){
         formData =<div>
       <FormGroup>
             <Label>Member Event Type</Label>
             <Input  type="text" name="societyMemberEventName" value={this.state.societyMemberEventName}   onChange={this.onMemberEventChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Member Event Type" maxLength={50}
-        minLength={3} required/>
+        minLength={3}/>
+        <span className="error">{this.state.errors.societyMemberEventName}</span>
           <span className="error">{this.state.message}</span>
                      
         </FormGroup>
@@ -101,7 +108,7 @@ class SocietyMemberEvent extends Component {
         <Button color="danger" onClick={this.memberEventDetails}>Cancel</Button>
         </div>
 
-       
+        }
         return (
             <div>
                 <UI onClick={this.logout}>
