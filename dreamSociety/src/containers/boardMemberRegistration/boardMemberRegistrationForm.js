@@ -53,7 +53,13 @@ class BoardMemberRegistrationForm extends Component {
         this.props.getMemberDetails().then(() => this.setState({loading: false}));
         this.props.getMemberDesignation().then(() => this.setState({loading: false}));
         this.props.getSocietyId().then(() => this.setState({loading: false}));
-        this.props.getLocation().then(() => this.setState({loading: false}));             
+        this.props.getLocation().then(() => this.setState({loading: false}));  
+        let societyId = localStorage.getItem('societyId')
+        console.log(societyId);
+        this.setState({societyId})
+        console.log(this.state.societyId)
+        this.setState({societyId: localStorage.getItem('societyId')})
+        console.log(this.state.societyId)           
  }
 
 
@@ -265,39 +271,16 @@ submit = (e) => {
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.emailValidError===''){
-            let societyId = localStorage.getItem('societyId')
-            console.log(societyId);
-            this.setState({societyId})
-            console.log(this.state.societyId)
-            this.setState({societyId: localStorage.getItem('societyId')})
-            console.log(this.state.societyId)
+           
             this.setState({loading: true});
+            console.log(this.state)
             this.props.addMemberDetails(this.state)
-            .then(() => this.props.history.push('/superDashboard/boardMemberDetails'));
-            this.setState({
-            societyId:'',
-            societyBoardMemberName:'',
-            designationName:'',
-            designationId:'',
-            cityName:'',
-            countryName:'',
-            stateName:'',
-            email:'',
-            optionalMail:'',
-            accountHolderName: '',
-            bankName:'',
-            currentAddress:'',
-            permanentAddress:'',
-            accountNumber:'',
-            countryId:'',
-            contactNumber:'',
-            IFSCCode:'',
-            panCardNumber:'',
-            optionalContactNumber: '',
-            stateId:'',
-            cityId:'',
-            dob:'',
-            errors: {}})
+            .then(() => this.props.history.push('/superDashboard/boardMemberDetails'))
+            .catch(err => {
+                err.response.data.message
+                this.setState({loading: false})
+            });
+            
         }
         
 }
@@ -336,7 +319,7 @@ emailValid(event) {
 
 emailChange = (e) => {
     console.log(this.state.email)
-    
+    this.setState({errors:{email: ''}})
     if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
         this.setState({[e.target.name]:e.target.value});
         console.log(this.state.email)
