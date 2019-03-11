@@ -6,6 +6,7 @@ import {URN,GET_DETAILS,FETCH_DETAILS,FETCH_DROP,FETCH_SIZE_DROP,FETCH_SOCIETY_D
 
 
 export  function AddDetails(values){
+    console.log(values);
   
     const request= axios.post(`${URN}/flat`,values,{headers:authHeader()})
     .then(response => response.data)

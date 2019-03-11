@@ -121,7 +121,7 @@ class FlatMaster extends Component {
          let form;
             form=<div>
             <FormGroup>
-                <Label>CountryName</Label>
+                <Label>Country Name</Label>
                 <Input
                     type="select"
                     name="countryId"
@@ -135,7 +135,7 @@ class FlatMaster extends Component {
 
 
             <FormGroup>
-                <Label>StateName</Label>
+                <Label>State Name</Label>
                 <Input
                     type="text"
                     name="stateName"
