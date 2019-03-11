@@ -328,9 +328,9 @@ exports.getDecrypt = async (req, res, next) => {
                 { model: Country }
             ]
         })
-            .then(emp => {
+            .then(async emp => {
                 // console.log(emp);
-                emp.map(item => {
+                await emp.map(item => {
                     item.firstName = decrypt(item.firstName);
                     item.middleName = decrypt(item.middleName);
                     item.lastName = decrypt(item.lastName);

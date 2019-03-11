@@ -11,15 +11,15 @@ exports.create = async (req, res, next) => {
         let body = req.body;
         body.userId = req.userId;
 
-        const designationExists = await Designation.findOne({
-            where:{
-                [Op.and]: [
-                    { designationName: req.body.designationName },
-                    { isActive: true }
-                ]
+        const designations = await Designation.findAll({
+            where: {
+                isActive: true
             }
         })
-        if (designationExists) {
+        let error = designations.some(designation => {
+            return designation.designationName.toLowerCase().replace(/ /g, '') == req.body.designationName.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Designation Name already Exists" })
         }
         const designation = await Designation.create(body);
@@ -57,6 +57,17 @@ exports.update = async (req, res, next) => {
         console.log("id==>", id)
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const designations = await Designation.findAll({
+            where: {
+                isActive: true
+            }
+        })
+        let error = designations.some(designation => {
+            return designation.designationName.toLowerCase().replace(/ /g, '') == req.body.designationName.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Designation Name already Exists" })
         }
         const update = req.body;
         console.log("update==>", update)

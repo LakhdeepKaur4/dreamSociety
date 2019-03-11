@@ -3,31 +3,42 @@ const httpStatus = require('http-status')
 
 const Relation = db.relation;
 
-exports.create = async (req,res,next) => {
-    try{
+exports.create = async (req, res, next) => {
+    try {
         let body = req.body;
         body.userId = req.userId;
+        const relations = await Relation.findAll({
+            where: {
+                isActive: true
+            }
+        })
+        let error = relations.some(relation => {
+            return relation.relationName.toLowerCase().replace(/ /g, '') == req.body.relationName.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Relation Name already Exists" })
+        }
         const relation = await Relation.create(body);
         return res.status(httpStatus.CREATED).json({
             message: "Relation successfully created",
             relation
         });
-       } catch (error) {
+    } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
 
-exports.get = async(req,res,next) => {
-    try{
-        const relation= await Relation.findAll({where:{isActive:true}});
-        if(relation){
+exports.get = async (req, res, next) => {
+    try {
+        const relation = await Relation.findAll({ where: { isActive: true } });
+        if (relation) {
             return res.status(httpStatus.CREATED).json({
                 message: "Relation Content Page",
                 relation
             });
         }
-    }catch(error){
-        console.log("error==>",error)
+    } catch (error) {
+        console.log("error==>", error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
@@ -40,18 +51,45 @@ exports.update = async (req, res, next) => {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
         const update = req.body;
-        console.log("update==>", update)
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedRelation = await Relation.find({ where: { relationId: id } }).then(relation => {
-            return relation.updateAttributes(update)
+        const relation = await Relation.findOne({
+            where: {
+                isActive: true,
+            }
         })
-        if (updatedRelation) {
-            return res.status(httpStatus.OK).json({
-                message: "Relation Updated Page",
-                updatedRelation
+        if (relation.relationName === update.relationName) {
+            const updatedRelation = await Relation.find({ where: { relationId: id } }).then(relation => {
+                return relation.updateAttributes(update)
+            })
+            if (updatedRelation) {
+                return res.status(httpStatus.OK).json({
+                    message: "Relation Updated Page",
+                    updatedRelation: updatedRelation
+                });
+            }
+        } else {
+            const relations = await Relation.findAll({
+                where: {
+                    isActive: true
+                }
+            })
+            let error = relations.some(relation => {
+                return relation.relationName.toLowerCase().replace(/ /g, '') == req.body.relationName.toLowerCase().replace(/ /g, '');
             });
+            if (error) {
+                return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Relation Name already Exists" })
+            }
+            const updatedRelation = await Relation.find({ where: { relationId: id } }).then(relation => {
+                return relation.updateAttributes(update)
+            })
+            if (updatedRelation) {
+                return res.status(httpStatus.OK).json({
+                    message: "Relation Updated Page",
+                    updatedRelation
+                });
+            }
         }
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);

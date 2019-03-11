@@ -5,9 +5,20 @@ const httpStatus = require('http-status');
 const Tower = db.tower;
 const Op = db.Sequelize.Op;
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
     console.log("creating tower");
-
+    const towers = await Tower.findAll({
+        where: {
+            isActive: true
+        }
+    })
+    
+    let error = towers.some(tower => {
+        return tower.towerName.toLowerCase().replace(/ /g, '') == req.body.towerName.toLowerCase().replace(/ /g, '');
+    });
+    if (error) {
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Tower Name already Exists" })
+    }
     Tower.create({
         towerName: req.body.towerName,
         userId: req.userId
@@ -44,11 +55,22 @@ exports.getById = (req, res) => {
     })
 }
 
-exports.update = (req, res) => {
+exports.update =async (req, res) => {
     console.log("-----update---------");
     const id = req.params.id;
     if (!id) {
         res.json("Please enter id");
+    }
+    const towers = await Tower.findAll({
+        where: {
+            isActive: true
+        }
+    })
+    let error = towers.some(tower => {
+        return tower.towerName.toLowerCase().replace(/ /g, '') == req.body.towerName.toLowerCase().replace(/ /g, '');
+    });
+    if (error) {
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Tower Name already Exists" })
     }
     const updates = req.body;
     Tower.find({

@@ -12,6 +12,17 @@ exports.create = async (req, res, next) => {
         console.log("creating event");
         let body = req.body;
         body.userId = req.userId;
+        const events = await Event.findAll({
+            where: {
+                isActive: true
+            }
+        })
+        let error = events.some(event => {
+            return event.eventName.toLowerCase().replace(/ /g, '') == req.body.eventName.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Event Name already Exists" })
+        }
         console.log("body===>", body)
         const event = await Event.create(body);
         return res.status(httpStatus.CREATED).json({
@@ -53,6 +64,17 @@ exports.update = async (req, res, next) => {
         console.log("id==>", id)
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const events = await Event.findAll({
+            where: {
+                isActive: true
+            }
+        })
+        let error = events.some(event => {
+            return event.eventName.toLowerCase().replace(/ /g, '') == req.body.eventName.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Event Name already Exists" })
         }
         const update = req.body;
         console.log("update==>", update)
@@ -101,7 +123,8 @@ exports.delete = async (req, res, next) => {
 exports.getEventOrganiser = async (req, res, next) => {
     try {
         const user = await User.findAll({
-            attributes: ['userId', 'userName'], include: [{
+            attributes: ['userId', 'userName'],
+             include: [{
                 model: Role,
                 where: { roleName: 'ADMIN' },
                 attributes: ['id', 'roleName'],

@@ -234,7 +234,10 @@ exports.deleteSelected = async (req, res, next) => {
 			return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
 		}
 		const updatedVendor = await Vendor.update(update, { where: { vendorId: { [Op.in]: deleteSelected } } })
-		if (updatedVendor) {
+        const updatedServices = await VendorService.update(update, { where: { vendorId: { [Op.in]: deleteSelected } } })
+        
+        
+        if (updatedVendor && updatedServices) {
 			return res.status(httpStatus.OK).json({
 				message: "Vendors deleted successfully",
 			});

@@ -88,6 +88,31 @@ exports.update = async (req, res) => {
     if (!id) {
         res.json("Please enter id");
     }
+    const updates = req.body;
+
+    const location = await Location.findOne({
+        where: {
+            [Op.and]:[
+                {isActive: true},
+                { locationId: req.params.locationId },
+                { stateId: req.body.stateId },
+                { countryId: req.body.countryId },
+                { cityId: req.body.cityId },
+            ]
+        }
+    })
+
+    if(location.locationName === updates.locationName){
+        const updatedLocation = await Location.find({ where: { locationId: id } }).then(location => {
+            return location.updateAttributes(updates)
+        })
+        if (updatedLocation) {
+            return res.status(httpStatus.OK).json({
+                message: "Location Updated Page",
+                updatedLocation: updatedLocation 
+            });
+        }
+    }else{
     const locations = await Location.findAll({
         where: {
             [Op.and]:[
@@ -106,7 +131,7 @@ exports.update = async (req, res) => {
         console.log("inside state");
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Location Name already Exists" })
     }
-    const updates = req.body;
+  
     Location.find({
         where: { locationId: id }
     })
@@ -116,6 +141,7 @@ exports.update = async (req, res) => {
         .then(updatedLocation => {
             res.json({ message: "Location updated successfully!", updatedLocation: updatedLocation });
         });
+}
 }
 
 exports.delete = async (req, res, next) => {

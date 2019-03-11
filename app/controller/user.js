@@ -28,6 +28,7 @@ exports.start = (req, res) => {
 
 exports.signup = async (req, res) => {
 	// Save User to Database
+	let alreadyExists= false;
 	console.log("Processing func -> SignUp");
 	console.log("req.body===>", req.body)
 	let password;
@@ -37,7 +38,7 @@ exports.signup = async (req, res) => {
 	if (roles) {
 		roleName.push(roles);
 	}
-	const user = await User.findAll({
+	const user = await User.findOne({
 		where:{
 			[Op.and]: [
 				{ userName: req.body.userName },
@@ -129,8 +130,9 @@ exports.update = (req, res) => {
 
 exports.signin = async (req, res) => {
 	console.log("Sign-In", req.body);
-	 const society = await Society.findOne({where:{isActive:true},
-		attributes:['societyId','societyName'],
+	let society = await Society.findOne({
+		where: { isActive: true },
+		attributes: ['societyId', 'societyName'],
 		include: [
 			{
 				model: City,
@@ -154,7 +156,9 @@ exports.signin = async (req, res) => {
 			},
 		]
 	});
-	 console.log(society);
+
+	society.societyName = decrypt(society.societyName);
+
 	// let userName = '%'+req.body.userName;
 	// console.log(userName)
 	if (!req.body.userName) {
@@ -169,11 +173,11 @@ exports.signin = async (req, res) => {
 	}
 	User.findOne({
 		where: {
-			[Op.and]:[
-				{userName: req.body.userName},
-			    {isActive:true}
+			[Op.and]: [
+				{ userName: req.body.userName },
+				{ isActive: true }
 			]
-		
+
 		}, include: [{
 			model: Role,
 			attributes: ['id', 'roleName'],
@@ -212,7 +216,7 @@ exports.signin = async (req, res) => {
 			auth: true,
 			accessToken: token,
 			user: user,
-			society:society,
+			society: society,
 			message: "Successfully Logged In"
 		});
 

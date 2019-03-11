@@ -6,13 +6,30 @@ const Service = db.service;
 const ServiceDetail = db.serviceDetail;
 const Op = db.Sequelize.Op;
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   let body = req.body;
   body.userId = req.userId;
   console.log("req.body===>", req.body)
   console.log("creating service");
   if (!body.serviceName && !body.serviceDetailId) {
     return res.status(422).json({ message: "Parameters Missing" })
+  }
+
+  const services = await Service.findAll({
+    where: {
+      [Op.and]:[
+        {isActive: true},
+        {serviceDetailId:req.body.serviceDetailId}
+    ]
+    }
+  })
+  // console.log(services);
+  let error = services.some(service => {
+    return service.serviceName.toLowerCase().replace(/ /g, '') == req.body.serviceName.toLowerCase().replace(/ /g, '');
+  });
+  if(error) {
+    console.log("inside country");
+    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Service Name already Exists" })
   }
   Service.create({
     serviceName: req.body.serviceName,
@@ -58,10 +75,26 @@ exports.getById = (req, res) => {
   })
 }
 
-exports.update = (req, res) => {
+exports.update =async (req, res) => {
   const id = req.params.id;
   if (!id) {
     res.json("Please enter id");
+  }
+  const services = await Service.findAll({
+    where: {
+      [Op.and]:[
+        {isActive: true},
+        {serviceDetailId:req.body.serviceDetailId}
+    ]
+    }
+  })
+  console.log(services);
+  let error = services.some(service => {
+    return service.serviceName.toLowerCase().replace(/ /g, '') == req.body.serviceName.toLowerCase().replace(/ /g, '');
+  });
+  if (error) {
+    console.log("inside country");
+    return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Service Name already Exists" })
   }
   const updates = req.body;
   Service.find({

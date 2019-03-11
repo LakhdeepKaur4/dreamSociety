@@ -11,13 +11,16 @@ exports.create = async (req, res, next) => {
         let body = req.body;
         body.userId = req.userId;
 
-        const maintenanceExists = await Maintenance.findOne({
+        const maintenances = await Maintenance.findAll({
             where: {
-                category: req.body.category
+                isActive: true
             }
         })
-        if (maintenanceExists) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Maintenance Name already Exists" })
+        let error = maintenances.some(maintenance => {
+            return maintenance.category.toLowerCase().replace(/ /g, '') == req.body.category.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Maintainance Name already Exists" })
         }
         const maintenance = await Maintenance.create(body);
         if (maintenance) {
@@ -57,6 +60,17 @@ exports.update = async (req, res, next) => {
         console.log("id==>", id)
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const maintenances = await Maintenance.findAll({
+            where: {
+                isActive: true
+            }
+        })
+        let error = maintenances.some(maintenance => {
+            return maintenance.category.toLowerCase().replace(/ /g, '') == req.body.category.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Maintainance Name already Exists" })
         }
         const update = req.body;
         console.log("update==>", update)

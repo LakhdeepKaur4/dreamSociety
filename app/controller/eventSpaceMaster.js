@@ -11,6 +11,17 @@ exports.create = async (req, res, next) => {
         console.log("creating event Space");
         let body = req.body;
         console.log(body);
+        const eventSpaces = await EventSpace.findAll({
+            where: {
+                isActive: true
+            }
+        })
+        let error = eventSpaces.some(eventSpace => {
+            return eventSpace.spaceName.toLowerCase().replace(/ /g, '') == req.body.spaceName.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Event Space Name already Exists" })
+        }
         body.userId = req.userId;
         const eventSpace = await EventSpace.create(body);
         return res.status(httpStatus.CREATED).json({
@@ -62,6 +73,37 @@ exports.update = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
+        const eventSpaces = await EventSpace.findOne({
+            where: {
+                [Op.and]:[
+                    {isActive: true},
+                    { eventSpaceId: id }
+                ]
+            }
+        })
+
+        if(eventSpaces.spaceName === update.spaceName){
+                const updatedEventSpace = await EventSpace.find({ where: { eventSpaceId: id } }).then(eventSpace => {
+                    return eventSpace.updateAttributes(update)
+                })
+                if (updatedEventSpace) {
+                    return res.status(httpStatus.OK).json({
+                        message: "Event Space Updated Page",
+                        updatedEventSpace: updatedEventSpace
+                    });
+                }
+            } else {
+        const eventSpaces = await EventSpace.findAll({
+            where: {
+                isActive: true
+            }
+        })
+        let error = eventSpaces.some(eventSpace => {
+            return eventSpace.spaceName.toLowerCase().replace(/ /g, '') == req.body.spaceName.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Event Space Name already Exists" })
+        }
         const updatedEventSpace = await EventSpace.find({ where: { eventSpaceId: id } }).then(eventSpace => {
             
            attrArr.forEach(attr => {
@@ -77,7 +119,7 @@ exports.update = async (req, res, next) => {
                 message: "Event Space Updated Page",
                 vendor: updatedEventSpace
             });
-        
+        }
     } catch (error) {
         console.log(error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);

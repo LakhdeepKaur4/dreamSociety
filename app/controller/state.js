@@ -90,7 +90,59 @@ exports.getCountry = (req, res) => {
     })
 }
 
-exports.update = async (req, res) => {
+exports.update = async(req,res) => {
+    const id = req.params.id;
+    if (!id) {
+        res.json("Please enter id");
+    }
+    const updates = req.body;
+
+    const state = await State.findOne({
+        where:{
+            stateId:id,
+            isActive:true
+        }
+    })
+
+    if(state.stateName === updates.stateName){
+        const updatedState = await State.find({ where: { stateId: id } }).then(state => {
+            return state.updateAttributes(updates)
+        })
+        if (updatedState) {
+            return res.status(httpStatus.OK).json({
+                message: "State Updated Page",
+                updatedState: updatedState 
+            });
+        }
+    }else{
+        const states = await State.findAll({
+            where: {
+                [Op.and]:[
+                    {isActive: true},
+                    {countryId:req.body.countryId}
+                ]
+            }
+        })
+        let error = states.some(state => {
+            return state.stateName.toLowerCase().replace(/ /g, '') == req.body.stateName.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
+            console.log("inside state");
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "State Name already Exists" })
+        }
+        const updatedState = await State.find({ where: { stateId: id } }).then(state => {
+            return state.updateAttributes(updates)
+        })
+        if (updatedState) {
+            return res.status(httpStatus.OK).json({
+                message: "State deleted successfully",
+                state: updatedState
+            });
+        }
+}
+}
+
+exports.update1 = async (req, res) => {
     const id = req.params.id;
     if (!id) {
         res.json("Please enter id");
@@ -112,15 +164,15 @@ exports.update = async (req, res) => {
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "State Name already Exists" })
     }
     const updates = req.body;
-    State.find({
-        where: { stateId: id }
+    const updatedState = await State.find({ where: { stateId: id } }).then(state => {
+        return state.updateAttributes(update)
     })
-        .then(state => {
-            return state.updateAttributes(updates)
-        })
-        .then(updatedState => {
-            res.json({ message: "State updated successfully!", updatedState: updatedState });
+    if (updatedState) {
+        return res.status(httpStatus.OK).json({
+            message: "State deleted successfully",
+            state: updatedState
         });
+    }
 }
 
 exports.delete = async (req, res, next) => {

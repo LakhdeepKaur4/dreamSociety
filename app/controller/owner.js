@@ -145,8 +145,8 @@ exports.create = async (req, res, next) => {
 
 exports.create1 = async (req, res, next) => {
   try {
-    // console.log("creating owner");
-    // console.log(req.body);
+    console.log("creating owner");
+    console.log(req.body);
     let existingOwner = await Owner.find({
       where: { email: encrypt(key, req.body.email) }
     });
@@ -195,6 +195,7 @@ exports.create1 = async (req, res, next) => {
     });
     const ownerId = owner.ownerId;
     if (req.body.profilePicture) {
+      ownerBody.profilePicture = ownerBody.profilePicture.split(",")[1]
       let fileName = ownerBody.fileName.split(".")[0];
       let fileExt = ownerBody.fileName.split(".")[1];
       saveToDisc(
@@ -239,7 +240,7 @@ exports.create1 = async (req, res, next) => {
       const bodyToUpdate = {
         ownerId: ownerId,
         userId: req.userId,
-        relationId: req.body.relationId
+        // relationId: req.body.relationId
       };
       console.log("bodytoUpdate ==>", bodyToUpdate);
       console.log(ownerMember.memberId);
@@ -387,7 +388,7 @@ exports.get1 = async (req, res, next) => {
       ]
     });
 
-    console.log(owners);
+    // console.log(owners);
 
     owners.map(owner => {
       owner.ownerName = decrypt(key, owner.ownerName);
@@ -409,7 +410,7 @@ exports.get1 = async (req, res, next) => {
       });
       getOwners.push(owner);
     });
-    console.log(getOwners);
+    // console.log(getOwners);
     if (owners) {
       return res.status(httpStatus.CREATED).json({
         message: "Owner Content Page",
@@ -674,4 +675,27 @@ exports.delete = async (req,res,next) => {
     console.log("error::",error)
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
 }
+}
+
+exports.deleteSelected = async (req, res, next) => {
+	try {
+		const deleteSelected = req.body.ids;
+        console.log("delete selected==>", deleteSelected);
+         
+		const update = { isActive: false };
+		if (!deleteSelected) {
+			return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
+		}
+		const updatedOwners = await Owner.update(update, { where: { ownerId: { [Op.in]: deleteSelected } } })
+		
+    const updatedOwnersMembers = await OwnerMembersDetail.update(update, {where:{ownerId: { [Op.in]: deleteSelected }}});
+    if (updatedOwners && updatedOwnersMembers) {
+			return res.status(httpStatus.OK).json({
+				message: "Owners deleted successfully",
+			});
+    };
+  } catch (error) {
+		console.log(error)
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+	}
 }

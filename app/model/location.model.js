@@ -7,7 +7,6 @@ module.exports = (sequelize, Sequelize) => {
 		},
 	  locationName: {
 		  type: Sequelize.STRING,
-		  unique:'compositeIndex'
 	  },
 		isActive:{
 			type:Sequelize.BOOLEAN,

@@ -12,6 +12,7 @@ exports.create = async (req, res, next) => {
         console.log("creating maintenance");
         let body = req.body;
         body.userId = req.userId;
+
         const maintenanceType = await MaintenanceType.create(body);
         if (maintenanceType) {
             return res.status(httpStatus.CREATED).json({

@@ -68,42 +68,48 @@ exports.update = async (req, res) => {
     }
     const updates = req.body;
 
-    const countries = await Country.findAll({
-        where: {
-            isActive: true
+    const country = await Country.findOne({
+        where:{
+            countryId:id,
+            isActive:true
         }
     })
-    console.log(countries);
-    let error = countries.some(country => {
-        return country.countryName.toLowerCase().replace(/ /g, '') == req.body.countryName.toLowerCase().replace(/ /g, '');
-    });
-    if (error) {
-        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Country Name already Exists" })
-    }
-    // const countries = await Country.findAll({
-    //     where: {
-    //         isActive: true
-    //     }
-    // })
-    // console.log(countries);
-    // let error = countries.some(country => {
-    //     return country.countryName.toLowerCase().replace(/ /g, '') == req.body.countryName.toLowerCase().replace(/ /g, '');
-    // });
-    // if (error) {
-    //     console.log("inside country");
-    //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Country Name already Exists" })
-    // }
-    Country.find({
-        where: { 
-            isActive:true,
-            countryId: id }
-    })
-        .then(country => {
+
+    if(country.countryName === updates.countryName){
+        const updatedCountry = await Country.find({ where: { countryId: id } }).then(country => {
             return country.updateAttributes(updates)
         })
-        .then(updatedCountry => {
-            res.json({ message: "Country updated successfully!", updatedCountry: updatedCountry });
+        if (updatedCountry) {
+            return res.status(httpStatus.OK).json({
+                message: "Country Updated Page",
+                updatedCountry: updatedCountry 
+            });
+        }
+    }else{
+        const countries = await Country.findAll({
+            where: {
+                isActive: true
+            }
+        })
+        console.log(countries);
+        let error = countries.some(country => {
+            return country.countryName.toLowerCase().replace(/ /g, '') == req.body.countryName.toLowerCase().replace(/ /g, '');
         });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Country Name already Exists" })
+        }
+        Country.find({
+            where: { 
+                isActive:true,
+                countryId: id }
+        })
+            .then(country => {
+                return country.updateAttributes(updates)
+            })
+            .then(updatedCountry => {
+                res.json({ message: "Country updated successfully!", updatedCountry: updatedCountry });
+            });
+    }
 }
 
 exports.delete = async (req, res, next) => {
