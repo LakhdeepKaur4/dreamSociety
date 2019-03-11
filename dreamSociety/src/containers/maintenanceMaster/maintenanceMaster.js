@@ -55,7 +55,10 @@ class MaintenanceMaster extends Component {
     handleSubmit=(e)=>{
         e.preventDefault();
         let errors = {};
-
+        if (this.state.category ==='') {
+            errors.category = "cant be empty"
+        }
+        this.setState({errors})
         const isValid = Object.keys(errors).length === 0
     
         if (isValid) {
@@ -92,8 +95,9 @@ class MaintenanceMaster extends Component {
       <FormGroup>
             <Label>Maintenance Category</Label>
             <Input  type="text" name="category" value={this.state.category}  onChange={this.onMaintenanceChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Maintenance Category" maxLength={50}
-        minLength={3} required/>
+        minLength={3}/>
           <span className="error">{this.state.message}</span>
+          <span className="error">{this.state.errors.category}</span>
                      
         </FormGroup>
          

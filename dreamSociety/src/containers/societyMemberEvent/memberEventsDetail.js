@@ -22,6 +22,7 @@ class MemberEventsDetail extends Component {
             filterName:'societyMemberEventName',
             menuVisible: false,
             search: '',
+            modalLoading: false,
             modal: false,
             loading: true,
             errors: {},
@@ -67,7 +68,7 @@ class MemberEventsDetail extends Component {
     }
 
     refreshData() {
-        this.props.getMemberEvent().then(() => this.setState({ loading: false }))
+        this.props.getMemberEvent().then(() => this.setState({ loading: false, modalLoading: false, modal:false }))
        
     }
 
@@ -89,18 +90,24 @@ class MemberEventsDetail extends Component {
             })
         this.props.updateMemberEvent(societyMemberEventId, societyMemberEventName)
             .then(() => this.refreshData())
+            .catch(err=>{ console.log(err.response.data.message)
+                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                })
+                if(this.state.message === ''){
+                    this.setState({modal: true})
+                }
+                else {
+                    this.setState({modal: false})
+                }
+        
         this.setState({
-            editMemberEventData: { societyMemberEventId, societyMemberEventName },
-            modal: !this.state.modal
+            modalLoading: true
         })
     }
     }
 
       deleteMemberEventName = (societyMemberEventId) => {
         let { isActive } = this.state.editMemberEventData
-
-       
-        
         this.setState({ loading: true })
         this.props.deleteMemberEvent(societyMemberEventId, isActive)
             .then(() => this.refreshData())
@@ -288,7 +295,7 @@ class MemberEventsDetail extends Component {
                         }  
                     }/></Label>
 
-                        {!this.state.loading ? tableData : <Spinner />}
+                        {!this.state.modalLoading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>

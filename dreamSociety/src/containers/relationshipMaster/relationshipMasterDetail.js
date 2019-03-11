@@ -35,6 +35,7 @@ class RelationshipMasterDetail extends Component {
     }
 
     onChangeHandler = (event) => {
+        this.setState({message:'' })
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -109,13 +110,9 @@ class RelationshipMasterDetail extends Component {
       deleteRelationName = (relationId) => {
         let { isActive } = this.state.editRelationData
         this.setState({ loading: true })
-
-       
         this.props.deleteRelation(relationId, isActive)
             .then(() => this.refreshData())
         this.setState({editRelationData: { isActive: false } })
-       
-       
       }
 
 
