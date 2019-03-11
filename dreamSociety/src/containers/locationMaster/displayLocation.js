@@ -28,7 +28,10 @@ class DisplayLocation extends Component {
                 search: '',
                 errors:{},
                 modal: false,
-                loading:true
+                loading:true,
+                message:'',
+                modalLoading: false,
+
             };
     }
 
@@ -39,7 +42,7 @@ componentDidMount(){
 }    
 
 refreshData() {
-    this.props.getLocation().then(()=> this.setState({loading:false}));
+    this.props.getLocation().then(()=> this.setState({modalLoading: false,loading:false}));
     this.props.getStateName().then(()=> this.setState({loading:false}));
     this.props.getCountryName().then(()=> this.setState({loading:false}));
     this.props.getCityName().then(()=> this.setState({loading:false}));
@@ -58,10 +61,13 @@ onChangeHandler = (event) => {
     }
 }
 
-toggle = (locationId, countryName, stateName, cityName, locationName) => {
+toggle = (locationId, countryId,stateId,cityId, countryName, stateName, cityName, locationName) => {
 
     this.setState({
         locationId,
+        countryId,
+        stateId,
+        cityId, 
         countryName,
         stateName,
         cityName,
@@ -99,7 +105,7 @@ deleteSelected (ids){
 
 
 toggleModal = () => {
-    this.setState({ modal: !this.state.modal })
+    this.setState({ modal: !this.state.modal, message:'' })
 }
 
 renderList=({details})=>{
@@ -138,7 +144,7 @@ renderList=({details})=>{
                 <td>{item.city_master.cityName}</td>
                 <td>{item.locationName}</td>
                 <td>
-                    <Button color="success"  className="mr-2" onClick={this.toggle.bind(this, item.locationId, item.country_master.countryName,item.state_master.stateName,item.city_master.cityName,item.locationName)}> Edit</Button>
+                    <Button color="success"  className="mr-2" onClick={this.toggle.bind(this, item.locationId,item.country_master.countryId,item.state_master.stateId,item.city_master.cityId, item.country_master.countryName,item.state_master.stateName,item.city_master.cityName,item.locationName)}> Edit</Button>
                
                     <Button color="danger" onClick={this.deleteLocation.bind(this,item.locationId)}> Delete</Button>
                 </td>
@@ -213,15 +219,26 @@ updateLocation = () => {
             errors.locationName="Location Name can't be empty";
         }
         this.setState({errors});
+
         const isValid =Object.keys(errors).length===0;
-        if(isValid){
+        if(isValid &&  this.state.message === ''){
+
         this.props.updateLocation(locationId, countryId, stateId, cityId,locationName)
         .then(() => this.refreshData())
-        this.setState({loading:true,
-            locationId, countryId, stateId, cityId,locationName,
-            modal: !this.state.modal
+        .catch(err=>{
+            this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+            })
+            if(this.state.message === ''){
+                this.setState({modal: true})
+            }
+            else {
+                this.setState({modal: false})
+            } 
+        this.setState({ modalLoading: true,
+            locationId, countryId, stateId, cityId,locationName
     })
         }
+        console.log(locationId, countryId, stateId, cityId,locationName)
 }
 
 push=()=>{
@@ -286,7 +303,7 @@ render(){
         onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
 
     return(
-        <div>
+        
         <UI onClick={this.logout}>
         
               
@@ -344,6 +361,7 @@ render(){
                          <Label>Location Name</Label>
                          <Input type="text" id="locationId" name="locationName" maxLength={20} onChange={this.onChangeHandler} value={this.state.locationName} />
                          <span className="error">{this.state.errors.locationName}</span>
+                         <span className="error">{this.state.message}</span>
                          
                      </FormGroup> 
                  
@@ -371,13 +389,13 @@ render(){
                                     }  
                                 }/>
                             </Label>
-                           {!this.state.loading ? tableData : <Spinner />}
+                           {!this.state.modalLoading ? tableData : <Spinner />}
                        
                                 
             
                 </div>
         </UI>
-        </div>
+        
     )
 }
 
