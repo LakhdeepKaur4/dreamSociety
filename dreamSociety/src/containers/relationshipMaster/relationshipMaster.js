@@ -47,7 +47,11 @@ class RelationshipMaster extends Component{
     handleSubmit=(e)=>{
         e.preventDefault();
         let errors={};
-
+        
+        if (this.state.relationName ==='') {
+            errors.relationName = "cant be empty"
+        }
+        this.setState({errors})
         const isValid=Object.keys(errors).length === 0
 
         if(isValid){
@@ -81,7 +85,8 @@ class RelationshipMaster extends Component{
         <FormGroup>
             <Label>Relation Name</Label>
             <Input  type="text" name="relationName"  onChange={this.onRelationChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Relation Name" maxLength={50}
-        minLength={3} required/>
+        minLength={3}/>
+        <span className="error">{this.state.errors.relationName}</span>   
         <span className="error">{this.state.message}</span>          
         </FormGroup>
         

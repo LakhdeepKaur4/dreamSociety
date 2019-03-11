@@ -199,4 +199,5 @@ export const GET_FLAT_DETAIL_VIA_TOWERID='GET_FLAT_DETAIL_VIA_TOWERID';
 export const GET_TOTAL_ITEMS='GET_TOTAL_ITEMS';
 export const GET_FLAT_OWNER='get_flat_owner';
 export const DELETE_MULTIPLE_OWNER='DELETE_MULTIPLE_OWNER';
-export const REMOVE_OWNER='remove_owner';
+export const REMOVE_OWNER='remove_owner'
+export const UPDATE_EVENT_SPACE='UPDATE_EVENT_SPACE';

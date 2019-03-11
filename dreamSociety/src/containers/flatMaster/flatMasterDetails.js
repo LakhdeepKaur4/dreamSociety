@@ -49,7 +49,8 @@ class flatMasterDetails extends Component {
 
     componentDidMount() {
 
-       
+       console.log(localStorage.getItem('societyId'));
+       this.setState({societyId: localStorage.getItem('societyId')})
         this.totalCount()
         this.refreshData()
 
@@ -445,7 +446,7 @@ class flatMasterDetails extends Component {
                                         <span  className='error'>{this.state.errors.societyId}</span>
                                 </FormGroup> */}
                                 <FormGroup>
-                                    <Label for="roles">flatType</Label>
+                                    <Label for="roles">Flat Type</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter  flat type"
@@ -469,7 +470,7 @@ class flatMasterDetails extends Component {
                                         <span  className='error'>{this.state.errors.flatSuperArea}</span>
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label for="roles">sizeType</Label>
+                                    <Label for="roles">Size Type</Label>
                                     <Input type="select" 
                                     value={this.state.sizeId} 
                                     name="sizeId"

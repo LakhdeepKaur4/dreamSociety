@@ -50,8 +50,10 @@ OnKeyPressUserhandler(event) {
     handleSubmit=(e)=>{
         e.preventDefault();
         let errors={};
-        
-
+        if (this.state.designationName ==='') {
+            errors.designationName = "cant be empty"
+        }
+        this.setState({errors})
         const isValid=Object.keys(errors).length === 0
 
         if(isValid){
@@ -87,7 +89,8 @@ OnKeyPressUserhandler(event) {
         <FormGroup>
             <Label>Designation Name</Label>
             <Input  type="text" name="designationName"    onChange={this.onDesignationChange} onKeyPress={this.OnKeyPressUserhandler}  placeholder="Designation Name" maxLength={50}
-        minLength={3} required/>
+        minLength={3} />
+        <span className="error">{this.state.errors.designationName}</span>  
         <span className="error">{this.state.message}</span>          
         </FormGroup>
 

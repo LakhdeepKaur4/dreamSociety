@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
-import {URN,ADD_EVENT_SPACE_DETAILS,FETCH_EVENT_SPACE_DETAILS,DELETE_MULTIPLE_EVENT_SPACE_MASTER_DETAILS} from '../actions/index';
+import {URN,ADD_EVENT_SPACE_DETAILS,FETCH_EVENT_SPACE_DETAILS,DELETE_MULTIPLE_EVENT_SPACE_MASTER_DETAILS,
+    UPDATE_EVENT_SPACE} from '../actions/index';
 
 
 export function AddEventDetails(values){
@@ -18,7 +19,7 @@ export function AddEventDetails(values){
 }
 
 export  function getEventDetails(){
-    console.log();
+ 
 
     const request = axios.get(`${URN}/eventSpaceMaster`,{headers:authHeader()})
     .then(response => response.data)
@@ -28,6 +29,20 @@ export  function getEventDetails(){
 
          type:FETCH_EVENT_SPACE_DETAILS,
          payload: request 
+    }
+
+}
+
+export function updateEventSpace( eventSpaceId ,spaceName,capacity,spaceType,sizeId,area,description){
+       console.log('jii',eventSpaceId ,spaceName,capacity,spaceType,sizeId,area,description);
+    const request =  axios.put(`${URN}/eventSpaceMaster/` +  eventSpaceId, {
+           spaceName, capacity, spaceType, sizeId, area, description }, { headers: authHeader()})
+         .then(response => response.data)
+         .then(getEventDetails());
+
+    return {
+        type:UPDATE_EVENT_SPACE,
+        payload: request
     }
 
 }
