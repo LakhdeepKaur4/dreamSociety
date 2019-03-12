@@ -74,7 +74,7 @@ this.setState({[e.target.name]:e.target.value});
 submit=(e)=>{
  e.preventDefault()
  let errors={};
- const {userName,email,towerId,flatDetailId,roles,  familyMember,parking}= this.state 
+ let {userName,email,towerId,flatDetailId,roles,  familyMember,parking}= this.state 
  if(!this.state.userName){
     errors.userName = "  Username can't be empty. Please select."
 }
@@ -100,10 +100,10 @@ this.setState({ errors });
 const isValid = Object.keys(errors).length === 0
 if (isValid) {
     this.setState({loading: true})
-this.props.addPerson(userName,email,towerId,flatDetailId,roles,familyMember,parking)
+this.props.addPerson(userName,email,towerId,roles,familyMember,parking)
 .then(()=>
 this.props.history.push('/superDashboard/displayPerson')
-).catch((err)=>this.setState({message: err.response.data.message, loading: false}))
+).catch((err)=>this.setState({message: err.response, loading: false}))
             
 }
 }

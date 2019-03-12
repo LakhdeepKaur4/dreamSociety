@@ -28,7 +28,9 @@ class DisplaySizeMaster extends Component {
     ids: [],
     isDisabled: true,
     sizeType: [],
-    filterName:"sizeType"
+    filterName:"sizeType",
+    message:'',
+    modalLoading:false
   }
 
   componentDidMount() {
@@ -38,7 +40,7 @@ class DisplaySizeMaster extends Component {
   }
 
   refreshData() {
-    this.props.displaySize().then(() =>this.setState({loading:false}));
+    this.props.displaySize().then(() =>this.setState({loading:false,modalLoading: false, editSizeModal:false}));
   }
 
    
@@ -58,7 +60,7 @@ class DisplaySizeMaster extends Component {
 
   onChange=(e)=> {
 
-
+      this.setState({message:''})
   if (!!this.state.errors[e.target.name]) {
     let errors = Object.assign({}, this.state.errors);
     delete errors[e.target.name];
@@ -73,7 +75,7 @@ else {
 
   toggleEditSizeModal() {
     this.setState({
-      editSizeModal: !this.state.editSizeModal
+      editSizeModal: !this.state.editSizeModal,message:''
     })
   }
   updateSize(){
@@ -90,12 +92,18 @@ else {
     const isValid = Object.keys(errors).length === 0
 
     // const isValid = this.validate();
-    if (isValid) {
-    this.props.updateSize(sizeId,sizeType).then(()=>{this.refreshData()})
-
+    if (isValid  &&  this.state.message === '') {
+    this.props.updateSize(sizeId,sizeType).then(()=>{this.refreshData()}).catch(err=>this.setState({ modalLoading:false,message:err.response.data.message,loading:false}))
+ 
+      if(this.state.message === ''){
+          this.setState({editSizeModal: true})
+      }
+      else {
+          this.setState({editSizeModal: false})
+      }
     
       this.setState({
-        editSizeModal: false, loading:true,editSizeData: { sizeType: '' }
+        modalLoading: true
       })
   }
 }
@@ -244,7 +252,7 @@ selectAll = () => {
       <th style={{width:"4%"}}></th>
         <th>#</th>
         <th onClick={()=>{this.setState((state)=>{return{sortVal:!state.sortVal,filterName:"sizeType"}})}}>Size Details
-        <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+        <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
 
         <th> Actions  </th>
       </tr>
@@ -287,7 +295,8 @@ selectAll = () => {
                   
                   onKeyPress ={ this.OnKeyPresshandle}   maxLength={20}
                    />
-                     <span className="error">{this.state.errors.sizeType}</span>   
+                     <span className="error">{this.state.errors.sizeType}</span> 
+                     <span className="error">{this.state.message} </span>  
                 </FormGroup>
 
 
@@ -299,8 +308,11 @@ selectAll = () => {
             </Modal>
             <SearchFilter type="text" value={this.state.search}
               onChange={this.searchOnChange} />
-             <input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+             
+             {deleteSelectedButton}
+
+             <label><b> Select All</b><input
+                         type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
                             if(e.target.checked) {
                                 this.selectAll();
                             }
@@ -308,9 +320,8 @@ selectAll = () => {
                                 this.unSelectAll();
                             } 
                         }  
-                    }/><label>Select All</label>
-             {deleteSelectedButton}
-         {!this.state.loading?tableData:<Spinner/>}
+                    }/></label>
+         {!this.state.modalLoading?tableData:<Spinner/>}
           </div>
         </UI>
       </div>
