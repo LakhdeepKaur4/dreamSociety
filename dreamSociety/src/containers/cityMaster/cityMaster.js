@@ -38,12 +38,8 @@ class CityMaster extends Component {
 
 
     componentDidMount=()=>{
-           this.refreshData()
-
-          
+           this.refreshData()     
     }
-
-    
 
     refreshData=()=>{
         this.props.getCountry().then(() => this.setState({loading: false}));
@@ -118,7 +114,8 @@ class CityMaster extends Component {
                         {item.stateName}
                        </option>
                    )
-               })
+               }
+               ) 
            )
 
         }
@@ -169,10 +166,14 @@ class CityMaster extends Component {
         if (!this.state.countryName) {
             errors.countryName = "cant be empty"
         }
-        if (this.state.stateName === '') errors.stateName = "cant be empty";
-        this.setState({ errors });
+        else if(this.state.stateName === ''){
+            errors.stateName = "cant be empty";
+        } 
 
-        if (this.state.cityName === '') errors.cityName = "cant be empty";
+        else if(this.state.cityName === ''){
+            errors.cityName = "cant be empty";
+        } 
+        
         this.setState({ errors });
 
   

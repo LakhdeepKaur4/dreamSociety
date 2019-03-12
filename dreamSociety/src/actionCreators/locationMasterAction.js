@@ -48,7 +48,7 @@ export function addLocationDetails( countryId,stateId,cityId,locationName){
     
 
     const request = axios.post(`${URN}/location`, {countryId,stateId,cityId,locationName},{headers:authHeader()})
-    
+    .then(getLocation())
     return{
         type:ADD_LOCATION_DETAILS,
         payload:request
@@ -77,7 +77,7 @@ export function updateLocation(locationId, countryId, stateId, cityId, locationN
 
 export const deleteLocation=(locationId,isActive)=>{
 
-    const request = axios.put(`${URN}/location/${locationId}`,{isActive}, {headers:authHeader()})
+    const request = axios.put(`${URN}/location/delete/${locationId}`,{isActive}, {headers:authHeader()})
      .then(response => response.data)
  
      

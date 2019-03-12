@@ -29,6 +29,7 @@ class flatMasterDetails extends Component {
         sizeType: '',
         sizeType1: '',
         coverArea: '',
+        filterName:"flatType",
         isDisabled: true,
         loading:true,
         isActive: false,
@@ -48,7 +49,8 @@ class flatMasterDetails extends Component {
 
     componentDidMount() {
 
-       
+       console.log(localStorage.getItem('societyId'));
+       this.setState({societyId: localStorage.getItem('societyId')})
         this.totalCount()
         this.refreshData()
 
@@ -171,8 +173,11 @@ class flatMasterDetails extends Component {
     fetchUsers({ list1 }) {
         
         if (list1) {
-            console.log(list1);
-            return list1.flat.filter(this.searchFilter(this.state.search)).map((item,index) => {
+            console.log("hiiiiiiiiiiiii",list1);
+            return list1.flat.sort((item1,item2)=>{
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item,index) => {
                 // let societyName = item.society_master.societyName;
                 let sizeType= item.size_master.sizeType;
         
@@ -259,7 +264,7 @@ class flatMasterDetails extends Component {
     deleteSelectedSubMaintenance(ids){
         this.setState({loading:true, isDisabled: true});
         this.props.deleteSelectedFlatMasterDetail(ids)
-        .then(() => this.refreshData())
+        .then(() => this.refreshData()).then(()=>this.totalCount())
         .catch(err => err.response);
     }
     routeToAddNewUser =() => {
@@ -379,12 +384,16 @@ class flatMasterDetails extends Component {
             <tr>
             
                 
-                 
-                 <th>#</th>
+            <th style={{width: "4%"}}></th>
+                        <th>#</th>
                 {/* <th>Society Name</th> */}
-                <th>Flat Type</th>
+                <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'flatType'}});
+                        }}>Flat Type 
+                         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Flat SuperArea</th>
-                <th>SizeType</th>
+                <th >Size Type</th>
                 <th>Cover Area</th>
                 <th>Actions</th>
             </tr>
@@ -423,7 +432,7 @@ class flatMasterDetails extends Component {
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
                             <ModalBody>
-                                <FormGroup>
+                                {/* <FormGroup>
                                     <Label for="roles">SocietyName</Label>
                                     <Input type="select" 
                                     name="societyId"
@@ -434,10 +443,10 @@ class flatMasterDetails extends Component {
                                             
                                             {this.fetchDrop(this.props.flats)}     
                                         </Input>
-                                        {/* <span  className='error'>{this.state.errors.societyId}</span> */}
-                                </FormGroup>
+                                        <span  className='error'>{this.state.errors.societyId}</span>
+                                </FormGroup> */}
                                 <FormGroup>
-                                    <Label for="roles">flatType</Label>
+                                    <Label for="roles">Flat Type</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter  flat type"
@@ -461,7 +470,7 @@ class flatMasterDetails extends Component {
                                         <span  className='error'>{this.state.errors.flatSuperArea}</span>
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label for="roles">sizeType</Label>
+                                    <Label for="roles">Size Type</Label>
                                     <Input type="select" 
                                     value={this.state.sizeId} 
                                     name="sizeId"
@@ -495,9 +504,9 @@ class flatMasterDetails extends Component {
                         </Modal>
                         <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
-                                 <input type="number"
+                                 {/* <input type="number"
                                  placeholder="enter no of entries to display"
-                                 onChange={this.onChange1}/>
+                                 onChange={this.onChange1}/> */}
                                  {deleteSelectedButton}
                                  <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:'10px',fontWeight:'700'}}>Select All<input
                 type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {

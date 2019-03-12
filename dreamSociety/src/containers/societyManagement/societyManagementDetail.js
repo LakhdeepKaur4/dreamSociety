@@ -6,13 +6,15 @@ import SearchFilter from '../../components/searchFilter/searchFilter';
 import {Table, Button, Modal, FormGroup, ModalBody, ModalHeader,  Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
+import _ from 'underscore';
+import DefaultSelect from './../../constants/defaultSelect';
 
 
 class SocietyManagementDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            editSocietyData: {
+            
                 countryId: '',
                 countryName: '',
                 stateName: '',
@@ -34,7 +36,7 @@ class SocietyManagementDetail extends Component {
                 totalBoardMembers:'',
                 isActive:false,
 
-            },
+            
             menuVisible: false,
             search: '',
             modal: false,
@@ -57,6 +59,14 @@ class SocietyManagementDetail extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
+    
+    emailValid(event) {
+        const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     
     emailChange = (e) => {
@@ -70,6 +80,8 @@ class SocietyManagementDetail extends Component {
         else{ this.setState({emailValidError: 'Invalid Email.'})}
         
     }
+
+  
 
   
 
@@ -139,44 +151,44 @@ class SocietyManagementDetail extends Component {
             errors.societyName="Society Name can't be empty"
         }
 
-        if(this.state.societyAddress === ''){
+        else if(this.state.societyAddress === ''){
             errors.societyAddress="Society Address can't be empty"
         }
 
         
-        if(this.state.bankName === ''){
+        else if(this.state.bankName === ''){
             errors.bankName="Bank Name can't be empty"
         }
         
         
-        if(this.state.accountHolderName === ''){
+        else if(this.state.accountHolderName === ''){
             errors.accountHolderName="Account Holder Name can't be empty"
         }
         
         
-        if(this.state.accountNumber === ''){
-            errors.accountNumber="Account Number can't be empty"
+        else if(this.state.accountNumber.length !== 16){
+            errors.accountNumber="Account Number should be 16 digits"
         }
         
         
-        if(this.state.IFSCCode === ''){
+        else if(this.state.IFSCCode === ''){
             errors.IFSCCode="IFSC Code can't be empty"
         }
         
         
-        if(this.state.email === ''){
+        else if(this.state.email === ''){
             errors.email="Email Id can't be empty"
         }
 
 
-        if(this.state.contactNumber === ''){
-            errors.contactNumber="Society Contact No. can't be empty"
+        else if(this.state.contactNumber.length !== 10){
+            errors.contactNumber="Contact No. should be 10 digits"
         }
-        if(this.state.registrationNumber === ''){
+        else if(this.state.registrationNumber === ''){
             errors.registrationNumber="Registration No. can't be empty"
         }
 
-        if(this.state.totalBoardMembers === ''){
+        else if(this.state.totalBoardMembers === ''){
             errors.totalBoardMembers="Total Board Members can't be empty"
         }
 
@@ -196,7 +208,7 @@ class SocietyManagementDetail extends Component {
     }
 
     deleteSocietyName = (societyId) => {
-        let {isActive}=this.state.editSocietyData
+        let {isActive}=this.state
         this.setState({
             loading: true
         })
@@ -204,7 +216,7 @@ class SocietyManagementDetail extends Component {
         
         this.props.deleteSociety(societyId, isActive)
             .then(() => this.refreshData())
-            this.setState({editSocietyData:{isActive:false}})
+            this.setState({isActive:false})
     
         
     }
@@ -247,6 +259,83 @@ class SocietyManagementDetail extends Component {
         
     }
 
+    onChangeCountry= (event)=>{
+     
+        let selected= event.target.value
+        var country = _.find(this.props.societyReducer.countryResult,function(obj){
+            return obj.countryName === selected
+            })
+        
+         
+            this.props.getState(country.countryId)
+            
+            this.setState({
+                countryName: country.countryName,
+                countryId:country.countryId,
+                stateName: '',
+                cityName: '',
+                locationName: ''
+            })
+          
+    }
+
+    
+    onChangeState= (event)=>{
+       
+      
+        let selected= event.target.value  
+        var data1 = _.find(this.props.societyReducer.stateResult,function(obj){
+            return obj.stateName === selected
+            })
+    
+           
+        
+            this.props.getCity(data1.stateId)
+
+            this.setState({
+                stateName: data1.stateName,
+                stateId:data1.stateId
+            })
+            
+         
+    }
+
+    onChangeCity= (event)=>{
+      
+        let selected= event.target.value
+    
+        var data2 = _.find(this.props.societyReducer.cityResult,function(obj){
+            return obj.cityName === selected
+            })
+    
+    
+        this.props.getLocation(data2.cityId)
+        this.setState({
+            cityName:data2.cityName,
+            cityId:data2.cityId
+        })
+        
+
+    }
+
+    onChangeLocation= (event)=>{
+      
+         let selected= event.target.value
+        var data3 = _.find(this.props.societyReducer.locationResult,function(obj){
+            return obj.locationName === selected
+            })
+      
+            this.props.getSociety(data3.locationId)
+
+            this.setState({
+                locationName:data3.locationName,
+                locationId:data3.locationId
+            })
+
+  
+    }
+
+
 
 
 
@@ -259,29 +348,7 @@ class SocietyManagementDetail extends Component {
 
                 return (
                     <tr key={item.societyId}>
-                  {/* <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyId}
-                         onChange={(e) => {
-                            const {societyId} = item
-                            if(!e.target.checked){
-                                document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(societyId);
-                                if(indexOfId > -1){
-                                    this.state.ids.splice(indexOfId, 1);
-                                }
-                                if(this.state.ids.length === 0){
-                                    this.setState({isDisabled: true});
-                                }
-                            }
-                            else {
-                               
-                                this.setState({ids: [...this.state.ids, societyId]});
-                                
-                                if(this.state.ids.length >= 0){
-                                    this.setState({isDisabled: false})
-                                }
-                            }
-                                
-                             }}/></td> */}
+                  
                         <td>{index+1}</td>
                         <td>{item.societyName}</td>
                         <td>{item.country_master?item.country_master.countryName:''}</td>
@@ -329,7 +396,7 @@ class SocietyManagementDetail extends Component {
             return (
                 countryResult.map((item) => {
                     return (
-                        <option value={item.countryId} key={item.countryId}>
+                        <option value={item.countryName} key={item.countryId}>
                             {item.countryName}
                         </option>
                     )
@@ -345,7 +412,7 @@ class SocietyManagementDetail extends Component {
                 stateResult.map((item) => {
 
                     return (
-                        <option value={item.stateId} key={item.stateId}>
+                        <option value={item.stateName} key={item.stateId}>
                             {item.stateName}
                         </option>
                     )
@@ -361,7 +428,7 @@ class SocietyManagementDetail extends Component {
                 cityResult.map((item) => {
 
                     return (
-                        <option value={item.cityId} key={item.cityId}>
+                        <option value={item.cityName} key={item.cityId}>
                             {item.cityName}
                         </option>
                     )
@@ -375,7 +442,7 @@ class SocietyManagementDetail extends Component {
             return (
                 locationResult.map((item) => {
                     return (
-                        <option value={item.locationId} key={item.locationId}>
+                        <option value={item.locationName} key={item.locationId}>
                             {item.locationName}
                         </option>
                     )
@@ -428,17 +495,7 @@ class SocietyManagementDetail extends Component {
         <Table className="table table-bordered">
             <thead>
                 <tr>
-                {/* <th>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th> */}
+               
                     <th>#</th>
                     <th>Society Name</th>
                     <th>Country</th>
@@ -494,56 +551,39 @@ class SocietyManagementDetail extends Component {
                         <FormGroup>
                             <Label>Country Name</Label>
 
-                            <Input type="select" id="countryId" name="countryName" onChange={(e) => {
-
-                                let { countryId } = this.state;
-                                countryId = e.target.value;
-                                this.setState({ countryId });
-                                this.props.getState(countryId)
-                            }} >
-                                <option value={this.state.countryId}>{this.state.countryName}</option>
-                                <option disabled>Select</option>
+                            <Input type="select" id="countryId" name="countryName" onChange={this.onChangeCountry}  value={this.state.countryName} required>
+                                {/* <option value={this.state.countryId}>{this.state.countryName}</option> */}
+                                <DefaultSelect/>
                                 {this.fetchCountry(this.props.societyReducer)}
                             </Input>
+                            {!this.state.countryName ? <span className="error">{this.state.errors.countryName}</span>: ''}
                         </FormGroup>
                         <FormGroup>
                             <Label>State Name</Label>
-                            <Input type="select" id="stateId" name="stateName" onChange={(e) => {
-                                let { stateId } = this.state;
-                                stateId = e.target.value;
-                                this.setState({ stateId });
-                                this.props.getCity(stateId)
-                            }} >
-                                <option value={this.state.stateId}>{this.state.stateName}</option>
-                                <option disabled>Select</option>
-                                {this.fetchState(this.props.societyReducer)}
+                            <Input type="select" id="stateId" name="stateName" onChange={this.onChangeState} >
+                            {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                                  {this.state.stateName ? <DefaultSelect />: null}
+                                    {this.state.stateName ? null : this.fetchState(this.props.societyReducer)}
                             </Input>
+                            {!this.state.stateName ? <span className="error">{this.state.errors.stateName}</span>: ''}
                         </FormGroup>
                         <FormGroup>
                             <Label>City Name</Label>
-                            <Input type="select" id="cityId" name="cityName" onChange={(e) => {
-                                let { cityId } = this.state;
-                                cityId = e.target.value;
-                                this.setState({ cityId });
-                                this.props.getLocation(cityId)
-                            }} >
-                                <option value={this.state.cityId}>{this.state.cityName}</option>
-                                <option disabled>Select</option>
-                                {this.fetchCity(this.props.societyReducer)}
+                            <Input type="select" id="cityId" name="cityName" onChange={this.onChangeCity} >
+                               {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
+                                {this.state.cityName ? <DefaultSelect />: null}
+                                {this.state.cityName ? null : this.fetchCity(this.props.societyReducer)}
                             </Input>
+                            {!this.state.cityName ? <span className="error">{this.state.errors.cityName}</span>: ''}
                         </FormGroup>
                         <FormGroup>
                             <Label>Location Name</Label>
-                            <Input type="select" id="locationId" name="locationName" onChange={(e) => {
-                                let { locationId } = this.state;
-                                locationId = e.target.value;
-                                this.setState({ locationId });
-                                this.props.getSociety(locationId)
-                            }}>
-                                <option value={this.state.locationId}>{this.state.locationName}</option>
-                                <option disabled>Select</option>
-                                {this.fetchLocation(this.props.societyReducer)}
+                            <Input type="select" id="locationId" name="locationName" onChange={this.onChangeLocation}>
+                            {this.state.locationName ? <option>{this.state.locationName}</option> : <option disabled>--Select--</option>}
+                                 {this.state.locationName ? <DefaultSelect />: null}
+                                 {this.state.locationName ? null : this.fetchLocation(this.props.societyReducer)}  
                             </Input>
+                            {!this.state.locationName ? <span className="error">{this.state.errors.locationName}</span>: ''}
                         </FormGroup>
                        
                         
@@ -575,21 +615,21 @@ class SocietyManagementDetail extends Component {
 
                         <FormGroup>
                             <Label>Account Number</Label>
-                            <Input type="text"  name="accountNumber" onChange={this.onChangeHandler} value={this.state.accountNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={20}/>
+                            <Input type="text"  name="accountNumber" onChange={this.onChangeHandler} value={this.state.accountNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={16} minLength={16}/>
                             <span className="error">{this.state.errors.accountNumber}</span> 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Email Id</Label>
-                            <Input type="email"  name="email" onChange={this.onChangeHandler} onKeyPress={this.emailChange} value={this.state.email}   maxLength={50}/>
-                            <span className="error">{this.state.errors.email}</span>
+                            <Input type="email"  name="email"   onChange={this.emailChange}     onKeyPress={this.emailValid} value={this.state.email}   maxLength={50}/>
+                            {!this.state.email ? <span className="error">{this.state.errors.email}</span> : ''}
                             <span className="error">{this.state.emailValidError}</span>
                              
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Contact Number</Label>
-                            <Input type="text"  name="contactNumber" onChange={this.onChangeHandler} value={this.state.contactNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10}/>
+                            <Input type="text"  name="contactNumber" onChange={this.onChangeHandler} value={this.state.contactNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10} minLength={10}/>
                             <span className="error">{this.state.errors.contactNumber}</span> 
                         </FormGroup>
                         <FormGroup>

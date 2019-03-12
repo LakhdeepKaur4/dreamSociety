@@ -133,14 +133,14 @@ class FlatOwnerList extends Component {
                         } 
                              }}/></td>
                     <td>{index+1}</td>
-                    <td > <img style={{ width: "70%", height: "35%" }} src={PicURN+items.picture} alt="Profile Pic">
+                    <td style={{width:"8%" ,height:"8%"}}> <img style={{ width: "100%", height: "15%" }} src={PicURN+items.picture} alt="Profile Pic">
                             </img></td>
                         <td style={{textAlign:"center",width:'10px'}}>{items.ownerName}</td>
-                        <td>{items.contact}</td>
-                        <td>{items.permanentAddress}</td>
-                        <td>{items.tower_master.towerName}</td>
-                        <td>{items.flat_detail_master.flatNo}</td>
-                        <td>
+                        <td style={{textAlign:"center"}}>{items.contact}</td>
+                        <td style={{textAlign:"center"}}>{items.permanentAddress}</td>
+                        <td style={{textAlign:"center"}}>{items.tower_master.towerName}</td>
+                        <td style={{textAlign:"center"}}>{items.flat_detail_master.flatNo}</td>
+                        <td style={{textAlign:"center"}}>
                         <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, items.ownerName, items.contact)} >Edit</button>
                         <button className="btn btn-danger" onClick={this.delete.bind(this, items.ownerId)} >Delete</button>
                         </td>
@@ -167,11 +167,11 @@ class FlatOwnerList extends Component {
                         }  
                     }/></th> */}
                     <th style={{width:"4%"}}></th>
-                    <th style={{textAlign:"center",width:"8%"}}>#</th>
-                    <th style={{textAlign:"center"}}>Profile Pic</th>
+                    <th style={{textAlign:"center",width:"4%"}}>#</th>
+                    <th style={{textAlign:"center", width: "12%" }}>Profile Pic</th>
                     <th style={{textAlign:"center",width:"8%"}}>Name</th>
                     <th style={{textAlign:"center"}}>Contact No.</th>
-                    <th style={{textAlign:"center"}}>Permanent Address</th>
+                    <th style={{textAlign:"center",width:"16%"}}>Permanent Address</th>
                     <th style={{textAlign:"center"}}>Tower Name</th>
                     <th style={{textAlign:"center"}}>Flat No.</th>
                     <th style={{textAlign:"center"}}>Actions</th>

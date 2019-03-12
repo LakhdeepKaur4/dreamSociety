@@ -31,7 +31,7 @@ class CountryDetails extends Component{
                  search: '',
                  errors:'',
                  filterName:"countryName",
-
+                 
         }
     }
 
@@ -40,8 +40,9 @@ class CountryDetails extends Component{
    }
 
      refreshData(){
+        console.log('reaching');
     this.props.getCountry().then(() => this.setState({loading:false, modalLoading: false, editUserModal: false}));
-    }
+    }  
 
     toggleEditUserModal() {
         this.setState({
@@ -277,9 +278,9 @@ class CountryDetails extends Component{
                         <th onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'countryName'}});
-                        }}>Country Name
+                        }}>Country Name 
                          <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-
+               
                 <th>Country Code</th>
                 <th>Currency</th>
                 <th>Phone Code</th>
@@ -299,10 +300,10 @@ class CountryDetails extends Component{
      color="danger"
     className="mb-3"
     onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
-
+    
     let modalData = <div>
         <FormGroup>
-                                    <Label for="roles">countryName</Label>
+                                    <Label for="roles">Country Name</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter countryName"
@@ -316,7 +317,7 @@ class CountryDetails extends Component{
                                          {this.state.message ? <span className='error'>{this.state.message}</span> : ''}
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label for="roles">code</Label>
+                                    <Label for="roles">Country Code</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter code"
@@ -328,7 +329,7 @@ class CountryDetails extends Component{
                                          <span  className='error'>{this.state.errors.code}</span>
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label for="firstName">currency</Label>
+                                    <Label for="firstName">Currency</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter currency"
@@ -340,7 +341,7 @@ class CountryDetails extends Component{
                                          <span  className='error'>{this.state.errors.currency}</span>
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label for="roles">phoneCode</Label>
+                                    <Label for="roles">Phone Code</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter currency"
@@ -390,7 +391,7 @@ class CountryDetails extends Component{
 
                 }  /></Label>
                             {(this.state.loading) ? <Spinner /> : tableData}
-
+                       
                     </div>
                 </UI>
 

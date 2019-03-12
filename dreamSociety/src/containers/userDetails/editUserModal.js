@@ -1,12 +1,11 @@
 import React from 'react';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
+import Spinner from '../../components/spinner/spinner';
 
-const editUserModal = (props) => (
-    <Modal isOpen={props.isOpen} toggle={props.toggle}>
-        <ModalHeader toggle={props.toggle}>Edit User</ModalHeader>
-        <ModalBody>
-            <FormGroup>
+const editUserModal = (props) => {
+    let modalData = <div>
+        <FormGroup>
                 <Label>Role</Label>
                 <Input type="select" name={props.roleInputName}  id="roleName" value={props.roleNameValue} onChange={props.roleNameChange} >
                     <DefaultSelect />
@@ -48,7 +47,7 @@ const editUserModal = (props) => (
                  onKeyPress={props.emailKeyPress}
                  name={props.emailInputName} onChange={props.emailValueChange} />
                 {!props.emailValue ? <span className="error">{props.emailError}</span> : null}
-                {<span className="error">{props.inValidEmailFormatError}</span>}
+                {<span className="error">{props.inValidEmailFormatError}</span> }
             </FormGroup>
             <FormGroup>
                 <Label>Tower Name</Label>
@@ -104,11 +103,18 @@ const editUserModal = (props) => (
                 <Button type="submit" color="primary" onClick={props.updateUserClick}>Save</Button>{' '}
                 <Button color="danger" onClick={props.toggle}>Cancel</Button>
             </FormGroup>
-            
+    </div>
+    return (
+        <Modal isOpen={props.isOpen} toggle={props.toggle}>
+            <ModalHeader toggle={props.toggle}>Edit User</ModalHeader>
+            <ModalBody>
+                
+                {!props.modalLoading ? modalData : <Spinner /> }
 
-        </ModalBody>
-        
-    </Modal>
-);
+            </ModalBody>
+            
+        </Modal>
+    )
+}
 
 export default editUserModal;

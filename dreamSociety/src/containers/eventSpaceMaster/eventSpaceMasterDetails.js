@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {  AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount,deleteSelectedFlatMasterDetail } from '../../actionCreators/flatMasterAction';
-import {getEventDetails,deleteSelectedEventSpaceMasterDetail} from '../../actionCreators/eventSpaceMasterAction';
+import {getEventDetails,deleteSelectedEventSpaceMasterDetail,updateEventSpace} from '../../actionCreators/eventSpaceMasterAction';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
@@ -26,9 +26,12 @@ class eventSpaceMasterDetails extends Component {
             open:'open',
             close:'close',
             area:'',
-            description:'',   
+            description:'',  
+            filterName:"spaceName",
+                  
         isDisabled: true,
         loading:true,
+        modalLoading: false,
         isActive: false,
         editUserModal: false,
         menuVisible: false,
@@ -51,16 +54,17 @@ class eventSpaceMasterDetails extends Component {
 
 
     refreshData() {
-        // const defaultPage=this.state.activePage;
-        this.props.getEventDetails().then(() => this.setState({loading:false}));
+      console.log('reaching');
+        this.props.getEventDetails().then(() => this.setState({loading:false, modalLoading: false,editUserModal: false}));
       
-        this.props.getSizeDrop().then(() => this.setState({loading:false}));
+        this.props.getSizeDrop().then(() => this.setState({loading:false, modalLoading: false,editUserModal: false}));
 
     }
 
     toggleEditUserModal() {
         this.setState({
-            editUserModal: !this.state.editUserModal
+            editUserModal: !this.state.editUserModal,
+            message: ''
         });
     }
     onChangeSizeType=(e)=>{
@@ -71,7 +75,7 @@ class eventSpaceMasterDetails extends Component {
     updateBook = (e) => {
         e.preventDefault();
         let { eventSpaceId, spaceName, capacity, spaceType, sizeId, area, description} = this.state
-        // console.log("gdchgdsvchgsvdccdsc",eventSpaceId,spaceName, capacity, spaceType, sizeId, area, description);
+     
 
         let errors = {};
         
@@ -85,22 +89,25 @@ class eventSpaceMasterDetails extends Component {
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
-        if(isValid){
-        
-        axios.put(`${URN}/eventSpaceMaster/` +  eventSpaceId, {
-           spaceName, capacity, spaceType, sizeId, area, description
-        }, { headers: authHeader() }).then((response) => {
-            this.refreshData();
-        })
+        if(isValid && this.state.message === ''){
+
+            this.props.updateEventSpace(eventSpaceId, spaceName, capacity, spaceType, sizeId, area, description).then(() => this.refreshData())
+            .catch((err)=>{console.log(err.response.data.message)
+            this.setState({modalLoading:false, message:err.response.data.message})});;
+            if(this.state.message === ''){
+                this.setState({editUserModal: true})
+            }
+            else {
+                this.setState({editUserModal: false})
+            }
         this.setState({
-            editUserModal: false,loading:true,  eventSpaceId:'', spaceName:'', capacity:'',  sizeId:'', area:'', 
-            description:''
+            modalLoading:true
         })
     }
         
     }
     onChange=(e)=>{
-        console.log(this.state);
+        this.setState({message: ''})
         if (!this.state.errors[e.target.value]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -155,7 +162,10 @@ class eventSpaceMasterDetails extends Component {
         
         if (space) {
             // console.log(list1);
-            return space.societyMember.filter(this.searchFilter(this.state.search)).map((item,index) => {
+            return space.societyMember.sort((item1,item2)=>{
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item,index) => {
                 console.log(item);
               
                 let sizeType= item.size_master.sizeType
@@ -207,21 +217,6 @@ class eventSpaceMasterDetails extends Component {
             })
         }
     }
-    // fetchDrop({ list2 }) {
-    //     if (list2) {
-
-    //         return (
-    //             list2.map((item) => {
-    //                 return (
-    //                     <option key={item.societyId} value={item.societyId}>
-    //                         {item.societyName}
-    //                     </option>
-    //                 )
-    //             })
-    //         )
-
-    //     }
-    // }
 
     fetchSizeDrop({ list3 }) {
         console.log(list3)
@@ -272,33 +267,6 @@ class eventSpaceMasterDetails extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
-    // handlePageChange=(pageNumber)=> {
-    //     console.log(`active page is ${pageNumber}`);
-    //     // this.setState({activePage: pageNumber}) ;
-    //     this.state.activePage=pageNumber;        
-    //     const activePage=this.state.activePage;
-        
-    //         this.props.getPageDetails(activePage);
-        
-        
-      
-    //   }
-
-    //   countPerPage=(e)=>{
-    //        e.preventDefault();
-    //   }
-
-//     onChange1=(e)=>{
-//         e.preventDefault();
-//         console.log('hii');
-//         // this.setState({itemsCountPerPage:e.target.value})
-//         const activePage=this.state.activePage;
-//         this.state.limit=`${e.target.value}`;   
-//         console.log(this.state.limit,activePage)
-//         // console.log(countPerPage);
-//         this.props.noOfCount({limit: parseInt(this.state.limit)},activePage)
-// }
-
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar =[];
@@ -336,22 +304,14 @@ class eventSpaceMasterDetails extends Component {
         <Table className="table table-bordered">
         <thead>
            
-            <tr>
-            
-                 <th style={{alignContent:'baseline'}}>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                    if(e.target.checked) {
-                        this.selectAll();
-                    }
-                    else if(!e.target.checked){
-                        this.unSelectAll();
-                    } 
-                }
-                    
-                }  /></th>
-                 
-                 <th>#</th>
-                <th>Space Name</th>
+            <tr>  
+            <th style={{width: "4%"}}></th>
+                        <th>#</th>
+                        <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'spaceName'}});
+                        }}>Space Name 
+                         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Capacity </th>
                 <th>Space Type </th>
                 <th>SizeType</th>
@@ -371,27 +331,9 @@ class eventSpaceMasterDetails extends Component {
      color="danger"
     className="mb-3"
     onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
-    
-    
-        
-        return (
-            <div>
-                <UI onClick={this.logout}>
-                        <div className="w3-container w3-margin-top  w3-responsive">
-                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true">&times;</span>
-                            </div>
-                            <div className="top-details">                               
-                             <h3>Event Space Master Details</h3>
-                                <Button onClick={this.routeToAddNewUser} color="primary">Add Space</Button>
-                                </div>
 
-                            
-                        <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
-                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
-                            <ModalBody>
-                               
-                                <FormGroup>
+    let modalData = <div>
+                  <FormGroup>
                                     <Label for="roles">Space Name</Label>
                                     <Input
                                         type="textbox"
@@ -401,7 +343,9 @@ class eventSpaceMasterDetails extends Component {
                                         onKeyPress={this.onKeyPressHandler}
                                         onChange={this.onChange} 
                                         maxLength='20'/>
-                                        <span  className='error'>{this.state.errors.spaceName}</span>
+                                        <span  className='error'>{this.state.errors.spaceName}</span>  
+                                         <span className='error'>{this.state.message}</span>
+
                                         
                                 </FormGroup>
                                 <FormGroup>
@@ -492,6 +436,29 @@ class eventSpaceMasterDetails extends Component {
                                 <Button color="primary mr-2" onClick={this.updateBook}>Save</Button>
                                 <Button color="danger" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
                                 </FormGroup>
+
+    </div>
+    
+    
+        
+        return (
+            <div>
+                <UI onClick={this.logout}>
+                        <div className="w3-container w3-margin-top  w3-responsive">
+                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
+                            <div className="top-details">                               
+                             <h3>Event Space Master Details</h3>
+                                <Button onClick={this.routeToAddNewUser} color="primary">Add Space</Button>
+                                </div>
+
+                            
+                        <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
+                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit SpaceName</ModalHeader>
+                            <ModalBody>
+                               
+                            {!this.state.modalLoading  ? modalData : <Spinner />}
                             </ModalBody>
                             
                         </Modal>
@@ -501,7 +468,19 @@ class eventSpaceMasterDetails extends Component {
                                  placeholder="enter no of entries to display"
                                  onChange={this.onChange1}/> */}
                                  {deleteSelectedButton}
-                            {!this.state.loading ? tableData : <Spinner />}
+                                 <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:'10px',fontWeight:'700'}}>Select All<input
+                                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                                   if(e.target.checked) {
+                                       this.selectAll();
+                                                 }
+                                     else if(!e.target.checked){
+                                          this.unSelectAll();
+                                     } 
+                                       }
+                    
+                                     }  /></Label>
+                 
+                                       {(this.state.loading) ? <Spinner /> : tableData}
                            
                             {/* <Pagination 
                             // hideDisabled
@@ -544,6 +523,7 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({
         getEventDetails,
         AddDetails,
+        updateEventSpace,
         getDrop,
         getSizeDrop,
         getPageDetails,

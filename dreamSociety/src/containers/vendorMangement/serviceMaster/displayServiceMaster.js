@@ -11,6 +11,7 @@ import DefaultSelect from '../../../constants/defaultSelect';
 class DisplayServices extends Component {
 
     state = {
+            filterName:"serviceName",
             serviceId: '',
             serviceName: '',
             service_detail: '',
@@ -19,10 +20,12 @@ class DisplayServices extends Component {
             ids:[], 
             menuVisible: false,
             editServiceModal: false,
-            isDisabled:true,
+            isDisabled:true, 
             search: '',
             errors:{},
             loading:true,
+            modalLoading: false,
+            message:''
 
     }
 
@@ -32,9 +35,8 @@ class DisplayServices extends Component {
    
     }
 
-
-    
     onHandleChange=(event)=>{
+        this.setState({message:''})
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -47,7 +49,7 @@ class DisplayServices extends Component {
 
 
     refreshData() {
-        this.props.getServiceType().then(()=> this.setState({loading:false}));
+        this.props.getServiceType().then(()=> this.setState({loading:false, modalLoading: false, editServiceModal:false}));
         this.props.getServiceDetail().then(()=> this.setState({loading:false}));
     }   
 
@@ -80,7 +82,7 @@ class DisplayServices extends Component {
 
     toggleEditServiceModal() {
         this.setState({
-            editServiceModal: !this.state.editServiceModal
+            editServiceModal: !this.state.editServiceModal, message:''
         });
     }
 
@@ -93,13 +95,22 @@ class DisplayServices extends Component {
         }
         this.setState({errors});
         const isValid =Object.keys(errors).length===0;
-        if(isValid){
+        if(isValid &&  this.state.message === ''){
+
             this.props.updateServices(serviceId,serviceName, service_detail, serviceDetailId)
-            .then(() => this.refreshData());            
-            this.setState({loading:true,
-                serviceId,serviceName, service_detail, serviceDetailId,
-                editServiceModal: !this.state.editServiceModal
+            .then(() => this.refreshData())
+            .catch(err=>{
+                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                })
+                if(this.state.message === ''){
+                    this.setState({editServiceModal: true})
+                }
+                else {
+                    this.setState({editServiceModal: false})
+                }       
+            this.setState({ modalLoading: true
        })
+
         }         
     }
 
@@ -133,7 +144,11 @@ class DisplayServices extends Component {
 
     renderList = ({ item }) => {
         if (item) {
-            return item.filter(this.searchFilter(this.state.search)).map((item,index) => {
+            
+            return item.sort((item1,item2)=>{
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+                }).filter(this.searchFilter(this.state.search)).map((item,index) => {
                 return (
                     
                     <tr key={item.serviceId}>
@@ -160,11 +175,7 @@ class DisplayServices extends Component {
                              }}/></td>
                         <td>{index+1}</td>
                         <td>{item.serviceName}</td>
-                        <td>{item.service_detail_master.service_detail}</td>
-                        
-                        
-
-
+                        <td>{item.service_detail_master.service_detail}</td>                                                
                         <td>
                             <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</Button>
                         
@@ -234,19 +245,12 @@ class DisplayServices extends Component {
         <Table className="table table-bordered">
         <thead>
             <tr>
-            <th>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></th>
-                <th>#</th>
-                <th>Service Type</th>
+            <th style={{width:'4%'}}></th>
+                <th style={{width:'4%'}}>#</th>
+                <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'serviceName'}});
+                        }}>Service Type <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Service Details</th>
                 <th>Actions</th>
                 
@@ -277,6 +281,7 @@ class DisplayServices extends Component {
                                 <Label for="serviceName">Service Type</Label>
                                 <Input type="text" value={this.state.serviceName} name="serviceName" onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}  />
                                 <span className="error">{this.state.errors.serviceName}</span>
+                                <span className="error">{this.state.message}</span>
                             </FormGroup>
 
                             <FormGroup>
@@ -299,8 +304,20 @@ class DisplayServices extends Component {
              
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
+                 
                              {deleteSelectedButton}
-                           {!this.state.loading ? tableData : <Spinner />}
+                    <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                        id="allSelect"
+                        type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        } }/>
+                    </Label>
+                           {!this.state.modalLoading ? tableData : <Spinner />}
                  
                      
                     

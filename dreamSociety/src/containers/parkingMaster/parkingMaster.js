@@ -11,10 +11,12 @@ class ParkingMaster extends Component {
     constructor(props){
         super(props);
         this.state = {
+            filterName:'parkingName',
             menuVisible: false,
             loading:true,
             search: ''
         }
+
     }
     componentDidMount() {
         this.refreshData()
@@ -31,7 +33,12 @@ class ParkingMaster extends Component {
 
     renderParking({ parking }) {
         if (parking) {
-            return parking.slot.filter(this.searchFilter(this.state.search)).map((item, index) => {
+            
+            return parking.slot.sort((item1,item2)=>{
+                console.log(item1, item2)
+                var cmprVal = (item1.parking_master[this.state.filterName].localeCompare(item2.parking_master[this.state.filterName]))
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item, index) => {
                 return (
                     <tr key={item.parking_master.parkingName}>
                         <td>{index + 1}</td>
@@ -77,8 +84,13 @@ class ParkingMaster extends Component {
                 <Table className="table table-bordered">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Basement</th>
+                        
+                        <th>#</th>
+                        <th style={{cursor:'pointer'}} onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'parkingName'}});
+                        }}>Basement 
+                         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                             <th>No. of Parking</th>
                             <th>Actions</th>
                         </tr>
