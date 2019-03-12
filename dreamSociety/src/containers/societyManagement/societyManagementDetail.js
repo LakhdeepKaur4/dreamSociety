@@ -59,6 +59,14 @@ class SocietyManagementDetail extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
+    
+    emailValid(event) {
+        const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     
     emailChange = (e) => {
@@ -281,7 +289,7 @@ class SocietyManagementDetail extends Component {
                 stateId:data1.stateId
             })
         
-            this.props.getCity(data1.stateId);
+            this.props.getCity(data1.stateId).then((data)=> this.setState({ cityName:data.payload.cityName}))
             
          
     }
@@ -300,7 +308,7 @@ class SocietyManagementDetail extends Component {
                 cityId:data2.cityId
             })
             
-        this.props.getLocation(data2.cityId)
+        this.props.getLocation(data2.cityId).then((data)=> this.setState({ locationName:data.payload.locationName}))
 
     }
 
@@ -537,7 +545,7 @@ class SocietyManagementDetail extends Component {
                             <Label>Country Name</Label>
 
                             <Input type="select" id="countryId" name="countryName" onChange={this.onChangeCountry} >
-                                <option value={this.state.countryId}>{this.state.countryName}</option>
+                                {/* <option value={this.state.countryId}>{this.state.countryName}</option> */}
                                 <DefaultSelect/>
                                 {this.fetchCountry(this.props.societyReducer)}
                             </Input>
@@ -602,8 +610,8 @@ class SocietyManagementDetail extends Component {
 
                         <FormGroup>
                             <Label>Email Id</Label>
-                            <Input type="email"  name="email" onChange={this.onChangeHandler} onKeyPress={this.emailChange} value={this.state.email}   maxLength={50}/>
-                            <span className="error">{this.state.errors.email}</span>
+                            <Input type="email"  name="email"   onChange={this.emailChange}     onKeyPress={this.emailValid} value={this.state.email}   maxLength={50}/>
+                            {!this.state.email ? <span className="error">{this.state.errors.email}</span> : ''}
                             <span className="error">{this.state.emailValidError}</span>
                              
                         </FormGroup>
