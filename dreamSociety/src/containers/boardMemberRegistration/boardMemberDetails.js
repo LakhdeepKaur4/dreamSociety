@@ -358,6 +358,7 @@ class BoardMemberDetails extends Component{
              
          }
      }
+     
     
      locationName=({locationResult})=>{
         if(locationResult){

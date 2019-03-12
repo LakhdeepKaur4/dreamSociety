@@ -59,6 +59,14 @@ class SocietyManagementDetail extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
+    
+    emailValid(event) {
+        const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     
     emailChange = (e) => {
@@ -143,44 +151,44 @@ class SocietyManagementDetail extends Component {
             errors.societyName="Society Name can't be empty"
         }
 
-        if(this.state.societyAddress === ''){
+        else if(this.state.societyAddress === ''){
             errors.societyAddress="Society Address can't be empty"
         }
 
         
-        if(this.state.bankName === ''){
+        else if(this.state.bankName === ''){
             errors.bankName="Bank Name can't be empty"
         }
         
         
-        if(this.state.accountHolderName === ''){
+        else if(this.state.accountHolderName === ''){
             errors.accountHolderName="Account Holder Name can't be empty"
         }
         
         
-        if(this.state.accountNumber === ''){
-            errors.accountNumber="Account Number can't be empty"
+        else if(this.state.accountNumber.length !== 16){
+            errors.accountNumber="Account Number should be 16 digits"
         }
         
         
-        if(this.state.IFSCCode === ''){
+        else if(this.state.IFSCCode === ''){
             errors.IFSCCode="IFSC Code can't be empty"
         }
         
         
-        if(this.state.email === ''){
+        else if(this.state.email === ''){
             errors.email="Email Id can't be empty"
         }
 
 
-        if(this.state.contactNumber === ''){
-            errors.contactNumber="Society Contact No. can't be empty"
+        else if(this.state.contactNumber.length !== 10){
+            errors.contactNumber="Contact No. should be 10 digits"
         }
-        if(this.state.registrationNumber === ''){
+        else if(this.state.registrationNumber === ''){
             errors.registrationNumber="Registration No. can't be empty"
         }
 
-        if(this.state.totalBoardMembers === ''){
+        else if(this.state.totalBoardMembers === ''){
             errors.totalBoardMembers="Total Board Members can't be empty"
         }
 
@@ -258,12 +266,16 @@ class SocietyManagementDetail extends Component {
             return obj.countryName === selected
             })
         
+         
+            this.props.getState(country.countryId)
+            
             this.setState({
                 countryName: country.countryName,
-                countryId:country.countryId
+                countryId:country.countryId,
+                stateName: '',
+                cityName: '',
+                locationName: ''
             })
-            
-            this.props.getState(country.countryId).then((data)=> this.setState({ stateName:data.payload.stateName}))
           
     }
 
@@ -276,12 +288,14 @@ class SocietyManagementDetail extends Component {
             return obj.stateName === selected
             })
     
+           
+        
+            this.props.getCity(data1.stateId)
+
             this.setState({
                 stateName: data1.stateName,
                 stateId:data1.stateId
             })
-        
-            this.props.getCity(data1.stateId);
             
          
     }
@@ -295,12 +309,12 @@ class SocietyManagementDetail extends Component {
             })
     
     
-            this.setState({
-                cityName:data2.cityName,
-                cityId:data2.cityId
-            })
-            
         this.props.getLocation(data2.cityId)
+        this.setState({
+            cityName:data2.cityName,
+            cityId:data2.cityId
+        })
+        
 
     }
 
@@ -310,13 +324,14 @@ class SocietyManagementDetail extends Component {
         var data3 = _.find(this.props.societyReducer.locationResult,function(obj){
             return obj.locationName === selected
             })
+      
+            this.props.getSociety(data3.locationId)
 
             this.setState({
                 locationName:data3.locationName,
                 locationId:data3.locationId
             })
 
-            this.props.getSociety(data3.locationId)
   
     }
 
@@ -536,35 +551,39 @@ class SocietyManagementDetail extends Component {
                         <FormGroup>
                             <Label>Country Name</Label>
 
-                            <Input type="select" id="countryId" name="countryName" onChange={this.onChangeCountry} >
-                                <option value={this.state.countryId}>{this.state.countryName}</option>
+                            <Input type="select" id="countryId" name="countryName" onChange={this.onChangeCountry}  value={this.state.countryName} required>
+                                {/* <option value={this.state.countryId}>{this.state.countryName}</option> */}
                                 <DefaultSelect/>
                                 {this.fetchCountry(this.props.societyReducer)}
                             </Input>
+                            {!this.state.countryName ? <span className="error">{this.state.errors.countryName}</span>: ''}
                         </FormGroup>
                         <FormGroup>
                             <Label>State Name</Label>
                             <Input type="select" id="stateId" name="stateName" onChange={this.onChangeState} >
-                                <option value={this.state.stateId}>{this.state.stateName}</option>
-                                <DefaultSelect/>
-                                {this.fetchState(this.props.societyReducer)}
+                            {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                                  {this.state.stateName ? <DefaultSelect />: null}
+                                    {this.state.stateName ? null : this.fetchState(this.props.societyReducer)}
                             </Input>
+                            {!this.state.stateName ? <span className="error">{this.state.errors.stateName}</span>: ''}
                         </FormGroup>
                         <FormGroup>
                             <Label>City Name</Label>
                             <Input type="select" id="cityId" name="cityName" onChange={this.onChangeCity} >
-                                <option value={this.state.cityId}>{this.state.cityName}</option>
-                                <DefaultSelect/>
-                                {this.fetchCity(this.props.societyReducer)}
+                               {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
+                                {this.state.cityName ? <DefaultSelect />: null}
+                                {this.state.cityName ? null : this.fetchCity(this.props.societyReducer)}
                             </Input>
+                            {!this.state.cityName ? <span className="error">{this.state.errors.cityName}</span>: ''}
                         </FormGroup>
                         <FormGroup>
                             <Label>Location Name</Label>
                             <Input type="select" id="locationId" name="locationName" onChange={this.onChangeLocation}>
-                                <option value={this.state.locationId}>{this.state.locationName}</option>
-                                <DefaultSelect/>
-                                {this.fetchLocation(this.props.societyReducer)}
+                            {this.state.locationName ? <option>{this.state.locationName}</option> : <option disabled>--Select--</option>}
+                                 {this.state.locationName ? <DefaultSelect />: null}
+                                 {this.state.locationName ? null : this.fetchLocation(this.props.societyReducer)}  
                             </Input>
+                            {!this.state.locationName ? <span className="error">{this.state.errors.locationName}</span>: ''}
                         </FormGroup>
                        
                         
@@ -596,21 +615,21 @@ class SocietyManagementDetail extends Component {
 
                         <FormGroup>
                             <Label>Account Number</Label>
-                            <Input type="text"  name="accountNumber" onChange={this.onChangeHandler} value={this.state.accountNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={20}/>
+                            <Input type="text"  name="accountNumber" onChange={this.onChangeHandler} value={this.state.accountNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={16} minLength={16}/>
                             <span className="error">{this.state.errors.accountNumber}</span> 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Email Id</Label>
-                            <Input type="email"  name="email" onChange={this.onChangeHandler} onKeyPress={this.emailChange} value={this.state.email}   maxLength={50}/>
-                            <span className="error">{this.state.errors.email}</span>
+                            <Input type="email"  name="email"   onChange={this.emailChange}     onKeyPress={this.emailValid} value={this.state.email}   maxLength={50}/>
+                            {!this.state.email ? <span className="error">{this.state.errors.email}</span> : ''}
                             <span className="error">{this.state.emailValidError}</span>
                              
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Contact Number</Label>
-                            <Input type="text"  name="contactNumber" onChange={this.onChangeHandler} value={this.state.contactNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10}/>
+                            <Input type="text"  name="contactNumber" onChange={this.onChangeHandler} value={this.state.contactNumber}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10} minLength={10}/>
                             <span className="error">{this.state.errors.contactNumber}</span> 
                         </FormGroup>
                         <FormGroup>
