@@ -356,7 +356,7 @@ render(){
         onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
 
     return(
-        <div>
+        
         <UI onClick={this.logout}>
         
               
@@ -429,7 +429,7 @@ render(){
             
                 </div>
         </UI>
-        </div>
+        
     )
 }
 

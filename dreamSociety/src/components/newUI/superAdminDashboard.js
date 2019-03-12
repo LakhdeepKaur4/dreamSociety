@@ -123,7 +123,7 @@ class Demo extends Component {
                 </nav>
                 {/* <div className="wrapper"  style={{'backgroundImage':`url('assets/society.jpg')`}}> */}
         
-                <div className="wrapper" >
+                <div className="wrapper"  style={{backgroundImage: `url('assets/society.jpg')`}}>
                
                     <nav id="sidebar" className="bg-dark inactive">
                         <div id="sidebar-content">

@@ -68,7 +68,7 @@ class Demo extends Component {
 
                     </div>
                 </nav>
-                  <div className="wrapper" >
+                  <div className="wrapper" style={{backgroundImage: `url('assets/society.jpg')`}}>
                 {/* <div className="wrapper" style={{'backgroundImage':`url('assets/society.jpg')`}}> */}
                 
               

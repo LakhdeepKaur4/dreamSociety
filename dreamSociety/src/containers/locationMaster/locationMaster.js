@@ -169,18 +169,7 @@ class locationMaster extends Component{
                         this.setState({message: err.response.data.message, loading: true})
                     
                     })
-                    // this.setState({
-                    //     locationId:'',
-                    //     countryId:'',
-                    //     countryName: '',
-                    //     stateId: '',
-                    //     stateName:'',
-                    //     cityId: '',
-                    //     cityName:'',
-                    //     locationName:''               
-                    // });
-        
-               
+                    this.refreshData();     
                     }      
     }
 
