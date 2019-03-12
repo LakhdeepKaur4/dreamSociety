@@ -25,8 +25,16 @@ class AssetList extends Component {
         };
     }
     onChangeHandler = (event) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
+        // const { name, value } = event.target;
+        // this.setState({ [name]: value });
+          if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value, errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value });
+        }
     }
 
     toggle = (assetId, assetName, description) => {
@@ -154,6 +162,13 @@ class AssetList extends Component {
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
+    onKeyPressHandler = (event) => {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar =[];
@@ -246,7 +261,7 @@ class AssetList extends Component {
                             <ModalBody>
                                 <FormGroup>
                                     <Label htmlFor="AssetName">Assets Name</Label>
-                                    <Input  style={{'textTransform': 'capitalize' }} maxLength={30} type="text" id="AssetName" name="assets" onChange={this.onChangeHandler} value={this.state.assets}/>
+                                    <Input  style={{'textTransform': 'capitalize' }} maxLength={30} type="text" id="AssetName" name="assets" onChange={this.onChangeHandler} value={this.state.assets} onKeyPress={this.onKeyPressHandler }/>
                                     <div className="error">{this.state.errors.assets}</div>
                                     <Label htmlFor="description">Description</Label>
                                     <Input  style={{'textTransform': 'capitalize' }} maxLength={30} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description}/>

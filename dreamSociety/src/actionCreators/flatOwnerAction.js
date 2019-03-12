@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER } from '../actions/index';
+import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER } from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
 export function addFlatOwner(data){
@@ -78,4 +78,48 @@ export function removeOwner(id){
         type:REMOVE_OWNER,
         payload:request
     }
+}
+export function updateFlatOwner(ownerId,ownerName,
+    email,
+    societyId,
+    contact,
+    permanentAddress,
+    towerId,
+    flatDetailId,
+    accountHolderName,
+    bankName,
+    panCardNumber,
+    IFSCCode,     countryName,
+    stateName,
+    cityName,
+    locationName,
+    locationId,
+    cityId,
+    stateId,
+    countryId,gender){
+        const data={ownerId,ownerName,
+            email,
+            societyId,
+            contact,
+            permanentAddress,
+            towerId,
+            flatDetailId,
+            accountHolderName,
+            bankName,
+            panCardNumber,
+            IFSCCode,     countryName,
+            stateName,
+            cityName,
+            locationName,
+            locationId,
+            cityId,
+            stateId,
+            countryId,gender}
+            console.log('=============data============',data)
+    const request=axios.put(`${URN}/owner/`+ownerId,data,{headers:authHeader()})
+        .then(reponse=>reponse.data)
+        return {
+            type:UPDATE_OWNER,
+            payload:request
+        }
 }
