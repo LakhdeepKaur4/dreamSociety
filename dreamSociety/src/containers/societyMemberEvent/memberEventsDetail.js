@@ -22,6 +22,7 @@ class MemberEventsDetail extends Component {
             filterName:'societyMemberEventName',
             menuVisible: false,
             search: '',
+            modalLoading: false,
             modal: false,
             loading: true,
             errors: {},
@@ -32,6 +33,7 @@ class MemberEventsDetail extends Component {
     }
 
     onChangeHandler = (event) => {
+        this.setState({message:''})
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -67,7 +69,7 @@ class MemberEventsDetail extends Component {
     }
 
     refreshData() {
-        this.props.getMemberEvent().then(() => this.setState({ loading: false }))
+        this.props.getMemberEvent().then(() => this.setState({ loading: false, modalLoading: false, modal:false }))
        
     }
 
@@ -78,29 +80,33 @@ class MemberEventsDetail extends Component {
         
         let errors = {};
         if(this.state.societyMemberEventName===''){
-            errors.societyMemberEventName="societyMemberEventName can't be empty"
+            errors.societyMemberEventName="Event Name can't be empty"
         }
         this.setState({errors});
         const isValid = Object.keys(errors).length === 0
         
-        if (isValid) {
-            this.setState({
-                loading: true
-            })
+        if (isValid &&  this.state.message === '') {
+          
         this.props.updateMemberEvent(societyMemberEventId, societyMemberEventName)
             .then(() => this.refreshData())
+            .catch(err=>{ console.log(err.response.data.message)
+                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                })
+                if(this.state.message === ''){
+                    this.setState({modal: true})
+                }
+                else {
+                    this.setState({modal: false})
+                }
+        
         this.setState({
-            editMemberEventData: { societyMemberEventId, societyMemberEventName },
-            modal: !this.state.modal
+            modalLoading: true
         })
     }
     }
 
       deleteMemberEventName = (societyMemberEventId) => {
         let { isActive } = this.state.editMemberEventData
-
-       
-        
         this.setState({ loading: true })
         this.props.deleteMemberEvent(societyMemberEventId, isActive)
             .then(() => this.refreshData())
@@ -126,14 +132,11 @@ class MemberEventsDetail extends Component {
         this.setState({loading:true,  isDisabled:true});
 
         
-        if(window.confirm('Are You Sure ?')){
+     
         this.props.deleteSelectMemberEvent(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
-        }
-        else{
-            this.refreshData()
-        }
+      
     }
 
     selectAll = () => {
@@ -288,7 +291,7 @@ class MemberEventsDetail extends Component {
                         }  
                     }/></Label>
 
-                        {!this.state.loading ? tableData : <Spinner />}
+                        {!this.state.modalLoading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
@@ -296,6 +299,7 @@ class MemberEventsDetail extends Component {
                                     <Label>MemberEvent Type</Label>
                                     <Input type="text" id="societyMemberEventId" name="societyMemberEventName" onChange={this.onChangeHandler} value={this.state.societyMemberEventName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
                                     <span className="error">{this.state.errors.societyMemberEventName}</span>
+                                    <span className="error">{this.state.message}</span>
                                 </FormGroup>
 
 

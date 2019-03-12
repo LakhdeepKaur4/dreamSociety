@@ -1,4 +1,4 @@
-import {FETCH_EVENT_SPACE_DETAILS, DELETE_MULTIPLE_EVENT_SPACE_MASTER_DETAILS} from '../../actions';
+import {FETCH_EVENT_SPACE_DETAILS, DELETE_MULTIPLE_EVENT_SPACE_MASTER_DETAILS,UPDATE_EVENT_SPACE} from '../../actions';
 export default function(state={},action){
 
     switch(action.type){
@@ -7,6 +7,8 @@ export default function(state={},action){
             return{...state,space:action.payload}   
         case DELETE_MULTIPLE_EVENT_SPACE_MASTER_DETAILS:
             return{...state,delete:action.payload}   
+        case UPDATE_EVENT_SPACE:
+            return{...state,delete:action.payload} 
         default:
             return state;
     }

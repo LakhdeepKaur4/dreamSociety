@@ -96,8 +96,10 @@ class Registration extends Component {
     }
 
     emailChange = (e) => {
+        if(e.target.value !== ''){
+            this.state.errors.email === '';
+        }
         console.log(this.state.email)
-        
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value});
             console.log(this.state.email)
@@ -109,29 +111,29 @@ class Registration extends Component {
 
 
     submit(e) {
-        
+        this.setState({message:''})
         e.preventDefault();
         let errors = {};
         if (!this.state.roles) {
-            errors.roles = "User type can't be empty. Please select"
+            errors.roles = "User type can't be empty. Please select."
         }
         
         if(!this.state.towerId){
             errors.towerId = "Tower can't be empty. Please select."
         }
-        if(this.state.floor === '') errors.floor = "Can't be empty."
-        if(this.state.parking === '') errors.parking = "Can't be empty."
+        if(this.state.floor === '') errors.floor = "Floor can't be empty."
+        if(this.state.parking === '') errors.parking = "Parking can't be empty."
 
-        if (this.state.firstName === '') errors.firstName = "Can't be empty.";
+        if (this.state.firstName === '') errors.firstName = "First Name can't be empty.";
         else if (this.state.firstName.length < 2) errors.firstName = "First name can't be less than four."
 
-        if (this.state.lastName === '') errors.lastName = "Can't be empty";
-        else if (this.state.lastName.length < 2) errors.lastName = "Last name can't be les than two.";
-        if(this.state.familyMember === '') errors.familyMember="Can't be empty."
-        if (this.state.userName === '') errors.userName = "Can't be empty.";
-        if (this.state.email === '') errors.email = "Can't be empty.";
-        if (this.state.contact === '') errors.contact = "Can't be empty.";
-        if (this.state.password === '') errors.password = "Can't be empty.";
+        if (this.state.lastName === '') errors.lastName = "Last name can't be empty";
+        else if (this.state.lastName.length < 2) errors.lastName = "Last name can't be less than two.";
+        if(this.state.familyMember === '') errors.familyMember="Family Member can't be empty."
+        if (this.state.userName === '') errors.userName = "User Name can't be empty.";
+        if (this.state.email === '') errors.email = "Email can't be empty.";
+        if (this.state.contact === '') errors.contact = "Contact can't be empty.";
+        if (this.state.password === '') errors.password = "Password can't be empty.";
         else if (this.state.password !== this.state.passwordConfirmation) errors.passwordConfirmation = `Password doesn't match.`
 
         this.setState({ errors });
@@ -146,9 +148,9 @@ class Registration extends Component {
                     
             )
             .catch(err => {
-                console.log(err.response.data.message);
-                this.setState({emailServerError: err.response.data.message, userNameServerError:err.response.data.message,
-                    contactServerError: err.response.data.message, loading: false})
+                console.log(err.response.data);
+                this.setState({emailServerError: err.response.data.messageEmailErr, userNameServerError:err.response.data.messageUsernameErr,
+                    contactServerError: err.response.data.messageContactErr, loading: false})
             });
         }
     }
@@ -276,6 +278,7 @@ class Registration extends Component {
                 emailServerValidationError={this.state.emailServerError}
                 userNameServerValidationError={this.state.userNameServerError}
                 contactServerValidationError={this.state.contactServerError}
+                
                 emailKeyPress={this.emailValid}
                 InValidEmailFormatError={this.state.emailValidError}
                 />

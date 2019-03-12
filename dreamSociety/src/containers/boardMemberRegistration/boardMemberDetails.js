@@ -4,6 +4,7 @@ import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader }
 import DefaultSelect from '../../constants/defaultSelect';
 import { connect } from 'react-redux';
 import _ from 'underscore';
+import SearchFilter from '../../components/searchFilter/searchFilter';
 import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
 import {getMemberDetails,getSocietyId, getMemberDesignation,updateSocietyMemberDetails
 ,deleteSocietyMemberDetail, deleteMultipleSocietyMemberDetail} from '../../actionCreators/boardMemberRegistrationAction';
@@ -14,6 +15,7 @@ class BoardMemberDetails extends Component{
     constructor(props){
         super(props);
         this.state = {
+            filterName:'societyBoardMemberName',
             societyId:'',
             societyBoardMemberId:'',
             societyName:'',
@@ -24,6 +26,7 @@ class BoardMemberDetails extends Component{
             cityName:'',
             locationName:'',
             currentAddress:'',
+            panCardNumber:'',
             permanentAddress:'',
             contactNumber:'',
             email:'',
@@ -41,12 +44,21 @@ class BoardMemberDetails extends Component{
             errors: {},
             loading:true,
             editSocietyMember: false,
-            emailValidError: ''
+            emailValidError: '',
+            search:'',
+            modalLoading: false,
+            emailServerError:'',
+            userNameServerError:'',
+            contactServerError:''
         }
     }
 
     componentDidMount(){
         this.refreshData();
+    }
+
+    searchOnChange = (e) => {
+        this.setState({search:e.target.value})
     }
 
     refreshData(){
@@ -59,19 +71,47 @@ class BoardMemberDetails extends Component{
         this.props.getLocation().then(() => this.setState({loading:false}));; 
     }
 
-    editMember(societyId,societyBoardMemberId,societyName,societyBoardMemberName,designationName,countryName,stateName,cityName,
+    editMember(societyId,societyBoardMemberId,societyBoardMemberName,designationName,countryName,stateName,cityName,
         locationName,currentAddress,permanentAddress,
         contactNumber,email,bankName,
         accountNumber,panCardNumber,dob,designationId,countryId,stateId,cityId,locationId){
-        this.setState({societyId,societyBoardMemberId,societyName,societyBoardMemberName,designationName,countryName,stateName,cityName,
+        this.setState({societyId,societyBoardMemberId,societyBoardMemberName,designationName,countryName,stateName,cityName,
             locationName,currentAddress,permanentAddress,
             contactNumber,email,bankName,
             accountNumber,panCardNumber,dob,designationId,countryId,stateId,cityId,locationId,editSocietyMember: !this.state.editSocietyMember});
         }
 
+        searchFilter(search){
+            console.log(search)
+            return function(x){
+                if(x){
+                    return x.societyBoardMemberName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    x.designation_master.designationName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    x.country_master.countryName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    x.state_master.stateName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    x.city_master.cityName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    x.location_master.locationName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    x.currentAddress.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    x.permanentAddress.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    x.contactNumber.toString().indexOf(search.toString())  !== -1 ||
+                    x.email.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    x.bankName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    x.accountNumber.toString().indexOf(search.toString())  !== -1 ||
+                    x.panCardNumber.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    x.dob.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                    !search;
+                }
+            }
+        }   
+
     fetchMemberDetails = ({memberDetails}) => {
         if(memberDetails){
-            return memberDetails.societyBoardMember.map((item, index) => {
+            return memberDetails.societyBoardMember.sort((item1,item2)=>{
+                if(item1 && item2){
+                    var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                    return this.state.sortVal ? cmprVal : -cmprVal;
+                }
+            }).filter(this.searchFilter(this.state.search)).map((item, index) => {
                 return (
                     <tr key={item.societyBoardMemberId}>
                         <td><input type="checkbox" name="ids" className="SelectAll"  value={item.societyBoardMemberId}
@@ -95,7 +135,6 @@ class BoardMemberDetails extends Component{
                             }  
                              }}/></td>
                         <td>{index + 1}</td>
-                        <td>{item.society_master.societyName}</td>
                         <td>{item.societyBoardMemberName}</td>
                         <td>{item.designation_master.designationName}</td>
                         <td>{item.country_master.countryName}</td>
@@ -113,8 +152,7 @@ class BoardMemberDetails extends Component{
                         <td>
                             <Button color="success" className="mr-2" onClick={this.editMember.bind(this,
                                 item.societyId,
-                                item.societyBoardMemberId,
-                                item.society_master.societyName,item.societyBoardMemberName,item.designation_master.designationName,
+                                item.societyBoardMemberId,item.societyBoardMemberName,item.designation_master.designationName,
                                 item.country_master.countryName,
                                 item.state_master.stateName,
                                 item.city_master.cityName,
@@ -139,7 +177,7 @@ class BoardMemberDetails extends Component{
     deleteSocietyMember(societyBoardMemberId) {
         this.setState({loading:true, isDisabled:true})
         this.props.deleteSocietyMemberDetail(societyBoardMemberId)
-        .then(() => this.loadingInactive())
+        .then(() => this.refreshData())
     }
 
     route = () => {
@@ -179,25 +217,22 @@ class BoardMemberDetails extends Component{
         this.setState({loading: true, isDisabled: true})
         console.log(ids);
         this.props.deleteMultipleSocietyMemberDetail(ids)
-        .then(() => this.loadingInactive())
+        .then(() => this.refreshData())
     }
 
     toggleEditSocietyMember(){
-        this.setState({editSocietyMember: !this.state.editSocietyMember})
+        this.setState({editSocietyMember: !this.state.editSocietyMember, emailServerError:'', userNameServerError:'',
+    contactServerError:'', errors:{}});
     }
 
     onChange = (e) => {
-        console.log(this.state);
-        this.setState({[e.target.name]: e.target.value})
-    }
-
-    fetchSocietyId = ({boardId}) => {
-        if(boardId){
-            return boardId.map((item) => {
-                return (
-                    <option value={item.societyId} key={item.societyId}>{item.societyName}</option>
-                )
-            })
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, panCardNumber:e.target.value.toUpperCase(), errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value, panCardNumber:e.target.value.toUpperCase() });
         }
     }
 
@@ -221,7 +256,10 @@ class BoardMemberDetails extends Component{
          
              this.setState({
                  countryName: country.countryName,
-                 countryId:country.countryId
+                 countryId:country.countryId,
+                 stateName: '',
+                 cityName: '',
+                 locationName: ''
              })
              
              this.props.getState(country.countryId)
@@ -320,6 +358,7 @@ class BoardMemberDetails extends Component{
              
          }
      }
+     
     
      locationName=({locationResult})=>{
         if(locationResult){
@@ -383,7 +422,7 @@ class BoardMemberDetails extends Component{
     }
 
      loadingInactive = () => {
-         this.setState({loading: false})
+         this.setState({modalLoading: false,editSocietyMember: !this.state.editSocietyMember})
      }
 
      update = (e) => {
@@ -394,21 +433,26 @@ class BoardMemberDetails extends Component{
             contactNumber,email,bankName,
             accountNumber,panCardNumber,dob,societyBoardMemberId} = this.state;
         let errors = {};
-        if(this.state.societyBoardMemberName === '') errors.societyBoardMemberName = `Can't be empty.`
-        if(this.state.currentAddress === '') {console.log('bug1'); errors.currentAddress = `Can't be empty.`;}
-        if(this.state.permanentAddress === ''){console.log('bug2'); errors.permanentAddress = `Can't be empty.`;}
-        if(this.state.contactNumber === '') {console.log('bug3'); errors.contactNumber = `Can't be empty.`;}
-        if(this.state.email === '') {console.log('bug4'); errors.email = `Can't be empty.`;}
-        if(this.state.bankName === '') {console.log('bug5'); errors.bankName = `Can't be empty.`;}
-        if(this.state.accountHolderName === '') {console.log('bug6'); errors.accountHolderName = `Can't be empty.`;}
-        if(this.state.accountNumber === '') {console.log('bug7'); errors.accountNumber = `Can't be empty.`;}
-        if(this.state.panCardNumber === '') {console.log('bug8'); errors.panCardNumber = `Can't be empty.`;}
-        if(this.state.dob === '') {console.log('bug10'); errors.dob = `Can't be empty.`};
+        if(this.state.countryName==='') errors.countryName = `Country can't be empty.`
+        if(this.state.stateName==='') errors.stateName = `State can't be empty.`
+        if(this.state.cityName==='') errors.cityName = `City can't be empty.`
+        if(this.state.locationName ==='') errors.locationName = `Location Can't be empty`
+        if(this.state.societyBoardMemberName === '') errors.societyBoardMemberName = `Board Member can't be empty.`
+        if(this.state.currentAddress === '') { errors.currentAddress = `Current Address can't be empty.`}
+        if(this.state.permanentAddress === ''){ errors.permanentAddress = `Permanent Address can't be empty.`}
+        if(this.state.contactNumber === '') { errors.contactNumber = `Contact can't be empty.`}
+        else if(this.state.contactNumber.length !== 10) errors.contactNumber = "Contact length should be of 10"
+        if(this.state.email === '') { errors.email = `Email can't be empty.`}
+        if(this.state.bankName === '') { errors.bankName = `Bank Name can't be empty.`}
+        if(this.state.accountHolderName === '') { errors.accountHolderName = `Account Holder Name can't be empty.`}
+        if(this.state.accountNumber === '') { errors.accountNumber = `Account Number can't be empty.`}
+        if(this.state.panCardNumber === '') { errors.panCardNumber = `Pan Card Number can't be empty.`}
+        if(this.state.dob === '') { errors.dob = `Date of birth can't be empty.`};
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.emailValidError===''){
             console.log('hello1')
-            this.setState({loading:true})
+            this.setState({modalLoading:true})
             
             this.props.updateSocietyMemberDetails(societyId,societyBoardMemberName,designationId,
                 countryId,stateId,cityId,
@@ -416,7 +460,10 @@ class BoardMemberDetails extends Component{
                 contactNumber,email,bankName,
                 accountNumber,panCardNumber,dob,societyBoardMemberId)
                 .then(() => this.loadingInactive())
-                this.setState({editSocietyMember: !this.state.editSocietyMember})
+                .catch(err => {
+                    err.response.data.message
+                    this.setState({modalLoading: false})
+                })
         }
     }
 
@@ -432,21 +479,16 @@ class BoardMemberDetails extends Component{
     }
 
     render(){
+        console.log(this.props.societyReducer.countryResult)
         let tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
-                    <th style={{alignContent:'baseline'}}>Select All<input
-                    type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                        if(e.target.checked) {
-                            this.selectAll();
-                        }
-                        else if(!e.target.checked){
-                            this.unSelectAll();
-                        } 
-                    }}/></th>
+                    <th style={{alignContent:'baseline'}}></th>
                     <th>#</th>
-                    <th>Society Name</th>
-                    <th>Member Name</th>
+                    <th style={{cursor: 'pointer'}} onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'societyBoardMemberName'}});
+                        }}>Member Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th>Designation</th>
                     <th>Country Name</th>
                     <th>State Name</th>
@@ -467,33 +509,9 @@ class BoardMemberDetails extends Component{
                 {this.fetchMemberDetails(this.props.boardMemberReducer)}
             </tbody>
         </Table>
-        let deleteSelectedButton = <Button
-         disabled={this.state.isDisabled}
-         color="danger"
-        className="mb-3"
-        onClick={this.deleteSelected(this.state.ids)}>Delete Selected</Button>
-        return(
-            <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top w3-responsive">
-                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                            <span aria-hidden="true">&times;</span>
-                    </div>
-                    <div className="top-details">
-                        <h3>Board Member Details</h3>
-                        <Button color="primary" onClick={this.route} color="primary">Add Board Member</Button>
-                    </div>
-                    <Modal isOpen={this.state.editSocietyMember} toggle={this.toggleEditSocietyMember.bind(this)}>
-                        <ModalHeader toggle={this.toggleEditSocietyMember.bind(this)}>Edit Board Member Details</ModalHeader>
-                        <ModalBody>
-                            <FormGroup>
-                                <Label>Society Name</Label>
-                                <Input name="societyId" type="select" onChange={this.onChange} >
-                                    <option>{this.state.societyName}</option>
-                                    <DefaultSelect />
-                                    {this.fetchSocietyId(this.props.boardMemberReducer)}
-                                 </Input>
-                            </FormGroup>
-                            <FormGroup>
+
+        let modalData = <div>
+            <FormGroup>
                                 <Label>Society Member Name</Label>
                                 <Input name="societyBoardMemberName" type="text" value={this.state.societyBoardMemberName} 
                                     onChange={this.onChange} />
@@ -501,46 +519,54 @@ class BoardMemberDetails extends Component{
                             </FormGroup>
                             <FormGroup>
                                 <Label>Designation</Label>
-                                <Input name="designationId" type="select" onChange={this.onChange} >
-                                    <option>{this.state.designationName}</option>
+                                <Input name="designationId" type="select" onChange={this.onChange} value={this.state.designationId}>
                                     <DefaultSelect />
                                     {this.fetchDesignation(this.props.boardMemberReducer)}
                                  </Input>
                             </FormGroup>
                              <FormGroup>
                                 <Label>Country Name</Label>
-                                <Input type="select" name="countryId"  onChange={this.onChangeCountry} required>
-                                    <option>{this.state.countryName}</option>
+                                <Input type="select" name="countryId"  onChange={this.onChangeCountry} 
+                                value={this.state.countryName} required>
                                     <DefaultSelect />
                                     {this.countryName(this.props.societyReducer)}
                                 </Input>
+                                {!this.state.countryName ? <span className="error">{this.state.errors.countryName}</span>: ''}
                             </FormGroup>
 
                             <FormGroup>
                                 <Label>State Name</Label>
-                                <Input type="select" name="stateId"   onChange={this.onChangeState} required>
-                                    <option>{this.state.stateName}</option>
-                                    <DefaultSelect/>
-                                    {this.stateName(this.props.societyReducer)}
+                                <Input type="select" name="stateId"
+                                  onChange={this.onChangeState}
+                                    required>
+                                  {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                                  {this.state.stateName ? <DefaultSelect />: null}
+                                    {this.state.stateName ? null : this.stateName(this.props.societyReducer)}
                                 </Input>
+                                {!this.state.stateName ? <span className="error">{this.state.errors.stateName}</span>: ''}
                             </FormGroup>
 
                             <FormGroup>
                                 <Label>City Name</Label>
-                                <Input type="select" name="cityId"  onChange={this.onChangeCity} required>
-                                    <option>{this.state.cityName}</option>
-                                    <DefaultSelect/>
-                                    {this.cityName(this.props.societyReducer)}  
+                                <Input type="select" name="cityId"
+                                 onChange={this.onChangeCity} required>
+                                {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
+                                {this.state.cityName ? <DefaultSelect />: null}
+                                {this.state.cityName ? null : this.cityName(this.props.societyReducer)}  
                                 </Input>
+                                {!this.state.cityName ? <span className="error">{this.state.errors.cityName}</span>: ''}
                             </FormGroup>
 
                             <FormGroup>
                                 <Label>Location Name</Label>
-                                <Input type="select" name="locationId"  onChange={this.onChangeLocation} required>
-                                    <option>{this.state.locationName}</option>
-                                    <DefaultSelect/>
-                                    {this.locationName(this.props.societyReducer)}  
+                                <Input type="select" name="locationId"
+                                  onChange={this.onChangeLocation}
+                                 required>
+                                 {this.state.locationName ? <option>{this.state.locationName}</option> : <option disabled>--Select--</option>}
+                                 {this.state.locationName ? <DefaultSelect />: null}
+                                 {this.state.locationName ? null : this.locationName(this.props.societyReducer)}  
                                 </Input>
+                                {!this.state.locationName ? <span className="error">{this.state.errors.locationName}</span>: ''}
                             </FormGroup>  
                             <FormGroup>
                                 <Label>Current Address</Label>
@@ -570,10 +596,10 @@ class BoardMemberDetails extends Component{
                                 name="contactNumber" 
                                 onChange={this.onChange}
                                 value={this.state.contactNumber}
-                                onKeyPress={this.OnKeyPresshandlerPhone}
-                                maxLength='10'
-                                minLength='10' />
-                                {!this.state.contactNumber ? <span className="error">{this.state.errors.contactNumber}</span>: ''}
+                                maxLength="10"
+                                onKeyPress={this.OnKeyPresshandlerPhone} />
+                                {<span className="error">{this.state.errors.contactNumber}</span>}
+                                {this.state.contactServerError ? <span className="error">{this.state.contactServerError}</span> : null}
                             </FormGroup>
                             <FormGroup>
                                 <Label>Email</Label>
@@ -585,6 +611,7 @@ class BoardMemberDetails extends Component{
                                 onChange={this.emailChange}
                                 onKeyPress={this.emailValid} />
                                 {!this.state.email ? <span className="error">{this.state.errors.email}</span>: ''}
+                                {this.state.emailServerError ? <span className="error">{this.state.emailServerError}</span> : null}
                                 {<span className="error">{this.state.emailValidError}</span>}
                             </FormGroup>
                             <FormGroup>
@@ -606,7 +633,7 @@ class BoardMemberDetails extends Component{
                                 name="accountNumber"
                                 value={this.state.accountNumber} 
                                 onChange={this.onChange}
-                                maxLength='14'
+                                maxLength='16'
                                 onKeyPress={this.OnKeyPresshandlerPhone} />
                                 {!this.state.accountNumber ? <span className="error">{this.state.errors.accountNumber}</span>: ''}
                             </FormGroup>
@@ -617,7 +644,7 @@ class BoardMemberDetails extends Component{
                                 placeholder="Pan Card Number"
                                 type="text"
                                 name="panCardNumber"
-                                value={this.state.panCardNumber}
+                                value={this.state.panCardNumber.toUpperCase()}
                                 minLength='10'
                                 maxLength='10'
                                 onKeyPress={(e) => {
@@ -639,9 +666,50 @@ class BoardMemberDetails extends Component{
                                     <Button type="submit" color="primary" onClick={this.update}>Save</Button>{' '}
                                     <Button color="danger" onClick={this.toggleEditSocietyMember.bind(this)}>Cancel</Button>
                             </FormGroup>
+        </div>
+
+        let deleteSelectedButton = <Button
+         disabled={this.state.isDisabled}
+         color="danger"
+        className="mb-3"
+        onClick={this.deleteSelected(this.state.ids)}>Delete Selected</Button>
+        return(
+            <UI onClick={this.logout}>
+                <div className="w3-container w3-margin-top w3-responsive">
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                            <span aria-hidden="true">&times;</span>
+                    </div>
+                    <div className="top-details">
+                        <h3>Board Member Details</h3>
+                        <Button color="primary" onClick={this.route} color="primary">Add Board Member</Button>
+                    </div>
+                    <Modal isOpen={this.state.editSocietyMember} toggle={this.toggleEditSocietyMember.bind(this)}>
+                        <ModalHeader toggle={this.toggleEditSocietyMember.bind(this)}>Edit Board Member Details</ModalHeader>
+                        <ModalBody>
+                            {/* <FormGroup>
+                                <Label>Society Name</Label>
+                                <Input name="societyId" type="select" onChange={this.onChange}  >
+                                    <DefaultSelect />
+                                    {this.fetchSocietyId(this.props.boardMemberReducer)}
+                                 </Input>
+                            </FormGroup> */}
+                            {!this.state.modalLoading ? modalData : <Spinner/>}
                         </ModalBody>
                     </Modal>
+                    <SearchFilter type="text" value={this.state.search}
+                                onChange={this.searchOnChange} />
                     {deleteSelectedButton}
+                    <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></Label>
                     {!this.state.loading ? tableData : <Spinner/>}
                 </div>
             </UI>

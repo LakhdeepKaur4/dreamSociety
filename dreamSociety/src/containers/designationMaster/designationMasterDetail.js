@@ -39,6 +39,8 @@ class DesignationMasterDetail extends Component {
     }
 
     onChangeHandler = (event) => {
+        this.setState({message:'' })
+       
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];

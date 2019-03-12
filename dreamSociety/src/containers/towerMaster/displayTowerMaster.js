@@ -25,7 +25,9 @@ class DisplayTowerMaster extends Component {
     ids: [],
     isDisabled: true,
     towerName: [],
-    errors:{}
+    errors:{},
+    message:'',
+    modalLoading:false
   }
 
   componentDidMount() {
@@ -35,7 +37,7 @@ class DisplayTowerMaster extends Component {
   }
 
   refreshData=()=>{
-    this.props.viewTower().then(() =>this.setState({loading:false}));
+    this.props.viewTower().then(() =>this.setState({loading:false, modalLoading: false,editTowerModal:false}));
   }
 
   OnKeyPresshandler(event) {
@@ -59,6 +61,7 @@ this.setState({loading:true});
 
  
   onChange=(e)=> {
+   this.setState({message:''})
    console.log("e",e.target.name);
    
    console.log(!!this.state.errors[e.target.name])
@@ -82,7 +85,7 @@ this.setState({loading:true});
 
   toggleEditTowerModal() {
     this.setState({
-      editTowerModal: !this.state.editTowerModal
+      editTowerModal: !this.state.editTowerModal, message:''
     })
   }
 
@@ -94,10 +97,18 @@ this.setState({loading:true});
         }
      this.setState({errors})
      const isValid = Object.keys(errors).length===0
-    if(isValid){
-   this.props.updateTower(towerId,towerName).then(()=>{this.refreshData()})
+    if(isValid  &&  this.state.message === ''){
+   this.props.updateTower(towerId,towerName).then(()=>{this.refreshData()}).catch(err=>{ console.log(err.response.data.message)
+    this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+    })
+    if(this.state.message === ''){
+      this.setState({editTowerModal: true})
+  }
+  else {
+      this.setState({editTowerModal: false})
+  }
       this.setState({
-        editTowerModal: false,loading:true, editTowerData: { id: '', towerName: '' }
+         modalLoading: true
       })
 
   }
@@ -291,6 +302,7 @@ selectAll = () => {
                      maxLength={20}
                     />
                     <span className="error">{this.state.errors.towerName} </span>
+                    <span className="error">{this.state.message}</span>
                 </FormGroup>
 
 
@@ -301,8 +313,11 @@ selectAll = () => {
                 </ModalBody>
             </Modal>
             <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-            <label>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+         
+            {deleteSelectedButton}
+
+            <label><b> Select All</b><input
+                         type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
                             if(e.target.checked) {
                                 this.selectAll();
                             }
@@ -311,8 +326,7 @@ selectAll = () => {
                             } 
                         }  
                     }/></label>
-            {deleteSelectedButton}
-            {!this.state.loading?tableData:<Spinner/>}
+            {!this.state.modalLoading ?tableData:<Spinner/>}
           </div>
         </UI>
       </div>

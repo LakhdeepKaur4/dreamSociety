@@ -7,6 +7,7 @@ import Select from 'react-select';
 import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
+import Spinner from '../../components/spinner/spinner';
 import { getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail } from '../../actionCreators/tenantMasterAction';
 
 class AddTenant extends Component{
@@ -39,7 +40,8 @@ class AddTenant extends Component{
             fileName: '',
             imageSizeError:'',
             errors:{},
-            emailValidError:''
+            emailValidError:'',
+            loading: false,
         }
     }
 
@@ -47,11 +49,15 @@ class AddTenant extends Component{
         this.props.detailSociety();
         this.props.viewTower();
         this.props.getRelation();
+        let societyId = localStorage.getItem('societyId')
+        console.log(societyId);
+        this.setState({societyId})
+        console.log(this.state.societyId)
+        this.setState({societyId: localStorage.getItem('societyId')})
+        console.log(this.state.societyId) 
     }
 
-    componentWillReceiveProps(){
-
-    }
+    
 
     logout = () => {
         localStorage.removeItem('token');
@@ -174,10 +180,11 @@ class AddTenant extends Component{
         console.log(this.state)
     }
     onSubmit = (e) => {
+        console.log(this.state.societyId)
         e.preventDefault()
         let { tenantName, dob, gender, email, contact, profilePicture, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, societyId, member, fileName } = this.state;
+            societyName, member, fileName, societyId } = this.state;
         console.log(this.state)
         let data = []
         for(let i = 0; i < this.state.noOfMembers; i++){
@@ -197,9 +204,13 @@ class AddTenant extends Component{
 
         if(this.state.imageSizeError === ''){
             this.props.addTenantDetail({tenantName, dob, gender, email, contact, profilePicture, permanentAddress, bankName, 
-                accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-                societyName, societyId, member, fileName});
+                accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, societyId, member, fileName})
+                .then(() => this.props.history.push('/superDashboard/tenantDetails'));
         }
+    }
+
+    routeToDetail = () => {
+        this.props.history.push('/superDashboard/tenantDetails')
     }
 
     relationHandler = (name,selectOption) => {
@@ -238,14 +249,13 @@ class AddTenant extends Component{
 
     nextPrev = () => {
         let errors = {};
-        const {tenantName, dob, gender, contact, email, societyId, correspondingAddress, permanentAddress} = this.state;
+        const {tenantName, dob, gender, contact, email, correspondingAddress, permanentAddress} = this.state;
         if(this.state.step === 1){
             if(tenantName === '') errors.tenantName = `Tenant Name can't be empty.`;
             if(dob === '') errors.dob = `Date of Birth can't be empty.`;
             if(gender === '') errors.gender = `Gender can't be empty`;
             if(contact === '') errors.contact= `Contact can't be empty.`;
             if(email === '') errors.email = `Email can't be empty.`;
-            if(!societyId) errors.societyId = `Society can't be empty.`
             if(correspondingAddress === '') errors.correspondingAddress = `Corresponding Address can't be empty.`;
             if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
             const isValid = Object.keys(errors).length === 0
@@ -341,6 +351,7 @@ class AddTenant extends Component{
                           onChange={this.relationHandler.bind(this,'relationId'+i )}  required/>
                     </Col>
                     <Col md={3} style={{display: 'flex'}}>
+                    <Label>Gender: </Label>
                         <Col md={1}>
                             <Label>M</Label>
                             <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange} 
@@ -365,15 +376,8 @@ class AddTenant extends Component{
             </FormGroup>);
         }
 
-        
-
-        return(
-            <UI onClick={this.logout}>
-                <Form onSubmit={this.onSubmit} method="post">
-                    <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
-                        <span aria-hidden="true">&times;</span>
-                    </div>
-                    <div style={{ 'display': this.state.step == 1 ? 'block' : 'none' }}>
+        let formData = <div>
+            <div style={{ 'display': this.state.step == 1 ? 'block' : 'none' }}>
                         <h3>Tenant Details</h3>
                         <FormGroup>
                             <Label>Tenant Name</Label>
@@ -429,7 +433,7 @@ class AddTenant extends Component{
                             </span> : ''}
                             {<span className="error">{this.state.emailValidError}</span>}
                         </FormGroup>
-                        <FormGroup>
+                        {/* <FormGroup>
                             <Label>Society Name</Label>
                             <Select placeholder="Society Name"
                              options={this.getSociety(this.props.societyReducer)}
@@ -438,10 +442,10 @@ class AddTenant extends Component{
                             {!this.state.societyId ? <span className="error">
                                 {this.state.errors.societyId}
                             </span> : ''}
-                        </FormGroup>
+                        </FormGroup> */}
                         <FormGroup>
                             <Label>Corresponding Address</Label>
-                            <Input type="textarea" onChange={this.onChange}
+                            <Input type="textarea" onChange={this.onChange} maxLength="250"
                              name="correspondingAddress" placeholder="Corresponding Address" />
                              {!this.state.correspondingAddress ? <span className="error">
                                 {this.state.errors.correspondingAddress}
@@ -450,6 +454,7 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>Permanent Address</Label>
                             <Input type="textarea" onChange={this.onChange}
+                            maxLength="250"
                              name="permanentAddress" placeholder="Permanent Address" />
                              {!this.state.permanentAddress ? <span className="error">
                                 {this.state.errors.permanentAddress}
@@ -462,13 +467,14 @@ class AddTenant extends Component{
                                 <Label>Bank Name</Label>
                                 <Input placeholder="Bank Name" onChange={this.onChange}
                                 onKeyPress={this.bankValidation}
+                                maxLength="50"
                                  type="text" name="bankName" />
                                  {!this.state.bankName ? <span className="error">{this.state.errors.bankName}</span> : ''}
                         </FormGroup>
                         <FormGroup>
                             <Label>Account Holder Name</Label>
                             <Input placeholder="Holder Name" onChange={this.onChange}
-                            onKeyPress={this.OnKeyPressUserhandler}
+                            onKeyPress={this.OnKeyPressUserhandler} maxLength="14"
                              type="text" name='accountHolderName' />
                              {!this.state.accountHolderName ? <span className="error">{this.state.errors.accountHolderName}</span> : ''}
                         </FormGroup>
@@ -483,6 +489,7 @@ class AddTenant extends Component{
                             <Label>PAN Card Number</Label>
                             <Input placeholder="Pan Number" onChange={this.onChange}
                              type='text' name="panCardNumber" minLength='10'
+                             value={this.state.panCardNumber.toUpperCase()}
                              maxLength='10' onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
                                 let inputChar = String.fromCharCode(e.charCode);
@@ -543,8 +550,17 @@ class AddTenant extends Component{
                         <Button color="primary" className="mr-2" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
                         <Button color="primary" id="nextBtn" style={{ display: this.state.step == 5 ? 'none' : 'inline-block' }} disabled={this.state.step == 5} onClick={this.nextPrev}>Next</Button>
                         <Button color="success" className="mr-2" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
-                        <Button color="danger" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Cancel</Button>
+                        <Button color="danger" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }} onClick={this.routeToDetail}>Cancel</Button>
                     </div>
+        </div>
+
+        return(
+            <UI onClick={this.logout}>
+                <Form onSubmit={this.onSubmit} method="post">
+                    <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                        <span aria-hidden="true">&times;</span>
+                    </div>
+                    {!this.state.loading ? formData : <Spinner />}
                 </Form>
             </UI>
         );

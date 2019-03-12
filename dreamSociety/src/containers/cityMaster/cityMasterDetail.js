@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getCountry, getState, getCity, detailCity, deleteCity, updateCity, deleteSelectCity } from './../../actionCreators/cityMasterAction';
+import {  getCity, detailCity, deleteCity, updateCity, deleteSelectCity } from './../../actionCreators/cityMasterAction';
+import { getCountry, getState } from './../../actionCreators/societyMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
+import _ from 'underscore';
+import DefaultSelect from './../../constants/defaultSelect';
 
 
 class CityMasterDetail extends Component {
@@ -40,7 +43,7 @@ class CityMasterDetail extends Component {
         this.setState({message:'' })
         this.setState({
             [event.target.name]:event.target.value
-  
+
         })
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
@@ -132,28 +135,21 @@ class CityMasterDetail extends Component {
         let { isActive } = this.state.editCityData
         this.setState({ loading: true })
 
-        if(window.confirm('Are You Sure ?')){
+    
         this.props.deleteCity(cityId, isActive)
             .then(() => this.refreshData())
         this.setState({ editCityData: { isActive: false } })
-        }
-        else{
-            this.refreshData()
-        this.setState({ editCityData: { isActive: false } })
-        }
+      
     }
 
     deleteSelected = (ids) => {
         this.setState({ loading: true, isDisabled: true });
 
-        if(window.confirm('Are You Sure ?')){
+       
         this.props.deleteSelectCity(ids)
             .then(() => this.refreshData())
             .catch(err => err.response.data.message);
-        }
-        else{
-            this.refreshData()
-        }
+        
  }
 
 
@@ -202,17 +198,17 @@ class CityMasterDetail extends Component {
 
     }
 
-    
+
 
     renderCity = ({ city }) => {
 
         if (city) {
-            
+
        return city.sort((item1,item2)=>{
         var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
         return this.state.sortVal ? cmprVal : -cmprVal;
     }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
-                
+
                 return (
                     <tr key={item.cityId}  >
                         <td><input type="checkbox" className="SelectAll" name="ids" value={item.cityId}
@@ -250,10 +246,49 @@ class CityMasterDetail extends Component {
                     </tr>
 
                 )
-                        
+
             })
         }
     }
+   
+
+    onChangeCountry= (event)=>{
+
+        let selected= event.target.value
+        var country = _.find(this.props.societyReducer.countryResult,function(obj){
+            return obj.countryName === selected
+            })
+
+        
+            this.props.getState(country.countryId)
+
+            this.setState({
+                countryName: country.countryName,
+                countryId:country.countryId,
+                stateName: '',
+                
+            })
+                
+
+    }
+
+
+    onChangeState= (event)=>{
+        this.setState({loading: false})
+   
+        let selected= event.target.value
+       
+        var data1 = _.find(this.props.societyReducer.stateResult,function(obj){
+            return obj.stateName === selected
+            })
+
+            this.props.getCity(data1.stateId);
+
+            this.setState({
+                stateId: data1.stateId,
+                stateName:data1.stateName
+            })
+        }
 
     fetchCountry({ countryResult }) {
         if (countryResult) {
@@ -262,7 +297,7 @@ class CityMasterDetail extends Component {
                 countryResult.map((item) => {
 
                     return (
-                        <option value={item.countryId} key={item.countryId}>
+                        <option value={item.countryName} key={item.countryId} >
                             {item.countryName}
                         </option>
                     )
@@ -275,10 +310,10 @@ class CityMasterDetail extends Component {
         if (stateResult) {
 
             return (
-                stateResult.map((item) => {
+                stateResult.map((item, index) => {
 
                     return (
-                        <option value={item.stateId} key={item.stateId}>
+                        <option value={item.stateName} key={item.stateId} selected={index==0}>
                             {item.stateName}
                         </option>
                     )
@@ -313,7 +348,7 @@ class CityMasterDetail extends Component {
 
 
     render() {
-  
+
         let tableData;
         tableData = <div style={{ backgroundColor: 'lightgray' }}>
             <Table className="table table-bordered">
@@ -323,12 +358,12 @@ class CityMasterDetail extends Component {
                         <th>#</th>
                         <th>Country Name</th>
                         <th>State Name</th>
-                      
+
                         <th  onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'cityName'}});
                         }} >City Name <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-                        
+
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -360,8 +395,8 @@ class CityMasterDetail extends Component {
                             }
                             else if(!e.target.checked){
                                 this.unSelectAll();
-                            } 
-                        }  
+                            }
+                        }
                     }/></Label>
 
                         {!this.state.loading ? tableData : <Spinner />}
@@ -371,34 +406,21 @@ class CityMasterDetail extends Component {
                                 <FormGroup>
                                     <Label>Country Name</Label>
 
-                                    <Input type="select" id="countryId" name="countryName" onChange={(e) => {
-                                         
-                                        let { countryId } = this.state;
-                                        countryId = e.target.value;
-                                        this.setState({ countryId });
-                                        this.props.getState(countryId)
-                                    }} >
-                                        <option value={this.state.countryId}>{this.state.countryName}</option>
-                                        <option disabled>Select</option>
-                                        {this.fetchCountry(this.props.cityMasterReducer)}
+                                     <Input type="select" value={this.state.countryName} name="countryName" onChange={this.onChangeCountry}>
+                                    {/* <option value={this.state.countryId}>{this.state.countryName}</option> */}
+                                        <DefaultSelect/>
+                                        {this.fetchCountry(this.props.societyReducer)}
                                     </Input>
                                 </FormGroup>
                                 <FormGroup>
                                     <Label>State Name</Label>
 
-                                    <Input type="select" id="stateId" name="stateName" onChange={(e) => {
-
-                                        let { stateId } = this.state;
-
-                                        stateId = e.target.value;
-
-                                        this.setState({ stateId });
-                                        this.props.getCity(stateId);
-                                    }} >
-                                        <option value={this.state.stateId}>{this.state.stateName}</option>
-                                        <option>Select</option>
-                                        {this.fetchState(this.props.cityMasterReducer)}
+                                     <Input type="select" value={this.state.stateName}  name="stateName" onChange={this.onChangeState} >
+                                     {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                                  {this.state.stateName ? <DefaultSelect />: null}
+                                    {this.state.stateName ? null : this.fetchState(this.props.societyReducer)}
                                     </Input>
+                                    {!this.state.stateName ? <span className="error">{this.state.errors.stateName}</span>: ''}
                                 </FormGroup>
                                 <FormGroup>
                                     <Label>City Name</Label>
@@ -429,7 +451,8 @@ class CityMasterDetail extends Component {
 function mapStatToProps(state) {
 
     return {
-        cityMasterReducer: state.cityMasterReducer
+        cityMasterReducer: state.cityMasterReducer,
+        societyReducer: state.societyReducer
     }
 }
 

@@ -40,7 +40,10 @@ class BoardMemberRegistrationForm extends Component {
             cityId:'',
             dob:'',
             loading: true,
-            errors: {}
+            errors: {},
+            emailServerError:'',
+            userNameServerError:'',
+            contactServerError:''
         }
 
         this.cityName=this.cityName.bind(this);
@@ -53,7 +56,13 @@ class BoardMemberRegistrationForm extends Component {
         this.props.getMemberDetails().then(() => this.setState({loading: false}));
         this.props.getMemberDesignation().then(() => this.setState({loading: false}));
         this.props.getSocietyId().then(() => this.setState({loading: false}));
-        this.props.getLocation().then(() => this.setState({loading: false}));             
+        this.props.getLocation().then(() => this.setState({loading: false}));  
+        let societyId = localStorage.getItem('societyId')
+        console.log(societyId);
+        this.setState({societyId})
+        console.log(this.state.societyId)
+        this.setState({societyId: localStorage.getItem('societyId')})
+        console.log(this.state.societyId)           
  }
 
 
@@ -202,6 +211,7 @@ onChange = (e) => {
 }
 
 fetchDesignation = ({designation}) => {
+    console.log(designation)
     if(designation){
        return designation.designation.map((item) => {
             return (
@@ -239,58 +249,43 @@ keyPress = (event) => {
 
 submit = (e) => {
     e.preventDefault()
+            
     let errors = {};
-        if(!this.state.societyId) errors.societyId = `Can't be empty.`
         if(this.state.societyBoardMemberName === ''){
-            errors.societyBoardMemberName = `Can't be empty.`
+            errors.societyBoardMemberName = `Board Member Name can't be empty.`
         }
         if(!this.state.designationId){
-            errors.designationId = `Please select any.`
+            errors.designationId = `Designation can't be empty.`
         }
-        if(!this.state.countryId) errors.countryId = `Please select any.`;
-        if(!this.state.stateId) errors.stateId = `Please select any.`;
-        if(!this.state.cityId) errors.cityId = `Please select any.`;
-        if(!this.state.locationId) errors.locationId = `Please select any.`;
-        if(this.state.currentAddress === '') errors.currentAddress = `Can't be empty.`;
-        if(this.state.permanentAddress === '') errors.permanentAddress = `Can't be empty.`;
-        if(this.state.contactNumber === '') errors.contactNumber = `Can't be empty.`;
-        if(this.state.email === '') errors.email = `Can't be empty.`;
-        if(this.state.bankName === '') errors.bankName = `Can't be empty.`;
-        if(this.state.accountHolderName === '') errors.accountHolderName = `Can't be empty.`;
-        if(this.state.accountNumber === '') errors.accountNumber = `Can't be empty.`;
-        if(this.state.panCardNumber === '') errors.panCardNumber = `Can't be empty.`;
-        if(this.state.IFSCCode === '') errors.IFSCCode = `Can't be empty.`;
-        if(this.state.dob === '') errors.dob = `Can't be empty.`;
+        if(!this.state.countryId) errors.countryId = `Country can't be empty.`;
+        if(!this.state.stateId) errors.stateId = `State can't be empty.`;
+        if(!this.state.cityId) errors.cityId = `City can't be empty.`;
+        if(!this.state.locationId) errors.locationId = `Location can't be empty.`;
+        if(this.state.currentAddress === '') errors.currentAddress = `Current Address can't be empty.`;
+        if(this.state.permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
+        if(this.state.contactNumber === '') errors.contactNumber = `Contact can't be empty.`;
+        if(this.state.email === '') errors.email = `Email can't be empty.`;
+        if(this.state.bankName === '') errors.bankName = `Bank Name can't be empty.`;
+        if(this.state.accountHolderName === '') errors.accountHolderName = `Account Holder Name can't be empty.`;
+        if(this.state.accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
+        if(this.state.panCardNumber === '') errors.panCardNumber = `Pan card number can't be empty.`;
+        if(this.state.IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
+        if(this.state.dob === '') errors.dob = `cDate of birth can't be empty.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.emailValidError===''){
+           
             this.setState({loading: true});
+            console.log(this.state)
             this.props.addMemberDetails(this.state)
-            .then(() => this.props.history.push('/superDashboard/boardMemberDetails'));
-            this.setState({
-            societyId:'',
-            societyBoardMemberName:'',
-            designationName:'',
-            designationId:'',
-            cityName:'',
-            countryName:'',
-            stateName:'',
-            email:'',
-            optionalMail:'',
-            accountHolderName: '',
-            bankName:'',
-            currentAddress:'',
-            permanentAddress:'',
-            accountNumber:'',
-            countryId:'',
-            contactNumber:'',
-            IFSCCode:'',
-            panCardNumber:'',
-            optionalContactNumber: '',
-            stateId:'',
-            cityId:'',
-            dob:'',
-            errors: {}})
+            .then(() => this.props.history.push('/superDashboard/boardMemberDetails'))
+            .catch(err => {
+                err.response.data;
+                console.log(err.response.data)
+                this.setState({emailServerError: err.response.data.messageEmailErr, userNameServerError:err.response.data.messageUsernameErr,
+                    contactServerError: err.response.data.messageContactErr,loading: false})
+            });
+            
         }
         
 }
@@ -329,7 +324,7 @@ emailValid(event) {
 
 emailChange = (e) => {
     console.log(this.state.email)
-    
+    this.setState({errors:{email: ''}})
     if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
         this.setState({[e.target.name]:e.target.value});
         console.log(this.state.email)
@@ -359,7 +354,7 @@ maxDate = () => {
 
     render(){
         let formData = <div>
-            <FormGroup>
+            {/* <FormGroup>
                         <Label>Society Name</Label>
                         <Input type="select"
                         name="societyId"
@@ -370,7 +365,7 @@ maxDate = () => {
                             {this.fetchSocietyId(this.props.boardMemberReducer)}
                         </Input>
                         {!this.state.societyId ? <span className="error">{this.state.errors.societyId}</span>: ''}
-                    </FormGroup>
+                    </FormGroup> */}
                     <FormGroup>
                         <Label>Member Name</Label>
                         <Input type='text'
@@ -447,6 +442,7 @@ maxDate = () => {
                           onKeyPress={this.OnKeyPresshandlerPhone}
                           maxLength='10'
                           minLength='10' />
+                          {this.state.contactServerError ? <span className='error'>{this.state.contactServerError}</span> : null}
                         {!this.state.contactNumber ? <span className="error">{this.state.errors.contactNumber}</span> : ''}
                     </FormGroup>
                     <FormGroup>
@@ -470,6 +466,7 @@ maxDate = () => {
                         onKeyPress={this.emailValid} />
                         {!this.state.email ? <span className="error">{this.state.errors.email}</span> : ''}
                         {<span className="error">{this.state.emailValidError}</span>}
+                        {this.state.emailServerError ? <span className='error'>{this.state.emailServerError}</span> : null}
                     </FormGroup>
                     <FormGroup>
                         <Label>Optional Mail</Label>
@@ -505,7 +502,7 @@ maxDate = () => {
                          type="text" 
                          name="accountNumber" 
                          onChange={this.onChange}
-                         maxLength='14'
+                         maxLength='16'
                          onKeyPress={this.OnKeyPresshandlerPhone} />
                          {!this.state.accountNumber ? <span className="error">{this.state.errors.accountNumber}</span> : ''}
                     </FormGroup>

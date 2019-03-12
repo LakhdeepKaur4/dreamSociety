@@ -34,6 +34,7 @@ class Country extends Component {
     }
 
     onChange = (e) => {
+        this.setState({message: ''})
         if (!this.state.errors[e.target.value]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];

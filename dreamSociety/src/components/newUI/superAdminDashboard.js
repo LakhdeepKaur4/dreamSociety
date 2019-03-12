@@ -121,8 +121,10 @@ class Demo extends Component {
 
                     </div>
                 </nav>
-                <div className="wrapper" >
-                  {/* <div className="wrapper"> */}
+                {/* <div className="wrapper"  style={{'backgroundImage':`url('assets/society.jpg')`}}> */}
+        
+                <div className="wrapper"  style={{backgroundImage: `url('assets/society.jpg')`}}>
+               
                     <nav id="sidebar" className="bg-dark inactive">
                         <div id="sidebar-content">
 
@@ -195,7 +197,7 @@ class Demo extends Component {
                             <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashBoard/assetsTypeSubMaster"> Assets Sub Type Master</Link></div></Menu.Item>
                             <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashBoard/memberEventsDetail">Society Member Events Master</Link></div></Menu.Item>
                             <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/displayPerson"> Person details</Link></div></Menu.Item>
-                            <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashBoard/memberEventsBookingDetail">Member Events Booking Master</Link></div></Menu.Item>
+                            {/* <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashBoard/memberEventsBookingDetail">Member Events Booking Master</Link></div></Menu.Item> */}
 {/*                            
                             <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashBoard/memberEventsBookingDetail">Member Events Booking Master</Link></div></Menu.Item> */}
 
