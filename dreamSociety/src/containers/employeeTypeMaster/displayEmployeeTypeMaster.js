@@ -349,17 +349,19 @@ searchFilter(search) {
                             </ModalBody>
                         </Modal>
                         <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-                         <label>Select All<input
-                            type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                                if (e.target.checked) {
-                                    this.selectAll();
-                                }
-                                else if (!e.target.checked) {
-                                    this.unSelectAll();
-                                }
-                            }
-                            } /></label>
+                        
                         {deleteSelectedButton}
+
+                        <label><b> Select All</b><input
+                         type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></label>
                         {!this.state.loading ? tableData : <Spinner />}
 
                     </div>

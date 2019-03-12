@@ -114,7 +114,8 @@ class CityMaster extends Component {
                         {item.stateName}
                        </option>
                    )
-               })
+               }
+               ) 
            )
 
         }
