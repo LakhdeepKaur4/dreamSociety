@@ -165,10 +165,14 @@ class CityMaster extends Component {
         if (!this.state.countryName) {
             errors.countryName = "cant be empty"
         }
-        if (this.state.stateName === '') errors.stateName = "cant be empty";
-        this.setState({ errors });
+        else if(this.state.stateName === ''){
+            errors.stateName = "cant be empty";
+        } 
 
-        if (this.state.cityName === '') errors.cityName = "cant be empty";
+        else if(this.state.cityName === ''){
+            errors.cityName = "cant be empty";
+        } 
+        
         this.setState({ errors });
 
   

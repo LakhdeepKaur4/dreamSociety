@@ -426,7 +426,7 @@ class BoardMemberDetails extends Component{
         if(this.state.societyBoardMemberName === '') errors.societyBoardMemberName = `Board Member can't be empty.`
         if(this.state.currentAddress === '') { errors.currentAddress = `Current Address can't be empty.`}
         if(this.state.permanentAddress === ''){ errors.permanentAddress = `Permanent Address can't be empty.`}
-        if(this.state.contactNumber === '') { errors.contactNumber = `Contact can't be empty.`}
+        if(this.state.contactNumber.length !== 10) { errors.contactNumber = `Contact no should be 10 digits.`}
         if(this.state.email === '') { errors.email = `Email can't be empty.`}
         if(this.state.bankName === '') { errors.bankName = `Bank Name can't be empty.`}
         if(this.state.accountHolderName === '') { errors.accountHolderName = `Account Holder Name can't be empty.`}
