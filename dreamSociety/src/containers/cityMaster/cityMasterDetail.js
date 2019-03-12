@@ -259,10 +259,16 @@ class CityMasterDetail extends Component {
             return obj.countryName === selected
             })
 
-            this.props.getState(country.countryId).then((data) => {
-                console.log("data ",data);
-                this.setState({countryId: country.countryId,
-                countryName: country.countryName, stateName:data.payload.stateName })})
+        
+            this.props.getState(country.countryId)
+
+            this.setState({
+                countryName: country.countryName,
+                countryId:country.countryId,
+                stateName: '',
+                
+            })
+                
 
     }
 
@@ -409,11 +415,12 @@ class CityMasterDetail extends Component {
                                 <FormGroup>
                                     <Label>State Name</Label>
 
-                                     <Input type="select"   name="stateName" onChange={this.onChangeState} >
-                                          <option value={this.state.stateId}>{this.state.stateName}</option> 
-                                        <DefaultSelect/>
-                                        {this.fetchState(this.props.societyReducer)}
+                                     <Input type="select" value={this.state.stateName}  name="stateName" onChange={this.onChangeState} >
+                                     {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                                  {this.state.stateName ? <DefaultSelect />: null}
+                                    {this.state.stateName ? null : this.fetchState(this.props.societyReducer)}
                                     </Input>
+                                    {!this.state.stateName ? <span className="error">{this.state.errors.stateName}</span>: ''}
                                 </FormGroup>
                                 <FormGroup>
                                     <Label>City Name</Label>
