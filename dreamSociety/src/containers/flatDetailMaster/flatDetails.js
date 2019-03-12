@@ -319,7 +319,7 @@ render(){
                      <ModalBody>
                         <FormGroup>
                             <Label for="flatNo">Flat No</Label>
-                            <Input name="flatNo" value={this.state.flatNo} maxLength={6} onKeyPress={this.OnKeyPresshandlerPhone}  onChange={this.onHandleChange}/>
+                            <Input name="flatNo" value={this.state.flatNo} maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone}  onChange={this.onHandleChange}/>
                             <span className="error">{this.state.errors.flatNo}</span>
                             <span className="error">{this.state.message}</span>  
                         </FormGroup>

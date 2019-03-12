@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {getLocation,getStateName,getCountryName,getCityName,getLocationName,updateLocation,deleteLocation,deleteSelectedLocation} from '../../actionCreators/locationMasterAction';
+import {getLocation, getLocationName,updateLocation,deleteLocation,deleteSelectedLocation} from '../../actionCreators/locationMasterAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody,Table, ModalHeader, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
+import _ from 'underscore';
+import { getCountry, getState, getCity } from './../../actionCreators/societyMasterAction';
 
 class DisplayLocation extends Component {
     constructor(props) {
@@ -43,9 +45,9 @@ componentDidMount(){
 
 refreshData() {
     this.props.getLocation().then(()=> this.setState({modalLoading: false,loading:false, modal:false}));
-    this.props.getStateName().then(()=> this.setState({loading:false}));
-    this.props.getCountryName().then(()=> this.setState({loading:false}));
-    this.props.getCityName().then(()=> this.setState({loading:false}));
+    this.props.getState().then(()=> this.setState({loading:false}));
+    this.props.getCountry().then(()=> this.setState({loading:false}));
+    this.props.getCity().then(()=> this.setState({loading:false}));
     this.props.getLocationName().then(()=> this.setState({loading:false}));
 }
 
@@ -60,6 +62,53 @@ onChangeHandler = (event) => {
     else {
         this.setState({ [event.target.name]: event.target.value });
     }
+}
+
+onChangeCountry= (event)=>{
+    console.log(this.state);
+     let selected= event.target.value
+ 
+     var country = _.find(this.props.societyReducer.countryResult,function(obj){
+         return obj.countryName === selected
+         })
+     
+         this.setState({
+             countryName: country.countryName,
+             countryId:country.countryId,
+             stateName: '',
+             cityName: '',
+             locationName: ''
+         })
+         
+         this.props.getState(country.countryId)
+       
+ }
+
+ onChangeState= (event)=>{
+     let selected= event.target.value
+     
+     var data1 = _.find(this.props.societyReducer.stateResult,function(obj){
+         return obj.stateName === selected
+         })
+ 
+         this.setState({
+             stateName: data1.stateName,
+             stateId:data1.stateId
+         })
+         this.props.getCity(data1.stateId);
+ }
+
+ onChangeCity= (event)=>{
+    let selected= event.target.value
+
+    var data2 = _.find(this.props.societyReducer.cityResult,function(obj){
+        return obj.cityName === selected
+        })
+        this.setState({
+            cityName:data2.cityName,
+            cityId:data2.cityId
+        })
+        this.props.getLocation(data2.cityId)
 }
 
 toggle = (locationId, countryId,stateId,cityId, countryName, stateName, cityName, locationName) => {
@@ -157,51 +206,55 @@ renderList=({details})=>{
 
 }
 
-fetchCountry({ country }) {
-    if (country) {
-        return (
-            country.map((item) => {
-                return (
-                    <option value={item.countryId} key={item.countryId}>
-                        {item.countryName}
-                    </option>
-                )
-            })
-        )
-    }
-}
 
-fetchState({ state }) {
-    if (state) {
-
-        return (
-            state.map((item,index) => {
-
-                return (
-                    <option value={item.stateId} key={item.stateId} selected={index == 0}>
-                        {item.stateName}
-                    </option>
-                )
-            })
-        )
+fetchCountry = ({countryResult}) => {
+    if(countryResult){
+      
+       return( 
+        countryResult.map((item) =>{
+               return(
+                   <option key={item.countryId} value={item.countryName}>
+                    {item.countryName}
+                   </option>
+               )
+           })
+       )
+        
     }
 }
 
 
+stateName = ({stateResult}) => {
+    if(stateResult){
+      
+       return( 
+        stateResult.map((item) =>{ 
+               return(
+                   <option key={item.stateId} value={item.stateName}>
+                    {item.stateName}
+                   </option>
+               )
+           })
+       )
+        
+    }
+}
 
-fetchCity({city}) {
-    if (city) {
-
-        return (
-            city.map((item,index) => {
-
-                return (
-                    <option value={item.cityId} key={item.cityId} selected={index == 0}>
-                        {item.cityName}
-                    </option>
-                )
-            })
-        )
+cityName=({cityResult})=>{
+        
+    if(cityResult){
+        
+       return( 
+        cityResult.map((item) =>{ 
+               return(
+                   <option key={item.cityId} value={item.cityName}>
+                    {item.cityName}
+                   </option>
+               )
+           }
+           )
+       )
+        
     }
 }
 
@@ -317,44 +370,25 @@ render(){
                  <ModalBody>
                      <FormGroup>
                          <Label> Country Name</Label>
-                         <Input type="select" id="countryId" name="countryName" onChange={(e) => {
-
-                            let { countryId } = this.state;
-                            countryId = e.target.value;
-                            this.setState({ countryId });
-                            this.props.getStateName(countryId)
-                            }} >
-                            <option value={this.state.countryId}>{this.state.countryName}</option>
-                            <DefaultSelect/>
-                            {this.fetchCountry(this.props.locationMasterReducer)}
-
+                         <Input type="select" name="countryId" value={this.state.countryName} onChange={this.onChangeCountry}>
+                         <DefaultSelect />
+                                    {this.fetchCountry(this.props.societyReducer)}
                         </Input>
                      </FormGroup>
                      <FormGroup>
                          <Label>State Name</Label>
-                         <Input type="select" id="stateId" name="stateName" onChange={(e)=>{                          
-                            let { stateId } = this.state;
-                            stateId = e.target.value;
-                            this.setState({ stateId });
-                            this.props.getCityName(stateId)
-                            }} >
-                            <option value={this.state.stateId}>{this.state.stateName}</option>
-                            <DefaultSelect/>
-                            {this.fetchState(this.props.locationMasterReducer)}
-                            
+                         <Input type="select" id="stateId" name="stateId" onChange={this.onChangeState}>
+                         {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                                  {this.state.stateName ? <DefaultSelect />: null}
+                                    {this.state.stateName ? null : this.stateName(this.props.societyReducer)}                 
                          </Input>
                      </FormGroup>
                      <FormGroup>
                          <Label>City Name</Label>
-                         <Input type="select" id="cityId" name="cityName" onChange={(e)=>{
-                            let { cityId } = this.state;
-                            cityId = e.target.value;
-                            this.setState({ cityId });
-                            this.props.getLocationName(cityId)
-                             }} >
-                            <option value={this.state.cityId}>{this.state.cityName}</option>
-                            <DefaultSelect/>
-                            {this.fetchCity(this.props.locationMasterReducer)}
+                         <Input type="select" id="cityId" name="cityName"   onChange={this.onChangeCity}  >
+                               {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
+                                {this.state.cityName ? <DefaultSelect />: null}
+                                {this.state.cityName ? null : this.cityName(this.props.societyReducer)}  
                          </Input>
                      </FormGroup>
                      <FormGroup>
@@ -404,12 +438,13 @@ render(){
 
     function mapStatToProps(state) {
         return {
-        locationMasterReducer:state.locationMasterReducer
+        locationMasterReducer:state.locationMasterReducer,
+        societyReducer: state.societyReducer
         }
     }
     
     function mapDispatchToProps(dispatch) {
-        return bindActionCreators({getLocation,getStateName,getCountryName,getCityName,getLocationName,deleteSelectedLocation,updateLocation,deleteLocation}, dispatch)
+        return bindActionCreators({getLocation,getState,getCountry,getCity,getLocationName,deleteSelectedLocation,updateLocation,deleteLocation}, dispatch)
     }
     
     export default connect(mapStatToProps, mapDispatchToProps)(DisplayLocation);
