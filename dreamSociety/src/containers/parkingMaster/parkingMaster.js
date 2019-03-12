@@ -86,7 +86,7 @@ class ParkingMaster extends Component {
                         <tr>
                         
                         <th>#</th>
-                        <th onClick={()=>{
+                        <th style={{cursor:'pointer'}} onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'parkingName'}});
                         }}>Basement 

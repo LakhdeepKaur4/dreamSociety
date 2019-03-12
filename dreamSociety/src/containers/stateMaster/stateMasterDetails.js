@@ -305,7 +305,7 @@ class flatMasterDetails extends Component {
 
     let modalData = <div>
                  <FormGroup>
-                                    <Label for="roles">CountryName</Label>
+                                    <Label for="roles">Country Name</Label>
                                     <Input type="select"
                                     name="countryId"
                                     value={this.state.countryId}
@@ -318,7 +318,7 @@ class flatMasterDetails extends Component {
                                         {/* <span  className='error'>{this.state.errors.countryId}</span> */}
                                 </FormGroup>
                                 <FormGroup>
-                                    <Label for="roles">StateName</Label>
+                                    <Label for="roles">State Name</Label>
                                     <Input
                                         type="textbox"
                                         placeholder="enter state name"
