@@ -28,7 +28,10 @@ class DisplayLocation extends Component {
                 search: '',
                 errors:{},
                 modal: false,
-                loading:true
+                loading:true,
+                message:'',
+                modalLoading: false,
+
             };
     }
 
@@ -39,7 +42,7 @@ componentDidMount(){
 }    
 
 refreshData() {
-    this.props.getLocation().then(()=> this.setState({loading:false}));
+    this.props.getLocation().then(()=> this.setState({modalLoading: false,loading:false, modal:false}));
     this.props.getStateName().then(()=> this.setState({loading:false}));
     this.props.getCountryName().then(()=> this.setState({loading:false}));
     this.props.getCityName().then(()=> this.setState({loading:false}));
@@ -48,6 +51,7 @@ refreshData() {
 
 
 onChangeHandler = (event) => {
+    this.setState({message:''})
     if (!!this.state.errors[event.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[event.target.name];
@@ -58,10 +62,13 @@ onChangeHandler = (event) => {
     }
 }
 
-toggle = (locationId, countryName, stateName, cityName, locationName) => {
+toggle = (locationId, countryId,stateId,cityId, countryName, stateName, cityName, locationName) => {
 
     this.setState({
         locationId,
+        countryId,
+        stateId,
+        cityId, 
         countryName,
         stateName,
         cityName,
@@ -81,7 +88,7 @@ searchOnChange = (e) => {
     this.setState({ search: e.target.value })
 }
 
-deleteLocation = (locationId) => {console.log(locationId)
+deleteLocation = (locationId) => {
         this.setState({loading:true})
         let {isActive } =this.state;  
         this.props.deleteLocation(locationId,isActive)
@@ -99,7 +106,7 @@ deleteSelected (ids){
 
 
 toggleModal = () => {
-    this.setState({ modal: !this.state.modal })
+    this.setState({ modal: !this.state.modal, message:'' })
 }
 
 renderList=({details})=>{
@@ -138,7 +145,7 @@ renderList=({details})=>{
                 <td>{item.city_master.cityName}</td>
                 <td>{item.locationName}</td>
                 <td>
-                    <Button color="success"  className="mr-2" onClick={this.toggle.bind(this, item.locationId, item.country_master.countryName,item.state_master.stateName,item.city_master.cityName,item.locationName)}> Edit</Button>
+                    <Button color="success"  className="mr-2" onClick={this.toggle.bind(this, item.locationId,item.country_master.countryId,item.state_master.stateId,item.city_master.cityId, item.country_master.countryName,item.state_master.stateName,item.city_master.cityName,item.locationName)}> Edit</Button>
                
                     <Button color="danger" onClick={this.deleteLocation.bind(this,item.locationId)}> Delete</Button>
                 </td>
@@ -168,10 +175,10 @@ fetchState({ state }) {
     if (state) {
 
         return (
-            state.map((item) => {
+            state.map((item,index) => {
 
                 return (
-                    <option value={item.stateId} key={item.stateId}>
+                    <option value={item.stateId} key={item.stateId} selected={index == 0}>
                         {item.stateName}
                     </option>
                 )
@@ -186,10 +193,10 @@ fetchCity({city}) {
     if (city) {
 
         return (
-            city.map((item) => {
+            city.map((item,index) => {
 
                 return (
-                    <option value={item.cityId} key={item.cityId}>
+                    <option value={item.cityId} key={item.cityId} selected={index == 0}>
                         {item.cityName}
                     </option>
                 )
@@ -213,15 +220,25 @@ updateLocation = () => {
             errors.locationName="Location Name can't be empty";
         }
         this.setState({errors});
+
         const isValid =Object.keys(errors).length===0;
-        if(isValid){
+        if(isValid &&  this.state.message === ''){
+
         this.props.updateLocation(locationId, countryId, stateId, cityId,locationName)
         .then(() => this.refreshData())
-        this.setState({loading:true,
-            locationId, countryId, stateId, cityId,locationName,
-            modal: !this.state.modal
+        .catch(err=>{
+            this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+            })
+            if(this.state.message === ''){
+                this.setState({modal: true})
+            }
+            else {
+                this.setState({modal: false})
+            } 
+        this.setState({ modalLoading: true
     })
         }
+        console.log(locationId, countryId, stateId, cityId,locationName)
 }
 
 push=()=>{
@@ -286,7 +303,7 @@ render(){
         onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
 
     return(
-        <div>
+        
         <UI onClick={this.logout}>
         
               
@@ -344,6 +361,7 @@ render(){
                          <Label>Location Name</Label>
                          <Input type="text" id="locationId" name="locationName" maxLength={20} onChange={this.onChangeHandler} value={this.state.locationName} />
                          <span className="error">{this.state.errors.locationName}</span>
+                         <span className="error">{this.state.message}</span>
                          
                      </FormGroup> 
                  
@@ -371,13 +389,13 @@ render(){
                                     }  
                                 }/>
                             </Label>
-                           {!this.state.loading ? tableData : <Spinner />}
+                           {!this.state.modalLoading ? tableData : <Spinner />}
                        
                                 
             
                 </div>
         </UI>
-        </div>
+        
     )
 }
 

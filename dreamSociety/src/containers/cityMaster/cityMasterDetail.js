@@ -307,7 +307,7 @@ class CityMasterDetail extends Component {
                 stateResult.map((item, index) => {
 
                     return (
-                        <option value={item.stateName} key={item.stateId} selected={index===0}>
+                        <option value={item.stateName} key={item.stateId} selected={index==0}>
                             {item.stateName}
                         </option>
                     )

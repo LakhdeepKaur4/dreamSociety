@@ -46,6 +46,7 @@ componentWillMount(){
 
    
 onHandleChange=(event)=>{
+    this.setState({message:''})
     if (!!this.state.errors[event.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[event.target.name];
@@ -83,6 +84,12 @@ searchFilter(search) {
 }
 
 
+toggleEditFlatModal(){
+    this.setState({
+        editFlatModal: ! this.state.editFlatModal, message:''
+    });
+}
+
 
 searchOnChange = (e) => {
     this.setState({search:e.target.value})
@@ -112,8 +119,7 @@ updateDetails(){
             else {
                 this.setState({editFlatModal: false})
             }  
-            this.setState({modalLoading:true,
-                flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName
+            this.setState({modalLoading:true
     })
 }
 }
@@ -139,12 +145,6 @@ deleteSelected(ids){
 } 
 
 
-
-toggleEditFlatModal(){
-    this.setState({
-        editFlatModal: ! this.state.editFlatModal, message:''
-    });
-}
 
 
 getDropDown1=({flattype})=>{

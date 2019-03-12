@@ -20,7 +20,7 @@ class DisplayServices extends Component {
             ids:[], 
             menuVisible: false,
             editServiceModal: false,
-            isDisabled:true,
+            isDisabled:true, 
             search: '',
             errors:{},
             loading:true,
@@ -36,6 +36,7 @@ class DisplayServices extends Component {
     }
 
     onHandleChange=(event)=>{
+        this.setState({message:''})
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -107,8 +108,7 @@ class DisplayServices extends Component {
                 else {
                     this.setState({editServiceModal: false})
                 }       
-            this.setState({ modalLoading: true,
-                serviceId,serviceName, service_detail, serviceDetailId
+            this.setState({ modalLoading: true
        })
 
         }         
