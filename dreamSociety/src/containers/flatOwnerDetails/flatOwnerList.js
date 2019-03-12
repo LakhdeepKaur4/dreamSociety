@@ -356,6 +356,9 @@ console.log(ownerId, ownerName,dob,gender, contact,email,permanentAddress,bankNa
                 })
         }
     }
+    close = () => {
+        return this.props.history.replace('/superDashBoard')
+    }
     render() {
         let tableData;
         tableData = <Table className="table table-bordered">
