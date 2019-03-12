@@ -108,8 +108,7 @@ class DisplayServices extends Component {
                 else {
                     this.setState({editServiceModal: false})
                 }       
-            this.setState({ modalLoading: true,
-                serviceId,serviceName, service_detail, serviceDetailId
+            this.setState({ modalLoading: true
        })
 
         }         

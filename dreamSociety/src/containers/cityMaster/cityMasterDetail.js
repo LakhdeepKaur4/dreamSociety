@@ -307,10 +307,10 @@ class CityMasterDetail extends Component {
         if (stateResult) {
 
             return (
-                stateResult.map((item) => {
+                stateResult.map((item, index) => {
 
                     return (
-                        <option value={item.stateName} key={item.stateId}>
+                        <option value={item.stateName} key={item.stateId} selected={index == 0}>
                             {item.stateName}
                         </option>
                     )
@@ -412,9 +412,9 @@ class CityMasterDetail extends Component {
                                 <FormGroup>
                                     <Label>State Name</Label>
 
-                                     <Input type="select"  name="stateName" onChange={this.onChangeState} >
-                                          <option value={this.state.stateId}>{this.state.stateName}</option> 
-                                        <DefaultSelect/>
+                                     <Input type="select"   name="stateName" onChange={this.onChangeState} >
+                                          {/* <option value={this.state.stateId}>{this.state.stateName}</option>  */}
+                                        
                                         {this.fetchState(this.props.cityMasterReducer)}
                                     </Input>
                                 </FormGroup>

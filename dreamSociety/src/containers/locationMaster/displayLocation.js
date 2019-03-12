@@ -42,7 +42,7 @@ componentDidMount(){
 }    
 
 refreshData() {
-    this.props.getLocation().then(()=> this.setState({modalLoading: false,loading:false}));
+    this.props.getLocation().then(()=> this.setState({modalLoading: false,loading:false, modal:false}));
     this.props.getStateName().then(()=> this.setState({loading:false}));
     this.props.getCountryName().then(()=> this.setState({loading:false}));
     this.props.getCityName().then(()=> this.setState({loading:false}));
@@ -51,6 +51,7 @@ refreshData() {
 
 
 onChangeHandler = (event) => {
+    this.setState({message:''})
     if (!!this.state.errors[event.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[event.target.name];
@@ -87,7 +88,7 @@ searchOnChange = (e) => {
     this.setState({ search: e.target.value })
 }
 
-deleteLocation = (locationId) => {console.log(locationId)
+deleteLocation = (locationId) => {
         this.setState({loading:true})
         let {isActive } =this.state;  
         this.props.deleteLocation(locationId,isActive)
@@ -174,10 +175,10 @@ fetchState({ state }) {
     if (state) {
 
         return (
-            state.map((item) => {
+            state.map((item,index) => {
 
                 return (
-                    <option value={item.stateId} key={item.stateId}>
+                    <option value={item.stateId} key={item.stateId} selected={index == 0}>
                         {item.stateName}
                     </option>
                 )
@@ -192,10 +193,10 @@ fetchCity({city}) {
     if (city) {
 
         return (
-            city.map((item) => {
+            city.map((item,index) => {
 
                 return (
-                    <option value={item.cityId} key={item.cityId}>
+                    <option value={item.cityId} key={item.cityId} selected={index == 0}>
                         {item.cityName}
                     </option>
                 )
@@ -234,8 +235,7 @@ updateLocation = () => {
             else {
                 this.setState({modal: false})
             } 
-        this.setState({ modalLoading: true,
-            locationId, countryId, stateId, cityId,locationName
+        this.setState({ modalLoading: true
     })
         }
         console.log(locationId, countryId, stateId, cityId,locationName)
