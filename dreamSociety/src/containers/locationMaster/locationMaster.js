@@ -11,7 +11,7 @@ class locationMaster extends Component{
     constructor(props){
         super(props);
         this.state={ 
-
+            locationId:'',
             countryId:'',
             countryName: '',
             stateId: '',
@@ -36,8 +36,7 @@ class locationMaster extends Component{
         this.props.getCountryName();
         this.props.getStateName();
         this.props.getCityName();
-        this.props.getLocationName();
-        
+        this.props.getLocationName();       
     }
            
 
@@ -107,7 +106,6 @@ class locationMaster extends Component{
         }
     }
 
-
     onChangeCity=(event)=>{
         this.onChange(event);
         let selected= event.target.value;     
@@ -122,6 +120,7 @@ class locationMaster extends Component{
     }
 
     onLocationChange=(e)=>{
+        this.setState({message:''})
         this.onChange(e);
         this.setState({
             [e.target.name]:e.target.value
@@ -170,7 +169,18 @@ class locationMaster extends Component{
                         this.setState({message: err.response.data.message, loading: true})
                     
                     })
-                    this.refreshData();     
+                    // this.setState({
+                    //     locationId:'',
+                    //     countryId:'',
+                    //     countryName: '',
+                    //     stateId: '',
+                    //     stateName:'',
+                    //     cityId: '',
+                    //     cityName:'',
+                    //     locationName:''               
+                    // });
+        
+               
                     }      
     }
 

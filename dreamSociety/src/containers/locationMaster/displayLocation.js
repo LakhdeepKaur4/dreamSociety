@@ -356,7 +356,7 @@ render(){
         onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
 
     return(
-        
+        <div>
         <UI onClick={this.logout}>
         
               
@@ -364,7 +364,7 @@ render(){
         <div className="w3-container w3-margin-top w3-responsive">
         <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
         <span aria-hidden="true">&times;</span>
-   </div>
+        </div>
              <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                  <ModalHeader toggle={this.toggle}> Edit Details</ModalHeader>
                  <ModalBody>
@@ -429,7 +429,7 @@ render(){
             
                 </div>
         </UI>
-        
+        </div>
     )
 }
 
