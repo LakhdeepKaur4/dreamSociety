@@ -9,8 +9,8 @@ import { UR } from '../../actions';
 import Spinner from '../../components/spinner/spinner'
 import UI from '../../components/newUI/superAdminDashboard'
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import defaultSelect from '../../constants/defaultSelect'
-
+import DefaultSelect from '../../constants/defaultSelect'
+import _ from 'underscore';
 import './employeeMaster.css'
 import GoogleDocsViewer from 'react-google-docs-viewer';
 
@@ -301,69 +301,68 @@ class DisplayEmployeeMaster extends Component {
     close = () => {
         return this.props.history.replace('/superDashBoard/displayemployee');
     }
-
-
-    fetchCountry({ countryResult }) {
-
-
-        if (countryResult) {
-            return (
-                countryResult.map((item) => {
-                    return (
-                        <option value={item.countryId} key={item.countryId}>
-                            {item.countryName}
-                        </option>
-                    )
-                })
-            )
-        }
+    
+    onChangeCountry= (event)=>{
+        let selected= event.target.value
+    
+        var country = _.find(this.props.societyReducer.countryResult,function(obj){
+            return obj.countryName === selected
+            })
+        
+            this.setState({
+                countryName: country.countryName,
+                countryId:country.countryId
+            })
+            
+            this.props.getState(country.countryId)
+          
     }
 
-    fetchState({ stateResult }) {
-        if (stateResult) {
 
-            return (
-                stateResult.map((item) => {
+   
+    onChangeState= (event)=>{
+        console.log(this.state);
+         let selected= event.target.value
+         
+         var data1 = _.find(this.props.societyReducer.stateResult,function(obj){
+             return obj.stateName === selected
+             })
+     
+             this.setState({
+                 stateName: data1.stateName,
+                 stateId:data1.stateId
+             })
+             this.props.getCity(data1.stateId);
+     }
+    
+     onChangeCity= (event)=>{
+         console.log(this.state);
+         let selected= event.target.value
+     
+         var data2 = _.find(this.props.societyReducer.cityResult,function(obj){
+             return obj.cityName === selected
+             })
+             this.setState({
+                 cityName:data2.cityName,
+                 cityId:data2.cityId
+             })
+             this.props.getLocation(data2.cityId)
+     }
+    
+     onChangeLocation = (event) => {
+        console.log(this.state);
+         let selected=event.target.value;
+    
+         var data3= _.find(this.props.societyReducer.locationResult, function(obj){
+             return obj.locationName === selected
+         });
+         this.setState({
+             locationName:data3.locationName,
+             locationId:data3.locationId
+         })
+     }
+    
 
-                    return (
-                        <option value={item.stateId} key={item.stateId}>
-                            {item.stateName}
-                        </option>
-                    )
-                })
-            )
-        }
-    }
-
-    fetchCity({ cityResult }) {
-        if (cityResult) {
-
-            return (
-                cityResult.map((item) => {
-
-                    return (
-                        <option value={item.cityId} key={item.cityId}>
-                            {item.cityName}
-                        </option>
-                    )
-                })
-            )
-        }
-    }
-
-    fetchLocation({ locationResult }) {
-        if (locationResult) {
-            return (
-                locationResult.map((item) => {
-                    return (
-                        <option value={item.locationId} key={item.locationId}>
-                            {item.locationName}
-                        </option>
-                    )
-                })
-            )
-        }
-    }
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
         let ar = [];
@@ -413,6 +412,76 @@ class DisplayEmployeeMaster extends Component {
         this.props.history.push('/superDashboard/employee')
     }
 
+
+     
+    countryName = ({countryResult}) => {
+        if(countryResult){
+          
+           return( 
+            countryResult.map((item) =>{
+                   return(
+                       <option key={item.countryId} value={item.countryName}>
+                        {item.countryName}
+                       </option>
+                   )
+               })
+           )
+            
+        }
+    }
+
+     stateName = ({stateResult}) => {
+        if(stateResult){
+          
+           return( 
+            stateResult.map((item) =>{ 
+                   return(
+                       <option key={item.stateId} value={item.stateName}>
+                        {item.stateName}
+                       </option>
+                   )
+               })
+           )
+            
+        }
+    }
+   
+    cityName=({cityResult})=>{
+       
+        if(cityResult){
+            
+           return( 
+            cityResult.map((item) =>{ 
+                   return(
+                       <option key={item.cityId} value={item.cityName}>
+                        {item.cityName}
+                       </option>
+                   )
+               }
+               )
+           )
+            
+        }
+    }
+   
+    locationName=({locationResult})=>{
+       if(locationResult){
+            
+           return( 
+               locationResult.map((item) =>{ 
+                   return(
+                       <option key={item.locationId} value={item.locationName}>
+                        {item.locationName}
+                       </option>
+                   )
+               }
+               )
+           )
+            
+        }
+    }
+
+
     render() {
         let tableData;
 
@@ -433,7 +502,7 @@ class DisplayEmployeeMaster extends Component {
                         <th>Address</th>
                         <th>ID</th>
                         <th>ID2</th>
-                        <th> Employment Start Date</th>
+                        <th> Employment  Date</th>
                           <th> Actions  </th>
                     </tr>
                 </thead>
@@ -518,57 +587,40 @@ class DisplayEmployeeMaster extends Component {
                                     <FormGroup>
                                         <Label>Country Name</Label>
 
-                                        <Input type="select" id="countryId" name="countryName" onChange={(e) => {
+                                        <Input type="select" name="countryId" value={this.state.countryName} onChange={this.onChangeCountry}>
+ >                                           <option>{this.state.countryName}</option>
+                                        <DefaultSelect />
+                                            {this.countryName(this.props.societyReducer)}
+                                        </Input>
+                                    </FormGroup>
+                                    <FormGroup>
 
-                                            let { countryId } = this.state;
-                                            countryId = e.target.value;
-                                            this.setState({ countryId });
-                                            this.props.getState(countryId)
-                                        }} >
-                                            <option value={this.state.countryId}>{this.state.countryName}</option>
-                                            <option disabled>Select</option>
-                                            {this.fetchCountry(this.props.societyReducer)}
-                                        </Input>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>State Name</Label>
-                                        <Input type="select" id="stateId" name="stateName" onChange={(e) => {
-                                            let { stateId } = this.state;
-                                            stateId = e.target.value;
-                                            this.setState({ stateId });
-                                            this.props.getCity(stateId)
-                                        }} >
-                                            <option value={this.state.stateId}>{this.state.stateName}</option>
-                                            <option disabled>Select</option>
-                                            {this.fetchState(this.props.societyReducer)}
-                                        </Input>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>City Name</Label>
-                                        <Input type="select" id="cityId" name="cityName" onChange={(e) => {
-                                            let { cityId } = this.state;
-                                            cityId = e.target.value;
-                                            this.setState({ cityId });
-                                            this.props.getLocation(cityId)
-                                        }} >
-                                            <option value={this.state.cityId}>{this.state.cityName}</option>
-                                            <option disabled>Select</option>
-                                            {this.fetchCity(this.props.societyReducer)}
-                                        </Input>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>Location Name</Label>
-                                        <Input type="select" id="locationId" name="locationName" onChange={(e) => {
-                                            let { locationId } = this.state;
-                                            locationId = e.target.value;
-                                            this.setState({ locationId });
+                                <Label>State Name</Label>
+                                <Input type="select" name="stateId"   onChange={this.onChangeState} required>
+                                    <option>{this.state.stateName}</option>
+                                    <DefaultSelect/>
+                                    {this.stateName(this.props.societyReducer)}
+                                </Input>
+                            </FormGroup>
 
-                                        }}>
-                                            <option value={this.state.locationId}>{this.state.locationName}</option>
-                                            <option disabled>Select</option>
-                                            {this.fetchLocation(this.props.societyReducer)}
-                                        </Input>
-                                    </FormGroup>
+                            <FormGroup>
+                                <Label>City Name</Label>
+                                <Input type="select" name="cityId"  onChange={this.onChangeCity} required>
+                                    <option>{this.state.cityName}</option>
+                                    <DefaultSelect/>
+                                    {this.cityName(this.props.societyReducer)}  
+                                </Input>
+                            </FormGroup>
+
+                            <FormGroup>
+                                <Label>Location Name</Label>
+                                <Input type="select" name="locationId"  onChange={this.onChangeLocation} required>
+                                    <option>{this.state.locationName}</option>
+                                    <DefaultSelect/>
+                                    {this.locationName(this.props.societyReducer)}  
+                                </Input>
+                            </FormGroup>  
+                                   
                                     <FormGroup>
                                     <Label > Address</Label>
                                     <Input name="address" value={this.state.address}
@@ -616,7 +668,7 @@ class DisplayEmployeeMaster extends Component {
                                 </FormGroup>
 
                                 <FormGroup>
-                                    <Label > Start Date</Label>
+                                    <Label > Employment Date</Label>
                                     <Input type="date" value={this.state.editEmployeeData.startDate}
                                         onChange={(e) => {
                                             let { editEmployeeData } = this.state;
@@ -641,8 +693,10 @@ class DisplayEmployeeMaster extends Component {
                             </ModalBody>
                         </Modal>
                         <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-                         <label>Select All<input
-                          type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                         
+                        {deleteSelectedButton}
+                        <label><b> Select All</b><input
+                         type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
                             if(e.target.checked) {
                                 this.selectAll();
                             }
@@ -651,7 +705,6 @@ class DisplayEmployeeMaster extends Component {
                             } 
                         }  
                     }/></label>
-                        {deleteSelectedButton}
                         {!this.state.loading ? tableData : <Spinner />}
                     </div>
                     <Modal

@@ -16,7 +16,7 @@ class displayPersonDetails extends Component {
                 super(props)
                 this.state = {
                         editPersonData: {
-                               
+
                                 isActive: false
                         },
                         editPersonModal: false,
@@ -35,8 +35,10 @@ class displayPersonDetails extends Component {
                         roleId: '',
                         familyMember: '',
                         parking: '',
-                        errors:{},
-                        filterName:"userName",
+                        errors: {},
+                        filterName: "userName",
+                        message: '',
+                        modalLoading: false
                 }
         }
         componentDidMount() {
@@ -44,17 +46,17 @@ class displayPersonDetails extends Component {
 
         }
 
-        onChange=(e)=>{
-
-                if(!!this.state.errors[e.target.name]){
-                    let errors =Object.assign({},this.state.errors)
-                    delete  errors[e.target.name]
-                    this.setState({[e.target.name]:e.target.value,errors});
+        onChange = (e) => {
+                this.setState({ message: '' })
+                if (!!this.state.errors[e.target.name]) {
+                        let errors = Object.assign({}, this.state.errors)
+                        delete errors[e.target.name]
+                        this.setState({ [e.target.name]: e.target.value, errors });
                 }
-                else{
-            this.setState({[e.target.name]:e.target.value});
-            }
-            }
+                else {
+                        this.setState({ [e.target.name]: e.target.value });
+                }
+        }
 
         OnKeyPresshandler(event) {
                 const pattern = /[a-zA-Z _]/;
@@ -98,7 +100,7 @@ class displayPersonDetails extends Component {
         }
         refreshData() {
 
-                this.props.viewPerson().then(() => this.setState({ loading: false }));
+                this.props.viewPerson().then(() => this.setState({ loading: false, modalLoading: false, editPersonModal: false }));
                 this.props.getTower().then(() => this.setState({ loading: false }));
                 this.props.getRoles().then(() => this.setState({ loading: false }));
 
@@ -106,55 +108,70 @@ class displayPersonDetails extends Component {
         toggleEditPersonModal() {
 
                 this.setState({
-                        editPersonModal: !this.state.editPersonModal
+                        editPersonModal: !this.state.editPersonModal, message: ''
                 })
         }
         editPerson(userId, userName, roleName, email, towerId, id, roles, familyMember, parking, flatDetailId) {
                 console.log('i m in edit ', userName, email, towerId, id, roles, familyMember, parking);
                 this.setState({
-               userId, userName, email, towerId, id, familyMember, roleName, parking, flatDetailId,
+                        userId, userName, email, towerId, id, familyMember, roleName, parking, flatDetailId,
                         editPersonModal: !this.state.editPersonModal
                 })
         }
 
         updatePerson = () => {
-                let errors={};
-                const {userId,userName,email,towerId,roleName,  familyMember,parking}= this.state 
-                if(!this.state.userName){
-                   errors.userName = "  Username can't be empty. Please select."
-               }
-               if(!this.state.email){
-                   errors.email = "  Email can't be empty. Please select."
-               }
-               if(!this.state.towerId){
-                   errors.towerId = "  Tower Name can't be empty. Please select."
-               }
-               if(!this.state.flatDetailId){
-                   errors.familyMember = "   Flat Number can't be empty. Please select."
-               }
-               if(!this.state.roleName){
-                   errors.roleName = " Roles can't be empty. Please select."
-               }
-               if(!this.state.familyMember){
-                   errors.familyMember = "Family Member can't be empty. Please select."
-               }
-               if(!this.state.parking){
-                   errors.parking = "parking can't be empty. Please select."
-               }
-               this.setState({ errors });
-               const isValid = Object.keys(errors).length === 0
-               if (isValid) {
-               
+                let errors = {};
+                let { userId, userName, email, towerId, roleName, familyMember, parking } = this.state
+                if (!this.state.userName) {
+                        errors.userName = "  Username can't be empty. Please select."
+                }
+                if (!this.state.email) {
+                        errors.email = "  Email can't be empty. Please select."
+                }
+                if (!this.state.towerId) {
+                        errors.towerId = "  Tower Name can't be empty. Please select."
+                }
+                if (!this.state.flatDetailId) {
+                        errors.familyMember = "   Flat Number can't be empty. Please select."
+                }
+                if (!this.state.roleName) {
+                        errors.roleName = " Roles can't be empty. Please select."
+                }
+                if (!this.state.familyMember) {
+                        errors.familyMember = "Family Member can't be empty. Please select."
+                }
+                if (!this.state.parking) {
+                        errors.parking = "parking can't be empty. Please select."
+                }
+                this.setState({ errors });
+                const isValid = Object.keys(errors).length === 0
+                if (isValid) {
 
-                this.props.updatePerson(userId, userName, email, towerId, familyMember, parking, roleName).then(() => { this.refreshData() })
+                        
+                        this.props.updatePerson(userId, userName, email, towerId, familyMember, parking, roleName).then(() => { this.refreshData() }).catch(err => {
+                                console.log(err.response)
+                                this.setState({
+                                        modalLoading: false,
+                                        message: err.response.data.messageUsernameErr, loading: false
+                                })
+                        })
 
-                //   this.refreshData()
-                this.setState({
-                        editPersonModal: false, loading: true
-                    })
 
+                        if (this.state.message === '') {
+                                this.setState({ editPersonModal: true })
+                        }
+                        else {
+                                this.setState({ editPersonModal: false })
+                        }
+
+
+                        this.setState({
+                                loading: true, modalLoading: true
+                        })
+                }
         }
-        }
+
+
 
 
 
@@ -200,35 +217,36 @@ class displayPersonDetails extends Component {
                         console.log("xyz", person1)
                         let currentRole;
                         return (
-                                person1.sort((item1,item2) =>{
-                                        var cmprVal=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
-                                        return this.state.sortVal ?cmprVal:-cmprVal}).filter(this.searchFilter(this.state.search)).map((item, index) => {
+                                person1.sort((item1, item2) => {
+                                        var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                                        return this.state.sortVal ? cmprVal : -cmprVal
+                                }).filter(this.searchFilter(this.state.search)).map((item, index) => {
                                         console.log(item.roles, "ancdd")
 
                                         return (
                                                 <tr key={item.userId}>
-                                                <td><input type="checkbox" name="ids" value={item.eventId} className="SelectAll"
-                         onChange={(e, i) => {
-                            const {userId} = item
-                            if(!e.target.checked){
-                                if(this.state.ids.length>-1){
-                                    document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(userId);
-                                if(indexOfId > -1){
-                                    this.state.ids.splice(indexOfId, 1)
-                                }
-                                if(this.state.ids.length === 0){
-                                    this.setState({isDisabled: true})
-                                }
-                            }
-                        }
-                            else {
-                                this.setState({ids: [...this.state.ids, userId]})
-                                if(this.state.ids.length >= 0){
-                                    this.setState({isDisabled: false})
-                                }
-                        } 
-                             }}/></td>
+                                                        <td><input type="checkbox" name="ids" value={item.eventId} className="SelectAll"
+                                                                onChange={(e, i) => {
+                                                                        const { userId } = item
+                                                                        if (!e.target.checked) {
+                                                                                if (this.state.ids.length > -1) {
+                                                                                        document.getElementById('allSelect').checked = false;
+                                                                                        let indexOfId = this.state.ids.indexOf(userId);
+                                                                                        if (indexOfId > -1) {
+                                                                                                this.state.ids.splice(indexOfId, 1)
+                                                                                        }
+                                                                                        if (this.state.ids.length === 0) {
+                                                                                                this.setState({ isDisabled: true })
+                                                                                        }
+                                                                                }
+                                                                        }
+                                                                        else {
+                                                                                this.setState({ ids: [...this.state.ids, userId] })
+                                                                                if (this.state.ids.length >= 0) {
+                                                                                        this.setState({ isDisabled: false })
+                                                                                }
+                                                                        }
+                                                                }} /></td>
                                                         <td>{index + 1}</td>
                                                         <td>{item.userName}</td>
                                                         <td>{item.email}</td>
@@ -318,10 +336,10 @@ class displayPersonDetails extends Component {
                 tableData = <Table className="table table-bordered">
                         <thead>
                                 <tr>
-                                <th style={{width:'4px'}}></th>
+                                        <th style={{ width: '4px' }}></th>
                                         <th>#</th>
-                                        <th onClick={()=>{this.setState((state)=>{return{sortVal:!state.sortVal,filterName:"userName"}})}}>userName
-        <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                                        <th onClick={() => { this.setState((state) => { return { sortVal: !state.sortVal, filterName: "userName" } }) }}>userName
+        <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                                         <th>Email</th>
                                         <th>Tower Name </th>
                                         <th>Roles</th>
@@ -336,8 +354,8 @@ class displayPersonDetails extends Component {
 
                         </tbody>
                 </Table>
-                let deleteSelectedButton = <Button color="danger" className="mb-2"  disabled={this.state.isDisabled} 
-                onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
+                let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
+                        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
                 return (
                         <div>
                                 <UI onClick={this.logout}>
@@ -353,10 +371,11 @@ class displayPersonDetails extends Component {
 
                                                                 <FormGroup>
                                                                         <Label>User Name</Label>
-                                                                        <Input type="text"   name ="userName" value={this.state.userName} onChange={this.onChange}
-                                                                                onKeyPress={this.OnKeyPresshandler} maxLength={30} required
+                                                                        <Input type="text" name="userName" value={this.state.userName} onChange={this.onChange}
+                                                                                maxLength={30} required
                                                                         />
-                                                                        <span className ="error"> {this.state.errors.userName}</span>
+                                                                        <span className="error"> {this.state.errors.userName}</span>
+                                                                        <span className="error">{this.state.message}</span>
                                                                 </FormGroup>
                                                                 <FormGroup>
                                                                         <Label> Email</Label>
@@ -364,16 +383,18 @@ class displayPersonDetails extends Component {
 
                                                                                 onKeyPress={this.OnKeyPressmail} maxLength={40} required
                                                                         />
-                                                                            <span className ="error"> {this.state.errors.towerName}</span>
+                                                                        <span className="error"> {this.state.errors.towerName}</span>
+                                                                        <span className="error">{this.state.message}</span>
+
                                                                 </FormGroup>
 
                                                                 <FormGroup>
                                                                         <Label> Tower Name</Label>
-                                                                        <Input type="select" id="towerId"   defaultValue='no-value' value={this.state.towerId} onChange={this.onChange}
-                                                                                 
-                                                                >
+                                                                        <Input type="select" id="towerId" value={this.state.towerId} onChange={this.onChange}
 
-                                                                              <DefaultSelect/>
+                                                                        >
+
+                                                                                <DefaultSelect />
                                                                                 {this.getTower(this.props.personDetails)}
                                                                         </Input>
                                                                 </FormGroup>
@@ -383,13 +404,13 @@ class displayPersonDetails extends Component {
                                                                 <FormGroup>
                                                                         <Label> Roles</Label>
 
-                                                                        <Input type="select"   value={this.state.roleName} onChange={ this.onChange}
-                                                                             
-       
+                                                                        <Input type="select" value={this.state.roleName} onChange={this.onChange}
+
+
 
                                                                         >
                                                                                 <option      >{this.state.roleName}</option>
-                                                                               <DefaultSelect/>
+                                                                                <DefaultSelect />
                                                                                 {this.getRole(this.props.personDetails)}
 
                                                                         </Input>
@@ -400,15 +421,15 @@ class displayPersonDetails extends Component {
                                                                         <Input type="text" name="familyMember" value={this.state.familyMember} onChange={this.onChange}
                                                                                 onKeyPress={this.OnkeyPressNumber} maxLength={2} required
                                                                         />
-                                                                            <span className ="error"> {this.state.errors.familyMember}</span>
+                                                                        <span className="error"> {this.state.errors.familyMember}</span>
                                                                 </FormGroup>
                                                                 <FormGroup>
                                                                         <Label> Parking</Label>
-                                                                        <Input type="text" name="parking"  value={this.state.parking} onChange={this.onChange}
+                                                                        <Input type="text" name="parking" value={this.state.parking} onChange={this.onChange}
 
                                                                                 onKeyPress={this.OnKeyPressNumber} maxLength={2} required
                                                                         />
-                                                                            <span className ="error"> {this.state.errors.parking}</span>
+                                                                        <span className="error"> {this.state.errors.parking}</span>
                                                                 </FormGroup>
 
 
@@ -421,18 +442,19 @@ class displayPersonDetails extends Component {
                                                         <button className="btn btn-primary" onClick={this.Addperson}> Add person</button>
                                                 </div>
                                                 <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-                                                
-                                                <label>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></label>
+
+
                                                 {deleteSelectedButton}
+                                                <label><b> Select All</b><input
+                                                        type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
+                                                                if (e.target.checked) {
+                                                                        this.selectAll();
+                                                                }
+                                                                else if (!e.target.checked) {
+                                                                        this.unSelectAll();
+                                                                }
+                                                        }
+                                                        } /></label>
                                                 {!this.state.loading ? tableData : <Spinner />}
 
                                         </div>

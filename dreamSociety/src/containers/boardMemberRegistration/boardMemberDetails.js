@@ -26,6 +26,7 @@ class BoardMemberDetails extends Component{
             cityName:'',
             locationName:'',
             currentAddress:'',
+            panCardNumber:'',
             permanentAddress:'',
             contactNumber:'',
             email:'',
@@ -45,7 +46,10 @@ class BoardMemberDetails extends Component{
             editSocietyMember: false,
             emailValidError: '',
             search:'',
-            modalLoading: false
+            modalLoading: false,
+            emailServerError:'',
+            userNameServerError:'',
+            contactServerError:''
         }
     }
 
@@ -103,8 +107,10 @@ class BoardMemberDetails extends Component{
     fetchMemberDetails = ({memberDetails}) => {
         if(memberDetails){
             return memberDetails.societyBoardMember.sort((item1,item2)=>{
-                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
-                return this.state.sortVal ? cmprVal : -cmprVal;
+                if(item1 && item2){
+                    var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                    return this.state.sortVal ? cmprVal : -cmprVal;
+                }
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
                 return (
                     <tr key={item.societyBoardMemberId}>
@@ -215,12 +221,19 @@ class BoardMemberDetails extends Component{
     }
 
     toggleEditSocietyMember(){
-        this.setState({editSocietyMember: !this.state.editSocietyMember})
+        this.setState({editSocietyMember: !this.state.editSocietyMember, emailServerError:'', userNameServerError:'',
+    contactServerError:'', errors:{}});
     }
 
     onChange = (e) => {
-        console.log(this.state);
-        this.setState({[e.target.name]: e.target.value.toUpperCase()})
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, panCardNumber:e.target.value.toUpperCase(), errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value, panCardNumber:e.target.value.toUpperCase() });
+        }
     }
 
     fetchDesignation = ({designation}) => {
@@ -345,6 +358,7 @@ class BoardMemberDetails extends Component{
              
          }
      }
+     
     
      locationName=({locationResult})=>{
         if(locationResult){
@@ -426,7 +440,8 @@ class BoardMemberDetails extends Component{
         if(this.state.societyBoardMemberName === '') errors.societyBoardMemberName = `Board Member can't be empty.`
         if(this.state.currentAddress === '') { errors.currentAddress = `Current Address can't be empty.`}
         if(this.state.permanentAddress === ''){ errors.permanentAddress = `Permanent Address can't be empty.`}
-        if(this.state.contactNumber.length !== 10) { errors.contactNumber = `Contact no should be 10 digits.`}
+        if(this.state.contactNumber === '') { errors.contactNumber = `Contact can't be empty.`}
+        else if(this.state.contactNumber.length !== 10) errors.contactNumber = "Contact length should be of 10"
         if(this.state.email === '') { errors.email = `Email can't be empty.`}
         if(this.state.bankName === '') { errors.bankName = `Bank Name can't be empty.`}
         if(this.state.accountHolderName === '') { errors.accountHolderName = `Account Holder Name can't be empty.`}
@@ -581,10 +596,10 @@ class BoardMemberDetails extends Component{
                                 name="contactNumber" 
                                 onChange={this.onChange}
                                 value={this.state.contactNumber}
-                                onKeyPress={this.OnKeyPresshandlerPhone}
-                                maxLength='10'
-                                minLength='10' />
-                                {!this.state.contactNumber ? <span className="error">{this.state.errors.contactNumber}</span>: ''}
+                                maxLength="10"
+                                onKeyPress={this.OnKeyPresshandlerPhone} />
+                                {<span className="error">{this.state.errors.contactNumber}</span>}
+                                {this.state.contactServerError ? <span className="error">{this.state.contactServerError}</span> : null}
                             </FormGroup>
                             <FormGroup>
                                 <Label>Email</Label>
@@ -596,6 +611,7 @@ class BoardMemberDetails extends Component{
                                 onChange={this.emailChange}
                                 onKeyPress={this.emailValid} />
                                 {!this.state.email ? <span className="error">{this.state.errors.email}</span>: ''}
+                                {this.state.emailServerError ? <span className="error">{this.state.emailServerError}</span> : null}
                                 {<span className="error">{this.state.emailValidError}</span>}
                             </FormGroup>
                             <FormGroup>
@@ -617,7 +633,7 @@ class BoardMemberDetails extends Component{
                                 name="accountNumber"
                                 value={this.state.accountNumber} 
                                 onChange={this.onChange}
-                                maxLength='14'
+                                maxLength='16'
                                 onKeyPress={this.OnKeyPresshandlerPhone} />
                                 {!this.state.accountNumber ? <span className="error">{this.state.errors.accountNumber}</span>: ''}
                             </FormGroup>
@@ -628,7 +644,7 @@ class BoardMemberDetails extends Component{
                                 placeholder="Pan Card Number"
                                 type="text"
                                 name="panCardNumber"
-                                value={this.state.panCardNumber}
+                                value={this.state.panCardNumber.toUpperCase()}
                                 minLength='10'
                                 maxLength='10'
                                 onKeyPress={(e) => {

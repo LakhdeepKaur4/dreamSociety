@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import UI from '../../components/newUI/superAdminDashboard';
-import { Form, FormGroup, Input, Button, Label, Col, Row } from 'reactstrap';
+import { Form,Modal,ModalBody,ModalHeader, FormGroup, Input, Button, Label, Col, Row } from 'reactstrap';
 import Select from 'react-select';
 import { PlaceHolder } from '../../actions/index';
 import { connect } from 'react-redux';
@@ -51,8 +51,12 @@ class FlatOwnerDetails extends Component {
             member:[],
             ownerGender:'',
             message:'',
-            emailError:false
+            emailError:false,
+            modal: false,
         }
+    }
+    toggles = () => {
+        this.setState({ modal: !this.state.modal })
     }
     componentDidMount() {
         this.props.detailSociety();
@@ -237,11 +241,6 @@ class FlatOwnerDetails extends Component {
     }
     userMemberHandler = (e) => {
         if (e.target.value != '') {
-            // for(let i = 0; i < this.state.familyMember; i++){
-            //   this.setState({
-            //     memberName:e.target.value
-            //   })
-            // }
             this.setState({
                 familyMember: e.target.value
             });
@@ -258,7 +257,6 @@ OnKeyPresshandlerEmail=(event)=> {
     const pattern = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
     let inputChar = event.target.value;
     if (!pattern.test(inputChar)) {
-        // event.preventDefault();
         this.setState({
             emailError:true
         })
@@ -284,9 +282,6 @@ OnKeyPresshandlerEmail=(event)=> {
             ifscCode,
             flatDetailId,
             familyMember,
-            // memberName,
-            // memberDOB,
-            // relationName,
             profilePicture,
             societyName,
             permanentAddress,
@@ -302,35 +297,9 @@ OnKeyPresshandlerEmail=(event)=> {
             fileName,
             ownerGender} = this.state
             const d = new FormData()
-            // data.append('ownerName',ownerName)
-            // data.append('dob',DOB)
-            // data.append('contact',number)
-            // data.append('email',email)
-            // data.append('societyId',societyName)
-            // data.append('permanentAddress',permanentAddress)
-            // data.append('towerId',tower)
-            // data.append('flatDetailId',flatNO)
-            // data.append('bankName',bankName)
-            // data.append('accountHolderName', holderName)
-            // data.append('accountNumber', accountNumber)
-            // data.append('panCardNumber', panNumber)
-            // data.append('IFSCCode', ifscCode)
-            // data.append('noOfMembers', familyMember)
-            // for(let i = 0; i < this.state.familyMember; i++){
-            //     data.append(`memberName${i}`, this.state['memberName'+i])
-            //     console.log(this.state['memberName'+i]);
-            //     data.append(`memberDob${i}`, this.state['memberDOB'+i])
-            //     console.log(`memberDOB`,this.state['memberDOB'+i]);
-            //     data.append(`relationId${i}`, this.state['relationName'+i])
-            //     console.log(`relationName`, this.state['relationName'+i]);
-            // }
             console.log(this.state.profilePicture)
-            d.append('profilePicture',this.state.profilePicture)
-            // console.log('jkldsjfkdfjjjjjjjjjjjjjjjjj',this.state);
-        //  this.props.addFlatOwner(data);  
-        
+            d.append('profilePicture',this.state.profilePicture)        
             for(let i = 0; i < this.state.familyMember; i++){
-                // data.append(`memberName${i}`, this.state['memberName'+i])
                 const data={
                     memberName: this.state['memberName'+i],
                     memberDob: this.state['memberDOB'+i],
@@ -338,13 +307,6 @@ OnKeyPresshandlerEmail=(event)=> {
                     gender:this.state['gender'+i]
                 }
                 this.state.member.push(data)
-                // this.state.member.push( this.state['memberDOB'+i])
-                // this.state.member.push( this.state['relationName'+i])
-                // console.log(this.state['memberName'+i]);
-                // data.append(`memberDob${i}`, this.state['memberDOB'+i])
-                // console.log(`memberDOB`,this.state['memberDOB'+i]);
-                // data.append(`relationId${i}`, this.state['relationName'+i])
-                // console.log(`relationName`, this.state['relationName'+i]);
             }
 
             console.log(this.state)
@@ -361,9 +323,6 @@ OnKeyPresshandlerEmail=(event)=> {
                 ifscCode,
                 flatDetailId,
                 familyMember,
-                // memberName,
-                // memberDOB,
-                // relationName,
                 profilePicture,
                 societyName,
                 permanentAddress,
@@ -383,14 +342,26 @@ OnKeyPresshandlerEmail=(event)=> {
             this.props.addFlatOwner(FlatOwnerData,d)
             .then(() => this.props.history.push('/superDashBoard/flatOwnerList'))
             .catch(err=>{
-                console.log(err)
+                console.log(err.response.data.message)
                 this.setState({message:err.response.data.message})
+                this.toggle()
+                
             })
+           
 
         }
+        toggle = () => {
+                    this.setState({
+                        modal: !this.state.modal
+                    })
+                }
+                onModalClosed=()=>{
+                   this.setState({
+                       step:1
+                   })
+                }
     FileChange=(event)=>{
-        // console.log(event.target.files[0].name)
-        // this.setState({ profilePicture: event.target.files[0]})
+
         const files = event.target.files;
         const file = files[0];
         const fileName=file.name
@@ -447,8 +418,6 @@ OnKeyPresshandlerEmail=(event)=> {
                                 <span><Input type="radio" name={'gender'+i} onChange={this.onChangeHandler} value="other"/></span>
                                 </div>
                                 </div>
-                                {/* <Input  type='date' max={this.maxDate()} name={`memberDOB${i}`} onChange={this.onChangeHandler} /> */}
-                               
                                 </Col>
                 </Row>
             </FormGroup>);
@@ -464,7 +433,6 @@ OnKeyPresshandlerEmail=(event)=> {
                         <div style={{ 'display': this.state.step == 1 ? 'block' : 'none' }}>
                             <h3>Flat Owner Details</h3>
                             <FormGroup>
-                                <span className="error">{this.state.message}</span>
                                 <Label>Owner Name</Label>
                                 <Input  style={{'textTransform': 'capitalize' }} placeholder="Full Name" maxLength={50} name='ownerName' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.ownerName}</span>
@@ -499,7 +467,7 @@ OnKeyPresshandlerEmail=(event)=> {
                                 onBlur={this.OnKeyPresshandlerEmail}
                                 onKeyPress={this.OnKeyPresshandlerEmail} />
                                 <span className="error">{this.state.errors.email}</span>
-                                <span style={{display:this.state.emailError?'block':'none'}}>email is not valid</span>
+                                <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Society Name</Label>
@@ -595,6 +563,12 @@ OnKeyPresshandlerEmail=(event)=> {
 
                         </div>
                     </Form>
+                    <Modal isOpen={this.state.modal} toggle={this.toggles} onClosed={this.onModalClosed}>
+                    <ModalHeader toggle={this.toggle}>Edit Flat Owner</ModalHeader>
+                    <ModalBody>
+                        <h1 style={{display:"block",background: 'black'}}>{this.state.message}</h1> 
+                    </ModalBody>
+                    </Modal>
                 </UI>
 
             </div>
