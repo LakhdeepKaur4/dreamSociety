@@ -44,7 +44,6 @@ class userDetails extends Component {
         this.OnKeyPresshandlerPhone = this.OnKeyPresshandlerPhone.bind(this);
         this.OnKeyPressUserhandler = this.OnKeyPressUserhandler.bind(this);
         this.emailValid = this.emailValid.bind(this);
-
     }
 
 
@@ -175,7 +174,7 @@ class userDetails extends Component {
     searchFilter(search){
         return function(x){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return x ? x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1 : false ||
+                return x ? x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1 : false||
                  x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
@@ -207,7 +206,7 @@ class userDetails extends Component {
             console.log(user)
             let currentRole;
             return user.sort((item1,item2)=>{
-                if(item1 && item2){
+                if(item1 || item2){
                     console.log(item1, item2)
                     var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                     return this.state.sortVal ? cmprVal : -cmprVal;
@@ -288,7 +287,7 @@ class userDetails extends Component {
     fetchRoles({ userRole }) {
         if(userRole) {
             return (
-                userRole.map((item) => {
+               userRole.map((item) => {
                     return (
                         <option value={item.roleId} key={item.id}>
                             {item.roleName}
