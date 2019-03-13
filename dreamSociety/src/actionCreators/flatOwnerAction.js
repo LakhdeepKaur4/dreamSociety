@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER } from '../actions/index';
+import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE } from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
 export function addFlatOwner(data){
@@ -122,4 +122,25 @@ export function updateFlatOwner(ownerId,ownerName,
             type:UPDATE_OWNER,
             payload:request
         }
+}
+
+export function getOwnerMember(id){
+    console.log(id)
+    const request =axios.get(`${URN}/owner/`+id,{headers:authHeader()})
+    .then(response=>response.data)
+    return{
+        type:GET_OWNER_MEMBER,
+        payload:request
+    }
+}
+export function deleteMember(id){
+    const data={    
+        isActive:false
+    }
+    const request =axios.put(`${URN}/ownerMember/delete/`+id,data,{headers:authHeader()})
+    .then(response=>response.data)
+    return {
+        type:OWNER_MEMBER_DELETE,
+        payload:request
+    }
 }

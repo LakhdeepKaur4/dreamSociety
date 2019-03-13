@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import UI from '../../components/newUI/superAdminDashboard';
+import {Link} from 'react-router-dom'
 import {PicURN} from '../../actions/index'
 import { PlaceHolder } from '../../actions/index';
 import Select from 'react-select';
@@ -11,7 +12,7 @@ import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
-import {getOwnerList,multipleDelete,removeOwner,updateFlatOwner} from '../../actionCreators/flatOwnerAction'
+import {getOwnerMember,getOwnerList,multipleDelete,removeOwner,updateFlatOwner} from '../../actionCreators/flatOwnerAction'
 class FlatOwnerList extends Component {
     constructor(props){
         super(props);
@@ -169,6 +170,14 @@ console.log(ownerId, ownerName,dob,gender, contact,email,permanentAddress,bankNa
         }
         return [];
     }
+    viewMember(id){
+     console.log('owner id',id)
+     localStorage.setItem('ownerId',id)
+    //  this.props.getOwnerMember(id)
+    this.props.history.push('/superDashBoard/flatMemberList')
+    //  .then(()=> this.props.history.push('/superDashBoard/flatMemberList'))
+      
+    }
     societyChangeHandler = (selectOption) => {
         let countryName = selectOption.country_master?selectOption.country_master.countryName:'';
         let countryId= selectOption.country_master?selectOption.country_master.countryId:'';
@@ -230,7 +239,10 @@ console.log(ownerId, ownerName,dob,gender, contact,email,permanentAddress,bankNa
                         <td style={{textAlign:"center"}}>{items.permanentAddress}</td>
                         <td style={{textAlign:"center"}}>{items.tower_master.towerName}</td>
                         <td style={{textAlign:"center"}}>{items.flat_detail_master.flatNo}</td>
-                        <td><button className="btn btn-success mr-2">View Member</button></td>
+                        {/* <td><Link to='/superDashBoard/flatMemberList'>
+                <Button color="info" className="mr-2" >view member</Button>
+                              </Link></td> */}
+                        <td><button className="btn btn-success mr-2" onClick={this.viewMember.bind(this,items.ownerId)}>View Member</button></td>
                         <td style={{textAlign:"center"}}>
                         <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, items.ownerName,items.dob,items.gender,items.contact,items.email,items.permanentAddress,items.bankName,items.accountHolderName,items.accountNumber,items.panCardNumber,items.IFSCCode)}>Edit</button>
                         <button className="btn btn-danger" onClick={this.delete.bind(this, items.ownerId)} >Delete</button>
@@ -534,7 +546,6 @@ console.log(ownerId, ownerName,dob,gender, contact,email,permanentAddress,bankNa
     }
 }
 function mapStateToProps(state){
-    console.log(state.FlatOwnerReducer)
     return{
         societyName: state.societyReducer,
         Owner:state.FlatOwnerReducer,
@@ -543,7 +554,7 @@ function mapStateToProps(state){
     }
 }
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({ getOwnerList,multipleDelete,removeOwner,detailSociety,getFlatDetails,viewTower,updateFlatOwner },dispatch)
+    return bindActionCreators({ getOwnerList,multipleDelete,removeOwner,detailSociety,getFlatDetails,viewTower,updateFlatOwner,getOwnerMember },dispatch)
 }
 
 export default  connect(mapStateToProps,mapDispatchToProps)(FlatOwnerList);

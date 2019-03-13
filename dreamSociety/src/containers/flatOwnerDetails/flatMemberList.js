@@ -1,13 +1,78 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {getOwnerList} from '../../actionCreators/flatOwnerAction';
+import Spinner from '../../components/spinner/spinner';
+import {getOwnerMember,deleteMember} from '../../actionCreators/flatOwnerAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Table, Label } from 'reactstrap';
-
+var id;
 class FlatMemberList extends Component {
+    constructor(props){
+super(props)
+this.state={
+    loading:true
+}
+ 
+    }
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/')
+    }
+ componentWillMount(){    
+     id=localStorage.getItem('ownerId')
+ }
+componentDidMount(){
+    this.props.getOwnerMember(id)
+    .then(()=>this.setState({loading:false}))
+}
+deleteMember(id){
+    this.props.deleteMember(id)
+    .then(()=> this.props.getOwnerMember(id))
+}
+
+renderList=({ownerMember})=>{
+     if(ownerMember){
+         return ownerMember.memberArr.map((item,index)=>{
+           return (
+            <tr key={item.memberId}>
+            <td></td>
+            <td>{index+1}</td>
+            <td style={{textAlign:"center",width:'10px'}}>{item.memberName}</td>
+            <td style={{textAlign:"center",width:'10px'}}>{item.memberDob}</td>
+            <td style={{textAlign:"center",width:'10px'}}>{item.gender}</td>
+            <td style={{textAlign:"center"}}>
+                        <button className="btn btn-success mr-2" >Edit</button>
+                        <button className="btn btn-danger" onClick={this.deleteMember.bind(this,item.memberId)} >Delete</button>
+                        </td>
+
+            </tr>
+           )
+         })
+     }
+}
+
     render() {
+        let tableData;
+        tableData = <Table className="table table-bordered">
+            <thead>
+                <tr>
+                    <th style={{width:"4%"}}></th>
+                    <th style={{textAlign:"center",width:"4%"}}>#</th>
+                    <th style={{textAlign:"center",width:"8%"}}>Name</th>
+                    <th style={{textAlign:"center",width:"16%"}}>Date of Birth</th>
+                    <th style={{textAlign:"center"}}>Gender</th>
+                    <th style={{textAlign:"center"}}>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {this.renderList(this.props.OwnerMemberList)}
+            </tbody>
+        </Table>
+        //   let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
+        //   onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
+
         return (
             <div>
                  <UI onClick={this.logout}>
@@ -35,6 +100,7 @@ class FlatMemberList extends Component {
                         }
                         } /></Label>
                         {/* {tableData} */}
+                        {!this.state.loading ? tableData : <Spinner/>}
                         </div>
                     </div>
                         </UI>
@@ -43,11 +109,12 @@ class FlatMemberList extends Component {
     }
 }
 function mapStateToProps (state){
+    console.log(state)
     return{
-        Owner:state.FlatOwnerReducer,
+        OwnerMemberList:state.FlatOwnerReducer,
     }
 }
 function mapDispatchToProps(dispatch){
-return bindActionCreators({ getOwnerList },dispatch)
+return bindActionCreators({ getOwnerMember,deleteMember },dispatch)
 }
 export default connect(mapStateToProps,mapDispatchToProps)(FlatMemberList);
