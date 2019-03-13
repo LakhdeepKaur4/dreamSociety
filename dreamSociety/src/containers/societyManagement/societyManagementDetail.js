@@ -59,6 +59,8 @@ class SocietyManagementDetail extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
+
+    
     
     emailValid(event) {
         const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
@@ -167,12 +169,12 @@ class SocietyManagementDetail extends Component {
         
         
         else if(this.state.accountNumber.length !== 16){
-            errors.accountNumber="Account Number should be 16 digits"
+            errors.accountNumber="Account Number must be 16 digits"
         }
         
         
-        else if(this.state.IFSCCode === ''){
-            errors.IFSCCode="IFSC Code can't be empty"
+        else if(this.state.IFSCCode.length !== 11){
+            errors.IFSCCode="IFSC Code is not valid"
         }
         
         
@@ -182,7 +184,7 @@ class SocietyManagementDetail extends Component {
 
 
         else if(this.state.contactNumber.length !== 10){
-            errors.contactNumber="Contact No. should be 10 digits"
+            errors.contactNumber="Contact No. must be 10 digits"
         }
         else if(this.state.registrationNumber === ''){
             errors.registrationNumber="Registration No. can't be empty"
@@ -602,7 +604,7 @@ class SocietyManagementDetail extends Component {
                         
                         <FormGroup>
                             <Label>IFSC Code</Label>
-                            <Input type="text"  name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode}  maxLength={20}/>
+                            <Input type="text"  name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode}  maxLength={11} style={{'textTransform':'upperCase'}}/>
                             <span className="error">{this.state.errors.IFSCCode}</span> 
                         </FormGroup>
                         

@@ -102,8 +102,8 @@ class CityMasterDetail extends Component {
 
 
 
-    editCityType = () => {
-
+    editCityType = (e) => {
+        e.preventDefault();
         const { cityId, countryId, stateId, cityName } = this.state
 
         let errors = {};
@@ -371,39 +371,9 @@ class CityMasterDetail extends Component {
                     {this.renderCity(this.props.cityMasterReducer)}
                 </tbody>
             </Table></div>
-        return (
-            <div>
 
-                <UI onClick={this.logout}>
-                    <div className="w3-container w3-margin-top w3-responsive">
-                        <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
-                            <span aria-hidden="true">&times;</span>
-                        </div>
-                        <div className="top-details">
-                            <h3>City Details</h3>
-                            <Button onClick={this.routeToAddNewCity} color="primary">Add City</Button>
-                        </div>
-                        <SearchFilter type="text" value={this.state.search}
-                            onChange={this.searchOnChange} />
-
-                        <Button color="danger" className="mb-3" onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled} >Delete Selected</Button>
-                        <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            }
-                        }
-                    }/></Label>
-
-                        {!this.state.loading ? tableData : <Spinner />}
-                        <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
-                            <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
-                            <ModalBody>
-                                <FormGroup>
+            let modalData=<div>
+                   <FormGroup>
                                     <Label>Country Name</Label>
 
                                      <Input type="select" value={this.state.countryName} name="countryName" onChange={this.onChangeCountry}>
@@ -435,6 +405,40 @@ class CityMasterDetail extends Component {
 
                                     <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
                                 </FormGroup>
+            </div>
+        return (
+            <div>
+
+                <UI onClick={this.logout}>
+                    <div className="w3-container w3-margin-top w3-responsive">
+                        <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                            <span aria-hidden="true">&times;</span>
+                        </div>
+                        <div className="top-details">
+                            <h3>City Details</h3>
+                            <Button onClick={this.routeToAddNewCity} color="primary">Add City</Button>
+                        </div>
+                        <SearchFilter type="text" value={this.state.search}
+                            onChange={this.searchOnChange} />
+
+                        <Button color="danger" className="mb-3" onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled} >Delete Selected</Button>
+                        <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            }
+                        }
+                    }/></Label>
+
+                        {(this.state.loading) ? <Spinner /> : tableData}
+                        <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+                            <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
+                            <ModalBody>
+                            {!this.state.modalLoading  ? modalData : <Spinner />}
                             </ModalBody>
                         </Modal>
 

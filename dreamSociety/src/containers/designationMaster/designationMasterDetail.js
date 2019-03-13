@@ -38,6 +38,16 @@ class DesignationMasterDetail extends Component {
         };
     }
 
+    componentWillMount() {
+        this.refreshData()
+
+    }
+
+    refreshData() {
+        this.props.getDesignation().then(() => this.setState({ loading: false,  modalLoading: false, modal:false }))
+       
+    }
+
     onChangeHandler = (event) => {
         this.setState({message:'' })
        
@@ -72,15 +82,6 @@ class DesignationMasterDetail extends Component {
     }
 
 
-    componentWillMount() {
-        this.refreshData()
-
-    }
-
-    refreshData() {
-        this.props.getDesignation().then(() => this.setState({ loading: false,  modalLoading: false, modal:false }))
-       
-    }
 
 
     editdesignationName = (e) => {
@@ -100,7 +101,7 @@ class DesignationMasterDetail extends Component {
         this.props.updateDesignation(designationId, designationName)
             .then(() => this.refreshData())
             .catch(err=>{ console.log(err.response.data.message)
-                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                this.setState({modalLoading:false,message: err.response.data.message})
                 })
                 if(this.state.message === ''){
                     this.setState({modal: true})
@@ -275,6 +276,21 @@ class DesignationMasterDetail extends Component {
 
                 </tbody>
             </Table></div>
+            let modalData=<div>
+                     <FormGroup>
+                                    <Label>Designation Type</Label>
+                                    <Input type="text" id="designationId" name="designationName" onChange={this.onChangeHandler} value={this.state.designationName} maxLength={50} onKeyPress={this.onKeyPressHandler} />
+                                    <span className="error">{this.state.errors.designationName}</span>
+                                    <span className="error">{this.state.message}</span>
+                                </FormGroup>
+
+
+                                <FormGroup>
+                                    <Button color="primary mr-2" onClick={this.editdesignationName}>Save</Button>
+
+                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+                                </FormGroup>
+            </div>
         return (
             <div>
 
@@ -303,23 +319,11 @@ class DesignationMasterDetail extends Component {
                             } 
                         }  
                     }/></Label>
-                        {!this.state.modalLoading ? tableData : <Spinner />}
+                         {(this.state.loading) ? <Spinner /> : tableData}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
-                                <FormGroup>
-                                    <Label>Designation Type</Label>
-                                    <Input type="text" id="designationId" name="designationName" onChange={this.onChangeHandler} value={this.state.designationName} maxLength={50} onKeyPress={this.onKeyPressHandler} />
-                                    <span className="error">{this.state.errors.designationName}</span>
-                                    <span className="error">{this.state.message}</span>
-                                </FormGroup>
-
-
-                                <FormGroup>
-                                    <Button color="primary mr-2" onClick={this.editdesignationName}>Save</Button>
-
-                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                                </FormGroup>
+                            {!this.state.modalLoading  ? modalData : <Spinner />}
                             </ModalBody>
                         </Modal>
 
