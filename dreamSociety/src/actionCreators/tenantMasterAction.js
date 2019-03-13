@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
-import{URN,GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID,ADD_TENANT_DETAIL, GET_TENANT_DETAIL, DELETE_TENANT} from '../actions/index';
+import{URN,GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID,
+    DELETE_SELECTED_TENANT,ADD_TENANT_DETAIL, GET_TENANT_DETAIL, DELETE_TENANT} from '../actions/index';
 
 export function addTenantDetail(values){
     console.log(values)
@@ -57,6 +58,16 @@ export function deleteTenant(id){
 
     return {
         type: DELETE_TENANT,
+        payload: request
+    }
+}
+
+export function deleteSelectedTenant(ids){
+    const request = axios.put(`${URN}/tenant/delete/deleteSelected`, {ids}, {headers: authHeader()})
+    .then(response => response.data);
+
+    return {
+        type: DELETE_SELECTED_TENANT,
         payload: request
     }
 }

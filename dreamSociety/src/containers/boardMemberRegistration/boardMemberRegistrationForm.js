@@ -541,8 +541,8 @@ maxDate = () => {
                                 e.preventDefault();
                             }
                         }} 
-                        minLength='8'
-                        maxLength='15' />
+                        minLength='11'
+                        maxLength='11' />
                         {!this.state.IFSCCode ? <span className="error">{this.state.errors.IFSCCode}</span> : ''}
                     </FormGroup>
                     <FormGroup>
