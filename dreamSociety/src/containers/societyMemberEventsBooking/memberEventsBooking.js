@@ -124,17 +124,22 @@ class MemberEventsBooking extends Component {
         if (!this.state.societyMemberEventId) {
             errors.societyMemberEventId = "cant be empty";
         }
-        if (this.state.startDate === '') errors.startDate = "cant be empty";
-        this.setState({ errors });
+        else if(this.state.startDate === ''){
+            errors.startDate = "cant be empty";
+        } 
+        
+        else if(this.state.endDate === ''){
+            errors.endDate = "cant be empty";
+        }
+        
 
-        if (this.state.endDate === '') errors.endDate = "cant be empty";
-        this.setState({ errors });
+        else if(this.state.numberOfGuestExpected === ''){
+            errors.numberOfGuestExpected = "cant be empty";
+        } 
 
-        if (this.state.numberOfGuestExpected === '') errors.numberOfGuestExpected = "cant be empty";
-        this.setState({ errors });
-
-
-        if (this.state.eventSpaceId === '') errors.eventSpaceId = "cant be empty";
+        else if(this.state.eventSpaceId === ''){
+            errors.eventSpaceId = "cant be empty";
+        } 
         this.setState({ errors });
 
 
@@ -217,7 +222,7 @@ class MemberEventsBooking extends Component {
 
             <FormGroup>
                 <Label>No Of Guest Expected</Label>
-                <Input type="text" name="numberOfGuestExpected" onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.onChange} maxLength={50}>
+                <Input type="text" name="numberOfGuestExpected" onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.onChange} maxLength={4}>
                 </Input >
                 <span className='error'>{this.state.errors.numberOfGuestExpected}</span>
             </FormGroup>

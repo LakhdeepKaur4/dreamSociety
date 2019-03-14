@@ -127,7 +127,7 @@ class SocietyManagementDetail extends Component {
         })
     }
     toggleModal = () => {
-        this.setState({ modal: !this.state.modal })
+        this.setState({ modal: !this.state.modal, message: '' })
     }
     componentDidMount() {
         this.refreshData()
@@ -521,30 +521,10 @@ class SocietyManagementDetail extends Component {
             </tbody>
         </Table>
         </div>
-        return (
-            <div>
-                <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top w3-responsive">
-                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
-                <div className="top-details">
-                                <h3>Society Details</h3>
-                                {/* <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button> */}
-                            </div>
-                            <div>
-                              
-                                <SearchFilter type="text" value={this.state.search}
-                                    onChange={this.searchOnChange} />
-                            </div>
-                            {/* <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button> */}
-                            {!this.state.loading ? tableData : <Spinner />}
-                <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
-                    <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
-                    <ModalBody>
 
-                    <FormGroup>
+        let modalData=<div>
+            
+            <FormGroup>
                             <Label>Society Name</Label>
                             <Input type="text" id="societyId" name="societyName"  value={this.state.societyName} onKeyPress={this.onKeyPressHandler} maxLength={100}/>
                             <span className="error">{this.state.errors.societyName}</span> 
@@ -647,6 +627,31 @@ class SocietyManagementDetail extends Component {
                         </FormGroup>
                         <Button color="primary mr-2" onClick={this.editSocietyType}>Save</Button> 
                         <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+        </div>
+
+        return (
+            <div>
+                <UI onClick={this.logout}>
+                <div className="w3-container w3-margin-top w3-responsive">
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+                <div className="top-details">
+                                <h3>Society Details</h3>
+                                {/* <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button> */}
+                            </div>
+                            <div>
+                              
+                                <SearchFilter type="text" value={this.state.search}
+                                    onChange={this.searchOnChange} />
+                            </div>
+                            {/* <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button> */}
+                            {(this.state.loading) ? <Spinner /> : tableData}
+                <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+                    <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
+                    <ModalBody>
+                         {modalData}
                     </ModalBody>
                 </Modal>
                </div>

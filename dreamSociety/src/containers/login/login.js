@@ -49,13 +49,13 @@ class Login extends Component {
                 localStorage.setItem('societyName',loginData.payload.data.society.societyName)
                 console.log(loginData.payload.data.society)
                         switch(loginData.payload.data.user.roles[0].roleName) {
-                            case 'SUPER_ADMIN':
+                            case 'SUPER ADMIN':
                                 return this.props.history.push('/superDashboard');
                             case 'ADMIN':
                                 return this.props.history.push('/adminDashboard');
-                            case 'SOCIETY_MEMBER_OWNER':
+                            case 'SOCIETY MEMBER OWNER':
                                 return this.props.history.push('/ownerDashboard');
-                            case 'SOCIETY_MEMBER_TENENT':
+                            case 'SOCIETY MEMBER TENENT':
                                 return this.props.history.push('/tenantDashboard');
                             case 'VENDOR':
                                 return this.props.history.push('/vendorDashboard')
