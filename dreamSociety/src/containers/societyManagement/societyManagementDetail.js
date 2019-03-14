@@ -59,6 +59,8 @@ class SocietyManagementDetail extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
+
+    
     
     emailValid(event) {
         const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
@@ -125,7 +127,7 @@ class SocietyManagementDetail extends Component {
         })
     }
     toggleModal = () => {
-        this.setState({ modal: !this.state.modal })
+        this.setState({ modal: !this.state.modal, message: '' })
     }
     componentDidMount() {
         this.refreshData()
@@ -167,12 +169,12 @@ class SocietyManagementDetail extends Component {
         
         
         else if(this.state.accountNumber.length !== 16){
-            errors.accountNumber="Account Number should be 16 digits"
+            errors.accountNumber="Account Number must be 16 digits"
         }
         
         
-        else if(this.state.IFSCCode === ''){
-            errors.IFSCCode="IFSC Code can't be empty"
+        else if(this.state.IFSCCode.length !== 11){
+            errors.IFSCCode="IFSC Code is not valid"
         }
         
         
@@ -182,7 +184,7 @@ class SocietyManagementDetail extends Component {
 
 
         else if(this.state.contactNumber.length !== 10){
-            errors.contactNumber="Contact No. should be 10 digits"
+            errors.contactNumber="Contact No. must be 10 digits"
         }
         else if(this.state.registrationNumber === ''){
             errors.registrationNumber="Registration No. can't be empty"
@@ -519,30 +521,10 @@ class SocietyManagementDetail extends Component {
             </tbody>
         </Table>
         </div>
-        return (
-            <div>
-                <UI onClick={this.logout}>
-                <div className="w3-container w3-margin-top w3-responsive">
-                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
-                <div className="top-details">
-                                <h3>Society Details</h3>
-                                {/* <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button> */}
-                            </div>
-                            <div>
-                              
-                                <SearchFilter type="text" value={this.state.search}
-                                    onChange={this.searchOnChange} />
-                            </div>
-                            {/* <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button> */}
-                            {!this.state.loading ? tableData : <Spinner />}
-                <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
-                    <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
-                    <ModalBody>
 
-                    <FormGroup>
+        let modalData=<div>
+            
+            <FormGroup>
                             <Label>Society Name</Label>
                             <Input type="text" id="societyId" name="societyName"  value={this.state.societyName} onKeyPress={this.onKeyPressHandler} maxLength={100}/>
                             <span className="error">{this.state.errors.societyName}</span> 
@@ -602,7 +584,7 @@ class SocietyManagementDetail extends Component {
                         
                         <FormGroup>
                             <Label>IFSC Code</Label>
-                            <Input type="text"  name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode}  maxLength={20}/>
+                            <Input type="text"  name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode}  maxLength={11} style={{'textTransform':'upperCase'}}/>
                             <span className="error">{this.state.errors.IFSCCode}</span> 
                         </FormGroup>
                         
@@ -645,6 +627,31 @@ class SocietyManagementDetail extends Component {
                         </FormGroup>
                         <Button color="primary mr-2" onClick={this.editSocietyType}>Save</Button> 
                         <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+        </div>
+
+        return (
+            <div>
+                <UI onClick={this.logout}>
+                <div className="w3-container w3-margin-top w3-responsive">
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+        <span aria-hidden="true">&times;</span>
+   </div>
+                <div className="top-details">
+                                <h3>Society Details</h3>
+                                {/* <Button onClick={this.routeToAddNewSociety} color="primary">Add Society</Button> */}
+                            </div>
+                            <div>
+                              
+                                <SearchFilter type="text" value={this.state.search}
+                                    onChange={this.searchOnChange} />
+                            </div>
+                            {/* <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button> */}
+                            {(this.state.loading) ? <Spinner /> : tableData}
+                <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+                    <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
+                    <ModalBody>
+                         {modalData}
                     </ModalBody>
                 </Modal>
                </div>
