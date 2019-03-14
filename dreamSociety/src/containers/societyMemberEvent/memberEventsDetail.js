@@ -19,6 +19,7 @@ class MemberEventsDetail extends Component {
                 isActive: false,
 
             },
+            message:'',
             filterName:'societyMemberEventName',
             menuVisible: false,
             search: '',
@@ -59,7 +60,7 @@ class MemberEventsDetail extends Component {
 
 
     toggleModal = () => {
-        this.setState({ modal: !this.state.modal })
+        this.setState({ modal: !this.state.modal, message:'' })
     }
 
 
@@ -74,8 +75,8 @@ class MemberEventsDetail extends Component {
     }
 
 
-    editsocietyMemberEventName = () => {
-       
+    editsocietyMemberEventName = (e) => {
+        e.preventDefault();
         const { societyMemberEventId, societyMemberEventName } = this.state
         
         let errors = {};
@@ -171,7 +172,7 @@ class MemberEventsDetail extends Component {
 
 
     renderMemberEvent = ({ memberEventsResult }) => {
-       console.log("sdhshsh", memberEventsResult);
+      
         if (memberEventsResult) {
             return memberEventsResult.event.sort((item1,item2)=>{
                 var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
@@ -263,6 +264,22 @@ class MemberEventsDetail extends Component {
                     {this.renderMemberEvent(this.props.societyMemberEventReducer)}
                 </tbody>
             </Table></div>
+
+            let modalData=<div>
+                <FormGroup>
+                                    <Label>MemberEvent Type</Label>
+                                    <Input type="text" id="societyMemberEventId" name="societyMemberEventName" onChange={this.onChangeHandler} value={this.state.societyMemberEventName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
+                                    <span className="error">{this.state.errors.societyMemberEventName}</span>
+                                    <span className="error">{this.state.message}</span>
+                                </FormGroup>
+
+
+                                <FormGroup>
+                                    <Button color="primary mr-2" onClick={this.editsocietyMemberEventName}>Save</Button>
+
+                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+                                </FormGroup>
+            </div>
         return (
             <div>
 
@@ -291,23 +308,11 @@ class MemberEventsDetail extends Component {
                         }  
                     }/></Label>
 
-                        {!this.state.modalLoading ? tableData : <Spinner />}
+                        {(this.state.loading) ? <Spinner /> : tableData}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
-                                <FormGroup>
-                                    <Label>MemberEvent Type</Label>
-                                    <Input type="text" id="societyMemberEventId" name="societyMemberEventName" onChange={this.onChangeHandler} value={this.state.societyMemberEventName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
-                                    <span className="error">{this.state.errors.societyMemberEventName}</span>
-                                    <span className="error">{this.state.message}</span>
-                                </FormGroup>
-
-
-                                <FormGroup>
-                                    <Button color="primary mr-2" onClick={this.editsocietyMemberEventName}>Save</Button>
-
-                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                                </FormGroup>
+                            {!this.state.modalLoading  ? modalData : <Spinner />}
                             </ModalBody>
                         </Modal>
 

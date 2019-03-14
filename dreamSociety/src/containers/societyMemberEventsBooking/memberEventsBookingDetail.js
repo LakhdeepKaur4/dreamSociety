@@ -25,6 +25,7 @@ class MemberEventsBookingDetail extends Component {
             spaceName:'',
             isActive: false,
             filterName:'societyMemberEventName',
+            modalLoading: false,
             menuVisible: false,
             search: '',
             modal: false,
@@ -32,11 +33,13 @@ class MemberEventsBookingDetail extends Component {
             errors: {},
             isDisabled: true,
             ids: [],
+            message:''
 
         };
     }
 
     onChangeHandler = (event) => {
+        this.setState({message: ''})
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -48,7 +51,7 @@ class MemberEventsBookingDetail extends Component {
     }
 
 
-    toggle = (societyMemberEventId,societyMemberEventName, startDate,endDate,numberOfGuestExpected, eventSpaceId, spaceName) => {
+    toggle = (societyMemberEventId, societyMemberEventName, startDate,endDate,numberOfGuestExpected, spaceName) => {
 
         this.setState({
             societyMemberEventId,
@@ -56,8 +59,8 @@ class MemberEventsBookingDetail extends Component {
             startDate,
             endDate,
             numberOfGuestExpected,
-            eventSpaceId,
             spaceName,
+          
            
             modal: !this.state.modal
         })
@@ -67,7 +70,7 @@ class MemberEventsBookingDetail extends Component {
 
 
     toggleModal = () => {
-        this.setState({ modal: !this.state.modal })
+        this.setState({ modal: !this.state.modal,  message: '' })
     }
 
 
@@ -84,8 +87,8 @@ class MemberEventsBookingDetail extends Component {
     }
 
 
-    editsocietyMemberEventName = () => {
-       
+    editsocietyMemberEventName = (e) => {
+        e.preventDefault();
         const { societyMemberEventId,startDate,endDate,numberOfGuestExpected, eventSpaceId } = this.state
         
         let errors = {};
@@ -93,14 +96,14 @@ class MemberEventsBookingDetail extends Component {
         if(this.state.startDate===''){
             errors.startDate="Start Date can't be empty"
         }
-        this.setState({errors});
+      
 
-        if(this.state.endDate===''){
+        else if(this.state.endDate===''){
             errors.startDate="End Date can't be empty"
         }
-        this.setState({errors});
+       
 
-        if(this.state.numberOfGuestExpected===''){
+        else if(this.state.numberOfGuestExpected===''){
             errors.numberOfGuestExpected="Number of Guest can't be empty"
         }
         this.setState({errors});
@@ -109,16 +112,22 @@ class MemberEventsBookingDetail extends Component {
 
         const isValid = Object.keys(errors).length === 0
         
-        if (isValid) {
-            this.setState({
-                loading: true
-            })
+        if (isValid && this.state.message === '') {
+           
         this.props.updateEventBooking(societyMemberEventId, startDate, endDate,numberOfGuestExpected, eventSpaceId)
             .then(() => this.refreshData())
-        this.setState({
-           societyMemberEventId,startDate,endDate,numberOfGuestExpected, eventSpaceId ,
-            modal: !this.state.modal
-        })
+            .catch(err=>{ console.log(err.response.data.message)
+                this.setState({modalLoading:false,message: err.response.data.message})
+                })
+                if(this.state.message === ''){
+                    this.setState({modal: true})
+                }
+                else {
+                    this.setState({modal: false})
+                }
+                this.setState({
+                    modalLoading: true
+                })
     }
     }
 
@@ -152,15 +161,10 @@ class MemberEventsBookingDetail extends Component {
     deleteSelected(ids){
         this.setState({loading:true,  isDisabled:true});
 
-        
-        if(window.confirm('Are You Sure ?')){
         this.props.deleteSelectMemberEvent(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
-        }
-        else{
-            this.refreshData()
-        }
+        
     }
 
     selectAll = () => {
@@ -227,8 +231,7 @@ class MemberEventsBookingDetail extends Component {
 
 
     renderBookingEvent = ({ memberEventsResult }) => {
-        console.log(memberEventsResult)
-        if (memberEventsResult) {
+        if (memberEventsResult){
             return memberEventsResult.events.sort((item1,item2)=>{ console.log(item1, item2)
                 var cmprVal = (item1.society_member_event_master[this.state.filterName].localeCompare(item2.society_member_event_master[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
@@ -268,7 +271,7 @@ class MemberEventsBookingDetail extends Component {
                         <td>{item.event_space_master ? item.event_space_master.spaceName:''}</td>
                         <td> 
                             <Button color="success mr-2" onClick={this.toggle.bind(this, item.societyMemberEventId, item.society_member_event_master?item.society_member_event_master.societyMemberEventName:'',item.startDate,item.endDate,item.numberOfGuestExpected, item.event_space_master ?item.event_space_master.spaceName:'')}>Edit</Button>
-                            <Button color="danger"  >Delete</Button>
+                            <Button color="danger" onClick={this.deleteMemberEventName.bind(this, item.societyMemberEventBookingId)}>Delete</Button>
 
                         </td>
                     </tr>
@@ -318,7 +321,7 @@ class MemberEventsBookingDetail extends Component {
                          <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                         <th>Start Date</th>
                         <th>End Date</th>
-                        <th>number Of Guest Expected</th>
+                        <th style={{'width':'4%'}}>number Of Guest Expected</th>
                         <th>Space Name</th>
                         <th>Actions</th>
                     </tr>
@@ -327,43 +330,12 @@ class MemberEventsBookingDetail extends Component {
                     {this.renderBookingEvent(this.props.memberEventsBookingReducer)}
                 </tbody>
             </Table></div>
-        return (
-            <div>
 
-                <UI onClick={this.logout}>
-                    <div className="w3-container w3-margin-top w3-responsive">
-                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                            <span aria-hidden="true">&times;</span>
-                    </div>
-                        <div className="top-details">
-                            <h3>Events Booking Detail</h3>
-                            <Button onClick={this.routeToAddNewBookingEvent} color="primary">Add Booking</Button>
-                        </div>
-                        <SearchFilter type="text" value={this.state.search}
-                            onChange={this.searchOnChange} />
-                             <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
-         <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></Label>
-
-                        {!this.state.loading ? tableData : <Spinner />}
-                        <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
-                            <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
-                            <ModalBody>
-                                <FormGroup>
+            let modalData=<div>
+                 <FormGroup>
                                     <Label>Event Type</Label>
                                     <Input type="select"  name="societyMemberEventName"  onChange={this.onChangeHandler} value={this.state.societyMemberEventName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler}>
                                    
-                                    <option value={this.state.societyMemberEventId}>{this.state.societyMemberEventName}</option>
                                     <DefaultSelect/>
                                      {this.fetchEventName(this.props.societyMemberEventReducer)}
                                     </Input>
@@ -395,22 +367,50 @@ class MemberEventsBookingDetail extends Component {
                                 <FormGroup>
                                     <Label>Space Name</Label>
                                     <Input type="select"  name="spaceName"  onChange={this.onChangeHandler} value={this.state.spaceName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler}>
-                                    <option value={this.state.eventSpaceId}>{this.state.spaceName}</option>
                                     <DefaultSelect/>
                                      {this.fetchSpaceName(this.props.eventSpaceMasterReducer)}
                                     </Input>
                                     <span className="error">{this.state.errors.eventSpaceId}</span>
                                 </FormGroup>
-
-
-
-
-
                                 <FormGroup>
                                     <Button color="primary mr-2" onClick={this.editsocietyMemberEventName}>Save</Button>
-
                                     <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
                                 </FormGroup>
+                                
+            </div>
+        return (
+            <div>
+
+                <UI onClick={this.logout}>
+                    <div className="w3-container w3-margin-top w3-responsive">
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                            <span aria-hidden="true">&times;</span>
+                    </div>
+                        <div className="top-details">
+                            <h3>Events Booking Detail</h3>
+                            <Button onClick={this.routeToAddNewBookingEvent} color="primary">Add Booking</Button>
+                        </div>
+                        <SearchFilter type="text" value={this.state.search}
+                            onChange={this.searchOnChange} />
+                             <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+         <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        }  
+                    }/></Label>
+
+                        {(this.state.loading) ? <Spinner /> : tableData}
+                        <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+                            <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
+                            <ModalBody>
+                            {!this.state.modalLoading  ? modalData : <Spinner />}
                             </ModalBody>
                         </Modal>
 

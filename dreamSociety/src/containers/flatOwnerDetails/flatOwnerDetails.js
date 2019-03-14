@@ -53,6 +53,7 @@ class FlatOwnerDetails extends Component {
             message:'',
             emailError:false,
             modal: false,
+            loading: true,
         }
     }
     toggles = () => {
@@ -339,6 +340,7 @@ OnKeyPresshandlerEmail=(event)=> {
                 fileName
             }
             console.log(FlatOwnerData,...d)
+            this.setState({loading: true})
             this.props.addFlatOwner(FlatOwnerData,d)
             .then(() => this.props.history.push('/superDashBoard/flatOwnerList'))
             .catch(err=>{

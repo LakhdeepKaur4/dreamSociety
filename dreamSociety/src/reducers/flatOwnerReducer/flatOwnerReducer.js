@@ -1,7 +1,8 @@
-import {ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER} from '../../actions/index';
+import {ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER} from '../../actions/index';
 
 export default function (state={},action){
-    console.log('7777777777777777777777777777777',action)
+    console.log('action.type',action.type)
+    console.log('action.paload',action.payload)
     switch(action.type){
         case ADD_FLAT_OWNER:
         return {...state ,ownerList:action.payload}
@@ -13,6 +14,14 @@ export default function (state={},action){
         return {...state ,deleteOwners:action.payload}
         case UPDATE_OWNER:
         return {...state, update:action.payload}
+        case GET_OWNER_MEMBER:
+        return {...state, ownerMember:action.payload}
+        case OWNER_MEMBER_DELETE:
+        return {...state, deleteOwnerMember:action.payload}
+        case MEMBER_OWNER_UPDATE:
+        return {...state, updateOwnerMember:action.payload}
+        case ADD_NEW_MEMBER:
+        return {...state, addNewMember:action.payload}
         default:
         return state;
     }
