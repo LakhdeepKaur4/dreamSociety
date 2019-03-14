@@ -78,7 +78,7 @@ import BoardMemberDetails from './containers/boardMemberRegistration/boardMember
 import AddTenant from './containers/tenantMaster/addTenant';
 import FlatOwnerList from './containers/flatOwnerDetails/flatOwnerList'
 import FlatMemberList from './containers/flatOwnerDetails/flatMemberList';
-import TenantDetail from './containers/tenantMaster/tenantDetail';
+import TenantDetail from './containers/tenantMaster/tenantDetail/tenantDetail';
 
 class App extends Component {
   render() {
