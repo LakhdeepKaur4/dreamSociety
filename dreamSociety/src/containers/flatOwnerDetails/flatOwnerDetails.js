@@ -552,7 +552,7 @@ OnKeyPresshandlerEmail=(event)=> {
                  
                             <FormGroup>
                             <Label>Upload Profile Pic</Label>                               
-                                <Input accept='image/*' type="file" name ="profilePic" onChange={this.FileChange} />
+                                <Input accept='image/*' style={{display:'inline-block'}}type="file" name ="profilePic" onChange={this.FileChange} />
                             </FormGroup>
                         </div>
                         <div>

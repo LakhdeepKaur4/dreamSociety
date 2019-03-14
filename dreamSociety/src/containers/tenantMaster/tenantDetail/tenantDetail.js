@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import UI from '../../components/newUI/superAdminDashboard';
+import UI from '../../../components/newUI/superAdminDashboard';
 import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader } from 'reactstrap';
-import DefaultSelect from '../../constants/defaultSelect';
-import SearchFilter from '../../components/searchFilter/searchFilter';
-import { getTenantDetail, deleteTenant, deleteSelectedTenant } from '../../actionCreators/tenantMasterAction';
-import {URN1,PicURN, URN} from '../../actions/index'
+import DefaultSelect from '../../../constants/defaultSelect';
+import SearchFilter from '../../../components/searchFilter/searchFilter';
+import { getTenantDetail, deleteTenant, deleteSelectedTenant } from '../../../actionCreators/tenantMasterAction';
+import {URN1,PicURN, URN} from '../../../actions/index'
 import { connect } from 'react-redux';
-import Spinner from '../../components/spinner/spinner';
+import Spinner from '../../../components/spinner/spinner';
 import GoogleDocsViewer from 'react-google-docs-viewer';
 import "./tenantDetail.css"
 

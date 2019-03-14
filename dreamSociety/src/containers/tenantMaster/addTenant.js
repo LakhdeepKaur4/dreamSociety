@@ -80,8 +80,12 @@ class AddTenant extends Component{
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]:e.target.value, IFSCCode:e.target.value.toUpperCase()});
+        this.setState({[e.target.name]:e.target.value});
         console.log(this.state);
+    }
+
+    ifscChange = (e) => {
+        this.setState({IFSCCode:e.target.value.toUpperCase()})
     }
 
     getTower = ({ tower }) => {
@@ -368,7 +372,7 @@ class AddTenant extends Component{
                             type="radio" value="Other"  required />
                         </Col>
                     </Col>
-                    <Col md={3}>
+                    <Col md={12}>
                         <Label>Date of Birth</Label>
                         <Input type="date" max={this.maxDate()}  name={`dob${i}`} onChange={this.memberDetailChange}  required />
                     </Col>
@@ -510,7 +514,7 @@ class AddTenant extends Component{
                         </FormGroup>
                         <FormGroup>
                             <Label>IFSC Code</Label>
-                            <Input placeholder="IFSC code" onChange={this.onChange}
+                            <Input placeholder="IFSC code" onChange={this.ifscChange}
                             maxLength="16"
                             value={this.state.IFSCCode.toUpperCase()}
                             onKeyPress={(e) => {
