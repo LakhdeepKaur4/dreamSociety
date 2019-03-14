@@ -220,6 +220,10 @@ class BoardMemberDetails extends Component{
         .then(() => this.refreshData())
     }
 
+    panChange = (e) => {
+        this.setState({panCardNumber:e.target.value.toUpperCase()})
+    }
+
     toggleEditSocietyMember(){
         this.setState({editSocietyMember: !this.state.editSocietyMember, emailServerError:'', userNameServerError:'',
     contactServerError:'', errors:{}});
@@ -229,10 +233,10 @@ class BoardMemberDetails extends Component{
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value, panCardNumber:e.target.value.toUpperCase(), errors });
+            this.setState({ [e.target.name]: e.target.value, errors });
         }
         else {
-            this.setState({ [e.target.name]: e.target.value, panCardNumber:e.target.value.toUpperCase() });
+            this.setState({ [e.target.name]: e.target.value });
         }
     }
 
@@ -654,7 +658,7 @@ class BoardMemberDetails extends Component{
                                         e.preventDefault();
                                     }
                                 }} 
-                                onChange={this.onChange} />
+                                onChange={this.panChange} />
                                 {!this.state.panCardNumber ? <span className="error">{this.state.errors.panCardNumber}</span>: ''}
                             </FormGroup>
                             <FormGroup>

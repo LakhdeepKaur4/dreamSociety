@@ -372,7 +372,7 @@ class AddTenant extends Component{
                             type="radio" value="Other"  required />
                         </Col>
                     </Col>
-                    <Col md={3}>
+                    <Col md={12}>
                         <Label>Date of Birth</Label>
                         <Input type="date" max={this.maxDate()}  name={`dob${i}`} onChange={this.memberDetailChange}  required />
                     </Col>
