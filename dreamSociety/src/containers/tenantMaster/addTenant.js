@@ -29,6 +29,7 @@ class AddTenant extends Component{
             bankName:'',
             accountHolderName:'',
             accountNumber:'',
+            aadhaarNumber:'',
             panCardNumber:'',
             IFSCCode:'',
             noOfMembers:'',
@@ -37,6 +38,8 @@ class AddTenant extends Component{
             societyName : '',
             societyId: '',
             member:[],
+            towerId:'',
+            towerName:'',
             fileName: '',
             imageSizeError:'',
             errors:{},
@@ -77,12 +80,13 @@ class AddTenant extends Component{
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]:e.target.value});
+        this.setState({[e.target.name]:e.target.value, IFSCCode:e.target.value.toUpperCase()});
         console.log(this.state);
     }
 
     getTower = ({ tower }) => {
         if (tower) {
+            
             return tower.map((item) => {
                 return (
                     { ...item, label: item.towerName, value: item.towerId }
@@ -123,21 +127,20 @@ class AddTenant extends Component{
 
     fetchFlatDetail = ({getFlatDetail}) => {
         console.log(getFlatDetail)
-        if(getFlatDetail){
+        if(getFlatDetail && getFlatDetail.owner){
+            console.log(getFlatDetail)
             return getFlatDetail.owner.map((item) => {
-                return (
-                    <option value={item.flatDetailId} key={item.flatDetailId}>{item.flatNo}</option>
-                )
+            return (
+                <option value={item.flatDetailId} key={item.flatDetailId}>{item.flatNo}</option>
+            )
             })
         }
-        
-        
     }
 
     
 
     towerChangeHandler = (selectTower) => {
-        
+        this.setState({towerName:selectTower.towerName, towerId:selectTower.towerId})
         this.props.getFlatDetailViaTowerId(selectTower.towerId)
     }
 
@@ -159,7 +162,6 @@ class AddTenant extends Component{
             );
         }
         return [];
-
     }
 
     maxDate = () => {
@@ -182,9 +184,9 @@ class AddTenant extends Component{
     onSubmit = (e) => {
         console.log(this.state.societyId)
         e.preventDefault()
-        let { tenantName, dob, gender, email, contact, profilePicture, permanentAddress, bankName, 
+        let { tenantName, dob, gender, email, contact, profilePicture, aadhaarNumber, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, member, fileName, societyId } = this.state;
+            societyName, member, fileName, societyId, towerName, towerId } = this.state;
         console.log(this.state)
         let data = []
         for(let i = 0; i < this.state.noOfMembers; i++){
@@ -198,14 +200,15 @@ class AddTenant extends Component{
         }
         
         this.setState({member:data})
-        console.log(tenantName, dob, gender, email, contact, profilePicture, permanentAddress, bankName, 
+        console.log(tenantName, dob, gender,aadhaarNumber, email, contact, profilePicture, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, societyId, member, fileName);
+            societyName, societyId, member, towerName, fileName, towerId);
 
         if(this.state.imageSizeError === ''){
-            this.props.addTenantDetail({tenantName, dob, gender, email, contact, profilePicture, permanentAddress, bankName, 
-                accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, societyId, member, fileName})
-                .then(() => this.props.history.push('/superDashboard/tenantDetails'));
+            this.props.addTenantDetail({tenantName, dob,aadhaarNumber, gender, email, contact, profilePicture, permanentAddress, bankName, 
+                accountHolderName, accountNumber, panCardNumber, towerName, towerId, IFSCCode, noOfMembers, flatDetailId, societyId, member, fileName})
+                .then(() => this.props.history.push('/superDashboard/tenantDetails'))
+                .catch(err => err.response.data);
         }
     }
 
@@ -244,12 +247,11 @@ class AddTenant extends Component{
         else {
             this.setState({imageSizeError:'Image size should not be more than 4 MB.'});
         }
-        
     }
 
     nextPrev = () => {
         let errors = {};
-        const {tenantName, dob, gender, contact, email, correspondingAddress, permanentAddress} = this.state;
+        const {tenantName, dob, gender, contact, email, correspondingAddress, aadhaarNumber, permanentAddress} = this.state;
         if(this.state.step === 1){
             if(tenantName === '') errors.tenantName = `Tenant Name can't be empty.`;
             if(dob === '') errors.dob = `Date of Birth can't be empty.`;
@@ -258,6 +260,7 @@ class AddTenant extends Component{
             if(email === '') errors.email = `Email can't be empty.`;
             if(correspondingAddress === '') errors.correspondingAddress = `Corresponding Address can't be empty.`;
             if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
+            if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -328,9 +331,6 @@ class AddTenant extends Component{
             e.preventDefault();
         }
     }
-
-    
-
 
     render(){
         
@@ -433,6 +433,15 @@ class AddTenant extends Component{
                             </span> : ''}
                             {<span className="error">{this.state.emailValidError}</span>}
                         </FormGroup>
+                        <FormGroup>
+                            <Label>Aadhaar Number</Label>
+                            <Input placeholder="Aadhaar number" onChange={this.onChange}
+                            name="aadhaarNumber"  onKeyPress={this.numberValidation} type="text"
+                            maxLength="12" />
+                            {!this.state.aadhaarNumber ? <span className="error">
+                                {this.state.errors.aadhaarNumber}
+                            </span> : ''}
+                        </FormGroup>
                         {/* <FormGroup>
                             <Label>Society Name</Label>
                             <Select placeholder="Society Name"
@@ -502,6 +511,15 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>IFSC Code</Label>
                             <Input placeholder="IFSC code" onChange={this.onChange}
+                            maxLength="16"
+                            value={this.state.IFSCCode.toUpperCase()}
+                            onKeyPress={(e) => {
+                                const pattern = /^[a-zA-Z0-9]+$/;
+                                let inputChar = String.fromCharCode(e.charCode);
+                                if (!pattern.test(inputChar)) {
+                                    e.preventDefault();
+                                }
+                            }}
                              type='text' name="IFSCCode" />
                              {!this.state.IFSCCode ? <span className="error">{this.state.errors.IFSCCode}</span> : ''}
                         </FormGroup>
@@ -541,7 +559,7 @@ class AddTenant extends Component{
                         <h3>Upload Your Image</h3>
                         <FormGroup>
                             <Label>Image</Label>
-                            <Input accept='image/*' placeholder="Owner Name" onChange={this.imageChangeHandler}
+                            <Input accept='image/*' onChange={this.imageChangeHandler}
                              type='file' name="profilePicture" />
                         </FormGroup>
                         <span className="error">{this.state.imageSizeError}</span>
