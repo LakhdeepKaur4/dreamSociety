@@ -53,6 +53,7 @@ class FlatOwnerDetails extends Component {
             message:'',
             emailError:false,
             modal: false,
+            loading: true,
         }
     }
     toggles = () => {

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE } from '../actions/index';
+import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,DELETE_MULTIPLE_OWNER_MEMBER,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER } from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
 export function addFlatOwner(data){
@@ -126,7 +126,7 @@ export function updateFlatOwner(ownerId,ownerName,
 
 export function getOwnerMember(id){
     console.log(id)
-    const request =axios.get(`${URN}/owner/`+id,{headers:authHeader()})
+    const request =axios.get(`${URN}/owner/ownerMember/`+id,{headers:authHeader()})
     .then(response=>response.data)
     return{
         type:GET_OWNER_MEMBER,
@@ -141,6 +141,38 @@ export function deleteMember(id){
     .then(response=>response.data)
     return {
         type:OWNER_MEMBER_DELETE,
+        payload:request
+    }
+}
+
+export function deleteMultipleMember(ids){
+    console.log(ids)
+    // const data={    
+    //     isActive:false
+    // }
+    const request=axios.put(`${URN}/ownerMember/delete/deleteSelected`,{ids},{headers:authHeader()})
+    .then(response=>response)
+    return {
+        type:DELETE_MULTIPLE_OWNER_MEMBER,
+        payload:request
+    }
+}
+
+export function memberUpdate(memberName,gender,memberDob,relationId,memberId){
+    
+    const request=axios.put(`${URN}/owner/ownerMember/update/${memberId}`,{memberName,gender,memberDob,relationId},{headers:authHeader()})
+    .then(response=>response.data)
+    return {
+        type:MEMBER_OWNER_UPDATE,
+        payload:request
+    }
+}
+
+export function addNewMember(memberName,memberDob,gender,relationId,id){
+    const request=axios.post(`${URN}/owner/ownerMember/${id}`,{memberName,memberDob,gender,relationId},{headers:authHeader()})
+    .then(response=>response.data)
+    return {
+        type:ADD_NEW_MEMBER,
         payload:request
     }
 }

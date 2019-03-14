@@ -314,6 +314,23 @@ console.log(ownerId, ownerName,dob,gender, contact,email,permanentAddress,bankNa
         towerId,
         flatDetailId,
         bankName,panCardNumber,IFSCCode,accountHolderName,gender} = this.state
+        console.log( ownerId,ownerName,
+            countryName,
+            stateName,
+            cityName,
+            locationName,
+            locationId,
+            cityId,
+            stateId,
+            countryId,
+            dob,
+        contact,
+        email,
+        societyName,
+        permanentAddress,
+        towerId,
+        flatDetailId,
+        bankName,panCardNumber,IFSCCode,accountHolderName,gender)
         if (ownerName === '') {
             errors.ownerName = "Owern Name can't be empty"
         }
