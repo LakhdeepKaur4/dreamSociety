@@ -3,7 +3,7 @@ import UI from '../../components/newUI/superAdminDashboard';
 import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import { getTenantDetail, deleteTenant } from '../../actionCreators/tenantMasterAction';
+import { getTenantDetail, deleteTenant, deleteSelectedTenant } from '../../actionCreators/tenantMasterAction';
 import {URN1,PicURN} from '../../actions/index'
 import { connect } from 'react-redux';
 import GoogleDocsViewer from 'react-google-docs-viewer';
@@ -14,7 +14,8 @@ class TenantDetail extends Component {
         this.state = {
             search:'',
             ids:[],
-            isActive: false
+            isActive: false,
+            isDisabled: true
         }
     }
 
@@ -63,14 +64,14 @@ class TenantDetail extends Component {
 
     delete(id){
         console.log(id)
-        this.props.deleteTenant(id).then(() => this.getTenantDetail())
+        this.props.deleteTenant(id).then(() => this.props.getTenantDetail())
     }
 
     renderList = ({getTenantDetail}) => {
         console.log(getTenantDetail)
         if(getTenantDetail){
             return getTenantDetail.tenants.map((item, index) => {
-                if(item && item.flat_detail_master){
+                if(item){
                     return (
                         <tr key={item.tenantId}>
                             <td><input type="checkbox" name="ids" value={item.tenantId} className="SelectAll"
@@ -101,7 +102,7 @@ class TenantDetail extends Component {
                             <td>{item.contact}</td>
                             <td>{item.permanentAddress}</td>
                             <td>{item.towerName}</td>
-                            <td>{item.flat_detail_master.flatNo}</td>
+                            <td>{item.flat_detail_master ? item.flat_detail_master.flatNo : false}</td>
                             <td>
                                 <Button color="success" className="mr-2">Edit</Button>
                                 <Button color="danger" onClick={this.delete.bind(this, item.tenantId)}>Delete</Button>
@@ -112,6 +113,14 @@ class TenantDetail extends Component {
                 else return false
             })
         }
+    }
+
+    deleteSelected(ids){
+        this.setState({loading:true, isDisabled: true});
+        this.props.deleteSelectedTenant(ids)
+        
+        .then(() => this.props.getTenantDetail())
+        .catch(err => err);
     }
 
     render(){
@@ -147,6 +156,8 @@ class TenantDetail extends Component {
                     </div>
                     <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />
+                     <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+                        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
                     <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
                     id="allSelect"
                     type="checkbox" onChange={(e) => {
@@ -172,7 +183,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {getTenantDetail, deleteTenant})(TenantDetail);
+export default connect(mapStateToProps, {getTenantDetail, deleteTenant, deleteSelectedTenant})(TenantDetail);
 
 
 

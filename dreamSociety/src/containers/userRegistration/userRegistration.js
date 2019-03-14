@@ -141,7 +141,7 @@ class Registration extends Component {
 
         // const isValid = this.validate();
         if (isValid && this.state.emailValidError==='') {
-            this.setState({loading: true})
+            this.setState({loading: true, userName: this.state.userName.toLowerCase()})
             this.props.addUser(this.state).then(() =>{
                     this.props.history.push('/superDashboard/user_details')
                 }
