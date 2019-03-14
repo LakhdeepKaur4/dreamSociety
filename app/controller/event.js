@@ -61,10 +61,29 @@ exports.get = async (req, res, next) => {
 exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
-        console.log("id==>", id)
+        console.log("id==>", id);
+        const update = req.body;
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
+        const event = await Event.findOne({
+            where:{
+                eventId:id,
+                isActive:true
+            }
+        })
+    
+        if(event.eventName === update.eventName){
+            const updatedEvent = await Event.find({ where: { eventId: id } }).then(event => {
+                return event.updateAttributes(update)
+            })
+            if (updatedEvent) {
+                return res.status(httpStatus.OK).json({
+                    message: "Event Updated Page",
+                    updatedEvent: updatedEvent
+                });
+            }
+        }else{
         const events = await Event.findAll({
             where: {
                 isActive: true
@@ -76,11 +95,11 @@ exports.update = async (req, res, next) => {
         if (error) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Event Name already Exists" })
         }
-        const update = req.body;
-        console.log("update==>", update)
-        if (!update) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
-        }
+  
+        // console.log("update==>", update)
+        // if (!update) {
+        //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        // }
         const updatedEvent = await Event.find({ where: { eventId: id } }).then(event => {
             return event.updateAttributes(update)
         })
@@ -90,7 +109,9 @@ exports.update = async (req, res, next) => {
                 event: updatedEvent
             });
         }
+    }
     } catch (error) {
+        console.log(error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }

@@ -12,6 +12,7 @@ const Op = db.Sequelize.Op;
 exports.create = async (req, res) => {
     console.log("creating location");
     let body = req.body;
+    console.log(body);
     // const location = await Location.findOne({
     //     where: {
     //         [Op.and]: [
@@ -89,30 +90,31 @@ exports.update = async (req, res) => {
         res.json("Please enter id");
     }
     const updates = req.body;
+    console.log("updates==>",updates);
 
-    const location = await Location.findOne({
-        where: {
-            [Op.and]:[
-                {isActive: true},
-                { locationId: req.params.locationId },
-                { stateId: req.body.stateId },
-                { countryId: req.body.countryId },
-                { cityId: req.body.cityId },
-            ]
-        }
-    })
-
-    if(location.locationName === updates.locationName){
-        const updatedLocation = await Location.find({ where: { locationId: id } }).then(location => {
-            return location.updateAttributes(updates)
-        })
-        if (updatedLocation) {
-            return res.status(httpStatus.OK).json({
-                message: "Location Updated Page",
-                updatedLocation: updatedLocation 
-            });
-        }
-    }else{
+    // const location = await Location.findOne({
+    //     where: {
+    //         [Op.and]:[
+    //             {isActive: true},
+    //             { locationId: id },
+    //             { stateId: req.body.stateId },
+    //             { countryId: req.body.countryId },
+    //             { cityId: req.body.cityId },
+    //         ]
+    //     }
+    // })
+    // console.log("location==>",location)
+    // if(location.locationName === updates.locationName){
+    //     const updatedLocation = await Location.find({ where: { locationId: id } }).then(location => {
+    //         return location.updateAttributes(updates)
+    //     })
+    //     if (updatedLocation) {
+    //         return res.status(httpStatus.OK).json({
+    //             message: "Location Updated Page",
+    //             updatedLocation: updatedLocation 
+    //         });
+    //     }
+    // }else{
     const locations = await Location.findAll({
         where: {
             [Op.and]:[
@@ -123,7 +125,7 @@ exports.update = async (req, res) => {
             ]
         }
     })
-    // console.log(cities);
+    console.log(locations);
     let error = locations.some(location => {
         return location.locationName.toLowerCase().replace(/ /g, '') == req.body.locationName.toLowerCase().replace(/ /g, '');
     });
@@ -131,7 +133,6 @@ exports.update = async (req, res) => {
         console.log("inside state");
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Location Name already Exists" })
     }
-  
     Location.find({
         where: { locationId: id }
     })
@@ -141,7 +142,7 @@ exports.update = async (req, res) => {
         .then(updatedLocation => {
             res.json({ message: "Location updated successfully!", updatedLocation: updatedLocation });
         });
-}
+// }
 }
 
 exports.delete = async (req, res, next) => {
@@ -155,7 +156,7 @@ exports.delete = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedLocation = await City.find({ where: { locationId: id } }).then(location => {
+        const updatedLocation = await Location.find({ where: { locationId: id } }).then(location => {
             return location.updateAttributes(update)
         })
         if (updatedLocation) {

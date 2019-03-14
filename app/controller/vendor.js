@@ -253,6 +253,15 @@ exports.create1 = async (req, res, next) => {
     try {
         let body = req.body;
         console.log("body===>",req.body);
+        let existingContact = await Vendor.findOne({
+            where:{
+                    isActive:true,
+                    contact: encrypt(key, req.body.contact)
+            }
+        })
+        if(existingContact){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:'Contact already exists'})
+        }
         let customVendorName = body.vendorName;
         const userName = customVendorName += Math.floor((Math.random() * 100) + 1);
         const password = passwordGenerator.generate({
@@ -560,6 +569,57 @@ exports.update1 = async (req, res, next) => {
         console.log(error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
+}
+
+
+exports.deleteVendorService = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = {isActive : false};
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        // const updatedVendor = await Vendor.find({ where: { vendorId: id } }).then(vendor => {
+        //     return vendor.updateAttributes(update)
+        // })
+
+        // const updatedVendorService = await VendorService.find({ where: { vendorId: id } }).then(vendorService => {
+        //     return vendorService.updateAttributes(update)
+        // })
+        const updatedVendorService = await VendorService.update(update, { where: { vendorServiceId:id} })
+        if ( updatedVendorService) {
+            return res.status(httpStatus.OK).json({
+                message: "VendorService deleted successfully",
+            });
+        }
+    } catch (error) {
+        console.log("error::",error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.deleteSelectedVendorServices = async (req, res, next) => {
+	try {
+		const deleteSelected = req.body.ids;
+        console.log("delete selected==>", deleteSelected);
+         
+		const update = { isActive: false };
+		if (!deleteSelected) {
+			return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
+		}
+		const updatedVendor = await VendorService.update(update, { where: { vendorServiceId: { [Op.in]: deleteSelected } } })
+		if (updatedVendor) {
+			return res.status(httpStatus.OK).json({
+				message: "VendorServices deleted successfully",
+			});
+		}
+	} catch (error) {
+		console.log(error)
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+	}
 }
 
 

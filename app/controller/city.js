@@ -9,21 +9,6 @@ const Op = db.Sequelize.Op;
 
 exports.create = async (req, res) => {
     console.log("creating city");
-    // const city = await City.findOne({
-    //     where: {
-    //         // cityName: req.body.cityName
-    //         [Op.and]: [
-    //             { stateId: req.body.stateId },
-    //             { countryId: req.body.countryId },
-    //             { cityName: req.body.cityName },
-    //             { isActive: true }
-    //         ]
-    //     }
-    // })
-    //  console.log(city);
-    // if (city) {
-    //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "City Name already Exists" })
-    // }
 
     const cities = await City.findAll({
         where: {
@@ -94,6 +79,25 @@ exports.update = async (req, res) => {
     if (!id) {
         res.json("Please enter id");
     }
+    const updates = req.body;
+    const city = await City.findOne({
+        where:{
+            cityId:id,
+            isActive:true
+        }
+    })
+
+    if(city.cityName === updates.cityName){
+        const updatedCity = await City.find({ where: { cityId: id } }).then(city => {
+            return city.updateAttributes(updates)
+        })
+        if (updatedCity) {
+            return res.status(httpStatus.OK).json({
+                message: "City Updated Page",
+                updatedCity: updatedCity
+            });
+        }
+    }else{
     const cities = await City.findAll({
         where: {
             [Op.and]:[
@@ -112,7 +116,6 @@ exports.update = async (req, res) => {
         console.log("inside city");
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "City Name already Exists" })
     }
-    const updates = req.body;
     City.find({
         where: { cityId: id }
     })
@@ -122,6 +125,7 @@ exports.update = async (req, res) => {
         .then(updatedCity => {
             res.json({ message: "City updated successfully!", updatedCity: updatedCity });
         });
+    }
 }
 
 exports.deleteById = async (req, res, next) => {

@@ -43,11 +43,13 @@ module.exports = function(app) {
 	
 	app.get('/', userController.start);
 
-	app.post('/api/auth/signup', [verifySignUp.checkRolesExisted], userController.signup);
+	app.post('/api/auth/signup', [verifySignUp.checkRolesExisted], userController.signupEncrypted);
 	
-    app.post('/api/auth/signin', userController.signin);
+    app.post('/api/auth/signin', userController.signinDecrypted);
 	
-	app.get('/api/user',[authJwt.verifyToken],userController.get);
+	app.get('/api/user',[authJwt.verifyToken],userController.getUserDecrypted);
+
+	app.get('/api/person',[authJwt.verifyToken], userController.getPersonDecrypted);
 
 	app.get('/api/user/search',userController.search);
 	
@@ -57,7 +59,7 @@ module.exports = function(app) {
 
 	app.get('/api/user/role',[authJwt.verifyToken],userController.role);
 
-	app.put('/api/user/:id',[authJwt.verifyToken], userController.update);
+	app.put('/api/user/:id',[authJwt.verifyToken], userController.updateEncrypted);
 
 	app.get('/api/user/:id', userController.getById);
 
@@ -117,11 +119,11 @@ module.exports = function(app) {
 
 	app.get('/api/location/:id', [authJwt.verifyToken], locationController.getById);
 
+	app.put('/api/location/:id',[authJwt.verifyToken], locationController.update);
+
 	app.put('/api/location/delete/deleteSelected',[authJwt.verifyToken], locationController.deleteSelected);
 	
 	app.put('/api/location/delete/:id', [authJwt.verifyToken],locationController.delete);
-	
-	app.put('/api/location/:id',[authJwt.verifyToken], locationController.update);
 
 	app.post('/api/society', [authJwt.verifyToken],societyController.createEncrypted);
 
@@ -230,6 +232,10 @@ module.exports = function(app) {
 	app.put('/api/vendor/delete/deleteSelected',[authJwt.verifyToken], vendorController.deleteSelected);
 
 	app.put('/api/vendor/delete/:id', [authJwt.verifyToken], vendorController.delete);
+
+	app.put('/api/vendorService/delete/deleteSelected', [authJwt.verifyToken], vendorController.deleteSelectedVendorServices);
+
+	app.put('/api/vendorService/delete/:id', [authJwt.verifyToken], vendorController.deleteVendorService);
 
 	app.post('/api/assets', [authJwt.verifyToken], assetsController.create);
 
@@ -353,11 +359,11 @@ module.exports = function(app) {
 
 	app.put('/api/designation/delete/:id',[authJwt.verifyToken],designationController.delete);
 
-	app.post('/api/societyBoardMember',[authJwt.verifyToken],societyBoardMemberController.create);
+	app.post('/api/societyBoardMember',[authJwt.verifyToken],societyBoardMemberController.createEncrypted);
 
-	app.get('/api/societyBoardMember',[authJwt.verifyToken],societyBoardMemberController.get);
+	app.get('/api/societyBoardMember',[authJwt.verifyToken],societyBoardMemberController.getDecrypted);
 
-	app.put('/api/societyBoardMember/:id',[authJwt.verifyToken],societyBoardMemberController.update);
+	app.put('/api/societyBoardMember/:id',[authJwt.verifyToken],societyBoardMemberController.updateEncrypted);
 
 	app.put('/api/societyBoardMember/delete/deleteSelected',[authJwt.verifyToken],societyBoardMemberController.deleteSelected);
 
@@ -367,13 +373,11 @@ module.exports = function(app) {
 
 	app.get('/api/relation',[authJwt.verifyToken],relationController.get);
 
-	app.put('/api/relation',[authJwt.verifyToken],relationController.update);
-
 	app.put('/api/relation/:id',[authJwt.verifyToken],relationController.update);
 
-	app.put('/api/relation/delete/deleteSelected',[authJwt.verifyToken],relationController.update);
+	app.put('/api/relation/delete/deleteSelected',[authJwt.verifyToken],relationController.deleteSelected);
 
-	app.put('/api/relation/delete/:id',[authJwt.verifyToken],relationController.update);
+	app.put('/api/relation/delete/:id',[authJwt.verifyToken],relationController.delete);
 
 	app.post('/api/societyMemberEvent',[authJwt.verifyToken],societyMemberEvent.create);
 
@@ -389,17 +393,31 @@ module.exports = function(app) {
 
 	app.get('/api/owner',[authJwt.verifyToken],owner.get1);
 
+	app.put('/api/owner/:id',[authJwt.verifyToken],owner.update1);
+
 	app.get('/api/owner/:id',[authJwt.verifyToken],owner.getFlatNo);
+
+	app.get('/api/owner/ownerMember/:id',[authJwt.verifyToken],owner.getMembers);
 
 	app.get('/api/owner/getFlatDetail/:id',[authJwt.verifyToken],owner.getFlatDetail);
 
 	app.put('/api/owner/delete/deleteSelected',[authJwt.verifyToken],owner.deleteSelected);
 
+	app.put('/api/ownerMember/delete/deleteSelected',[authJwt.verifyToken],owner.deleteSelectedMembers);
+
 	app.put('/api/owner/delete/:id',[authJwt.verifyToken],owner.delete);
+	
+	//app.put('/api/ownerMember/deleteSelected',[authJwt.verifyToken],owner.delete);
+
+	app.put('/api/ownerMember/delete/:id',[authJwt.verifyToken],owner.deleteMember)
 	
 	app.post('/api/tenant',[authJwt.verifyToken],tenant.createEncrypted);
 
 	app.get('/api/tenant',[authJwt.verifyToken],tenant.getDecrypted);
+
+	app.put('/api/tenant/delete/deleteSelected',[authJwt.verifyToken],tenant.deleteSelected);
+
+	app.put('/api/tenant/delete/:id',[authJwt.verifyToken],tenant.delete);
 
 	app.post('/api/societyMemberEventBooking', [authJwt.verifyToken], societyMemberEventBooking.create);
 

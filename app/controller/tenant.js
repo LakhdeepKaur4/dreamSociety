@@ -189,6 +189,7 @@ exports.createEncrypted = (req, res, next) => {
         index = tenant.fileName.lastIndexOf('.');
         tenant.fileExt = tenant.fileName.slice(index + 1);
         tenant.fileName = tenant.fileName.slice(0, index);
+        tenant.profilePicture = tenant.profilePicture.split(',')[1];
         const password = passwordGenerator.generate({
             length: 10,
             numbers: true
@@ -200,6 +201,7 @@ exports.createEncrypted = (req, res, next) => {
             userName: encrypt(tenant.userName),
             dob: tenant.dob,
             email: encrypt(tenant.email),
+            aadhaarNumber: encrypt(tenant.aadhaarNumber),
             contact: encrypt(tenant.contact),
             password: tenant.password,
             permanentAddress: encrypt(tenant.permanentAddress),
@@ -276,7 +278,7 @@ exports.createEncrypted = (req, res, next) => {
                                 ownerId2 = null;
                             }
                             if (ownersArr[2]) {
-                                ownerId3 = null;
+                                ownerId3 = ownersArr[2];
                             }
                             else {
                                 ownerId3 = null;
@@ -301,6 +303,7 @@ exports.createEncrypted = (req, res, next) => {
                         tenantSend.userName = decrypt(tenantSend.userName);
                         tenantSend.email = decrypt(tenantSend.email);
                         tenantSend.contact = decrypt(tenantSend.contact);
+                        tenantSend.aadhaarNumber = decrypt(tenantSend.aadhaarNumber);
                         tenantSend.picture = decrypt(tenantSend.picture);
                         tenantSend.permanentAddress = decrypt(tenantSend.permanentAddress);
                         tenantSend.bankName = decrypt(tenantSend.bankName);
@@ -329,9 +332,9 @@ exports.getDecrypted = async (req, res, next) => {
         const tenantsArr = [];
         
         Tenant.findAll({
-            // where: {
-            //     isActive: true
-            // },
+            where: {
+                isActive: true
+            },
             order: [['createdAt', 'DESC']],
             include: [
                 { model: Society },
@@ -349,6 +352,7 @@ exports.getDecrypted = async (req, res, next) => {
                     item.userName = decrypt(item.userName);
                     item.email = decrypt(item.email);
                     item.contact = decrypt(item.contact);
+                    item.aadhaarNumber = decrypt(item.aadhaarNumber);
                     item.picture = decrypt(item.picture);
                     item.permanentAddress = decrypt(item.permanentAddress);
                     item.bankName = decrypt(item.bankName);

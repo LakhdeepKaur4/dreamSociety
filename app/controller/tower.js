@@ -12,10 +12,11 @@ exports.create = async (req, res) => {
             isActive: true
         }
     })
-    
+
     let error = towers.some(tower => {
         return tower.towerName.toLowerCase().replace(/ /g, '') == req.body.towerName.toLowerCase().replace(/ /g, '');
     });
+    console.log(error);
     if (error) {
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Tower Name already Exists" })
     }
@@ -55,33 +56,55 @@ exports.getById = (req, res) => {
     })
 }
 
-exports.update =async (req, res) => {
+exports.update = async (req, res) => {
     console.log("-----update---------");
     const id = req.params.id;
+    const updates = req.body;
     if (!id) {
         res.json("Please enter id");
     }
-    const towers = await Tower.findAll({
+    const tower = await Tower.findOne({
         where: {
-            isActive: true
+            [Op.and]: [
+                { isActive: true },
+                { towerId: id },
+            ]
         }
     })
-    let error = towers.some(tower => {
-        return tower.towerName.toLowerCase().replace(/ /g, '') == req.body.towerName.toLowerCase().replace(/ /g, '');
-    });
-    if (error) {
-        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Tower Name already Exists" })
-    }
-    const updates = req.body;
-    Tower.find({
-        where: { towerId: id }
-    })
-        .then(tower => {
+
+    if (tower.towerName === updates.towerName) {
+        const updatedTower = await Tower.find({ where: { towerId: id } }).then(tower => {
             return tower.updateAttributes(updates)
         })
-        .then(updatedTower => {
-            res.json({ message: "Tower updated successfully!", updatedTower: updatedTower });
+        if (updatedTower) {
+            return res.status(httpStatus.OK).json({
+                message: "Tower Updated Page",
+                updatedTower: updatedTower
+            });
+        }
+    } else {
+        const towers = await Tower.findAll({
+            where: {
+                isActive: true
+            }
+        })
+        let error = towers.some(tower => {
+            return tower.towerName.toLowerCase().replace(/ /g, '') == req.body.towerName.toLowerCase().replace(/ /g, '');
         });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Tower Name already Exists" })
+        }
+   
+        Tower.find({
+            where: { towerId: id }
+        })
+            .then(tower => {
+                return tower.updateAttributes(updates)
+            })
+            .then(updatedTower => {
+                res.json({ message: "Tower updated successfully!", updatedTower: updatedTower });
+            });
+    }
 }
 
 exports.delete = async (req, res, next) => {

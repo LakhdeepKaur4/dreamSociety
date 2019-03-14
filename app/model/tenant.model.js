@@ -1,3 +1,5 @@
+
+
 module.exports = (sequelize, Sequelize) => {
       const Tenant = sequelize.define('tenant_master', {
             tenantId: {
@@ -64,9 +66,13 @@ module.exports = (sequelize, Sequelize) => {
                   type: Sequelize.INTEGER,
                   allowNull: false
             },
+            aadhaarNumber: {
+                  type: Sequelize.STRING,
+                  allowNull: false
+            },
             isActive: {
                   type: Sequelize.BOOLEAN,
-                  defaultValue: false
+                  defaultValue: true
             },
             createdAt: {
                   allowNull: false,

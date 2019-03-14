@@ -5,14 +5,13 @@ const httpStatus = require('http-status')
 const Size = db.size;
 const Op = db.Sequelize.Op;
 
-exports.create =async  (req, res) => {
+exports.create = async (req, res) => {
     console.log("creating size");
     const sizes = await Size.findAll({
         where: {
             isActive: true
         }
     })
-    
     let error = sizes.some(size => {
         return size.sizeType.toLowerCase().replace(/ /g, '') == req.body.sizeType.toLowerCase().replace(/ /g, '');
     });
@@ -56,33 +55,54 @@ exports.getById = (req, res) => {
     })
 }
 
-exports.update =async (req, res) => {
+exports.update = async (req, res) => {
     const id = req.params.id;
     if (!id) {
         res.json("Please enter id");
     }
-    const sizes = await Size.findAll({
+    const updates = req.body;
+    const size = await Size.findOne({
         where: {
-            isActive: true
+            [Op.and]: [
+                { isActive: true },
+                { sizeId: id },
+            ]
         }
     })
-    console.log(sizes);
-    let error = sizes.some(size => {
-        return size.sizeName.toLowerCase().replace(/ /g, '') == req.body.sizeName.toLowerCase().replace(/ /g, '');
-    });
-    if (error) {
-        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Size Name already Exists" })
-    }
-    const updates = req.body;
-    Size.find({
-        where: { sizeId: id }
-    })
-        .then(size => {
+
+    if (size.sizeType === updates.sizeType) {
+        const updatedSize = await Size.find({ where: { sizeId: id } }).then(size => {
             return size.updateAttributes(updates)
         })
-        .then(updatedSize => {
-            res.json({ message: "Size updated successfully!", updatedSize: updatedSize });
+        if (updatedSize) {
+            return res.status(httpStatus.OK).json({
+                message: "Size Updated Page",
+                updatedSize: updatedSize
+            });
+        }
+    } else {
+        const sizes = await Size.findAll({
+            where: {
+                isActive: true
+            }
+        })
+        console.log(sizes);
+        let error = sizes.some(size => {
+            return size.sizeType.toLowerCase().replace(/ /g, '') == req.body.sizeType.toLowerCase().replace(/ /g, '');
         });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Size Name already Exists" })
+        }
+        Size.find({
+            where: { sizeId: id }
+        })
+            .then(size => {
+                return size.updateAttributes(updates)
+            })
+            .then(updatedSize => {
+                res.json({ message: "Size updated successfully!", updatedSize: updatedSize });
+            });
+    }
 }
 
 exports.delete = async (req, res, next) => {

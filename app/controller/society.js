@@ -222,42 +222,66 @@ referenceConstraintReturn = (checkConstraint, object, property, entry) => {
     }
 }
 
-exports.createEncrypted = (req, res, next) => {
+exports.createEncrypted = async (req, res, next) => {
     console.log('Creating Society');
     console.log('Body ===>', req.body);
-    Society.create({
-        societyName: encrypt(req.body.societyName),
-        societyAddress: encrypt(req.body.societyAddress),
-        cityId: req.body.cityId,
-        countryId: req.body.countryId,
-        locationId: req.body.locationId,
-        stateId: req.body.stateId,
-        contactNumber: encrypt(req.body.contactNumber),
-        registrationNumber: encrypt(req.body.registrationNumber),
-        totalBoardMembers: encrypt(req.body.totalBoardMembers),
-        bankName: encrypt(req.body.bankName),
-        email: encrypt(req.body.email),
-        IFSCCode: encrypt(req.body.IFSCCode),
-        accountHolderName: encrypt(req.body.accountHolderName),
-        accountNumber: encrypt(req.body.accountNumber),
-        userId: req.userId,
-    })
-        .then(society => {
-            society.societyName = decrypt(society.societyName);
-            society.societyAddress = decrypt(society.societyAddress);
-            society.contactNumber = decrypt(society.contactNumber);
-            society.registrationNumber = decrypt(society.registrationNumber);
-            society.totalBoardMembers = decrypt(society.totalBoardMembers);
-            society.bankName = decrypt(society.bankName);
-            society.email = decrypt(society.email);
-            society.IFSCCode = decrypt(society.IFSCCode);
-            society.accountHolderName = decrypt(society.accountHolderName);
-            society.accountNumber = decrypt(society.accountNumber);
-            res.json({ message: "Society added successfully!", society: society });
+
+    let existSocietyName = 0;
+
+    if (req.body['societyName'] !== undefined) {
+        societyNameErr = await Society.findAll({ attributes: ['societyName'] });
+    }
+    else {
+        societyNameErr = null;
+    }
+
+    if (societyNameErr !== null) {
+        societyNameErr.map(item => {
+            if ((decrypt(item.societyName)).replace(/ /g, '') === req.body.societyName.replace(/ /g, '')) {
+                existSocietyName += 1;
+            }
         })
-        .catch(err => {
-            res.status(500).send("Fail! Error -> " + err);
+    }
+
+    if (existSocietyName !== 0) {
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+            message: "Society Name already in use",
+        });
+    } else {
+        Society.create({
+            societyName: encrypt(req.body.societyName),
+            societyAddress: encrypt(req.body.societyAddress),
+            cityId: req.body.cityId,
+            countryId: req.body.countryId,
+            locationId: req.body.locationId,
+            stateId: req.body.stateId,
+            contactNumber: encrypt(req.body.contactNumber),
+            registrationNumber: encrypt(req.body.registrationNumber),
+            totalBoardMembers: encrypt(req.body.totalBoardMembers),
+            bankName: encrypt(req.body.bankName),
+            email: encrypt(req.body.email),
+            IFSCCode: encrypt(req.body.IFSCCode),
+            accountHolderName: encrypt(req.body.accountHolderName),
+            accountNumber: encrypt(req.body.accountNumber),
+            userId: req.userId,
         })
+            .then(society => {
+                society.societyName = decrypt(society.societyName);
+                society.societyAddress = decrypt(society.societyAddress);
+                society.contactNumber = decrypt(society.contactNumber);
+                society.registrationNumber = decrypt(society.registrationNumber);
+                society.totalBoardMembers = decrypt(society.totalBoardMembers);
+                society.bankName = decrypt(society.bankName);
+                society.email = decrypt(society.email);
+                society.IFSCCode = decrypt(society.IFSCCode);
+                society.accountHolderName = decrypt(society.accountHolderName);
+                society.accountNumber = decrypt(society.accountNumber);
+                res.json({ message: "Society added successfully!", society: society });
+            })
+            .catch(err => {
+                res.status(500).send("Fail! Error -> " + err);
+            })
+    }
 }
 
 exports.getDecrypted = (req, res, next) => {
@@ -374,73 +398,96 @@ exports.updateEncrypted = async (req, res, next) => {
     }
     const update = req.body;
 
-    society = await Society.find({ where: { societyId: id } });
+    let existSocietyName = 0;
 
-    societyNameCheck = constraintCheck('societyName', update);
-    societyAddressCheck = constraintCheck('societyAddress', update);
-    contactNumberCheck = constraintCheck('contactNumber', update);
-    registrationNumberCheck = constraintCheck('registrationNumber', update);
-    totalBoardMembersCheck = constraintCheck('totalBoardMembers', update);
-    bankNameCheck = constraintCheck('bankName', update);
-    emailCheck = constraintCheck('email', update);
-    IFSCCodeCheck = constraintCheck('IFSCCode', update);
-    accountHolderNameCheck = constraintCheck('accountHolderName', update);
-    accountNumberCheck = constraintCheck('accountNumber', update);
-    cityIdCheck = constraintCheck('cityId', update);
-    countryIdCheck = constraintCheck('countryId', update);
-    locationIdCheck = constraintCheck('locationId', update);
-    stateIdCheck = constraintCheck('stateId', update);
-
-    societyName = constraintReturn(societyNameCheck, update, 'societyName', society);
-    societyAddress = constraintReturn(societyAddressCheck, update, 'societyAddress', society);
-    contactNumber = constraintReturn(contactNumberCheck, update, 'contactNumber', society);
-    registrationNumber = constraintReturn(registrationNumberCheck, update, 'registrationNumber', society);
-    totalBoardMembers = constraintReturn(totalBoardMembersCheck, update, 'totalBoardMembers', society);
-    bankName = constraintReturn(bankNameCheck, update, 'bankName', society);
-    email = constraintReturn(emailCheck, update, 'email', society);
-    IFSCCode = constraintReturn(IFSCCodeCheck, update, 'IFSCCode', society);
-    accountHolderName = constraintReturn(accountHolderNameCheck, update, 'accountHolderName', society);
-    accountNumber = constraintReturn(accountNumberCheck, update, 'accountNumber', society);
-    cityId = referenceConstraintReturn(cityIdCheck, update, 'cityId', society);
-    countryId = referenceConstraintReturn(countryIdCheck, update, 'countryId', society);
-    locationId = referenceConstraintReturn(locationIdCheck, update, 'locationId', society);
-    stateId = referenceConstraintReturn(stateIdCheck, update, 'stateId', society);
-
-    const updates = {
-        societyName: societyName,
-        societyAddress: societyAddress,
-        cityId: cityId,
-        countryId: countryId,
-        locationId: locationId,
-        stateId: stateId,
-        contactNumber: contactNumber,
-        registrationNumber: registrationNumber,
-        totalBoardMembers: totalBoardMembers,
-        bankName: bankName,
-        email: email,
-        IFSCCode: IFSCCode,
-        accountHolderName: accountHolderName,
-        accountNumber: accountNumber,
-        userId: req.userId
+    if (update['societyName'] !== undefined) {
+        societyNameErr = await Society.findAll({ attributes: ['societyName'], where: { societyId: { [Op.ne]: id } } });
+    }
+    else {
+        societyNameErr = null;
     }
 
-    Society.find({
-        where: { societyId: id }
-    })
-        .then(society => {
-            return society.updateAttributes(updates)
+    if (societyNameErr !== null) {
+        societyNameErr.map(item => {
+            if ((decrypt(item.societyName)).replace(/ /g, '') === req.body.societyName.replace(/ /g, '')) {
+                existSocietyName += 1;
+            }
         })
-        .then(updatedSociety => {
-            updatedSociety.societyName = decrypt(updatedSociety.societyName);
-            updatedSociety.societyAddress = decrypt(updatedSociety.societyAddress);
-            updatedSociety.contactNumber = decrypt(updatedSociety.contactNumber);
-            updatedSociety.registrationNumber = decrypt(updatedSociety.registrationNumber);
-            updatedSociety.totalBoardMembers = decrypt(updatedSociety.totalBoardMembers);
-            updatedSociety.bankName = decrypt(updatedSociety.bankName);
-            updatedSociety.email = decrypt(updatedSociety.email);
-            updatedSociety.IFSCCode = decrypt(updatedSociety.IFSCCode);
-            updatedSociety.accountHolderName = decrypt(updatedSociety.accountHolderName);
-            updatedSociety.accountNumber = decrypt(updatedSociety.accountNumber);
-            res.json({ message: "Society updated successfully!", updatedSociety: updatedSociety });
+    }
+
+    if (existSocietyName !== 0) {
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+            message: "Society Name already in use",
         });
+    } else {
+        society = await Society.find({ where: { societyId: id } });
+
+        societyNameCheck = constraintCheck('societyName', update);
+        societyAddressCheck = constraintCheck('societyAddress', update);
+        contactNumberCheck = constraintCheck('contactNumber', update);
+        registrationNumberCheck = constraintCheck('registrationNumber', update);
+        totalBoardMembersCheck = constraintCheck('totalBoardMembers', update);
+        bankNameCheck = constraintCheck('bankName', update);
+        emailCheck = constraintCheck('email', update);
+        IFSCCodeCheck = constraintCheck('IFSCCode', update);
+        accountHolderNameCheck = constraintCheck('accountHolderName', update);
+        accountNumberCheck = constraintCheck('accountNumber', update);
+        cityIdCheck = constraintCheck('cityId', update);
+        countryIdCheck = constraintCheck('countryId', update);
+        locationIdCheck = constraintCheck('locationId', update);
+        stateIdCheck = constraintCheck('stateId', update);
+
+        societyName = constraintReturn(societyNameCheck, update, 'societyName', society);
+        societyAddress = constraintReturn(societyAddressCheck, update, 'societyAddress', society);
+        contactNumber = constraintReturn(contactNumberCheck, update, 'contactNumber', society);
+        registrationNumber = constraintReturn(registrationNumberCheck, update, 'registrationNumber', society);
+        totalBoardMembers = constraintReturn(totalBoardMembersCheck, update, 'totalBoardMembers', society);
+        bankName = constraintReturn(bankNameCheck, update, 'bankName', society);
+        email = constraintReturn(emailCheck, update, 'email', society);
+        IFSCCode = constraintReturn(IFSCCodeCheck, update, 'IFSCCode', society);
+        accountHolderName = constraintReturn(accountHolderNameCheck, update, 'accountHolderName', society);
+        accountNumber = constraintReturn(accountNumberCheck, update, 'accountNumber', society);
+        cityId = referenceConstraintReturn(cityIdCheck, update, 'cityId', society);
+        countryId = referenceConstraintReturn(countryIdCheck, update, 'countryId', society);
+        locationId = referenceConstraintReturn(locationIdCheck, update, 'locationId', society);
+        stateId = referenceConstraintReturn(stateIdCheck, update, 'stateId', society);
+
+        const updates = {
+            societyName: societyName,
+            societyAddress: societyAddress,
+            cityId: cityId,
+            countryId: countryId,
+            locationId: locationId,
+            stateId: stateId,
+            contactNumber: contactNumber,
+            registrationNumber: registrationNumber,
+            totalBoardMembers: totalBoardMembers,
+            bankName: bankName,
+            email: email,
+            IFSCCode: IFSCCode,
+            accountHolderName: accountHolderName,
+            accountNumber: accountNumber,
+            userId: req.userId
+        }
+
+        Society.find({
+            where: { societyId: id }
+        })
+            .then(society => {
+                return society.updateAttributes(updates)
+            })
+            .then(updatedSociety => {
+                updatedSociety.societyName = decrypt(updatedSociety.societyName);
+                updatedSociety.societyAddress = decrypt(updatedSociety.societyAddress);
+                updatedSociety.contactNumber = decrypt(updatedSociety.contactNumber);
+                updatedSociety.registrationNumber = decrypt(updatedSociety.registrationNumber);
+                updatedSociety.totalBoardMembers = decrypt(updatedSociety.totalBoardMembers);
+                updatedSociety.bankName = decrypt(updatedSociety.bankName);
+                updatedSociety.email = decrypt(updatedSociety.email);
+                updatedSociety.IFSCCode = decrypt(updatedSociety.IFSCCode);
+                updatedSociety.accountHolderName = decrypt(updatedSociety.accountHolderName);
+                updatedSociety.accountNumber = decrypt(updatedSociety.accountNumber);
+                res.json({ message: "Society updated successfully!", updatedSociety: updatedSociety });
+            });
+    }
 }

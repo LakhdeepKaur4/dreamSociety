@@ -85,6 +85,7 @@ exports.update = async (req, res, next) => {
             where: {
                 [Op.and]: [
                     { flatNo: req.body.flatNo },
+                    { flatId: req.body.flatId },
                     { towerId: req.body.towerId },
                     { isActive: true }
                 ]

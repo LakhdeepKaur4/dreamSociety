@@ -18,7 +18,8 @@ exports.create = async (req, res, next) => {
 
         SocietyMemberEventBooking.findOrCreate({
             where: {
-                startDate: body.startDate
+                startDate: body.startDate,
+                eventSpaceId: body.eventSpaceId
             },
             // defaults: {
             //     endDate: body.endDate,
@@ -36,8 +37,8 @@ exports.create = async (req, res, next) => {
                 }
                 else {
                     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                        message: "Date Not Available"
-                    })
+                        message: "Date not available for same venue"
+                    });
                 }
             })
             .catch(err => console.log(err))
@@ -87,14 +88,28 @@ exports.update = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedEvent = await SocietyMemberEventBooking.find({ where: { societyMemberEventBookingId: id } }).then(event => {
-            return event.updateAttributes(update)
-        })
-        if (updatedEvent) {
-            return res.status(httpStatus.OK).json({
-                message: "Event Updated Page",
-                event: updatedEvent
+
+        if ((update['startDate'] !== undefined) && (update['eventSpaceId'] !== undefined)) {
+            eventExisting = await SocietyMemberEventBooking.findOne({ where: { startDate: update.startDate, eventSpaceId: update.eventSpaceId, societyMemberEventBookingId: { [Op.ne]: id } } });
+        }
+        else {
+            eventExisting = null;
+        }
+
+        if (eventExisting !== null) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                message: "Date not available for same venue"
             });
+        } else {
+            const updatedEvent = await SocietyMemberEventBooking.find({ where: { societyMemberEventBookingId: id } }).then(event => {
+                return event.updateAttributes(update)
+            })
+            if (updatedEvent) {
+                return res.status(httpStatus.CREATED).json({
+                    message: "Event Updated Page",
+                    event: updatedEvent
+                });
+            }
         }
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);

@@ -9,13 +9,20 @@ exports.create = async (req, res, next) => {
     try {
         console.log("creating Society member event");
         let body = req.body;
-        const societyMemberEvent = await SocietyMemberEvent.findOne({
+        const societyMemberEvent = await SocietyMemberEvent.findAll({
             where: {
-                societyMemberEventName: body.societyMemberEventName
+                [Op.and]: [
+                    { isActive: true },
+                    { societyMemberEventName: req.body.societyMemberEventName },
+                ]
             }
         })
-        if (societyMemberEvent) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Society Member Event already Exists" })
+        // console.log(cities);
+        let error = societyMemberEvent.some(member => {
+            return member.societyMemberEventName.toLowerCase().replace(/ /g, '') == req.body.societyMemberEventName.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Society Event Name already Exists" })
         }
         body.userId = req.userId;
         const event = await SocietyMemberEvent.create(body);
@@ -99,8 +106,23 @@ exports.update = async (req, res, next) => {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
         const update = req.body;
-        if (!update) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        // if (!update) {
+        //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        // }
+        const societyMemberEvent = await SocietyMemberEvent.findAll({
+            where: {
+                [Op.and]: [
+                    { isActive: true },
+                    { societyMemberEventName: req.body.societyMemberEventName },
+                ]
+            }
+        })
+
+        let error = societyMemberEvent.some(member => {
+            return member.societyMemberEventName.toLowerCase().replace(/ /g, '') == req.body.societyMemberEventName.toLowerCase().replace(/ /g, '');
+        });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Society Event Name already Exists" })
         }
         const updatedEvent = await SocietyMemberEvent.find({ where: { societyMemberEventId: id } }).then(event => {
             return event.updateAttributes(update);

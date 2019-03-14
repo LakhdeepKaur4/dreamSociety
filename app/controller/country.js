@@ -8,7 +8,7 @@ const Op = db.Sequelize.Op;
 
 exports.create = async (req, res) => {
     let body = req.body;
-    let countryName = body.countryName.replace(/ +/g, "");
+    // let countryName = body.countryName.replace(/ +/g, "");
 
     const countries = await Country.findAll({
         where: {

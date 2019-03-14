@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
 		},
 		userName: {
 			type: Sequelize.STRING,
-			unique: true
+			unique: 'compositeIndex'
 		},
 		contact: {
 			type: Sequelize.STRING,
