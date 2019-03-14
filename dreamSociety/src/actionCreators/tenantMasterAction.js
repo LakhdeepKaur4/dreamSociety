@@ -54,7 +54,7 @@ export function deleteTenant(id){
 
     let {isActive} = data;
     const request = axios.put(`${URN}/tenant/delete/` + id, {isActive}, {headers: authHeader()})
-    .then(response => response.data);
+    .then(() => this.getTenantDetail());
 
     return {
         type: DELETE_TENANT,

@@ -4,9 +4,11 @@ import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader }
 import DefaultSelect from '../../constants/defaultSelect';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { getTenantDetail, deleteTenant, deleteSelectedTenant } from '../../actionCreators/tenantMasterAction';
-import {URN1,PicURN} from '../../actions/index'
+import {URN1,PicURN, URN} from '../../actions/index'
 import { connect } from 'react-redux';
+import Spinner from '../../components/spinner/spinner';
 import GoogleDocsViewer from 'react-google-docs-viewer';
+import "./tenantDetail.css"
 
 class TenantDetail extends Component {
     constructor(props){
@@ -15,7 +17,20 @@ class TenantDetail extends Component {
             search:'',
             ids:[],
             isActive: false,
-            isDisabled: true
+            isDisabled: true,
+            modalLoading:false,
+            editTenant:false,
+            tenantName:'',
+            email:'',
+            contact:'',
+            aadhaarNumber:'',
+            permanentAddress:'',
+            fileName:'',
+            towerName:'',
+            flatNo:'',
+            towerId:'',
+            picture:'',
+            flatDetailId:''
         }
     }
 
@@ -64,12 +79,21 @@ class TenantDetail extends Component {
 
     delete(id){
         console.log(id)
-        this.props.deleteTenant(id).then(() => this.props.getTenantDetail())
+        this.setState({isDisabled:true})
+        this.props.deleteTenant(id).then(() => {
+            this.props.getTenantDetail()
+        })
+    }
+
+    edit = (picture,tenantName, email, contact, aadhaarNumber, permanentAddress, towerName,flatNo,towerId,flatDetailId) =>{
+        console.log(picture,tenantName, email, contact, aadhaarNumber, permanentAddress, towerName,flatNo,towerId,flatDetailId)
+        this.setState({picture,tenantName, email, contact, aadhaarNumber, permanentAddress,
+            towerName,flatNo,towerId,flatDetailId,editTenant: true})
     }
 
     renderList = ({getTenantDetail}) => {
         console.log(getTenantDetail)
-        if(getTenantDetail){
+        if(getTenantDetail && getTenantDetail.tenants){
             return getTenantDetail.tenants.map((item, index) => {
                 if(item){
                     return (
@@ -99,12 +123,18 @@ class TenantDetail extends Component {
                             <td>{index + 1}</td>
                             <td style={{width:'4%'}}><img style={{ width: "100%", height: "20%" }} src={PicURN+item.picture} alt="Profile Pic" /></td>
                             <td>{item.tenantName}</td>
+                            <td>{item.email}</td>
                             <td>{item.contact}</td>
+                            <td>{item.aadhaarNumber}</td>
                             <td>{item.permanentAddress}</td>
-                            <td>{item.towerName}</td>
+                            <td>{item.tower_master ? item.tower_master.towerName : null}</td>
                             <td>{item.flat_detail_master ? item.flat_detail_master.flatNo : false}</td>
                             <td>
-                                <Button color="success" className="mr-2">Edit</Button>
+                                <Button color="success" onClick={this.edit.bind(this,PicURN+item.picture.replace('../../',''),
+                                     item.tenantName, item.email,
+                                    item.contact, item.aadhaarNumber, item.permanentAddress, 
+                                    item.tower_master.towerName,item.flat_detail_master.flatNo,
+                                     item.tower_master.towerId,item.flat_detail_master.flatDetailId)} className="mr-2">Edit</Button>
                                 <Button color="danger" onClick={this.delete.bind(this, item.tenantId)}>Delete</Button>
                             </td>
                         </tr>
@@ -123,7 +153,45 @@ class TenantDetail extends Component {
         .catch(err => err);
     }
 
+    toggleTenant(){
+        this.setState({editTenant: !this.state.editTenant})
+    }
+
+    browseBtn = (e) => {
+        document.getElementById('real-input').click();
+    }
+
+    imgChange = (event) => {
+        const files = event.target.files
+        const file = files[0];
+        console.log(file)
+        let fileName = file.name;
+        if (files && file && file.size <= 40096) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload =  () =>{
+              this.setState({
+                picture :  reader.result,
+                fileName,
+                imageSizeError:''
+              })
+              console.log(this.state.picture)
+          };
+        }
+        else {
+            this.setState({imageSizeError:'Image size should not be more than 4 MB.'});
+        }
+        console.log(document.querySelector('#real-input'))
+        const name = document.querySelector('#real-input').value.split(/\\|\//).pop();
+            const truncated = name.length > 20 
+              ? name.substr(name.length - 20) 
+              : name;
+            
+              document.querySelector('.file-info').innerHTML = truncated;
+    }
+
     render(){
+        
 
         let TableData = <Table>
                            <thead>
@@ -132,7 +200,9 @@ class TenantDetail extends Component {
                                     <th>#</th>
                                     <th>Profile Pic</th>
                                     <th>Name</th>
+                                    <th>Email</th>
                                     <th>Contact No.</th>
+                                    <th>Aadhaar Number</th>
                                     <th>Permanent Address</th>
                                     <th>Tower Name</th>
                                     <th>Flat No.</th>
@@ -143,6 +213,22 @@ class TenantDetail extends Component {
                                 {this.renderList(this.props.tenantReducer)}
                             </tbody>
                         </Table>
+
+        let modalData = <div>
+            <FormGroup>
+                <div>
+                    <Input type="file" accept='image/*' id="real-input" onChange={this.imgChange} />
+                    <Button className="browse-btn" onClick={this.browseBtn}>
+                        Update pic
+                    </Button>
+                    <span className="file-info" >Upload a file</span>
+                </div>
+                <span className="error">{this.state.imageSizeError}</span>
+            </FormGroup>
+            <FormGroup>
+                <img src={URN + this.state.picture} />
+            </FormGroup>
+        </div>
 
         return(
             <UI onClick={this.logout}>
@@ -169,10 +255,16 @@ class TenantDetail extends Component {
                             } 
                         }  
                     }/></Label>
+                    <Modal isOpen={this.state.editTenant} toggle={this.toggleTenant.bind(this)}>
+                        <ModalHeader toggle={this.toggleTenant.bind(this)}>Edit Tenant Details</ModalHeader>
+                        <ModalBody>
+                            {!this.state.modalLoading ? modalData : <Spinner/>}
+                        </ModalBody>
+                    </Modal>
                     {TableData}
                 </div>
             </UI>
-        )
+        );
     }
 }
 
