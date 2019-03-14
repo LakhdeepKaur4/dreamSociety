@@ -166,7 +166,7 @@ class TenantDetail extends Component {
         const file = files[0];
         console.log(file)
         let fileName = file.name;
-        if (files && file && file.size <= 40096) {
+        if (files && file) {
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload =  () =>{
@@ -178,9 +178,6 @@ class TenantDetail extends Component {
               console.log(this.state.picture)
           };
         }
-        else {
-            this.setState({imageSizeError:'Image size should not be more than 4 MB.'});
-        }
         console.log(document.querySelector('#real-input'))
         const name = document.querySelector('#real-input').value.split(/\\|\//).pop();
             const truncated = name.length > 20 
@@ -188,6 +185,10 @@ class TenantDetail extends Component {
               : name;
             
               document.querySelector('.file-info').innerHTML = truncated;
+    }
+
+    onChange = (e) => {
+        this.setState({[e.target.name]:e.target.value})
     }
 
     render(){
@@ -226,7 +227,19 @@ class TenantDetail extends Component {
                 <span className="error">{this.state.imageSizeError}</span>
             </FormGroup>
             <FormGroup>
-                <img src={URN + this.state.picture} />
+                <Input value={this.state.tenantName} name="tenantName" onChange={this.onChange} />
+            </FormGroup>
+            <FormGroup>
+                <Input value={this.state.email} name="email" onChange={this.onChange} />
+            </FormGroup>
+            <FormGroup>
+                <Input value={this.state.contact} name="contact" onChange={this.onChange} />
+            </FormGroup>
+            <FormGroup>
+                <Input value={this.state.aadhaarNumber} name="aadhaarNumber" onChange={this.onChange} />
+            </FormGroup>
+            <FormGroup>
+                <Input value={this.state.permanentAddress} name="permanentAddress" onChange={this.onChange} />
             </FormGroup>
         </div>
 
