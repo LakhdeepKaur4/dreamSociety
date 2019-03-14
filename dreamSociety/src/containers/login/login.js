@@ -55,7 +55,7 @@ class Login extends Component {
                                 return this.props.history.push('/adminDashboard');
                             case 'SOCIETY MEMBER OWNER':
                                 return this.props.history.push('/ownerDashboard');
-                            case 'SOCIETY MEMBER TENENT':
+                            case 'SOCIETY MEMBER TENANT':
                                 return this.props.history.push('/tenantDashboard');
                             case 'VENDOR':
                                 return this.props.history.push('/vendorDashboard')

@@ -231,7 +231,7 @@ console.log(ownerId, ownerName,dob,gender, contact,email,permanentAddress,bankNa
                                 }
                         } 
                              }}/></td>
-                    <td>{index+1}</td>
+                    <td style={{textAlign:"center"}}>{index+1}</td>
                     <td style={{width:"8%" ,height:"8%"}}> <img style={{ width: "100%", height: "15%" }} src={PicURN+items.picture} alt="Profile Pic">
                             </img></td>
                         <td style={{textAlign:"center",width:'10px'}}>{items.ownerName}</td>
@@ -396,12 +396,12 @@ console.log(ownerId, ownerName,dob,gender, contact,email,permanentAddress,bankNa
                     <th style={{width:"4%"}}></th>
                     <th style={{textAlign:"center",width:"4%"}}>#</th>
                     <th style={{textAlign:"center", width: "12%" }}>Profile Pic</th>
-                    <th style={{textAlign:"center",width:"8%"}}>Name</th>
+                    <th style={{textAlign:"center",width:"12%"}}>Name</th>
                     <th style={{textAlign:"center"}}>Contact No.</th>
                     <th style={{textAlign:"center",width:"16%"}}>Permanent Address</th>
                     <th style={{textAlign:"center"}}>Tower Name</th>
                     <th style={{textAlign:"center"}}>Flat No.</th>
-                    <th style={{textAlign:"center"}}>View Member</th>
+                    <th style={{textAlign:"center",width:"8%"}}>View Member</th>
                     <th style={{textAlign:"center"}}>Actions</th>
                 </tr>
             </thead>
