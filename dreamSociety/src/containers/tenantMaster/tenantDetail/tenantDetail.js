@@ -4,7 +4,7 @@ import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader }
 import DefaultSelect from '../../../constants/defaultSelect';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import { getTenantDetail, deleteTenant, deleteSelectedTenant } from '../../../actionCreators/tenantMasterAction';
-import {URN1,PicURN, URN} from '../../../actions/index'
+import {UR,PicURN, URN} from '../../../actions/index'
 import { connect } from 'react-redux';
 import Spinner from '../../../components/spinner/spinner';
 import GoogleDocsViewer from 'react-google-docs-viewer';
