@@ -77,7 +77,7 @@ export function updateLocation(locationId, countryId, stateId, cityId, locationN
 
 export const deleteLocation=(locationId,isActive)=>{
 
-    const request = axios.put(`${URN}/location/${locationId}`,{isActive}, {headers:authHeader()})
+    const request = axios.put(`${URN}/location/delete/${locationId}`,{isActive}, {headers:authHeader()})
      .then(response => response.data)
  
      

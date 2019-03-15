@@ -35,12 +35,15 @@ class userDetails extends Component {
                 dropdownOpen: false,
                 emailValidError:'',
                 search:'',
-                filterName:'firstName'
+                filterName:'firstName',
+                modalLoading: false,
+                emailServerError:'',
+                userNameServerError:'',
+                contactServerError:''
         }
         this.OnKeyPresshandlerPhone = this.OnKeyPresshandlerPhone.bind(this);
         this.OnKeyPressUserhandler = this.OnKeyPressUserhandler.bind(this);
         this.emailValid = this.emailValid.bind(this);
-
     }
 
 
@@ -87,7 +90,11 @@ class userDetails extends Component {
 
     toggleEditUserModal() {
         this.setState({
-            editUserModal: !this.state.editUserModal
+            errors:{},
+            editUserModal: !this.state.editUserModal,
+            emailServerError:'',
+            userNameServerError:'',
+            contactServerError:''
         });
     }
 
@@ -99,7 +106,13 @@ class userDetails extends Component {
         }
     }
 
+    refreshDataAfterUpdate = () => {
+        this.props.getUsers()
+        .then(() => this.setState({editUserModal: false, modalLoading: false}))
+    }
+
     updateUser = (e) => {
+            this.setState({message: '', emailServerError:'', userNameServerError:'', contactServerError:''})
             e.preventDefault();
             let { userId, roleName, firstName, lastName, userName, email,familyMember,towerName, floor,parking, contact,towerId } = this.state;
             let errors = {};
@@ -117,16 +130,20 @@ class userDetails extends Component {
             if (userName === '') errors.userName = "User Name can't be empty.";
             if (email === '') errors.email = "Email can't be empty.";
             if (contact === '') errors.contact = "Contact can't be empty.";
+            else if(contact.length !== 10) errors.contact = "Contact length should be of 10."
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0;
             if (isValid && this.state.emailValidError==='') {
                 this.props.updateUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerName,floor,parking, contact,towerId)
                 .then(() => {
-                    this.refreshData()
+                    this.refreshDataAfterUpdate()
                 })
+                .catch(err => { 
+                    console.log(err.response.data);
+                    this.setState({emailServerError: err.response.data.messageEmailErr, userNameServerError:err.response.data.messageUsernameErr,
+                    contactServerError: err.response.data.messageContactErr, modalLoading: false})})
                 this.setState({
-                    editUserModal: false,loading:true,errors:{},  userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '',
-                    towerId:''
+                    modalLoading:true,errors:{}, emailServerError: '', userNameServerError:'', contactServerError:''
                 });
             }
     }
@@ -156,10 +173,8 @@ class userDetails extends Component {
 
     searchFilter(search){
         return function(x){
-            if(x){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return  x.familyMember ? x.familyMember.toString().indexOf(search.toString())  !== -1: x   ||
-                 x.floor ? x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1: x ||
+                return x ? x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1 : false||
                  x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
@@ -168,7 +183,6 @@ class userDetails extends Component {
                  currentRole[0].toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.contact.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  !search;
-            }
         }
     }
 
@@ -189,65 +203,75 @@ class userDetails extends Component {
 
     fetchUsers({ user }) {
         if(user) {
+            console.log(user)
             let currentRole;
             return user.sort((item1,item2)=>{
-                console.log(item1, item2)
-                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
-                return this.state.sortVal ? cmprVal : -cmprVal;
+                if(item1 || item2){
+                    console.log(item1, item2)
+                    var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                    return this.state.sortVal ? cmprVal : -cmprVal;
+                }
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
-                let currentTower = item.tower_master.towerName;
-                let currentTowerId = item.towerId
-                return (
-                    <tr key={item.userId}>
-                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.userId}
-                         onChange={(e) => {
-                            const {userId} = item
-                            if(!e.target.checked){
-                                document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(userId);
-                                if(indexOfId > -1){
-                                    this.state.ids.splice(indexOfId, 1);
+                if(item && item.tower_master){
+                    let currentTower = item.tower_master.towerName;
+                    let currentTowerId = item.towerId
+                    return (
+                        <tr key={item.userId}>
+                            <td><input type="checkbox" name="ids" className="SelectAll" value={item.userId}
+                             onChange={(e) => {
+                                const {userId} = item
+                                if(!e.target.checked){
+                                    document.getElementById('allSelect').checked=false;
+                                    let indexOfId = this.state.ids.indexOf(userId);
+                                    if(indexOfId > -1){
+                                        this.state.ids.splice(indexOfId, 1);
+                                    }
+                                    if(this.state.ids.length === 0){
+                                        this.setState({isDisabled: true});
+                                    }
                                 }
-                                if(this.state.ids.length === 0){
-                                    this.setState({isDisabled: true});
+                                else {
+                                    this.setState({ids: [...this.state.ids, userId]});
+                                    if(this.state.ids.length >= 0){
+                                        this.setState({isDisabled: false})
+                                    }
                                 }
-                            }
-                            else {
-                                this.setState({ids: [...this.state.ids, userId]});
-                                if(this.state.ids.length >= 0){
-                                    this.setState({isDisabled: false})
+                                    
+                                 }}/></td>
+                            <td>{index + 1}</td>
+                            <td>{item.roles.map((i) => {
+                                if(i){
+                                    currentRole = i.roleName
+                                    return currentRole
                                 }
-                            }
-                                
-                             }}/></td>
-                        <td>{index + 1}</td>
-                        <td>{item.roles.map((i) => {
-                            currentRole = i.roleName
-                            return currentRole
-                        })}</td>
-                        <td>{item.firstName}</td>
-                        <td>{item.lastName}</td>
-                        <td>{item.userName}</td>
-                        <td>{item.email}</td>
-                        <td>{item.familyMember ? item.familyMember : ''}</td>
-                        <td>{currentTower}</td>
-                        <td>{item.floor}</td>
-                        <td>{item.parking}</td>
-                        <td>{item.contact}</td>
-                        <td>
-                            <div className="w3-row">
-                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email,item.familyMember,
-                                currentTowerId,item.floor,item.parking, item.contact, currentTower)}>Edit</Button>
-                            <Button color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
-                            </div>
-                        </td>
-                    </tr>
-                )
+                            })}</td>
+                            <td>{item.firstName}</td>
+                            <td>{item.lastName}</td>
+                            <td>{item.userName}</td>
+                            <td>{item.email}</td>
+                            <td>{item.familyMember}</td>
+                            <td>{currentTower}</td>
+                            <td>{item.floor}</td>
+                            <td>{item.parking}</td>
+                            <td>{item.contact}</td>
+                            <td>
+                                <div className="w3-row">
+                                <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email,item.familyMember,
+                                    currentTowerId,item.floor,item.parking, item.contact, currentTower)}>Edit</Button>
+                                <Button color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
+                                </div>
+                            </td>
+                        </tr>
+                    )
+                }
+                
+                
             })
         }
     }
 
     onChange = (e) => {
+        this.setState({userNameServerError: '', contactServerError:''})
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -261,9 +285,9 @@ class userDetails extends Component {
     }
 
     fetchRoles({ userRole }) {
-        if (userRole) {
+        if(userRole) {
             return (
-                userRole.map((item) => {
+               userRole.map((item) => {
                     return (
                         <option value={item.roleId} key={item.id}>
                             {item.roleName}
@@ -325,7 +349,7 @@ class userDetails extends Component {
 
     emailChange = (e) => {
         console.log(this.state.email)
-        this.setState({email:e.target.value})
+        this.setState({email:e.target.value, emailServerError:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value});
             console.log(this.state.email)
@@ -345,7 +369,7 @@ class userDetails extends Component {
                     <th></th>
                     <th>#</th>
                     <th>Roles</th>
-                    <th onClick={()=>{
+                    <th style={{cursor:'pointer'}} onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'firstName'}});
                         }}>First Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
@@ -368,21 +392,7 @@ class userDetails extends Component {
         let deleteSelectedButton = <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
 
-        return (
-
-            <div>
-                <UI onClick={this.logout}>
-                    <div className="w3-container w3-margin-top w3-responsive">
-                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                            <span aria-hidden="true">&times;</span>
-                    </div>
-
-                            <div className="top-details">
-                                <h3>User Master Details</h3>
-                                <Button color="primary" onClick={this.routeToAddNewUser} color="primary">Add Users</Button>
-                            </div>
-
-                            <EditUserModal isOpen={this.state.editUserModal}
+        let modalData = <EditUserModal isOpen={this.state.editUserModal}
                                 toggle={this.toggleEditUserModal.bind(this)}
                                 roleNameValue = {this.state.roleName}
                                 roleInputName = "roleName"
@@ -401,9 +411,11 @@ class userDetails extends Component {
                                 lastNameError = {this.state.errors.lastName}
                                 userNameInputName = "userName"
                                 userNameValue = {this.state.userName}
+                                userNameServerError={this.state.userNameServerError}
                                 userNameValueChange = {this.onChange}
                                 userNameError = {this.state.errors.userName}
                                 emailInputName= "email"
+                                emailServerError={this.state.emailServerError}
                                 emailValue = {this.state.email}
                                 emailError = {this.state.errors.email}
                                 emailKeyPress={this.emailValid}
@@ -427,12 +439,30 @@ class userDetails extends Component {
                                 towerChange={this.onChange}
                                 contactInputName = "contact"
                                 contactValue = {this.state.contact}
+                                contactServerError={this.state.contactServerError}
                                 contactError = {this.state.errors.contact}
                                 contactValidation = {this.OnKeyPresshandlerPhone}
                                 contactValueChange = {this.onChange}
                                 updateUserClick={this.updateUser}
                                 inValidEmailFormatError={this.state.emailValidError}
+                                modalLoading={this.state.modalLoading}
                                  />
+
+        return (
+
+            <div>
+                <UI onClick={this.logout}>
+                    <div className="w3-container w3-margin-top w3-responsive">
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                            <span aria-hidden="true">&times;</span>
+                    </div>
+
+                            <div className="top-details">
+                                <h3>User Master Details</h3>
+                                <Button color="primary" onClick={this.routeToAddNewUser} color="primary">Add Users</Button>
+                            </div>
+                            {modalData}
+                            
 
                             <SearchFilter type="text" value={this.state.search}
                                 onChange={this.searchOnChange} />

@@ -29,6 +29,7 @@ class AddTenant extends Component{
             bankName:'',
             accountHolderName:'',
             accountNumber:'',
+            aadhaarNumber:'',
             panCardNumber:'',
             IFSCCode:'',
             noOfMembers:'',
@@ -37,6 +38,8 @@ class AddTenant extends Component{
             societyName : '',
             societyId: '',
             member:[],
+            towerId:'',
+            towerName:'',
             fileName: '',
             imageSizeError:'',
             errors:{},
@@ -49,11 +52,15 @@ class AddTenant extends Component{
         this.props.detailSociety();
         this.props.viewTower();
         this.props.getRelation();
+        let societyId = localStorage.getItem('societyId')
+        console.log(societyId);
+        this.setState({societyId})
+        console.log(this.state.societyId)
+        this.setState({societyId: localStorage.getItem('societyId')})
+        console.log(this.state.societyId) 
     }
 
-    componentWillReceiveProps(){
-
-    }
+    
 
     logout = () => {
         localStorage.removeItem('token');
@@ -77,8 +84,13 @@ class AddTenant extends Component{
         console.log(this.state);
     }
 
+    ifscChange = (e) => {
+        this.setState({IFSCCode:e.target.value.toUpperCase()})
+    }
+
     getTower = ({ tower }) => {
         if (tower) {
+            
             return tower.map((item) => {
                 return (
                     { ...item, label: item.towerName, value: item.towerId }
@@ -119,21 +131,20 @@ class AddTenant extends Component{
 
     fetchFlatDetail = ({getFlatDetail}) => {
         console.log(getFlatDetail)
-        if(getFlatDetail){
+        if(getFlatDetail && getFlatDetail.owner){
+            console.log(getFlatDetail)
             return getFlatDetail.owner.map((item) => {
-                return (
-                    <option value={item.flatDetailId} key={item.flatDetailId}>{item.flatNo}</option>
-                )
+            return (
+                <option value={item.flatDetailId} key={item.flatDetailId}>{item.flatNo}</option>
+            )
             })
         }
-        
-        
     }
 
     
 
     towerChangeHandler = (selectTower) => {
-        
+        this.setState({towerName:selectTower.towerName, towerId:selectTower.towerId})
         this.props.getFlatDetailViaTowerId(selectTower.towerId)
     }
 
@@ -155,7 +166,6 @@ class AddTenant extends Component{
             );
         }
         return [];
-
     }
 
     maxDate = () => {
@@ -176,14 +186,11 @@ class AddTenant extends Component{
         console.log(this.state)
     }
     onSubmit = (e) => {
-        let abc = localStorage.getItem('societyId')
-        console.log(abc);
-        this.setState({...this.state.societyId,societyId: abc})
         console.log(this.state.societyId)
         e.preventDefault()
-        let { tenantName, dob, gender, email, contact, profilePicture, permanentAddress, bankName, 
+        let { tenantName, dob, gender, email, contact, profilePicture, aadhaarNumber, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, member, fileName, societyId } = this.state;
+            societyName, member, fileName, societyId, towerName, towerId } = this.state;
         console.log(this.state)
         let data = []
         for(let i = 0; i < this.state.noOfMembers; i++){
@@ -197,14 +204,20 @@ class AddTenant extends Component{
         }
         
         this.setState({member:data})
-        console.log(tenantName, dob, gender, email, contact, profilePicture, permanentAddress, bankName, 
+        console.log(tenantName, dob, gender,aadhaarNumber, email, contact, profilePicture, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, societyId, member, fileName);
+            societyName, societyId, member, towerName, fileName, towerId);
 
         if(this.state.imageSizeError === ''){
-            this.props.addTenantDetail({tenantName, dob, gender, email, contact, profilePicture, permanentAddress, bankName, 
-                accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, societyId, member, fileName});
+            this.props.addTenantDetail({tenantName, dob,aadhaarNumber, gender, email, contact, profilePicture, permanentAddress, bankName, 
+                accountHolderName, accountNumber, panCardNumber, towerName, towerId, IFSCCode, noOfMembers, flatDetailId, societyId, member, fileName})
+                .then(() => this.props.history.push('/superDashboard/tenantDetails'))
+                .catch(err => err.response.data);
         }
+    }
+
+    routeToDetail = () => {
+        this.props.history.push('/superDashboard/tenantDetails')
     }
 
     relationHandler = (name,selectOption) => {
@@ -238,12 +251,11 @@ class AddTenant extends Component{
         else {
             this.setState({imageSizeError:'Image size should not be more than 4 MB.'});
         }
-        
     }
 
     nextPrev = () => {
         let errors = {};
-        const {tenantName, dob, gender, contact, email, correspondingAddress, permanentAddress} = this.state;
+        const {tenantName, dob, gender, contact, email, correspondingAddress, aadhaarNumber, permanentAddress} = this.state;
         if(this.state.step === 1){
             if(tenantName === '') errors.tenantName = `Tenant Name can't be empty.`;
             if(dob === '') errors.dob = `Date of Birth can't be empty.`;
@@ -252,6 +264,7 @@ class AddTenant extends Component{
             if(email === '') errors.email = `Email can't be empty.`;
             if(correspondingAddress === '') errors.correspondingAddress = `Corresponding Address can't be empty.`;
             if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
+            if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -323,9 +336,6 @@ class AddTenant extends Component{
         }
     }
 
-    
-
-
     render(){
         
         let userDatas = [];
@@ -362,7 +372,7 @@ class AddTenant extends Component{
                             type="radio" value="Other"  required />
                         </Col>
                     </Col>
-                    <Col md={3}>
+                    <Col md={12}>
                         <Label>Date of Birth</Label>
                         <Input type="date" max={this.maxDate()}  name={`dob${i}`} onChange={this.memberDetailChange}  required />
                     </Col>
@@ -427,6 +437,15 @@ class AddTenant extends Component{
                             </span> : ''}
                             {<span className="error">{this.state.emailValidError}</span>}
                         </FormGroup>
+                        <FormGroup>
+                            <Label>Aadhaar Number</Label>
+                            <Input placeholder="Aadhaar number" onChange={this.onChange}
+                            name="aadhaarNumber"  onKeyPress={this.numberValidation} type="text"
+                            maxLength="12" />
+                            {!this.state.aadhaarNumber ? <span className="error">
+                                {this.state.errors.aadhaarNumber}
+                            </span> : ''}
+                        </FormGroup>
                         {/* <FormGroup>
                             <Label>Society Name</Label>
                             <Select placeholder="Society Name"
@@ -439,7 +458,7 @@ class AddTenant extends Component{
                         </FormGroup> */}
                         <FormGroup>
                             <Label>Corresponding Address</Label>
-                            <Input type="textarea" onChange={this.onChange}
+                            <Input type="textarea" onChange={this.onChange} maxLength="250"
                              name="correspondingAddress" placeholder="Corresponding Address" />
                              {!this.state.correspondingAddress ? <span className="error">
                                 {this.state.errors.correspondingAddress}
@@ -448,6 +467,7 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>Permanent Address</Label>
                             <Input type="textarea" onChange={this.onChange}
+                            maxLength="250"
                              name="permanentAddress" placeholder="Permanent Address" />
                              {!this.state.permanentAddress ? <span className="error">
                                 {this.state.errors.permanentAddress}
@@ -460,13 +480,14 @@ class AddTenant extends Component{
                                 <Label>Bank Name</Label>
                                 <Input placeholder="Bank Name" onChange={this.onChange}
                                 onKeyPress={this.bankValidation}
+                                maxLength="50"
                                  type="text" name="bankName" />
                                  {!this.state.bankName ? <span className="error">{this.state.errors.bankName}</span> : ''}
                         </FormGroup>
                         <FormGroup>
                             <Label>Account Holder Name</Label>
                             <Input placeholder="Holder Name" onChange={this.onChange}
-                            onKeyPress={this.OnKeyPressUserhandler}
+                            onKeyPress={this.OnKeyPressUserhandler} maxLength="14"
                              type="text" name='accountHolderName' />
                              {!this.state.accountHolderName ? <span className="error">{this.state.errors.accountHolderName}</span> : ''}
                         </FormGroup>
@@ -481,6 +502,7 @@ class AddTenant extends Component{
                             <Label>PAN Card Number</Label>
                             <Input placeholder="Pan Number" onChange={this.onChange}
                              type='text' name="panCardNumber" minLength='10'
+                             value={this.state.panCardNumber.toUpperCase()}
                              maxLength='10' onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
                                 let inputChar = String.fromCharCode(e.charCode);
@@ -492,7 +514,16 @@ class AddTenant extends Component{
                         </FormGroup>
                         <FormGroup>
                             <Label>IFSC Code</Label>
-                            <Input placeholder="IFSC code" onChange={this.onChange}
+                            <Input placeholder="IFSC code" onChange={this.ifscChange}
+                            maxLength="16"
+                            value={this.state.IFSCCode.toUpperCase()}
+                            onKeyPress={(e) => {
+                                const pattern = /^[a-zA-Z0-9]+$/;
+                                let inputChar = String.fromCharCode(e.charCode);
+                                if (!pattern.test(inputChar)) {
+                                    e.preventDefault();
+                                }
+                            }}
                              type='text' name="IFSCCode" />
                              {!this.state.IFSCCode ? <span className="error">{this.state.errors.IFSCCode}</span> : ''}
                         </FormGroup>
@@ -532,7 +563,7 @@ class AddTenant extends Component{
                         <h3>Upload Your Image</h3>
                         <FormGroup>
                             <Label>Image</Label>
-                            <Input accept='image/*' placeholder="Owner Name" onChange={this.imageChangeHandler}
+                            <Input accept='image/*' onChange={this.imageChangeHandler}
                              type='file' name="profilePicture" />
                         </FormGroup>
                         <span className="error">{this.state.imageSizeError}</span>
@@ -541,7 +572,7 @@ class AddTenant extends Component{
                         <Button color="primary" className="mr-2" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
                         <Button color="primary" id="nextBtn" style={{ display: this.state.step == 5 ? 'none' : 'inline-block' }} disabled={this.state.step == 5} onClick={this.nextPrev}>Next</Button>
                         <Button color="success" className="mr-2" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
-                        <Button color="danger" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Cancel</Button>
+                        <Button color="danger" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }} onClick={this.routeToDetail}>Cancel</Button>
                     </div>
         </div>
 

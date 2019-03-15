@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getCountry, getState, getCity, detailCity, deleteCity, updateCity, deleteSelectCity } from './../../actionCreators/cityMasterAction';
+import {  getCity, detailCity, deleteCity, updateCity, deleteSelectCity } from './../../actionCreators/cityMasterAction';
+import { getCountry, getState } from './../../actionCreators/societyMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -101,8 +102,8 @@ class CityMasterDetail extends Component {
 
 
 
-    editCityType = () => {
-
+    editCityType = (e) => {
+        e.preventDefault();
         const { cityId, countryId, stateId, cityName } = this.state
 
         let errors = {};
@@ -134,15 +135,11 @@ class CityMasterDetail extends Component {
         let { isActive } = this.state.editCityData
         this.setState({ loading: true })
 
-        if(window.confirm('Are You Sure ?')){
+    
         this.props.deleteCity(cityId, isActive)
             .then(() => this.refreshData())
         this.setState({ editCityData: { isActive: false } })
-        }
-        else{
-            this.refreshData()
-        this.setState({ editCityData: { isActive: false } })
-        }
+      
     }
 
     deleteSelected = (ids) => {
@@ -258,14 +255,20 @@ class CityMasterDetail extends Component {
     onChangeCountry= (event)=>{
 
         let selected= event.target.value
-        var country = _.find(this.props.cityMasterReducer.countryResult,function(obj){
+        var country = _.find(this.props.societyReducer.countryResult,function(obj){
             return obj.countryName === selected
             })
 
-            this.props.getState(country.countryId).then((data) => {
-                console.log("data ",data);
-                this.setState({countryId: country.countryId,
-                countryName: country.countryName, stateName:data.payload.stateName })})
+        
+            this.props.getState(country.countryId)
+
+            this.setState({
+                countryName: country.countryName,
+                countryId:country.countryId,
+                stateName: '',
+                
+            })
+                
 
     }
 
@@ -275,7 +278,7 @@ class CityMasterDetail extends Component {
    
         let selected= event.target.value
        
-        var data1 = _.find(this.props.cityMasterReducer.stateResult,function(obj){
+        var data1 = _.find(this.props.societyReducer.stateResult,function(obj){
             return obj.stateName === selected
             })
 
@@ -294,7 +297,7 @@ class CityMasterDetail extends Component {
                 countryResult.map((item) => {
 
                     return (
-                        <option value={item.countryName} key={item.countryId}>
+                        <option value={item.countryName} key={item.countryId} >
                             {item.countryName}
                         </option>
                     )
@@ -307,10 +310,10 @@ class CityMasterDetail extends Component {
         if (stateResult) {
 
             return (
-                stateResult.map((item) => {
+                stateResult.map((item, index) => {
 
                     return (
-                        <option value={item.stateName} key={item.stateId}>
+                        <option value={item.stateName} key={item.stateId} selected={index==0}>
                             {item.stateName}
                         </option>
                     )
@@ -368,6 +371,41 @@ class CityMasterDetail extends Component {
                     {this.renderCity(this.props.cityMasterReducer)}
                 </tbody>
             </Table></div>
+
+            let modalData=<div>
+                   <FormGroup>
+                                    <Label>Country Name</Label>
+
+                                     <Input type="select" value={this.state.countryName} name="countryName" onChange={this.onChangeCountry}>
+                                    {/* <option value={this.state.countryId}>{this.state.countryName}</option> */}
+                                        <DefaultSelect/>
+                                        {this.fetchCountry(this.props.societyReducer)}
+                                    </Input>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label>State Name</Label>
+
+                                     <Input type="select" value={this.state.stateName}  name="stateName" onChange={this.onChangeState} >
+                                     {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                                  {this.state.stateName ? <DefaultSelect />: null}
+                                    {this.state.stateName ? null : this.fetchState(this.props.societyReducer)}
+                                    </Input>
+                                    {!this.state.stateName ? <span className="error">{this.state.errors.stateName}</span>: ''}
+                                </FormGroup>
+                                <FormGroup>
+                                    <Label>City Name</Label>
+                                    <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} onKeyPress={this.onKeyPressHandler} value={this.state.cityName} maxLength={50} />
+                                    <span className="error">{this.state.errors.cityName}</span>
+                                    <span className="error">{this.state.message}</span>
+                                </FormGroup>
+
+
+                                <FormGroup>
+                                    <Button color="primary mr-2" onClick={this.editCityType}>Save</Button>
+
+                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+                                </FormGroup>
+            </div>
         return (
             <div>
 
@@ -396,41 +434,11 @@ class CityMasterDetail extends Component {
                         }
                     }/></Label>
 
-                        {!this.state.loading ? tableData : <Spinner />}
+                        {(this.state.loading) ? <Spinner /> : tableData}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
-                                <FormGroup>
-                                    <Label>Country Name</Label>
-
-                                     <Input type="select" value={this.state.countryName} name="countryName" onChange={this.onChangeCountry}>
-                                    {/* <option value={this.state.countryId}>{this.state.countryName}</option> */}
-                                        <DefaultSelect/>
-                                        {this.fetchCountry(this.props.cityMasterReducer)}
-                                    </Input>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label>State Name</Label>
-
-                                     <Input type="select"  name="stateName" onChange={this.onChangeState} >
-                                          <option value={this.state.stateId}>{this.state.stateName}</option> 
-                                        <DefaultSelect/>
-                                        {this.fetchState(this.props.cityMasterReducer)}
-                                    </Input>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label>City Name</Label>
-                                    <Input type="text" id="cityId" name="cityName" onChange={this.onChangeHandler} onKeyPress={this.onKeyPressHandler} value={this.state.cityName} maxLength={50} />
-                                    <span className="error">{this.state.errors.cityName}</span>
-                                    <span className="error">{this.state.message}</span>
-                                </FormGroup>
-
-
-                                <FormGroup>
-                                    <Button color="primary mr-2" onClick={this.editCityType}>Save</Button>
-
-                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                                </FormGroup>
+                            {!this.state.modalLoading  ? modalData : <Spinner />}
                             </ModalBody>
                         </Modal>
 
@@ -447,7 +455,8 @@ class CityMasterDetail extends Component {
 function mapStatToProps(state) {
 
     return {
-        cityMasterReducer: state.cityMasterReducer
+        cityMasterReducer: state.cityMasterReducer,
+        societyReducer: state.societyReducer
     }
 }
 

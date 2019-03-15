@@ -20,7 +20,7 @@ class DisplayServices extends Component {
             ids:[], 
             menuVisible: false,
             editServiceModal: false,
-            isDisabled:true,
+            isDisabled:true, 
             search: '',
             errors:{},
             loading:true,
@@ -36,6 +36,7 @@ class DisplayServices extends Component {
     }
 
     onHandleChange=(event)=>{
+        this.setState({message:''})
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -107,8 +108,7 @@ class DisplayServices extends Component {
                 else {
                     this.setState({editServiceModal: false})
                 }       
-            this.setState({ modalLoading: true,
-                serviceId,serviceName, service_detail, serviceDetailId
+            this.setState({ modalLoading: true
        })
 
         }         
@@ -271,8 +271,8 @@ class DisplayServices extends Component {
                   
                     <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
+                    <span aria-hidden="true">&times;</span>
+                     </div>
 
                     <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)} >
                         <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Edit a Service</ModalHeader>

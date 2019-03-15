@@ -11,7 +11,7 @@ class locationMaster extends Component{
     constructor(props){
         super(props);
         this.state={ 
-
+            locationId:'',
             countryId:'',
             countryName: '',
             stateId: '',
@@ -36,8 +36,7 @@ class locationMaster extends Component{
         this.props.getCountryName();
         this.props.getStateName();
         this.props.getCityName();
-        this.props.getLocationName();
-        
+        this.props.getLocationName();       
     }
            
 
@@ -107,7 +106,6 @@ class locationMaster extends Component{
         }
     }
 
-
     onChangeCity=(event)=>{
         this.onChange(event);
         let selected= event.target.value;     
@@ -122,6 +120,7 @@ class locationMaster extends Component{
     }
 
     onLocationChange=(e)=>{
+        this.setState({message:''})
         this.onChange(e);
         this.setState({
             [e.target.name]:e.target.value
@@ -163,8 +162,13 @@ class locationMaster extends Component{
         const isValid = Object.keys(errors).length === 0;
         if(isValid){           
                     this.setState({loading:true});
-                    this.props.addLocationDetails(countryId,stateId,cityId,locationName);
-                    this.push();
+                    this.props.addLocationDetails(countryId,stateId,cityId,locationName)
+                    .then(()=>
+                    this.push())
+                    .catch(err=>{
+                        this.setState({message: err.response.data.message, loading: true})
+                    
+                    })
                     this.refreshData();     
                     }      
     }
@@ -201,6 +205,7 @@ class locationMaster extends Component{
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
                         <span className='error'>{this.state.errors.countryId}</span>
+                    
                     </div>
                     <div>    
                         <label>State Name</label>
@@ -222,6 +227,7 @@ class locationMaster extends Component{
                         <label>Location Name</label>
                         <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  value={this.state.locationName}  onChange={this.onLocationChange} ></input>
                         <span className='error'>{this.state.errors.locationName}</span>
+                        <span className="error">{this.state.message}</span>
                     </div>
              
                     <div className="mt-4">
