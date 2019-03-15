@@ -200,7 +200,7 @@ class Country extends Component {
 
             <FormGroup>
                 <Button color="success" className="mr-2">Submit</Button>
-                <Button color="danger" onClick={this.countryDetails}>Cancel</Button>
+                    <Button color="danger" onClick={this.countryDetails}>Cancel</Button>
             </FormGroup>
               </div>
 
