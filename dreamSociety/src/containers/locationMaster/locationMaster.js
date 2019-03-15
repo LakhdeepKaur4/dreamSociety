@@ -167,7 +167,9 @@ class locationMaster extends Component{
                     this.push())
                     .catch(err=>{
                         this.setState({message: err.response.data.message, loading: true})
-                    }) 
+                    
+                    })
+                    this.refreshData();     
                     }      
     }
 

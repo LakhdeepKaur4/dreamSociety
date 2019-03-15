@@ -275,7 +275,7 @@ class CountryDetails extends Component{
             <tr>
             <th style={{width: "4%"}}></th>
                         <th>#</th>
-                        <th onClick={()=>{
+                        <th  style={{cursor:'pointer'}} onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'countryName'}});
                         }}>Country Name 

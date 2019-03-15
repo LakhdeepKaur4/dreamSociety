@@ -92,7 +92,7 @@ class RelationshipMasterDetail extends Component {
         this.props.updateRelation(relationId, relationName)
             .then(() => this.refreshData())
             .catch(err=>{ console.log(err.response.data.message)
-                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                this.setState({modalLoading:false,message: err.response.data.message})
                 })
                 if(this.state.message === ''){
                     this.setState({modal: true})
@@ -265,6 +265,22 @@ class RelationshipMasterDetail extends Component {
                     {this.renderRelation(this.props.RelationMasterReducer)}
                 </tbody>
             </Table></div>
+            
+            let modalData=<div>
+                  <FormGroup>
+                                    <Label>Relation Name</Label>
+                                    <Input type="text" id="relationId" name="relationName" onChange={this.onChangeHandler} value={this.state.relationName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
+                                    <span className="error">{this.state.errors.relationName}</span>
+                                    <span className="error">{this.state.message}</span>
+                                </FormGroup>
+
+
+                                <FormGroup>
+                                    <Button color="primary mr-2" onClick={this.editrelationName}>Save</Button>
+
+                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+                                </FormGroup>
+            </div>
         return (
             <div>
 
@@ -294,26 +310,13 @@ class RelationshipMasterDetail extends Component {
                         }  
                     }/></Label>
 
-                        {!this.state.modalLoading ? tableData : <Spinner />}
+                        {(this.state.loading) ? <Spinner /> : tableData}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
-                                <FormGroup>
-                                    <Label>Relation Name</Label>
-                                    <Input type="text" id="relationId" name="relationName" onChange={this.onChangeHandler} value={this.state.relationName} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
-                                    <span className="error">{this.state.errors.relationName}</span>
-                                    <span className="error">{this.state.message}</span>
-                                </FormGroup>
-
-
-                                <FormGroup>
-                                    <Button color="primary mr-2" onClick={this.editrelationName}>Save</Button>
-
-                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                                </FormGroup>
+                            {!this.state.modalLoading  ? modalData : <Spinner />}
                             </ModalBody>
                         </Modal>
-
 
                     </div>
                 </UI>

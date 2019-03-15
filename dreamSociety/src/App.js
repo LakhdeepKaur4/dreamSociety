@@ -10,11 +10,11 @@ import Parking from './containers/parking/parking';
 import UserDetails from './containers/userDetails/userDetails';
 import Demo from './containers/demo';
 import Registration from './containers/userRegistration/userRegistration';
-import AdminDashboard from './containers/adminDashboard/adminDashboard';
-import OwnerDashboard from './containers/ownerDashboard/ownerDashboard';
+import AdminDashboard from './components/newUI/adminDashboard';
+import OwnerDashboard from './components/newUI/ownerDashboard';
 import SuperDashboard from './containers/superDashboard/superDashboard';
-import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
-import VendorDashboard from './containers/vendorDashboard/vendorDashboard';
+import TenantDashboard from './components/newUI/tenantDashboard';
+import VendorDashboard from './components/newUI/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
 import EmployeeMaster from './containers/employeeMaster/employeeMaster';
 import DisplayEmployeeMaster from './containers/employeeMaster/displayEmployeeMaster';
@@ -76,8 +76,9 @@ import FlatOwnerDetails from './containers/flatOwnerDetails/flatOwnerDetails';
 import BoardMemberRegistrationForm from './containers/boardMemberRegistration/boardMemberRegistrationForm';
 import BoardMemberDetails from './containers/boardMemberRegistration/boardMemberDetails';
 import AddTenant from './containers/tenantMaster/addTenant';
-import FlatOwnerList from './containers/flatOwnerDetails/flatOwnerList';
-import TenantDetail from './containers/tenantMaster/tenantDetail';
+import FlatOwnerList from './containers/flatOwnerDetails/flatOwnerList'
+import FlatMemberList from './containers/flatOwnerDetails/flatMemberList';
+import TenantDetail from './containers/tenantMaster/tenantDetail/tenantDetail';
 
 class App extends Component {
   render() {
@@ -157,6 +158,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/boardMemberDetails' component={BoardMemberDetails} />
             <PrivateRoute path='/superDashboard/addTenant' component={AddTenant} />
             <PrivateRoute path='/superDashboard/flatOwnerList' component={FlatOwnerList} />
+            <PrivateRoute path='/superDashboard/flatMemberList' component={FlatMemberList} />
             <PrivateRoute path='/superDashboard/tenantDetails' component={TenantDetail} />
           </Switch>
         </div>

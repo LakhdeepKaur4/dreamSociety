@@ -141,16 +141,16 @@ class Registration extends Component {
 
         // const isValid = this.validate();
         if (isValid && this.state.emailValidError==='') {
-            this.setState({loading: true})
+            this.setState({loading: true, userName: this.state.userName.toLowerCase()})
             this.props.addUser(this.state).then(() =>{
                     this.props.history.push('/superDashboard/user_details')
                 }
                     
             )
             .catch(err => {
-                console.log(err.response.data.message);
-                this.setState({emailServerError: err.response.data.message, userNameServerError:err.response.data.message,
-                    contactServerError: err.response.data.message, loading: false})
+                console.log(err.response.data);
+                this.setState({emailServerError: err.response.data.messageEmailErr, userNameServerError:err.response.data.messageUsernameErr,
+                    contactServerError: err.response.data.messageContactErr, loading: false})
             });
         }
     }
@@ -278,6 +278,7 @@ class Registration extends Component {
                 emailServerValidationError={this.state.emailServerError}
                 userNameServerValidationError={this.state.userNameServerError}
                 contactServerValidationError={this.state.contactServerError}
+                
                 emailKeyPress={this.emailValid}
                 InValidEmailFormatError={this.state.emailValidError}
                 />

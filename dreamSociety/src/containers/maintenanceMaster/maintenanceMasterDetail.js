@@ -74,8 +74,8 @@ class MaintenanceMasterDetail extends Component {
     }
 
 
-    editcategory = () => {
-       
+    editcategory = (e) => {
+        e.preventDefault();
         const { maintenanceId, category } = this.state
         
         let errors = {};
@@ -86,13 +86,11 @@ class MaintenanceMasterDetail extends Component {
         const isValid = Object.keys(errors).length === 0
         
         if (isValid && this.state.message==='') {
-            this.setState({
-                loading: true
-            })
+           
         this.props.updateMaintenance(maintenanceId, category)
             .then(() => this.refreshData())
             .catch(err=>{ console.log(err.response.data.message)
-                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                this.setState({modalLoading:false,message: err.response.data.message})
                 })
                 if(this.state.message === ''){
                     this.setState({modal: true})
@@ -266,6 +264,22 @@ class MaintenanceMasterDetail extends Component {
                     {this.renderMaintenance(this.props.MaintenanceMasterReducer)}
                 </tbody>
             </Table></div>
+
+             let modalData=<div>
+                  <FormGroup>
+                                    <Label>Category Type</Label>
+                                    <Input type="text" id="maintenanceId" name="category" onChange={this.onChangeHandler} value={this.state.category} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
+                                    <span className="error">{this.state.errors.category}</span>
+                                    <span className="error">{this.state.message}</span>
+                                </FormGroup>
+
+
+                                <FormGroup>
+                                    <Button color="primary mr-2" onClick={this.editcategory}>Save</Button>
+
+                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+                                </FormGroup>
+             </div>
         return (
             <div>
 
@@ -294,23 +308,11 @@ class MaintenanceMasterDetail extends Component {
                         }  
                     }/></Label>
 
-                        {!this.state.loading ? tableData : <Spinner />}
+                        {(this.state.loading) ? <Spinner /> : tableData}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
-                                <FormGroup>
-                                    <Label>Category Type</Label>
-                                    <Input type="text" id="maintenanceId" name="category" onChange={this.onChangeHandler} value={this.state.category} maxLength={50} onKeyPress={this.OnKeyPressUserhandler} />
-                                    <span className="error">{this.state.errors.category}</span>
-                                    <span className="error">{this.state.message}</span>
-                                </FormGroup>
-
-
-                                <FormGroup>
-                                    <Button color="primary mr-2" onClick={this.editcategory}>Save</Button>
-
-                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                                </FormGroup>
+                            {!this.state.modalLoading  ? modalData : <Spinner />}
                             </ModalBody>
                         </Modal>
 
