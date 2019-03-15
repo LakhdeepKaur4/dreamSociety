@@ -4,7 +4,7 @@ import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader }
 import DefaultSelect from '../../../constants/defaultSelect';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import { getTenantDetail, deleteTenant, deleteSelectedTenant } from '../../../actionCreators/tenantMasterAction';
-import {URN1,PicURN, URN} from '../../../actions/index'
+import {UR,PicURN, URN} from '../../../actions/index'
 import { connect } from 'react-redux';
 import Spinner from '../../../components/spinner/spinner';
 import GoogleDocsViewer from 'react-google-docs-viewer';
@@ -166,7 +166,7 @@ class TenantDetail extends Component {
         const file = files[0];
         console.log(file)
         let fileName = file.name;
-        if (files && file && file.size <= 40096) {
+        if (files && file && file.size <= 400096) {
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload =  () =>{
@@ -226,7 +226,7 @@ class TenantDetail extends Component {
                 <span className="error">{this.state.imageSizeError}</span>
             </FormGroup>
             <FormGroup>
-                <img src={URN + this.state.picture} />
+                <img src={this.state.picture} va />
             </FormGroup>
         </div>
 
