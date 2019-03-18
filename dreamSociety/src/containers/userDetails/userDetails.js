@@ -36,12 +36,14 @@ class userDetails extends Component {
                 emailValidError:'',
                 search:'',
                 filterName:'firstName',
-                modalLoading: false
+                modalLoading: false,
+                emailServerError:'',
+                userNameServerError:'',
+                contactServerError:''
         }
         this.OnKeyPresshandlerPhone = this.OnKeyPresshandlerPhone.bind(this);
         this.OnKeyPressUserhandler = this.OnKeyPressUserhandler.bind(this);
         this.emailValid = this.emailValid.bind(this);
-
     }
 
 
@@ -88,7 +90,11 @@ class userDetails extends Component {
 
     toggleEditUserModal() {
         this.setState({
-            editUserModal: !this.state.editUserModal
+            errors:{},
+            editUserModal: !this.state.editUserModal,
+            emailServerError:'',
+            userNameServerError:'',
+            contactServerError:''
         });
     }
 
@@ -106,7 +112,7 @@ class userDetails extends Component {
     }
 
     updateUser = (e) => {
-            this.setState({message: ''})
+            this.setState({message: '', emailServerError:'', userNameServerError:'', contactServerError:''})
             e.preventDefault();
             let { userId, roleName, firstName, lastName, userName, email,familyMember,towerName, floor,parking, contact,towerId } = this.state;
             let errors = {};
@@ -124,6 +130,7 @@ class userDetails extends Component {
             if (userName === '') errors.userName = "User Name can't be empty.";
             if (email === '') errors.email = "Email can't be empty.";
             if (contact === '') errors.contact = "Contact can't be empty.";
+            else if(contact.length !== 10) errors.contact = "Contact length should be of 10."
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0;
             if (isValid && this.state.emailValidError==='') {
@@ -131,9 +138,12 @@ class userDetails extends Component {
                 .then(() => {
                     this.refreshDataAfterUpdate()
                 })
+                .catch(err => { 
+                    console.log(err.response.data);
+                    this.setState({emailServerError: err.response.data.messageEmailErr, userNameServerError:err.response.data.messageUsernameErr,
+                    contactServerError: err.response.data.messageContactErr, modalLoading: false})})
                 this.setState({
-                    modalLoading:true,errors:{},  userId: '', roleName: '', firstName: '', lastName: '', userName: '', email: '', contact: '',
-                    towerId:''
+                    modalLoading:true,errors:{}, emailServerError: '', userNameServerError:'', contactServerError:''
                 });
             }
     }
@@ -164,7 +174,7 @@ class userDetails extends Component {
     searchFilter(search){
         return function(x){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return x ? x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1 : false ||
+                return x ? x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1 : false||
                  x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
@@ -193,11 +203,14 @@ class userDetails extends Component {
 
     fetchUsers({ user }) {
         if(user) {
+            console.log(user)
             let currentRole;
             return user.sort((item1,item2)=>{
-                console.log(item1, item2)
-                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
-                return this.state.sortVal ? cmprVal : -cmprVal;
+                if(item1 || item2){
+                    console.log(item1, item2)
+                    var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                    return this.state.sortVal ? cmprVal : -cmprVal;
+                }
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
                 if(item && item.tower_master){
                     let currentTower = item.tower_master.towerName;
@@ -258,6 +271,7 @@ class userDetails extends Component {
     }
 
     onChange = (e) => {
+        this.setState({userNameServerError: '', contactServerError:''})
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -271,9 +285,9 @@ class userDetails extends Component {
     }
 
     fetchRoles({ userRole }) {
-        if (userRole) {
+        if(userRole) {
             return (
-                userRole.map((item) => {
+               userRole.map((item) => {
                     return (
                         <option value={item.roleId} key={item.id}>
                             {item.roleName}
@@ -335,7 +349,7 @@ class userDetails extends Component {
 
     emailChange = (e) => {
         console.log(this.state.email)
-        this.setState({email:e.target.value})
+        this.setState({email:e.target.value, emailServerError:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value});
             console.log(this.state.email)
@@ -397,9 +411,11 @@ class userDetails extends Component {
                                 lastNameError = {this.state.errors.lastName}
                                 userNameInputName = "userName"
                                 userNameValue = {this.state.userName}
+                                userNameServerError={this.state.userNameServerError}
                                 userNameValueChange = {this.onChange}
                                 userNameError = {this.state.errors.userName}
                                 emailInputName= "email"
+                                emailServerError={this.state.emailServerError}
                                 emailValue = {this.state.email}
                                 emailError = {this.state.errors.email}
                                 emailKeyPress={this.emailValid}
@@ -423,6 +439,7 @@ class userDetails extends Component {
                                 towerChange={this.onChange}
                                 contactInputName = "contact"
                                 contactValue = {this.state.contact}
+                                contactServerError={this.state.contactServerError}
                                 contactError = {this.state.errors.contact}
                                 contactValidation = {this.OnKeyPresshandlerPhone}
                                 contactValueChange = {this.onChange}

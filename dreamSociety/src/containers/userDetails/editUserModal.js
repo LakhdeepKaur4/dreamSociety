@@ -37,6 +37,7 @@ const editUserModal = (props) => {
                 minLength='3'
                 name={props.userNameInputName} value={props.userNameValue} onChange={props.userNameValueChange} />
                 {!props.userNameValue ? <span className="error">{props.userNameError}</span> : null}
+                {props.userNameServerError ? <span className="error">{props.userNameServerError}</span> : null}
             </FormGroup>
             <FormGroup>
                 <Label for="email">Email</Label>
@@ -48,6 +49,7 @@ const editUserModal = (props) => {
                  name={props.emailInputName} onChange={props.emailValueChange} />
                 {!props.emailValue ? <span className="error">{props.emailError}</span> : null}
                 {<span className="error">{props.inValidEmailFormatError}</span> }
+                {props.emailServerError ? <span className="error">{props.emailServerError}</span>: null}
             </FormGroup>
             <FormGroup>
                 <Label>Tower Name</Label>
@@ -97,7 +99,9 @@ const editUserModal = (props) => {
                 <Input id="contact" onKeyPress = {props.contactValidation} name={props.contactInputName} 
                 value={props.contactValue} onChange={props.contactValueChange}
                 maxLength='10' />
-                {!props.parkingValue ? <span className="error">{props.contactError}</span> : null}
+                {!props.contactValue ? <span>{props.contactError}</span> : null}
+                {<span className="error">{props.contactError}</span>}
+                {props.contactServerError ? <span className="error">{props.contactServerError}</span> : null}
             </FormGroup>
             <FormGroup>
                 <Button type="submit" color="primary" onClick={props.updateUserClick}>Save</Button>{' '}
