@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
-import{URN,GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID,
+import{URN,GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID,UPDATE_TENANT_DETAIL,
     DELETE_SELECTED_TENANT,ADD_TENANT_DETAIL, GET_TENANT_DETAIL, DELETE_TENANT} from '../actions/index';
 
 export function addTenantDetail(values){
@@ -71,3 +71,17 @@ export function deleteSelectedTenant(ids){
         payload: request
     }
 }
+
+export function updateTenantDetail(tenantName, email, contact, aadhaarNumber, dob, permanentAddress, fileName, towerName, flatNo, towerId,
+    picture, flatDetailId, tenantId){
+        console.log(tenantName, email, contact, aadhaarNumber, dob, permanentAddress, fileName, towerName, flatNo, towerId,
+            picture, flatDetailId, tenantId)
+        const request = axios.put(`${URN}/tenant/` + tenantId, {tenantName, email, contact, aadhaarNumber,dob,
+             permanentAddress, fileName, towerName, flatNo, towerId,
+            picture, flatDetailId, tenantId}, {headers: authHeader()})
+
+            return {
+                type: UPDATE_TENANT_DETAIL,
+                payload:request
+            }
+    }

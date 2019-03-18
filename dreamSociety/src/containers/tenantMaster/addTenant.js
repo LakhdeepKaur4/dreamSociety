@@ -203,7 +203,7 @@ class AddTenant extends Component{
             })
         }
         
-        this.setState({member:data})
+        this.state.member.push(data)
         console.log(tenantName, dob, gender,aadhaarNumber, email, contact, profilePicture, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
             societyName, societyId, member, towerName, fileName, towerId);
@@ -211,7 +211,7 @@ class AddTenant extends Component{
         if(this.state.imageSizeError === ''){
             this.props.addTenantDetail({tenantName, dob,aadhaarNumber, gender, email, contact, profilePicture, permanentAddress, bankName, 
                 accountHolderName, accountNumber, panCardNumber, towerName, towerId, IFSCCode, noOfMembers, flatDetailId, societyId, member, fileName})
-                .then(() => this.props.history.push('/superDashboard/tenantDetails'))
+                // .then(() => this.props.history.push('/superDashboard/tenantDetails'))
                 .catch(err => err.response.data);
         }
     }
