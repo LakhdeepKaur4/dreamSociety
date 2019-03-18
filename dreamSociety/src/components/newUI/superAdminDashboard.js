@@ -87,7 +87,7 @@ class Demo extends Component {
                         <span className="navbar-toggler-icon"></span>
                     </button>
 
-                    <div className="collapse navbar-collapse" id="navbarsExample04">
+                    <div className="collapse navbar-collapse" id="navbarsExample05">
                         <ul className="navbar-nav mr-auto mx-auto">
                             <li  className="nav-item mx-3 active">
                                 <Link className="nav-link" to="/superDashboard">Home<span className="sr-only">(current)</span></Link>

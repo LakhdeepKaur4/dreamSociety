@@ -50,7 +50,7 @@ export function addPerson( userName,email,towerId,roles,familyMember,parking){
      }
      export function viewPerson(){
          
-        const request = axios.get(`${URN}/user`,{headers:authHeader()})
+        const request = axios.get(`${URN}/person`,{headers:authHeader()})
         .then(response=>response.data)
         console.log(request,"res");
         return{

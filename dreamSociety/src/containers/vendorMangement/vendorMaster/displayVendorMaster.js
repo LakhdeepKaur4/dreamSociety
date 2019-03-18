@@ -174,17 +174,18 @@ class DisplayVendorMaster extends Component {
     }
 
 
-    delete(vendorId){
+    delete(vendorServiceId){
         
         this.setState({loading:true})
         let{isActive}=this.state;
-        this.props.deleteVendor(vendorId,isActive)
+        this.props.deleteVendor(vendorServiceId,isActive)
         .then(()=>this.refreshData())
         this.setState({isActive:false})
 
     }
 
     deleteSelected(ids){
+        console.log(ids)
         this.setState({loading:true,
         isDisabled:true});
         this.props.deleteSelectedVendor(ids)
@@ -242,12 +243,12 @@ class DisplayVendorMaster extends Component {
                 return (
 
                     <tr key={vendors.vendorServiceId}>
-                        <td><input type="checkbox" name="ids" className="SelectAll" value={vendors.vendorId}
+                        <td><input type="checkbox" name="ids" className="SelectAll" value={vendors.vendorServiceId}
                          onChange={(e) => {
-                            const {vendorId} = vendors;
+                            const {vendorServiceId} = vendors;
                             if(!e.target.checked){
                                 document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(vendorId);
+                                let indexOfId = this.state.ids.indexOf(vendorServiceId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1);
                                 }
@@ -256,7 +257,7 @@ class DisplayVendorMaster extends Component {
                                 }
                             }
                             else {
-                                this.setState({ids: [...this.state.ids, vendorId]});
+                                this.setState({ids: [...this.state.ids, vendorServiceId]});
                                 if(this.state.ids.length >= 0){
                                     this.setState({isDisabled: false})
                                 }
@@ -278,7 +279,7 @@ class DisplayVendorMaster extends Component {
                         <td>
                              <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorServiceId,vendors.vendorId, vendors.vendor_master.vendorName,vendors.vendor_master.currentAddress,vendors.vendor_master.permanentAddress,vendors.vendor_master.contact,vendors.service_master.serviceName,vendors.service_master.serviceId,vendors.rate_master.rateType,vendors.rate_master.rateId,vendors.rate,vendors.vendor_master.documentOne,vendors.vendor_master.documentTwo,vendors.vendor_master.picture)}>Edit</Button> 
                 
-                            <Button color="danger"onClick={this.delete.bind(this,vendors.vendorId)} >Delete</Button>
+                            <Button color="danger"onClick={this.delete.bind(this,vendors.vendorServiceId)} >Delete</Button>
                         </td>
                     </tr>
 

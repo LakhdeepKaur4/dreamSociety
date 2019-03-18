@@ -8,7 +8,7 @@ import {bindActionCreators} from 'redux';
 import DefaultSelect from '../../constants/defaultSelect'
 import _ from 'underscore';
 import './employeeMaster.css';
-import OnKeyPresshandler from '../../constants/validation';
+
 class EmployeeMaster extends Component{
 
 
@@ -63,7 +63,15 @@ this.setState({[e.target.name]:e.target.value});
 }
   } 
 
-  
+        
+  OnKeyPresshandler(event) {
+    const pattern = /[a-zA-Z _]/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
+    }
+}
+
  
     
 onFileChange=(event)=>{
@@ -396,7 +404,7 @@ form=
 
               <div className="form-group">
                 <label> Address</label>
-                <input type="text" className="form-control" name ="address"  onKeyPress={this.OnKeyPressNumber}  onChange ={this.onChange} maxLength={30}/>
+                <input type="text" className="form-control" name ="address"   onChange ={this.onChange} maxLength={30}/>
                 <span className="error">{this.state.errors.address}</span>
               </div>
 
@@ -433,7 +441,7 @@ form=
  
 
     <button className="btn btn-success mr-2">Submit</button>
-    <button className="btn btn-primary"  onClick ={this.displayEmployee}>Display Employee Master</button>
+    <button className="btn btn-danger"  onClick ={this.displayEmployee}>Cancel</button>
     {/* {!this.state.loading ? formData: <Spinner />}  */}
     </form>
     </div>

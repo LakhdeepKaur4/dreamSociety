@@ -20,7 +20,8 @@ this.state={
     parking: '',
     loading: true,
     errors:{},
-    message:''
+    usernameMessage:'',
+    emailMessage:''
 }                              
 
 }
@@ -58,7 +59,7 @@ OnKeyPressmail(event){
 }
 
 onChange=(e)=>{
-        this.setState({message:''})
+        this.setState({usernameMessage:'',emailMessage:''})
     if(!!this.state.errors[e.target.name]){
         let errors =Object.assign({},this.state.errors)
         delete  errors[e.target.name]
@@ -103,7 +104,7 @@ if (isValid) {
 this.props.addPerson(userName,email,towerId,roles,familyMember,parking)
 .then(()=>
 this.props.history.push('/superDashboard/displayPerson')
-).catch((err)=>this.setState({message: err.response, loading: false}))
+).catch((err)=>this.setState({usernameMessage: err.response.data.messageUsernameErr, emailMessage:err.response.data.messageEmailErr, loading: false}))
             
 }
 }
@@ -168,14 +169,14 @@ form1 = <form onSubmit={this.submit}>
               <input type="text" name="userName" placeholder="Username"  onChange={this.onChange} maxLength={30} className="form-control" onKeyPress={this.OnKeyPresshandler}  />
          
               <span className="error">{this.state.errors.userName}</span>
-              <span className="error">{this.state.message}</span>
+              <span className="error">{this.state.usernameMessage}</span>
           </div>
              
           <div className="form-group">
               <label> Email</label>
               <input type="email" name="email"  placeholder="Email" onChange={this.onChange} maxLength={50} className="form-control" onKeyPress={this.OnKeyPressmail}  />
               <span className="error">{this.state.errors.email}</span>
-              <span className="error">{this.state.message}</span>
+              <span className="error">{this.state.emailMessage}</span>
           </div>
           
           <div className="form-group">
