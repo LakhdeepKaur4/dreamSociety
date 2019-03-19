@@ -352,6 +352,10 @@ maxDate = () => {
     return d.toISOString().split('T')[0];
 }
 
+ifscChange = (e) => {
+    this.setState({IFSCCode:e.target.value.toUpperCase()})
+}
+
     render(){
         let formData = <div>
             {/* <FormGroup>
@@ -533,7 +537,7 @@ maxDate = () => {
                         type="text" 
                         name="IFSCCode" 
                         value={this.state.IFSCCode.toUpperCase()}
-                        onChange={this.onChange}
+                        onChange={this.ifscChange}
                         onKeyPress={(e) => {
                             const pattern = /^[a-zA-Z0-9]+$/;
                             let inputChar = String.fromCharCode(e.charCode);

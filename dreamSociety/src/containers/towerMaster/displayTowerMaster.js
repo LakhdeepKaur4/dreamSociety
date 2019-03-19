@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
-
+import './tower.css'
 import Spinner from '../../components/spinner/spinner';
 class DisplayTowerMaster extends Component {
 
@@ -244,20 +244,20 @@ selectAll = () => {
   render() {
      let tableData;
  
-     tableData=<Table    className="table table-bordered">
+     tableData=<table    className="table table-md table-bordered">
    
               <thead>
                 <tr>
                
-                <th style={{alignContent:'baseline'}}></th>
-                  <th> #</th>
+                <th style={{width:"4%"}}></th>
+                  <th style={{width:"4%"}}> #</th>
                      
                   <th  onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'towerName'}})
-                        }} >Tower Name      <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                        }}    style={{width:"40%"}}>Tower Name      <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
 
-                  <th> Actions  </th>
+                  <th  style={{width:"20%"}}> Actions  </th>
                 </tr>
               </thead>
 
@@ -269,7 +269,7 @@ selectAll = () => {
 
               </tbody>
               
-            </Table>
+            </table>
              let deleteSelectedButton = <Button color="danger" className="mb-2"  disabled={this.state.isDisabled} 
              onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
             if(!this.props.TowerDetails.tower){

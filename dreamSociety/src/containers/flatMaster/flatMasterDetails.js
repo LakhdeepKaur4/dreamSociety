@@ -521,7 +521,7 @@ class flatMasterDetails extends Component {
                 }  /></Label>
                             {!this.state.loading ? tableData : <Spinner />}
                            
-                            <Pagination 
+                            <Pagination className=""
                             // hideDisabled
                             
                              activePage={this.state.activePage}
