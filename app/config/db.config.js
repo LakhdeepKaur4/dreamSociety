@@ -59,6 +59,7 @@ db.tenant = require('../model/tenant.model')(sequelize,Sequelize);
 db.tenantMembersDetail  = require('../model/tenantMemberDetails.model')(sequelize,Sequelize);
 db.societyMemberEventBooking = require('../model/societyMemberEventBooking.model')(sequelize, Sequelize);
 db.eventSpace = require('../model/eventSpaceMaster.model')(sequelize,Sequelize);
+db.floor = require('../model/floor.model')(sequelize,Sequelize);
  
 db.role.belongsToMany(db.user, { through: 'user_roles', foreignKey: 'roleId', otherKey: 'userId'});
 db.user.belongsToMany(db.role, { through: 'user_roles', foreignKey: 'userId', otherKey: 'roleId'});
@@ -150,5 +151,9 @@ db.societyMemberEventBooking.belongsTo(db.societyMemberEvent, { foreignKey: 'soc
 db.societyMemberEventBooking.belongsTo(db.eventSpace, { foreignKey: 'eventSpaceId' });
 db.eventSpace.belongsTo(db.user,{foreignKey:'userId'});
 db.eventSpace.belongsTo(db.size,{foreignKey:'sizeId'});
+db.floor.belongsTo(db.user,{foreignKey:'userId'});
+db.tower.hasMany(db.floor, {foreignKey: 'floorId'});
+db.floor.belongsTo(db.tower,{foreignKey:'towerId'});
+
 
 module.exports = db;

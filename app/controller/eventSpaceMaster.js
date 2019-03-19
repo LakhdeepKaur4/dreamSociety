@@ -3,6 +3,7 @@ const config = require('../config/config.js');
 const httpStatus = require('http-status');
 
 const EventSpace = db.eventSpace;
+const SocietMemberEventBooking = db.societyMemberEventBooking;
 const Size = db.size;
 const Op = db.Sequelize.Op;
 
@@ -139,8 +140,10 @@ exports.delete = async (req, res, next) => {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
         const eventSpace = await EventSpace.find({ where: { eventSpaceId: id } }).then(eventSpace => {
-            return eventSpace.updateAttributes(update)
-        })
+            return eventSpace.updateAttributes(update);
+        });
+        const societyMemberEventBooking = await SocietMemberEventBooking.findAll({where: {eventSpaceId: id}});
+        societyMemberEventBooking.map(x => x.updateAttributes({isActive: false}));
         if (eventSpace) {
             return res.status(httpStatus.OK).json({
                 message: "Event Space deleted successfully",
@@ -148,6 +151,7 @@ exports.delete = async (req, res, next) => {
             });
         }
     } catch (error) {
+        console.log(error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }

@@ -39,6 +39,7 @@ module.exports = function(app) {
 	const tenant = require('../controller/tenant');
 	const societyMemberEventBooking = require('../controller/societyMemberEventBooking');
 	const eventSpaceController = require('../controller/eventSpaceMaster');
+	const floor = require('../controller/floor');
 
 	
 	app.get('/', userController.start);
@@ -62,6 +63,8 @@ module.exports = function(app) {
 	app.put('/api/user/:id',[authJwt.verifyToken], userController.updateEncrypted);
 
 	app.get('/api/user/:id', userController.getById);
+
+	app.get('/api/forgotPassword/:userName', userController.forgottenPassword);
 
 	app.put('/api/user/delete/deleteSelected',[authJwt.verifyToken], userController.deleteSelected);
 
@@ -389,7 +392,9 @@ module.exports = function(app) {
 
 	app.put('/api/societyMemberEvent/:id', [authJwt.verifyToken], societyMemberEvent.update);
 
-	app.post('/api/owner',[authJwt.verifyToken],owner.create1);
+    app.post('/api/owner',[authJwt.verifyToken],owner.create1);
+
+	app.post('/api/owner/ownerMember/:id',[authJwt.verifyToken],owner.addMember);
 
 	app.get('/api/owner',[authJwt.verifyToken],owner.get1);
 
@@ -405,12 +410,14 @@ module.exports = function(app) {
 
 	app.put('/api/ownerMember/delete/deleteSelected',[authJwt.verifyToken],owner.deleteSelectedMembers);
 
+	app.put('/api/owner/ownerMember/update/:id',[authJwt.verifyToken],owner.updateMember);
+
 	app.put('/api/owner/delete/:id',[authJwt.verifyToken],owner.delete);
 	
 	//app.put('/api/ownerMember/deleteSelected',[authJwt.verifyToken],owner.delete);
 
-	app.put('/api/ownerMember/delete/:id',[authJwt.verifyToken],owner.deleteMember)
-	
+	app.put('/api/ownerMember/delete/:id',[authJwt.verifyToken],owner.deleteMember);
+
 	app.post('/api/tenant',[authJwt.verifyToken],tenant.createEncrypted);
 
 	app.get('/api/tenant',[authJwt.verifyToken],tenant.getDecrypted);
@@ -418,6 +425,12 @@ module.exports = function(app) {
 	app.put('/api/tenant/delete/deleteSelected',[authJwt.verifyToken],tenant.deleteSelected);
 
 	app.put('/api/tenant/delete/:id',[authJwt.verifyToken],tenant.delete);
+
+	app.put('/api/tenant/:id', [authJwt.verifyToken], tenant.updateEncrypted);
+
+	app.get('/api/tenant/members/:id', [authJwt.verifyToken], tenant.getTenantMembers);
+
+	app.put('/api/tenant/members/delete/:id', [authJwt.verifyToken], tenant.deleteTenantMember);
 
 	app.post('/api/societyMemberEventBooking', [authJwt.verifyToken], societyMemberEventBooking.create);
 
@@ -438,5 +451,15 @@ module.exports = function(app) {
 	app.put('/api/eventSpaceMaster/delete/deleteSelected', [authJwt.verifyToken], eventSpaceController.deleteSelected);
 
 	app.put('/api/eventSpaceMaster/delete/:id',  [authJwt.verifyToken], eventSpaceController.delete);
+
+	app.post('/api/floor', [authJwt.verifyToken], floor.create);
+	
+	app.get('/api/floor' ,[authJwt.verifyToken], floor.get);
+
+	app.put('/api/floor/:id' ,[authJwt.verifyToken], floor.update);
+
+	app.put('/api/floor/delete/deleteSelected', [authJwt.verifyToken], floor.deleteSelected);
+
+	app.put('/api/floor/delete/:id',  [authJwt.verifyToken], floor.delete);
 
 }
