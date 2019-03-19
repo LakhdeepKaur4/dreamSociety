@@ -226,6 +226,10 @@ class MaintenanceMasterDetail extends Component {
         return this.props.history.replace('/')
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+
     routeToAddNewMaintence = () => {
         this.props.history.push('/superDashboard/maintenanceMaster')
     }
@@ -283,7 +287,7 @@ class MaintenanceMasterDetail extends Component {
         return (
             <div>
 
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>

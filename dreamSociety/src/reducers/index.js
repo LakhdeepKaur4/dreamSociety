@@ -35,6 +35,7 @@ import tenantReducer from './tenantReducer/tenantReducer';
 import FlatOwnerReducer from './flatOwnerReducer/flatOwnerReducer';
 import FloorDetail from './floorReducer/floorReducer'
 
+import ChangePassword from './changePasswordReducer.js/changePasswordReducer';
 const rootReducer = combineReducers({
     loginReducer,
     userDetail,
@@ -69,6 +70,8 @@ const rootReducer = combineReducers({
     boardMemberReducer,
     tenantReducer,
     FlatOwnerReducer,
-    FloorDetail
+    FloorDetail,
+
+    ChangePassword
 })
 export default rootReducer;

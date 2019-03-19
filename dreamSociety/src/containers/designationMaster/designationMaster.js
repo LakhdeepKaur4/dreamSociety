@@ -55,7 +55,6 @@ OnKeyPressUserhandler(event) {
         }
         this.setState({errors})
         const isValid=Object.keys(errors).length === 0
-
         if(isValid){
             this.setState({loading:true})
 
@@ -72,6 +71,11 @@ OnKeyPressUserhandler(event) {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+
+    
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
 
     designationDetails=()=>{
     this.props.history.push('/superDashboard/designationMasterDetail');
@@ -102,7 +106,7 @@ OnKeyPressUserhandler(event) {
         </div>
         return(
             <div>
-                  <UI onClick={this.logout}>
+                  <UI onClick={this.logout} change={this.changePassword}>
                 <Form onSubmit={this.handleSubmit}>
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                  <span aria-hidden="true">&times;</span>
