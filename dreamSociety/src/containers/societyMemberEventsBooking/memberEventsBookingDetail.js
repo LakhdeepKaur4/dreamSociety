@@ -38,7 +38,13 @@ class MemberEventsBookingDetail extends Component {
         };
     }
 
+    onChange = (event) => {
+        const { name, value } = event.target;
+        this.setState({ [name]: value });
+    }
+
     onChangeHandler = (event) => {
+       
         this.setState({message: ''})
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
@@ -50,18 +56,24 @@ class MemberEventsBookingDetail extends Component {
         }
     }
 
+    OnKeyPresshandlerPhone(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
-    toggle = (societyMemberEventId, societyMemberEventName, startDate,endDate,numberOfGuestExpected, spaceName) => {
 
+    toggle = (societyMemberEventName, startDate,endDate,numberOfGuestExpected,spaceName, societyMemberEventBookingId, eventSpaceId, societyMemberEventId) => {
+      
         this.setState({
-            societyMemberEventId,
             societyMemberEventName,
             startDate,
             endDate,
             numberOfGuestExpected,
             spaceName,
-          
-           
+            societyMemberEventBookingId, eventSpaceId, societyMemberEventId,   
             modal: !this.state.modal
         })
     }
@@ -80,7 +92,7 @@ class MemberEventsBookingDetail extends Component {
     }
 
     refreshData() {
-        this.props.getEventBooking().then(() => this.setState({ loading: false }))
+        this.props.getEventBooking().then(() => this.setState({ loading: false,  modalLoading: false, modal:false  }))
         this.props.getMemberEvent().then(() => this.setState({loading: false}))
         this.props.getEventDetails().then(() => this.setState({loading: false}))
        
@@ -89,8 +101,9 @@ class MemberEventsBookingDetail extends Component {
 
     editsocietyMemberEventName = (e) => {
         e.preventDefault();
-        const { societyMemberEventId,startDate,endDate,numberOfGuestExpected, eventSpaceId } = this.state
-        
+      
+        const {societyMemberEventBookingId, societyMemberEventId,startDate,endDate,numberOfGuestExpected, eventSpaceId } = this.state
+      
         let errors = {};
        
         if(this.state.startDate===''){
@@ -114,7 +127,7 @@ class MemberEventsBookingDetail extends Component {
         
         if (isValid && this.state.message === '') {
            
-        this.props.updateEventBooking(societyMemberEventId, startDate, endDate,numberOfGuestExpected, eventSpaceId)
+        this.props.updateEventBooking(societyMemberEventBookingId,societyMemberEventId, startDate, endDate,numberOfGuestExpected, eventSpaceId)
             .then(() => this.refreshData())
             .catch(err=>{ console.log(err.response.data.message)
                 this.setState({modalLoading:false,message: err.response.data.message})
@@ -196,12 +209,12 @@ class MemberEventsBookingDetail extends Component {
     }
 
     fetchEventName=({ memberEventsResult })=> {
-        
+     
         if (memberEventsResult) {
             return (
-                memberEventsResult.event.map((item) => { 
+                memberEventsResult.event.map((item) => {
                     return (
-                        <option value={item.societyMemberEventId} key={item.societyMemberEventId}>
+                        <option value={item.societyMemberEventName} key={item.societyMemberEventId}>
                             {item.societyMemberEventName}
                         </option>
                     )
@@ -211,12 +224,12 @@ class MemberEventsBookingDetail extends Component {
     }
 
     fetchSpaceName=({ space })=> {
-       
+     
         if ( space) {
             return (
                 space.societyMember.map((item) => {
                     return (
-                        <option value={item.eventSpaceId} key={item.eventSpaceId}>
+                        <option value={item.spaceName} key={item.eventSpaceId}>
                             {item.spaceName}
                         </option>
                     )
@@ -232,19 +245,19 @@ class MemberEventsBookingDetail extends Component {
 
     renderBookingEvent = ({ memberEventsResult }) => {
         if (memberEventsResult){
-            return memberEventsResult.events.sort((item1,item2)=>{ console.log(item1, item2)
+            return memberEventsResult.events.sort((item1,item2)=>{ 
                 var cmprVal = (item1.society_member_event_master[this.state.filterName].localeCompare(item2.society_member_event_master[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                 return (
-                    <tr key={item.societyMemberEventId}>
-                     <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyMemberEventId}
+                    <tr key={item.societyMemberEventBookingId}>
+                     <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyMemberEventBookingId}
                          onChange={(e) => {
-                            const {societyMemberEventId} = item
+                            const {societyMemberEventBookingId} = item
                             if(!e.target.checked){
                                 document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(societyMemberEventId);
+                                let indexOfId = this.state.ids.indexOf(societyMemberEventBookingId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1);
                                 }
@@ -254,7 +267,7 @@ class MemberEventsBookingDetail extends Component {
                             }
                             else {
                       
-                                this.setState({ids: [...this.state.ids, societyMemberEventId]});
+                                this.setState({ids: [...this.state.ids, societyMemberEventBookingId]});
                                 
                                 if(this.state.ids.length >= 0){
                                     this.setState({isDisabled: false})
@@ -270,7 +283,8 @@ class MemberEventsBookingDetail extends Component {
                         <td>{item.numberOfGuestExpected}</td>
                         <td>{item.event_space_master ? item.event_space_master.spaceName:''}</td>
                         <td> 
-                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.societyMemberEventId, item.society_member_event_master?item.society_member_event_master.societyMemberEventName:'',item.startDate,item.endDate,item.numberOfGuestExpected, item.event_space_master ?item.event_space_master.spaceName:'')}>Edit</Button>
+                            <Button color="success mr-2" onClick={this.toggle.bind(this, item.society_member_event_master?item.society_member_event_master.societyMemberEventName:'',item.startDate,item.endDate,item.numberOfGuestExpected, 
+                            item.event_space_master ?item.event_space_master.spaceName:'',item.societyMemberEventBookingId, item.eventSpaceId, item.societyMemberEventId)}>Edit</Button>
                             <Button color="danger" onClick={this.deleteMemberEventName.bind(this, item.societyMemberEventBookingId)}>Delete</Button>
 
                         </td>
@@ -289,6 +303,10 @@ class MemberEventsBookingDetail extends Component {
         return this.props.history.replace('/')
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+
     routeToAddNewBookingEvent = () => {
         this.props.history.push('/superDashboard/memberEventsBooking')
     }
@@ -304,6 +322,11 @@ class MemberEventsBookingDetail extends Component {
 
     close=()=>{
         return this.props.history.replace('/superDashBoard')
+    }
+
+    minDate = () => {
+        var d = new Date();
+        return d.toISOString().split('T')[0];
     }
 
     render() {
@@ -344,23 +367,26 @@ class MemberEventsBookingDetail extends Component {
 
                                 <FormGroup>
                                     <Label>Start Date</Label>
-                                    <Input type="date"  name="startDate"  onChange={this.onChangeHandler} value={this.state.startDate} >
+                                    <Input type="date"  name="startDate" min={this.minDate()} onChange={this.onChangeHandler} value={this.state.startDate} >
                                     </Input>
                                     <span className="error">{this.state.errors.startDate}</span>
+                                    <span className="error">{this.state.message}</span>
                                 </FormGroup>
 
                                 <FormGroup>
                                     <Label>End Date</Label>
-                                    <Input type="date"  name="endDate"  onChange={this.onChangeHandler} value={this.state.endDate} >
+                                    <Input type="date"  name="endDate" min={this.minDate()} onChange={this.onChangeHandler} value={this.state.endDate} >
                                     </Input>
                                     <span className="error">{this.state.errors.endDate}</span>
+                                    <span className="error">{this.state.message}</span>
                                 </FormGroup>
 
                                 <FormGroup>
                                     <Label>Number Of Guest Expected</Label>
-                                    <Input type="text"  name="numberOfGuestExpected"  onChange={this.onChangeHandler} value={this.state.numberOfGuestExpected} >
+                                    <Input type="text"  name="numberOfGuestExpected"  onChange={this.onChangeHandler} onKeyPress={this.OnKeyPresshandlerPhone} value={this.state.numberOfGuestExpected} maxLength={4}>
                                     </Input>
-                                    <span className="error">{this.state.errors.endDate}</span>
+                                    <span className="error">{this.state.errors.numberOfGuestExpected}</span>
+                                  
                                 </FormGroup>
 
 
@@ -371,6 +397,7 @@ class MemberEventsBookingDetail extends Component {
                                      {this.fetchSpaceName(this.props.eventSpaceMasterReducer)}
                                     </Input>
                                     <span className="error">{this.state.errors.eventSpaceId}</span>
+                                    <span className="error">{this.state.message}</span>
                                 </FormGroup>
                                 <FormGroup>
                                     <Button color="primary mr-2" onClick={this.editsocietyMemberEventName}>Save</Button>
@@ -381,7 +408,7 @@ class MemberEventsBookingDetail extends Component {
         return (
             <div>
 
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
@@ -425,7 +452,7 @@ class MemberEventsBookingDetail extends Component {
 
 
 function mapStatToProps(state) {
-   console.log("hzcxhvzchvh",state)
+
     return {
         memberEventsBookingReducer: state.memberEventsBookingReducer,
         societyMemberEventReducer: state.societyMemberEventReducer,

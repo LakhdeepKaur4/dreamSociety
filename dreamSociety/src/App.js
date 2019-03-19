@@ -79,6 +79,7 @@ import AddTenant from './containers/tenantMaster/addTenant';
 import FlatOwnerList from './containers/flatOwnerDetails/flatOwnerList'
 import FlatMemberList from './containers/flatOwnerDetails/flatMemberList';
 import TenantDetail from './containers/tenantMaster/tenantDetail';
+import ChangePassword from './components/changePassword/changePassword';
 
 class App extends Component {
   render() {
@@ -160,6 +161,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/flatOwnerList' component={FlatOwnerList} />
             <PrivateRoute path='/superDashboard/flatMemberList' component={FlatMemberList} />
             <PrivateRoute path='/superDashboard/tenantDetails' component={TenantDetail} />
+            <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
           </Switch>
         </div>
         

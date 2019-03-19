@@ -78,8 +78,8 @@ export const deleteEventBooking=(societyMemberEventBookingId)=>{
  
  }
 
- export const updateEventBooking=(societyMemberEventBookingId,societyMemberEventId, startDate, endDate,numberOfGuestExpected, eventSpaceId)=>{
-    
+ export const updateEventBooking=(societyMemberEventBookingId, societyMemberEventId, startDate, endDate,numberOfGuestExpected, eventSpaceId)=>{
+    console.log(societyMemberEventBookingId, societyMemberEventId, startDate, endDate,numberOfGuestExpected, eventSpaceId)
     const request = axios.put(`${URN}/societyMemberEventBooking/`+ societyMemberEventBookingId ,{societyMemberEventId, startDate, endDate,numberOfGuestExpected, eventSpaceId}, {headers:authHeader()})
      .then(response => response.data)
  
