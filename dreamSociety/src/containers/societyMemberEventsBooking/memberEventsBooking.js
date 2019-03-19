@@ -19,7 +19,6 @@ class MemberEventsBooking extends Component {
 
 
         this.state = {
-           
             societyMemberEventId: '',
             startDate: '',
             endDate: '',
@@ -28,7 +27,7 @@ class MemberEventsBooking extends Component {
 
             loading: true,
             errors: {},
-            message: {},
+            message:'',
 
 
             menuVisible: false,
@@ -59,7 +58,6 @@ class MemberEventsBooking extends Component {
 
 
     eventType({ memberEventsResult }) {
-
         if (memberEventsResult) {
             return (
                 memberEventsResult.event.map((item) => {
@@ -77,7 +75,7 @@ class MemberEventsBooking extends Component {
 
 
     spaceName({ space }) {
-          console.log(space)
+       
         if (space) {
             return (
                 space.societyMember.map((item) => {
@@ -97,6 +95,7 @@ class MemberEventsBooking extends Component {
 
 
     onChange = (e) => {
+        this.setState({message:'' })
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -117,16 +116,28 @@ class MemberEventsBooking extends Component {
 
 
     handleSubmit = (e) => {
-        console.log("submitted", this.state)
+       
         e.preventDefault();
-
         let errors = {};
+
+        // var ToDate = new Date();
+  
+    
         if (!this.state.societyMemberEventId) {
             errors.societyMemberEventId = "cant be empty";
         }
         else if(this.state.startDate === ''){
             errors.startDate = "cant be empty";
         } 
+
+        
+        // else if(new Date(this.state.startDate).getTime() <= ToDate.getTime()) {
+        //     errors.startDate="start date cannot be past date"
+        // }
+        
+        // else if(this.state.startDate > this.state.endDate){
+        //     errors.endDate="end date cannot be before start date"
+        // }
         
         else if(this.state.endDate === ''){
             errors.endDate = "cant be empty";
@@ -152,6 +163,10 @@ class MemberEventsBooking extends Component {
             this.setState({loading:true})
             this.props.addEventBooking(this.state)
             .then(()=>this.props.history.push('/superDashboard/memberEventsBookingDetail'))
+            .catch(err=>{
+                this.setState({message: err.response.data.message, loading: false})
+            })
+              
 
 
             this.setState({
@@ -183,12 +198,21 @@ class MemberEventsBooking extends Component {
         return this.props.history.replace('/')
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+
     eventDetails=()=>{
         this.props.history.push('/superDashboard/memberEventsBookingDetail');
     }
 
     close = () => {
         return this.props.history.replace('/superDashBoard')
+    }
+
+    minDate = () => {
+        var d = new Date();
+        return d.toISOString().split('T')[0];
     }
 
     render() {
@@ -209,14 +233,15 @@ class MemberEventsBooking extends Component {
 
             <FormGroup>
                 <Label>Start Date</Label>
-                <Input type="date" name="startDate" onChange={this.onChange}>
+                <Input type="date" min={this.minDate()} name="startDate" onChange={this.onChange}>
                 </Input>
                 <span className='error'>{this.state.errors.startDate}</span>
+                <span className='error'>{this.state.message}</span>
             </FormGroup>
 
             <FormGroup>
                 <Label>End Date</Label>
-                <Input type="date" name="endDate" onChange={this.onChange} />
+                <Input type="date" min={this.minDate()} name="endDate" onChange={this.onChange} />
                 <span className='error'>{this.state.errors.endDate}</span>
             </FormGroup>
 
@@ -244,7 +269,7 @@ class MemberEventsBooking extends Component {
         // }
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <Form onSubmit={this.handleSubmit}>
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>

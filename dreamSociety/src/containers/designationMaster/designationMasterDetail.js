@@ -233,6 +233,11 @@ class DesignationMasterDetail extends Component {
         return this.props.history.replace('/')
     }
 
+    
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
     routeToAddNewDesignation = () => {
         this.props.history.push('/superDashboard/designationMaster')
     }
@@ -252,8 +257,6 @@ class DesignationMasterDetail extends Component {
     }
 
     render() {
-
-   
 
         let tableData;
         tableData = <div style={{ backgroundColor: 'lightgray' }}>
@@ -294,7 +297,7 @@ class DesignationMasterDetail extends Component {
         return (
             <div>
 
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>

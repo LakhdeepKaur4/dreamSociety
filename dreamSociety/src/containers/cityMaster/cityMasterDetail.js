@@ -328,6 +328,11 @@ class CityMasterDetail extends Component {
         return this.props.history.replace('/')
     }
 
+    
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
     routeToAddNewCity = () => {
         this.props.history.push('/superDashboard/cityMaster')
     }
@@ -409,7 +414,7 @@ class CityMasterDetail extends Component {
         return (
             <div>
 
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>

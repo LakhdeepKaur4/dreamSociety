@@ -15,8 +15,6 @@ class SocietyMangement extends Component {
     constructor(props) {
         super(props);
         
-        
-
         this.state = {
             countryName:'',
             stateName:'',
@@ -305,6 +303,10 @@ class SocietyMangement extends Component {
         return this.props.history.replace('/') 
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+
     societyDetails=()=>{
         this.props.history.push('/superDashboard/societyManagementDetail');
     }
@@ -489,7 +491,7 @@ class SocietyMangement extends Component {
         }
         return (
            <div>
-               <UI onClick={this.logout}>
+               <UI onClick={this.logout} chnage={this.changePassword}>
                <Form  onSubmit={this.handleSubmit}>
                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
         <span aria-hidden="true">&times;</span>
