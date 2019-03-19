@@ -5,7 +5,7 @@ import DefaultSelect from '../../../constants/defaultSelect';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import { getTenantDetail, deleteTenant,getFlatDetailViaTowerId, deleteSelectedTenant,getOwnerDetailViaFlatId,
 updateTenantDetail } from '../../../actionCreators/tenantMasterAction';
-import {UR,PicURN, URN} from '../../../actions/index';
+import {PicURN} from '../../../actions/index';
 import { viewTower } from '../../../actionCreators/towerMasterAction';
 import { connect } from 'react-redux';
 import Select from 'react-select';
@@ -37,7 +37,15 @@ class TenantDetail extends Component {
             towerId:'',
             picture:'',
             flatDetailId:'',
-            loading:true
+            loading:true,
+            messageEmailErr:'',
+            errors:{},
+            emailValidError:'',
+            messageContactErr:'',
+            gender:'',
+            Male:'Male',
+            Female:'Female',
+            Other:'Other'
         }
     }
 
@@ -93,9 +101,9 @@ class TenantDetail extends Component {
         })
     }
 
-    edit = (picture,tenantName, email, contact, aadhaarNumber, dob, permanentAddress, towerName,flatNo,towerId,flatDetailId, tenantId) =>{
+    edit = (picture,tenantName,gender, email, contact, aadhaarNumber, dob, permanentAddress, towerName,flatNo,towerId,flatDetailId, tenantId) =>{
         console.log(tenantId)
-        this.setState({picture,tenantName, email, contact, aadhaarNumber, dob, permanentAddress,
+        this.setState({picture,tenantName,gender, email, contact, aadhaarNumber, dob, permanentAddress,
             towerName,flatNo,towerId,flatDetailId,tenantId, editTenant: true})
     }
 
@@ -104,6 +112,7 @@ class TenantDetail extends Component {
             console.log(x.flat_detail_master.flatNo)
             if(x){
                 return x.tenantName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                x.gender.toLowerCase()[0] === search.toLowerCase()[0] ||
                 x.email.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.contact.toString().indexOf(search.toString())  !== -1 ||
                 x.aadhaarNumber.toString().indexOf(search.toString())  !== -1 ||
@@ -112,6 +121,11 @@ class TenantDetail extends Component {
                 !search;
             }
         }
+    }
+
+    viewMembers(id){
+        localStorage.setItem('tenantId', id)
+        this.props.history.push('/superDashBoard/tenantMemberDetail');
     }
 
     renderList = ({getTenantDetail}) => {
@@ -151,20 +165,21 @@ class TenantDetail extends Component {
                             <td>{index + 1}</td>
                             <td style={{width:'4%'}}><img style={{ width: "100%", height: "20%" }} src={PicURN+item.picture} alt="Profile Pic" /></td>
                             <td>{item.tenantName}</td>
+                            <td>{item.gender}</td>
                             <td>{item.email}</td>
                             <td>{item.contact}</td>
                             <td>{item.aadhaarNumber}</td>
                             <td>{item.dob}</td>
                             <td>{item.permanentAddress}</td>
-                            <td>{item.tower_master ? item.tower_master.towerName : null}</td>
-                            <td>{item.flat_detail_master ? item.flat_detail_master.flatNo : false}</td>
-                            <td><Button>Member Details</Button></td>
+                            <td>{item.tower_master ? item.tower_master.towerName : ''}</td>
+                            <td>{item.flat_detail_master ? item.flat_detail_master.flatNo : ''}</td>
+                            <td><Button onClick={this.viewMembers.bind(this, item.tenantId)}>Member Details</Button></td>
                             <td>
                                 <Button color="success" onClick={this.edit.bind(this,PicURN+item.picture.replace('../../',''),
-                                     item.tenantName, item.email,
+                                     item.tenantName, item.gender, item.email,
                                     item.contact, item.aadhaarNumber, item.dob, item.permanentAddress,
-                                    item.tower_master.towerName,item.flat_detail_master.flatNo,
-                                     item.tower_master.towerId,item.flat_detail_master.flatDetailId, item.tenantId)} className="mr-2">Edit</Button>
+                                    item.tower_master ? item.tower_master.towerName:'',item.flat_detail_master.flatNo,
+                                    item.tower_master ? item.tower_master.towerId: '',item.flat_detail_master.flatDetailId, item.tenantId)} className="mr-2">Edit</Button>
                                 <Button color="danger" onClick={this.delete.bind(this, item.tenantId)}>Delete</Button>
                             </td>
                         </tr>
@@ -185,7 +200,7 @@ class TenantDetail extends Component {
     }
 
     toggleTenant(){
-        this.setState({editTenant: !this.state.editTenant, fileName:''})
+        this.setState({editTenant: !this.state.editTenant, emailValidError:'',messageContactErr:''})
     }
 
     browseBtn = (e) => {
@@ -221,6 +236,7 @@ class TenantDetail extends Component {
 
     onChange = (e) => {
         this.setState({[e.target.name]:e.target.value})
+        console.log(this.state)
     }
 
     getTower = ({ tower }) => {
@@ -234,7 +250,7 @@ class TenantDetail extends Component {
             }
             );
         }
-        return [];
+        else return [];
     }
 
     towerChangeHandler = (e) => {
@@ -242,6 +258,10 @@ class TenantDetail extends Component {
         console.log(this.state)
         this.setState({towerId:e.target.value, flatNo:'', flatDetailId:''})
         this.props.getFlatDetailViaTowerId(this.state.towerId)
+    }
+
+    contactChange = (e) => {
+        this.setState({contact: e.target.value,messageContactErr:'' })
     }
 
     fetchFlatDetail = ({getFlatDetail}) => {
@@ -272,15 +292,59 @@ class TenantDetail extends Component {
 
     updateTenant = (e) => {
         e.preventDefault();
-        this.setState({modalLoading: true})
-        let {tenantName, email, contact, aadhaarNumber,dob, permanentAddress, fileName, towerName, flatNo, towerId,
+        
+        let {tenantName,gender, email, contact, aadhaarNumber,dob, permanentAddress, fileName, towerName, flatNo, towerId,
         picture, flatDetailId, tenantId} = this.state;
+        let errors = {};
+        if(this.state.tenantName === '') errors.tenantName = `Tenant Name can't be empty.`;
 
+        if(this.state.email === '') errors.email = `Email can't be empty.`;
+        if(this.state.contact === '') errors.contact = `Contact can't be empty.`;
+        if(this.state.aadhaarNumber === '') errors.aadhaarNumber = `Aadhaar Number can't be empty.`;
+        if(this.state.dob === '') errors.dob = `Date of birth can't be empty.`;
+        if(this.state.permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
+        if(!this.state.towerId) errors.towerId = `Please select tower.`;
+        if(!this.state.flatDetailId) errors.flatDetailId=`Please select flat no.`;
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0;
         console.log(flatDetailId, picture, tenantId)
-        this.props.updateTenantDetail(tenantName, email, contact, aadhaarNumber, dob,
-            permanentAddress, fileName, towerName, flatNo, towerId,
-            picture, flatDetailId, tenantId)
-            .then(() => this.refreshDataAfterUpdate())
+        if(isValid){
+            this.setState({modalLoading: true})
+            this.props.updateTenantDetail(tenantName,gender, email, contact, aadhaarNumber, dob,
+                permanentAddress, fileName, towerName, flatNo, towerId,
+                picture, flatDetailId, tenantId)
+                .then(() => this.refreshDataAfterUpdate())
+                .catch((err) => {
+                    console.log(err.response.data)
+                    this.setState({messageEmailErr: err.response.data.messageEmailErr, messageContactErr: err.response.data.messageContactErr,
+                         modalLoading:false})
+                })
+        }
+        
+    }
+
+    close = () => {
+        return this.props.history.replace('/superDashBoard');
+    }
+
+    emailValid(event) {
+        const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    emailChange = (e) => {
+        console.log(this.state.email)
+        this.setState({email:e.target.value, messageEmailErr:''})
+        if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
+            this.setState({[e.target.name]:e.target.value});
+            console.log(this.state.email)
+            this.setState({emailValidError: ''})
+        }
+        else{ this.setState({emailValidError: 'Invalid Email.'})}
+        
     }
 
     render(){
@@ -294,6 +358,7 @@ class TenantDetail extends Component {
                                         this.setState((state)=>{return {sortVal:!state.sortVal,
                                         filterName:'tenantName'}});
                                     }}>Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                                    <th>Gender</th>
                                     <th>Email</th>
                                     <th>Contact No.</th>
                                     <th>Aadhaar Number</th>
@@ -321,7 +386,7 @@ class TenantDetail extends Component {
                         <Button className="browse-btn" onClick={this.browseBtn}>
                             Update pic
                         </Button>
-                        <span className="file-info" >{!this.state.fileName ? this.state.picture.slice(lastIndex + 1): this.state.fileName}</span>
+                        <span className="file-info" >upload New Pic</span>
                     </Col>
                     <Col md={4}>
                         <div style={{border: '1px solid black', textAlign:'center'}}>
@@ -336,26 +401,58 @@ class TenantDetail extends Component {
             <FormGroup>
                 <Label>Tenant Name</Label>
                 <Input value={this.state.tenantName} name="tenantName" onChange={this.onChange} />
+                {!this.state.tenantName ? <span className='error'>{this.state.errors.tenantName}</span>: ''}
+            </FormGroup>
+            <FormGroup>
+                <div style={{display: 'flex'}}>
+                <Label>Gender: </Label>
+                <Col md={3} style={{display: 'flex'}}>
+                    <Col md={1}>
+                        <Label>M</Label>
+                        <Input name="gender" style={{margin: '0px'}}
+                        onChange={this.onChange} type="radio" value={this.state.Male}
+                        checked={this.state.Male===this.state.gender ? true : false} />
+                    </Col>
+                    <Col md={1}>
+                        <Label>F</Label>
+                        <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio"
+                        value={this.state.Female} checked={this.state.Female===this.state.gender ? true : false} />
+                    </Col>
+                    <Col md={1}>
+                        <Label>O</Label>
+                        <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio"
+                        value={this.state.Other} checked={this.state.Other===this.state.gender ? true : false}/>
+                    </Col>
+                </Col>
+                </div>
             </FormGroup>
             <FormGroup>
                 <Label>Email</Label>
-                <Input value={this.state.email} name="email" onChange={this.onChange} />
+                <Input value={this.state.email} name="email" onChange={this.emailChange} onKeyPress={this.emailValid} />
+                {this.state.messageEmailErr ? <span className='error'>{this.state.messageEmailErr}</span> : ''}
+                {this.state.emailValidError ? <span className='error'>{this.state.emailValidError}</span>:''}
+                {!this.state.email ? <span className='error'>{this.state.errors.email}</span>: ''}
             </FormGroup>
             <FormGroup>
                 <Label>Contact</Label>
-                <Input value={this.state.contact} name="contact" onChange={this.onChange} />
+                <Input value={this.state.contact} name="contact" onChange={this.contactChange} />
+                {this.state.messageContactErr ? <span className='error'>{this.state.messageContactErr}</span> : ''}
+                {!this.state.contact ? <span className='error'>{this.state.errors.contact}</span>: ''}
             </FormGroup>
             <FormGroup>
                 <Label>Aadhar Number</Label>
                 <Input value={this.state.aadhaarNumber} name="aadhaarNumber" onChange={this.onChange} />
+                {!this.state.aadhaarNumber ? <span className='error'>{this.state.errors.aadhaarNumber}</span>: ''}
             </FormGroup>
             <FormGroup>
                 <Label>Date of Birth</Label>
                 <Input value={this.state.dob} type="date" name="dob" onChange={this.onChange} />
+                {!this.state.dob ? <span className='error'>{this.state.errors.dob}</span>: ''}
             </FormGroup>
             <FormGroup>
                 <Label>Permanent Address</Label>
                 <Input value={this.state.permanentAddress} name="permanentAddress" onChange={this.onChange} />
+                {!this.state.permanentAddress ? <span className='error'>{this.state.errors.permanentAddress}</span>: ''}
             </FormGroup>
             <FormGroup>
                 <Label>Tower Name</Label>
@@ -363,6 +460,7 @@ class TenantDetail extends Component {
                     <DefaultSelect />
                     {this.getTower(this.props.towerList)}
                 </Input>
+                {!this.state.towerId ? <span className='error'>{this.state.errors.towerId}</span>: ''}
             </FormGroup>
             <FormGroup>
                 <Label>Flat No</Label>
@@ -375,6 +473,7 @@ class TenantDetail extends Component {
                     <DefaultSelect />
                     {this.fetchFlatDetail(this.props.tenantReducer)} */}
                 </Input>
+                {!this.state.flatDetailId ? <span className='error'>{this.state.errors.flatDetailId}</span>: ''}
             </FormGroup>
             <FormGroup>
                 <Button className="mr-2" color="primary" onClick={this.updateTenant}>Save</Button>
