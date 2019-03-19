@@ -21,6 +21,25 @@ export function postFloor(values){
    }
 }
 
+
+export const deleteFloor=(floorId)=>{
+    const data={
+        floorId,
+        isActive:false
+    }
+    const request = axios.put(`${URN}/floor/delete/${floorId}`,data, {headers:authHeader()})
+     .then(response => response.data)
+ 
+   
+     return{
+ 
+         type:DELETE_FLOOR,
+         payload: request 
+     }
+ 
+ }
+
+
 export function deleteSelectedFloor(ids){
     const request = axios.put(`${URN}/floor/delete/deleteSelected`, {ids}, {headers: authHeader()})
     .then(response => response.data)
@@ -31,3 +50,17 @@ export function deleteSelectedFloor(ids){
         payload: request
     }
 }
+
+export const updateFloor=(floorId,floorName)=>{
+    
+    const request = axios.put(`${URN}/floor/`+ floorId ,{floorName}, {headers:authHeader()})
+     .then(response => response.data)
+ 
+     
+     return{
+ 
+         type:UPDATE_FLOOR,
+         payload: request
+     }
+ 
+ }
