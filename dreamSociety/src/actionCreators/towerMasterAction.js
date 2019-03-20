@@ -19,7 +19,7 @@ export  default function AddTower(towerName,floorIds,floors){
 
 
 export function viewTower(){
-const request  = fetch(`${URN}/tower`,  {headers:authHeader()},{method: 'GET'})
+const request  = fetch(`${URN}/towerFloor`,  {headers:authHeader()},{method: 'GET'})
 .then(response => response.json())
 return{
       type: GET_TOWER,
