@@ -4,7 +4,8 @@ import './login.css';
 import { connect } from 'react-redux';
 import { login } from '../../actionCreators/loginAction';
 import { bindActionCreators } from 'redux';
-import { Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Button, Label } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import { Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Button, Label,} from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import UI from '../../components/newUI/loginDashboard';
 import Spinner from '../../components/spinner/spinner';
@@ -136,6 +137,7 @@ class Login extends Component {
                 <FormGroup>
                     <Button onClick={this.submit} color="primary" >Login</Button>{' '}
                 </FormGroup>
+                <Link to ="/forgetPassword">Forget Password</Link>
 
         </ModalBody>
         <ModalFooter>

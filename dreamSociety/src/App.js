@@ -79,6 +79,8 @@ import AddTenant from './containers/tenantMaster/addTenant';
 import FlatOwnerList from './containers/flatOwnerDetails/flatOwnerList'
 import FlatMemberList from './containers/flatOwnerDetails/flatMemberList';
 import TenantDetail from './containers/tenantMaster/tenantDetail/tenantDetail';
+import forgetPassword from './containers/login/forgetPassword';
+import resetPassword from './containers/resetPassword/resetPassword';
 
 class App extends Component {
   render() {
@@ -89,6 +91,8 @@ class App extends Component {
           <Switch>
             <Route path="/" exact component={Login} />
             <Route path='/login' component={Login} />
+            <Route path='/forgetPassword' component= {forgetPassword}/>
+            <Route path='/resetPassword' component= {resetPassword}/>
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
             <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
             <PrivateRoute path='/ownerDashboard' component={OwnerDashboard} />
@@ -160,6 +164,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/flatOwnerList' component={FlatOwnerList} />
             <PrivateRoute path='/superDashboard/flatMemberList' component={FlatMemberList} />
             <PrivateRoute path='/superDashboard/tenantDetails' component={TenantDetail} />
+            
           </Switch>
         </div>
         
