@@ -6,7 +6,9 @@ import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, In
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
 import './tower.css'
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
 import Spinner from '../../components/spinner/spinner';
+import {fetchFloor} from '../../actionCreators/floorAction';
 class DisplayTowerMaster extends Component {
 
   state = {
@@ -33,6 +35,7 @@ class DisplayTowerMaster extends Component {
   componentDidMount() {
 
     this.refreshData();
+    this.props.fetchFloor();
 
   }
 
@@ -91,14 +94,14 @@ this.setState({loading:true});
 
   updateTower() {
     let errors={};
-        const {  towerId, towerName } = this.state
+        const {  towerId, towerName,Floors } = this.state
     if(!this.state.towerName){
       errors.towerName ="tower Name cant be empty please Select"
         }
      this.setState({errors})
      const isValid = Object.keys(errors).length===0
     if(isValid  &&  this.state.message === ''){
-   this.props.updateTower(towerId,towerName).then(()=>{this.refreshData()}).catch(err=>{ console.log(err.response.data.message)
+   this.props.updateTower(towerId,towerName,Floors).then(()=>{this.refreshData()}).catch(err=>{ console.log(err.response.data.message)
     this.setState({modalLoading:false,message: err.response.data.message, loading: false})
     })
     if(this.state.message === ''){
@@ -132,7 +135,7 @@ this.setState({loading:true});
   TowerMasterDetails({ tower }) {
 
     if (tower) {
-      return tower.sort((item1,item2)=>{
+      return tower.tower.sort((item1,item2)=>{
         var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
         return this.state.sortVal ? cmprVal : -cmprVal;
     }).filter(this.searchFilter(this.state.search)).map((item, index) => {
@@ -166,8 +169,9 @@ this.setState({loading:true});
                              }}/></td>
             <td>{index+1}</td>
             <td>{item.towerName}</td>
+            <td>{item.Floors.map((item)=>{return item.floorName}).join(",")}</td>
             <td>
-              <button className="btn btn-success mr-2" onClick={this.editTower.bind(this, item.id, item.towerId, item.towerName)}>edit </button>
+              <button className="btn btn-success mr-2" onClick={this.editTower.bind(this, item.id, item.towerId, item.towerName,item.floorName,item.floorId)}>edit </button>
               <button className="btn btn-danger" onClick={this.deleteTower.bind(this, item.towerId)}>delete</button>
             </td>
           </tr>
@@ -239,7 +243,31 @@ selectAll = () => {
            .then(()=>this.setState({loading:false}))
           }
       }
-
+      getFloor=({floorDetails})=>{
+        console.log('getFloor',floorDetails)
+        if(floorDetails){
+            return floorDetails.floor.map((item)=>{
+                return (
+                    {...item,label:item.floorName,value:item.floorId}
+                )
+            })
+       }
+    }
+    floorChangeHandler=(name,selectOption)=>{
+        console.log('selectOption',selectOption)
+        console.log('event')
+    //    const data=selectOption.map((item)=>{return item.floorId})
+    //    this.state.floors.push(data)
+        this.setState({
+            [name]: selectOption.map((item)=>{return item.floorId}),
+            floors:selectOption.map((item)=>{return {floorId:item.floorId}})
+        })
+        console.log('jkldfjdsklfjdklfjdklfj',this.state)
+        // const data={floorId:this.state.floorId}
+        // console.log(data)
+        // this.state.floors.push(data)
+         
+    }
 
   render() {
      let tableData;
@@ -256,7 +284,7 @@ selectAll = () => {
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'towerName'}})
                         }}    style={{width:"40%"}}>Tower Name      <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-
+                 <th  style={{width:"20%"}}> Floors </th>
                   <th  style={{width:"20%"}}> Actions  </th>
                 </tr>
               </thead>
@@ -304,6 +332,14 @@ selectAll = () => {
                     <span className="error">{this.state.errors.towerName} </span>
                     <span className="error">{this.state.message}</span>
                 </FormGroup>
+                <FormGroup>
+                  <Label for="towerName">Floors</Label>
+                  <ReactMultiSelectCheckboxes
+                 options={this.getFloor(this.props.floor)}
+                 onChange={this.floorChangeHandler.bind(this,'floorId')}/>
+                    <span className="error">{this.state.errors.towerName} </span>
+                    <span className="error">{this.state.message}</span>
+                </FormGroup>
 
 
               
@@ -336,16 +372,16 @@ selectAll = () => {
 }
 
 function mapStateToProps(state) {
-
+console.log(state.TowerDetails)
   return {
     TowerDetails: state.TowerDetails,
-
+    floor:state.FloorReducer
 
   }
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ viewTower,updateTower,deleteTower,deleteMultipleTower}, dispatch)
+  return bindActionCreators({ viewTower,updateTower,deleteTower,deleteMultipleTower,fetchFloor}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayTowerMaster)
