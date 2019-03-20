@@ -78,8 +78,13 @@ import BoardMemberDetails from './containers/boardMemberRegistration/boardMember
 import AddTenant from './containers/tenantMaster/addTenant';
 import FlatOwnerList from './containers/flatOwnerDetails/flatOwnerList'
 import FlatMemberList from './containers/flatOwnerDetails/flatMemberList';
+
+import ChangePassword from './components/changePassword/changePassword';
 import TenantDetail from './containers/tenantMaster/tenantDetail/tenantDetail';
 import AccountVarification from './components/accountVarification/accountVarification'
+import TenantMemberDetail from './containers/tenantMaster/tenantMemberDetail';
+import AddFloor from './containers/floorMaster/addFloor';
+import GetFloorDetail from './containers/floorMaster/getFloorDetail';
 
 class App extends Component {
   render() {
@@ -162,6 +167,10 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/flatMemberList' component={FlatMemberList} />
             <PrivateRoute path='/superDashboard/tenantDetails' component={TenantDetail} />
             <Route path='/login/accountVerification' component={AccountVarification} />
+            <PrivateRoute path='/superDashBoard/tenantMemberDetail' component={TenantMemberDetail} />
+            <PrivateRoute path='/superDashboard/addFloor' component={AddFloor} />
+            <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
+            <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
           </Switch>
         </div>
         

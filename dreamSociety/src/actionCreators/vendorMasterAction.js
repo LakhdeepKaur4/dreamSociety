@@ -42,10 +42,10 @@ export function getRateType(){
     }
 }
 
-export function deleteVendor(vendorId,isActive){
+export function deleteVendor(vendorServiceId,isActive){
  
-console.log("id",vendorId);
-    const request = axios.put(`${URN}/vendor/delete/`+vendorId,{isActive}, {headers:authHeader()})
+console.log(vendorServiceId)
+    const request = axios.put(`${URN}/vendorService/delete/`+vendorServiceId,{isActive}, {headers:authHeader()})
      .then()     
      return{
  

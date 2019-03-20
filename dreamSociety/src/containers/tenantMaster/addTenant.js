@@ -43,8 +43,9 @@ class AddTenant extends Component{
             fileName: '',
             imageSizeError:'',
             errors:{},
-            emailValidError:'',
             loading: false,
+            messageContactErr:'',
+            messageEmailErr:''
         }
     }
 
@@ -80,7 +81,7 @@ class AddTenant extends Component{
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]:e.target.value});
+        this.setState({[e.target.name]:e.target.value,messageContactErr:''});
         console.log(this.state);
     }
 
@@ -90,7 +91,6 @@ class AddTenant extends Component{
 
     getTower = ({ tower }) => {
         if (tower) {
-            
             return tower.map((item) => {
                 return (
                     { ...item, label: item.towerName, value: item.towerId }
@@ -184,6 +184,7 @@ class AddTenant extends Component{
     memberDetailChange = (e) => {
         this.setState({[e.target.name]:e.target.value})
         console.log(this.state)
+            
     }
     onSubmit = (e) => {
         console.log(this.state.societyId)
@@ -192,27 +193,36 @@ class AddTenant extends Component{
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
             societyName, member, fileName, societyId, towerName, towerId } = this.state;
         console.log(this.state)
-        let data = []
+        
+        let data;
         for(let i = 0; i < this.state.noOfMembers; i++){
             console.log(this.state.member)
-             data.push({
+             data = {
                 memberName: this.state['memberName'+i],
-                dob: this.state['dob'+i],
-                relation: this.state['relationId'+i],
+                memberDob: this.state['memberDob'+i],
+                relationId: this.state['relationId'+i],
                 gender:this.state['gender'+i]
-            })
+            }
+                    this.state.member.push(data)
         }
         
-        this.setState({member:data})
+        
         console.log(tenantName, dob, gender,aadhaarNumber, email, contact, profilePicture, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
             societyName, societyId, member, towerName, fileName, towerId);
 
-        if(this.state.imageSizeError === ''){
-            this.props.addTenantDetail({tenantName, dob,aadhaarNumber, gender, email, contact, profilePicture, permanentAddress, bankName, 
-                accountHolderName, accountNumber, panCardNumber, towerName, towerId, IFSCCode, noOfMembers, flatDetailId, societyId, member, fileName})
+        const data1 = {tenantName, dob, gender,aadhaarNumber, email, contact, profilePicture, permanentAddress, bankName, 
+            accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
+            societyName, societyId, member, towerName, fileName, towerId}
+
+        if(this.state.imageSizeError === '' && this.state.messageContactErr==='' && this.state.messageEmailErr===''){
+            this.props.addTenantDetail(data1)
                 .then(() => this.props.history.push('/superDashboard/tenantDetails'))
-                .catch(err => err.response.data);
+                .catch(err => {
+                    err.response.data.message
+                    this.setState({messageContactErr:err.response.data.messageContactErr,messageEmailErr:err.response.data.messageEmailErr,
+                         loading:false, member:[]})
+                });
         }
     }
 
@@ -310,7 +320,7 @@ class AddTenant extends Component{
 
     emailChange = (e) => {
         console.log(this.state.email)
-        
+        this.setState({messageEmailErr:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value});
             console.log(this.state.email)
@@ -364,17 +374,17 @@ class AddTenant extends Component{
                         <Col md={1}>
                             <Label>F</Label>
                             <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange}
-                             type="radio" value="Female"  required />
+                             type="radio" value="Female" />
                         </Col>
                         <Col md={1}>
                             <Label>O</Label>
                             <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange} 
-                            type="radio" value="Other"  required />
+                            type="radio" value="Other" />
                         </Col>
                     </Col>
                     <Col md={12}>
                         <Label>Date of Birth</Label>
-                        <Input type="date" max={this.maxDate()}  name={`dob${i}`} onChange={this.memberDetailChange}  required />
+                        <Input type="date" max={this.maxDate()}  name={`memberDob${i}`} onChange={this.memberDetailChange} />
                     </Col>
                 </Row>
             </FormGroup>);
@@ -387,7 +397,7 @@ class AddTenant extends Component{
                             <Label>Tenant Name</Label>
                             <Input type="text" placeholder="Name" onKeyPress={this.OnKeyPressUserhandler} 
                             onChange={this.onChange} 
-                            maxLength={50} name='tenantName' />
+                            maxLength={100} name='tenantName' />
                             {!this.state.tenantName ? <span className="error">{this.state.errors.tenantName}</span> : ''}
                         </FormGroup>
                         <FormGroup>
@@ -480,14 +490,14 @@ class AddTenant extends Component{
                                 <Label>Bank Name</Label>
                                 <Input placeholder="Bank Name" onChange={this.onChange}
                                 onKeyPress={this.bankValidation}
-                                maxLength="50"
+                                maxLength="100"
                                  type="text" name="bankName" />
                                  {!this.state.bankName ? <span className="error">{this.state.errors.bankName}</span> : ''}
                         </FormGroup>
                         <FormGroup>
                             <Label>Account Holder Name</Label>
                             <Input placeholder="Holder Name" onChange={this.onChange}
-                            onKeyPress={this.OnKeyPressUserhandler} maxLength="14"
+                            onKeyPress={this.OnKeyPressUserhandler} maxLength="80"
                              type="text" name='accountHolderName' />
                              {!this.state.accountHolderName ? <span className="error">{this.state.errors.accountHolderName}</span> : ''}
                         </FormGroup>
@@ -495,7 +505,7 @@ class AddTenant extends Component{
                             <Label>Account Number</Label>
                             <Input onKeyPress={this.numberValidation} onChange={this.onChange}
                              placeholder="Account Number"
-                             type="text" className="quantity" name='accountNumber' maxLength='14'/>
+                             type="text" className="quantity" name='accountNumber' minLength='14' maxLength='14'/>
                              {!this.state.accountNumber ? <span className="error">{this.state.errors.accountNumber}</span> : ''}
                         </FormGroup>
                         <FormGroup>
@@ -516,6 +526,7 @@ class AddTenant extends Component{
                             <Label>IFSC Code</Label>
                             <Input placeholder="IFSC code" onChange={this.ifscChange}
                             maxLength="16"
+                            minLength='16'
                             value={this.state.IFSCCode.toUpperCase()}
                             onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
@@ -567,6 +578,10 @@ class AddTenant extends Component{
                              type='file' name="profilePicture" />
                         </FormGroup>
                         <span className="error">{this.state.imageSizeError}</span>
+                    </div>
+                    <div>
+                        {this.state.messageEmailErr ? <span className="error">{this.state.messageEmailErr}</span>:''}<br/>
+                        {this.state.messageContactErr ? <span className="error">{this.state.messageContactErr}</span>:''}
                     </div>
                     <div>
                         <Button color="primary" className="mr-2" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>

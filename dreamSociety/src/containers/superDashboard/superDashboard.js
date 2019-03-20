@@ -24,6 +24,12 @@ import UI from '../../components/newUI/superAdminDashboard';
   logout=()=>{
     this.props.userLogout();   
 }
+
+    changePassword=()=>{
+          
+      return this.props.history.replace('/superDashboard/changePassword')
+    }
+
   editUser() {
     this.setState({
       editUserModal: !this.state.editUserModal
@@ -59,7 +65,7 @@ import UI from '../../components/newUI/superAdminDashboard';
           </form>
         </div>
       </nav> */}
-      <UI onClick={this.logout} >
+      <UI onClick={this.logout} change={this.changePassword} >
         
       </UI>
       {/* <div style={{ margin: '48px auto' }}>

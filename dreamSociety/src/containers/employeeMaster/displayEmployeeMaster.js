@@ -63,6 +63,16 @@ class DisplayEmployeeMaster extends Component {
         this.refreshData()
     }
 
+          
+    OnKeyPresshandler(event) {
+        const pattern = /[a-zA-Z _]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+
     refreshData() {
         this.props.ViewEmployee().then(() => this.setState({ loading: false }));
         this.props.getCountry().then(() => this.setState({ loading: false }))
@@ -302,65 +312,7 @@ class DisplayEmployeeMaster extends Component {
         return this.props.history.replace('/superDashBoard/displayemployee');
     }
     
-    onChangeCountry= (event)=>{
-        let selected= event.target.value
-    
-        var country = _.find(this.props.societyReducer.countryResult,function(obj){
-            return obj.countryName === selected
-            })
-        
-            this.setState({
-                countryName: country.countryName,
-                countryId:country.countryId
-            })
-            
-            this.props.getState(country.countryId)
-          
-    }
 
-
-   
-    onChangeState= (event)=>{
-        console.log(this.state);
-         let selected= event.target.value
-         
-         var data1 = _.find(this.props.societyReducer.stateResult,function(obj){
-             return obj.stateName === selected
-             })
-     
-             this.setState({
-                 stateName: data1.stateName,
-                 stateId:data1.stateId
-             })
-             this.props.getCity(data1.stateId);
-     }
-    
-     onChangeCity= (event)=>{
-         console.log(this.state);
-         let selected= event.target.value
-     
-         var data2 = _.find(this.props.societyReducer.cityResult,function(obj){
-             return obj.cityName === selected
-             })
-             this.setState({
-                 cityName:data2.cityName,
-                 cityId:data2.cityId
-             })
-             this.props.getLocation(data2.cityId)
-     }
-    
-     onChangeLocation = (event) => {
-        console.log(this.state);
-         let selected=event.target.value;
-    
-         var data3= _.find(this.props.societyReducer.locationResult, function(obj){
-             return obj.locationName === selected
-         });
-         this.setState({
-             locationName:data3.locationName,
-             locationId:data3.locationId
-         })
-     }
     
 
     selectAll = () => {
@@ -414,72 +366,136 @@ class DisplayEmployeeMaster extends Component {
 
 
      
-    countryName = ({countryResult}) => {
-        if(countryResult){
-          
-           return( 
-            countryResult.map((item) =>{
-                   return(
-                       <option key={item.countryId} value={item.countryName}>
-                        {item.countryName}
-                       </option>
-                   )
-               })
-           )
-            
-        }
-    }
-
+    onChangeCountry= (event)=>{
+        console.log(this.state);
+         let selected= event.target.value
+     
+         var country = _.find(this.props.societyReducer.countryResult,function(obj){
+             return obj.countryName === selected
+             })
+         
+             this.setState({
+                 countryName: country.countryName,
+                 countryId:country.countryId,
+                 stateName: '',
+                 cityName: '',
+                 locationName: ''
+             })
+             
+             this.props.getState(country.countryId)
+           
+     }
+    
+     
+     onChangeState= (event)=>{
+        console.log(this.state);
+         let selected= event.target.value
+         
+         var data1 = _.find(this.props.societyReducer.stateResult,function(obj){
+             return obj.stateName === selected
+             })
+     
+             this.setState({
+                 stateName: data1.stateName,
+                 stateId:data1.stateId
+             })
+             this.props.getCity(data1.stateId);
+     }
+    
+     onChangeCity= (event)=>{
+         console.log(this.state);
+         let selected= event.target.value
+     
+         var data2 = _.find(this.props.societyReducer.cityResult,function(obj){
+             return obj.cityName === selected
+             })
+             this.setState({
+                 cityName:data2.cityName,
+                 cityId:data2.cityId
+             })
+             this.props.getLocation(data2.cityId)
+     }
+    
+     onChangeLocation = (event) => {
+        console.log(this.state);
+         let selected=event.target.value;
+    
+         var data3= _.find(this.props.societyReducer.locationResult, function(obj){
+             return obj.locationName === selected
+         });
+         this.setState({
+             locationName:data3.locationName,
+             locationId:data3.locationId
+         })
+     }
+     
+     countryName = ({countryResult}) => {
+         if(countryResult){
+           
+            return( 
+             countryResult.map((item) =>{
+                    return(
+                        <option key={item.countryId} value={item.countryName}>
+                         {item.countryName}
+                        </option>
+                    )
+                })
+            )
+             
+         }
+     }
+    
      stateName = ({stateResult}) => {
-        if(stateResult){
-          
-           return( 
-            stateResult.map((item) =>{ 
-                   return(
-                       <option key={item.stateId} value={item.stateName}>
-                        {item.stateName}
-                       </option>
-                   )
-               })
-           )
-            
-        }
-    }
-   
-    cityName=({cityResult})=>{
-       
-        if(cityResult){
-            
-           return( 
-            cityResult.map((item) =>{ 
-                   return(
-                       <option key={item.cityId} value={item.cityName}>
-                        {item.cityName}
-                       </option>
-                   )
-               }
-               )
-           )
-            
-        }
-    }
-   
-    locationName=({locationResult})=>{
-       if(locationResult){
-            
-           return( 
-               locationResult.map((item) =>{ 
-                   return(
-                       <option key={item.locationId} value={item.locationName}>
-                        {item.locationName}
-                       </option>
-                   )
-               }
-               )
-           )
-            
-        }
-    }
+         if(stateResult){
+           
+            return( 
+             stateResult.map((item) =>{ 
+                    return(
+                        <option key={item.stateId} value={item.stateName}>
+                         {item.stateName}
+                        </option>
+                    )
+                })
+            )
+             
+         }
+     }
+    
+     cityName=({cityResult})=>{
+        
+         if(cityResult){
+             
+            return( 
+             cityResult.map((item) =>{ 
+                    return(
+                        <option key={item.cityId} value={item.cityName}>
+                         {item.cityName}
+                        </option>
+                    )
+                }
+                )
+            )
+             
+         }
+     }
+     
+    
+     locationName=({locationResult})=>{
+        if(locationResult){
+             
+            return( 
+                locationResult.map((item) =>{ 
+                    return(
+                        <option key={item.locationId} value={item.locationName}>
+                         {item.locationName}
+                        </option>
+                    )
+                }
+                )
+            )
+             
+         }
+     }
 
 
     render() {
@@ -584,49 +600,57 @@ class DisplayEmployeeMaster extends Component {
                                     />
                                      <span  className="error" >{this.state.errors.salary}</span>
                                      </FormGroup>
-                                    <FormGroup>
-                                        <Label>Country Name</Label>
-
-                                        <Input type="select" name="countryId" value={this.state.countryName} onChange={this.onChangeCountry}>
- >                                           <option>{this.state.countryName}</option>
-                                        <DefaultSelect />
-                                            {this.countryName(this.props.societyReducer)}
-                                        </Input>
-                                    </FormGroup>
-                                    <FormGroup>
-
-                                <Label>State Name</Label>
-                                <Input type="select" name="stateId"   onChange={this.onChangeState} required>
-                                    <option>{this.state.stateName}</option>
-                                    <DefaultSelect/>
-                                    {this.stateName(this.props.societyReducer)}
+                                     <FormGroup>
+                                <Label>Country Name</Label>
+                                <Input type="select" name="countryId"  onChange={this.onChangeCountry} 
+                                value={this.state.countryName} required>
+                                    <DefaultSelect />
+                                    {this.countryName(this.props.societyReducer)}
                                 </Input>
+                           
+                            </FormGroup>
+
+                            <FormGroup>
+                                <Label>State Name</Label>
+                                <Input type="select" name="stateId"
+                                  onChange={this.onChangeState}
+                                    required>
+                                  {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                                  {this.state.stateName ? <DefaultSelect />: null}
+                                    {this.state.stateName ? null : this.stateName(this.props.societyReducer)}
+                                </Input>
+                            
                             </FormGroup>
 
                             <FormGroup>
                                 <Label>City Name</Label>
-                                <Input type="select" name="cityId"  onChange={this.onChangeCity} required>
-                                    <option>{this.state.cityName}</option>
-                                    <DefaultSelect/>
-                                    {this.cityName(this.props.societyReducer)}  
+                                <Input type="select" name="cityId"
+                                 onChange={this.onChangeCity} required>
+                                {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
+                                {this.state.cityName ? <DefaultSelect />: null}
+                                {this.state.cityName ? null : this.cityName(this.props.societyReducer)}  
                                 </Input>
+                      
                             </FormGroup>
 
                             <FormGroup>
                                 <Label>Location Name</Label>
-                                <Input type="select" name="locationId"  onChange={this.onChangeLocation} required>
-                                    <option>{this.state.locationName}</option>
-                                    <DefaultSelect/>
-                                    {this.locationName(this.props.societyReducer)}  
+                                <Input type="select" name="locationId"
+                                  onChange={this.onChangeLocation}
+                                 required>
+                                 {this.state.locationName ? <option>{this.state.locationName}</option> : <option disabled>--Select--</option>}
+                                 {this.state.locationName ? <DefaultSelect />: null}
+                                 {this.state.locationName ? null : this.locationName(this.props.societyReducer)}  
                                 </Input>
-                            </FormGroup>  
+                             
+                            </FormGroup> 
                                    
                                     <FormGroup>
                                     <Label > Address</Label>
                                     <Input name="address" value={this.state.address}
                                         onChange={this.onChange}
 
-                                        onKeyPress={this.OnKeyPresshandler}
+                                      
 
                                     />
                                      <span  className="error" >{this.state.errors.address}</span>
@@ -707,6 +731,10 @@ class DisplayEmployeeMaster extends Component {
                     }/></label>
                         {!this.state.loading ? tableData : <Spinner />}
                     </div>
+                    {this.state.profilePicture && [...this.state.profilePicture].map((file)=>(
+       <img src={UR + this.state.editEmployeeData.picture} />
+    ))}
+
                     <Modal
                         isOpen={this.state.modalIsOpen} >
                         <ModalHeader toggle={this.toggleModal.bind(this)}></ModalHeader>

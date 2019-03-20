@@ -37,7 +37,8 @@ class displayPersonDetails extends Component {
                         parking: '',
                         errors: {},
                         filterName: "userName",
-                        message: '',
+                        usernameMessage: '',
+                        emailMessage:'',
                         modalLoading: false
                 }
         }
@@ -47,7 +48,7 @@ class displayPersonDetails extends Component {
         }
 
         onChange = (e) => {
-                this.setState({ message: '' })
+                this.setState({ usernameMessage: '',emailMessage:'' })
                 if (!!this.state.errors[e.target.name]) {
                         let errors = Object.assign({}, this.state.errors)
                         delete errors[e.target.name]
@@ -152,12 +153,12 @@ class displayPersonDetails extends Component {
                                 console.log(err.response)
                                 this.setState({
                                         modalLoading: false,
-                                        message: err.response.data.messageUsernameErr, loading: false
+                                        emailMessage: err.response.data.messageEmailErr, usernameMessage: err.response.data.messageUsernameErr,  loading: false
                                 })
                         })
 
 
-                        if (this.state.message === '') {
+                        if (this.state.usernameMessage === ''&& this.state.emailMessage==='') {
                                 this.setState({ editPersonModal: true })
                         }
                         else {
@@ -375,16 +376,16 @@ class displayPersonDetails extends Component {
                                                                                 maxLength={30} required
                                                                         />
                                                                         <span className="error"> {this.state.errors.userName}</span>
-                                                                        <span className="error">{this.state.message}</span>
+                                                                        <span className="error">{this.state.usernameMessage}</span>
                                                                 </FormGroup>
-                                                                <FormGroup>
+                                                                <FormGroup>             
                                                                         <Label> Email</Label>
                                                                         <Input type="text" name="email" value={this.state.email} onChange={this.onChange}
 
                                                                                 onKeyPress={this.OnKeyPressmail} maxLength={40} required
                                                                         />
-                                                                        <span className="error"> {this.state.errors.towerName}</span>
-                                                                        <span className="error">{this.state.message}</span>
+                                                                        <span className="error"> {this.state.errors.email}</span>
+                                                                        <span className="error">{this.state.emailMessage}</span>
 
                                                                 </FormGroup>
 
