@@ -81,6 +81,7 @@ import FlatMemberList from './containers/flatOwnerDetails/flatMemberList';
 
 import ChangePassword from './components/changePassword/changePassword';
 import TenantDetail from './containers/tenantMaster/tenantDetail/tenantDetail';
+import AccountVarification from './components/accountVarification/accountVarification'
 import TenantMemberDetail from './containers/tenantMaster/tenantMemberDetail';
 import AddFloor from './containers/floorMaster/addFloor';
 import GetFloorDetail from './containers/floorMaster/getFloorDetail';
@@ -88,12 +89,12 @@ import GetFloorDetail from './containers/floorMaster/getFloorDetail';
 class App extends Component {
   render() {
     return (
-      <BrowserRouter basename='dreamsociety' onUpdate={() => window.scrollTo(0, 0)}>
+      <BrowserRouter onUpdate={() => window.scrollTo(0, 0)}>
         
         <div>
           <Switch>
             <Route path="/" exact component={Login} />
-            <Route path='/login' component={Login} />
+            <Route path='/login' exact component={Login} />
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
             <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
             <PrivateRoute path='/ownerDashboard' component={OwnerDashboard} />
@@ -165,6 +166,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/flatOwnerList' component={FlatOwnerList} />
             <PrivateRoute path='/superDashboard/flatMemberList' component={FlatMemberList} />
             <PrivateRoute path='/superDashboard/tenantDetails' component={TenantDetail} />
+            <Route path='/login/accountVerification' component={AccountVarification} />
             <PrivateRoute path='/superDashBoard/tenantMemberDetail' component={TenantMemberDetail} />
             <PrivateRoute path='/superDashboard/addFloor' component={AddFloor} />
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />

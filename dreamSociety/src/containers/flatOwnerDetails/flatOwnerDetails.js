@@ -42,9 +42,6 @@ class FlatOwnerDetails extends Component {
             ifscCode: '',
             flatNO:'',
             flatDetailId:'',
-            // memberDOB:'',
-            // memberName:'',
-            // relationName:'',
             profilePicture:'',
             permanentAddress:'',
             familyMember:'',
@@ -141,7 +138,6 @@ class FlatOwnerDetails extends Component {
         this.setState({
             [name]: selectOption.value
         })
-        console.log(this.state.flatNO)
     }
     relationHandler = (name,selectOption) => {
         this.setState(function (prevState, props) {
@@ -150,7 +146,7 @@ class FlatOwnerDetails extends Component {
             }
         }, function () {
             console.log(selectOption.value)
-        });
+        })
     }
     maxDate = () => {
         var d = new Date();
@@ -339,7 +335,7 @@ OnKeyPresshandlerEmail=(event)=> {
                 ownerGender,
                 fileName
             }
-            console.log(FlatOwnerData,...d)
+           
             this.setState({loading: true})
             this.props.addFlatOwner(FlatOwnerData,d)
             .then(() => this.props.history.push('/superDashBoard/flatOwnerList'))
@@ -349,7 +345,7 @@ OnKeyPresshandlerEmail=(event)=> {
                 this.toggle()
                 
             })
-           
+        
 
         }
         toggle = () => {

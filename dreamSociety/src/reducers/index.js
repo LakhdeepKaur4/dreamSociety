@@ -33,6 +33,8 @@ import eventSpaceMasterReducer from './eventSpaceMasterReducer/eventSpaceMasterR
 import boardMemberReducer from './boardMemberReducer/boardMemberReducer';
 import tenantReducer from './tenantReducer/tenantReducer';
 import FlatOwnerReducer from './flatOwnerReducer/flatOwnerReducer';
+import FloorReducer from './floorReducer/floorReducer';
+
 import FloorDetail from './floorReducer/floorReducer'
 
 import ChangePassword from './changePasswordReducer.js/changePasswordReducer';
@@ -70,6 +72,7 @@ const rootReducer = combineReducers({
     boardMemberReducer,
     tenantReducer,
     FlatOwnerReducer,
+    FloorReducer,
     FloorDetail,
 
     ChangePassword
