@@ -173,7 +173,8 @@ class TenantDetail extends Component {
                             <td>{item.permanentAddress}</td>
                             <td>{item.tower_master ? item.tower_master.towerName : ''}</td>
                             <td>{item.flat_detail_master ? item.flat_detail_master.flatNo : ''}</td>
-                            <td><Button onClick={this.viewMembers.bind(this, item.tenantId)}>Member Details</Button></td>
+                            <td><Button color="success" onClick={this.viewMembers.bind(this, item.tenantId)}>
+                                Member Details</Button></td>
                             <td>
                                 <Button color="success" onClick={this.edit.bind(this,PicURN+item.picture.replace('../../',''),
                                      item.tenantName, item.gender, item.email,
@@ -284,6 +285,7 @@ class TenantDetail extends Component {
 
     refreshData = () => {
         this.props.getTenantDetail().then(() => this.setState({editTenant:false, loading: false}))
+        .catch(err => err)
     }
 
     refreshDataAfterUpdate = () => {
@@ -404,27 +406,21 @@ class TenantDetail extends Component {
                 {!this.state.tenantName ? <span className='error'>{this.state.errors.tenantName}</span>: ''}
             </FormGroup>
             <FormGroup>
-                <div style={{display: 'flex'}}>
-                <Label>Gender: </Label>
-                <Col md={3} style={{display: 'flex'}}>
-                    <Col md={1}>
-                        <Label>M</Label>
-                        <Input name="gender" style={{margin: '0px'}}
+                <Label>Gender:</Label>
+                <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
+                <span><Input name="gender"
                         onChange={this.onChange} type="radio" value={this.state.Male}
-                        checked={this.state.Male===this.state.gender ? true : false} />
-                    </Col>
-                    <Col md={1}>
-                        <Label>F</Label>
-                        <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio"
-                        value={this.state.Female} checked={this.state.Female===this.state.gender ? true : false} />
-                    </Col>
-                    <Col md={1}>
-                        <Label>O</Label>
-                        <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio"
-                        value={this.state.Other} checked={this.state.Other===this.state.gender ? true : false}/>
-                    </Col>
-                </Col>
-                </div>
+                        checked={this.state.Male===this.state.gender ? true : false}/></span>
+                
+                
+                <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
+                <span><Input name="gender" onChange={this.onChange} type="radio"
+                        value={this.state.Female} checked={this.state.Female===this.state.gender ? true : false} /></span>
+                
+                
+                <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
+                <span><Input name="gender" onChange={this.onChange} type="radio"
+                        value={this.state.Other} checked={this.state.Other===this.state.gender ? true : false}/></span>
             </FormGroup>
             <FormGroup>
                 <Label>Email</Label>

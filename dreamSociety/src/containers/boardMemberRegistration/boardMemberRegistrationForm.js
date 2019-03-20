@@ -264,6 +264,7 @@ submit = (e) => {
         if(this.state.currentAddress === '') errors.currentAddress = `Current Address can't be empty.`;
         if(this.state.permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
         if(this.state.contactNumber === '') errors.contactNumber = `Contact can't be empty.`;
+        else if(this.state.contactNumber.length !== 10) errors.contactNumber = "Contact length should be of 10."
         if(this.state.email === '') errors.email = `Email can't be empty.`;
         if(this.state.bankName === '') errors.bankName = `Bank Name can't be empty.`;
         if(this.state.accountHolderName === '') errors.accountHolderName = `Account Holder Name can't be empty.`;
