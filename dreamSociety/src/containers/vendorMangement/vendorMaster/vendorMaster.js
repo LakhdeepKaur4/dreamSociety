@@ -207,6 +207,11 @@ class vendorMaster extends Component {
      
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+    
+
     getDropDown = ({ item }) => {
         if (item) {
             return item.map((item) => {
@@ -331,7 +336,7 @@ class vendorMaster extends Component {
     
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
 
                     <Form onSubmit={this.onSubmit} >
 

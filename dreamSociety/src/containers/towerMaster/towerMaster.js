@@ -6,7 +6,7 @@ import { FormGroup, Form, Label, Input, Button } from 'reactstrap';
 
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner'
-import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes'; 
 import {fetchFloor} from '../../actionCreators/floorAction';
 
 class TowerMaster extends Component {

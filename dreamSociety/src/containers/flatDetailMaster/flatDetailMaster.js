@@ -1,7 +1,7 @@
 import React,{ Component } from 'react';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import {getTowerName,getFlatType,addFlatDetails} from '../../actionCreators/flatDetailMasterAction';
+import {getTowerName,getFlatType,addFlatDetails, getfloors} from '../../actionCreators/flatDetailMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader,Table, ModalFooter, Input, Label } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
@@ -47,6 +47,21 @@ class flatDetailMaster extends Component{
         this.props.getFlatType();
     }
 
+    
+    floorChange=(event)=>{
+        this.setState({message:'' })
+        let selected= event.target.value
+        this.props.getfloors(selected);
+
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value.trim('') });
+        }
+    }
 
     OnKeyPresshandlerPhone(event) {
         const pattern = /^[0-9, a-zA-Z  -]$/;
@@ -67,7 +82,7 @@ class flatDetailMaster extends Component{
 
     onSubmit=(event)=> {
         event.preventDefault();
-        const { flatNo,flatId,floor,towerId} = this.state;
+        const { flatNo,flatId,floorId,towerId} = this.state;
         let errors={};
         if(this.state.flatNo===''){
             errors.flatNo="Flat No can't be empty"
@@ -75,17 +90,18 @@ class flatDetailMaster extends Component{
         else if(this.state.flatId===''){
             errors.flatId="Flat Type can't be empty"
         }
-        else if(this.state.floor===''){
-            errors.floor="Floor can't be empty"
-        }
         else if(this.state.towerId===''){
             errors.towerId="Tower Name can't be empty"
+        }
+
+        else if(this.state.floorId===''){
+            errors.floorId="Floor can't be empty"
         }
         this.setState({errors});
         const isValid=Object.keys(errors).length === 0;
         if(isValid){
             this.setState({loading:true});
-            this.props.addFlatDetails(flatNo,flatId,floor,towerId)
+            this.props.addFlatDetails(flatNo,flatId,floorId,towerId)
             .then(()=>
             this.push())
             .catch(err=>{
@@ -126,22 +142,29 @@ class flatDetailMaster extends Component{
         }
     }
 
-    // getFloorData=({floor})=>{
-    //     if(floor){
-    //         return floor.flat.map((items)=>{
-    //             return(
-    //                 <option key={items.floorId} value={items.floorId}>
-    //                 {items.floorName}
-    //                 </option>
-    //             )
-    //         })
-    //     }
-    // }
+    getFloorData=({floorDetails})=>{
+      
+        if(floorDetails){
+            return floorDetails.tower.Floors.map((items)=>{
+                return(
+                    <option key={items.floorId} value={items.floorId}>
+                    {items.floorName}
+                    </option>
+                )
+            })
+        }
+    }
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+
+        
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+
     
     push=()=>{
         this.props.history.push('/superDashboard/flatDetails')
@@ -153,7 +176,7 @@ class flatDetailMaster extends Component{
 
     render (){
         return(
-            <UI onClick={this.logout}>
+            <UI onClick={this.logout} change={this.changePassword}>
             <div>
                 <form onSubmit={this.onSubmit}>
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
@@ -177,7 +200,7 @@ class flatDetailMaster extends Component{
                     </div>
                     <div>    
                         <label>Tower Name</label>
-                        <select  required  className ="form-control"  defaultValue='no-value' name="towerId" onChange={this.handleChange}>
+                        <select  required  className ="form-control"  defaultValue='no-value' name="towerId" onChange={this.floorChange}>
                         <DefaultSelect/>
                             {this.getDropdown(this.props.flatDetailMasterReducer)}
                         </select>
@@ -186,12 +209,12 @@ class flatDetailMaster extends Component{
                     </div>
                     <div>    
                         <label>Floor</label>
-                        <select className ="form-control" placeholder="Floor"  defaultValue='no-value'  name="floor" maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  value={this.state.floor}>
+                        <select className ="form-control" placeholder="Floor"  defaultValue='no-value'  name="floorId" maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  value={this.state.floorId}>
                         <DefaultSelect/>
-                        {/* {this.getFloorData(this.props.flatDetailMasterReducer)} */}
+                        {this.getFloorData(this.props.flatDetailMasterReducer)}
                         </select>
                       
-                        <span className="error">{this.state.errors.floor}</span>
+                        <span className="error">{this.state.errors.floorId}</span>
                     </div>
                  
                     <div className="mt-4">
@@ -213,7 +236,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({getTowerName,getFlatType,addFlatDetails},dispatch);
+    return bindActionCreators({getTowerName,getFlatType,addFlatDetails, getfloors},dispatch);
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(flatDetailMaster);
