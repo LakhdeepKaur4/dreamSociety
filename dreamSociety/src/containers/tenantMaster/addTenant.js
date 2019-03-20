@@ -337,6 +337,10 @@ class AddTenant extends Component{
             event.preventDefault();
         }
     }
+
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
     
     bankValidation(e){
         const pattern = /^[a-zA-Z0-9_, ]+$/;
@@ -408,17 +412,22 @@ class AddTenant extends Component{
                              {!this.state.dob ? <span className="error">{this.state.errors.dob}</span> : ''}
                         </FormGroup>
                         <FormGroup>
-                            <Label>Gender:</Label>
-                            <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
-                            <span><Input type="radio" id="Gender1" name="gender" onChange={this.onChange} value="Male"/></span>
-                            
-                            
-                            <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
-                            <span><Input type="radio" id="Gender2" name="gender" onChange={this.onChange} value="Female"/></span>
-                            
-                            
-                            <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
-                            <span><Input type="radio" id="Gender3" name="gender" onChange={this.onChange} value="Other"/></span>
+                            <div>
+                                <Label>Gender:</Label>
+                                <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
+                                <span><Input type="radio" id="Gender1" name="gender" onChange={this.onChange} value="Male"/></span>
+                                
+                                
+                                <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
+                                <span><Input type="radio" id="Gender2" name="gender" onChange={this.onChange} value="Female"/></span>
+                                
+                                
+                                <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
+                                <span><Input type="radio" id="Gender3" name="gender" onChange={this.onChange} value="Other"/></span>
+                            </div>
+                            <div>
+                                {!this.state.gender ? <span className="error">{this.state.errors.gender}</span> : ''}
+                            </div>
                         </FormGroup>
                         <FormGroup>
                             <Label>Contact Number</Label>
@@ -565,14 +574,14 @@ class AddTenant extends Component{
                     </div>
                     <div>
                         <Button color="primary" className="mr-2" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
-                        <Button color="primary" id="nextBtn" style={{ display: this.state.step == 5 ? 'none' : 'inline-block' }} disabled={this.state.step == 5} onClick={this.nextPrev}>Next</Button>
-                        <Button color="success" className="mr-2" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
-                        <Button color="danger" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }} onClick={this.routeToDetail}>Cancel</Button>
+                        <Button color="primary"className="mr-2" id="nextBtn" style={{ display: this.state.step == 5 ? 'none' : 'inline-block' }} disabled={this.state.step == 5} onClick={this.nextPrev}>Next</Button>
+                        <Button color="success"  style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
+                        <Button color="danger" onClick={this.routeToDetail}>Cancel</Button>
                     </div>
         </div>
 
         return(
-            <UI onClick={this.logout}>
+            <UI onClick={this.logout} change={this.changePassword}>
                 <Form onSubmit={this.onSubmit} method="post">
                     <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                         <span aria-hidden="true">&times;</span>

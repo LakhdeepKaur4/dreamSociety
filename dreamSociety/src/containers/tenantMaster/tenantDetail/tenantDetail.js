@@ -8,9 +8,7 @@ updateTenantDetail } from '../../../actionCreators/tenantMasterAction';
 import {PicURN} from '../../../actions/index';
 import { viewTower } from '../../../actionCreators/towerMasterAction';
 import { connect } from 'react-redux';
-import Select from 'react-select';
 import Spinner from '../../../components/spinner/spinner';
-import GoogleDocsViewer from 'react-google-docs-viewer';
 import "./tenantDetail.css"
 
 class TenantDetail extends Component {
@@ -349,6 +347,10 @@ class TenantDetail extends Component {
         
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
     render(){
         let TableData = <Table>
                            <thead>
@@ -478,7 +480,7 @@ class TenantDetail extends Component {
         </div>
 
         return(
-            <UI onClick={this.logout}>
+            <UI onClick={this.logout} change={this.changePassword}>
                 <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
