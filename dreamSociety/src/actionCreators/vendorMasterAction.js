@@ -1,4 +1,4 @@
-import {URN,ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE,DELETE_VENDOR,UPDATE_VENDOR,DELETE_VENDOR_IDS,UPDATE_VENDOR_SERVICE} from '../actions/index';
+import {URN,ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE,DELETE_VENDOR,UPDATE_VENDOR,DELETE_VENDOR_IDS,UPDATE_VENDOR_SERVICE,DELETE_VENDOR_SERVICES} from '../actions/index';
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
 
@@ -47,6 +47,16 @@ export function deleteVendor(vendorId,isActive){
      return{
  
          type:DELETE_VENDOR,
+         payload: request 
+     }
+}
+
+export function deleteVendorServices(vendorServiceId,isActive){console.log(vendorServiceId,"delete")
+    const request = axios.put(`${URN}/vendorService/delete/`+vendorServiceId,{isActive}, {headers:authHeader()})
+     .then()     
+     return{
+ 
+         type:DELETE_VENDOR_SERVICES,
          payload: request 
      }
 }

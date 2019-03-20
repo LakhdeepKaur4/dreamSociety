@@ -301,6 +301,11 @@ close=()=>{
     return this.props.history.replace('/superDashBoard')
 }
 
+changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+}
+
+
 selectAll = () => {
     let selectMultiple = document.getElementsByClassName('SelectAll');
     let ar =[];
@@ -357,7 +362,7 @@ render(){
 
     return(
         
-        <UI onClick={this.logout}>
+        <UI onClick={this.logout} change={this.changePassword}>
         
               
               

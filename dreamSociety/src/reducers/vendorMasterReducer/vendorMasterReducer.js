@@ -1,4 +1,4 @@
-import {ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE,DELETE_VENDOR,UPDATE_VENDOR, DELETE_VENDOR_IDS,UPDATE_VENDOR_SERVICE} from '../../actions/index';
+import {ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE,DELETE_VENDOR,UPDATE_VENDOR,   DELETE_VENDOR_SERVICES, DELETE_VENDOR_IDS,UPDATE_VENDOR_SERVICE} from '../../actions/index';
 import { stat } from 'fs';
 
 export default function(state={}, action) {
@@ -23,7 +23,10 @@ export default function(state={}, action) {
             return {...state, updateService: action.payload}
 
         case DELETE_VENDOR_IDS:
-            return{...stat,deleteAll:action.payload}
+            return{...state,deleteAll:action.payload}
+        
+        case DELETE_VENDOR_SERVICES:
+            return{...state, delete: action.payload}
 
         default:
             return state;

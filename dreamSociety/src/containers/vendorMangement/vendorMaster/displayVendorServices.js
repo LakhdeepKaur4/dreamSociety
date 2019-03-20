@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getVendorMaster,getRateType,deleteVendor,updateVendor,deleteSelectedVendor,updateVendorServices} from '../../../actionCreators/vendorMasterAction';
+import { getVendorMaster,getRateType,deleteVendor,updateVendor,deleteSelectedVendor,updateVendorServices,deleteVendorServices} from '../../../actionCreators/vendorMasterAction';
 import { getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -103,12 +103,11 @@ class DisplayVendorServices extends Component {
 
     }
 
-   
 
-    delete(vendorServiceId){       
+    delete(vendorServiceId){   console.log(vendorServiceId)    
         this.setState({loading:true})
         let{isActive}=this.state;
-        this.props.deleteVendor(vendorServiceId,isActive)
+        this.props.deleteVendorServices(vendorServiceId,isActive)
         .then(()=>this.refreshData())
         this.setState({isActive:false})
 
@@ -208,7 +207,7 @@ if (vendors) {
                   <td>{item.rate}</td> 
                   <td>
                         <Button color="success" className="mr-2" onClick={this.editUser.bind(this,item.vendorServiceId,item.service_master.serviceId,item.rate_master.rateId,item.service_master.serviceName,item.rate_master.rateType,item.rate)}>Edit</Button> 
-                        <Button color="danger">Delete</Button>
+                        <Button color="danger" onClick={this.delete.bind(this,item.vendorServiceId)}>Delete</Button>
                   </td>
 
             </tr>
@@ -226,6 +225,10 @@ if (vendors) {
         return this.props.history.replace('/') 
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+    
     OnKeyPressUserhandler(event) {
         const pattern = /[a-zA-Z_ ]/;
         let inputChar = String.fromCharCode(event.charCode);
@@ -291,7 +294,11 @@ if (vendors) {
             this.setState({[e.target.name]:e.target.value});
             
         }}
-
+    
+    push=()=>{
+            this.props.history.push('/superDashboard/vendorMaster')
+        }
+           
 
     render() {
      
@@ -324,7 +331,7 @@ if (vendors) {
         onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
             return(
             <div>
-                 <UI onClick={this.logout}>
+                 <UI onClick={this.logout} change={this.changePassword}>
 
                 <div className="w3-container w3-margin-top w3-responsive">
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
@@ -401,7 +408,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getVendorMaster, getServiceType,getRateType,deleteVendor,updateVendor,deleteSelectedVendor,updateVendorServices}, dispatch);
+    return bindActionCreators({ getVendorMaster, getServiceType,getRateType,deleteVendor,updateVendor,deleteVendorServices,deleteSelectedVendor,updateVendorServices}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayVendorServices);

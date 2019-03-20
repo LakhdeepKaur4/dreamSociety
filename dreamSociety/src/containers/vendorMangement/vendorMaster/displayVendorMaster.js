@@ -139,8 +139,7 @@ class DisplayVendorMaster extends Component {
     }
 
 
-    delete(vendorId){
-        
+    delete(vendorId){      
         this.setState({loading:true})
         let{isActive}=this.state;
         this.props.deleteVendor(vendorId,isActive)
@@ -184,6 +183,7 @@ class DisplayVendorMaster extends Component {
         const isValid = Object.keys(errors).length === 0
         if (isValid) {
         this.setState({loading: true})
+        formData.append('vendorId',this.state.vendorId)
         formData.append('vendorName',this.state.vendorName)
         formData.append('contact',this.state.contact)
         formData.append('currentAddress',this.state.currentAddress)
@@ -256,6 +256,10 @@ class DisplayVendorMaster extends Component {
         return this.props.history.replace('/') 
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+    
     OnKeyPressUserhandler(event) {
         const pattern = /[a-zA-Z_ ]/;
         let inputChar = String.fromCharCode(event.charCode);
@@ -328,9 +332,7 @@ class DisplayVendorMaster extends Component {
         }}
 
 
-    render() {
-     
-      
+    render() { 
             let tableData;
             tableData=
             <Table className="table table-bordered">
@@ -363,7 +365,7 @@ class DisplayVendorMaster extends Component {
         onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
             return(
             <div>
-                 <UI onClick={this.logout}>
+                 <UI onClick={this.logout} change={this.changePassword}>
 
                 <div className="w3-container w3-margin-top w3-responsive">
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>

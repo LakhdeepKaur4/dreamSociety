@@ -46,6 +46,7 @@ export const UPDATE_VENDOR_SERVICE='update_vendor_service';
 export const DELETE_VENDOR='delete_vendor';
 export const DELETE_VENDOR_IDS='delete_selected_vendor';
 export const UPDATE_VENDOR='update_vendor';
+export const DELETE_VENDOR_SERVICES='delete_vendor_services';
 export const GET_FLAT ='get_flat';
 export const ADD_PERSON ='add_person';
 export const GET_PERSON ='get_person';
