@@ -79,16 +79,17 @@ import AddTenant from './containers/tenantMaster/addTenant';
 import FlatOwnerList from './containers/flatOwnerDetails/flatOwnerList'
 import FlatMemberList from './containers/flatOwnerDetails/flatMemberList';
 import TenantDetail from './containers/tenantMaster/tenantDetail/tenantDetail';
+import AccountVarification from './components/accountVarification/accountVarification'
 
 class App extends Component {
   render() {
     return (
-      <BrowserRouter basename='dreamsociety' onUpdate={() => window.scrollTo(0, 0)}>
+      <BrowserRouter onUpdate={() => window.scrollTo(0, 0)}>
         
         <div>
           <Switch>
             <Route path="/" exact component={Login} />
-            <Route path='/login' component={Login} />
+            <Route path='/login' exact component={Login} />
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
             <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
             <PrivateRoute path='/ownerDashboard' component={OwnerDashboard} />
@@ -160,6 +161,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/flatOwnerList' component={FlatOwnerList} />
             <PrivateRoute path='/superDashboard/flatMemberList' component={FlatMemberList} />
             <PrivateRoute path='/superDashboard/tenantDetails' component={TenantDetail} />
+            <Route path='/login/accountVerification' component={AccountVarification} />
           </Switch>
         </div>
         

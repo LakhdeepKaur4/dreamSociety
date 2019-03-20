@@ -6,8 +6,8 @@ import { FormGroup, Form, Label, Input, Button } from 'reactstrap';
 
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner'
-
-
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
+import {fetchFloor} from '../../actionCreators/floorAction';
 
 class TowerMaster extends Component {
 
@@ -21,7 +21,9 @@ class TowerMaster extends Component {
             menuVisible: false,
             loading:true,
             errors: {},
-            message:''
+            message:'',
+            floorId:[],
+            floors:[]
 
         }
 
@@ -30,6 +32,10 @@ class TowerMaster extends Component {
     }
     componentWillMount(){
         this.refreshData()
+       
+    }
+    componentDidMount(){
+        this.props.fetchFloor();
     }
 
     refreshData(){
@@ -59,13 +65,16 @@ class TowerMaster extends Component {
         // this.setState({loading:true})
         event.preventDefault();
         let errors = {};
-        const { towerName} = this.state
+        const { towerName,floorId,floors} = this.state
         
         if(!this.state.towerName){
             errors.towerName = "Tower Name can't be empty. Please select."
         }
+        else if(floorId===[]){
+            errors.floorId="No. Of Floor can't be empty"
+        }
         
-
+       console.log('==============',floorId)
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
 
@@ -73,7 +82,7 @@ class TowerMaster extends Component {
         if (isValid) {
             this.setState({loading: true})
           
-                this.props.AddTower(towerName).then(()=> this.props.history.push('/superDashboard/display-tower')
+                this.props.AddTower(towerName,floorId,floors).then(()=> this.props.history.push('/superDashboard/display-tower')
             
                 ).catch((err)=>this.setState({message: err.response.data.message, loading: false})
             
@@ -92,7 +101,31 @@ class TowerMaster extends Component {
   close=()=>{
     return this.props.history.replace('/superDashBoard')
 }
-
+getFloor=({floorDetails})=>{
+    console.log('getFloor',floorDetails)
+    if(floorDetails){
+        return floorDetails.floor.map((item)=>{
+            return (
+                {...item,label:item.floorName,value:item.floorId}
+            )
+        })
+   }
+}
+floorChangeHandler=(name,selectOption)=>{
+    console.log('selectOption',selectOption)
+    console.log('event')
+//    const data=selectOption.map((item)=>{return item.floorId})
+//    this.state.floors.push(data)
+    this.setState({
+        [name]: selectOption.map((item)=>{return item.floorId}),
+        floors:selectOption.map((item)=>{return {floorId:item.floorId}})
+    })
+    console.log('jkldfjdsklfjdklfjdklfj',this.state)
+    // const data={floorId:this.state.floorId}
+    // console.log(data)
+    // this.state.floors.push(data)
+     
+}
     render() {
       let form;
       if(!this.state.loading){
@@ -109,6 +142,16 @@ class TowerMaster extends Component {
                 <span className="error">{this.state.errors.towerName}</span>
                 <span className="error">{this.state.message}</span>    
             </FormGroup>
+            <FormGroup>
+                <Label>No. Of Floors</Label>
+                <ReactMultiSelectCheckboxes
+                 options={this.getFloor(this.props.floor)}
+                 onChange={this.floorChangeHandler.bind(this,'floorId')}/>
+                {/* <Input type="text" className="form-control" placeholder="No. Of Floor" name="noOfFloor"  maxLength ={20} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange}  /> */}
+                 <span className="error">{this.state.errors.noOfFloor}</span>
+               {/* <span className="error">{this.state.message}</span>     */}
+            </FormGroup>
+            
             <FormGroup>
                 <Button color="success" className="mr-2">Submit</Button>
 
@@ -141,12 +184,13 @@ class TowerMaster extends Component {
 function mapStateToProps(state) {
     console.log(state);
     return {
-        Tower: state.TowerDetails
+        Tower: state.TowerDetails,
+        floor:state.FloorReducer
     }
 }
 
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ AddTower }, dispatch);
+    return bindActionCreators({ AddTower,fetchFloor }, dispatch);
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TowerMaster)

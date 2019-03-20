@@ -3,8 +3,10 @@ import axios from 'axios';
 import {URN,ADD_TOWER,GET_TOWER,UPDATE_TOWER,DELETE_TOWER,DELETE_MULTIPLE_TOWER}  from '../actions/index' 
 
 
-export  default function AddTower(towerName){
-    const request = axios.post(`${URN}/tower`,{towerName},{headers:authHeader()},
+export  default function AddTower(towerName,floorIds,floors){
+    console.log(towerName,floorIds,floors)
+
+    const request = axios.post(`${URN}/tower`,{towerName,floorIds,floors},{headers:authHeader()},
      {method: 'POST'})
     .then(viewTower())
    console.log(request);
