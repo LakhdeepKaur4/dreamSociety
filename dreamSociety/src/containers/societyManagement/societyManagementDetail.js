@@ -396,7 +396,7 @@ class SocietyManagementDetail extends Component {
     fetchCountry({ countryResult }) {
         if (countryResult) {
             return (
-                countryResult.map((item) => {
+                countryResult.map((item) => { 
                     return (
                         <option value={item.countryName} key={item.countryId}>
                             {item.countryName}
@@ -482,6 +482,10 @@ class SocietyManagementDetail extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
 
     routeToAddNewSociety =() => {
         this.props.history.push('/superDashboard/societyManagement')
@@ -631,7 +635,7 @@ class SocietyManagementDetail extends Component {
 
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout}  change={this.changePassword}>
                 <div className="w3-container w3-margin-top w3-responsive">
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
         <span aria-hidden="true">&times;</span>

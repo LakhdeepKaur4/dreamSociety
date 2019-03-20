@@ -47,6 +47,7 @@ class Login extends Component {
                 localStorage.setItem('firstName',loginData.payload.data.user.firstName);
                 localStorage.setItem('societyId',loginData.payload.data.society.societyId);
                 localStorage.setItem('societyName',loginData.payload.data.society.societyName)
+                localStorage.setItem('userId',loginData.payload.data.user.userId)
                 console.log(loginData.payload.data.society)
                         switch(loginData.payload.data.user.roles[0].roleName) {
                             case 'SUPER ADMIN':

@@ -1,5 +1,6 @@
 // export  const URN = 'http://192.168.1.105:5000/api';
-// export  const URN = 'http://192.168.1.103:8081/api';
+// export  const URN = 'http://192.168.1.101:8081/api';
+// export  const URN = 'https://mydreamsociety.herokuapp.com/api';
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export const PicURN= 'https://dreamsociety.herokuapp.com/'; 
 export const DocURN= 'https://dreamsociety.herokuapp.com/'; 
@@ -194,6 +195,8 @@ export const ADD_TENANT_DETAIL='ADD_TENANT_DETAIL';
 export const DELETE_TENANT='DELETE_TENANT';
 export const DELETE_SELECTED_TENANT='DELETE_SELECTED_TENANT';
 export const GET_TENANT_DETAIL='GET_TENANT_DETAIL';
+export const GET_TENANT_MEMBER_DETAILS='GET_TENANT_MEMBER_DETAILS';
+export const UPDATE_TENANT_DETAIL='UPDATE_TENANT_DETAIL';
 export const ADD_FLAT_OWNER='add_flat_owner';
 export const GET_FLAT_DETAIL_VIA_TOWERID='GET_FLAT_DETAIL_VIA_TOWERID';
 export const GET_TOTAL_ITEMS='GET_TOTAL_ITEMS';
@@ -204,6 +207,15 @@ export const UPDATE_OWNER='UPDATE_OWNER';
 export const UPDATE_EVENT_SPACE='UPDATE_EVENT_SPACE';
 export const GET_OWNER_MEMBER="GET_OWNER_MEMBER";
 export const OWNER_MEMBER_DELETE="OWNER_MEMBER_DELETE";
+
+export const CHANGE_PASSWORD="change_password";
 export const DELETE_MULTIPLE_OWNER_MEMBER="DELETE_MULTIPLE_OWNER_MEMBER"
 export const MEMBER_OWNER_UPDATE="MEMBER_OWNER_UPDATE"
 export const ADD_NEW_MEMBER='ADD_NEW_MEMBER';
+
+export const ADD_FLOOR='ADD_FLOOR';
+export const GET_FLOOR='GET_FLOOR';
+export const UPDATE_FLOOR='UPDATE_FLOOR';
+export const DELETE_FLOOR='DELETE_FLOOR';
+export const DELETE_MULTIPLE_FLOOR='DELETE_FLOOR';
+export const GET_FLOOR_TOWER='GET_FLOOR_TOWER'
