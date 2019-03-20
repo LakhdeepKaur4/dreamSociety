@@ -352,42 +352,43 @@ class AddTenant extends Component{
         for (let i = 0; i < this.state.noOfMembers; i++) {
             userDatas.push(<FormGroup key={i}>
                 <Row form>
-                    <Col md={4}>
+                    <Col md={6}>
                         <Label>Name</Label>
                         <Input placeholder="Name Of Member"
                         onKeyPress={this.OnKeyPressUserhandler}
                          name = {`memberName${i}`} onChange={this.memberDetailChange} 
                         className="input" />
                     </Col>
-                    <Col md={5}>
+                    <Col md={6}>
                         <Label>Relation With Owner</Label>
                         <Select name={`relationId${i}`} options={this.getRelationList(this.props.relationList)} 
                           onChange={this.relationHandler.bind(this,'relationId'+i )}  required/>
                     </Col>
-                    <Col md={3} style={{display: 'flex'}}>
-                    <Label>Gender: </Label>
-                        <Col md={1}>
-                            <Label>M</Label>
-                            <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange} 
-                            type="radio" value="Male"  required />
-                        </Col>
-                        <Col md={1}>
-                            <Label>F</Label>
-                            <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange}
-                             type="radio" value="Female" />
-                        </Col>
-                        <Col md={1}>
-                            <Label>O</Label>
-                            <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange} 
-                            type="radio" value="Other" />
-                        </Col>
+                    <Col md={12} style={{marginTop:'20px', marginBottom:'20px'}}>
+                        <Label>Gender:</Label>
+                        <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
+                        <span><Input name={`gender${i}`} onChange={this.memberDetailChange}
+                                        type="radio" value="Female" /></span>
+                        
+                        
+                        <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
+                        <span><Input name={`gender${i}`} onChange={this.memberDetailChange}
+                                        type="radio" value="Female"/></span>
+                        
+                        
+                        <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
+                        <span><Input type="radio" onKeyPress={this.OnKeyPressUserhandler}
+                                    name = {`memberName${i}`} onChange={this.memberDetailChange} 
+                                    className="input"/></span>
                     </Col>
                     <Col md={12}>
                         <Label>Date of Birth</Label>
                         <Input type="date" max={this.maxDate()}  name={`memberDob${i}`} onChange={this.memberDetailChange} />
                     </Col>
                 </Row>
-            </FormGroup>);
+            </FormGroup>
+
+            );
         }
 
         let formData = <div>
@@ -407,28 +408,17 @@ class AddTenant extends Component{
                              {!this.state.dob ? <span className="error">{this.state.errors.dob}</span> : ''}
                         </FormGroup>
                         <FormGroup>
-                            <div style={{display: 'flex'}}>
-                            <Label>Gender: </Label>
-                            <Col md={3} style={{display: 'flex'}}>
-                                <Col md={1}>
-                                    <Label>M</Label>
-                                    <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio" value="Male" />
-                                </Col>
-                                <Col md={1}>
-                                    <Label>F</Label>
-                                    <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio" value="Female" />
-                                </Col>
-                                <Col md={1}>
-                                    <Label>O</Label>
-                                    <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio" value="Other" />
-                                </Col>
-                            </Col>
-                            </div>
-                            <div style={{marginTop:'20px'}}>
-                            {!this.state.gender ? <span className="error">
-                                {this.state.errors.gender}
-                            </span> : ''}
-                            </div>
+                            <Label>Gender:</Label>
+                            <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
+                            <span><Input type="radio" id="Gender1" name="gender" onChange={this.onChange} value="Male"/></span>
+                            
+                            
+                            <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
+                            <span><Input type="radio" id="Gender2" name="gender" onChange={this.onChange} value="Female"/></span>
+                            
+                            
+                            <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
+                            <span><Input type="radio" id="Gender3" name="gender" onChange={this.onChange} value="Other"/></span>
                         </FormGroup>
                         <FormGroup>
                             <Label>Contact Number</Label>
@@ -456,16 +446,6 @@ class AddTenant extends Component{
                                 {this.state.errors.aadhaarNumber}
                             </span> : ''}
                         </FormGroup>
-                        {/* <FormGroup>
-                            <Label>Society Name</Label>
-                            <Select placeholder="Society Name"
-                             options={this.getSociety(this.props.societyReducer)}
-                                onChange={this.societyChangeHandler.bind(this)}
-                                     />
-                            {!this.state.societyId ? <span className="error">
-                                {this.state.errors.societyId}
-                            </span> : ''}
-                        </FormGroup> */}
                         <FormGroup>
                             <Label>Corresponding Address</Label>
                             <Input type="textarea" onChange={this.onChange} maxLength="250"

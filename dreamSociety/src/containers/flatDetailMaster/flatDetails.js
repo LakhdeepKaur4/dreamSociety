@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat,updateFlatDetails} from '../../actionCreators/flatDetailMasterAction';
+import {getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat,updateFlatDetails,getfloors} from '../../actionCreators/flatDetailMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Table,Input, Label } from 'reactstrap';
@@ -10,6 +10,7 @@ import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
+import _ from 'underscore'
 
 class flatDetails extends Component{
         
@@ -19,7 +20,8 @@ class flatDetails extends Component{
             flatNo:'',
             flatId:'',
             flatType:'',
-            floor:'',
+            floorId:'',
+            floorName:'',
             towerId:'',
             towerName:'',
             isActive: false,
@@ -64,17 +66,17 @@ refreshData(){
 }
 
   
-edit(flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName){
+edit(flatDetailId,flatNo,flatId,flatType,floorName,towerId,towerName){
     this.setState({
-        flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName,editFlatModal: !this.state.editFlatModal
+        flatDetailId,flatNo,flatId,flatType,floorName,towerId,towerName,editFlatModal: !this.state.editFlatModal
     })
 
 }
 
 
 searchFilter(search) {
-    return function (x) {
-        return x.floor.toLowerCase().includes(search.toLowerCase()) ||
+    return function (x) { console.log(x,"ghsdgwehjgdwhjgdwhjgd")
+        return x.floor_master.floorName.toLowerCase().includes(search.toLowerCase()) ||
             x.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
             x.flat_master.flatType.toLowerCase().includes(search.toLowerCase()) ||
             x.flatNo.toLowerCase().includes(search.toLowerCase()) 
@@ -96,19 +98,19 @@ searchOnChange = (e) => {
 }
 
 updateDetails(){
-    const {flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName } = this.state;
+    const {flatDetailId,flatNo,flatId,flatType,floorId,towerId,towerName } = this.state;
     let errors={};
     if(this.state.flatNo===''){
         errors.flatNo="Flat No can't be empty";
     }
-        else if(this.state.floor===''){
-            errors.floor="Floor can't be empty";
+        else if(this.state.floorId===''){
+            errors.floorId="Floor can't be empty";
         }
             this.setState({errors});
             const isValid =Object.keys(errors).length===0;
             if(isValid &&  this.state.message === ''){
 
-            this.props.updateFlatDetails(flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName)
+            this.props.updateFlatDetails(flatDetailId,flatNo,flatId,flatType,floorId,towerId,towerName)
             .then(() => this.refreshData())
             .catch(err=>{
                 this.setState({modalLoading:false,message: err.response.data.message, loading: true})           
@@ -171,6 +173,19 @@ getDropDown2=({name})=>{
     }
 }
 
+getFloorData=({floorDetails})=>{
+    
+    if(floorDetails){
+        return floorDetails.flatDetail.map((items)=>{
+            return(
+                <option key={items.floorId} value={items.floorName}>
+                {items.floor_master.floorName}
+                </option>
+            )
+        })
+    }
+}
+
 push=()=>{
     this.props.history.push('/superDashboard/flatDetailMaster')
 }
@@ -210,11 +225,11 @@ renderList =({details})=>{
                             <td>{index+1}</td>             
                             <td>{item.flatNo}</td>
                             <td>{item.flat_master?item.flat_master.flatType:''}</td>
-                            <td>{item.floor}</td>
-                            <td>{item.tower_master.towerName}</td>
+                            <td>{item.floor_master?item.floor_master.floorName:''}</td>
+                            <td>{item.tower_master?item.tower_master.towerName:''}</td>
                             
                                 <td>
-                                   <Button color="success"   className="mr-2" onClick={this.edit.bind(this,item.flatDetailId,item.flatNo,item.flat_master.flatId,item.flat_master?item.flat_master.flatType:'',item.floor,item.tower_master.towerId,item.tower_master.towerName)} >Edit</Button>
+                                   <Button color="success"   className="mr-2" onClick={this.edit.bind(this,item.flatDetailId,item.flatNo,item.flat_master.flatId,item.flat_master?item.flat_master.flatType:'',item.floor_master?item.floor_master.floorName:'',item.tower_master.towerId,item.tower_master?item.tower_master.towerName:'')} >Edit</Button>
                               
                                    <Button color="danger" onClick={this.delete.bind(this, item.flatDetailId)}>Delete</Button>
                                  </td>  
@@ -269,12 +284,40 @@ unSelectAll = () =>{
     
 }
 
+floorChange=(event)=>{
+    this.setState({message:'' })
+    let selected= event.target.value
+  
+
+    // var data = _.find(this.props.flatDetailMasterReducer.Details,function(obj){ 
+    //     return obj.floorId === selected
+    //     })
+    
+    // console.log(data);
+    this.props.getfloors(selected);
+    
+
+    if (!!this.state.errors[event.target.name]) {
+        let errors = Object.assign({}, this.state.errors);
+        delete errors[event.target.name];
+        this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+    }
+    else {
+        this.setState({ [event.target.name]: event.target.value.trim('') });
+    }
+}
+
 
 logout=()=>{
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
     return this.props.history.replace('/') 
 }
+
+changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+ }
+
 
 close=()=>{
     return this.props.history.replace('/superDashBoard')
@@ -308,7 +351,7 @@ render(){
 
     return(
         <div>
-        <UI onClick={this.logout}>
+        <UI onClick={this.logout} change={this.changePassword}>
       
         <div className="w3-container w3-margin-top w3-responsive">
         <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
@@ -340,25 +383,24 @@ render(){
                         </FormGroup>
 
                         <FormGroup>
-                            <Label for="floor">Floor</Label>
-                            <Input name="floor" value={this.state.floor} maxLength={10} onKeyPress={this.OnKeyPressUserhandler}  onChange={this.onHandleChange}/>
-                            <span className="error">{this.state.errors.floor}</span>
-                        </FormGroup>
-
-                        <FormGroup>
                             <Label>Tower Name</Label>
-                            <Input type="select" name="towerId" value={this.state.towerId} onChange={(e)=>{
-                                let{towerId}=this.state;
-
-                                towerId=e.target.value;
-
-                                this.setState({towerId});
-                            }}>
+                            <Input type="select" name="towerId" value={this.state.towerId} onChange={this.floorChange}>
                             <option>{this.state.towerName}</option>
                             <DefaultSelect/>
                             {this.getDropDown2(this.props.flatDetailMasterReducer)}
                            </Input>
                         </FormGroup>
+
+                        
+                        <FormGroup>
+                            <Label>Floor</Label>
+                            <Input type="select" name="floorName" value={this.state.floorName} maxLength={10}  onChange={this.onHandleChange}>
+                            <option>{this.state.floorName}</option>
+                            <DefaultSelect/>
+                            {this.getFloorData(this.props.flatDetailMasterReducer)}
+                            </Input>
+                        </FormGroup>
+
                     
                          <Button color="primary" className="mr-2" onClick={this.updateDetails.bind(this)}>Save </Button>
                          <Button color="danger" onClick={this.toggleEditFlatModal.bind(this)}>Cancel</Button>                 
@@ -395,13 +437,14 @@ render(){
 }
 
 function mapStateToProps(state){
+  
     return{
         flatDetailMasterReducer:state.flatDetailMasterReducer
     }
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat,updateFlatDetails},dispatch)
+    return bindActionCreators({getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat,updateFlatDetails,getfloors},dispatch)
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(flatDetails);
