@@ -72,6 +72,10 @@ class RelationshipMaster extends Component{
         return this.props.history.replace('/') 
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+
     relationDetails=()=>{
     this.props.history.push('/superDashboard/relationshipMasterDetail');
     }
@@ -95,7 +99,7 @@ class RelationshipMaster extends Component{
         </div>
         return(
             <div>
-                  <UI onClick={this.logout}>
+                  <UI onClick={this.logout} change={this.changePassword}>
                 <Form onSubmit={this.handleSubmit}>
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                  <span aria-hidden="true">&times;</span>

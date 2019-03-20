@@ -32,7 +32,6 @@ class DesignationMasterDetail extends Component {
             isDisabled: true,
             ids: [],
 
-            CopyData: []
 
 
         };
@@ -141,8 +140,6 @@ class DesignationMasterDetail extends Component {
 
     deleteSelected(ids) {
         this.setState({ loading: true, isDisabled: true });
-
-        
         this.props.deleteSelectDesignation(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
@@ -150,32 +147,34 @@ class DesignationMasterDetail extends Component {
       
     }
 
-    selectAll = () => {                                                                                                                                                                                                                                                                                                         
+     
+   
+    selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
-        let ar = [];
-        for (var i = 0; i < selectMultiple.length; i++) {
-            ar.push(parseInt(selectMultiple[i].value));
-            selectMultiple[i].checked = true;
-        }
-        this.setState({ ids: ar });
-        if (ar.length > 0) {
-            this.setState({ isDisabled: false });
-        }
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
     }
 
-    unSelectAll = () => {
-
+    unSelectAll = () =>{
+        
         let unSelectMultiple = document.getElementsByClassName('SelectAll');
         let allIds = [];
-        for (var i = 0; i < unSelectMultiple.length; i++) {
-            unSelectMultiple[i].checked = false
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
         }
-
-        this.setState({ ids: [...allIds] });
-        if (allIds.length === 0) {
-            this.setState({ isDisabled: true });
+        
+        this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
         }
-
+        
     }
 
 
@@ -199,16 +198,19 @@ class DesignationMasterDetail extends Component {
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1);
                                 }
-                                else {
-
-                                    this.setState({ ids: [...this.state.ids, designationId] });
-
-                                    if (this.state.ids.length >= 0) {
-                                        this.setState({ isDisabled: false })
-                                    }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
                                 }
                             }
+                            else {
+                      
+                                this.setState({ids: [...this.state.ids, designationId]});
                                 
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                                  
                              }}/></td>
                         <td >{index+1}</td>
                         <td>{item.designationName}</td>
@@ -233,6 +235,11 @@ class DesignationMasterDetail extends Component {
         return this.props.history.replace('/')
     }
 
+    
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
     routeToAddNewDesignation = () => {
         this.props.history.push('/superDashboard/designationMaster')
     }
@@ -252,8 +259,6 @@ class DesignationMasterDetail extends Component {
     }
 
     render() {
-
-   
 
         let tableData;
         tableData = <div style={{ backgroundColor: 'lightgray' }}>
@@ -294,7 +299,7 @@ class DesignationMasterDetail extends Component {
         return (
             <div>
 
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>

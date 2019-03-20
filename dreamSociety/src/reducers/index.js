@@ -34,6 +34,12 @@ import boardMemberReducer from './boardMemberReducer/boardMemberReducer';
 import tenantReducer from './tenantReducer/tenantReducer';
 import FlatOwnerReducer from './flatOwnerReducer/flatOwnerReducer'
 import forgetPasswordReducer from './forgetPasswordReducer/forgetPasswordReducer';
+// import FlatOwnerReducer from './flatOwnerReducer/flatOwnerReducer';
+import FloorReducer from './floorReducer/floorReducer';
+
+import FloorDetail from './floorReducer/floorReducer'
+
+import ChangePassword from './changePasswordReducer.js/changePasswordReducer';
 const rootReducer = combineReducers({
     loginReducer,
     userDetail,
@@ -68,6 +74,10 @@ const rootReducer = combineReducers({
     boardMemberReducer,
     tenantReducer,
     FlatOwnerReducer,
-    forgetPasswordReducer
+    forgetPasswordReducer,
+    FloorReducer,
+    FloorDetail,
+
+    ChangePassword
 })
 export default rootReducer;

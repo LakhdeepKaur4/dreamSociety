@@ -49,7 +49,7 @@ class flatDetailMaster extends Component{
 
 
     OnKeyPresshandlerPhone(event) {
-        const pattern = /^[0-9]$/;
+        const pattern = /^[0-9, a-zA-Z  -]$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -126,6 +126,17 @@ class flatDetailMaster extends Component{
         }
     }
 
+    // getFloorData=({floor})=>{
+    //     if(floor){
+    //         return floor.flat.map((items)=>{
+    //             return(
+    //                 <option key={items.floorId} value={items.floorId}>
+    //                 {items.floorName}
+    //                 </option>
+    //             )
+    //         })
+    //     }
+    // }
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
@@ -152,7 +163,7 @@ class flatDetailMaster extends Component{
                 <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Flat Details</h3></div>
                     <div>
                         <label>Flat No</label>
-                        <input className ="form-control" placeholder="Flat No" type="text" name="flatNo" maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.handleChange} value={this.state.flatNo} ></input>
+                        <input className ="form-control" placeholder="Flat No" type="text" name="flatNo" maxLength={5} onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.handleChange} ></input>
                         <span className="error">{this.state.errors.flatNo}</span>
                         <span className="error">{this.state.message}</span>  
                     </div>
@@ -165,11 +176,6 @@ class flatDetailMaster extends Component{
                         <span className="error">{this.state.errors.flatId}</span>
                     </div>
                     <div>    
-                        <label>Floor</label>
-                        <input className ="form-control" placeholder="Floor" type="text" name="floor" maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  value={this.state.floor}></input>
-                        <span className="error">{this.state.errors.floor}</span>
-                    </div>
-                    <div>    
                         <label>Tower Name</label>
                         <select  required  className ="form-control"  defaultValue='no-value' name="towerId" onChange={this.handleChange}>
                         <DefaultSelect/>
@@ -178,6 +184,16 @@ class flatDetailMaster extends Component{
                         <span className="error">{this.state.errors.towerId}</span>
 
                     </div>
+                    <div>    
+                        <label>Floor</label>
+                        <select className ="form-control" placeholder="Floor"  defaultValue='no-value'  name="floor" maxLength={10} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  value={this.state.floor}>
+                        <DefaultSelect/>
+                        {/* {this.getFloorData(this.props.flatDetailMasterReducer)} */}
+                        </select>
+                      
+                        <span className="error">{this.state.errors.floor}</span>
+                    </div>
+                 
                     <div className="mt-4">
                     <Button type="submit" className="mr-2" color="success" value="submit">Submit</Button>
                     <Button color="danger" onClick={this.push}>Cancel</Button>

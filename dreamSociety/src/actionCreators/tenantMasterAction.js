@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
-import{URN,GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID,
+import{URN,GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID,UPDATE_TENANT_DETAIL,GET_TENANT_MEMBER_DETAILS,
     DELETE_SELECTED_TENANT,ADD_TENANT_DETAIL, GET_TENANT_DETAIL, DELETE_TENANT} from '../actions/index';
 
 export function addTenantDetail(values){
@@ -69,5 +69,29 @@ export function deleteSelectedTenant(ids){
     return {
         type: DELETE_SELECTED_TENANT,
         payload: request
+    }
+}
+
+export function updateTenantDetail(tenantName,gender, email, contact, aadhaarNumber, dob, permanentAddress, fileName, towerName, flatNo, towerId,
+    picture, flatDetailId, tenantId){
+        console.log(tenantName,gender, email, contact, aadhaarNumber, dob, permanentAddress, fileName, towerName, flatNo, towerId,
+            picture, flatDetailId, tenantId)
+        const request = axios.put(`${URN}/tenant/` + tenantId, {tenantName,gender, email, contact, aadhaarNumber,dob,
+             permanentAddress, fileName, towerName, flatNo, towerId,
+            picture, flatDetailId, tenantId}, {headers: authHeader()})
+
+            return {
+                type: UPDATE_TENANT_DETAIL,
+                payload:request
+            }
+    }
+
+export function viewMember(id){
+    const request = axios.get(`${URN}/tenant/members/` + id, {headers: authHeader()})
+    .then(response => response.data)
+
+    return {
+        type: GET_TENANT_MEMBER_DETAILS,
+        payload:request
     }
 }

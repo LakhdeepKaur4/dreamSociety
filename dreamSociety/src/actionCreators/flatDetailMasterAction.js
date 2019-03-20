@@ -61,3 +61,13 @@ export function updateFlatDetails(flatDetailId,flatNo,flatId,flatType,floor,towe
         payload:request
     }
 }
+
+// export  function getfloor(towerId){
+//     const request  = fetch(`${URN}/floor/${towerId}`,  {headers:authHeader()},{method: 'GET'})
+//     .then(response => response.json())
+//     return{
+//           type: GET_FLOOR_DATA,
+//           payload: request
+//         } 
+//     }
+
