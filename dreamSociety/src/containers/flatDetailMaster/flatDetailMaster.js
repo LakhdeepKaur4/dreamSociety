@@ -159,6 +159,12 @@ class flatDetailMaster extends Component{
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+
+        
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+
     
     push=()=>{
         this.props.history.push('/superDashboard/flatDetails')
@@ -170,7 +176,7 @@ class flatDetailMaster extends Component{
 
     render (){
         return(
-            <UI onClick={this.logout}>
+            <UI onClick={this.logout} change={this.changePassword}>
             <div>
                 <form onSubmit={this.onSubmit}>
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>

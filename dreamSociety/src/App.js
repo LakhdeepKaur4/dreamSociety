@@ -37,6 +37,7 @@ import ServiceMaster from './containers/vendorMangement/serviceMaster/serviceMas
 import DisplayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
 import vendorMaster from './containers/vendorMangement/vendorMaster/vendorMaster';
 import DisplayVendorMaster from './containers/vendorMangement/vendorMaster/displayVendorMaster';
+import DisplayVendorServices from './containers/vendorMangement/vendorMaster/displayVendorServices';
 
 import displayPersonDetails from './containers/personDetails/displayPersonDetails';
 import AssetTypeMaster from './containers/assetsTypeMaster/assetsTypeMaster';
@@ -122,6 +123,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/personDetails' component={PersonDetails} />
             <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster} />
             <PrivateRoute path='/superDashboard/displayVendorMaster' component={DisplayVendorMaster}/>
+            <PrivateRoute path='/superDashboard/displayVendorServices' component={DisplayVendorServices}/>
             <PrivateRoute path='/superDashboard/DisplayServices' component={DisplayServices} />
             <PrivateRoute path='/superDashBoard/displayPerson' exact component={displayPersonDetails} />
             <PrivateRoute path='/superDashBoard/demo' component={Demo} />

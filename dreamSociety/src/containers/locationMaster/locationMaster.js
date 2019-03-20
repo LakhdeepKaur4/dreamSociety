@@ -183,6 +183,11 @@ class locationMaster extends Component{
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
+
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
@@ -191,7 +196,7 @@ class locationMaster extends Component{
     render (){
         return(
             <div>
-            <UI onClick={this.logout}>
+            <UI onClick={this.logout} change={this.changePassword}>
             <div>
                 <form onSubmit={this.onSubmit}>
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
