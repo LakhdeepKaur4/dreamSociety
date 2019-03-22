@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getVendorMaster,getRateType,deleteVendor,updateVendor,deleteSelectedVendor,updateVendorServices,deleteVendorServices} from '../../../actionCreators/vendorMasterAction';
+import { getVendorMaster,getRateType,deleteSelectedVendorServices,updateVendorServices,deleteVendorServices} from '../../../actionCreators/vendorMasterAction';
 import { getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -17,7 +17,6 @@ class DisplayVendorServices extends Component {
 
 
     state = {
-      
             vendorServiceId:'',         
             serviceId: '',
             serviceName: '',
@@ -53,7 +52,7 @@ class DisplayVendorServices extends Component {
 
     searchFilter(search) {
         return function (x) {
-            return x.vendorName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.service_master ? x.service_master.serviceName.toLowerCase().includes(search.toLowerCase()) : '' || !search;
         }
     }
 
@@ -68,22 +67,12 @@ class DisplayVendorServices extends Component {
     }
 
     
-    searchFilter(search) {
-        return function (x) {
-            return x.vendorName.toLowerCase().includes(search.toLowerCase()) || !search;
-        }
-    }
-  
-    searchOnChange = (e) => {
-        this.setState({ search: e.target.value })
-    }
-
     getDropDown = ({item}) => {
         if (item) {
             return item.map((item) => {
                 return (
                     <option key={item.serviceId} value={item.serviceId}>
-                        {item.serviceName}
+                       {item.serviceName + " | " + item.service_detail_master.service_detail}
                     </option>
                 )
             })
@@ -104,7 +93,7 @@ class DisplayVendorServices extends Component {
     }
 
 
-    delete(vendorServiceId){   console.log(vendorServiceId)    
+    delete(vendorServiceId){ 
         this.setState({loading:true})
         let{isActive}=this.state;
         this.props.deleteVendorServices(vendorServiceId,isActive)
@@ -114,55 +103,16 @@ class DisplayVendorServices extends Component {
     }
 
     deleteSelected(ids){
-        console.log(ids)
         this.setState({loading:true,
         isDisabled:true});
-        this.props.deleteSelectedVendor(ids)
+        this.props.deleteSelectedVendorServices(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
     }
 
    
 
-//    updateVendor=()=>{
-//         let errors = {};
-//         if(this.state.vendorName===''){
-//             errors.vendorName="Vendor Name can't be empty"
-//         }
-//            else if(this.state.currentAddress===''){
-//                 errors.currentAddress="Current Address can't be empty"
-//             }
-//             else if(this.state.permanentAddress===''){
-//                 errors.permanentAddress="Permanent Address can't be empty"
-//             }
-//             else if(this.state.contact===''){
-//                 errors.contact="Contact can't be empty"                
-//             }
-//             else if(this.state.rate1===''){
-//                 errors.rate1="Rate can't be empty"                
-//             } 
-//         const formData=new FormData();
-//         this.setState({ errors });
-//         const isValid = Object.keys(errors).length === 0
-//         if (isValid) {
-//         this.setState({loading: true})
-//         formData.append('vendorServiceId',this.state.vendorServiceId) 
-//         formData.append('vendorName',this.state.vendorName)
-//         formData.append('contact',this.state.contact)
-//         formData.append('currentAddress',this.state.currentAddress)
-//         formData.append('permanentAddress',this.state.permanentAddress)
-//         formData.append('serviceId',this.state.serviceId)
-//         formData.append('rateId1',this.state.rateId1)
-//         formData.append('rate1',this.state.rate1)
-//         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
-//         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
-//         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)
-//         this.props.updateVendor( this.state.vendorId,formData).then(() => this.refreshData());   
-//         this.setState({ editVendorModal: !this.state.editVendorModal}); 
-//         }
-//    }
-
-editUser(vendorServiceId,serviceId,rateId,serviceName,rateType,rate){console.log("vendorServiceId",vendorServiceId,"serviceId",serviceId,"rateId",rateId,"serviceName",serviceName,"rateType",rateType,"rate",rate)
+editUser(vendorServiceId,serviceId,rateId,serviceName,rateType,rate){
     this.setState({
         vendorServiceId,serviceId,rateId,serviceName,rateType,rate
             ,editVendorModal: !this.state.editServiceModal})
@@ -180,42 +130,67 @@ toggle() {
     }
 
 updateServices = () => { 
-        const {vendorServiceId,serviceId,rateId,rate} = this.state
-        this.props.updateVendorServices(vendorServiceId,serviceId,rateId,rate)
-            .then(() => this.refreshData())
-        this.setState({loading:true,
-            vendorServiceId,serviceId,rateId,rate,
-            editVendorModal: !this.state.editVendorModal
-        })
-        console.log("vendorServiceId",vendorServiceId,"serviceId",serviceId,"rateId",rateId,"rate",rate)
-    
+    const {vendorServiceId,serviceId,rateId,rate} = this.state
+    let errors = {};
+            if(this.state.rate===''){
+                errors.rate="Rate can't be empty"
+            }
+            this.setState({ errors });
+            
+            const isValid =Object.keys(errors).length===0;
+            if(isValid){           
+                this.props.updateVendorServices(vendorServiceId,serviceId,rateId,rate)
+                    .then(() => this.refreshData())
+                this.setState({loading:true,
+                    vendorServiceId,serviceId,rateId,rate,
+                    editVendorModal: !this.state.editVendorModal
+                })
     }   
-
-
-renderList = ({ vendors }) => {console.log("priya",vendors)
-
-
-if (vendors) {
-    return vendors.vendor[0].vendor_services.map((item,index) => {
-        return (
-
-            <tr key={item.vendorServiceId}>
-                  <td><input type="checkbox"/></td>
-                  <td>{index+1}</td>
-                  <td>{item.service_master.serviceName}</td>
-                  <td>{item.rate_master.rateType}</td>
-                  <td>{item.rate}</td> 
-                  <td>
-                        <Button color="success" className="mr-2" onClick={this.editUser.bind(this,item.vendorServiceId,item.service_master.serviceId,item.rate_master.rateId,item.service_master.serviceName,item.rate_master.rateType,item.rate)}>Edit</Button> 
-                        <Button color="danger" onClick={this.delete.bind(this,item.vendorServiceId)}>Delete</Button>
-                  </td>
-
-            </tr>
-
-        )
-    })
 }
-}
+
+    renderList = ({ vendors }) => {
+
+        if (vendors) {
+            return vendors.vendor[0].vendor_services.filter(this.searchFilter(this.state.search)).map((item,index) => {
+                return (
+
+                    <tr key={item.vendorServiceId}>
+                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.vendorServiceId}
+                            onChange={(e) => {
+                                const {vendorServiceId} = item;
+                                if(!e.target.checked){
+                                    document.getElementById('allSelect').checked=false;
+                                    let indexOfId = this.state.ids.indexOf(vendorServiceId);
+                                    if(indexOfId > -1){
+                                        this.state.ids.splice(indexOfId, 1);
+                                    }
+                                    if(this.state.ids.length === 0){
+                                        this.setState({isDisabled: true});
+                                    }
+                                }
+                                else {
+                                    this.setState({ids: [...this.state.ids, vendorServiceId]});
+                                    if(this.state.ids.length >= 0){
+                                        this.setState({isDisabled: false})
+                                    }
+                                }
+                                
+                                 }}/></td>
+                        <td>{index+1}</td>
+                        <td>{item.service_master?item.service_master.serviceName:''}</td>
+                        <td>{item.rate_master?item.rate_master.rateType:''}</td>
+                        <td>{item.rate}</td> 
+                        <td>
+                                <Button color="success" className="mr-2" onClick={this.editUser.bind(this,item.vendorServiceId,item.service_master.serviceId,item.rate_master.rateId,item.service_master?item.service_master.serviceName:'',item.rate_master?item.rate_master.rateType:'',item.rate)}>Edit</Button> 
+                                <Button color="danger" onClick={this.delete.bind(this,item.vendorServiceId)}>Delete</Button>
+                        </td>
+
+                    </tr>
+
+                )
+            })
+        }
+        }
 
 
 
@@ -291,8 +266,7 @@ if (vendors) {
     
     onRateChange=(e)=>{
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
-            this.setState({[e.target.name]:e.target.value});
-            
+            this.setState({[e.target.name]:e.target.value});          
         }}
     
     push=()=>{
@@ -300,9 +274,7 @@ if (vendors) {
         }
            
 
-    render() {
-     
-      
+    render() {    
             let tableData;
             tableData=
             <Table className="table table-bordered">
@@ -310,10 +282,7 @@ if (vendors) {
             <tr>
                 <th  style={{width:'4%'}}></th>
                 <th  style={{width:'4%'}}>#</th>
-                {/* <th  onClick={()=>{
-                             this.setState((state)=>{return {sortVal:!state.sortVal,
-                                filterName:"vendorName"}});
-                        }}>Vendor Name  <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th> */}
+              
                 <th>Services</th>
                 <th>Rate Types </th>           
                 <th>Rates</th>             
@@ -361,7 +330,7 @@ if (vendors) {
                         <Label> Rates</Label>
                         <Input name="rate" value={this.state.rate} onChange={this.onRateChange}>
                         </Input>
-                        {/* <div>{!this.state.rate1 ? <span className="error">{this.state.errors.rate1}</span>: null}</div> */}
+                        <div>{!this.state.rate ? <span className="error">{this.state.errors.rate}</span>: null}</div>
                     </FormGroup>
                               
                     <FormGroup>
@@ -408,7 +377,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getVendorMaster, getServiceType,getRateType,deleteVendor,updateVendor,deleteVendorServices,deleteSelectedVendor,updateVendorServices}, dispatch);
+    return bindActionCreators({ getVendorMaster, getServiceType,getRateType,deleteSelectedVendorServices,deleteVendorServices,updateVendorServices}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayVendorServices);

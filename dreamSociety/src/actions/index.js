@@ -2,6 +2,7 @@
 // export  const URN = 'http://192.168.1.115:8081/api';
 // export  const URN = 'https://mydreamsociety.herokuapp.com/api';
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
+//    export  const URN = 'http://192.168.1.4:8081/api';
 export const PicURN= 'https://dreamsociety.herokuapp.com/'; 
 export const DocURN= 'https://dreamsociety.herokuapp.com/'; 
 export const UR= 'https://dreamsociety.herokuapp.com/';
@@ -41,6 +42,7 @@ export const FETCH_BASEMENT = 'FETCH_BASEMENT';
 export const FETCH_PARKING = 'FETCH_PARKING';
 export const CREATE_PARKING = 'CREATE_PARKING';
 export const ADD_VENDOR_MASTER='add_vendor_master';
+export const DELETE_VENDOR_SERVICE_IDS='delete_selected_vendor_services';
 export const GET_VENDOR_MASTER='get_vendor_master';
 export const UPDATE_VENDOR_SERVICE='update_vendor_service';
 export const DELETE_VENDOR='delete_vendor';
@@ -217,6 +219,8 @@ export const CHANGE_PASSWORD="change_password";
 export const DELETE_MULTIPLE_OWNER_MEMBER="DELETE_MULTIPLE_OWNER_MEMBER"
 export const MEMBER_OWNER_UPDATE="MEMBER_OWNER_UPDATE"
 export const ADD_NEW_MEMBER='ADD_NEW_MEMBER';
+export const MATCH_USER='match_user';
+export const CLEAR_MESSAGE='CLEAR_MESSAGE'
 
 export const ADD_FLOOR='ADD_FLOOR';
 export const GET_FLOOR='GET_FLOOR';
@@ -227,3 +231,5 @@ export const GET_FLOOR_TOWER='GET_FLOOR_TOWER';
 
 
 export const GET_FLOOR_DATA='GET_FLOOR_DATA';
+export const RESET_PASSWORD="RESET_PASSWORD";
+export const GET_TOKEN="GET_TOKEN";

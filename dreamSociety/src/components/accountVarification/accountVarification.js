@@ -20,6 +20,7 @@ export default class AccountVarification extends Component {
   render() {
     return (
       <div>
+       
           <UI>
              <h2>Submit OTP</h2> 
         <OtpInput
