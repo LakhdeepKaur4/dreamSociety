@@ -231,7 +231,7 @@ onImageChange = (event) => {
         data.append('locationId', this.state.locationId)
         data.append('startDate', this.state.editEmployeeData.startDate)
     
-        data.append('profilePicture', this.state.profilePicture)
+        data.append('picture', this.state.picture)
         console.log(this.state.editEmployeeData.picture, "picture")
 
         this.props.updateEmployee(this.state.editEmployeeData.employeeId,data).then(() =>  this.refreshData())

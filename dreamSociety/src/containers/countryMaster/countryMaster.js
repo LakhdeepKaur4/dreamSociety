@@ -83,7 +83,7 @@ class Country extends Component {
                 this.setState({loading:false, message:err.response.data.message})})
 
             this.setState({
-                countryName: '',
+                countryName: '',    
                 code: '',
                 currency: '',
                 phoneCode: '',

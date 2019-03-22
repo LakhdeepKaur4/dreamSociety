@@ -175,9 +175,9 @@ class DisplayServices extends Component {
                              }}/></td>
                         <td>{index+1}</td>
                         <td>{item.serviceName}</td>
-                        <td>{item.service_detail_master.service_detail}</td>                                                
+                        <td>{item.service_detail_master?item.service_detail_master.service_detail:''}</td>                                                
                         <td>
-                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</Button>
+                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail_master?item.service_detail_master.service_detail:'', item.serviceDetailId)}>Edit</Button>
                         
                             <Button color="danger" onClick={this.deleteService.bind(this, item.serviceId)}>Delete</Button>
                         </td>
