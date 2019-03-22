@@ -23,7 +23,7 @@ class resetPassword1 extends Component{
 
     submit=(e)=>{
         e.preventDefault();
-        let url = localStorage.getItem('url');
+        let url = window.location.href.split('?')[1]
         let errors = {};
 
         if (this.state.newPassword === '') errors.newPassword = "Cant be empty";
