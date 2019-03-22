@@ -314,6 +314,11 @@ if(location){
   displayEmployee=()=>{
       this.props.history.push('/superDashboard/displayEmployee');
   }
+
+  changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+ }
+
 render(){
 let form;
 <Spinner/>
@@ -453,8 +458,8 @@ form=
 // }
 
     return(
-        <div>
-            <UI>
+        <div  >
+            <UI  change={this.changePassword}>
           {form}
         </UI>
         </div>
