@@ -131,8 +131,6 @@ class RelationshipMasterDetail extends Component {
 
     deleteSelected(ids){
         this.setState({loading:true,  isDisabled:true});
-
-       
         this.props.deleteSelectRelation(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
