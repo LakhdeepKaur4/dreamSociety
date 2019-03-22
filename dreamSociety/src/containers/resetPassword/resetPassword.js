@@ -21,7 +21,7 @@ class resetPassword1 extends Component{
 
   
 
-    submit=(e)=>{
+    submit=(e)=>{ 
         e.preventDefault();
         let url = window.location.href.split('?')[1]
         let errors = {};
