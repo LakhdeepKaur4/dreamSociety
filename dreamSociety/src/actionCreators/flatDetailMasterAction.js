@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN, GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT_DETAIL_IDS,UPDATE_FLAT_DETAILS} from '../actions/index';
+import {URN, GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT_DETAIL_IDS,UPDATE_FLAT_DETAILS,GET_FLOOR_DATA} from '../actions/index';
 
 
 
@@ -62,12 +62,11 @@ export function updateFlatDetails(flatDetailId,flatNo,flatId,flatType,floor,towe
     }
 }
 
-// export  function getfloor(towerId){
-//     const request  = fetch(`${URN}/floor/${towerId}`,  {headers:authHeader()},{method: 'GET'})
-//     .then(response => response.json())
-//     return{
-//           type: GET_FLOOR_DATA,
-//           payload: request
-//         } 
-//     }
-
+export  function getfloors(towerId){
+    const request  = fetch(`${URN}/towerFloor/${towerId}`,  {headers:authHeader()},{method: 'GET'})
+    .then(response => response.json())
+    return{
+          type: GET_FLOOR_DATA,
+          payload: request
+        } 
+    }
