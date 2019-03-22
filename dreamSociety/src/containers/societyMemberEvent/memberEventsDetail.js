@@ -90,7 +90,7 @@ class MemberEventsDetail extends Component {
           
         this.props.updateMemberEvent(societyMemberEventId, societyMemberEventName)
             .then(() => this.refreshData())
-            .catch(err=>{ 
+            .catch(err=>{ console.log(err.response.data.message)
                 this.setState({modalLoading:false,message: err.response.data.message, loading: false})
                 })
                 if(this.state.message === ''){
@@ -175,7 +175,7 @@ class MemberEventsDetail extends Component {
       
         if (memberEventsResult) {
             return memberEventsResult.event.sort((item1,item2)=>{
-                var cmprVal = (item1.societyMemberEventName && item2.societyMemberEventName) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
@@ -327,7 +327,7 @@ class MemberEventsDetail extends Component {
 
 
 function mapStatToProps(state) {
-  
+    console.log("state", state)
     return {
         societyMemberEventReducer: state.societyMemberEventReducer
     }

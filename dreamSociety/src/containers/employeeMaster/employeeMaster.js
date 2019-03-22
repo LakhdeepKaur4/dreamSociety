@@ -363,7 +363,7 @@ form=
         <span className="error">{this.state.errors.salary}</span>
     </div>
     <div  className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-3">
                             <label>Country Name</label>
                            <select   className ="form-control" name="countryName"         defaultValue='no-value' onChange={this.onChangeCountry} >
                         <    DefaultSelect/> 
@@ -374,7 +374,7 @@ form=
 
 
 
-                    <div className="col-md-6">    
+                    <div className="col-md-3">    
                         <label>State Name</label>
                         <select  className ="form-control"  defaultValue='no-value'  name="stateName" onChange={this.onChangeState}>
                                <DefaultSelect/>
@@ -382,9 +382,8 @@ form=
                         </select>
                         <span className="error">{this.state.errors.stateId}</span>
                     </div>
-                          </div>
-                          <div className="row">    
-                      <div  className="col-md-6">    
+
+                      <div  className="col-md-3">    
                         <label>City Name</label>
                         <select  className ="form-control" defaultValue='no-value'  name="cityName" onChange={this.onChangeCity} >
                             <DefaultSelect/>
@@ -392,7 +391,7 @@ form=
                         </select>
                         <span className="error">{this.state.errors.cityId}</span>
                      </div>
-                     <div  className="col-md-6" >    
+                     <div  className="col-md-3" >    
                         <label>location</label>
                         <select  className ="form-control" defaultValue='no-value' onChange={this.onLocationChange} >
                              <DefaultSelect/>
@@ -410,7 +409,7 @@ form=
               </div>
 
 
-        <div className="form-group">
+        <div className="form-group col-md-6 col-sm-6">
           <label> Employment  Date</label>
           <input
             type="date"

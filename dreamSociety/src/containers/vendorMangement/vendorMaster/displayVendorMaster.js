@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { getVendorMaster,deleteVendor,updateVendor,deleteSelectedVendor} from '../../../actionCreators/vendorMasterAction';
+import { getVendorMaster,getRateType,deleteVendor,updateVendor,deleteSelectedVendor} from '../../../actionCreators/vendorMasterAction';
+import { getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader,Table, Input, Label } from 'reactstrap';
 import { DocURN,PicURN } from '../../../actions/index';
+import DefaultSelect from '../../../constants/defaultSelect';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/vendorDashboardInside';
 import Spinner from '../../../components/spinner/spinner';
@@ -12,13 +14,21 @@ import GoogleDocsViewer from 'react-google-docs-viewer';
 
 class DisplayVendorMaster extends Component {
 
+
+
     state = {
             filterName:"vendorName",
+            vendorServiceId:'',
             vendorId:'',
             vendorName: '',
             contact: '',
             currentAddress: '',
             permanentAddress: '',
+            serviceId: '',
+            serviceName: '',
+            rateId1: '',
+            rateType:'',
+            rate1:'',
             documentOne: null,
             documentTwo:'',
             profilePicture: '',
@@ -29,6 +39,7 @@ class DisplayVendorMaster extends Component {
             search: '',
             modal: false,
             modalIsOpen: false,
+            search: '', 
             ids:[],
             isDisabled:true,    
             errors:{}
@@ -61,11 +72,14 @@ class DisplayVendorMaster extends Component {
 
     refreshData() {
         this.props.getVendorMaster().then(()=> this.setState({loading:false}));
+        this.props.getServiceType().then(()=> this.setState({loading:false}));
+        this.props.getRateType().then(()=> this.setState({loading:false}));
     }
 
-    editUser(vendorId,vendorName,currentAddress,permanentAddress,contact,documentOne,documentTwo,picture){
+    editUser(vendorServiceId,vendorId,vendorName,currentAddress,permanentAddress,contact,serviceName,serviceId,rateType,rateId,rate1,documentOne,documentTwo,picture){
+    console.log(vendorServiceId,vendorId,vendorName,currentAddress,permanentAddress,contact,serviceName,serviceId,rateType,rateId,rate1,documentOne,documentTwo,picture)
     this.setState({
-            vendorId,vendorName,currentAddress,permanentAddress,contact,documentOne,documentTwo,picture
+        vendorServiceId,vendorId,vendorName,currentAddress,permanentAddress,contact,serviceName,serviceId,rateType,rateId,rate1,documentOne,documentTwo,picture
             ,editVendorModal: !this.state.editServiceModal})
             
     }
@@ -108,7 +122,7 @@ class DisplayVendorMaster extends Component {
     
     searchFilter(search) {
         return function (x) {
-            return x.vendorName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.vendor_master.vendorName.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
   
@@ -116,6 +130,30 @@ class DisplayVendorMaster extends Component {
         this.setState({ search: e.target.value })
     }
 
+    getDropDown = ({item}) => {
+        if (item) {
+            return item.map((item) => {
+                return (
+                    <option key={item.serviceId} value={item.serviceId}>
+                        {item.serviceName}
+                    </option>
+                )
+            })
+        }
+    }
+
+    getDropDown1 = ({rate}) => {
+        if (rate) {
+            return rate.rate.map((item) => {
+                return (
+                    <option key={item.rateId} value={item.rateId}>
+                        {item.rateType}
+                    </option>
+                )
+            })
+        }
+
+    }
 
     openModal = (documentOne) => {
         this.setState({
@@ -136,10 +174,11 @@ class DisplayVendorMaster extends Component {
     }
 
 
-    delete(vendorId){      
+    delete(vendorServiceId){
+        
         this.setState({loading:true})
         let{isActive}=this.state;
-        this.props.deleteVendor(vendorId,isActive)
+        this.props.deleteVendor(vendorServiceId,isActive)
         .then(()=>this.refreshData())
         this.setState({isActive:false})
 
@@ -152,10 +191,6 @@ class DisplayVendorMaster extends Component {
         this.props.deleteSelectedVendor(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
-    }
-
-    viewServices(){
-        this.props.history.push('/superDashBoard/displayVendorServices')
     }
 
    updateVendor=()=>{
@@ -180,11 +215,14 @@ class DisplayVendorMaster extends Component {
         const isValid = Object.keys(errors).length === 0
         if (isValid) {
         this.setState({loading: true})
-        formData.append('vendorId',this.state.vendorId)
+        formData.append('vendorServiceId',this.state.vendorServiceId) 
         formData.append('vendorName',this.state.vendorName)
         formData.append('contact',this.state.contact)
         formData.append('currentAddress',this.state.currentAddress)
         formData.append('permanentAddress',this.state.permanentAddress)
+        formData.append('serviceId',this.state.serviceId)
+        formData.append('rateId1',this.state.rateId1)
+        formData.append('rate1',this.state.rate1)
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)
@@ -198,19 +236,19 @@ class DisplayVendorMaster extends Component {
  
         if (vendors) {
             return vendors.vendor.sort((item1,item2)=>{
-                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                var cmprVal = (item1.vendor_master[this.state.filterName].localeCompare(item2.vendor_master[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
                 }).filter(this.searchFilter(this.state.search)).map((vendors,index) => {
                 
                 return (
 
-                    <tr key={vendors.vendorId}>
-                        <td><input type="checkbox" name="ids" className="SelectAll" value={vendors.vendorId}
+                    <tr key={vendors.vendorServiceId}>
+                        <td><input type="checkbox" name="ids" className="SelectAll" value={vendors.vendorServiceId}
                          onChange={(e) => {
-                            const {vendorId} = vendors;
+                            const {vendorServiceId} = vendors;
                             if(!e.target.checked){
                                 document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(vendorId);
+                                let indexOfId = this.state.ids.indexOf(vendorServiceId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1);
                                 }
@@ -219,7 +257,7 @@ class DisplayVendorMaster extends Component {
                                 }
                             }
                             else {
-                                this.setState({ids: [...this.state.ids, vendorId]});
+                                this.setState({ids: [...this.state.ids, vendorServiceId]});
                                 if(this.state.ids.length >= 0){
                                     this.setState({isDisabled: false})
                                 }
@@ -227,18 +265,21 @@ class DisplayVendorMaster extends Component {
                                 
                              }}/></td>
                         <td>{index+1}</td>
-                        <td>{vendors.vendorName}</td>
-                        <td>{vendors.currentAddress}</td>
-                        <td>{vendors.permanentAddress}</td>
-                        <td>{vendors.contact}</td>
-                        <td><button className="btn btn-light" onClick={this.openModal.bind(this, vendors.documentOne)}>View Document</button></td>
-                        <td><button className="btn btn-light" onClick={this.Modal.bind(this, vendors.documentTwo)}>View Document </button></td>
-                        <td><img style={{width:"100%", height:"15%"}} src={PicURN+ vendors.picture}></img></td>
-                        <td><button className="btn btn-success mr-2" onClick={this.viewServices.bind(this,vendors.vendorId)}>View Services</button></td>                   
+                        <td>{vendors.vendor_master.vendorName}</td>
+                        <td>{vendors.vendor_master.currentAddress}</td>
+                        <td>{vendors.vendor_master.permanentAddress}</td>
+                        <td>{vendors.vendor_master.contact}</td>
+                        <td>{vendors.service_master.serviceName}</td>
+                        <td>{vendors.rate_master.rateType}</td>
+                        <td>{vendors.rate}</td>
+                        <td><button className="btn btn-light" onClick={this.openModal.bind(this, vendors.vendor_master.documentOne)}>View Document</button></td>
+                        <td><button className="btn btn-light" onClick={this.Modal.bind(this, vendors.vendor_master.documentTwo)}>View Document </button></td>
+                        <td><img style={{width:"100%", height:"15%"}} src={PicURN+ vendors.vendor_master.picture}></img></td>
+                        
                         <td>
-                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorId, vendors.vendorName,vendors.currentAddress,vendors.permanentAddress,vendors.contact,vendors.documentOne,vendors.documentTwo,vendors.picture)}>Edit</Button> 
+                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorServiceId,vendors.vendorId, vendors.vendor_master.vendorName,vendors.vendor_master.currentAddress,vendors.vendor_master.permanentAddress,vendors.vendor_master.contact,vendors.service_master.serviceName,vendors.service_master.serviceId,vendors.rate_master.rateType,vendors.rate_master.rateId,vendors.rate,vendors.vendor_master.documentOne,vendors.vendor_master.documentTwo,vendors.vendor_master.picture)}>Edit</Button> 
                 
-                            <Button color="danger"onClick={this.delete.bind(this,vendors.vendorId)} >Delete</Button>
+                            <Button color="danger"onClick={this.delete.bind(this,vendors.vendorServiceId)} >Delete</Button>
                         </td>
                     </tr>
 
@@ -253,10 +294,6 @@ class DisplayVendorMaster extends Component {
         return this.props.history.replace('/') 
     }
 
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-    }
-    
     OnKeyPressUserhandler(event) {
         const pattern = /[a-zA-Z_ ]/;
         let inputChar = String.fromCharCode(event.charCode);
@@ -329,7 +366,9 @@ class DisplayVendorMaster extends Component {
         }}
 
 
-    render() { 
+    render() {
+     
+      
             let tableData;
             tableData=
             <Table className="table table-bordered">
@@ -337,17 +376,19 @@ class DisplayVendorMaster extends Component {
             <tr>
                 <th  style={{width:'4%'}}></th>
                 <th  style={{width:'4%'}}>#</th>
-                <th  onClick={()=>{
+                <th onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:"vendorName"}});
                         }}>Vendor Name  <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Current Address</th>
-                <th style={{ textAlign: "center", width: "16%" }}>Permanent Address</th>
+                <th>Permanent Address</th>
                 <th>Contact</th>
+                <th>Serice Types</th>
+                <th>Rate Types</th>
+                <th>Rates</th>
                 <th>Document 1</th>
                 <th>Document 2</th>
                 <th>Profile Picture</th>
-                <th>View Services</th>
                 <th>Actions</th>
               
             </tr>
@@ -362,7 +403,7 @@ class DisplayVendorMaster extends Component {
         onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
             return(
             <div>
-                 <UI onClick={this.logout} change={this.changePassword}>
+                 <UI onClick={this.logout}>
 
                 <div className="w3-container w3-margin-top w3-responsive">
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
@@ -397,6 +438,29 @@ class DisplayVendorMaster extends Component {
                         <span className="error">{this.state.errors.contact}</span>
                     </FormGroup>
                     <FormGroup>
+                        <Label>Service Types</Label>
+                        <Input type="select" name="serviceId" value={this.state.serviceId}  onChange={this.onHandleChange}>                      
+                        <option>{this.state.serviceName}</option>
+                        <DefaultSelect/>
+                        {this.getDropDown(this.props.displayServiceMasterReducer)}
+                        </Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Rate Types</Label>
+                        <Input type="select" name="rateId1" value={this.state.rateId1}  onChange={this.onHandleChange}>
+                        <option>{this.state.rateType}</option>
+                        <DefaultSelect/>
+                        {this.getDropDown1(this.props.vendorMasterReducer)}
+                        </Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label> Rates</Label>
+                        <Input name="rate1" value={this.state.rate1} onChange={this.onRateChange}>
+                        </Input>
+                        <div>{!this.state.rate1 ? <span className="error">{this.state.errors.rate1}</span>: null}</div>
+                    </FormGroup>
+                    <FormGroup></FormGroup>
+                    <FormGroup>
                         <Label> Document One</Label>
                         <GoogleDocsViewer
                             width="400px"
@@ -405,7 +469,7 @@ class DisplayVendorMaster extends Component {
                     </FormGroup>
                     <FormGroup>
                             <Label>Upload Your Id</Label>
-                            <Input type="file" name="documentOne"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage} required/>
+                            <Input type="file" name="documentOne"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage} required  />
                         </FormGroup>
                      
                     <FormGroup>
@@ -418,7 +482,7 @@ class DisplayVendorMaster extends Component {
                     <FormGroup>
                             <Label>Upload Another Id</Label>
                             <Input type="file" name="documentTwo"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage2} required  />
- 
+
                         </FormGroup>
                     <FormGroup>
                     <Label> Profile Picture</Label>
@@ -485,11 +549,12 @@ class DisplayVendorMaster extends Component {
 function mapStateToProps(state) {
     return {
         vendorMasterReducer: state.vendorMasterReducer,
+        displayServiceMasterReducer: state.displayServiceMasterReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getVendorMaster,deleteVendor,updateVendor,deleteSelectedVendor}, dispatch);
+    return bindActionCreators({ getVendorMaster, getServiceType,getRateType,deleteVendor,updateVendor,deleteSelectedVendor}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayVendorMaster);

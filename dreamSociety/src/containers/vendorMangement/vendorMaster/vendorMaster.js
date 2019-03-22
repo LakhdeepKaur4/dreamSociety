@@ -43,8 +43,7 @@ class vendorMaster extends Component {
             profilePicture: '',
             loading:false,
             menuVisible: false,
-            errors:{},
-            message:''
+            errors:{}
             
         }
         this.handleChange = this.handleChange.bind(this);
@@ -69,7 +68,6 @@ class vendorMaster extends Component {
 
 
     handleChange(e) {
-        this.setState({message:''})
         if(!!this.state.errors[e.target.name]){
             let errors =Object.assign({},this.state.errors)
             delete  errors[e.target.name]
@@ -209,11 +207,6 @@ class vendorMaster extends Component {
      
     }
 
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-    }
-    
-
     getDropDown = ({ item }) => {
         if (item) {
             return item.map((item) => {
@@ -318,11 +311,7 @@ class vendorMaster extends Component {
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)     
-        this.props.addVendorMaster(formData).then(()=>this.push()) 
-        .catch(err=>{
-            this.setState({message: err.response.data.message, loading: true})
-        
-        }) 
+        this.props.addVendorMaster(formData).then(()=>this.push());  
         this.refreshData();
 
         }
@@ -342,7 +331,7 @@ class vendorMaster extends Component {
     
         return (
             <div>
-                <UI onClick={this.logout} change={this.changePassword}>
+                <UI onClick={this.logout}>
 
                     <Form onSubmit={this.onSubmit} >
 
@@ -375,7 +364,6 @@ class vendorMaster extends Component {
                             <Label>Contact Number</Label>
                             <Input type="text" placeholder="Contact Number" name="contact" maxLength={10} onKeyPress={this.OnKeyPresshandlerPhone} value={this.state.contact} onChange={this.handleChange} />
                             <span className="error">{this.state.errors.contact}</span>
-                            <span className="error">{this.state.message}</span>
                         </FormGroup>
 
                         <Row form>

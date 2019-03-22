@@ -123,10 +123,6 @@ class MaintenanceSubMasterForm extends Component{
         this.props.history.push('/superDashboard/MaintenanceSubMasterDetails');
     }
 
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-     }
-
     render(){
         let formData = <div>
             <FormGroup>
@@ -156,7 +152,7 @@ class MaintenanceSubMasterForm extends Component{
             <Button  color="danger" onClick={this.route}>Cancel</Button>
         </div>
         return(
-            <UI onClick={this.logout}  change={this.changePassword}>
+            <UI onClick={this.logout}>
                 <Form onSubmit={this.onSubmit}>
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>

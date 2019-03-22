@@ -131,6 +131,8 @@ class RelationshipMasterDetail extends Component {
 
     deleteSelected(ids){
         this.setState({loading:true,  isDisabled:true});
+
+       
         this.props.deleteSelectRelation(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
@@ -174,7 +176,7 @@ class RelationshipMasterDetail extends Component {
         
         if (relationResult) {
             return relationResult.relation.sort((item1,item2)=>{
-                var cmprVal = (item1.relationName && item2.relationName) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 

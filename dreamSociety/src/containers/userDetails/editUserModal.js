@@ -73,6 +73,17 @@ const editUserModal = (props) => {
                 {!props.familyValue ? <span className='error'>{props.familyError}</span> : null}
             </FormGroup>
             <FormGroup>
+                <Label>Floor</Label>
+                <Input name={props.floorInputName}
+                    type="text"
+                    placeholder="Floor"
+                    value={props.floorValue}
+                    onChange={props.floorChange}
+                    onKeyPress={props.parkingAndFloorKeyPress}
+                    maxLength='30'  />
+                {!props.floorValue ? <span className='error'>{props.floorError}</span> : null}
+            </FormGroup>
+            <FormGroup>
                 <Label>Parking Slot Name</Label>
                 <Input name={props.parkingInputName}
                     type="text"

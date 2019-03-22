@@ -76,7 +76,7 @@ class BoardMemberRegistrationForm extends Component {
          })
      
          this.setState({
-             countryName: country.countryName.trim(),
+             countryName: country.countryName,
              countryId:country.countryId
          })
          
@@ -94,7 +94,7 @@ class BoardMemberRegistrationForm extends Component {
          })
  
          this.setState({
-             stateName: data1.stateName.trim(),
+             stateName: data1.stateName,
              stateId:data1.stateId
          })
          this.props.getCity(data1.stateId);
@@ -108,7 +108,7 @@ class BoardMemberRegistrationForm extends Component {
          return obj.cityName === selected
          })
          this.setState({
-             cityName:data2.cityName.trim(),
+             cityName:data2.cityName,
              cityId:data2.cityId
          })
          this.props.getLocation(data2.cityId)
@@ -122,7 +122,7 @@ class BoardMemberRegistrationForm extends Component {
          return obj.locationName === selected
      });
      this.setState({
-         locationName:data3.locationName.trim(),
+         locationName:data3.locationName,
          locationId:data3.locationId
      })
  }
@@ -234,7 +234,7 @@ sameAddress = (e) => {
 }
 
 keyPress = (event) => {
-    const pattern = /^[a-zA-Z0-9_, ]+$/;
+    const pattern = /^[a-zA-Z0-9, ]+$/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
         event.preventDefault();
@@ -264,7 +264,6 @@ submit = (e) => {
         if(this.state.currentAddress === '') errors.currentAddress = `Current Address can't be empty.`;
         if(this.state.permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
         if(this.state.contactNumber === '') errors.contactNumber = `Contact can't be empty.`;
-        else if(this.state.contactNumber.length !== 10) errors.contactNumber = "Contact length should be of 10."
         if(this.state.email === '') errors.email = `Email can't be empty.`;
         if(this.state.bankName === '') errors.bankName = `Bank Name can't be empty.`;
         if(this.state.accountHolderName === '') errors.accountHolderName = `Account Holder Name can't be empty.`;
@@ -327,7 +326,7 @@ emailChange = (e) => {
     console.log(this.state.email)
     this.setState({errors:{email: ''}})
     if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
-        this.setState({[e.target.name]:e.target.value.trim()});
+        this.setState({[e.target.name]:e.target.value});
         console.log(this.state.email)
         this.setState({emailValidError: ''})
     }
@@ -353,12 +352,8 @@ maxDate = () => {
     return d.toISOString().split('T')[0];
 }
 
-changePassword=()=>{ 
-    return this.props.history.replace('/superDashboard/changePassword')
- }
-
 ifscChange = (e) => {
-    this.setState({IFSCCode:e.target.value.toUpperCase().trim()})
+    this.setState({IFSCCode:e.target.value.toUpperCase()})
 }
 
     render(){
@@ -420,6 +415,7 @@ ifscChange = (e) => {
                         <Label>Current Address</Label>
                         <Input id="currentAddress" 
                         onKeyPress={this.keyPress} 
+                        value={this.state.currentAddress} 
                         type="textarea" 
                         placeholder="Current Address" 
                         name="currentAddress" 
@@ -562,7 +558,7 @@ ifscChange = (e) => {
                     <Button color="danger" onClick={this.route}>Cancel</Button>
         </div>
         return(
-            <UI onClick={this.logout} change={this.changePassword}>
+            <UI onClick={this.logout}>
                 <Form onSubmit={this.submit} method="POST">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>

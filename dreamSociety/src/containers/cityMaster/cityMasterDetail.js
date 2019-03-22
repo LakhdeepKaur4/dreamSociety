@@ -163,8 +163,8 @@ class CityMasterDetail extends Component {
     searchFilter = (search) => {
         return function (x) {
             return x.cityName.toLowerCase().includes(search.toLowerCase()) ||
-                x.country_master ? x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) : '' ||
-                x.state_master ? x.state_master.stateName.toLowerCase().includes(search.toLowerCase()) : ''
+                x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) ||
+                x.state_master.stateName.toLowerCase().includes(search.toLowerCase())
                 || !search;
         }
     }
@@ -205,7 +205,7 @@ class CityMasterDetail extends Component {
         if (city) {
 
        return city.sort((item1,item2)=>{
-        var cmprVal = (item1.cityName && item2.cityName ) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
+        var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
         return this.state.sortVal ? cmprVal : -cmprVal;
     }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
