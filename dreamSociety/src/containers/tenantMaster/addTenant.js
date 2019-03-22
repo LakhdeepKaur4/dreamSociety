@@ -247,7 +247,7 @@ class AddTenant extends Component{
         const file = files[0];
         console.log(file)
         let fileName = file.name;
-        if (files && file && file.size <= 40096) {
+        if (files && file) {
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload =  () =>{
