@@ -72,7 +72,7 @@ class DisplayVendorServices extends Component {
             return item.map((item) => {
                 return (
                     <option key={item.serviceId} value={item.serviceId}>
-                        {item.serviceName}
+                       {item.serviceName + " | " + item.service_detail_master.service_detail}
                     </option>
                 )
             })
