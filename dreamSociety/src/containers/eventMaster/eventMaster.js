@@ -122,6 +122,10 @@ if(!this.state.endDate){
     return this.props.history.replace('/superDashBoard')
 }
 
+changePassword=()=>{ 
+  return this.props.history.replace('/superDashboard/changePassword')
+}
+
   
   render() {
 
@@ -222,7 +226,7 @@ if(!this.state.endDate){
   }
     return (
       <div>
-    <UI onClick={this.logout}>
+    <UI onClick={this.logout} change={this.changePassword}>
   
              {form1}   
         

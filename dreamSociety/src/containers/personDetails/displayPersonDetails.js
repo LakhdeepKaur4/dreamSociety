@@ -119,9 +119,14 @@ class displayPersonDetails extends Component {
                         editPersonModal: !this.state.editPersonModal
                 })
         }
-
+        loadingInactive = () => {
+                this.setState({modalLoading: false,editPersonModal: !this.state.editPersonModal})
+            }
+       
         updatePerson = () => {
                 let errors = {};
+
+              
                 let { userId, userName, email, towerId, roleName, familyMember, parking } = this.state
                 if (!this.state.userName) {
                         errors.userName = "  Username can't be empty. Please select."
@@ -148,12 +153,12 @@ class displayPersonDetails extends Component {
                 const isValid = Object.keys(errors).length === 0
                 if (isValid) {
 
-                        
-                        this.props.updatePerson(userId, userName, email, towerId, familyMember, parking, roleName).then(() => { this.refreshData() }).catch(err => {
+                        this.setState({modalLoading:true})
+                        this.props.updatePerson(userId, userName, email, towerId, familyMember, parking, roleName).then(() =>  this.loadingInactive()).catch(err => {
                                 console.log(err.response)
                                 this.setState({
                                         modalLoading: false,
-                                        emailMessage: err.response.data.messageEmailErr, usernameMessage: err.response.data.messageUsernameErr,  loading: false
+                                        emailMessage: err.response.data.messageEmailErr, usernameMessage: err.response.data.messageUsernameErr
                                 })
                         })
 
@@ -167,7 +172,7 @@ class displayPersonDetails extends Component {
 
 
                         this.setState({
-                                loading: true, modalLoading: true
+                                 modalLoading: true
                         })
                 }
         }
@@ -282,6 +287,10 @@ class displayPersonDetails extends Component {
                 localStorage.removeItem('user-type');
                 return this.props.history.replace('/')
         }
+        changePassword=()=>{ 
+                return this.props.history.replace('/superDashboard/changePassword')
+             }
+        
         close = () => {
                 return this.props.history.replace('/superDashBoard')
         }
@@ -355,11 +364,77 @@ class displayPersonDetails extends Component {
 
                         </tbody>
                 </Table>
+
+
+   let modalData =<div>
+<FormGroup>
+<Label>User Name</Label>
+<Input type="text" name="userName" value={this.state.userName} onChange={this.onChange}
+        maxLength={30} required
+/>
+<span className="error"> {this.state.errors.userName}</span>
+<span className="error">{this.state.usernameMessage}</span>
+</FormGroup>
+<FormGroup>             
+<Label> Email</Label>
+<Input type="text" name="email" value={this.state.email} onChange={this.onChange}
+
+        onKeyPress={this.OnKeyPressmail} maxLength={40} required
+/>
+<span className="error"> {this.state.errors.email}</span>
+<span className="error">{this.state.emailMessage}</span>
+
+</FormGroup>
+
+<FormGroup>
+<Label> Tower Name</Label>
+<Input type="select" id="towerId" value={this.state.towerId} onChange={this.onChange}
+
+>
+
+        <DefaultSelect />
+        {this.getTower(this.props.personDetails)}
+</Input>
+</FormGroup>
+
+
+
+<FormGroup>
+<Label> Roles</Label>
+
+<Input type="select" value={this.state.roleName} onChange={this.onChange}
+
+
+
+>
+        <option      >{this.state.roleName}</option>
+        <DefaultSelect />
+        {this.getRole(this.props.personDetails)}
+
+</Input>
+</FormGroup>
+
+<FormGroup>
+<Label> Number of family Members</Label>
+<Input type="text" name="familyMember" value={this.state.familyMember} onChange={this.onChange}
+        onKeyPress={this.OnkeyPressNumber} maxLength={2} required
+/>
+<span className="error"> {this.state.errors.familyMember}</span>
+</FormGroup>
+<FormGroup>
+<Label> Parking</Label>
+<Input type="text" name="parking" value={this.state.parking} onChange={this.onChange}
+
+        onKeyPress={this.OnKeyPressNumber} maxLength={2} required
+/>
+<span className="error"> {this.state.errors.parking}</span>
+</FormGroup>
+</div>
                 let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
                         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
                 return (
                         <div>
-                                <UI onClick={this.logout}>
+                                <UI onClick={this.logout} change={this.changePassword}>
                                         <div className="w3-container w3-margin-top w3-responsive">
                                                 <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                                                         <span aria-hidden="true">&times;</span>
@@ -369,70 +444,7 @@ class displayPersonDetails extends Component {
                                                         <ModalHeader toggle={this.toggleEditPersonModal.bind(this)}>Edit  Person Details</ModalHeader>
                                                         <ModalBody>
 
-
-                                                                <FormGroup>
-                                                                        <Label>User Name</Label>
-                                                                        <Input type="text" name="userName" value={this.state.userName} onChange={this.onChange}
-                                                                                maxLength={30} required
-                                                                        />
-                                                                        <span className="error"> {this.state.errors.userName}</span>
-                                                                        <span className="error">{this.state.usernameMessage}</span>
-                                                                </FormGroup>
-                                                                <FormGroup>             
-                                                                        <Label> Email</Label>
-                                                                        <Input type="text" name="email" value={this.state.email} onChange={this.onChange}
-
-                                                                                onKeyPress={this.OnKeyPressmail} maxLength={40} required
-                                                                        />
-                                                                        <span className="error"> {this.state.errors.email}</span>
-                                                                        <span className="error">{this.state.emailMessage}</span>
-
-                                                                </FormGroup>
-
-                                                                <FormGroup>
-                                                                        <Label> Tower Name</Label>
-                                                                        <Input type="select" id="towerId" value={this.state.towerId} onChange={this.onChange}
-
-                                                                        >
-
-                                                                                <DefaultSelect />
-                                                                                {this.getTower(this.props.personDetails)}
-                                                                        </Input>
-                                                                </FormGroup>
-
-
-
-                                                                <FormGroup>
-                                                                        <Label> Roles</Label>
-
-                                                                        <Input type="select" value={this.state.roleName} onChange={this.onChange}
-
-
-
-                                                                        >
-                                                                                <option      >{this.state.roleName}</option>
-                                                                                <DefaultSelect />
-                                                                                {this.getRole(this.props.personDetails)}
-
-                                                                        </Input>
-                                                                </FormGroup>
-
-                                                                <FormGroup>
-                                                                        <Label> Number of family Members</Label>
-                                                                        <Input type="text" name="familyMember" value={this.state.familyMember} onChange={this.onChange}
-                                                                                onKeyPress={this.OnkeyPressNumber} maxLength={2} required
-                                                                        />
-                                                                        <span className="error"> {this.state.errors.familyMember}</span>
-                                                                </FormGroup>
-                                                                <FormGroup>
-                                                                        <Label> Parking</Label>
-                                                                        <Input type="text" name="parking" value={this.state.parking} onChange={this.onChange}
-
-                                                                                onKeyPress={this.OnKeyPressNumber} maxLength={2} required
-                                                                        />
-                                                                        <span className="error"> {this.state.errors.parking}</span>
-                                                                </FormGroup>
-
+                                                        {!this.state.modalLoading ? modalData : <Spinner/>}
 
                                                                 <Button color="primary" onClick={this.updatePerson} className="mr-2" >Save</Button>
                                                                 <Button color="danger" onClick={this.toggleEditPersonModal.bind(this)}>Cancel</Button>

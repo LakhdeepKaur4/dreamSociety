@@ -144,6 +144,9 @@ person=()=>{
     this.props.history.push('/superDashboard/displayPerson')
 }
 
+changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+ }
 
     logout=()=>{
         localStorage.removeItem('token');
@@ -220,7 +223,7 @@ form1 = <form onSubmit={this.submit}>
   }
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change ={this.changePassword}>
                  {form1} 
 
                  

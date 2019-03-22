@@ -95,7 +95,7 @@ class DisplayEventMaster extends Component {
                 this.setState({ errors })
                 const isValid = Object.keys(errors).length === 0
                 if (isValid) {
-                        this.props.updateEvent(eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId).then(() => { this.refreshData() }).catch(err => this.setState({ modalLoading: false, message: err.response.data.message, loading: false }))
+                        this.props.updateEvent(eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId).then(() => { this.refreshData() }).catch(err => this.setState({ modalLoading: false, message: err.response.data.message }))
 
 
 
@@ -108,7 +108,7 @@ class DisplayEventMaster extends Component {
 
 
                         this.setState({
-                                loading: true, modalLoading: true
+                             modalLoading: true
                         })
                 }
         }
@@ -225,6 +225,10 @@ class DisplayEventMaster extends Component {
                 localStorage.removeItem('user-type');
                 return this.props.history.replace('/')
         }
+        changePassword=()=>{ 
+                return this.props.history.replace('/superDashboard/changePassword')
+             }
+        
 
         close = () => {
                 return this.props.history.replace('/superDashBoard')
@@ -296,12 +300,61 @@ class DisplayEventMaster extends Component {
 
                         </tbody>
                 </Table>
+let modalData=<div>        
+<FormGroup>
+<Label for="eventType"> Event Type</Label>
+<Input name="eventType" value={this.state.eventType}
+        onChange={this.onChange}
+
+
+        maxLength={25}
+        onKeyPress={this.OnKeyPresshandler}
+
+/>
+<span className="error"> {this.state.errors.eventType}</span>
+</FormGroup>
+
+<FormGroup>
+<Label for="eventName"> Event Name</Label>
+<Input name="eventName" value={this.state.eventName} onChange={this.onChange}
+        onKeyPress={this.OnKeyPresshandler}
+        maxLength={25}
+/>
+<span className="error"> {this.state.errors.eventName}</span>
+<span className="error">{this.state.message} </span>
+</FormGroup>
+<FormGroup>
+<Label >Event Organiser</Label>
+<Input type="select" name="eventOrganiser" value={this.state.eventOrganiser} onChange={this.onChange} >
+
+        <option value={this.state.userName}>{this.state.userName}</option>
+
+        <DefaultSelect />
+
+        {this.getEvent(this.props.EventDetails)}
+</Input>
+<span className="error"> {this.state.errors.userName}</span>
+</FormGroup>
+<FormGroup>
+<Label> Event Start Date</Label>
+<Input type="date" id="startDate" value={this.state.startDate} onChange={this.onChange}
+/>
+<span className="error"> {this.state.errors.startDate}</span>
+</FormGroup>
+<FormGroup>
+<Label>Event End Date</Label>
+<Input type="date" id="endDate" value={this.state.endDate} onChange={this.onChange}
+
+/>
+<span className="error"> {this.state.errors.endDate}</span>
+</FormGroup>
+</div>
                 let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
                         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
                 return (
                         <div>
 
-                                <UI onClick={this.logout}>
+                                <UI onClick={this.logout}  change={this.changePassword}>
 
                                         <div className="w3-container w3-margin-top w3-responsive">
                                                 <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
@@ -316,55 +369,7 @@ class DisplayEventMaster extends Component {
                                                         <ModalBody>
 
 
-                                                                <FormGroup>
-                                                                        <Label for="eventType"> Event Type</Label>
-                                                                        <Input name="eventType" value={this.state.eventType}
-                                                                                onChange={this.onChange}
-
-
-                                                                                maxLength={25}
-                                                                                onKeyPress={this.OnKeyPresshandler}
-
-                                                                        />
-                                                                        <span className="error"> {this.state.errors.eventType}</span>
-                                                                </FormGroup>
-
-                                                                <FormGroup>
-                                                                        <Label for="eventName"> Event Name</Label>
-                                                                        <Input name="eventName" value={this.state.eventName} onChange={this.onChange}
-                                                                                onKeyPress={this.OnKeyPresshandler}
-                                                                                maxLength={25}
-                                                                        />
-                                                                        <span className="error"> {this.state.errors.eventName}</span>
-                                                                        <span className="error">{this.state.message} </span>
-                                                                </FormGroup>
-                                                                <FormGroup>
-                                                                        <Label >Event Organiser</Label>
-                                                                        <Input type="select" name="eventOrganiser" value={this.state.eventOrganiser} onChange={this.onChange} >
-
-                                                                                <option value={this.state.editEventData.userName}>{this.state.editEventData.userName}</option>
-
-                                                                                <DefaultSelect />
-
-                                                                                {this.getEvent(this.props.EventDetails)}
-                                                                        </Input>
-                                                                        <span className="error"> {this.state.errors.userName}</span>
-                                                                </FormGroup>
-                                                                <FormGroup>
-                                                                        <Label> Event Start Date</Label>
-                                                                        <Input type="date" id="startDate" value={this.state.startDate} onChange={this.onChange}
-                                                                        />
-                                                                        <span className="error"> {this.state.errors.startDate}</span>
-                                                                </FormGroup>
-                                                                <FormGroup>
-                                                                        <Label>Event End Date</Label>
-                                                                        <Input type="date" id="endDate" value={this.state.endDate} onChange={this.onChange}
-
-                                                                        />
-                                                                        <span className="error"> {this.state.errors.endDate}</span>
-                                                                </FormGroup>
-
-
+                                                        {!this.state.modalLoading ? modalData : <Spinner/>}
 
                                                                 <Button color="primary" className="mr-2" onClick={this.updateEvent}>Save</Button>
                                                                 <Button color="danger" onClick={this.toggleEditEventModal.bind(this)}>Cancel</Button>
