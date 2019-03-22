@@ -241,7 +241,15 @@ class BoardMemberDetails extends Component{
     }
 
     contactChange = (e) => {
-        this.setState({[e.target.name]:e.target.value, contactServerError:''})
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors, contactServerError:'' });
+        }
+        else {
+            this.setState({[e.target.name]:e.target.value, contactServerError:''})
+        }
+        
     }
 
     fetchDesignation = ({designation}) => {
