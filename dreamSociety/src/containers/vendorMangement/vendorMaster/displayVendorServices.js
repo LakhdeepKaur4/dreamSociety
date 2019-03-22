@@ -52,7 +52,7 @@ class DisplayVendorServices extends Component {
 
     searchFilter(search) {
         return function (x) {
-            return x.service_master.serviceName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.service_master ? x.service_master.serviceName.toLowerCase().includes(search.toLowerCase()) : '' || !search;
         }
     }
 
@@ -177,11 +177,11 @@ updateServices = () => {
                                 
                                  }}/></td>
                         <td>{index+1}</td>
-                        <td>{item.service_master.serviceName}</td>
-                        <td>{item.rate_master.rateType}</td>
+                        <td>{item.service_master?item.service_master.serviceName:''}</td>
+                        <td>{item.rate_master?item.rate_master.rateType:''}</td>
                         <td>{item.rate}</td> 
                         <td>
-                                <Button color="success" className="mr-2" onClick={this.editUser.bind(this,item.vendorServiceId,item.service_master.serviceId,item.rate_master.rateId,item.service_master.serviceName,item.rate_master.rateType,item.rate)}>Edit</Button> 
+                                <Button color="success" className="mr-2" onClick={this.editUser.bind(this,item.vendorServiceId,item.service_master.serviceId,item.rate_master.rateId,item.service_master?item.service_master.serviceName:'',item.rate_master?item.rate_master.rateType:'',item.rate)}>Edit</Button> 
                                 <Button color="danger" onClick={this.delete.bind(this,item.vendorServiceId)}>Delete</Button>
                         </td>
 
@@ -266,8 +266,7 @@ updateServices = () => {
     
     onRateChange=(e)=>{
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
-            this.setState({[e.target.name]:e.target.value});
-            
+            this.setState({[e.target.name]:e.target.value});          
         }}
     
     push=()=>{
@@ -275,9 +274,7 @@ updateServices = () => {
         }
            
 
-    render() {
-     
-      
+    render() {    
             let tableData;
             tableData=
             <Table className="table table-bordered">
