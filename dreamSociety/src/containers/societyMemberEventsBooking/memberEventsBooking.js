@@ -6,7 +6,7 @@ import { getMemberEvent } from './../../actionCreators/societyMemberEventAction'
 import {getEventDetails} from './../../actionCreators/eventSpaceMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import _ from 'underscore';
-import Spinner from '../../components/spinner/spinner'
+import Spinner from '../../components/spinner/spinner';
 import { Form, Button, FormGroup, Input, Label } from 'reactstrap';
 import DefaultSelect from './../../constants/defaultSelect';
 
@@ -130,15 +130,7 @@ class MemberEventsBooking extends Component {
             errors.startDate = "cant be empty";
         } 
 
-        
-        // else if(new Date(this.state.startDate).getTime() <= ToDate.getTime()) {
-        //     errors.startDate="start date cannot be past date"
-        // }
-        
-        // else if(this.state.startDate > this.state.endDate){
-        //     errors.endDate="end date cannot be before start date"
-        // }
-        
+       
         else if(this.state.endDate === ''){
             errors.endDate = "cant be empty";
         }
@@ -161,6 +153,7 @@ class MemberEventsBooking extends Component {
         if (isValid) {
 
             this.setState({loading:true})
+           
             this.props.addEventBooking(this.state)
             .then(()=>this.props.history.push('/superDashboard/memberEventsBookingDetail'))
             .catch(err=>{

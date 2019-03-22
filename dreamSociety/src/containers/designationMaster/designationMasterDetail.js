@@ -182,7 +182,7 @@ class DesignationMasterDetail extends Component {
         if (designationResult) {
 
             return designationResult.designation.sort((item1, item2) => {
-                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                var cmprVal = (item1.designationName && item2.designationName) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
                 console.log(item)
