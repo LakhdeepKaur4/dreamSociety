@@ -162,6 +162,7 @@ class DisplayEmployeeMaster extends Component {
    
     }
 // }
+console.log(picture,"picture")
     
 
       const name = document.querySelector('#real-input').value.split(/\\|\//).pop();
