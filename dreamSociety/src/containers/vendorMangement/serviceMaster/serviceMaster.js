@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { addServiceType, getServiceDetail,getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { Button } from 'reactstrap';
 import DefaultSelect from '../../../constants/defaultSelect';
+import Spinner from '../../../components/spinner/spinner';
 
 
 import UI from '../../../components/newUI/vendorDashboardInside';
@@ -21,15 +22,16 @@ class ServiceMaster extends Component {
             service_detail: '',
             menuVisible: false,
             errors:{},
-            loading:true,
-            message:''
+            loading:false,
+            message:'',
+            isSubmit: false,
         }
 
     }
 
 
     handleChange = (event) => {
-
+        this.setState({message:''});
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -86,11 +88,15 @@ class ServiceMaster extends Component {
                     this.props.addServiceType( serviceName,serviceDetailId)
                     .then(()=>
                     this.push())
-                    .catch(err=>{
-                        this.setState({message: err.response.data.message, loading: true})
-                    
-                    })
-                    this.refreshData();
+                    .catch((err)=>{
+                        this.setState({loading:false, message:err.response.data.message})})
+        
+                    this.setState({
+                        serviceName: '',
+                        serviceDetailId: '',
+                        service_detail: '',
+                        isSubmit: true
+                    });
         }
         
     }
@@ -126,18 +132,9 @@ class ServiceMaster extends Component {
     
 
     render() {
-
-        return (
-        <div>
-            <UI onClick={this.logout} change={this.changePassword}>
-               
-                <div>
-                    <form onSubmit={this.onSubmit}>
-                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                    <span aria-hidden="true">&times;</span>
-                 </div>
-                    <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Services</h3></div>
-                        <div>
+        let form;
+        form=<div>
+             <div>
                             <label>Service Type</label>
                             <input type="text" placeholder="Service Type" className="form-control" name="serviceName" maxLength={30}  onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} ></input>
                             <span className="error">{this.state.errors.serviceName}</span>
@@ -155,10 +152,23 @@ class ServiceMaster extends Component {
                             <Button type="submit" color="success" className="mr-2" value="submit">Submit</Button>
                           
                                 <Button color="danger" onClick={this.push}>Cancel</Button>
+                                </div>
+                   </div>                
+        return (
+
+        <div>
+            <UI onClick={this.logout} change={this.changePassword}>
+               
+                 <form onSubmit={this.onSubmit}>
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                    <span aria-hidden="true">&times;</span>
+                 </div>
+                    <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Services</h3></div>
+                    {!this.state.loading ? form : <Spinner /> }
                        
-                        </div>
+                   
                     </form>
-                </div>
+              
             </UI>
            
 

@@ -5,6 +5,7 @@ import {getCountryName,getStateName,getCityName,addLocationDetails, getLocationN
 import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard'; 
 import DefaultSelect from '../../constants/defaultSelect';
+import Spinner from '../../components/spinner/spinner';
 
 
 class locationMaster extends Component{
@@ -20,7 +21,7 @@ class locationMaster extends Component{
             cityName:'',
             locationName:'',
             errors:{},
-            loading:true,
+            loading:false,
             message:''
         }
     }
@@ -64,20 +65,15 @@ class locationMaster extends Component{
            this.props.getStateName(data.countryId)
            this.setState({countryId:data.countryId})
    }  
-
-        
+      
     getDropdown2=({state})=>{
         if(state){
             return state.map((item)=>{
                     return(
                         <option key={item.stateId} value={item.stateName}>
                         {item.stateName}</option>
-                    )
-                    
+                    )                 
                 })
-
-                
-            
         }
     }
 
@@ -100,8 +96,7 @@ class locationMaster extends Component{
                     return(
                         <option key={item.cityId} value={item.cityName} >
                         {item.cityName}</option>
-                    )
-                    
+                    )                  
                 })
         }
     }
@@ -112,23 +107,14 @@ class locationMaster extends Component{
         
         var data2 = _.find(this.props.locationMasterReducer.city,function(obj){
             return obj.cityName === selected
-            })
-            
+            })         
           this.props.getLocationName(data2.cityId)
-
            this.setState({cityId:data2.cityId})
-    }
-
-    onLocationChange=(e)=>{
-        this.setState({message:''})
-        this.onChange(e);
-        this.setState({
-            [e.target.name]:e.target.value
-        })
     }
 
 
     onChange=(e)=>{
+     
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -138,8 +124,6 @@ class locationMaster extends Component{
             this.setState({ [e.target.name]: e.target.value.trim('') });
         }
     }
-
-   
 
     onSubmit=(event)=> {
        
@@ -166,10 +150,14 @@ class locationMaster extends Component{
                     .then(()=>
                     this.push())
                     .catch(err=>{
-                        this.setState({message: err.response.data.message, loading: true})
-                    
+                        this.setState({message: err.response.data.message, loading: false})                    
                     })
-                    this.refreshData();     
+                    this.setState({
+                        countryId:'',
+                        stateId:'',
+                        cityId:'',
+                        locationName:''
+                    })   
                     }      
     }
 
@@ -194,15 +182,9 @@ class locationMaster extends Component{
 
     
     render (){
-        return(
-            <div>
-            <UI onClick={this.logout} change={this.changePassword}>
-            <div>
-                <form onSubmit={this.onSubmit}>
-                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                <span aria-hidden="true">&times;</span>
-            </div>
-                <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Location</h3></div>
+        let form;
+        form= <div>
+      
                     <div>
                         <label>Country Name</label>
                         <select defaultValue='no-value' className ="form-control" name="countryId"  onChange={this.onChangeCountry} >
@@ -230,20 +212,26 @@ class locationMaster extends Component{
                     </div>
                     <div>
                         <label>Location Name</label>
-                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  value={this.state.locationName}  onChange={this.onLocationChange} ></input>
+                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  value={this.state.locationName}  onChange={this.onChange} ></input>
                         <span className='error'>{this.state.errors.locationName}</span>
                         <span className="error">{this.state.message}</span>
                     </div>
              
                     <div className="mt-4">
-                            <button type="submit" className=" btn btn-success mr-2" value="submit">Submit</button>
-                          
+                            <button type="submit" className=" btn btn-success mr-2" value="submit">Submit</button>                         
                                 <button className=" btn btn-danger" onClick={this.push}>Cancel</button>
-                       
+                    </div>
+          </div>
+             return(
+                <div>
+                    <UI onClick={this.logout} change={this.changePassword}>
+                        <form onSubmit={this.onSubmit}>
+                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                        <span aria-hidden="true">&times;</span>
                         </div>
-                </form> 
-                
-            </div>
+                        <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Location</h3></div>
+                        {!this.state.loading ? form : <Spinner /> }                                         
+                </form>            
             </UI>
             </div>
         )
