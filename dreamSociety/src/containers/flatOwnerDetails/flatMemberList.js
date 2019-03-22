@@ -184,11 +184,6 @@ class FlatMemberList extends Component {
     close = () => {
         return this.props.history.replace('/superDashBoard/flatOwnerList')
     }
-
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-     }
-     
     addMember = () => {
         const { memberName, memberDob, gender, relationId } = this.state
         let errors = {};
@@ -235,7 +230,7 @@ class FlatMemberList extends Component {
             onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
-                <UI onClick={this.logout} change={this.changePassword}>
+                <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top w3-responsive">
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>

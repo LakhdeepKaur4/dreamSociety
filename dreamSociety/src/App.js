@@ -37,6 +37,7 @@ import ServiceMaster from './containers/vendorMangement/serviceMaster/serviceMas
 import DisplayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
 import vendorMaster from './containers/vendorMangement/vendorMaster/vendorMaster';
 import DisplayVendorMaster from './containers/vendorMangement/vendorMaster/displayVendorMaster';
+import DisplayVendorServices from './containers/vendorMangement/vendorMaster/displayVendorServices';
 
 import displayPersonDetails from './containers/personDetails/displayPersonDetails';
 import AssetTypeMaster from './containers/assetsTypeMaster/assetsTypeMaster';
@@ -81,11 +82,14 @@ import FlatMemberList from './containers/flatOwnerDetails/flatMemberList';
 
 import ChangePassword from './components/changePassword/changePassword';
 import TenantDetail from './containers/tenantMaster/tenantDetail/tenantDetail';
+import forgetPassword from './containers/login/forgetPassword';
+import resetPassword from './containers/resetPassword/resetPassword';
 import AccountVarification from './components/accountVarification/accountVarification'
 import TenantMemberDetail from './containers/tenantMaster/tenantMemberDetail';
 import AddFloor from './containers/floorMaster/addFloor';
 import GetFloorDetail from './containers/floorMaster/getFloorDetail';
-import Active from './components/isActive/isActive';
+import submitOTP from './containers/login/submitOtp';
+import token from './containers/token';
 
 class App extends Component {
   render() {
@@ -95,6 +99,9 @@ class App extends Component {
         <div>
           <Switch>
             <Route path="/" exact component={Login} />
+            <Route path='/login' exact component={Login} />
+            <Route path='/forgetPassword' component= {forgetPassword}/>
+            <Route path='/resetPassword' component= {resetPassword}/>
             <Route path='/login' exact component={Login} />
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
             <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
@@ -123,6 +130,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/personDetails' component={PersonDetails} />
             <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster} />
             <PrivateRoute path='/superDashboard/displayVendorMaster' component={DisplayVendorMaster}/>
+            <PrivateRoute path='/superDashboard/displayVendorServices' component={DisplayVendorServices}/>
             <PrivateRoute path='/superDashboard/DisplayServices' component={DisplayServices} />
             <PrivateRoute path='/superDashBoard/displayPerson' exact component={displayPersonDetails} />
             <PrivateRoute path='/superDashBoard/demo' component={Demo} />
@@ -167,12 +175,14 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/flatOwnerList' component={FlatOwnerList} />
             <PrivateRoute path='/superDashboard/flatMemberList' component={FlatMemberList} />
             <PrivateRoute path='/superDashboard/tenantDetails' component={TenantDetail} />
-            <Route path='/login/accountVerification' component={AccountVarification} />
-            <Route path='/login/Active' exact component={Active} />
+            
+            <Route path='/login/accountVerification' exact component={AccountVarification} />
             <PrivateRoute path='/superDashBoard/tenantMemberDetail' component={TenantMemberDetail} />
             <PrivateRoute path='/superDashboard/addFloor' component={AddFloor} />
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
+            <Route path='/submitotp' component= {submitOTP}/>
+            <Route path='/token' component= {token}/>
           </Switch>
         </div>
         

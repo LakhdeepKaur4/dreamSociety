@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { URN,ADD_FLAT_OWNER,GET_ALL_FLOOR,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,DELETE_MULTIPLE_OWNER_MEMBER,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER } from '../actions/index';
+import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,DELETE_MULTIPLE_OWNER_MEMBER,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER } from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
 export function addFlatOwner(data){
@@ -24,9 +24,7 @@ export function addFlatOwner(data){
         member:data.member,
         profilePicture:data.profilePicture,
         gender:data.ownerGender,
-        fileName:data.fileName,
-        adhaarCardNo:data.Aadhaar,
-        floorId:data.floorId
+        fileName:data.fileName
     }
     // const data2={
     //     data1,
@@ -175,15 +173,6 @@ export function addNewMember(memberName,memberDob,gender,relationId,id){
     .then(response=>response.data)
     return {
         type:ADD_NEW_MEMBER,
-        payload:request
-    }
-}
-
-export function getAllFloor (id){
-    const request =axios.get(`${URN}/towerFloor/${id}`,{headers:authHeader()})
-    .then(response=>response.data)
-    return {
-        type:GET_ALL_FLOOR,
         payload:request
     }
 }

@@ -84,10 +84,6 @@ class AssetList extends Component {
         }
     }
 
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-     }
-
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
     }

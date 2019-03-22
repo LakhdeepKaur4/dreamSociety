@@ -72,11 +72,11 @@ class SocietyManagementDetail extends Component {
 
     
     emailChange = (e) => {
-        console.log(this.state.email)
+   
         this.setState({email:e.target.value})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value});
-            console.log(this.state.email)
+            
             this.setState({emailValidError: ''})
         }
         else{ this.setState({emailValidError: 'Invalid Email.'})}
@@ -224,7 +224,7 @@ class SocietyManagementDetail extends Component {
     }
 
     deleteSelected=(ids)=>{
-        console.log(ids)
+    
         this.setState({loading:true, isDisabled:true});
         
         this.props.deleteSelectSociety(ids)
@@ -459,10 +459,10 @@ class SocietyManagementDetail extends Component {
     searchFilter(search) {
         return function (x) {
             return x.societyName.toLowerCase().includes(search.toLowerCase()) ||
-                x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) ||
-                x.state_master.stateName.toLowerCase().includes(search.toLowerCase()) ||
-                x.city_master.cityName.toLowerCase().includes(search.toLowerCase()) ||
-                x.location_master.locationName.toLowerCase().includes(search.toLowerCase()) ||
+                x.country_master ? x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) : '' ||
+                x.state_master ? x.state_master.stateName.toLowerCase().includes(search.toLowerCase()) : '' || 
+                x.city_master ? x.city_master.cityName.toLowerCase().includes(search.toLowerCase()) : '' ||
+                x.location_master ? x.location_master.locationName.toLowerCase().includes(search.toLowerCase()) : '' ||
                 x.societyAddress.toLowerCase().includes(search.toLowerCase()) ||
                 x.bankName.toLowerCase().includes(search.toLowerCase()) ||
                 x.accountHolderName.toLowerCase().includes(search.toLowerCase()) ||
