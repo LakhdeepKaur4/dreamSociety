@@ -89,6 +89,7 @@ import TenantMemberDetail from './containers/tenantMaster/tenantMemberDetail';
 import AddFloor from './containers/floorMaster/addFloor';
 import GetFloorDetail from './containers/floorMaster/getFloorDetail';
 import submitOTP from './containers/login/submitOtp';
+import token from './containers/token';
 
 class App extends Component {
   render() {
@@ -181,6 +182,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
             <Route path='/submitotp' component= {submitOTP}/>
+            <Route path='/token' component= {token}/>
           </Switch>
         </div>
         
