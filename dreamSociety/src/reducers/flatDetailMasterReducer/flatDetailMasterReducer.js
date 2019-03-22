@@ -1,4 +1,4 @@
-import{GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT_DETAIL_IDS,UPDATE_FLAT_DETAILS,GET_FLOOR_DATA} from '../../actions/index';
+import{GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT_DETAIL_IDS,UPDATE_FLAT_DETAILS} from '../../actions/index';
 
 export default function(state={},action){
 
@@ -32,12 +32,6 @@ export default function(state={},action){
              return{
                 ...state, update: action.payload
              }    
-
-            
-        case GET_FLOOR_DATA:
-             return{
-                ...state, floorDetails: action.payload
-             } 
             default:
             return state
     }

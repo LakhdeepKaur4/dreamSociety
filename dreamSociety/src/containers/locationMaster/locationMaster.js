@@ -5,7 +5,6 @@ import {getCountryName,getStateName,getCityName,addLocationDetails, getLocationN
 import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard'; 
 import DefaultSelect from '../../constants/defaultSelect';
-import Spinner from '../../components/spinner/spinner';
 
 
 class locationMaster extends Component{
@@ -21,7 +20,7 @@ class locationMaster extends Component{
             cityName:'',
             locationName:'',
             errors:{},
-            loading:false,
+            loading:true,
             message:''
         }
     }
@@ -65,15 +64,20 @@ class locationMaster extends Component{
            this.props.getStateName(data.countryId)
            this.setState({countryId:data.countryId})
    }  
-      
+
+        
     getDropdown2=({state})=>{
         if(state){
             return state.map((item)=>{
                     return(
                         <option key={item.stateId} value={item.stateName}>
                         {item.stateName}</option>
-                    )                 
+                    )
+                    
                 })
+
+                
+            
         }
     }
 
@@ -96,7 +100,8 @@ class locationMaster extends Component{
                     return(
                         <option key={item.cityId} value={item.cityName} >
                         {item.cityName}</option>
-                    )                  
+                    )
+                    
                 })
         }
     }
@@ -107,14 +112,23 @@ class locationMaster extends Component{
         
         var data2 = _.find(this.props.locationMasterReducer.city,function(obj){
             return obj.cityName === selected
-            })         
+            })
+            
           this.props.getLocationName(data2.cityId)
+
            this.setState({cityId:data2.cityId})
+    }
+
+    onLocationChange=(e)=>{
+        this.setState({message:''})
+        this.onChange(e);
+        this.setState({
+            [e.target.name]:e.target.value
+        })
     }
 
 
     onChange=(e)=>{
-     
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -124,6 +138,8 @@ class locationMaster extends Component{
             this.setState({ [e.target.name]: e.target.value.trim('') });
         }
     }
+
+   
 
     onSubmit=(event)=> {
        
@@ -150,14 +166,10 @@ class locationMaster extends Component{
                     .then(()=>
                     this.push())
                     .catch(err=>{
-                        this.setState({message: err.response.data.message, loading: false})                    
+                        this.setState({message: err.response.data.message, loading: true})
+                    
                     })
-                    this.setState({
-                        countryId:'',
-                        stateId:'',
-                        cityId:'',
-                        locationName:''
-                    })   
+                    this.refreshData();     
                     }      
     }
 
@@ -171,20 +183,21 @@ class locationMaster extends Component{
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
-
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-    }
-
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
 
     
     render (){
-        let form;
-        form= <div>
-      
+        return(
+            <div>
+            <UI onClick={this.logout}>
+            <div>
+                <form onSubmit={this.onSubmit}>
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                <span aria-hidden="true">&times;</span>
+            </div>
+                <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Location</h3></div>
                     <div>
                         <label>Country Name</label>
                         <select defaultValue='no-value' className ="form-control" name="countryId"  onChange={this.onChangeCountry} >
@@ -212,26 +225,20 @@ class locationMaster extends Component{
                     </div>
                     <div>
                         <label>Location Name</label>
-                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  value={this.state.locationName}  onChange={this.onChange} ></input>
+                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  value={this.state.locationName}  onChange={this.onLocationChange} ></input>
                         <span className='error'>{this.state.errors.locationName}</span>
                         <span className="error">{this.state.message}</span>
                     </div>
              
                     <div className="mt-4">
-                            <button type="submit" className=" btn btn-success mr-2" value="submit">Submit</button>                         
+                            <button type="submit" className=" btn btn-success mr-2" value="submit">Submit</button>
+                          
                                 <button className=" btn btn-danger" onClick={this.push}>Cancel</button>
-                    </div>
-          </div>
-             return(
-                <div>
-                    <UI onClick={this.logout} change={this.changePassword}>
-                        <form onSubmit={this.onSubmit}>
-                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                        <span aria-hidden="true">&times;</span>
+                       
                         </div>
-                        <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Location</h3></div>
-                        {!this.state.loading ? form : <Spinner /> }                                         
-                </form>            
+                </form> 
+                
+            </div>
             </UI>
             </div>
         )

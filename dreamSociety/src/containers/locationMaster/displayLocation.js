@@ -189,12 +189,12 @@ renderList=({details})=>{
                                 
                              }}/></td>
                 <td>{index+1}</td>
-                <td>{item.country_master?item.country_master.countryName:''}</td>
-                <td>{item.state_master?item.state_master.stateName:''}</td>
-                <td>{item.city_master?item.city_master.cityName:''}</td>
+                <td>{item.country_master.countryName}</td>
+                <td>{item.state_master.stateName}</td>
+                <td>{item.city_master.cityName}</td>
                 <td>{item.locationName}</td>
                 <td>
-                    <Button color="success"  className="mr-2" onClick={this.toggle.bind(this, item.locationId,item.country_master.countryId,item.state_master.stateId,item.city_master.cityId, item.country_master?item.country_master.countryName:'',item.state_master?item.state_master.stateName:'',item.city_master?item.city_master.cityName:'',item.locationName)}> Edit</Button>
+                    <Button color="success"  className="mr-2" onClick={this.toggle.bind(this, item.locationId,item.country_master.countryId,item.state_master.stateId,item.city_master.cityId, item.country_master.countryName,item.state_master.stateName,item.city_master.cityName,item.locationName)}> Edit</Button>
                
                     <Button color="danger" onClick={this.deleteLocation.bind(this,item.locationId)}> Delete</Button>
                 </td>
@@ -301,11 +301,6 @@ close=()=>{
     return this.props.history.replace('/superDashBoard')
 }
 
-changePassword=()=>{ 
-    return this.props.history.replace('/superDashboard/changePassword')
-}
-
-
 selectAll = () => {
     let selectMultiple = document.getElementsByClassName('SelectAll');
     let ar =[];
@@ -362,7 +357,7 @@ render(){
 
     return(
         
-        <UI onClick={this.logout} change={this.changePassword}>
+        <UI onClick={this.logout}>
         
               
               

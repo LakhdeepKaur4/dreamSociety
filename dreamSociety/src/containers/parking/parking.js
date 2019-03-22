@@ -102,10 +102,6 @@ class Parking extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-     }
-
     render() {
         let formData;
         formData = <ParkingForm 
@@ -122,7 +118,7 @@ class Parking extends Component {
                             />
         return (
             <div>
-                <UI onClick={this.logout} change={this.changePassword}>
+                <UI onClick={this.logout}>
                     <div>
                         <Form onSubmit={this.submit} method="POST">
                         <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>

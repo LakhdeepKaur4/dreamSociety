@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat,updateFlatDetails,getfloors} from '../../actionCreators/flatDetailMasterAction';
+import {getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat,updateFlatDetails} from '../../actionCreators/flatDetailMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Table,Input, Label } from 'reactstrap';
@@ -10,7 +10,6 @@ import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
-import _ from 'underscore'
 
 class flatDetails extends Component{
         
@@ -20,13 +19,11 @@ class flatDetails extends Component{
             flatNo:'',
             flatId:'',
             flatType:'',
-            floorId:'',
-            floorName:'',
+            floor:'',
             towerId:'',
             towerName:'',
             isActive: false,
             ids:[],
-            menuVisible: false,
             editFlatModal: false,
             isDisabled:true,
             search:'',
@@ -37,7 +34,9 @@ class flatDetails extends Component{
 }
 
 
-
+componentDidMount(){
+    this.refreshData();
+}
 
 
 componentWillMount(){
@@ -65,29 +64,29 @@ refreshData(){
 }
 
   
-edit(flatDetailId,flatNo,flatType,floorName,towerName,flatId, floorId,towerId){
+edit(flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName){
     this.setState({
-        flatDetailId,flatNo,flatType,floorName,towerName,flatId, floorId,towerId,editFlatModal: !this.state.editFlatModal
+        flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName,editFlatModal: !this.state.editFlatModal
     })
 
 }
 
 
-searchFilter=(search)=> {
-    return function (x) { 
-        return x.floor_master ? x.floor_master.floorName.toLowerCase().includes(search.toLowerCase()) : '' ||
-        x.tower_master ? x.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) : '' ||
-        x.flat_master ?  x.flat_master.flatType.toLowerCase().includes(search.toLowerCase()) : '' ||
-         x.flatNo ? x.flatNo.toLowerCase().includes(search.toLowerCase()) : '' 
+searchFilter(search) {
+    return function (x) {
+        return x.floor.toLowerCase().includes(search.toLowerCase()) ||
+            x.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
+            x.flat_master.flatType.toLowerCase().includes(search.toLowerCase()) ||
+            x.flatNo.toLowerCase().includes(search.toLowerCase()) 
 
             || !search;
     }
 }
 
 
-toggleEditFlatModal=()=>{
+toggleEditFlatModal(){
     this.setState({
-        editFlatModal: !this.state.editFlatModal, message:''
+        editFlatModal: ! this.state.editFlatModal, message:''
     });
 }
 
@@ -96,23 +95,23 @@ searchOnChange = (e) => {
     this.setState({search:e.target.value})
 }
 
-updateDetails=(e)=>{
-    e.preventDefault();
-    const {flatDetailId,flatNo,flatId, floorId,towerId } = this.state;
-  
+updateDetails(){
+    const {flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName } = this.state;
     let errors={};
     if(this.state.flatNo===''){
         errors.flatNo="Flat No can't be empty";
     }
-    
-    this.setState({errors});
+        else if(this.state.floor===''){
+            errors.floor="Floor can't be empty";
+        }
+            this.setState({errors});
             const isValid =Object.keys(errors).length===0;
             if(isValid &&  this.state.message === ''){
 
-            this.props.updateFlatDetails(flatDetailId,flatNo,flatId, floorId,towerId)
+            this.props.updateFlatDetails(flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName)
             .then(() => this.refreshData())
-            .catch(err=>{ console.log(err.response.data.message,"error==========")
-                this.setState({modalLoading:false,message: err.response.data.message })           
+            .catch(err=>{
+                this.setState({modalLoading:false,message: err.response.data.message, loading: true})           
             })
             if(this.state.message === ''){
                 this.setState({editFlatModal: true})
@@ -120,14 +119,12 @@ updateDetails=(e)=>{
             else {
                 this.setState({editFlatModal: false})
             }  
-            this.setState({
-                modalLoading:true,
-               
-             })
+            this.setState({modalLoading:true
+    })
 }
 }
 
-delete=(flatDetailId)=>{
+delete(flatDetailId){
     this.setState({loading:true})
     let{isActive}=this.state;
     axios.put(`${URN}/flatDetail/delete/` +flatDetailId,{isActive},{headers:authHeader()}).then((response)=>{
@@ -139,7 +136,7 @@ delete=(flatDetailId)=>{
 }
 
 
-deleteSelected=(ids)=>{
+deleteSelected(ids){
     this.setState({loading:true,
     isDisabled:true});
     this.props.deleteSelectedFlat(ids)
@@ -174,42 +171,6 @@ getDropDown2=({name})=>{
     }
 }
 
-getFloorData=({floorDetails})=>{
-    console.log(floorDetails)
-    if(floorDetails){
-        
-        return floorDetails.tower.Floors.map((items)=>{ console.log(items)
-            return(
-                <option key={items.floorId} value={items.floorId}>
-                {items.floorName}
-                </option>
-            )
-        })
-    }
-}
-
-floorChange=(event)=>{
-    this.setState({loading: false})
-    let selected= event.target.value
-    this.props.getfloors(selected);
-
-    //   var data = _.find(this.props.flatDetailMasterReducer.floorDetails,function(obj){  console.log(obj)
-    //     return obj.floorId === selected
-    //     })
-    
-    // console.log(data);
-
-    if (!!this.state.errors[event.target.name]) {
-        let errors = Object.assign({}, this.state.errors);
-        delete errors[event.target.name];
-        this.setState({ [event.target.name]: event.target.value.trim(''), errors });
-    }
-    else {
-        this.setState({ [event.target.name]: event.target.value.trim('') });
-    }
-}
-
-
 push=()=>{
     this.props.history.push('/superDashboard/flatDetailMaster')
 }
@@ -217,12 +178,11 @@ push=()=>{
 renderList =({details})=>{
     
     if(details){
-        console.log(details)
         return details.flatDetail.sort((item1,item2)=>{
-            var cmprVal = (item1.flatNo && item2.flatNo) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
+            var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
             return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).map((item,index) =>{
-                
+        
             return(
                    
                     <tr  key={item.flatDetailId}>
@@ -250,11 +210,11 @@ renderList =({details})=>{
                             <td>{index+1}</td>             
                             <td>{item.flatNo}</td>
                             <td>{item.flat_master?item.flat_master.flatType:''}</td>
-                            <td>{item.floor_master?item.floor_master.floorName:''}</td>
-                            <td>{item.tower_master?item.tower_master.towerName:''}</td>
+                            <td>{item.floor}</td>
+                            <td>{item.tower_master.towerName}</td>
                             
                                 <td>
-                                   <Button color="success"   className="mr-2" onClick={this.edit.bind(this,item.flatDetailId,item.flatNo,item.flat_master?item.flat_master.flatType:'',item.floor_master?item.floor_master.floorName:'',item.tower_master?item.tower_master.towerName:'',item.flatId, item.floorId,item.towerId)} >Edit</Button>
+                                   <Button color="success"   className="mr-2" onClick={this.edit.bind(this,item.flatDetailId,item.flatNo,item.flat_master.flatId,item.flat_master?item.flat_master.flatType:'',item.floor,item.tower_master.towerId,item.tower_master.towerName)} >Edit</Button>
                               
                                    <Button color="danger" onClick={this.delete.bind(this, item.flatDetailId)}>Delete</Button>
                                  </td>  
@@ -265,15 +225,13 @@ renderList =({details})=>{
     }  
 }    
 
-
 OnKeyPresshandlerPhone(event) {
-    const pattern = /^[0-9 , a-zA-Z  -]$/;
+    const pattern = /^[0-9]$/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
         event.preventDefault();
     }
 }
-
 
 OnKeyPressUserhandler(event) {
     const pattern = /[a-zA-Z_ ]/;
@@ -312,20 +270,11 @@ unSelectAll = () =>{
 }
 
 
-
-
-
-
 logout=()=>{
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
     return this.props.history.replace('/') 
 }
-
-changePassword=()=>{ 
-    return this.props.history.replace('/superDashboard/changePassword')
- }
-
 
 close=()=>{
     return this.props.history.replace('/superDashBoard')
@@ -355,14 +304,22 @@ render(){
         </tbody>
     </Table>    
              let deleteSelectedButton = <Button color="danger" className="mb-2"
-             onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>
-             
+             onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
 
-    
-             let modalData=<div>
-                    <FormGroup>
+    return(
+        <div>
+        <UI onClick={this.logout}>
+      
+        <div className="w3-container w3-margin-top w3-responsive">
+        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
+             <Modal isOpen={this.state.editFlatModal} toggle={this.toggleEditFlatModal.bind(this)}>
+                 <ModalHeader toggle={this.toggleEditFlatModal.bind(this)}>Edit Details</ModalHeader>
+                     <ModalBody>
+                        <FormGroup>
                             <Label for="flatNo">Flat No</Label>
-                            <Input name="flatNo" value={this.state.flatNo} maxLength={6} onKeyPress={this.OnKeyPresshandlerPhone}  onChange={this.onHandleChange} value={this.state.flatNo}/>
+                            <Input name="flatNo" value={this.state.flatNo} maxLength={3} onKeyPress={this.OnKeyPresshandlerPhone}  onChange={this.onHandleChange}/>
                             <span className="error">{this.state.errors.flatNo}</span>
                             <span className="error">{this.state.message}</span>  
                         </FormGroup>
@@ -383,39 +340,32 @@ render(){
                         </FormGroup>
 
                         <FormGroup>
+                            <Label for="floor">Floor</Label>
+                            <Input name="floor" value={this.state.floor} maxLength={10} onKeyPress={this.OnKeyPressUserhandler}  onChange={this.onHandleChange}/>
+                            <span className="error">{this.state.errors.floor}</span>
+                        </FormGroup>
+
+                        <FormGroup>
                             <Label>Tower Name</Label>
-                            <Input type="select" name="towerId" value={this.state.towerId} onChange={this.floorChange}>
+                            <Input type="select" name="towerId" value={this.state.towerId} onChange={(e)=>{
+                                let{towerId}=this.state;
+
+                                towerId=e.target.value;
+
+                                this.setState({towerId});
+                            }}>
                             <option>{this.state.towerName}</option>
                             <DefaultSelect/>
                             {this.getDropDown2(this.props.flatDetailMasterReducer)}
                            </Input>
                         </FormGroup>
-
-                        
-                        <FormGroup>
-                            <Label>Floor</Label>
-                            <Input type="select" name="floorId" value={this.state.floorId}  onChange={this.onHandleChange}>
-                            <option>{this.state.floorName}</option>
-                            <DefaultSelect/>
-                            {this.getFloorData(this.props.flatDetailMasterReducer)}
-                            </Input>
-                        </FormGroup>
-
                     
                          <Button color="primary" className="mr-2" onClick={this.updateDetails.bind(this)}>Save </Button>
                          <Button color="danger" onClick={this.toggleEditFlatModal.bind(this)}>Cancel</Button>                 
                     
-             </div>
-
-    return(
-        <div>
-        <UI onClick={this.logout} change={this.changePassword}>
-      
-        <div className="w3-container w3-margin-top w3-responsive">
-        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true">&times;</span>
-                            </div>
-                            <div className="top-details"  style={{ fontWeight: 'bold' }}><h3>Flat Details</h3>                  
+                    </ModalBody>
+             </Modal>
+                        <div className="top-details"  style={{ fontWeight: 'bold' }}><h3>Flat Details</h3>                  
                         <Button color="primary" type="button" onClick={this.push}> Add Flat</Button>
                         </div>
                             <SearchFilter  type="text" value={this.state.search}  onChange={this.searchOnChange} />
@@ -433,14 +383,7 @@ render(){
                                     }  
                                 }/>
                             </Label>
-                            {(this.state.loading) ? <Spinner /> : tableData}
-             <Modal isOpen={this.state.editFlatModal} toggle={this.toggleEditFlatModal.bind(this)}>
-                 <ModalHeader toggle={this.toggleEditFlatModal.bind(this)}>Edit Details</ModalHeader>
-                     <ModalBody>
-                     {!this.state.modalLoading  ? modalData : <Spinner />}
-                    </ModalBody>
-             </Modal>
-                                         
+                            {!this.state.modalLoading ?  tableData : <Spinner />}                    
                                                     
           
         </div>
@@ -452,14 +395,13 @@ render(){
 }
 
 function mapStateToProps(state){
-   console.log(state,"state==============")
     return{
         flatDetailMasterReducer:state.flatDetailMasterReducer
     }
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat,updateFlatDetails,getfloors},dispatch)
+    return bindActionCreators({getFlatDetails,getFlatType,getTowerName,deleteSelectedFlat,updateFlatDetails},dispatch)
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(flatDetails);

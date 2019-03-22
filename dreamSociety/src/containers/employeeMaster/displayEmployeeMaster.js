@@ -27,12 +27,13 @@ class DisplayEmployeeMaster extends Component {
          
             selectedDocumentUrl: null,
 
-           
+            documentOne: '',
+            documentTwo:'',
             modal: false,
             modalIsOpen: false,
             isActive: false
         },
-        picture:'',
+
         profilePicture: '',
         editEmployeeModal: false,
         loading: true,
@@ -130,7 +131,7 @@ class DisplayEmployeeMaster extends Component {
         
             let errors =Object.assign({},this.state.errors)
             delete  errors[event.target.name]
-            this.setState({[event.target.name]:event.target.files,errors});
+            this.setState({[event.target.name]:event .target.files,errors});
         }
         else{
       this.setState({ profilePicture : event.target.files[0]})
@@ -139,56 +140,36 @@ class DisplayEmployeeMaster extends Component {
 
 }   
 
-onImageChange = (event) => {
-    if(!!this.state.errors[event.target.name]){
-        
-        let errors =Object.assign({},this.state.errors)
-        delete  errors[event.target.name]
-        this.setState({[event.target.name]:event.target.files,errors});
-    }
-    else{
-    if (event.target.files && event.target.files[0]) {
-      let reader = new FileReader();
-      reader.onload = (e) => {
-        this.setState({picture:  reader.result});
-      };
-      reader.readAsDataURL(event.target.files[0]);
-    }
-}
-  }
-
 
     onFileChange=(event)=>{
-        // if (event.target.files && event.target.files[0]) {
-        //     let reader = new FileReader();
-        //     reader.onload = (e) => {
-        //       this.setState({documentOne:  reader.result});
-        //     };
-        //     reader.readAsDataURL(event.target.files[0]);
-        //   }
-
-    //     <GoogleDocsViewer
-    //     width="400px"
-    //     height="600px"
-    //     fileUrl={this.setState({documentOne:event.target.files[0]})}
-    // />
+        if(!!this.state.errors[event.target.name]){
+            let errors =Object.assign({},this.state.errors)
+            delete errors[event.target.name]
+            this.setState({[event.target.name]:event.target.files[0],errors});
+ 
+        }
+           else{this.setState({ documentOne: event.target.files[0]})
+     }
           }
  
          
  FileChange=(event)=>{
-    if (event.target.files && event.target.files[0]) {
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          this.setState({documentTwo:  reader.result});
-        };
-        reader.readAsDataURL(event.target.files[0]);
-      }
+     if(!!this.state.errors[event.target.name]){
+         let errors =Object.assign({},this.state.errors)
+         delete errors[event.target.name]
+         this.setState({[event.target.name]:event.target.files[0],errors});
+     }
+   
+     else{
+               this.setState({ documentTwo: event.target.files[0]})
+              
+         }
      }
      
 
     editEmployee(employeeId, picture, firstName, middleName, lastName, salary,address, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate) {
 
-        this.setState({ editEmployeeData: { employeeId,  startDate },   documentOne, documentTwo, picture, firstName, middleName, lastName, salary, address,countryName, stateName, cityName, locationName, editEmployeeModal: !this.state.editEmployeeModal })
+        this.setState({ editEmployeeData: { employeeId, picture,  documentOne, documentTwo, startDate },  firstName, middleName, lastName, salary, address,countryName, stateName, cityName, locationName, editEmployeeModal: !this.state.editEmployeeModal })
 
     }
 
@@ -231,7 +212,7 @@ onImageChange = (event) => {
         data.append('locationId', this.state.locationId)
         data.append('startDate', this.state.editEmployeeData.startDate)
     
-        data.append('picture', this.state.picture)
+        data.append('profilePicture', this.state.profilePicture)
         console.log(this.state.editEmployeeData.picture, "picture")
 
         this.props.updateEmployee(this.state.editEmployeeData.employeeId,data).then(() =>  this.refreshData())
@@ -308,15 +289,15 @@ onImageChange = (event) => {
                             <td> {item.address},{item.location_master.locationName},{item.city_master.cityName},{item.state_master.stateName},{item.country_master.countryName}</td>
 
                             <td>
-                                <button className="btn btn-light" onClick={this.openModal.bind(this, UR+item.documentOne)}>View Document</button>
+                                <button className="btn btn-light" onClick={this.openModal.bind(this, item.documentOne)}>View Document</button>
                             </td>
-                            <td>  <button className="btn btn-light" onClick={this.Modal.bind(this, UR+item.documentTwo)}>View Document </button></td>
+                            <td>  <button className="btn btn-light" onClick={this.Modal.bind(this, item.documentTwo)}>View Document </button></td>
 
                             <td>{item.startDate}</td>
                             
 
                             <td>
-                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeId, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.address,item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, UR+item.documentOne, UR+item.documentTwo, item.startDate)} >Edit</button>
+                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeId, item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.address,item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, item.documentOne, item.documentTwo, item.startDate)} >Edit</button>
                                 <button className="btn btn-danger" onClick={this.deleteEmployee.bind(this, item.employeeId)}> Delete</button>
                             </td>
 
@@ -563,18 +544,18 @@ onImageChange = (event) => {
                             <ModalBody>
 
                                 <FormGroup>
-                                  
-
-
-                          
-                                    <input accept='image/*' type="file" name="profilePicture"    onChange={this.onImageChange} />
-                                    {/* <img  id="target" style={{ width: "30%", height: "35%" }} src={UR + this.state.picture} alt="desc"/> */}
-                                    <img id="target" src={this.state.picture}/>
-                                 
-                                        
-                                   
+                                    <div className ="row">
+                                    <div  class="input-contain">
+                                    <Label> Update your Profile photo</Label>
+                                    <input accept='image/*' type="file" name="profilePicture" onChange={this.onPicChange} />
+                                    </div>
+                                    <div>
+                                    <img style={{ width: "30%", height: "35%" }} src={UR + this.state.editEmployeeData.picture} alt="desc">
+                                    </ img>
+                                    </div>
+                                    </div>
                                 </FormGroup>
-                                         
+
 
                                 <FormGroup>
                                     <Label > First Name</Label>
@@ -681,13 +662,15 @@ onImageChange = (event) => {
                                     <GoogleDocsViewer
                                         width="400px"
                                         height="600px"
-                                        fileUrl={this.state.documentOne}
+                                        fileUrl={UR + this.state.editEmployeeData.documentOne}
                                     />
                                   
-                               
+                                </FormGroup>
+                                <FormGroup>
+                                <div  className="input-contain">
                                 <Label> Update your Id</Label>
                                     <input accept='.docx ,.doc,application/pdf' type="file" name="documentOne" onChange={this.onFileChange} />
-                                 
+                                    </div>
                                 </FormGroup>
                                 
                                 <FormGroup>
@@ -696,7 +679,7 @@ onImageChange = (event) => {
                                     <GoogleDocsViewer
                                         width="400px"
                                         height="600px"
-                                        fileUrl={this.state.documentTwo}
+                                        fileUrl={UR + this.state.editEmployeeData.documentTwo}
                                     />
                                
                                 </FormGroup>
@@ -725,7 +708,8 @@ onImageChange = (event) => {
                                     />
                                 </FormGroup>
                               
-        
+
+
 
                                 <Button color="primary" className="mr-2" onClick={this.updateEmployee}>Save</Button>
                                 <Button color="danger" onClick={this.toggleEditEmployeeModal.bind(this)}>Cancel</Button>
@@ -747,7 +731,9 @@ onImageChange = (event) => {
                     }/></label>
                         {!this.state.loading ? tableData : <Spinner />}
                     </div>
-  
+                    {this.state.profilePicture && [...this.state.profilePicture].map((file)=>(
+       <img src={UR + this.state.editEmployeeData.picture} />
+    ))}
 
                     <Modal
                         isOpen={this.state.modalIsOpen} >
@@ -757,7 +743,7 @@ onImageChange = (event) => {
                             <GoogleDocsViewer
                                 width="400px"
                                 height="780px"
-                                fileUrl={ this.state.documentOne}
+                                fileUrl={UR + this.state.documentOne}
                             />
 
                         </ModalBody>
@@ -771,7 +757,7 @@ onImageChange = (event) => {
                             <GoogleDocsViewer
                                 width="400px"
                                 height="780px"
-                                fileUrl={ this.state.documentTwo}
+                                fileUrl={UR + this.state.documentTwo}
                             />
                         </ModalBody>
 

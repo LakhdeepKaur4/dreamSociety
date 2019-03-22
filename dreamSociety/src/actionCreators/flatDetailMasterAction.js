@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN, GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT_DETAIL_IDS,UPDATE_FLAT_DETAILS,GET_FLOOR_DATA} from '../actions/index';
+import {URN, GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT_DETAIL_IDS,UPDATE_FLAT_DETAILS} from '../actions/index';
 
 
 
@@ -31,33 +31,19 @@ export function getFlatDetails(){
     }
 }   
 
-// export function addFlatDetails( values){
-//     console.log(values,"hwsghqwgdhqwg")
-//     const request = axios.post(`${URN}/flatDetail`, {values},{headers:authHeader()},{method:'POST'})
-//     .then(()=>getFlatDetails());
-//     return{
-//         type:ADD_FLAT_DETAILS,
-//         payload:request
-//     }
-// }
-
-export function addFlatDetails( values){
-    console.log("result", values)
-     const request = axios.post(`${URN}/flatDetail` , values , {headers:authHeader()})
-      .then(response => response.data)
-   
-      return{
-  
+export function addFlatDetails( flatNo,flatId,floor,towerId){
+    const request = axios.post(`${URN}/flatDetail`, {flatNo,flatId,floor,towerId},{headers:authHeader()},{method:'POST'})
+    .then(getFlatDetails());
+    return{
         type:ADD_FLAT_DETAILS,
         payload:request
-      }
-  
-  }
+    }
+}
 
 export function deleteSelectedFlat(ids){
 const request= axios.put(`${URN}/flatDetail/delete/deleteSelected`,{ids},{headers:authHeader()})
 .then((response) => response.data)
-
+.then(() => this.getFlatDetails());
 
 return{
     type:DELETE_FLAT_DETAIL_IDS,
@@ -66,21 +52,22 @@ return{
 }
 
 
-export function updateFlatDetails(flatDetailId,flatNo,flatId, floorId,towerId ){
+export function updateFlatDetails(flatDetailId,flatNo,flatId,flatType,floor,towerId,towerName  ){
 
-    const request = axios.put(`${URN}/flatDetail/`+flatDetailId,{flatNo,flatId,floorId,towerId },{headers:authHeader()})
-    .then((response) => response.data)
+    const request = axios.put(`${URN}/flatDetail/`+flatDetailId,{flatNo,flatId,flatType,floor,towerId,towerName },{headers:authHeader()})
+    .then()
     return{
         type:UPDATE_FLAT_DETAILS,
         payload:request
     }
 }
 
-export  function getfloors(towerId){
-    const request  = fetch(`${URN}/towerFloor/${towerId}`,  {headers:authHeader()},{method: 'GET'})
-    .then(response => response.json())
-    return{
-          type: GET_FLOOR_DATA,
-          payload: request
-        } 
-    }
+// export  function getfloor(towerId){
+//     const request  = fetch(`${URN}/floor/${towerId}`,  {headers:authHeader()},{method: 'GET'})
+//     .then(response => response.json())
+//     return{
+//           type: GET_FLOOR_DATA,
+//           payload: request
+//         } 
+//     }
+

@@ -182,7 +182,7 @@ class DesignationMasterDetail extends Component {
         if (designationResult) {
 
             return designationResult.designation.sort((item1, item2) => {
-                var cmprVal = (item1.designationName && item2.designationName) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
+                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
                 console.log(item)
@@ -281,8 +281,6 @@ class DesignationMasterDetail extends Component {
 
                 </tbody>
             </Table></div>
-            let deleteSelectButton=<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-            onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
             let modalData=<div>
                      <FormGroup>
                                     <Label>Designation Type</Label>
@@ -313,7 +311,8 @@ class DesignationMasterDetail extends Component {
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
 
-                            {deleteSelectButton}
+<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
                            <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
                     id="allSelect"
                     type="checkbox" onChange={(e) => {

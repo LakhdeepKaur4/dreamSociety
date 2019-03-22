@@ -48,7 +48,8 @@ class FlatOwnerList extends Component {
             locationId: '',
             towerId: '',
             modalError: false,
-            messageError: ''
+            messageError: '',
+            Aadhaar:''
         }
     }
     toggles = () => {
@@ -76,7 +77,7 @@ class FlatOwnerList extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-    toggle = (ownerId, ownerName, dob, gender, contact, email, permanentAddress, bankName, accountHolderName, accountNumber, panCardNumber, IFSCCode) => {
+    toggle = (ownerId, ownerName, dob, gender, contact, email,Aadhaar, permanentAddress, bankName, accountHolderName, accountNumber, panCardNumber, IFSCCode) => {
         this.setState({
             ownerId,
             ownerName,
@@ -84,6 +85,7 @@ class FlatOwnerList extends Component {
             gender,
             contact,
             email,
+            Aadhaar,
             permanentAddress,
             bankName,
             accountHolderName,
@@ -174,6 +176,9 @@ class FlatOwnerList extends Component {
         this.props.history.push('/superDashBoard/flatMemberList')
 
     }
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
     societyChangeHandler = (selectOption) => {
         let countryName = selectOption.country_master ? selectOption.country_master.countryName : '';
         let countryId = selectOption.country_master ? selectOption.country_master.countryId : '';
@@ -236,7 +241,7 @@ class FlatOwnerList extends Component {
                         <td style={{ textAlign: "center" }}>{items.flat_detail_master.flatNo}</td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewMember.bind(this, items.ownerId)}>View Member</button></td>
                         <td style={{ textAlign: "center" }}>
-                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, items.ownerName, items.dob, items.gender, items.contact, items.email, items.permanentAddress, items.bankName, items.accountHolderName, items.accountNumber, items.panCardNumber, items.IFSCCode)}>Edit</button>
+                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, items.ownerName, items.dob, items.gender, items.contact, items.email,items.Aadhaar, items.permanentAddress, items.bankName, items.accountHolderName, items.accountNumber, items.panCardNumber, items.IFSCCode)}>Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.ownerId)} >Delete</button>
                         </td>
                     </tr>
@@ -263,7 +268,7 @@ class FlatOwnerList extends Component {
     }
     getTower = ({ tower }) => {
         if (tower) {
-            return tower.map((item) => {
+            return tower.tower.map((item) => {
                 return (
                     { ...item, label: item.towerName, value: item.towerId }
                 )
@@ -305,6 +310,7 @@ class FlatOwnerList extends Component {
             permanentAddress,
             towerId,
             flatDetailId,
+            Aadhaar,
             bankName, panCardNumber, IFSCCode, accountHolderName, gender } = this.state
         if (ownerName === '') {
             errors.ownerName = "Owern Name can't be empty"
@@ -326,6 +332,9 @@ class FlatOwnerList extends Component {
         }
         else if (societyName === '') {
             errors.societyName = "society name can't be empty"
+        }
+        else if(Aadhaar===''){
+            errors.Aadhaar="Aadhaar number can't be empty"
         }
 
         this.setState({ errors });
@@ -351,7 +360,7 @@ class FlatOwnerList extends Component {
                 cityId,
                 stateId,
                 countryId,
-                gender)
+                gender,Aadhaar)
                 .then(() => this.props.getOwnerList().then(() => this.setState({ loading: false })))
                 .catch(err => {
                     this.setState({ messageError: err.response.data.message, modal: !this.state.modal })
@@ -389,7 +398,7 @@ class FlatOwnerList extends Component {
 
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
@@ -450,6 +459,11 @@ class FlatOwnerList extends Component {
                                             onKeyPress={this.OnKeyPresshandlerEmail} value={this.state.email} />
                                         <span className="error">{this.state.errors.email}</span>
                                         <span style={{ display: this.state.emailError ? 'block' : 'none', color: 'red' }}>email is not valid</span>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label>Aadhaar Number</Label>
+                                        <Input placeholder="Aadhaar Number" name="Aadhaar" type="text"  onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.onChangeHandler} />
+                                        {/* <span className="error">{this.errors.Aadhaar}</span> */}
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Society Name</Label>
@@ -538,6 +552,7 @@ class FlatOwnerList extends Component {
     }
 }
 function mapStateToProps(state) {
+    console.log('============yyyyyyyyyyy',state.FlatOwnerReducer)
     return {
         societyName: state.societyReducer,
         Owner: state.FlatOwnerReducer,
