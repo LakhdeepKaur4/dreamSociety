@@ -1,4 +1,4 @@
-import {URN,ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE,DELETE_VENDOR,UPDATE_VENDOR,DELETE_VENDOR_IDS,UPDATE_VENDOR_SERVICE,DELETE_VENDOR_SERVICES} from '../actions/index';
+import {URN,ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE,DELETE_VENDOR,UPDATE_VENDOR,DELETE_VENDOR_IDS,DELETE_VENDOR_SERVICE_IDS,UPDATE_VENDOR_SERVICE,DELETE_VENDOR_SERVICES} from '../actions/index';
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
 
@@ -72,6 +72,18 @@ export function deleteSelectedVendor(ids){
     }
 }
 
+export function deleteSelectedVendorServices(ids){
+    const request= axios.put(`${URN}/vendorService/delete/deleteSelected`,{ids},{headers:authHeader()})
+    .then((response) => response.data)
+    .then(() => this.getVendorMaster());
+
+    return{
+        type:DELETE_VENDOR_SERVICE_IDS,
+        payload:request
+    }
+}
+
+
 export function updateVendor(vendorId,formData){
     const config = {
         headers: {
@@ -90,7 +102,7 @@ export function updateVendor(vendorId,formData){
     }
     
     export function updateVendorServices(vendorServiceId,serviceId,rateId,rate){
-            const request = axios.put(`${URN}/vendor/`+vendorServiceId,{serviceId,rateId,rate}, {headers:authHeader()})
+            const request = axios.put(`${URN}/vendorService/`+vendorServiceId,{serviceId,rateId,rate}, {headers:authHeader()})
              .then(this.getVendorMaster());
          
              
