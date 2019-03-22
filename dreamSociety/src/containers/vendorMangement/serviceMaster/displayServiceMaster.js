@@ -175,9 +175,9 @@ class DisplayServices extends Component {
                              }}/></td>
                         <td>{index+1}</td>
                         <td>{item.serviceName}</td>
-                        <td>{item.service_detail_master?item.service_detail_master.service_detail:''}</td>                                                
+                        <td>{item.service_detail_master.service_detail}</td>                                                
                         <td>
-                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail_master?item.service_detail_master.service_detail:'', item.serviceDetailId)}>Edit</Button>
+                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.serviceId, item.serviceName, item.service_detail, item.serviceDetailId)}>Edit</Button>
                         
                             <Button color="danger" onClick={this.deleteService.bind(this, item.serviceId)}>Delete</Button>
                         </td>
@@ -238,10 +238,6 @@ class DisplayServices extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-    }
-    
     render() {
         
         let tableData;
@@ -271,7 +267,7 @@ class DisplayServices extends Component {
         return (
 
             <div>
-                <UI onClick={this.logout} change={this.changePassword}>
+                <UI onClick={this.logout}>
                   
                     <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>

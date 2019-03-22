@@ -64,6 +64,7 @@ class AssetsTypeSubMaster extends Component {
                 )
             })
         }
+        
 
     }
     logout = () => {
@@ -75,7 +76,9 @@ class AssetsTypeSubMaster extends Component {
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
-
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
     render() {
         let formData;
         
@@ -111,7 +114,7 @@ class AssetsTypeSubMaster extends Component {
 
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div>
                     <Form onSubmit={this.onSubmit}>
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>

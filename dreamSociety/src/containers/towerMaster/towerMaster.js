@@ -6,7 +6,7 @@ import { FormGroup, Form, Label, Input, Button } from 'reactstrap';
 
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner'
-import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes'; 
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
 import {fetchFloor} from '../../actionCreators/floorAction';
 
 class TowerMaster extends Component {
@@ -61,6 +61,9 @@ class TowerMaster extends Component {
             event.preventDefault();
         }
     }
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
     onSubmit(event) {
         // this.setState({loading:true})
         event.preventDefault();
@@ -147,9 +150,6 @@ floorChangeHandler=(name,selectOption)=>{
                 <ReactMultiSelectCheckboxes
                  options={this.getFloor(this.props.floor)}
                  onChange={this.floorChangeHandler.bind(this,'floorId')}/>
-                {/* <Input type="text" className="form-control" placeholder="No. Of Floor" name="noOfFloor"  maxLength ={20} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange}  /> */}
-                 <span className="error">{this.state.errors.noOfFloor}</span>
-               {/* <span className="error">{this.state.message}</span>     */}
             </FormGroup>
             
             <FormGroup>
@@ -168,7 +168,7 @@ floorChangeHandler=(name,selectOption)=>{
      
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                    {form}
                 </UI>
             </div>

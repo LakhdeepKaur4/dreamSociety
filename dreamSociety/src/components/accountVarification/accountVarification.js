@@ -11,16 +11,12 @@ export default class AccountVarification extends Component {
 
   submit=()=>{
     console.log(this.state.otp)
-    const data={
-      otp:this.state.otp
-    }
-   axios.post(`${URN}/ownerActivation?${window.location.href.split('?')[1]}`,data)
+   axios.post(`${URN}/ownerActivation`,this.state.otp)
    .then((response)=>response.data)
   }
   render() {
     return (
       <div>
-       
           <UI>
              <h2>Submit OTP</h2> 
         <OtpInput

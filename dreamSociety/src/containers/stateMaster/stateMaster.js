@@ -115,11 +115,6 @@ class FlatMaster extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-     }
-
-
 
     render() {
 
@@ -163,7 +158,7 @@ class FlatMaster extends Component {
         return (
             <div>
                 
-                <UI onClick={this.logout} change={this.changePassword}>
+                <UI onClick={this.logout}>
                 <Form onSubmit={this.submit}>
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                         <span aria-hidden="true">&times;</span>

@@ -244,10 +244,6 @@ class eventSpaceMasterDetails extends Component {
         this.props.history.push('/superDashboard/eventSpaceMaster')
     }
 
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-     }
-
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
@@ -447,7 +443,7 @@ class eventSpaceMasterDetails extends Component {
         
         return (
             <div>
-                <UI onClick={this.logout}  change={this.changePassword}>
+                <UI onClick={this.logout}>
                         <div className="w3-container w3-margin-top  w3-responsive">
                         <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                                 <span aria-hidden="true">&times;</span>

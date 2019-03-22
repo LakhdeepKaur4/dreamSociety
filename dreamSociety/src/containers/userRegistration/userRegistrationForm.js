@@ -86,6 +86,17 @@ const userRegistrationForm = (props) => (
                 <span className='error'>{props.towerError}</span>
             </FormGroup>
             <FormGroup>
+                <Label>Floor</Label>
+                <Input name={props.floorInputName}
+                    type="text"
+                    placeholder="Floor"
+                    value={props.floorValue}
+                    onChange={props.floorChange}
+                    onKeyPress={props.parkingAndFloorKeyPress}
+                    maxLength='30'  />
+                <span className='error'>{props.floorError}</span>
+            </FormGroup>
+            <FormGroup>
                 <Label>Parking Slot Name</Label>
                 <Input name={props.parkingInputName}
                     type="text"

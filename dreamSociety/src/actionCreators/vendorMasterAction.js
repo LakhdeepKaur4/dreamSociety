@@ -1,4 +1,4 @@
-import {URN,ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE,DELETE_VENDOR,UPDATE_VENDOR,DELETE_VENDOR_IDS,DELETE_VENDOR_SERVICE_IDS,UPDATE_VENDOR_SERVICE,DELETE_VENDOR_SERVICES} from '../actions/index';
+import {URN,ADD_VENDOR_MASTER,GET_VENDOR_MASTER,GET_RATE_TYPE,DELETE_VENDOR,UPDATE_VENDOR,DELETE_VENDOR_IDS} from '../actions/index';
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
 
@@ -9,6 +9,7 @@ export function addVendorMaster(formData){
           'content-type': 'multipart/form-data'
         }
       }
+    console.log(formData)
     const request=axios.post(`${URN}/vendor`, formData,{headers:authHeader()},config)
     .then(getVendorMaster())
 
@@ -41,22 +42,14 @@ export function getRateType(){
     }
 }
 
-export function deleteVendor(vendorId,isActive){
-    const request = axios.put(`${URN}/vendor/delete/`+vendorId,{isActive}, {headers:authHeader()})
-     .then()     
-     return{
+export function deleteVendor(vendorServiceId,isActive){
  
-         type:DELETE_VENDOR,
-         payload: request 
-     }
-}
-
-export function deleteVendorServices(vendorServiceId,isActive){console.log(vendorServiceId,"delete")
+console.log(vendorServiceId)
     const request = axios.put(`${URN}/vendorService/delete/`+vendorServiceId,{isActive}, {headers:authHeader()})
      .then()     
      return{
  
-         type:DELETE_VENDOR_SERVICES,
+         type:DELETE_VENDOR,
          payload: request 
      }
 }
@@ -71,18 +64,6 @@ export function deleteSelectedVendor(ids){
         payload:request
     }
 }
-
-export function deleteSelectedVendorServices(ids){
-    const request= axios.put(`${URN}/vendorService/delete/deleteSelected`,{ids},{headers:authHeader()})
-    .then((response) => response.data)
-    .then(() => this.getVendorMaster());
-
-    return{
-        type:DELETE_VENDOR_SERVICE_IDS,
-        payload:request
-    }
-}
-
 
 export function updateVendor(vendorId,formData){
     const config = {
@@ -101,15 +82,3 @@ export function updateVendor(vendorId,formData){
          }
     }
     
-    export function updateVendorServices(vendorServiceId,serviceId,rateId,rate){
-            const request = axios.put(`${URN}/vendorService/`+vendorServiceId,{serviceId,rateId,rate}, {headers:authHeader()})
-             .then(this.getVendorMaster());
-         
-             
-             return{
-         
-                 type:UPDATE_VENDOR_SERVICE,
-                 payload: request 
-             }
-        }
-        
