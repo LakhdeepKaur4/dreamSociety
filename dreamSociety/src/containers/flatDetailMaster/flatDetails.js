@@ -355,7 +355,9 @@ render(){
         </tbody>
     </Table>    
              let deleteSelectedButton = <Button color="danger" className="mb-2"
-             onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
+             onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>
+             
+
     
              let modalData=<div>
                     <FormGroup>

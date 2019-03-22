@@ -335,7 +335,7 @@ class BoardMemberDetails extends Component{
     
      stateName = ({stateResult}) => {
          if(stateResult){
-           
+           console.log(stateResult)
             return( 
              stateResult.map((item) =>{ 
                     return(
@@ -487,6 +487,10 @@ class BoardMemberDetails extends Component{
         return d.toISOString().split('T')[0];
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
     render(){
         console.log(this.props.societyReducer.countryResult)
         let tableData = <Table className="table table-bordered">
@@ -628,6 +632,7 @@ class BoardMemberDetails extends Component{
                         <Input 
                         placeholder="Bank Name" 
                         type="text" 
+                        maxLength="50"
                         name="bankName" 
                         onChange={this.onChange}
                         value={this.state.bankName}
@@ -683,7 +688,7 @@ class BoardMemberDetails extends Component{
         className="mb-3"
         onClick={this.deleteSelected(this.state.ids)}>Delete Selected</Button>
         return(
-            <UI onClick={this.logout}>
+            <UI onClick={this.logout} change={this.changePassword}>
                 <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
@@ -695,13 +700,6 @@ class BoardMemberDetails extends Component{
                     <Modal isOpen={this.state.editSocietyMember} toggle={this.toggleEditSocietyMember.bind(this)}>
                         <ModalHeader toggle={this.toggleEditSocietyMember.bind(this)}>Edit Board Member Details</ModalHeader>
                         <ModalBody>
-                            {/* <FormGroup>
-                                <Label>Society Name</Label>
-                                <Input name="societyId" type="select" onChange={this.onChange}  >
-                                    <DefaultSelect />
-                                    {this.fetchSocietyId(this.props.boardMemberReducer)}
-                                 </Input>
-                            </FormGroup> */}
                             {!this.state.modalLoading ? modalData : <Spinner/>}
                         </ModalBody>
                     </Modal>

@@ -81,7 +81,7 @@ class AddTenant extends Component{
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]:e.target.value,messageContactErr:''});
+        this.setState({[e.target.name]:e.target.value.trim(),messageContactErr:''});
         console.log(this.state);
     }
 
@@ -91,7 +91,7 @@ class AddTenant extends Component{
 
     getTower = ({ tower }) => {
         if (tower) {
-            return tower.map((item) => {
+            return tower.tower.map((item) => {
                 return (
                     { ...item, label: item.towerName, value: item.towerId }
                 )
@@ -129,13 +129,13 @@ class AddTenant extends Component{
         });
     }
 
-    fetchFlatDetail = ({getFlatDetail}) => {
+    fetchFloorDetail = ({getFlatDetail}) => {
         console.log(getFlatDetail)
-        if(getFlatDetail && getFlatDetail.owner){
+        if(getFlatDetail){
             console.log(getFlatDetail)
-            return getFlatDetail.owner.map((item) => {
+            return getFlatDetail.tower.Floors.map((item) => {
             return (
-                <option value={item.flatDetailId} key={item.flatDetailId}>{item.flatNo}</option>
+                <option value={item.floorId} key={item.floorId}>{item.floorName}</option>
             )
             })
         }
@@ -187,11 +187,12 @@ class AddTenant extends Component{
             
     }
     onSubmit = (e) => {
+        this.setState({loading: true})
         console.log(this.state.societyId)
         e.preventDefault()
         let { tenantName, dob, gender, email, contact, profilePicture, aadhaarNumber, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, member, fileName, societyId, towerName, towerId } = this.state;
+            societyName, member, fileName, societyId, towerName, towerId, floorId } = this.state;
         console.log(this.state)
         
         let data;
@@ -209,11 +210,11 @@ class AddTenant extends Component{
         
         console.log(tenantName, dob, gender,aadhaarNumber, email, contact, profilePicture, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, societyId, member, towerName, fileName, towerId);
+            societyName, societyId, member, towerName, fileName, towerId, floorId);
 
         const data1 = {tenantName, dob, gender,aadhaarNumber, email, contact, profilePicture, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, societyId, member, towerName, fileName, towerId}
+            societyName, societyId, member, towerName, fileName, towerId, floorId}
 
         if(this.state.imageSizeError === '' && this.state.messageContactErr==='' && this.state.messageEmailErr===''){
             this.props.addTenantDetail(data1)
@@ -297,10 +298,11 @@ class AddTenant extends Component{
         if(this.state.step === 3){
             this.setState({ step: this.state.step + 1 })
         }
-        const { towerId, flatDetailId } = this.state;
+        const { towerId, floorId, flatDetailId } = this.state;
         if(this.state.step === 4){
             if(towerId === '') errors.towerId = `Please select Tower.`;
-            if(flatDetailId === '') errors.flatDetailId = `Please select a flat.`;
+            if(floorId === '') errors.floorId = `Please select a Floor.`;
+            if(flatDetailId === '') errors.flatDetailId = `Please select a Flat.`;
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -348,6 +350,30 @@ class AddTenant extends Component{
         if (!pattern.test(inputChar)) {
             e.preventDefault();
         }
+    }
+
+    fetchFlatDetail = ({getFlatDetail}) => {
+        console.log(getFlatDetail)
+        console.log(this.state.floorId)
+        if(getFlatDetail){
+            console.log(getFlatDetail.flatDetail)
+            
+             return getFlatDetail.flatDetail.filter((i) => {
+                
+                return this.state.floorId == i.floorId
+            }).map((item) => {
+                if(item){
+                    return (
+                        <option value={item.flatDetailId} key={item.flatDetailId} >{item.flatNo}</option>
+                    )
+                }
+            })
+        }
+    }
+
+    floorChange = (e) => {
+        this.setState({floorId:e.target.value})
+        
     }
 
     render(){
@@ -548,12 +574,21 @@ class AddTenant extends Component{
                             {!this.state.towerId ? <span className="error">{this.state.errors.towerId}</span> : ''}
                         </FormGroup >
                         <FormGroup>
+                            <Label>Floor</Label>
+                            <Input defaultValue="no-value"
+                            type='select' name="floorId" onChange = {this.floorChange}  >
+                            <DefaultSelect />
+                            {/* {this.getFlats(this.props.tenantReducer)} */}
+                            {this.fetchFloorDetail(this.props.tenantReducer)}
+                            </Input>
+                            {!this.state.floorId ? <span className="error">{this.state.errors.floorId}</span> : ''}
+                        </FormGroup>
+                        <FormGroup>
                             <Label>Flat No.</Label>
                             <Input onKeyPress={this.numberValidation} onChange={this.flatChangeHandler}
                              placeholder="Flat No." defaultValue="no-value"
                             type='select' name="flatDetailId" >
                             <DefaultSelect />
-                            {/* {this.getFlats(this.props.tenantReducer)} */}
                             {this.fetchFlatDetail(this.props.tenantReducer)}
                             </Input>
                             {!this.state.flatDetailId ? <span className="error">{this.state.errors.flatDetailId}</span> : ''}

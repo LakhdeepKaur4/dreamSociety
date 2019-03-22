@@ -281,6 +281,8 @@ class DesignationMasterDetail extends Component {
 
                 </tbody>
             </Table></div>
+            let deleteSelectButton=<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+            onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
             let modalData=<div>
                      <FormGroup>
                                     <Label>Designation Type</Label>
@@ -311,8 +313,7 @@ class DesignationMasterDetail extends Component {
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
 
-<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+                            {deleteSelectButton}
                            <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
                     id="allSelect"
                     type="checkbox" onChange={(e) => {

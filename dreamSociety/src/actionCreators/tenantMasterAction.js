@@ -17,7 +17,7 @@ export function addTenantDetail(values){
 
 export function getFlatDetailViaTowerId(towerId){
     console.log(towerId)
-    const request = axios.get(`${URN}/owner/${towerId}`, {headers: authHeader()})
+    const request = axios.get(`${URN}/towerFloor/${towerId}`, {headers: authHeader()})
     .then((response) => response.data)
 
     return {
@@ -73,12 +73,14 @@ export function deleteSelectedTenant(ids){
     }
 }
 
-export function updateTenantDetail(tenantName,gender, email, contact, aadhaarNumber, dob, permanentAddress, fileName, towerName, flatNo, towerId,
+export function updateTenantDetail(tenantName,gender, email, contact, aadhaarNumber, dob,
+    permanentAddress, fileName, towerName, flatNo, towerId, floorId,
     picture, flatDetailId, tenantId){
-        console.log(tenantName,gender, email, contact, aadhaarNumber, dob, permanentAddress, fileName, towerName, flatNo, towerId,
+        console.log(tenantName,gender, email, contact, aadhaarNumber, dob,
+            permanentAddress, fileName, towerName, flatNo, towerId, floorId,
             picture, flatDetailId, tenantId)
-        const request = axios.put(`${URN}/tenant/` + tenantId, {tenantName,gender, email, contact, aadhaarNumber,dob,
-             permanentAddress, fileName, towerName, flatNo, towerId,
+        const request = axios.put(`${URN}/tenant/` + tenantId, {tenantName,gender, email, contact, aadhaarNumber, dob,
+            permanentAddress, fileName, towerName, flatNo, towerId, floorId,
             picture, flatDetailId, tenantId}, {headers: authHeader()})
 
             return {
