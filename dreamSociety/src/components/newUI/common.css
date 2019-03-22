@@ -1,0 +1,337 @@
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+.wrapper {
+    display: flex;
+    align-items: stretch;
+    background-image: url('/assets/society.jpg');
+    background-size: cover;
+    max-height: inherit;
+    min-height: 100vh;
+}
+
+.error{
+    color: red;
+}
+.w3-container{
+    width: 109%;
+    margin-left: 35px;
+    
+}
+
+.w3-margin-top{
+    background: #f3f3f3 !important;
+    padding: 20px !important;
+}
+
+.top-details{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+    margin-top: 40px;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
+
+form{
+    width: 600px;
+    padding: 20px 20px;
+    border-radius: 20px;
+    margin: 0 auto;
+    background: #f3f3f3;
+    position: relative
+}
+
+#sidebar {
+    min-width: 150px;
+    max-width: 150px;
+    display: inline;
+    z-index: 1000;
+}
+
+#sidebar-content {
+    position: fixed;
+    width: 10rem;
+    height: 100vh;
+    overflow: auto;
+}
+
+.table{
+    background: #f3f3f3 !important;
+    padding: 20px;
+}
+
+#sidebar.inactive {
+    margin-left: -250px;
+    transition: all 0.3s;
+}
+
+#sidebar.active {
+    margin-left: 0px;
+    transition: all 0.3s;
+}
+
+#sidebarMaster {
+    min-width: 150px;
+    max-width: 150px;
+    z-index: 999;
+}
+
+#sidebarMaster-content {
+    position: fixed;
+    width: 10rem;
+    height: 100vh;
+    overflow: auto;
+}
+
+#sidebarMaster.inactive {
+    margin-left: -150px;
+    transition: all 0.6s;
+}
+
+#sidebarMaster.active {
+    margin-left: 0px;
+    transition: all 0.6s;
+}
+
+#sidebarDetails {
+    min-width: 150px;
+    max-width: 150px;
+    z-index: 998;
+}
+
+#sidebarDetails-content {
+    position: fixed;
+    width: 10rem;
+    height: 100vh;
+    overflow: auto;
+}
+
+#sidebarDetails.inactive {
+    margin-left: -150px;
+    transition: all 1.2s;
+}
+
+#sidebarDetails.active {
+    margin-left: 0px;
+    transition: all 1.2s;
+}
+
+#sidebarAdmin {
+    min-width: 150px;
+    max-width: 150px;
+    z-index: 999;
+}
+
+#sidebarAdmin-content {
+    position: fixed;
+    width: 10rem;
+    height: 100vh;
+    overflow: auto;
+}
+
+#sidebarAdmin.inactive {
+    margin-left: -150px;
+    transition: all 0.6s;
+}
+
+#sidebarAdmin.active {
+    margin-left: 0px;
+    transition: all 0.6s;
+}
+
+#sidebarOwner {
+    min-width: 150px;
+    max-width: 150px;
+    z-index: 998;
+}
+
+#sidebarOwner-content {
+    position: fixed;
+    width: 10rem;
+    height: 100vh;
+    overflow: auto;
+}
+
+#sidebarOwner.inactive {
+    margin-left: -150px;
+    transition: all 1.2s;
+}
+
+#sidebarOwner.active {
+    margin-left: 0px;
+    transition: all 1.2s;
+}
+
+#sidebarTenant {
+    min-width: 150px;
+    max-width: 150px;
+    z-index: 997;
+}
+
+#sidebarTenant-content {
+    position: fixed;
+    width: 10rem;
+    height: 100vh;
+    overflow: auto;
+}
+
+#sidebarTenant.inactive {
+    margin-left: -150px;
+    transition: all 1.8s;
+}
+
+#sidebarTenant.active {
+    margin-left: 0px;
+    transition: all 1.8s;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+#detailsdrop, #masterdrop {
+    cursor: pointer;
+}
+
+
+@media (max-width: 768px) {
+    #sidebar.inactive {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #sidebarMaster.inactive {
+        margin-left: -150px;
+    }
+    #sidebarMaster.active {
+        margin-left: 0;
+    }
+    #sidebarDetails.inactive {
+        margin-left: -150px;
+    }
+    #sidebarDetails.active {
+        margin-left: 0;
+    }
+    #sidebarAdmin.inactive {
+        margin-left: -150px;
+    }
+    #sidebarAdmin.active {
+        margin-left: 0;
+    }
+    #sidebarOwner.inactive {
+        margin-left: -150px;
+    }
+    #sidebarOwner.active {
+        margin-left: 0;
+    }
+    #sidebarTenant.inactive {
+        margin-left: -150px;
+    }
+    #sidebarTenant.active {
+        margin-left: 0;
+    }
+    #body {
+    margin-left: 150px;
+    margin-right: 150px;
+    }
+}
+
+#body {
+    display: inline-block;
+    height: inherit;
+    margin-left: 150px;
+    margin-right: 150px;
+}
+
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+
+a, a:hover, a:focus {
+    color: inherit;
+    transition: all 0.3s;
+
+}
+
+#sidebar {
+    /* don't forget to add all the previously mentioned styles here too */
+    background: #7386D5;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #6d7fcc;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #47748b;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+#sidebar ul li a:hover {
+    color: #7386D5;
+    background: #fff;
+}
+
+#sidebar ul li.active > a, a[aria-expanded="true"] {
+    color: #fff;
+    background: #6d7fcc;
+}
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #6d7fcc;
+}
+
+.btn{
+    margin-left: 0px !important;
+}
+
+.TextTransformToCapital{
+    text-transform: uppercase;
+}
+
+/* .modal-backdrop.show{
+    opacity: 0;
+} */
+/* .pg-viewer-wrapper .loading-container .loading{
+ height:0px;
+}
+.modal-content{
+    height:0px;
+} */
+
+#sortArrow{
+    position: relative;
+    margin-left: 40px;
+}
