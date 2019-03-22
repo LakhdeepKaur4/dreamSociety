@@ -24,7 +24,6 @@ class userDetails extends Component {
                 familyMember: "",
                 towerName:"",
                 towerId:"",
-                floor:"",
                 parking:"",
                 contact: "",
                 errors:{},
@@ -119,7 +118,6 @@ class userDetails extends Component {
             if(!this.state.towerName){
                 errors.towerName = "Tower can't be empty. Please select."
             }
-            if(this.state.floor === '') errors.floor = "Floor can't be empty."
             if(this.state.parking === '') errors.parking = "State can't be empty."
             if(this.state.familyMember === '') errors.familyMember="family Member can't be empty."
 
@@ -148,9 +146,9 @@ class userDetails extends Component {
             }
     }
 
-    editUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerId, floor,parking, contact, towerName) {
+    editUser(userId, roleName, firstName, lastName, userName, email,familyMember,towerId,parking, contact, towerName) {
         this.setState({
-             userId, roleName, firstName, lastName, userName, email,familyMember,towerId, floor,parking, contact , towerName, editUserModal: !this.state.editUserModal
+             userId, roleName, firstName, lastName, userName, email,familyMember,towerId,parking, contact , towerName, editUserModal: !this.state.editUserModal
         });
         console.log(towerName);
     }
@@ -174,8 +172,7 @@ class userDetails extends Component {
     searchFilter(search){
         return function(x){
                 let currentRole = x.roles.map((i) => i.roleName);
-                return x ? x.floor.toLowerCase().indexOf(search.toLowerCase())  !== -1 : false||
-                 x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                return x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  x.userName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
@@ -188,13 +185,16 @@ class userDetails extends Component {
 
     fetchTowers({tower}) {
         if(tower){
+            console.log(tower)
             return (
-                tower.map((item) => {
-                    return (
-                        <option value={item.towerId} key={item.towerId}>
-                            {item.towerName}
-                        </option>
-                    )
+                tower.tower.map((item) => {
+                    if(item){
+                        return (
+                            <option value={item.towerId} key={item.towerId}>
+                                {item.towerName}
+                            </option>
+                        )
+                    }
                 })
             )
         }
@@ -206,13 +206,14 @@ class userDetails extends Component {
             console.log(user)
             let currentRole;
             return user.sort((item1,item2)=>{
-                if(item1 || item2){
+                if(item1 && item2){
                     console.log(item1, item2)
                     var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                     return this.state.sortVal ? cmprVal : -cmprVal;
                 }
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
                 if(item && item.tower_master){
+                    console.log(item.tower_master.towerName)
                     let currentTower = item.tower_master.towerName;
                     let currentTowerId = item.towerId
                     return (
@@ -251,13 +252,12 @@ class userDetails extends Component {
                             <td>{item.email}</td>
                             <td>{item.familyMember}</td>
                             <td>{currentTower}</td>
-                            <td>{item.floor}</td>
                             <td>{item.parking}</td>
                             <td>{item.contact}</td>
                             <td>
                                 <div className="w3-row">
                                 <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email,item.familyMember,
-                                    currentTowerId,item.floor,item.parking, item.contact, currentTower)}>Edit</Button>
+                                    currentTowerId,item.parking, item.contact, currentTower)}>Edit</Button>
                                 <Button color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
                                 </div>
                             </td>
@@ -275,17 +275,18 @@ class userDetails extends Component {
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value, errors });
+            this.setState({ [e.target.name]: e.target.value.trim(), errors });
             console.log(this.state);
         }
         else {
-            this.setState({ [e.target.name]: e.target.value });
+            this.setState({ [e.target.name]: e.target.value.trim() });
             console.log(this.state);
         }
     }
 
     fetchRoles({ userRole }) {
         if(userRole) {
+            console.log(userRole)
             return (
                userRole.map((item) => {
                     return (
@@ -359,6 +360,10 @@ class userDetails extends Component {
         
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
     render() {
 
         let tableData;
@@ -378,7 +383,6 @@ class userDetails extends Component {
                     <th>Email</th>
                     <th>Total Family Members</th>
                     <th>Tower Name</th>
-                    <th>Floor</th>
                     <th>Parking Slot Name</th>
                     <th>Contact No.</th>
                     <th>Actions</th>
@@ -429,10 +433,6 @@ class userDetails extends Component {
                                 parkingValue={this.state.parking}
                                 parkingChange={this.onChange}
                                 parkingError={this.state.errors.parking}
-                                floorInputName="floor"
-                                floorValue={this.state.floor}
-                                floorChange={this.onChange}
-                                floorError={this.state.errors.floor}
                                 towerInputName = "towerId"
                                 fetchingTower={this.fetchTowers(this.props.TowerDetails)}
                                 towerValue={this.state.towerId}
@@ -451,7 +451,7 @@ class userDetails extends Component {
         return (
 
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout}  change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
