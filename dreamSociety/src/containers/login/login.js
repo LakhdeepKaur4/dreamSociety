@@ -138,7 +138,8 @@ class Login extends Component {
                 <FormGroup>
                     <Button onClick={this.submit} color="primary" >Login</Button>{' '}
                 </FormGroup>
-                <Link to ="/forgetPassword">Forget Password</Link>
+                <a style={{color:'blue'}} href ="/forgetPassword">Forget Password ?</a>
+                {/* <Link to ="/forgetPassword">Forget Password ?</Link> */}
 
         </ModalBody>
         <ModalFooter>

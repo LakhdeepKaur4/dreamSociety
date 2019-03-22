@@ -76,7 +76,7 @@ class BoardMemberRegistrationForm extends Component {
          })
      
          this.setState({
-             countryName: country.countryName,
+             countryName: country.countryName.trim(),
              countryId:country.countryId
          })
          
@@ -94,7 +94,7 @@ class BoardMemberRegistrationForm extends Component {
          })
  
          this.setState({
-             stateName: data1.stateName,
+             stateName: data1.stateName.trim(),
              stateId:data1.stateId
          })
          this.props.getCity(data1.stateId);
@@ -108,7 +108,7 @@ class BoardMemberRegistrationForm extends Component {
          return obj.cityName === selected
          })
          this.setState({
-             cityName:data2.cityName,
+             cityName:data2.cityName.trim(),
              cityId:data2.cityId
          })
          this.props.getLocation(data2.cityId)
@@ -122,7 +122,7 @@ class BoardMemberRegistrationForm extends Component {
          return obj.locationName === selected
      });
      this.setState({
-         locationName:data3.locationName,
+         locationName:data3.locationName.trim(),
          locationId:data3.locationId
      })
  }
@@ -234,7 +234,7 @@ sameAddress = (e) => {
 }
 
 keyPress = (event) => {
-    const pattern = /^[a-zA-Z0-9, ]+$/;
+    const pattern = /^[a-zA-Z0-9_, ]+$/;
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
         event.preventDefault();
@@ -327,7 +327,7 @@ emailChange = (e) => {
     console.log(this.state.email)
     this.setState({errors:{email: ''}})
     if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
-        this.setState({[e.target.name]:e.target.value});
+        this.setState({[e.target.name]:e.target.value.trim()});
         console.log(this.state.email)
         this.setState({emailValidError: ''})
     }
@@ -353,8 +353,12 @@ maxDate = () => {
     return d.toISOString().split('T')[0];
 }
 
+changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+ }
+
 ifscChange = (e) => {
-    this.setState({IFSCCode:e.target.value.toUpperCase()})
+    this.setState({IFSCCode:e.target.value.toUpperCase().trim()})
 }
 
     render(){
@@ -416,7 +420,6 @@ ifscChange = (e) => {
                         <Label>Current Address</Label>
                         <Input id="currentAddress" 
                         onKeyPress={this.keyPress} 
-                        value={this.state.currentAddress} 
                         type="textarea" 
                         placeholder="Current Address" 
                         name="currentAddress" 
@@ -559,7 +562,7 @@ ifscChange = (e) => {
                     <Button color="danger" onClick={this.route}>Cancel</Button>
         </div>
         return(
-            <UI onClick={this.logout}>
+            <UI onClick={this.logout} change={this.changePassword}>
                 <Form onSubmit={this.submit} method="POST">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
