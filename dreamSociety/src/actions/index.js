@@ -41,6 +41,7 @@ export const FETCH_BASEMENT = 'FETCH_BASEMENT';
 export const FETCH_PARKING = 'FETCH_PARKING';
 export const CREATE_PARKING = 'CREATE_PARKING';
 export const ADD_VENDOR_MASTER='add_vendor_master';
+export const DELETE_VENDOR_SERVICE_IDS='delete_selected_vendor_services';
 export const GET_VENDOR_MASTER='get_vendor_master';
 export const UPDATE_VENDOR_SERVICE='update_vendor_service';
 export const DELETE_VENDOR='delete_vendor';

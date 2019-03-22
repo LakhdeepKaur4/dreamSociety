@@ -12,8 +12,6 @@ import GoogleDocsViewer from 'react-google-docs-viewer';
 
 class DisplayVendorMaster extends Component {
 
-
-
     state = {
             filterName:"vendorName",
             vendorId:'',
@@ -31,7 +29,6 @@ class DisplayVendorMaster extends Component {
             search: '',
             modal: false,
             modalIsOpen: false,
-            search: '', 
             ids:[],
             isDisabled:true,    
             errors:{}
