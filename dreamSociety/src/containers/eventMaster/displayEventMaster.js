@@ -258,24 +258,15 @@ class DisplayEventMaster extends Component {
                         this.setState({ isDisabled: true });
                 }
         }
-        deleteSelected(ids) {
-                this.setState({
-                        loading: true,
-                        isDisabled: true
-                });
-                if (window.confirm('Are You Sure ?')) {
-                        this.props.deleteMultipleEvents(ids)
-                                .then(() => {
-                                        this.props.ViewEvent()
-                                        .then(() => this.setState({ loading: false }))
-                                })
-                                .catch(err => err.response.data.message);
-                }
-                else {
-                        this.props.ViewEvent()
-                                .then(() => this.setState({ loading: false }))
-                }
-        }
+
+        deleteSelected(ids){
+                this.setState({loading:true,
+                isDisabled:true});
+                this.props.deleteMultipleEvents(ids)
+                .then(() => this.refreshData())
+                .catch(err => err.response.data.message);
+            }
+
 
         render() {
                 let tableData;

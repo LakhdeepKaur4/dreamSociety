@@ -7,6 +7,7 @@
     "axios": "^0.18.0",
     "bootstrap": "^4.2.1",
     "form-data": "^2.3.3",
+    "git": "^0.1.5",
     "jquery": "^3.3.1",
     "lodash": "^4.17.11",
     "mdbreact": "^4.10.0",

@@ -124,7 +124,7 @@ class Country extends Component {
         }
     }
     onKeyPressCode=(event)=>{
-        const pattern = /^[A-Z]+$/;
+        const pattern = /^[a-zA-Z]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -171,7 +171,7 @@ class Country extends Component {
                     maxLength='3'
                     // value={this.state.code.toUpperCase()}
                   
-                    // onKeyPress={this. onKeyPressCode}
+                    onKeyPress={this. onKeyPressCode}
                     // value={this.state.code.toUpperCase()}
                     onChange={this.onChangeCountry} />
                 <span className='error'>{this.state.errors.code}</span>

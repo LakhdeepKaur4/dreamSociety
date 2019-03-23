@@ -162,10 +162,9 @@ class CityMasterDetail extends Component {
 
     searchFilter = (search) => {
         return function (x) {
-            return x.cityName.toLowerCase().includes(search.toLowerCase()) ||
-                x.country_master ? x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) : '' ||
-                x.state_master ? x.state_master.stateName.toLowerCase().includes(search.toLowerCase()) : ''
-                || !search;
+            return x.country_master.countryName.toLowerCase().includes(search.toLowerCase())  ||
+             x.state_master.stateName.toLowerCase().includes(search.toLowerCase())  ||
+             x.cityName.toLowerCase().includes(search.toLowerCase()) ||!search;
         }
     }
 
@@ -207,8 +206,8 @@ class CityMasterDetail extends Component {
        return city.sort((item1,item2)=>{
         var cmprVal = (item1.cityName && item2.cityName ) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
         return this.state.sortVal ? cmprVal : -cmprVal;
-    }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
-
+        }).filter(this.searchFilter(this.state.search)).map((item, index) => {
+           
                 return (
                     <tr key={item.cityId}  >
                         <td><input type="checkbox" className="SelectAll" name="ids" value={item.cityId}
@@ -423,6 +422,12 @@ class CityMasterDetail extends Component {
                             <h3>City Details</h3>
                             <Button onClick={this.routeToAddNewCity} color="primary">Add City</Button>
                         </div>
+                        <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+                            <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
+                            <ModalBody>
+                            {!this.state.modalLoading  ? modalData : <Spinner />}
+                            </ModalBody>
+                        </Modal>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
 
@@ -440,12 +445,7 @@ class CityMasterDetail extends Component {
                     }/></Label>
 
                         {(this.state.loading) ? <Spinner /> : tableData}
-                        <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
-                            <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
-                            <ModalBody>
-                            {!this.state.modalLoading  ? modalData : <Spinner />}
-                            </ModalBody>
-                        </Modal>
+                        
 
 
                     </div>

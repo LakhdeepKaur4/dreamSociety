@@ -13,7 +13,7 @@ import SearchFilter from '../../components/searchFilter/searchFilter'
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
 import { URN } from '../../actions/index'
-import Pagination from "react-js-pagination";
+import Pagination from "react-js-pagination";   
 
 class flatMasterDetails extends Component {
    constructor(props){
@@ -71,7 +71,8 @@ class flatMasterDetails extends Component {
 
     toggleEditUserModal() {
         this.setState({
-            editUserModal: !this.state.editUserModal
+            editUserModal: !this.state.editUserModal,
+            errors:{}
         });
     }
 
@@ -83,7 +84,7 @@ class flatMasterDetails extends Component {
     }
     updateBook = (e) => {
         e.preventDefault();
-      this.setState({modalLoading:true});
+    
        
         let { flatId, 
             // societyId,societyName,

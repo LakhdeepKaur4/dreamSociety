@@ -24,9 +24,7 @@ export function addFlatOwner(data){
         member:data.member,
         profilePicture:data.profilePicture,
         gender:data.ownerGender,
-        fileName:data.fileName,
-        adhaarCardNo:data.Aadhaar,
-        floorId:data.floorId
+        fileName:data.fileName
     }
     // const data2={
     //     data1,
@@ -178,15 +176,6 @@ export function addNewMember(memberName,memberDob,gender,relationId,id){
     .then(response=>response.data)
     return {
         type:ADD_NEW_MEMBER,
-        payload:request
-    }
-}
-
-export function getAllFloor (id){
-    const request =axios.get(`${URN}/towerFloor/${id}`,{headers:authHeader()})
-    .then(response=>response.data)
-    return {
-        type:GET_ALL_FLOOR,
         payload:request
     }
 }

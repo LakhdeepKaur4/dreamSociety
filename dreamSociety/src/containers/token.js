@@ -17,7 +17,9 @@ import { giveToken  } from '../actionCreators/token';
         localStorage.setItem('url', url)
         console.log("fhcbdhbdhc",url);
         this.props.giveToken(url)
-        .then((response)=>this.props.history.push('/submitotp?'+ url))
+        .then((response)=>{
+          this.props.history.push('/submitotp?'+ url)
+        })
         .catch(err=>console.log(err));
 
     }

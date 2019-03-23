@@ -1,4 +1,4 @@
-import {ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER,GET_ALL_FLOOR} from '../../actions/index';
+import {ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER} from '../../actions/index';
 
 export default function (state={},action){
     console.log('action.type',action.type)
@@ -22,8 +22,6 @@ export default function (state={},action){
         return {...state, updateOwnerMember:action.payload}
         case ADD_NEW_MEMBER:
         return {...state, addNewMember:action.payload}
-        case GET_ALL_FLOOR:
-        return {...state, floor:action.payload}
         default:
         return state;
     }

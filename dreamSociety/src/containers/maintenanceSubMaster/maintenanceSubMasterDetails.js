@@ -85,7 +85,10 @@ class MaintenanceSubMasterDetails extends Component{
         if(isValid){
             this.props.updateMaintenanceSubMasterDetail(maintenanceTypeId, category, sizeType, rate, maintenanceId, sizeId)
             .then(() => this.modalRefresh())
-            this.setState({modalLoading:true});
+            this.setState({modalLoading:true})
+            .catch(err => {
+                this.setState({modalLoading:false})
+            });
         }
     }
 

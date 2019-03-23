@@ -85,8 +85,10 @@ class MaintenanceSubMasterForm extends Component{
         if(isValid){
             this.setState({loading: true});
             this.props.postMaintenanceSubMaster({...this.state})
-            .then(() => this.props.history.replace('/superDashboard/MaintenanceSubMasterDetails'));
-            this.setState({sizeId:'',rate:''});
+            .then(() => this.props.history.replace('/superDashboard/MaintenanceSubMasterDetails'))
+            .catch(err => {
+                this.setState({modalLoading:false})
+            });
         }
         
     }

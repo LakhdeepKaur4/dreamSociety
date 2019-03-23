@@ -266,22 +266,10 @@ class DisplayServices extends Component {
             {this.renderList(this.props.displayServiceMasterReducer)}
         </tbody>
     </Table>
-           let deleteSelectedButton = <Button color="danger" className="mb-2"
-           onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
-        return (
 
-            <div>
-                <UI onClick={this.logout} change={this.changePassword}>
-                  
-                    <div className="w3-container w3-margin-top w3-responsive">
-                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                    <span aria-hidden="true">&times;</span>
-                     </div>
 
-                    <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)} >
-                        <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Edit a Service</ModalHeader>
-                        <ModalBody>
-                            <FormGroup>
+let modalData =<div>
+      <FormGroup>
                                 <Label for="serviceName">Service Type</Label>
                                 <Input type="text" value={this.state.serviceName} name="serviceName" onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}  />
                                 <span className="error">{this.state.errors.serviceName}</span>
@@ -300,6 +288,23 @@ class DisplayServices extends Component {
                             <Button color="primary" className="mr-2" onClick={this.updateServices.bind(this)}>Save </Button>
                             <Button color="danger" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button>
                         </FormGroup>
+</div>
+           let deleteSelectedButton = <Button color="danger" className="mb-2"
+           onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>
+        return (
+
+            <div>
+                <UI onClick={this.logout} change={this.changePassword}>
+                  
+                    <div className="w3-container w3-margin-top w3-responsive">
+                    <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                    <span aria-hidden="true">&times;</span>
+                     </div>
+
+                    <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)} >
+                        <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Edit a Service</ModalHeader>
+                        <ModalBody>
+                           {!this.state.modalLoading?modalData:<Spinner/>}
                         </ModalBody>
                     </Modal>
                     <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Service Details</h3>
@@ -321,7 +326,7 @@ class DisplayServices extends Component {
                             } 
                         } }/>
                     </Label>
-                           {!this.state.modalLoading ? tableData : <Spinner />}
+                           {!this.state.loading ? tableData : <Spinner />}
                  
                      
                     

@@ -331,12 +331,12 @@ class TenantDetail extends Component {
             errors.email = `Email can't be empty.`};
         if(this.state.contact === '') {console.log('contact');
             errors.contact = `Contact can't be empty.`;}
-        if(this.state.contact.length !== 10) {
-        errors.contact = `Contact number should be of 12 digit.`;}    
+        else if(this.state.contact.length !== 10) {
+        errors.contact = `Contact number should be of 10 digit.`;}    
         if(this.state.aadhaarNumber === '') {console.log('aadhaar');
             errors.aadhaarNumber = `Aadhaar Number can't be empty.`;}
-        if(this.state.aadhaarNumber.length !== 12) {console.log('aadhaarLimit');
-            errors.aadhaarNumber = `Aadhaar Number should be 12 digit.`}
+        else if(this.state.aadhaarNumber.length !== 12) {console.log('aadhaarLimit');
+            errors.aadhaarNumber = `Aadhaar Number should be of 12 digit.`}
         if(this.state.dob === '') {
             console.log('dob');
             errors.dob = `Date of birth can't be empty.`;
@@ -386,6 +386,14 @@ class TenantDetail extends Component {
 
     emailChange = (e) => {
         console.log(this.state.email)
+        // this.setState({email:e.target.value, messageEmailErr:''})
+        // if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
+        //     this.setState({[e.target.name]:e.target.value});
+        //     console.log(this.state.email)
+        //     this.setState({emailValidError: ''})
+        // }
+        // else{ this.setState({emailValidError: 'Invalid Email.'})}
+
         this.setState({email:e.target.value, messageEmailErr:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value});
@@ -393,6 +401,36 @@ class TenantDetail extends Component {
             this.setState({emailValidError: ''})
         }
         else{ this.setState({emailValidError: 'Invalid Email.'})}
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            console.log(this.state.email)
+            this.setState({ [e.target.name]: e.target.value, errors });
+        }
+        else {
+            this.setState({email:e.target.value});
+        }
+        
+    }
+
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
+     fetchFloorDetail = ({getFlatDetail}) => {
+        console.log(getFlatDetail)
+        if(getFlatDetail){
+            console.log(getFlatDetail)
+            return getFlatDetail.tower.Floors.map((item) => {
+            return (
+                <option value={item.floorId} key={item.floorId}>{item.floorName}</option>
+            )
+            })
+        }
+    }
+
+    floorChange = (e) => {
+        this.setState({floorId:e.target.value})
         
     }
 
@@ -471,7 +509,7 @@ class TenantDetail extends Component {
             </FormGroup>
             <FormGroup>
                 <Label>Tenant Name</Label>
-                <Input value={this.state.tenantName} name="tenantName" onChange={this.onChange} />
+                <Input value={this.state.tenantName} name="tenantName" maxLength="70" onChange={this.onChange} />
                 {<span className='error'>{this.state.errors.tenantName}</span>}
             </FormGroup>
             <FormGroup>
@@ -495,8 +533,9 @@ class TenantDetail extends Component {
                 <Label>Email</Label>
                 <Input value={this.state.email} name="email" onChange={this.emailChange} onKeyPress={this.emailValid} />
                 {this.state.messageEmailErr ? <span className='error'>{this.state.messageEmailErr}</span> : ''}
-                {this.state.emailValidError ? <span className='error'>{this.state.emailValidError}</span>:''}
-                {<span className='error'>{this.state.errors.email}</span>}
+                {<span className="error">{this.state.emailValidError}</span>}
+                <span><br/></span>
+                {<span className="error">{this.state.errors.email}</span>}
             </FormGroup>
             <FormGroup>
                 <Label>Contact</Label>

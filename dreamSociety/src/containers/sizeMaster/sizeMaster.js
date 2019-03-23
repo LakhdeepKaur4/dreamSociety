@@ -117,7 +117,7 @@ changePassword=()=>{
         <h3 align="center">  Add Size </h3>
             <FormGroup>
                 <Label> Size Type</Label>
-                <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={20} />
+                <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={30} />
                 <span className="error">{this.state.errors.sizeType}</span>
                 <span className="error">{this.state.message}</span>    
             </FormGroup>

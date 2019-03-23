@@ -402,7 +402,7 @@ class vendorMaster extends Component {
                             <Col md={2}>
                                 <FormGroup>
                                     <Label> Rate 1</Label>
-                                    <Input type="text" placeholder="Rate" name="rate1" maxLength={4}  value={this.state.rate1} onChange={this.onRateChange}/>
+                                    <Input type="text" placeholder="Rate" name="rate1" maxLength={6}  value={this.state.rate1} onChange={this.onRateChange}/>
                                     <div>{!this.state.rate1 ? <span className="error">{this.state.errors.rate1}</span>: null}</div>
                                 </FormGroup>
                             </Col>
@@ -433,7 +433,7 @@ class vendorMaster extends Component {
                             <Col md={2}>
                                 <FormGroup>
                                     <Label> Rate 2</Label>
-                                    <Input type="text" placeholder="Rate" name="rate2" maxLength={4} value={this.state.rate2}onChange={this.onRateChange}/>
+                                    <Input type="text" placeholder="Rate" name="rate2" maxLength={6} value={this.state.rate2}onChange={this.onRateChange}/>
                                     <div>{!this.state.rate2 ? <span className="error">{this.state.errors.rate2}</span>: null}</div>
                                 </FormGroup>
                             </Col>
@@ -463,7 +463,7 @@ class vendorMaster extends Component {
                             <Col md={2}>
                                 <FormGroup>
                                     <Label> Rate 3</Label>
-                                    <Input type="text" placeholder="Rate" name="rate3"  maxLength={4} value={this.state.rate3} onChange={this.onRateChange}/>
+                                    <Input type="text" placeholder="Rate" name="rate3"  maxLength={6} value={this.state.rate3} onChange={this.onRateChange}/>
                                     <div>{!this.state.rate3 ? <span className="error">{this.state.errors.rate3}</span>: null}</div>
                                 </FormGroup>
                             </Col>
