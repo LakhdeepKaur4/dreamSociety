@@ -241,10 +241,10 @@ class BoardMemberDetails extends Component{
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value, errors });
+            this.setState({ [e.target.name]: e.target.value.trim(), errors });
         }
         else {
-            this.setState({ [e.target.name]: e.target.value });
+            this.setState({ [e.target.name]: e.target.value.trim() });
         }
     }
 
@@ -252,10 +252,10 @@ class BoardMemberDetails extends Component{
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value, errors, contactServerError:'' });
+            this.setState({ [e.target.name]: e.target.value.trim(), errors, contactServerError:'' });
         }
         else {
-            this.setState({[e.target.name]:e.target.value, contactServerError:''})
+            this.setState({[e.target.name]:e.target.value.trim(), contactServerError:''})
         }
         
     }
@@ -437,7 +437,7 @@ class BoardMemberDetails extends Component{
         console.log(this.state.email)
         this.setState({email:e.target.value, emailServerError:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
-            this.setState({[e.target.name]:e.target.value});
+            this.setState({[e.target.name]:e.target.value.trim()});
             console.log(this.state.email)
             this.setState({emailValidError: ''})
         }
@@ -446,10 +446,10 @@ class BoardMemberDetails extends Component{
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             console.log(this.state.email)
-            this.setState({ [e.target.name]: e.target.value, errors });
+            this.setState({ [e.target.name]: e.target.value.trim(), errors });
         }
         else {
-            this.setState({email:e.target.value});
+            this.setState({email:e.target.value.trim()});
         }
         
     }
