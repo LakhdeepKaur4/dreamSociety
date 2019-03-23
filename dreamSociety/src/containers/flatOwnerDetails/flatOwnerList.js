@@ -80,7 +80,9 @@ class FlatOwnerList extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-    toggle = (ownerId, ownerName, dob, gender, contact, email,Aadhaar, permanentAddress, bankName, accountHolderName, accountNumber, panCardNumber, IFSCCode,) => {
+    toggle = (ownerId, ownerName, dob, gender, contact, email,Aadhaar, permanentAddress, bankName, 
+            accountHolderName, accountNumber, panCardNumber, IFSCCode,) => {
+        console.log("======================="+accountNumber);
         this.setState({
             ownerId,
             ownerName,
@@ -96,6 +98,7 @@ class FlatOwnerList extends Component {
             IFSCCode,
             Aadhaar,
             modal: !this.state.modal
+            
         })
     }
     delete = (ownerId) => {
@@ -244,7 +247,10 @@ class FlatOwnerList extends Component {
                         <td style={{ textAlign: "center" }}>{items.flat_detail_master.flatNo}</td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewMember.bind(this, items.ownerId)}>View Member</button></td>
                         <td style={{ textAlign: "center" }}>
-                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, items.ownerName, items.dob, items.gender, items.contact, items.email,items.adhaarCardNo, items.permanentAddress, items.bankName, items.accountHolderName, items.accountNumber, items.panCardNumber, items.IFSCCode)}>Edit</button>
+                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, 
+                                items.ownerName, items.dob, items.gender, items.contact, items.email,
+                                items.adhaarCardNo, items.permanentAddress, items.bankName, items.accountHolderName,
+                                items.accountNumber, items.panCardNumber, items.IFSCCode)}>Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.ownerId)} >Delete</button>
                         </td>
                     </tr>

@@ -25,6 +25,7 @@ export default class AccountVerificationTenant extends Component {
        return this.props.history.push('/')
      }
      else{
+       
        return this.props.history.push('/login/tokenVerification')
      }
    })
@@ -45,6 +46,7 @@ export default class AccountVerificationTenant extends Component {
         />
         <span><button style={{marginTop:'10px'}} onClick={this.submit}>Submit</button></span>
         <span><button style={{marginTop:'10px', marginLeft:'4px'}}>Resend</button></span>
+        <span><button style={{marginTop:'10px', marginLeft:'4px',display:this.state.otpVerified?'block':'none'}} onClick={this.sendLogin}>login</button></span>
         </UI>
       </div>
       
