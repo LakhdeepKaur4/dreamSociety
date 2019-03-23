@@ -45,10 +45,10 @@ componentDidMount(){
 
 refreshData() {
     this.props.getLocation().then(()=> this.setState({modalLoading: false,loading:false, modal:false}));
-    this.props.getState().then(()=> this.setState({loading:false}));
-    this.props.getCountry().then(()=> this.setState({loading:false}));
-    this.props.getCity().then(()=> this.setState({loading:false}));
-    this.props.getLocationName().then(()=> this.setState({loading:false}));
+    this.props.getState().then(()=> this.setState({modalLoading: false,loading:false, modal:false}));
+    this.props.getCountry().then(()=> this.setState({modalLoading: false,loading:false, modal:false}));
+    this.props.getCity().then(()=> this.setState({modalLoading: false,loading:false, modal:false}));
+    this.props.getLocationName().then(()=> this.setState({modalLoading: false,loading:false, modal:false}));
 }
 
 
@@ -357,6 +357,36 @@ render(){
         {this.renderList(this.props.locationMasterReducer)}
         </tbody>
     </Table> 
+               let modalData=<div><FormGroup>
+                   <Label> Country Name</Label>
+                   <Input type="select" name="countryId" value={this.state.countryName} onChange={this.onChangeCountry}>
+                   <DefaultSelect />
+                              {this.fetchCountry(this.props.societyReducer)}
+                  </Input>
+               </FormGroup>
+               <FormGroup>
+                   <Label>State Name</Label>
+                   <Input type="select" id="stateId" name="stateId" onChange={this.onChangeState}>
+                   {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                            {this.state.stateName ? <DefaultSelect />: null}
+                              {this.state.stateName ? null : this.stateName(this.props.societyReducer)}                 
+                   </Input>
+               </FormGroup>
+               <FormGroup>
+                   <Label>City Name</Label>
+                   <Input type="select" id="cityId" name="cityName"   onChange={this.onChangeCity}  >
+                         {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
+                          {this.state.cityName ? <DefaultSelect />: null}
+                          {this.state.cityName ? null : this.cityName(this.props.societyReducer)}  
+                   </Input>
+               </FormGroup>
+               <FormGroup>
+                   <Label>Location Name</Label>
+                   <Input type="text" id="locationId" name="locationName" maxLength={20} onChange={this.onChangeHandler} value={this.state.locationName} />
+                   <span className="error">{this.state.errors.locationName}</span>
+                   <span className="error">{this.state.message}</span>
+               </FormGroup> 
+               </div>    
         let deleteSelectedButton = <Button color="danger" className="mb-2"
         onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
 
@@ -373,38 +403,8 @@ render(){
              <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                  <ModalHeader toggle={this.toggle}> Edit Details</ModalHeader>
                  <ModalBody>
-                     <FormGroup>
-                         <Label> Country Name</Label>
-                         <Input type="select" name="countryId" value={this.state.countryName} onChange={this.onChangeCountry}>
-                         <DefaultSelect />
-                                    {this.fetchCountry(this.props.societyReducer)}
-                        </Input>
-                     </FormGroup>
-                     <FormGroup>
-                         <Label>State Name</Label>
-                         <Input type="select" id="stateId" name="stateId" onChange={this.onChangeState}>
-                         {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
-                                  {this.state.stateName ? <DefaultSelect />: null}
-                                    {this.state.stateName ? null : this.stateName(this.props.societyReducer)}                 
-                         </Input>
-                     </FormGroup>
-                     <FormGroup>
-                         <Label>City Name</Label>
-                         <Input type="select" id="cityId" name="cityName"   onChange={this.onChangeCity}  >
-                               {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
-                                {this.state.cityName ? <DefaultSelect />: null}
-                                {this.state.cityName ? null : this.cityName(this.props.societyReducer)}  
-                         </Input>
-                     </FormGroup>
-                     <FormGroup>
-                         <Label>Location Name</Label>
-                         <Input type="text" id="locationId" name="locationName" maxLength={20} onChange={this.onChangeHandler} value={this.state.locationName} />
-                         <span className="error">{this.state.errors.locationName}</span>
-                         <span className="error">{this.state.message}</span>
-                         
-                     </FormGroup> 
-                 
-            
+      
+                    {!this.state.modalLoading?modalData:<Spinner/>}
                         <Button color="primary" className="mr-2" onClick={this.updateLocation}>Save</Button> 
                         <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
                  
@@ -428,7 +428,7 @@ render(){
                                     }  
                                 }/>
                             </Label>
-                           {!this.state.modalLoading ? tableData : <Spinner />}
+                           {!this.state.loading ? tableData : <Spinner />}
                        
                                 
             

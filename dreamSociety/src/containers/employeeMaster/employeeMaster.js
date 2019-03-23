@@ -123,54 +123,60 @@ FileChange=(event)=>{
     submit=(event)=> {
         
         event.preventDefault();
-//         let errors ={};
-//         // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
+        let errors ={};
+        // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
        
-//         if(!this.state.countryId){
-//           errors.countryId = " Country Id  can't be empty. "
-//          }
-//          if(!this.state.stateId){
-//           errors.stateId ="State Name can't be empty. "
-//          }
-//           if(!this.state.cityId){
-//           errors.cityId ="City Name can't be empty."
-//          }
-//          if(!this.state.locationId){
-//           errors.locationId ="Location Name can't be empty."
-//          }
-//          if(!this.state.documentOne){
-//           errors.documentOne ="please select an ID."
-//          }
-//          if(!this.state.documentTwo){
-//             errors.documentTwo ="please select an ID"
-//          }
-//          if(!this.state.profilePicture){
-//           errors.profilePicture =" Profile picture can't be empty."
-//          }
-//          if(!this.state.firstName){
-//          errors.firstName ="First Name can't be empty. "
-//          }
+        if(!this.state.countryName){
+          errors.countryName = "Country Name  can't be empty. "
+         }
+         if(!this.state.stateName){
+          errors.stateName ="State Name can't be empty. "
+         }
+          if(!this.state.cityName){
+          errors.cityName ="City Name can't be empty."
+         }
+         if(!this.state.locationName){
+          errors.locationName ="Location Name can't be empty."
+         }
+         if(!this.state.documentOne){
+          errors.documentOne ="please select an ID."
+         }
+         if(!this.state.documentTwo){
+            errors.documentTwo ="please select an ID"
+         }
+         if(!this.state.profilePicture){
+          errors.profilePicture =" Profile picture can't be empty."
+         }
+         if(!this.state.firstName){
+         errors.firstName ="First Name can't be empty. "
+         }
        
-//          if(!this.state.lastName){
-//        errors.lastName ="Last Name can't be empty."
-//          }
-//          if(!this.state.startDate){
-//           errors.startDate =" Start Date can't be empty ."
-//          }
-//          if(!this.state.endDate){
-//          errors.endDate ="End Date can't be empty."
-//          }
-//          if(!this.state.CTC){
-//         errors.CTC ="CTC can't be empty."
-//          }
-        
-//         console.log(this.state.salary,"salary")
-//   this.setState({ errors });
-//   const isValid = Object.keys(errors).length === 0
-//   if (isValid) {        
+         if(!this.state.lastName){
+       errors.lastName ="Last Name can't be empty."
+         }
+         if(!this.state.salary){
+            errors.salary ="salary can't be empty."
+              }
+              if(!this.state.address){
+                errors.address ="Address can't be empty."
+                  }
+         if(!this.state.startDate){
+          errors.startDate =" Start Date can't be empty ."
+         }
+         if(!this.state.endDate){
+         errors.endDate ="End Date can't be empty."
+         }
+         if(!this.state.CTC){
+        errors.CTC ="CTC can't be empty."
+         }
+         const data = new FormData() 
+
+  this.setState({ errors });
+  const isValid = Object.keys(errors).length === 0
+  if (isValid) {        
      
       this.setState({loading:true})
-      const data = new FormData() 
+   
       data.append('profilePicture',this.state.profilePicture)
         data.append('documentOne',this.state.documentOne, this.state.documentOne.name)
         data.append('documentTwo',this.state.documentTwo, this.state.documentTwo.name)
@@ -191,7 +197,7 @@ FileChange=(event)=>{
 
 
     }
-    // }
+    }
  
   
          
@@ -364,7 +370,7 @@ form=
 
         <label> Salary</label>
        
-        <input type="text" className="form-control" name ="salary" onChange ={this.onChange} maxLength={30}/>
+        <input type="text" className="form-control" name ="salary" onChange ={this.onChange} maxLength={20}/>
         <span className="error">{this.state.errors.salary}</span>
     </div>
     <div  className="row">
@@ -374,7 +380,7 @@ form=
                         <    DefaultSelect/> 
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
-                           <span className="error">{this.state.errors.countryId}</span>
+                           <span className="error">{this.state.errors.countryName}</span>
                     </div>
 
 
@@ -385,7 +391,7 @@ form=
                                <DefaultSelect/>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
-                        <span className="error">{this.state.errors.stateId}</span>
+                        <span className="error">{this.state.errors.stateName}</span>
                     </div>
                           </div>
                           <div className="row">    
@@ -395,15 +401,15 @@ form=
                             <DefaultSelect/>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
-                        <span className="error">{this.state.errors.cityId}</span>
+                        <span className="error">{this.state.errors.cityName}</span>
                      </div>
                      <div  className="col-md-6" >    
                         <label>location</label>
-                        <select  className ="form-control" defaultValue='no-value' onChange={this.onLocationChange} >
+                        <select  className ="form-control" name="locationName" defaultValue='no-value' onChange={this.onLocationChange} >
                              <DefaultSelect/>
                             {this.getDropdown4(this.props.locationMasterReducer)}
                         </select>
-                        <span className="error">{this.state.errors.locationId}</span>
+                        <span className="error">{this.state.errors.locationName}</span>
                       </div>
                      </div>
                       

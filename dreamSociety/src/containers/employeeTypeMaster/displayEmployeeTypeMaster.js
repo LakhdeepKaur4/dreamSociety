@@ -238,24 +238,14 @@ searchFilter(search) {
             this.setState({ isDisabled: true });
         }
     }
-    deleteSelected(ids) {
-        this.setState({
-            loading: true,
-            isDisabled: true
-        });
-        if (window.confirm('Are You Sure ?')) {
-            this.props.deleteMultipleEmployee(ids)
-                .then(() => {
-                    this.props.getEmployee()
-                    .then(() => this.setState({ loading: false }))
-                })
-                .catch(err => err.response.data.message);
-        }
-        else {
-            this.props.getEmployee()
-                .then(() => this.setState({ loading: false }))
-        }
+    deleteSelected(ids){
+        this.setState({loading:true,
+        isDisabled:true});
+        this.props.deleteMultipleEmployee(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
     }
+
 
     changePassword=()=>{ 
         return this.props.history.replace('/superDashboard/changePassword')

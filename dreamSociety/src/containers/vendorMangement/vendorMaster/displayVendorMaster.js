@@ -31,7 +31,8 @@ class DisplayVendorMaster extends Component {
             modalIsOpen: false,
             ids:[],
             isDisabled:true,    
-            errors:{}
+            errors:{},
+            message:''
         }
 
     componentDidMount() {
@@ -39,6 +40,7 @@ class DisplayVendorMaster extends Component {
     }
 
     onHandleChange=(e)=>{
+        this.setState({message:''})
         if(!!this.state.errors[e.target.name]){
             let errors =Object.assign({},this.state.errors)
             delete  errors[e.target.name]
@@ -60,19 +62,19 @@ class DisplayVendorMaster extends Component {
     }
 
     refreshData() {
-        this.props.getVendorMaster().then(()=> this.setState({loading:false}));
+        this.props.getVendorMaster().then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false}));
     }
 
     editUser(vendorId,vendorName,currentAddress,permanentAddress,contact,documentOne,documentTwo,picture){
     this.setState({
             vendorId,vendorName,currentAddress,permanentAddress,contact,documentOne,documentTwo,picture
-            ,editVendorModal: !this.state.editServiceModal})
+            ,editVendorModal: !this.state.editVendorModal})
             
     }
 
     toggleEditVendorModal() {
         this.setState({
-            editVendorModal: !this.state.editVendorModal
+            editVendorModal: !this.state.editVendorModal, message:''
         });
     }
     toggleModal() {
@@ -86,12 +88,25 @@ class DisplayVendorMaster extends Component {
         this.setState({ modalIsOpen: false });
     }
 
-    selectImages = (e) => {
-        this.setState({
-            profilePicture: e.target.files[0]
-        })
-
+    selectImages = (event) =>{
+        if(!!this.state.errors[event.target.name]){
+        
+            let errors =Object.assign({},this.state.errors)
+            delete  errors[event.target.name]
+            this.setState({[event.target.name]:event.target.files,errors});
+        }
+        else{
+        if (event.target.files && event.target.files[0]) {
+          let reader = new FileReader();
+          reader.onload = (e) => {
+            this.setState({picture:  reader.result});
+          };
+        
+          reader.readAsDataURL(event.target.files[0]);
+          this.setState({profilePicture:event.target.files[0]})
+        }
     }
+}
 
     selectImage = (e) => {
         this.setState({
@@ -146,7 +161,6 @@ class DisplayVendorMaster extends Component {
     }
 
     deleteSelected(ids){
-        console.log(ids)
         this.setState({loading:true,
         isDisabled:true});
         this.props.deleteSelectedVendor(ids)
@@ -177,9 +191,9 @@ class DisplayVendorMaster extends Component {
             } 
         const formData=new FormData();
         this.setState({ errors });
-        const isValid = Object.keys(errors).length === 0
-        if (isValid) {
-        this.setState({loading: true})
+        const isValid = Object.keys(errors).length === 0    
+        if (isValid  &&  this.state.message === '') {
+     
         formData.append('vendorId',this.state.vendorId)
         formData.append('vendorName',this.state.vendorName)
         formData.append('contact',this.state.contact)
@@ -188,8 +202,19 @@ class DisplayVendorMaster extends Component {
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)
-        this.props.updateVendor( this.state.vendorId,formData).then(() => this.refreshData());   
-        this.setState({ editVendorModal: !this.state.editVendorModal});
+        this.props.updateVendor( this.state.vendorId,formData).then(() => this.refreshData())
+        .catch(err=>{
+            this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+        
+        }) 
+        if(this.state.message === ''){
+            this.setState({editVendorModal: true})
+        }
+        else {
+            this.setState({editVendorModal: false})
+        }   
+        this.setState({ modalLoading: true
+        })
         }
    }
 
@@ -236,7 +261,7 @@ class DisplayVendorMaster extends Component {
                         <td><img style={{width:"100%", height:"15%"}} src={PicURN+ vendors.picture}></img></td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewServices.bind(this,vendors.vendorId)}>View Services</button></td>                   
                         <td>
-                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorId, vendors.vendorName,vendors.currentAddress,vendors.permanentAddress,vendors.contact,vendors.documentOne,vendors.documentTwo,vendors.picture)}>Edit</Button> 
+                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorId, vendors.vendorName,vendors.currentAddress,vendors.permanentAddress,vendors.contact,vendors.documentOne,vendors.documentTwo, PicURN+vendors.picture)}>Edit</Button> 
                 
                             <Button color="danger"onClick={this.delete.bind(this,vendors.vendorId)} >Delete</Button>
                         </td>
@@ -358,6 +383,7 @@ class DisplayVendorMaster extends Component {
             {this.renderList(this.props.vendorMasterReducer)}
         </tbody>
     </Table>
+    
         let deleteSelectedButton = <Button color="danger" className="mb-2"
         onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
             return(
@@ -395,6 +421,7 @@ class DisplayVendorMaster extends Component {
                         <Input name="contact" value={this.state.contact} onKeyPress={this.OnKeyPresshandlerPhone}  maxLength={10} onChange={this.onHandleChange}>
                         </Input>
                         <span className="error">{this.state.errors.contact}</span>
+                        <span className="error">{this.state.message}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label> Document One</Label>
@@ -418,12 +445,13 @@ class DisplayVendorMaster extends Component {
                     <FormGroup>
                             <Label>Upload Another Id</Label>
                             <Input type="file" name="documentTwo"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage2} required  />
- 
+                         
                         </FormGroup>
                     <FormGroup>
                     <Label> Profile Picture</Label>
-                        <img style={{width:"30%", height:"35%"}} src={PicURN+ this.state.picture}></img>
+                        <img id="target" src={this.state.picture}/>
                         <Input type="file" name="profilePicture" accept="image/*" onChange={this.selectImages} required /> 
+                        
                     </FormGroup>
                     
                     <FormGroup>
