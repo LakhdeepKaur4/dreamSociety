@@ -35,7 +35,7 @@ export default class AccountVarification extends Component {
       <div >
        
           <UI>
-            <div style={{margin:"25% 0 0 30%"}}>
+            <div style={{margin:"15% 0 0 30%"}}>
              <h2>Submit OTP</h2> 
              <h2 style={{color:'red'}}>{this.state.message}</h2>
         <OtpInput
