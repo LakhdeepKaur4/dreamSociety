@@ -44,10 +44,10 @@ class Parking extends Component {
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value, errors })
+            this.setState({ [e.target.name]: e.target.value.trim(), errors })
         }
         else {
-            this.setState({ [e.target.name]: e.target.value })
+            this.setState({ [e.target.name]: e.target.value.trim() })
         }
     }
 
@@ -78,6 +78,10 @@ class Parking extends Component {
             .then(() => {
                 this.setState({loading: false})
                 this.props.history.push('/superDashboard/parking_master')
+                })
+                .catch((err) => {
+                    err
+                    this.setState({loading:false})
                 })
             
                 this.setState(
