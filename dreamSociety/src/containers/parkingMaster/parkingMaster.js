@@ -77,6 +77,10 @@ class ParkingMaster extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
     render() {
         let tableData;
         if(this.props.parkingDetail.parking){
@@ -106,7 +110,7 @@ class ParkingMaster extends Component {
         }
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div>
 
                         <div className="w3-container w3-margin-top w3-responsive">

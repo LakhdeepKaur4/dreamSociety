@@ -240,6 +240,10 @@ class BoardMemberDetails extends Component{
         }
     }
 
+    contactChange = (e) => {
+        this.setState({[e.target.name]:e.target.value, contactServerError:''})
+    }
+
     fetchDesignation = ({designation}) => {
         if(designation){
            return designation.designation.map((item) => {
@@ -331,7 +335,7 @@ class BoardMemberDetails extends Component{
     
      stateName = ({stateResult}) => {
          if(stateResult){
-           
+           console.log(stateResult)
             return( 
              stateResult.map((item) =>{ 
                     return(
@@ -415,7 +419,7 @@ class BoardMemberDetails extends Component{
 
     emailChange = (e) => {
         console.log(this.state.email)
-        this.setState({email:e.target.value})
+        this.setState({email:e.target.value, emailServerError:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value});
             console.log(this.state.email)
@@ -445,7 +449,7 @@ class BoardMemberDetails extends Component{
         if(this.state.currentAddress === '') { errors.currentAddress = `Current Address can't be empty.`}
         if(this.state.permanentAddress === ''){ errors.permanentAddress = `Permanent Address can't be empty.`}
         if(this.state.contactNumber === '') { errors.contactNumber = `Contact can't be empty.`}
-        else if(this.state.contactNumber.length !== 10) errors.contactNumber = "Contact length should be of 10"
+        else if(this.state.contactNumber.length !== 10) errors.contactNumber = "Contact length should be of 10."
         if(this.state.email === '') { errors.email = `Email can't be empty.`}
         if(this.state.bankName === '') { errors.bankName = `Bank Name can't be empty.`}
         if(this.state.accountHolderName === '') { errors.accountHolderName = `Account Holder Name can't be empty.`}
@@ -466,7 +470,8 @@ class BoardMemberDetails extends Component{
                 .then(() => this.loadingInactive())
                 .catch(err => {
                     err.response.data.message
-                    this.setState({modalLoading: false})
+                    this.setState({modalLoading: false, contactServerError:err.response.data.messageContactErr,
+                    emailServerError:err.response.data.messageEmailErr})
                 })
         }
     }
@@ -481,6 +486,10 @@ class BoardMemberDetails extends Component{
         var d = new Date();
         return d.toISOString().split('T')[0];
     }
+
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
 
     render(){
         console.log(this.props.societyReducer.countryResult)
@@ -516,160 +525,161 @@ class BoardMemberDetails extends Component{
 
         let modalData = <div>
             <FormGroup>
-                                <Label>Society Member Name</Label>
-                                <Input name="societyBoardMemberName" type="text" value={this.state.societyBoardMemberName} 
-                                    onChange={this.onChange} />
-                                {!this.state.societyBoardMemberName ? <span className="error">{this.state.errors.societyBoardMemberName}</span>: ''}
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>Designation</Label>
-                                <Input name="designationId" type="select" onChange={this.onChange} value={this.state.designationId}>
-                                    <DefaultSelect />
-                                    {this.fetchDesignation(this.props.boardMemberReducer)}
-                                 </Input>
-                            </FormGroup>
-                             <FormGroup>
-                                <Label>Country Name</Label>
-                                <Input type="select" name="countryId"  onChange={this.onChangeCountry} 
-                                value={this.state.countryName} required>
-                                    <DefaultSelect />
-                                    {this.countryName(this.props.societyReducer)}
-                                </Input>
-                                {!this.state.countryName ? <span className="error">{this.state.errors.countryName}</span>: ''}
-                            </FormGroup>
+                        <Label>Society Member Name</Label>
+                        <Input name="societyBoardMemberName" type="text" value={this.state.societyBoardMemberName} 
+                            onChange={this.onChange} />
+                        {!this.state.societyBoardMemberName ? <span className="error">{this.state.errors.societyBoardMemberName}</span>: ''}
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Designation</Label>
+                        <Input name="designationId" type="select" onChange={this.onChange} value={this.state.designationId}>
+                            <DefaultSelect />
+                            {this.fetchDesignation(this.props.boardMemberReducer)}
+                            </Input>
+                    </FormGroup>
+                        <FormGroup>
+                        <Label>Country Name</Label>
+                        <Input type="select" name="countryId"  onChange={this.onChangeCountry} 
+                        value={this.state.countryName} required>
+                            <DefaultSelect />
+                            {this.countryName(this.props.societyReducer)}
+                        </Input>
+                        {!this.state.countryName ? <span className="error">{this.state.errors.countryName}</span>: ''}
+                    </FormGroup>
 
-                            <FormGroup>
-                                <Label>State Name</Label>
-                                <Input type="select" name="stateId"
-                                  onChange={this.onChangeState}
-                                    required>
-                                  {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
-                                  {this.state.stateName ? <DefaultSelect />: null}
-                                    {this.state.stateName ? null : this.stateName(this.props.societyReducer)}
-                                </Input>
-                                {!this.state.stateName ? <span className="error">{this.state.errors.stateName}</span>: ''}
-                            </FormGroup>
+                    <FormGroup>
+                        <Label>State Name</Label>
+                        <Input type="select" name="stateId"
+                            onChange={this.onChangeState}
+                            required>
+                            {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                            {this.state.stateName ? <DefaultSelect />: null}
+                            {this.state.stateName ? null : this.stateName(this.props.societyReducer)}
+                        </Input>
+                        {!this.state.stateName ? <span className="error">{this.state.errors.stateName}</span>: ''}
+                    </FormGroup>
 
-                            <FormGroup>
-                                <Label>City Name</Label>
-                                <Input type="select" name="cityId"
-                                 onChange={this.onChangeCity} required>
-                                {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
-                                {this.state.cityName ? <DefaultSelect />: null}
-                                {this.state.cityName ? null : this.cityName(this.props.societyReducer)}  
-                                </Input>
-                                {!this.state.cityName ? <span className="error">{this.state.errors.cityName}</span>: ''}
-                            </FormGroup>
+                    <FormGroup>
+                        <Label>City Name</Label>
+                        <Input type="select" name="cityId"
+                            onChange={this.onChangeCity} required>
+                        {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
+                        {this.state.cityName ? <DefaultSelect />: null}
+                        {this.state.cityName ? null : this.cityName(this.props.societyReducer)}  
+                        </Input>
+                        {!this.state.cityName ? <span className="error">{this.state.errors.cityName}</span>: ''}
+                    </FormGroup>
 
-                            <FormGroup>
-                                <Label>Location Name</Label>
-                                <Input type="select" name="locationId"
-                                  onChange={this.onChangeLocation}
-                                 required>
-                                 {this.state.locationName ? <option>{this.state.locationName}</option> : <option disabled>--Select--</option>}
-                                 {this.state.locationName ? <DefaultSelect />: null}
-                                 {this.state.locationName ? null : this.locationName(this.props.societyReducer)}  
-                                </Input>
-                                {!this.state.locationName ? <span className="error">{this.state.errors.locationName}</span>: ''}
-                            </FormGroup>  
-                            <FormGroup>
-                                <Label>Current Address</Label>
-                                <Input onKeyPress={this.keyPress} 
-                                value={this.state.currentAddress} 
-                                type="textarea" 
-                                placeholder="Current Address" 
-                                name="currentAddress" 
-                                onChange={this.onChange}
-                                maxLength='150' />
-                                {!this.state.currentAddress ? <span className="error">{this.state.errors.currentAddress}</span>: ''}
-                            </FormGroup>
-                            <FormGroup >
-                                <Label>Permanent Address</Label>
-                                <Input type="textarea" 
-                                value={this.state.permanentAddress} 
-                                placeholder="Permanent Address" 
-                                name="permanentAddress" 
-                                onChange={this.onChange}
-                                maxLength='150' />
-                                {!this.state.permanentAddress ? <span className="error">{this.state.errors.permanentAddress}</span>: ''}
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>Contact Number</Label>
-                                <Input placeholder="Contact Number"
-                                type="text"
-                                name="contactNumber" 
-                                onChange={this.onChange}
-                                value={this.state.contactNumber}
-                                maxLength="10"
-                                onKeyPress={this.OnKeyPresshandlerPhone} />
-                                {<span className="error">{this.state.errors.contactNumber}</span>}
-                                {this.state.contactServerError ? <span className="error">{this.state.contactServerError}</span> : null}
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>Email</Label>
-                                <Input 
-                                placeholder="Email" 
-                                type="email" 
-                                value={this.state.email}
-                                name="email" 
-                                onChange={this.emailChange}
-                                onKeyPress={this.emailValid} />
-                                {!this.state.email ? <span className="error">{this.state.errors.email}</span>: ''}
-                                {this.state.emailServerError ? <span className="error">{this.state.emailServerError}</span> : null}
-                                {<span className="error">{this.state.emailValidError}</span>}
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>Bank Name</Label>
-                                <Input 
-                                placeholder="Bank Name" 
-                                type="text" 
-                                name="bankName" 
-                                onChange={this.onChange}
-                                value={this.state.bankName}
-                                onKeyPress={this.bankValidation} />
-                                {!this.state.bankName ? <span className="error">{this.state.errors.bankName}</span>: ''}
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>Account Number</Label>
-                                <Input
-                                placeholder="Account Number" 
-                                type="text" 
-                                name="accountNumber"
-                                value={this.state.accountNumber} 
-                                onChange={this.onChange}
-                                maxLength='16'
-                                onKeyPress={this.OnKeyPresshandlerPhone} />
-                                {!this.state.accountNumber ? <span className="error">{this.state.errors.accountNumber}</span>: ''}
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>Pan Card Number</Label>
-                                <Input 
-                                className="TextTransformToCapital" 
-                                placeholder="Pan Card Number"
-                                type="text"
-                                name="panCardNumber"
-                                value={this.state.panCardNumber.toUpperCase()}
-                                minLength='10'
-                                maxLength='10'
-                                onKeyPress={(e) => {
-                                    const pattern = /^[a-zA-Z0-9]+$/;
-                                    let inputChar = String.fromCharCode(e.charCode);
-                                    if (!pattern.test(inputChar)) {
-                                        e.preventDefault();
-                                    }
-                                }} 
-                                onChange={this.panChange} />
-                                {!this.state.panCardNumber ? <span className="error">{this.state.errors.panCardNumber}</span>: ''}
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>Date of Birth</Label>
-                                <Input type="date" max={this.maxDate()} name="dob" value={this.state.dob} onChange={this.onChange} />
-                                {!this.state.dob ? <span className="error">{this.state.errors.dob}</span>: ''}
-                            </FormGroup>  
-                            <FormGroup>
-                                    <Button type="submit" color="primary" onClick={this.update}>Save</Button>{' '}
-                                    <Button color="danger" onClick={this.toggleEditSocietyMember.bind(this)}>Cancel</Button>
-                            </FormGroup>
+                    <FormGroup>
+                        <Label>Location Name</Label>
+                        <Input type="select" name="locationId"
+                            onChange={this.onChangeLocation}
+                            required>
+                            {this.state.locationName ? <option>{this.state.locationName}</option> : <option disabled>--Select--</option>}
+                            {this.state.locationName ? <DefaultSelect />: null}
+                            {this.state.locationName ? null : this.locationName(this.props.societyReducer)}  
+                        </Input>
+                        {!this.state.locationName ? <span className="error">{this.state.errors.locationName}</span>: ''}
+                    </FormGroup>  
+                    <FormGroup>
+                        <Label>Current Address</Label>
+                        <Input onKeyPress={this.keyPress} 
+                        value={this.state.currentAddress} 
+                        type="textarea" 
+                        placeholder="Current Address" 
+                        name="currentAddress" 
+                        onChange={this.onChange}
+                        maxLength='150' />
+                        {!this.state.currentAddress ? <span className="error">{this.state.errors.currentAddress}</span>: ''}
+                    </FormGroup>
+                    <FormGroup >
+                        <Label>Permanent Address</Label>
+                        <Input type="textarea" 
+                        value={this.state.permanentAddress} 
+                        placeholder="Permanent Address" 
+                        name="permanentAddress" 
+                        onChange={this.onChange}
+                        maxLength='150' />
+                        {!this.state.permanentAddress ? <span className="error">{this.state.errors.permanentAddress}</span>: ''}
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Contact Number</Label>
+                        <Input placeholder="Contact Number"
+                        type="text"
+                        name="contactNumber" 
+                        onChange={this.contactChange}
+                        value={this.state.contactNumber}
+                        maxLength="10"
+                        onKeyPress={this.OnKeyPresshandlerPhone} />
+                        {<span className="error">{this.state.errors.contactNumber}</span>}
+                        {this.state.contactServerError ? <span className="error">{this.state.contactServerError}</span> : null}
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Email</Label>
+                        <Input 
+                        placeholder="Email" 
+                        type="email" 
+                        value={this.state.email}
+                        name="email" 
+                        onChange={this.emailChange}
+                        onKeyPress={this.emailValid} />
+                        {!this.state.email ? <span className="error">{this.state.errors.email}</span>: ''}
+                        {this.state.emailServerError ? <span className="error">{this.state.emailServerError}</span> : null}
+                        {<span className="error">{this.state.emailValidError}</span>}
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Bank Name</Label>
+                        <Input 
+                        placeholder="Bank Name" 
+                        type="text" 
+                        maxLength="50"
+                        name="bankName" 
+                        onChange={this.onChange}
+                        value={this.state.bankName}
+                        onKeyPress={this.bankValidation} />
+                        {!this.state.bankName ? <span className="error">{this.state.errors.bankName}</span>: ''}
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Account Number</Label>
+                        <Input
+                        placeholder="Account Number" 
+                        type="text" 
+                        name="accountNumber"
+                        value={this.state.accountNumber} 
+                        onChange={this.onChange}
+                        maxLength='16'
+                        onKeyPress={this.OnKeyPresshandlerPhone} />
+                        {!this.state.accountNumber ? <span className="error">{this.state.errors.accountNumber}</span>: ''}
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Pan Card Number</Label>
+                        <Input 
+                        className="TextTransformToCapital" 
+                        placeholder="Pan Card Number"
+                        type="text"
+                        name="panCardNumber"
+                        value={this.state.panCardNumber.toUpperCase()}
+                        minLength='10'
+                        maxLength='10'
+                        onKeyPress={(e) => {
+                            const pattern = /^[a-zA-Z0-9]+$/;
+                            let inputChar = String.fromCharCode(e.charCode);
+                            if (!pattern.test(inputChar)) {
+                                e.preventDefault();
+                            }
+                        }} 
+                        onChange={this.panChange} />
+                        {!this.state.panCardNumber ? <span className="error">{this.state.errors.panCardNumber}</span>: ''}
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Date of Birth</Label>
+                        <Input type="date" max={this.maxDate()} name="dob" value={this.state.dob} onChange={this.onChange} />
+                        {!this.state.dob ? <span className="error">{this.state.errors.dob}</span>: ''}
+                    </FormGroup>  
+                    <FormGroup>
+                            <Button type="submit" color="primary" onClick={this.update}>Save</Button>{' '}
+                            <Button color="danger" onClick={this.toggleEditSocietyMember.bind(this)}>Cancel</Button>
+                    </FormGroup>
         </div>
 
         let deleteSelectedButton = <Button
@@ -678,7 +688,7 @@ class BoardMemberDetails extends Component{
         className="mb-3"
         onClick={this.deleteSelected(this.state.ids)}>Delete Selected</Button>
         return(
-            <UI onClick={this.logout}>
+            <UI onClick={this.logout} change={this.changePassword}>
                 <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
@@ -690,13 +700,6 @@ class BoardMemberDetails extends Component{
                     <Modal isOpen={this.state.editSocietyMember} toggle={this.toggleEditSocietyMember.bind(this)}>
                         <ModalHeader toggle={this.toggleEditSocietyMember.bind(this)}>Edit Board Member Details</ModalHeader>
                         <ModalBody>
-                            {/* <FormGroup>
-                                <Label>Society Name</Label>
-                                <Input name="societyId" type="select" onChange={this.onChange}  >
-                                    <DefaultSelect />
-                                    {this.fetchSocietyId(this.props.boardMemberReducer)}
-                                 </Input>
-                            </FormGroup> */}
                             {!this.state.modalLoading ? modalData : <Spinner/>}
                         </ModalBody>
                     </Modal>

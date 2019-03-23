@@ -192,6 +192,11 @@ else {
 
 }
 
+changePassword=()=>{ 
+  return this.props.history.replace('/superDashboard/changePassword')
+}
+
+
   logout=()=>{
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
@@ -273,7 +278,7 @@ selectAll = () => {
      
 
       <div>
-        <UI onClick={this.logout}>
+        <UI onClick={this.logout} change ={this.changePassword}>
 
           
           <div className ="w3-container w3-margin-top w3-responsive">

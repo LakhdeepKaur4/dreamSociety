@@ -56,9 +56,6 @@ class AssetsTypeMaster extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-     }
      
     close=()=>{
         return this.props.history.replace('/superDashBoard')
@@ -88,7 +85,7 @@ class AssetsTypeMaster extends Component {
 
         return (
             <div>
-                <UI onClick={this.logout} change={this.changePassword}>
+                <UI onClick={this.logout}>
                     <div>
                     <Form onSubmit={this.onSubmit}>
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>

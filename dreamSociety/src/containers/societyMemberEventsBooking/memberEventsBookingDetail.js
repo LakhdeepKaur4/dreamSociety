@@ -129,7 +129,7 @@ class MemberEventsBookingDetail extends Component {
            
         this.props.updateEventBooking(societyMemberEventBookingId,societyMemberEventId, startDate, endDate,numberOfGuestExpected, eventSpaceId)
             .then(() => this.refreshData())
-            .catch(err=>{ console.log(err.response.data.message)
+            .catch(err=>{ 
                 this.setState({modalLoading:false,message: err.response.data.message})
                 })
                 if(this.state.message === ''){
@@ -162,11 +162,11 @@ class MemberEventsBookingDetail extends Component {
     searchFilter = (search) => {
         return function (x) {
            
-            return x.society_member_event_master.societyMemberEventName.toLowerCase().includes(search.toLowerCase()) ||
+            return x.society_member_event_master ? x.society_member_event_master.societyMemberEventName.toLowerCase().includes(search.toLowerCase()) : '' ||
                    x.startDate.toLowerCase().includes(search.toLowerCase())  ||
                    x.endDate.toLowerCase().includes(search.toLowerCase())  ||
                    x.numberOfGuestExpected.toLowerCase().includes(search.toLowerCase())  ||
-                   x.event_space_master.spaceName.toLowerCase().includes(search.toLowerCase())  ||
+                   x.event_space_master ? x.event_space_master.spaceName.toLowerCase().includes(search.toLowerCase()) : '' ||
                  !search;
         }
     }
@@ -246,7 +246,7 @@ class MemberEventsBookingDetail extends Component {
     renderBookingEvent = ({ memberEventsResult }) => {
         if (memberEventsResult){
             return memberEventsResult.events.sort((item1,item2)=>{ 
-                var cmprVal = (item1.society_member_event_master[this.state.filterName].localeCompare(item2.society_member_event_master[this.state.filterName]))
+                var cmprVal = (item1.societyMemberEventName && item2.societyMemberEventName) ? (item1.society_member_event_master[this.state.filterName].localeCompare(item2.society_member_event_master[this.state.filterName])) : ''
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 

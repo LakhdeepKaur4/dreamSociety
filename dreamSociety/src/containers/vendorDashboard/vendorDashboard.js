@@ -30,6 +30,10 @@ export default class Dashboard extends Component {
     localStorage.removeItem('user-type');
     return this.props.history.replace('/') 
 }
+changePassword=()=>{ 
+  return this.props.history.replace('/superDashboard/changePassword')
+}
+
 
   render() {
     return (<div>
@@ -75,7 +79,7 @@ export default class Dashboard extends Component {
         </Sidebar.Pushable> */}
       {/* </div> */}
 
-      <UI onClick={this.logout}></UI>
+      <UI onClick={this.logout} change={this.changePassword}></UI>
 
     </div>
     );

@@ -83,7 +83,7 @@ class Country extends Component {
                 this.setState({loading:false, message:err.response.data.message})})
 
             this.setState({
-                countryName: '',
+                countryName: '',    
                 code: '',
                 currency: '',
                 phoneCode: '',
@@ -124,7 +124,7 @@ class Country extends Component {
         }
     }
     onKeyPressCode=(event)=>{
-        const pattern = /^[A-Z]+$/;
+        const pattern = /^[a-zA-Z]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -139,6 +139,10 @@ class Country extends Component {
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
 
     render() {
           
@@ -167,7 +171,7 @@ class Country extends Component {
                     maxLength='3'
                     // value={this.state.code.toUpperCase()}
                   
-                    // onKeyPress={this. onKeyPressCode}
+                    onKeyPress={this. onKeyPressCode}
                     // value={this.state.code.toUpperCase()}
                     onChange={this.onChangeCountry} />
                 <span className='error'>{this.state.errors.code}</span>
@@ -206,7 +210,7 @@ class Country extends Component {
 
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                 <Form onSubmit={this.submit}>
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                         <span aria-hidden="true">&times;</span>

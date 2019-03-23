@@ -29,7 +29,7 @@ class CountryDetails extends Component{
                 editUserModal: false,
                  menuVisible: false,
                  search: '',
-                 errors:'',
+                 errors:{},
                  filterName:"countryName",
                  
         }
@@ -47,7 +47,8 @@ class CountryDetails extends Component{
     toggleEditUserModal() {
         this.setState({
           editUserModal: ! this.state.editUserModal,
-          message: ''
+          message: '',
+          errors:{}
         });
       }
 
@@ -217,13 +218,13 @@ class CountryDetails extends Component{
             event.preventDefault();
         }
     }
-    // onKeyPressCode=(event)=>{
-    //     const pattern = /^[A-Z ]+$/;
-    //     let inputChar = String.fromCharCode(event.charCode);
-    //     if (!pattern.test(inputChar)) {
-    //         event.preventDefault();
-    //     }
-    // }
+    onKeyPressCode=(event)=>{
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
@@ -231,6 +232,9 @@ class CountryDetails extends Component{
     routeToAddNewUser =() => {
         this.props.history.push('/superDashboard/countrymaster')
     }
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
 
 
 
@@ -324,7 +328,7 @@ class CountryDetails extends Component{
                                         name="code"
                                         value={this.state.code}
                                         maxLength='3'
-                                        // onKeyPress={this.onKeyPressCode}
+                                        onKeyPress={this.onKeyPressCode}
                                         onChange={this.onChangeCountry} />
                                          <span  className='error'>{this.state.errors.code}</span>
                                 </FormGroup>
@@ -360,7 +364,7 @@ class CountryDetails extends Component{
 
         return(
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                 <div className="w3-container w3-margin-top w3-responsive">
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                                 <span aria-hidden="true">&times;</span>

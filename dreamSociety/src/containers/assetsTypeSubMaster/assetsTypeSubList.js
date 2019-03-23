@@ -31,9 +31,6 @@ class AssetsTypeSubList extends Component {
         const { name, value } = event.target;
         this.setState({ [name]: value });
     }
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-     }
 
     toggle = (assetTypeId, assetType, description) => {
 
@@ -232,7 +229,7 @@ class AssetsTypeSubList extends Component {
           onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
-                <UI onClick={this.logout} change={this.changePassword}>
+                <UI onClick={this.logout}>
                     <div className="w3-container w3-margin-top w3-responsive">
                             <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                                 <span aria-hidden="true">&times;</span>

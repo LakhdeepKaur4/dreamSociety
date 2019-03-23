@@ -9,7 +9,7 @@ import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
 import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
-import {addFlatOwner,getAllFloor} from '../../actionCreators/flatOwnerAction';
+import {addFlatOwner} from '../../actionCreators/flatOwnerAction';
 import {Link} from 'react-router-dom';
 
 class FlatOwnerDetails extends Component {
@@ -51,8 +51,6 @@ class FlatOwnerDetails extends Component {
             emailError:false,
             modal: false,
             loading: true,
-            Aadhaar:'',
-            floorId:'',
         }
     }
     toggles = () => {
@@ -128,34 +126,18 @@ class FlatOwnerDetails extends Component {
         });
     }
     towerChangeHandler = (name, selectOption) => {
-
         this.setState(function (prevState, props) {
             return {
                 [name]: selectOption.value
             }
         }, function () {
             console.log(selectOption.towerId)
-            
-
         });
-        this.props.getAllFloor(selectOption.towerId);
-
     }
-    floorChangeHandler=(name,selectOption)=>{
-        console.log('=======selectOption=======',selectOption.value);
-        this.setState({
-            [name]: selectOption.value
-        })
-console.log('lllllllll=======',this.state.floorId)
-    // this.getFlats(this.props.towerFloor);
-
-    }
-  
     flatChangeHandler=(name,selectOption)=>{
         this.setState({
             [name]: selectOption.value
         })
-        console.log('flatDetailID',this.state.flatDetailId)
     }
     relationHandler = (name,selectOption) => {
         this.setState(function (prevState, props) {
@@ -172,7 +154,7 @@ console.log('lllllllll=======',this.state.floorId)
     }
     nextPrev = () => {
         let errors = {};
-        const { societyName, number, ownerName, DOB, email, towerId, flatDetailId,Aadhaar } = this.state
+        const { societyName, number, ownerName, DOB, email, towerId, flatDetailId } = this.state
         if (this.state.step === 1) {
             if (ownerName === '') {
                 errors.ownerName = "Owern Name can't be empty"
@@ -195,9 +177,6 @@ console.log('lllllllll=======',this.state.floorId)
             else if (societyName === '') {
                 errors.societyName = "society name can't be empty"
             }
-            // else if(Aadhaar.length<=9){
-            //     errors.Aadhaar="Please enter 12 digit number";
-            // }
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -313,7 +292,7 @@ OnKeyPresshandlerEmail=(event)=> {
             locationName,
             member,
             fileName,
-            ownerGender,Aadhaar,floorId} = this.state
+            ownerGender} = this.state
             const d = new FormData()
             console.log(this.state.profilePicture)
             d.append('profilePicture',this.state.profilePicture)        
@@ -354,8 +333,7 @@ OnKeyPresshandlerEmail=(event)=> {
                 locationId,
                 locationName,
                 ownerGender,
-                fileName,
-                Aadhaar,floorId
+                fileName
             }
            
             this.setState({loading: true})
@@ -370,11 +348,6 @@ OnKeyPresshandlerEmail=(event)=> {
         
 
         }
-
-        changePassword=()=>{ 
-            return this.props.history.replace('/superDashboard/changePassword')
-         }
-
         toggle = () => {
                     this.setState({
                         modal: !this.state.modal
@@ -403,37 +376,6 @@ OnKeyPresshandlerEmail=(event)=> {
           };
         }
        
-  }
-  getFlats=({floor})=>{
-      console.log('7777777jjjjjj',floor)
-      if(floor){
-        return  floor.flatDetail.filter((flatRecord)=>{
-              return flatRecord.floorId===this.state.floorId
-          }).map((selectFlat)=>{
-              console.log('bbbbbbbbbbbbbbbbb',selectFlat)
-              return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
-          });
-      }
-      else {
-          return []
-        }
-  }
-  getFloor=({floor})=>{
-      console.log("floor",floor)
-      if(floor){
-          return floor.tower.Floors.map((item)=>{
-                    
-              return {...item ,label: item.floorName, value: item.floorId }
-          })
-        //   this.setState({
-        //     floorId:item.floorId
-        //   })
-      }
-      else {
-          return []
-      }
-
-
   }
     render() {
             
@@ -481,7 +423,7 @@ OnKeyPresshandlerEmail=(event)=> {
         }
         return (
             <div>
-                <UI onClick={this.logout} change={this.changePassword}>
+                <UI onClick={this.logout}>
                     <Form onSubmit={this.onSubmit} style={{width: '769px'}}>
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
@@ -526,11 +468,6 @@ OnKeyPresshandlerEmail=(event)=> {
                                 <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
                             </FormGroup>
                             <FormGroup>
-                                <Label>Aadhaar Number</Label>
-                                <Input placeholder='Aadhaar Number' onChange={this.onChangeHandler} name='Aadhaar' onKeyPress={this.OnKeyPresshandlerPhone} type="text" maxLength={12}/>
-                                <span className="error">{this.state.errors.Aadhaar}</span>
-                            </FormGroup>
-                            <FormGroup>
                                 <Label>Society Name</Label>
                                 <Select options={this.getSociety(this.props.societyName)}
                                     onChange={this.societyChangeHandler.bind(this)}
@@ -558,26 +495,17 @@ OnKeyPresshandlerEmail=(event)=> {
                                 <Input type="text" style={{ 'textTransform': 'capitalize' }} maxLength={100} placeholder="Permanent Address" name="permanentAddress" onChange={this.onChangeHandler} />
                             </FormGroup >
                             <FormGroup>
-                                <Label>Tower Name</Label>
+                                <Label>Tower</Label>
                                 <Select options={this.getTower(this.props.towerList)}
                                     onChange={this.towerChangeHandler.bind(this, 'towerId')}
                                     placeholder={PlaceHolder} />
                                 <span className="error">{this.state.errors.tower}</span>
                             </FormGroup >
                             <FormGroup>
-                                <Label>Floor</Label>
-                                <Select options={this.getFloor(this.props.towerFloor)} 
-                                placeholder={PlaceHolder}
-                                onChange={this.floorChangeHandler.bind(this,'floorId')}
-                                />
-                            </FormGroup>
-                            
-                            <FormGroup>
                                 <Label>Flat Number</Label>
-                                <Select options={this.getFlats(this.props.towerFloor)}
-                                    placeholder={PlaceHolder} 
-                                  onChange={this.flatChangeHandler.bind(this,'flatDetailId')}
-                                    />
+                                <Select options={this.getflat(this.props.flatList)}
+                                    onChange={this.flatChangeHandler.bind(this, 'flatDetailId')}
+                                    placeholder={PlaceHolder} />
                                 <span className="error">{this.state.errors.flatNO}</span>
                             </FormGroup >
                         </div>
@@ -647,17 +575,15 @@ OnKeyPresshandlerEmail=(event)=> {
 }
 
 function mapStateToProps(state) {
-    console.log('ppppppppppppppppppppppppppppppppppp',state.FlatOwnerReducer)
     return {
         societyName: state.societyReducer,
         towerList: state.TowerDetails,
-        towerFloor:state.FlatOwnerReducer,
         relationList: state.RelationMasterReducer,
-        // flatList:state.flatDetailMasterReducer,
+        flatList:state.flatDetailMasterReducer,
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner,getAllFloor }, dispatch)
+    return bindActionCreators({ detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerDetails);
 

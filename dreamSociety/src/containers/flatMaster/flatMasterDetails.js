@@ -32,6 +32,7 @@ class flatMasterDetails extends Component {
         filterName:"flatType",
         isDisabled: true,
         loading:true,
+        modalLoading: false,
         isActive: false,
         editUserModal: false,
         menuVisible: false,
@@ -61,16 +62,17 @@ class flatMasterDetails extends Component {
     refreshData() {
        console.log('done')
         const defaultPage=this.state.activePage;
-        this.props.getDetails(defaultPage).then(() => this.setState({loading:false}));
-        this.props.getDrop().then(() => this.setState({loading:false}));
+        this.props.getDetails(defaultPage).then(() => this.setState({loading:false, modalLoading: false,editUserModal: false}));
+        this.props.getDrop().then(() => this.setState({loading:false, modalLoading: false,editUserModal: false}));
        
-        this.props.getSizeDrop().then(() => this.setState({loading:false}));
+        this.props.getSizeDrop().then(() => this.setState({loading:false, modalLoading: false,editUserModal: false}));
 
     }
 
     toggleEditUserModal() {
         this.setState({
-            editUserModal: !this.state.editUserModal
+            editUserModal: !this.state.editUserModal,
+            errors:{}
         });
     }
 
@@ -82,6 +84,7 @@ class flatMasterDetails extends Component {
     }
     updateBook = (e) => {
         e.preventDefault();
+    
        
         let { flatId, 
             // societyId,societyName,
@@ -110,9 +113,10 @@ class flatMasterDetails extends Component {
             this.refreshData();
         })
         this.setState({
-            editUserModal: false,loading:true, flatId: '',
-            // societyId:'',societyName:'',
-            flatType: '', flatSuperArea: '',sizeId:'', CoverArea: ''
+          modalLoading:false
+        })
+        this.setState({
+            modalLoading:true
         })
     }
         
@@ -271,6 +275,10 @@ class flatMasterDetails extends Component {
         this.props.history.push('/superDashboard/flatmaster')
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
     logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
@@ -413,39 +421,9 @@ class flatMasterDetails extends Component {
      color="danger"
     className="mb-3"
     onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
-    
-    
-        
-        return (
-            <div>
-                <UI onClick={this.logout}>
-                        <div className="w3-container w3-margin-top  w3-responsive">
-                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true">&times;</span>
-                            </div>
-                            <div className="top-details">                               
-                             <h3>Flat Master Details</h3>
-                                <Button onClick={this.routeToAddNewUser} color="primary">Add Flats</Button>
-                                </div>
 
-                            
-                        <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
-                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
-                            <ModalBody>
-                                {/* <FormGroup>
-                                    <Label for="roles">SocietyName</Label>
-                                    <Input type="select" 
-                                    name="societyId"
-                                            value={this.state.societyId} 
-                                            onChange={this.societyChange} >
-                                            
-                                            <option disabled>Select</option>
-                                            
-                                            {this.fetchDrop(this.props.flats)}     
-                                        </Input>
-                                        <span  className='error'>{this.state.errors.societyId}</span>
-                                </FormGroup> */}
-                                <FormGroup>
+    let modalData=<div>
+                         <FormGroup>
                                     <Label for="roles">Flat Type</Label>
                                     <Input
                                         type="textbox"
@@ -499,6 +477,42 @@ class flatMasterDetails extends Component {
                                 <Button color="primary mr-2" onClick={this.updateBook}>Save</Button>
                                 <Button color="danger" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
                                 </FormGroup>
+
+                  </div>
+    
+    
+        
+        return (
+            <div>
+                <UI onClick={this.logout} change={this.changePassword}>
+                        <div className="w3-container w3-margin-top  w3-responsive">
+                        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
+                            <div className="top-details">                               
+                             <h3>Flat Master Details</h3>
+                                <Button onClick={this.routeToAddNewUser} color="primary">Add Flats</Button>
+                                </div>
+
+                            
+                        <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
+                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
+                            <ModalBody>
+                                {/* <FormGroup>
+                                    <Label for="roles">SocietyName</Label>
+                                    <Input type="select" 
+                                    name="societyId"
+                                            value={this.state.societyId} 
+                                            onChange={this.societyChange} >
+                                            
+                                            <option disabled>Select</option>
+                                            
+                                            {this.fetchDrop(this.props.flats)}     
+                                        </Input>
+                                        <span  className='error'>{this.state.errors.societyId}</span>
+                                </FormGroup> */}
+                                 {!this.state.modalLoading  ? modalData : <Spinner />}
+                               
                             </ModalBody>
                             
                         </Modal>
