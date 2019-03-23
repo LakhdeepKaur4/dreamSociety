@@ -14,7 +14,7 @@ class flatMasterDetails extends Component {
    constructor(props){
       super(props);
     this.state = {
-             ids:[],
+            ids:[],
             stateId:'',
             countryId:'',
             countryName:'',
