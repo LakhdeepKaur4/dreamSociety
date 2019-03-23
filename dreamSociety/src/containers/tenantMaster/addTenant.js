@@ -420,7 +420,7 @@ class AddTenant extends Component{
                         className="input" />
                     </Col>
                     <Col md={6}>
-                        <Label>Relation With Owner</Label>
+                        <Label>Relation With Tenant</Label>
                         <Select name={`relationId${i}`} options={this.getRelationList(this.props.relationList)} 
                           onChange={this.relationHandler.bind(this,'relationId'+i )}  required/>
                     </Col>
