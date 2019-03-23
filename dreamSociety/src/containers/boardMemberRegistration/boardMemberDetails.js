@@ -221,7 +221,15 @@ class BoardMemberDetails extends Component{
     }
 
     panChange = (e) => {
-        this.setState({panCardNumber:e.target.value.toUpperCase()})
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.toUpperCase(), errors });
+        }
+        else {
+            this.setState({panCardNumber:e.target.value.toUpperCase()})
+        }
+        
     }
 
     toggleEditSocietyMember(){
@@ -434,6 +442,15 @@ class BoardMemberDetails extends Component{
             this.setState({emailValidError: ''})
         }
         else{ this.setState({emailValidError: 'Invalid Email.'})}
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            console.log(this.state.email)
+            this.setState({ [e.target.name]: e.target.value, errors });
+        }
+        else {
+            this.setState({email:e.target.value});
+        }
         
     }
 
@@ -463,6 +480,7 @@ class BoardMemberDetails extends Component{
         if(this.state.accountHolderName === '') { errors.accountHolderName = `Account Holder Name can't be empty.`}
         if(this.state.accountNumber === '') { errors.accountNumber = `Account Number can't be empty.`}
         if(this.state.panCardNumber === '') { errors.panCardNumber = `Pan Card Number can't be empty.`}
+        else if(this.state.panCardNumber.length !== 10) { errors.panCardNumber = `Pan length should be of 10.`}
         if(this.state.dob === '') { errors.dob = `Date of birth can't be empty.`};
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
@@ -535,7 +553,7 @@ class BoardMemberDetails extends Component{
             <FormGroup>
                         <Label>Society Member Name</Label>
                         <Input name="societyBoardMemberName" type="text" value={this.state.societyBoardMemberName} 
-                            onChange={this.onChange} />
+                            onChange={this.onChange}  maxLength='40' />
                         {!this.state.societyBoardMemberName ? <span className="error">{this.state.errors.societyBoardMemberName}</span>: ''}
                     </FormGroup>
                     <FormGroup>
@@ -597,7 +615,7 @@ class BoardMemberDetails extends Component{
                         placeholder="Current Address" 
                         name="currentAddress" 
                         onChange={this.onChange}
-                        maxLength='150' />
+                        maxLength='250' />
                         {!this.state.currentAddress ? <span className="error">{this.state.errors.currentAddress}</span>: ''}
                     </FormGroup>
                     <FormGroup >
@@ -607,7 +625,7 @@ class BoardMemberDetails extends Component{
                         placeholder="Permanent Address" 
                         name="permanentAddress" 
                         onChange={this.onChange}
-                        maxLength='150' />
+                        maxLength='250' />
                         {!this.state.permanentAddress ? <span className="error">{this.state.errors.permanentAddress}</span>: ''}
                     </FormGroup>
                     <FormGroup>
@@ -630,9 +648,11 @@ class BoardMemberDetails extends Component{
                         value={this.state.email}
                         name="email" 
                         onChange={this.emailChange}
+                        maxLength="70"
                         onKeyPress={this.emailValid} />
-                        {!this.state.email ? <span className="error">{this.state.errors.email}</span>: ''}
                         {this.state.emailServerError ? <span className="error">{this.state.emailServerError}</span> : null}
+                        <span><br/></span>
+                        {<span className="error">{this.state.errors.email}</span>}
                         {<span className="error">{this.state.emailValidError}</span>}
                     </FormGroup>
                     <FormGroup>
@@ -640,12 +660,12 @@ class BoardMemberDetails extends Component{
                         <Input 
                         placeholder="Bank Name" 
                         type="text" 
-                        maxLength="50"
+                        maxLength="70"
                         name="bankName" 
                         onChange={this.onChange}
                         value={this.state.bankName}
                         onKeyPress={this.bankValidation} />
-                        {!this.state.bankName ? <span className="error">{this.state.errors.bankName}</span>: ''}
+                        {<span className="error">{this.state.errors.bankName}</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label>Account Number</Label>
@@ -655,9 +675,9 @@ class BoardMemberDetails extends Component{
                         name="accountNumber"
                         value={this.state.accountNumber} 
                         onChange={this.onChange}
-                        maxLength='16'
+                        maxLength='18'
                         onKeyPress={this.OnKeyPresshandlerPhone} />
-                        {!this.state.accountNumber ? <span className="error">{this.state.errors.accountNumber}</span>: ''}
+                        {<span className="error">{this.state.errors.accountNumber}</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label>Pan Card Number</Label>
@@ -677,12 +697,12 @@ class BoardMemberDetails extends Component{
                             }
                         }} 
                         onChange={this.panChange} />
-                        {!this.state.panCardNumber ? <span className="error">{this.state.errors.panCardNumber}</span>: ''}
+                        {<span className="error">{this.state.errors.panCardNumber}</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label>Date of Birth</Label>
                         <Input type="date" max={this.maxDate()} name="dob" value={this.state.dob} onChange={this.onChange} />
-                        {!this.state.dob ? <span className="error">{this.state.errors.dob}</span>: ''}
+                        {<span className="error">{this.state.errors.dob}</span>}
                     </FormGroup>  
                     <FormGroup>
                             <Button type="submit" color="primary" onClick={this.update}>Save</Button>{' '}

@@ -13,7 +13,7 @@ import SearchFilter from '../../components/searchFilter/searchFilter'
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
 import { URN } from '../../actions/index'
-import Pagination from "react-js-pagination";
+import Pagination from "react-js-pagination";   
 
 class flatMasterDetails extends Component {
    constructor(props){
@@ -83,7 +83,7 @@ class flatMasterDetails extends Component {
     }
     updateBook = (e) => {
         e.preventDefault();
-      this.setState({modalLoading:true});
+      
        
         let { flatId, 
             // societyId,societyName,
@@ -497,19 +497,7 @@ class flatMasterDetails extends Component {
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
                             <ModalBody>
-                                {/* <FormGroup>
-                                    <Label for="roles">SocietyName</Label>
-                                    <Input type="select" 
-                                    name="societyId"
-                                            value={this.state.societyId} 
-                                            onChange={this.societyChange} >
-                                            
-                                            <option disabled>Select</option>
-                                            
-                                            {this.fetchDrop(this.props.flats)}     
-                                        </Input>
-                                        <span  className='error'>{this.state.errors.societyId}</span>
-                                </FormGroup> */}
+                              
                                  {!this.state.modalLoading  ? modalData : <Spinner />}
                                
                             </ModalBody>

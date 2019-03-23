@@ -55,7 +55,8 @@ class DisplayEmployeeMaster extends Component {
         documentOne: '',
             documentTwo:'',
             errors:{},
-            filterName:"firstName"
+            filterName:"firstName",
+            modalLoading:false
 
     }
     componentDidMount() {
@@ -73,11 +74,11 @@ class DisplayEmployeeMaster extends Component {
 
 
     refreshData() {
-        this.props.ViewEmployee().then(() => this.setState({ loading: false }));
-        this.props.getCountry().then(() => this.setState({ loading: false }))
-        this.props.getState().then(() => this.setState({ loading: false }))
-        this.props.getCity().then(() => this.setState({ loading: false }))
-        this.props.getLocation().then(() => this.setState({ loading: false }))
+        this.props.ViewEmployee().then(() => this.setState({ loading: false,modalLoading:false,editEmployeeModal:false }));
+        this.props.getCountry().then(() => this.setState({ loading: false,modalLoading:false}))
+        this.props.getState().then(() => this.setState({ loading: false,modalLoading:false }))
+        this.props.getCity().then(() => this.setState({ loading: false,modalLoading:false }))
+        this.props.getLocation().then(() => this.setState({ loading: false,modalLoading:false }))
     }
 
     onChange=(e)=> {
@@ -139,24 +140,33 @@ class DisplayEmployeeMaster extends Component {
 
 }   
 
-onImageChange = (event) => {
-    if(!!this.state.errors[event.target.name]){
+// onImageChange = (event) => {
+//     if(!!this.state.errors[event.target.name]){
         
-        let errors =Object.assign({},this.state.errors)
-        delete  errors[event.target.name]
-        this.setState({[event.target.name]:event.target.files,errors});
-    }
-    else{
-    if (event.target.files && event.target.files[0]) {
-      let reader = new FileReader();
-      reader.onload = (e) => {
-        this.setState({picture:  reader.result});
-      };
-      reader.readAsDataURL(event.target.files[0]);
+//         let errors =Object.assign({},this.state.errors)
+//         delete  errors[event.target.name]
+//         this.setState({[event.target.name]:event.target.files,errors});
+//     }
+//     else{
+ImageChange =(event)=>{
+        if(!!this.state.errors[event.target.name]){
+        
+            let errors =Object.assign({},this.state.errors)
+            delete  errors[event.target.name]
+            this.setState({[event.target.name]:event.target.files,errors});
+        }
+        else{
+        if (event.target.files && event.target.files[0]) {
+          let reader = new FileReader();
+          reader.onload = (e) => {
+            this.setState({picture:  reader.result});
+          };
+        
+          reader.readAsDataURL(event.target.files[0]);
+          this.setState({profilePicture:event.target.files[0]})
+        }
     }
 }
-  }
-
 
     onFileChange=(event)=>{
         // if (event.target.files && event.target.files[0]) {
@@ -177,6 +187,7 @@ onImageChange = (event) => {
          
  FileChange=(event)=>{
     if (event.target.files && event.target.files[0]) {
+        console.log("event",event.target.files[0])
         let reader = new FileReader();
         reader.onload = (e) => {
           this.setState({documentTwo:  reader.result});
@@ -193,8 +204,8 @@ onImageChange = (event) => {
     }
 
     updateEmployee = (employeeId) => {
-        console.log(employeeId, "employeeId")
-
+        // console.log(employeeId,  "employeeId")
+        console.log("picture",this.state.profilePicture);
         // console.log(this.state.documentOne, this.state.documentTwo, this.state.profilePicture, this.state.locationId, "documents");
         // let errors = {};
         // const {firstName,middleName,lastName,CTC}=this.state;
@@ -231,13 +242,12 @@ onImageChange = (event) => {
         data.append('locationId', this.state.locationId)
         data.append('startDate', this.state.editEmployeeData.startDate)
     
-        data.append('picture', this.state.picture)
-        console.log(this.state.editEmployeeData.picture, "picture")
+        data.append('profilePicture', this.state.profilePicture)
 
         this.props.updateEmployee(this.state.editEmployeeData.employeeId,data).then(() =>  this.refreshData())
 
         this.setState({
-            editEmployeeModal: false,loading:true
+            modalLoading:true
 
         })
 
@@ -365,7 +375,7 @@ onImageChange = (event) => {
             loading: true,
             isDisabled: true
         });
-        if (window.confirm('Are You Sure ?')) {
+        if (window.confirm()) {
             this.props.deleteMultipleEmployee(ids)
                 .then(() => {
                     this.props.ViewEmployee()
@@ -515,6 +525,12 @@ onImageChange = (event) => {
              
          }
      }
+     changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+     browseBtn = (e) => {
+        document.getElementById('real-input').click();
+    }
 
 
     render() {
@@ -545,11 +561,181 @@ onImageChange = (event) => {
                     {this.getEmployee(this.props.EmpDetails)}
                 </tbody>
             </Table>
+
+           let modalData =<div>
+                <FormGroup>
+                                  
+
+
+                          
+                                  <input accept='image/*' type="file" name="profilePicture"   onChange={this.ImageChange} />
+                                
+                                  <img id="target" src={this.state.picture}/>
+                               
+                                      
+                                 
+                              </FormGroup>
+                                       
+
+                              <FormGroup>
+                                  <Label > First Name</Label>
+                                  <Input  name="firstName" value={this.state.firstName}
+                                      onChange={this.onChange}
+              
+                                      maxLength={25}
+                                      onKeyPress={this.OnKeyPresshandler}
+
+                                  />
+                                  <span className="error">{this.state.errors.firstName}</span>
+                              </FormGroup>
+                              <FormGroup>
+                                  <Label > Middle Name</Label>
+                                  <Input name="middleName" value={this.state.middleName}
+                                      onChange={this.onChange}
+                                          
+                                      maxLength={25}
+                                      onKeyPress={this.OnKeyPresshandler}
+
+                                  />
+                                   <span  className="error">{this.state.errors.middleName}</span>
+                              </FormGroup>
+                              <FormGroup>
+                                  <Label > Last Name</Label>
+                                  <Input name="lastName" value={this.state.lastName}
+                                      onChange={this.onChange}
+                                         
+                                      maxLength={25}
+                                      onKeyPress={this.OnKeyPresshandler}
+
+                                  />
+                                   <span  className="error">{this.state.errors.lastName}</span>
+                              </FormGroup>
+                              <FormGroup>
+                                  <Label > Salary</Label>
+                                  <Input name="salary" value={this.state.salary}
+                                      onChange={this.onChange}
+
+                                      onKeyPress={this.OnKeyPresshandler}
+
+                                  />
+                                   <span  className="error" >{this.state.errors.salary}</span>
+                                   </FormGroup>
+                                   <FormGroup>
+                              <Label>Country Name</Label>
+                              <Input type="select" name="countryId"  onChange={this.onChangeCountry} 
+                              value={this.state.countryName} required>
+                                  <DefaultSelect />
+                                  {this.countryName(this.props.societyReducer)}
+                              </Input>
+                         
+                          </FormGroup>
+
+                          <FormGroup>
+                              <Label>State Name</Label>
+                              <Input type="select" name="stateId"
+                                onChange={this.onChangeState}
+                                  required>
+                                {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                                {this.state.stateName ? <DefaultSelect />: null}
+                                  {this.state.stateName ? null : this.stateName(this.props.societyReducer)}
+                              </Input>
+                          
+                          </FormGroup>
+
+                          <FormGroup>
+                              <Label>City Name</Label>
+                              <Input type="select" name="cityId"
+                               onChange={this.onChangeCity} required>
+                              {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
+                              {this.state.cityName ? <DefaultSelect />: null}
+                              {this.state.cityName ? null : this.cityName(this.props.societyReducer)}  
+                              </Input>
+                    
+                          </FormGroup>
+
+                          <FormGroup>
+                              <Label>Location Name</Label>
+                              <Input type="select" name="locationId"
+                                onChange={this.onChangeLocation}
+                               required>
+                               {this.state.locationName ? <option>{this.state.locationName}</option> : <option disabled>--Select--</option>}
+                               {this.state.locationName ? <DefaultSelect />: null}
+                               {this.state.locationName ? null : this.locationName(this.props.societyReducer)}  
+                              </Input>
+                           
+                          </FormGroup> 
+                                 
+                                  <FormGroup>
+                                  <Label > Address</Label>
+                                  <Input name="address" value={this.state.address}
+                                      onChange={this.onChange}
+
+                                    
+
+                                  />
+                                   <span  className="error" >{this.state.errors.address}</span>
+                                   </FormGroup>
+                              <FormGroup>
+                                
+                                  <Label > Document One</Label>
+
+                                  <GoogleDocsViewer
+                                      width="400px"
+                                      height="600px"
+                                      fileUrl={this.state.documentOne}
+                                  />
+                                
+                             
+                              <Label> Update your Id</Label>
+                                  <input accept='.docx ,.doc,application/pdf' type="file" name="documentOne" onChange={this.onFileChange} />
+                               
+                              </FormGroup>
+                              
+                              <FormGroup>
+                                  <Label > Document Two</Label>
+
+                                  <GoogleDocsViewer
+                                      width="400px"
+                                      height="600px"
+                                      fileUrl={this.state.documentTwo}
+                                  />
+                             
+                              </FormGroup>
+
+                              <FormGroup>
+                              <div  className="input-contain">
+                              <Label> Update your Id</Label>
+                                  <input accept='.docx,application/pdf' type="file" name="documentTwo" onChange={this.FileChange} />
+                                  </div>
+                              </FormGroup>
+
+                              <FormGroup>
+                                  <Label > Employment Date</Label>
+                                  <Input type="date" value={this.state.editEmployeeData.startDate}
+                                      onChange={(e) => {
+                                          let { editEmployeeData } = this.state;
+
+                                          editEmployeeData.startDate = e.target.value;
+
+                                          this.setState({ editEmployeeData });
+                                      }}
+                                      required
+
+                                      onKeyPress={this.OnKeyPresshandler}
+
+                                  />
+                              </FormGroup>
+                            
+      
+
+           </div>
+
+
             let deleteSelectedButton = <Button color="danger" className="mb-2"  disabled={this.state.isDisabled} 
             onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
-                <UI>
+                <UI  change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
@@ -561,172 +747,8 @@ onImageChange = (event) => {
                         <Modal isOpen={this.state.editEmployeeModal} toggle={this.toggleEditEmployeeModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditEmployeeModal.bind(this)}>Edit  Employee Details</ModalHeader>
                             <ModalBody>
-
-                                <FormGroup>
-                                  
-
-
-                          
-                                    <input accept='image/*' type="file" name="profilePicture"    onChange={this.onImageChange} />
-                                    {/* <img  id="target" style={{ width: "30%", height: "35%" }} src={UR + this.state.picture} alt="desc"/> */}
-                                    <img id="target" src={this.state.picture}/>
-                                 
-                                        
-                                   
-                                </FormGroup>
-                                         
-
-                                <FormGroup>
-                                    <Label > First Name</Label>
-                                    <Input  name="firstName" value={this.state.firstName}
-                                        onChange={this.onChange}
-                
-                                        maxLength={25}
-                                        onKeyPress={this.OnKeyPresshandler}
-
-                                    />
-                                    <span className="error">{this.state.errors.firstName}</span>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label > Middle Name</Label>
-                                    <Input name="middleName" value={this.state.middleName}
-                                        onChange={this.onChange}
-                                            
-                                        maxLength={25}
-                                        onKeyPress={this.OnKeyPresshandler}
-
-                                    />
-                                     <span  className="error">{this.state.errors.middleName}</span>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label > Last Name</Label>
-                                    <Input name="lastName" value={this.state.lastName}
-                                        onChange={this.onChange}
-                                           
-                                        maxLength={25}
-                                        onKeyPress={this.OnKeyPresshandler}
-
-                                    />
-                                     <span  className="error">{this.state.errors.lastName}</span>
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label > Salary</Label>
-                                    <Input name="salary" value={this.state.salary}
-                                        onChange={this.onChange}
-
-                                        onKeyPress={this.OnKeyPresshandler}
-
-                                    />
-                                     <span  className="error" >{this.state.errors.salary}</span>
-                                     </FormGroup>
-                                     <FormGroup>
-                                <Label>Country Name</Label>
-                                <Input type="select" name="countryId"  onChange={this.onChangeCountry} 
-                                value={this.state.countryName} required>
-                                    <DefaultSelect />
-                                    {this.countryName(this.props.societyReducer)}
-                                </Input>
-                           
-                            </FormGroup>
-
-                            <FormGroup>
-                                <Label>State Name</Label>
-                                <Input type="select" name="stateId"
-                                  onChange={this.onChangeState}
-                                    required>
-                                  {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
-                                  {this.state.stateName ? <DefaultSelect />: null}
-                                    {this.state.stateName ? null : this.stateName(this.props.societyReducer)}
-                                </Input>
-                            
-                            </FormGroup>
-
-                            <FormGroup>
-                                <Label>City Name</Label>
-                                <Input type="select" name="cityId"
-                                 onChange={this.onChangeCity} required>
-                                {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
-                                {this.state.cityName ? <DefaultSelect />: null}
-                                {this.state.cityName ? null : this.cityName(this.props.societyReducer)}  
-                                </Input>
-                      
-                            </FormGroup>
-
-                            <FormGroup>
-                                <Label>Location Name</Label>
-                                <Input type="select" name="locationId"
-                                  onChange={this.onChangeLocation}
-                                 required>
-                                 {this.state.locationName ? <option>{this.state.locationName}</option> : <option disabled>--Select--</option>}
-                                 {this.state.locationName ? <DefaultSelect />: null}
-                                 {this.state.locationName ? null : this.locationName(this.props.societyReducer)}  
-                                </Input>
-                             
-                            </FormGroup> 
-                                   
-                                    <FormGroup>
-                                    <Label > Address</Label>
-                                    <Input name="address" value={this.state.address}
-                                        onChange={this.onChange}
-
-                                      
-
-                                    />
-                                     <span  className="error" >{this.state.errors.address}</span>
-                                     </FormGroup>
-                                <FormGroup>
-                                  
-                                    <Label > Document One</Label>
-
-                                    <GoogleDocsViewer
-                                        width="400px"
-                                        height="600px"
-                                        fileUrl={this.state.documentOne}
-                                    />
-                                  
+                            {!this.state.modalLoading ? modalData : <Spinner />}
                                
-                                <Label> Update your Id</Label>
-                                    <input accept='.docx ,.doc,application/pdf' type="file" name="documentOne" onChange={this.onFileChange} />
-                                 
-                                </FormGroup>
-                                
-                                <FormGroup>
-                                    <Label > Document Two</Label>
-
-                                    <GoogleDocsViewer
-                                        width="400px"
-                                        height="600px"
-                                        fileUrl={this.state.documentTwo}
-                                    />
-                               
-                                </FormGroup>
-
-                                <FormGroup>
-                                <div  className="input-contain">
-                                <Label> Update your Id</Label>
-                                    <input accept='.docx,application/pdf' type="file" name="documentTwo" onChange={this.FileChange} />
-                                    </div>
-                                </FormGroup>
-
-                                <FormGroup>
-                                    <Label > Employment Date</Label>
-                                    <Input type="date" value={this.state.editEmployeeData.startDate}
-                                        onChange={(e) => {
-                                            let { editEmployeeData } = this.state;
-
-                                            editEmployeeData.startDate = e.target.value;
-
-                                            this.setState({ editEmployeeData });
-                                        }}
-                                        required
-
-                                        onKeyPress={this.OnKeyPresshandler}
-
-                                    />
-                                </FormGroup>
-                              
-        
-
                                 <Button color="primary" className="mr-2" onClick={this.updateEmployee}>Save</Button>
                                 <Button color="danger" onClick={this.toggleEditEmployeeModal.bind(this)}>Cancel</Button>
 

@@ -379,7 +379,7 @@ class TenantMemberDetail extends Component {
         let editForm = <div>
             <FormGroup>
                 <Label>Member Name</Label>
-                <Input name="memberName" value={this.state.memberName} onChange={this.changeHandler} />
+                <Input name="memberName" value={this.state.memberName} maxLength="70" onChange={this.changeHandler} />
                 {!this.state.memberName ? <span className="error">{this.state.errors.memberName}</span> : ''}
             </FormGroup>
             <FormGroup>
