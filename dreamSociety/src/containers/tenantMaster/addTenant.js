@@ -34,6 +34,7 @@ class AddTenant extends Component{
             IFSCCode:'',
             noOfMembers:'',
             flatNo: '',
+            floorId:'',
             flatDetailId: '',
             societyName : '',
             societyId: '',
@@ -636,7 +637,7 @@ class AddTenant extends Component{
                     <div>
                         <Button color="primary" className="mr-2" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
                         <Button color="primary"className="mr-2" id="nextBtn" style={{ display: this.state.step == 5 ? 'none' : 'inline-block' }} disabled={this.state.step == 5} onClick={this.nextPrev}>Next</Button>
-                        <Button color="success"  style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
+                        <Button color="success" className="mr-2" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
                         <Button color="danger" onClick={this.routeToDetail}>Cancel</Button>
                     </div>
         </div>
