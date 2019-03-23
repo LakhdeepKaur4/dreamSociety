@@ -306,6 +306,7 @@ class AddTenant extends Component{
             if(accountHolderName === '') errors.accountHolderName = `Account Holder name can't be empty.`;
             if(accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
             if(panCardNumber === '') errors.panCardNumber = `Pan Card number can't be empty.`;
+            else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
             if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
             else if(IFSCCode.length !== 11) errors.IFSCCode=`IFSC code should be of digit 11.`
             const isValid = Object.keys(errors).length === 0
