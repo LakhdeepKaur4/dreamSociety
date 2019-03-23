@@ -237,7 +237,7 @@ class AddTenant extends Component{
             this.props.addTenantDetail(data1)
                 .then(() => this.props.history.push('/superDashboard/tenantDetails'))
                 .catch(err => {
-                    err.response.data.message
+                    err.response
                     this.setState({messageContactErr:err.response.data.messageContactErr,messageEmailErr:err.response.data.messageEmailErr,
                          loading:false, member:[]})
                 });
@@ -293,7 +293,7 @@ class AddTenant extends Component{
             if(correspondingAddress === '') errors.correspondingAddress = `Corresponding Address can't be empty.`;
             if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
             if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
-            else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of digit 12.`
+            else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of 12 digit.`
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -308,7 +308,7 @@ class AddTenant extends Component{
             if(panCardNumber === '') errors.panCardNumber = `Pan Card number can't be empty.`;
             else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
             if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
-            else if(IFSCCode.length !== 11) errors.IFSCCode=`IFSC code should be of digit 11.`
+            else if(IFSCCode.length !== 11) errors.IFSCCode = `IFSC code should be of 11 digit.`;
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -420,7 +420,7 @@ class AddTenant extends Component{
                         className="input" />
                     </Col>
                     <Col md={6}>
-                        <Label>Relation With Owner</Label>
+                        <Label>Relation With Tenant</Label>
                         <Select name={`relationId${i}`} options={this.getRelationList(this.props.relationList)} 
                           onChange={this.relationHandler.bind(this,'relationId'+i )}  required/>
                     </Col>
