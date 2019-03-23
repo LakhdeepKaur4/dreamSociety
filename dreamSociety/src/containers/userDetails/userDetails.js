@@ -171,14 +171,11 @@ class userDetails extends Component {
 
     searchFilter(search){
         return function(x){
+            console.log(x)
                 let currentRole = x.roles.map((i) => i.roleName);
-                return x.parking.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                 x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                 x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                 x.userName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                 x.email.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                 currentRole[0].toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                 x.contact.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                return x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                x.email.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                  !search;
         }
     }
