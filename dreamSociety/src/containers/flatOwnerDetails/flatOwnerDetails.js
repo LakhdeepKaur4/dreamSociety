@@ -190,6 +190,9 @@ console.log('lllllllll=======',this.state.floorId)
             else if (societyName === '') {
                 errors.societyName = "society name can't be empty"
             }
+            else if(Aadhaar.length<12){
+                errors.Aadhaar='Please enter 12 digit number'
+            }
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -424,6 +427,10 @@ OnKeyPresshandlerEmail=(event)=> {
             return []
           }
     }
+    changePassword=()=>{
+          
+        return this.props.history.replace('/superDashboard/changePassword')
+      }
     render() {
             
         let userDatas = [];
@@ -470,7 +477,7 @@ OnKeyPresshandlerEmail=(event)=> {
         }
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <Form onSubmit={this.onSubmit} style={{width: '769px'}}>
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
@@ -514,6 +521,12 @@ OnKeyPresshandlerEmail=(event)=> {
                                 <span className="error">{this.state.errors.email}</span>
                                 <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
                             </FormGroup>
+                            <FormGroup>
+                                <Label>Aadhaar Number</Label>
+                                <Input placeholder='Aadhaar Number' onChange={this.onChangeHandler} name='Aadhaar' onKeyPress={this.OnKeyPresshandlerPhone} type="text"  maxLength={12}/>
+                                <span className="error">{this.state.errors.Aadhaar}</span>
+                            </FormGroup>
+
                             <FormGroup>
                                 <Label>Society Name</Label>
                                 <Select options={this.getSociety(this.props.societyName)}
@@ -572,7 +585,7 @@ OnKeyPresshandlerEmail=(event)=> {
                             </FormGroup>
                             <FormGroup>
                                 <Label>Account Holder Name</Label>
-                                <Input style={{'textTransform': 'capitalize' }} placeholder="Holder Name" type="text" name='holderName' onChange={this.onChangeHandler} />
+                                <Input style={{'textTransform': 'capitalize' }} maxLength={50} placeholder="Holder Name" type="text" name='holderName' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.holderName}</span>
                             </FormGroup>
                             <FormGroup >

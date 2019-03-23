@@ -217,6 +217,10 @@ class InventoryDetails extends Component {
             this.setState({isDisabled: true});
         }
     }
+    changePassword=()=>{
+          
+        return this.props.history.replace('/superDashboard/changePassword')
+      }
 
     render() {
         let tableData;
@@ -251,7 +255,7 @@ class InventoryDetails extends Component {
             onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>

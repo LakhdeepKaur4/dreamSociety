@@ -11,11 +11,12 @@ import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getFlatDetails } from '../../actionCreators/flatDetailMasterAction';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
-import { getOwnerMember, getOwnerList, multipleDelete, removeOwner, updateFlatOwner } from '../../actionCreators/flatOwnerAction'
+import { getOwnerMember, getOwnerList, multipleDelete, removeOwner, updateFlatOwner,getAllFloor } from '../../actionCreators/flatOwnerAction'
 class FlatOwnerList extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            filterName: "ownerName",
             ownerId: '',
             profilePic: '',
             ownerName: '',
@@ -48,7 +49,10 @@ class FlatOwnerList extends Component {
             locationId: '',
             towerId: '',
             modalError: false,
-            messageError: ''
+            messageError: '',
+            Aadhaar:'',
+            floorId:'',
+            accountNumber:''
         }
     }
     toggles = () => {
@@ -76,7 +80,7 @@ class FlatOwnerList extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-    toggle = (ownerId, ownerName, dob, gender, contact, email, permanentAddress, bankName, accountHolderName, accountNumber, panCardNumber, IFSCCode) => {
+    toggle = (ownerId, ownerName, dob, gender, contact, email,Aadhaar, permanentAddress, bankName, accountHolderName, accountNumber, panCardNumber, IFSCCode,) => {
         this.setState({
             ownerId,
             ownerName,
@@ -90,6 +94,7 @@ class FlatOwnerList extends Component {
             accountNumber,
             panCardNumber,
             IFSCCode,
+            Aadhaar,
             modal: !this.state.modal
         })
     }
@@ -200,7 +205,10 @@ class FlatOwnerList extends Component {
     }
     renderList = ({ owners }) => {
         if (owners) {
-            return owners.getOwners.filter(this.searchFilter(this.state.search)).map((items, index) => {
+            console.log('owner',owners)
+            return owners.getOwners.sort((item1,item2)=>{
+                let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                return this.state.sortVal?cmpValue: -cmpValue;}).filter(this.searchFilter(this.state.search)).map((items, index) => {
                 return (
 
                     <tr key={items.ownerId}>
@@ -236,7 +244,7 @@ class FlatOwnerList extends Component {
                         <td style={{ textAlign: "center" }}>{items.flat_detail_master.flatNo}</td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewMember.bind(this, items.ownerId)}>View Member</button></td>
                         <td style={{ textAlign: "center" }}>
-                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, items.ownerName, items.dob, items.gender, items.contact, items.email, items.permanentAddress, items.bankName, items.accountHolderName, items.accountNumber, items.panCardNumber, items.IFSCCode)}>Edit</button>
+                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, items.ownerName, items.dob, items.gender, items.contact, items.email,items.adhaarCardNo, items.permanentAddress, items.bankName, items.accountHolderName, items.accountNumber, items.panCardNumber, items.IFSCCode)}>Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.ownerId)} >Delete</button>
                         </td>
                     </tr>
@@ -254,6 +262,7 @@ class FlatOwnerList extends Component {
         }, function () {
             console.log(selectOption.towerId)
         });
+        this.props.getAllFloor(selectOption.towerId);
     }
     flatChangeHandler = (name, selectOption) => {
         this.setState({
@@ -281,6 +290,12 @@ class FlatOwnerList extends Component {
             })
         }
     }
+    flatChangeHandler=(name,selectOption)=>{
+        this.setState({
+            [name]: selectOption.value
+        })
+        this.props.getAllFloor(selectOption.towerId);
+    }
     toggles = () => {
         this.setState({ modal: !this.state.modal })
     }
@@ -305,7 +320,7 @@ class FlatOwnerList extends Component {
             permanentAddress,
             towerId,
             flatDetailId,
-            bankName, panCardNumber, IFSCCode, accountHolderName, gender } = this.state
+            bankName, panCardNumber, IFSCCode, accountHolderName, gender,floorId,Aadhaar,accountNumber } = this.state
         if (ownerName === '') {
             errors.ownerName = "Owern Name can't be empty"
         }
@@ -333,6 +348,7 @@ class FlatOwnerList extends Component {
         if (isValid) {
             this.setState({ loading: true })
             this.setState({ modal: !this.state.modal })
+          console.log(  this.state.accountNumber)
             this.props.updateFlatOwner(ownerId, ownerName,
                 email,
                 societyName,
@@ -351,7 +367,7 @@ class FlatOwnerList extends Component {
                 cityId,
                 stateId,
                 countryId,
-                gender)
+                gender,floorId,Aadhaar,accountNumber)
                 .then(() => this.props.getOwnerList().then(() => this.setState({ loading: false })))
                 .catch(err => {
                     this.setState({ messageError: err.response.data.message, modal: !this.state.modal })
@@ -360,9 +376,51 @@ class FlatOwnerList extends Component {
                 })
         }
     }
+    getFloor=({floor})=>{
+        console.log("floor",floor)
+        if(floor){
+            return floor.tower.Floors.map((item)=>{
+                      
+                return {...item ,label: item.floorName, value: item.floorId }
+            })
+          //   this.setState({
+          //     floorId:item.floorId
+          //   })
+        }
+        else {
+            return []
+        }}
+        floorChangeHandler=(name,selectOption)=>{
+            console.log('=======selectOption=======',selectOption.value);
+            this.setState({
+                [name]: selectOption.value
+            })
+    console.log('lllllllll=======',this.state.floorId)
+        // this.getFlats(this.props.towerFloor);
+    
+        }
+        getFlats=({floor})=>{
+            console.log('7777777jjjjjj',floor)
+            if(floor){
+              return  floor.flatDetail.filter((flatRecord)=>{
+                    return flatRecord.floorId===this.state.floorId
+                }).map((selectFlat)=>{
+                    console.log('bbbbbbbbbbbbbbbbb',selectFlat)
+                    return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
+                });
+            }
+            else {
+                return []
+              }
+        }
+    
     close = () => {
         return this.props.history.replace('/superDashBoard')
     }
+    changePassword=()=>{
+          
+        return this.props.history.replace('/superDashboard/changePassword')
+      }
     render() {
         let tableData;
         tableData = <Table className="table table-bordered">
@@ -371,7 +429,14 @@ class FlatOwnerList extends Component {
                     <th style={{ width: "4%" }}></th>
                     <th style={{ textAlign: "center", width: "4%" }}>#</th>
                     <th style={{ textAlign: "center", width: "12%" }}>Profile Pic</th>
-                    <th style={{ textAlign: "center", width: "12%" }}>Name</th>
+                    <th style={{ textAlign: "center", width: "12%" }} onClick={() => {
+                            this.setState((state) => {
+                                return {
+                                    sortVal: !state.sortVal,
+                                    filterName: 'ownerName'
+                                }
+                            });
+                        }}>Name <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th style={{ textAlign: "center" }}>Contact No.</th>
                     <th style={{ textAlign: "center", width: "16%" }}>Permanent Address</th>
                     <th style={{ textAlign: "center" }}>Tower Name</th>
@@ -389,7 +454,7 @@ class FlatOwnerList extends Component {
 
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
@@ -452,6 +517,11 @@ class FlatOwnerList extends Component {
                                         <span style={{ display: this.state.emailError ? 'block' : 'none', color: 'red' }}>email is not valid</span>
                                     </FormGroup>
                                     <FormGroup>
+                                <Label>Aadhaar Number</Label>
+                                <Input placeholder='Aadhaar Number' onChange={this.onChangeHandler} name='Aadhaar' onKeyPress={this.OnKeyPresshandlerPhone} type="text" maxLength={12}/>
+                                <span className="error">{this.state.errors.Aadhaar}</span>
+                            </FormGroup>
+                                    <FormGroup>
                                         <Label>Society Name</Label>
                                         <Select options={this.getSociety(this.props.societyName)}
                                             onChange={this.societyChangeHandler.bind(this)}
@@ -486,12 +556,19 @@ class FlatOwnerList extends Component {
                                         <span className="error">{this.state.errors.tower}</span>
                                     </FormGroup >
                                     <FormGroup>
-                                        <Label>Flat Number</Label>
-                                        <Select options={this.getflat(this.props.flatList)}
-                                            onChange={this.flatChangeHandler.bind(this, 'flatDetailId')}
-                                            placeholder={PlaceHolder} />
-                                        <span className="error">{this.state.errors.flatNO}</span>
-                                    </FormGroup >
+                                <Label>Floor</Label>
+                                <Select options={this.getFloor(this.props.towerFloor)} 
+                                placeholder={PlaceHolder}
+                                onChange={this.floorChangeHandler.bind(this,'floorId')}
+                                />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Flat Number</Label>
+                                <Select options={this.getFlats(this.props.towerFloor)}
+                                    placeholder={PlaceHolder} 
+                                  onChange={this.flatChangeHandler.bind(this,'flatDetailId')}
+                                    />
+                            </FormGroup >
                                     <h3>Bank Details</h3>
                                     <FormGroup>
                                         <Label>Bank Name</Label>
@@ -542,11 +619,12 @@ function mapStateToProps(state) {
         societyName: state.societyReducer,
         Owner: state.FlatOwnerReducer,
         towerList: state.TowerDetails,
-        flatList: state.flatDetailMasterReducer,
+        // flatList: state.flatDetailMasterReducer,
+        towerFloor:state.FlatOwnerReducer,
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getOwnerList, multipleDelete, removeOwner, detailSociety, getFlatDetails, viewTower, updateFlatOwner, getOwnerMember }, dispatch)
+    return bindActionCreators({ getOwnerList, multipleDelete, removeOwner, detailSociety, getFlatDetails, viewTower, updateFlatOwner, getOwnerMember,getAllFloor }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerList);

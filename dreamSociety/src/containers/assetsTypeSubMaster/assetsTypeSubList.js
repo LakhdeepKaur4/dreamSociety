@@ -190,6 +190,10 @@ class AssetsTypeSubList extends Component {
                     this.setState({isDisabled: true});
                 }
         }
+        changePassword=()=>{
+          
+            return this.props.history.replace('/superDashboard/changePassword')
+          }
 
     render() {
         let tableData;
@@ -215,7 +219,7 @@ class AssetsTypeSubList extends Component {
                                     filterName: 'assetType'
                                 }
                             });
-                        }} style={{textAlign:"center"}}>Asset Name  <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                        }} style={{textAlign:"center"}}>Asset Name  <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th style={{textAlign:"center"}}>Assets Sub Type Name</th>
                     <th style={{textAlign:"center"}}>Description</th>
                     <th style={{textAlign:"center"}}>Actions</th>
@@ -229,7 +233,7 @@ class AssetsTypeSubList extends Component {
           onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                             <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                                 <span aria-hidden="true">&times;</span>

@@ -81,7 +81,7 @@ export function removeOwner(id){
         payload:request
     }
 }
-export function updateFlatOwner(ownerId,ownerName,
+export function updateFlatOwner(ownerId, ownerName,
     email,
     societyId,
     contact,
@@ -91,14 +91,17 @@ export function updateFlatOwner(ownerId,ownerName,
     accountHolderName,
     bankName,
     panCardNumber,
-    IFSCCode,     countryName,
+    IFSCCode, countryName,
     stateName,
     cityName,
     locationName,
     locationId,
     cityId,
     stateId,
-    countryId,gender){
+    countryId,
+    gender,floorId,Aadhaar,accountNumber){
+
+        console.log(accountNumber,'accountNumber')
         const data={ownerId,ownerName,
             email,
             societyId,
@@ -116,7 +119,7 @@ export function updateFlatOwner(ownerId,ownerName,
             locationId,
             cityId,
             stateId,
-            countryId,gender}
+            countryId,gender,accountNumber,floorId,Aadhaar}
             console.log('=============data============',data)
     const request=axios.put(`${URN}/owner/`+ownerId,data,{headers:authHeader()})
         .then(reponse=>reponse.data)
