@@ -293,6 +293,7 @@ class AddTenant extends Component{
             if(correspondingAddress === '') errors.correspondingAddress = `Corresponding Address can't be empty.`;
             if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
             if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
+            else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of digit 12.`
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -305,7 +306,9 @@ class AddTenant extends Component{
             if(accountHolderName === '') errors.accountHolderName = `Account Holder name can't be empty.`;
             if(accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
             if(panCardNumber === '') errors.panCardNumber = `Pan Card number can't be empty.`;
+            else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
             if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
+            else if(IFSCCode.length !== 11) errors.IFSCCode=`IFSC code should be of digit 11.`
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -547,13 +550,13 @@ class AddTenant extends Component{
                             <Label>Account Number</Label>
                             <Input onKeyPress={this.numberValidation} onChange={this.onChange}
                              placeholder="Account Number"
-                             type="text" className="quantity" name='accountNumber' minLength='9' maxLength='18'/>
+                             type="text" className="quantity" name='accountNumber' maxLength='18'/>
                              {<span className="error">{this.state.errors.accountNumber}</span>}
                         </FormGroup>
                         <FormGroup>
                             <Label>PAN Card Number</Label>
                             <Input placeholder="Pan Number" onChange={this.onChange}
-                             type='text' name="panCardNumber" minLength='10'
+                             type='text' name="panCardNumber"
                              value={this.state.panCardNumber.toUpperCase()}
                              maxLength='10' onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
@@ -568,7 +571,6 @@ class AddTenant extends Component{
                             <Label>IFSC Code</Label>
                             <Input placeholder="IFSC code" onChange={this.ifscChange}
                             maxLength="11"
-                            minLength='11'
                             value={this.state.IFSCCode.toUpperCase()}
                             onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
