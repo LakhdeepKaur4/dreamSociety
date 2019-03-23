@@ -32,9 +32,10 @@ export default class AccountVarification extends Component {
   
   render() {
     return (
-      <div>
+      <div >
        
           <UI>
+            <div style={{margin:"25% 0 0 30%"}}>
              <h2>Submit OTP</h2> 
              <h2 style={{color:'red'}}>{this.state.message}</h2>
         <OtpInput
@@ -45,6 +46,7 @@ export default class AccountVarification extends Component {
         />
         <span><button style={{marginTop:'10px'}} onClick={this.submit}>Submit</button></span>
         <span><button style={{marginTop:'10px', marginLeft:'4px'}}>Resend</button></span>
+        </div>
         </UI>
       </div>
       
