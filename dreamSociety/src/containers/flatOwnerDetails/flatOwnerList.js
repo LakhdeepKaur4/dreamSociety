@@ -263,7 +263,7 @@ class FlatOwnerList extends Component {
     }
     getTower = ({ tower }) => {
         if (tower) {
-            return tower.tower.map((item) => {
+            return tower.map((item) => {
                 return (
                     { ...item, label: item.towerName, value: item.towerId }
                 )

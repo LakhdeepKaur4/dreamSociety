@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getFloor ,deleteFloor, updateFloor,deleteSelectedFloor} from '../../actionCreators/floorAction';
+import { getFloor, deleteFloor, updateFloor, deleteSelectedFloor } from '../../actionCreators/floorAction';
 import { connect } from 'react-redux';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
 import '../../r-css/w3.css';
@@ -11,37 +11,38 @@ class GetFloorDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            floorName:'',
-            floorId:'',
+            floorName: '',
+            floorId: '',
             isActive: false,
             loading: false,
             isDisabled: true,
-            message:'',
+            message: '',
             menuVisible: false,
             search: '',
             modalLoading: false,
             modal: false,
             ids: [],
-            errors:{}, 
-            filterName:'floorName'
+            errors: {},
+            filterName: 'floorName',
+
         }
     }
-   
+
 
     componentWillMount() {
         this.refreshData()
-        
+
     }
 
     refreshData() {
-        this.props.getFloor().then(() => this.setState({ loading: false,  modalLoading: false, modal:false }))
-       
+        this.props.getFloor().then(() => this.setState({ loading: false, modalLoading: false, modal: false }))
+
     }
 
-    
+
     onChangeHandler = (event) => {
-        this.setState({message:'' })
-       
+        this.setState({ message: '' })
+
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -58,8 +59,8 @@ class GetFloorDetail extends Component {
         this.setState({
             floorId,
             floorName,
-         
-           
+
+
             modal: !this.state.modal
         })
     }
@@ -68,8 +69,8 @@ class GetFloorDetail extends Component {
 
 
     toggleModal = () => {
-        
-        this.setState({ modal: !this.state.modal, message:'', })
+
+        this.setState({ modal: !this.state.modal, message: '', })
     }
 
 
@@ -77,7 +78,7 @@ class GetFloorDetail extends Component {
 
     editfloorName = (e) => {
         e.preventDefault();
-    
+
         const { floorId, floorName } = this.state
 
         let errors = {};
@@ -86,25 +87,26 @@ class GetFloorDetail extends Component {
         }
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
-        
-        if (isValid &&  this.state.message === '') {
-           
-        this.props.updateFloor(floorId, floorName)
-            .then(() => this.refreshData())
-            .catch(err=>{ console.log(err.response.data.message)
-                this.setState({modalLoading:false,message: err.response.data.message})
+
+        if (isValid && this.state.message === '') {
+
+            this.props.updateFloor(floorId, floorName)
+                .then(() => this.refreshData())
+                .catch(err => {
+                    console.log(err.response.data.message)
+                    this.setState({ modalLoading: false, message: err.response.data.message })
                 })
-                if(this.state.message === ''){
-                    this.setState({modal: true})
-                }
-                else {
-                    this.setState({modal: false})
-                }
-        
-        this.setState({
-            modalLoading: true
-        })
-    }
+            if (this.state.message === '') {
+                this.setState({ modal: true })
+            }
+            else {
+                this.setState({ modal: false })
+            }
+
+            this.setState({
+                modalLoading: true
+            })
+        }
     }
 
     deleteFloorName = (floorId) => {
@@ -112,9 +114,9 @@ class GetFloorDetail extends Component {
         this.setState({ loading: true })
         this.props.deleteFloor(floorId, isActive)
             .then(() => this.refreshData())
-        this.setState({isActive: false } )
-      
-      }
+        this.setState({ isActive: false })
+
+    }
 
 
 
@@ -133,39 +135,39 @@ class GetFloorDetail extends Component {
     deleteSelected(ids) {
         this.setState({ loading: true, isDisabled: true });
         this.props.deleteSelectedFloor(ids)
-        .then(() => this.refreshData())
-        .catch(err => err.response.data.message);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-      
+            .then(() => this.refreshData())
+            .catch(err => err.response.data.message);
+
+
     }
 
-    
+
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
-        let ar =[];
-            for(var i = 0; i < selectMultiple.length; i++){
-                    ar.push(parseInt(selectMultiple[i].value));
-                    selectMultiple[i].checked = true;
-            }
-            this.setState({ids: ar});
-            if(ar.length > 0){
-                this.setState({isDisabled: false});
-            }
+        let ar = [];
+        for (var i = 0; i < selectMultiple.length; i++) {
+            ar.push(parseInt(selectMultiple[i].value));
+            selectMultiple[i].checked = true;
+        }
+        this.setState({ ids: ar });
+        if (ar.length > 0) {
+            this.setState({ isDisabled: false });
+        }
     }
 
-    unSelectAll = () =>{
-        
+    unSelectAll = () => {
+
         let unSelectMultiple = document.getElementsByClassName('SelectAll');
         let allIds = [];
-        for(var i = 0; i < unSelectMultiple.length; i++){
-                unSelectMultiple[i].checked = false
+        for (var i = 0; i < unSelectMultiple.length; i++) {
+            unSelectMultiple[i].checked = false
         }
-        
-        this.setState({ids: [ ...allIds]});
-        if(allIds.length === 0){
-            this.setState({isDisabled: true});
+
+        this.setState({ ids: [...allIds] });
+        if (allIds.length === 0) {
+            this.setState({ isDisabled: true });
         }
-        
+
     }
 
 
@@ -173,37 +175,37 @@ class GetFloorDetail extends Component {
         if (floor) {
 
             return floor.floor.sort((item1, item2) => {
-                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                var cmprVal = (item1.floorName && item2.floorName) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
-                console.log(item)
+
 
                 return (
                     <tr key={item.floorId} >
-                      <td><input type="checkbox" name="ids" className="SelectAll" value={item.floorId}
-                         onChange={(e) => {
-                            const {floorId} = item
-                            if(!e.target.checked){
-                                document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(floorId);
-                                if(indexOfId > -1){
-                                    this.state.ids.splice(indexOfId, 1);
+                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.floorId}
+                            onChange={(e) => {
+                                const { floorId } = item
+                                if (!e.target.checked) {
+                                    document.getElementById('allSelect').checked = false;
+                                    let indexOfId = this.state.ids.indexOf(floorId);
+                                    if (indexOfId > -1) {
+                                        this.state.ids.splice(indexOfId, 1);
+                                    }
+                                    if (this.state.ids.length === 0) {
+                                        this.setState({ isDisabled: true });
+                                    }
                                 }
-                                if(this.state.ids.length === 0){
-                                    this.setState({isDisabled: true});
+                                else {
+
+                                    this.setState({ ids: [...this.state.ids, floorId] });
+
+                                    if (this.state.ids.length >= 0) {
+                                        this.setState({ isDisabled: false })
+                                    }
                                 }
-                            }
-                            else {
-                      
-                                this.setState({ids: [...this.state.ids, floorId]});
-                                
-                                if(this.state.ids.length >= 0){
-                                    this.setState({isDisabled: false})
-                                }
-                            }
-                                
-                             }}/></td>
-                        <td >{index+1}</td>
+
+                            }} /></td>
+                        <td >{index + 1}</td>
                         <td>{item.floorName}</td>
                         <td>
                             <Button color="success mr-2" onClick={this.toggle.bind(this, item.floorId, item.floorName)} >Edit</Button>
@@ -226,10 +228,10 @@ class GetFloorDetail extends Component {
         return this.props.history.replace('/')
     }
 
-    
-    changePassword=()=>{ 
+
+    changePassword = () => {
         return this.props.history.replace('/superDashboard/changePassword')
-     }
+    }
 
     routeToAddNewFloor = () => {
         this.props.history.push('/superDashboard/addFloor')
@@ -256,14 +258,18 @@ class GetFloorDetail extends Component {
             <Table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th style={{width: "4%"}}></th>
+                        <th style={{ width: "4%" }}></th>
                         <th>#</th>
-                        <th onClick={()=>{
-                             this.setState((state)=>{return {sortVal:!state.sortVal,
-                                filterName:'floorName'}});
-                        }}>Floor Details 
+                        <th onClick={() => {
+                            this.setState((state) => {
+                                return {
+                                    sortVal: !state.sortVal,
+                                    filterName: 'floorName'
+                                }
+                            });
+                        }}>Floor Details
                          <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-                       
+
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -272,21 +278,21 @@ class GetFloorDetail extends Component {
 
                 </tbody>
             </Table></div>
-            let modalData=<div>
-                     <FormGroup>
-                                    <Label>Floor Type</Label>
-                                    <Input type="text" id="floorId" name="floorName" onChange={this.onChangeHandler} value={this.state.floorName} maxLength={50} onKeyPress={this.onKeyPressHandler} />
-                                    <span className="error">{this.state.errors.floorName}</span>
-                                    <span className="error">{this.state.message}</span>
-                                </FormGroup>
+        let modalData = <div>
+            <FormGroup>
+                <Label>Floor Type</Label>
+                <Input type="text" id="floorId" name="floorName" onChange={this.onChangeHandler} value={this.state.floorName} maxLength={50} onKeyPress={this.onKeyPressHandler} />
+                <span className="error">{this.state.errors.floorName}</span>
+                <span className="error">{this.state.message}</span>
+            </FormGroup>
 
 
-                                <FormGroup>
-                                    <Button color="primary mr-2" onClick={this.editfloorName}>Save</Button>
+            <FormGroup>
+                <Button color="primary mr-2" onClick={this.editfloorName}>Save</Button>
 
-                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                                </FormGroup>
-            </div>
+                <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+            </FormGroup>
+        </div>
         return (
             <div>
 
@@ -302,24 +308,24 @@ class GetFloorDetail extends Component {
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
 
-<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
-                           <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
+                        <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+                            onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+                        <Label htmlFor="allSelect" style={{ alignContent: 'baseline', marginLeft: "10px", fontWeight: "700" }}>Select All<input className="ml-2"
+                            id="allSelect"
+                            type="checkbox" onChange={(e) => {
+                                if (e.target.checked) {
+                                    this.selectAll();
+                                }
+                                else if (!e.target.checked) {
+                                    this.unSelectAll();
+                                }
                             }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></Label>
-                         {(this.state.loading) ? <Spinner /> : tableData}
+                            } /></Label>
+                        {(this.state.loading) ? <Spinner /> : tableData}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
-                            {!this.state.modalLoading  ? modalData : <Spinner />}
+                                {!this.state.modalLoading ? modalData : <Spinner />}
                             </ModalBody>
                         </Modal>
 
@@ -335,10 +341,10 @@ class GetFloorDetail extends Component {
 
 
 const mapStateToProps = (state) => {
-    console.log(state)
+
     return {
         FloorDetail: state.FloorDetail
     }
 }
 
-export default connect(mapStateToProps, { getFloor ,deleteFloor, updateFloor, deleteSelectedFloor})(GetFloorDetail);
+export default connect(mapStateToProps, { getFloor, deleteFloor, updateFloor, deleteSelectedFloor })(GetFloorDetail);

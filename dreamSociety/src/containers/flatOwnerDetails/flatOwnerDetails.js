@@ -9,7 +9,7 @@ import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
 import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
-import {addFlatOwner,getAllFloor} from '../../actionCreators/flatOwnerAction';
+import {addFlatOwner} from '../../actionCreators/flatOwnerAction';
 import {Link} from 'react-router-dom';
 
 class FlatOwnerDetails extends Component {
@@ -51,8 +51,6 @@ class FlatOwnerDetails extends Component {
             emailError:false,
             modal: false,
             loading: true,
-            Aadhaar:'',
-            floorId:'',
         }
     }
     toggles = () => {
@@ -305,7 +303,7 @@ OnKeyPresshandlerEmail=(event)=> {
             locationName,
             member,
             fileName,
-            ownerGender,Aadhaar,floorId} = this.state
+            ownerGender} = this.state
             const d = new FormData()
             console.log(this.state.profilePicture)
             d.append('profilePicture',this.state.profilePicture)        
@@ -346,8 +344,7 @@ OnKeyPresshandlerEmail=(event)=> {
                 locationId,
                 locationName,
                 ownerGender,
-                fileName,
-                Aadhaar,floorId
+                fileName
             }
            
             this.setState({loading: true})
@@ -638,7 +635,7 @@ function mapStateToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner,getAllFloor}, dispatch)
+    return bindActionCreators({detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerDetails);
 

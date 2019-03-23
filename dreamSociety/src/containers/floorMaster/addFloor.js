@@ -10,8 +10,9 @@ class AddFloor extends Component {
         super(props);
         this.state = {
             floorName: '',
-            errorMessage:'',
-            loading: false
+            message:'',
+            loading: false,
+            errors:{}
         }
     }
 
@@ -30,14 +31,31 @@ class AddFloor extends Component {
     }
 
     floorChangeHandler = (event) => {
-        this.setState({ [event.target.name]: event.target.value,errorMessage:'' })
-        console.log(this.state);
+        this.setState({message:'' })
+       
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value, errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value });
+        };
     }
 
     addFloor = (event) => {
-        this.setState({loading:true});
         event.preventDefault();
-        console.log(this.state)
+
+        let errors={};
+        if(this.state.floorName===''){
+            errors.floorName="Floor can't be empty";
+        }
+
+        this.setState({errors});
+        const isValid=Object.keys(errors).length === 0;
+
+        if(isValid){
+        this.setState({loading:true})
         let { floorName } = this.state
          this.props.postFloor({ floorName })
         .then(() => {
@@ -45,8 +63,9 @@ class AddFloor extends Component {
         })
         .catch(error=>{
             console.log(error.response.data);
-            this.setState({errorMessage:error.response.data.message,loading:false});
+            this.setState({message:error.response.data.message,loading:false});
         })
+    }
     }
 
     render() {
@@ -55,7 +74,8 @@ class AddFloor extends Component {
             <FormGroup>
                 <Label>Add Floor</Label>
                 <Input type="text" name="floorName" onChange={this.floorChangeHandler} placeholder="Add Floor" />
-                {this.state.errorMessage ? <span className='error'>{this.state.errorMessage}</span>:''}
+                {this.state.message ? <span className='error'>{this.state.message}</span>:''}
+                <span className="error">{this.state.errors.floorName}</span>  
             </FormGroup>
             <FormGroup>
                 <Button color="success" className="mr-2">Add</Button>

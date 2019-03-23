@@ -196,11 +196,11 @@ class TenantMemberDetail extends Component {
     }
 
     changeHandler = (e) => {
-        this.setState({[e.target.name]:e.target.value})
+        this.setState({[e.target.name]:e.target.value.trim()})
     }
 
     addNewMemberChange = (e) => {
-        this.setState({[e.target.name]:e.target.value})
+        this.setState({[e.target.name]:e.target.value.trim()})
         console.log(this.state)
     }
 
@@ -379,7 +379,7 @@ class TenantMemberDetail extends Component {
         let editForm = <div>
             <FormGroup>
                 <Label>Member Name</Label>
-                <Input name="memberName" value={this.state.memberName} onChange={this.changeHandler} />
+                <Input name="memberName" value={this.state.memberName} maxLength="70" onChange={this.changeHandler} />
                 {!this.state.memberName ? <span className="error">{this.state.errors.memberName}</span> : ''}
             </FormGroup>
             <FormGroup>

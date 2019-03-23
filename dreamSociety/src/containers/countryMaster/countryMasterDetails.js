@@ -29,7 +29,7 @@ class CountryDetails extends Component{
                 editUserModal: false,
                  menuVisible: false,
                  search: '',
-                 errors:'',
+                 errors:{},
                  filterName:"countryName",
                  
         }
@@ -47,7 +47,8 @@ class CountryDetails extends Component{
     toggleEditUserModal() {
         this.setState({
           editUserModal: ! this.state.editUserModal,
-          message: ''
+          message: '',
+          errors:{}
         });
       }
 
@@ -217,13 +218,13 @@ class CountryDetails extends Component{
             event.preventDefault();
         }
     }
-    // onKeyPressCode=(event)=>{
-    //     const pattern = /^[A-Z ]+$/;
-    //     let inputChar = String.fromCharCode(event.charCode);
-    //     if (!pattern.test(inputChar)) {
-    //         event.preventDefault();
-    //     }
-    // }
+    onKeyPressCode=(event)=>{
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
@@ -327,7 +328,7 @@ class CountryDetails extends Component{
                                         name="code"
                                         value={this.state.code}
                                         maxLength='3'
-                                        // onKeyPress={this.onKeyPressCode}
+                                        onKeyPress={this.onKeyPressCode}
                                         onChange={this.onChangeCountry} />
                                          <span  className='error'>{this.state.errors.code}</span>
                                 </FormGroup>

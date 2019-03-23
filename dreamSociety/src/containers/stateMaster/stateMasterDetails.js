@@ -14,7 +14,7 @@ class flatMasterDetails extends Component {
    constructor(props){
       super(props);
     this.state = {
-             ids:[],
+            ids:[],
             stateId:'',
             countryId:'',
             countryName:'',
@@ -50,7 +50,8 @@ class flatMasterDetails extends Component {
     toggleEditUserModal() {
         this.setState({
           editUserModal: ! this.state.editUserModal,
-          message: ''
+          message: '',
+          errors:{}
         });
       }
     

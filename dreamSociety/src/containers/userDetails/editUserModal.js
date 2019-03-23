@@ -16,7 +16,7 @@ const editUserModal = (props) => {
 
             <FormGroup>
                 <Label for="firstName">First Name</Label>
-                <Input id="firstName" onKeyPress={props.NameKeyPress} maxLength='25'
+                <Input id="firstName" onKeyPress={props.NameKeyPress} maxLength='40'
                     minLength='3' name={props.firstNameInputName} value={props.firstNameValue} onChange={props.firstNameValueChange} />
                 {!props.firstNameValue ? <span className="error">{props.firstNameError}</span> : null}
             </FormGroup>
@@ -24,7 +24,7 @@ const editUserModal = (props) => {
                 <Label for="lastName">Last Name</Label>
                 <Input id="lastName" name={props.lastNameInputName} 
                 onKeyPress={props.NameKeyPress}
-                maxLength='25'
+                maxLength='40'
                 minLength='3'
                 value={props.lastNameValue} onChange={props.lastNameValueChange} />
                 {!props.lastNameValue ? <span className="error">{props.lastNameError}</span> : null}
@@ -33,7 +33,7 @@ const editUserModal = (props) => {
                 <Label for="Username">Username</Label>
                 <Input id="Username"
                 onChange={props.userNameChange}
-                maxLength='25'
+                maxLength='40'
                 minLength='3'
                 name={props.userNameInputName} value={props.userNameValue} onChange={props.userNameValueChange} />
                 {!props.userNameValue ? <span className="error">{props.userNameError}</span> : null}
@@ -42,7 +42,7 @@ const editUserModal = (props) => {
             <FormGroup>
                 <Label for="email">Email</Label>
                 <Input type="email" name="email" id="email"
-                 maxLength='40'
+                 maxLength='70'
                  minLength='6'
                  value={props.emailValue}
                  onKeyPress={props.emailKeyPress}
