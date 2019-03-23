@@ -231,37 +231,36 @@ class displayPersonDetails extends Component {
 
                                         return (
                                                 <tr key={item.userId}>
-                                                        <td><input type="checkbox" name="ids" value={item.eventId} className="SelectAll"
-                                                                onChange={(e, i) => {
-                                                                        const { userId } = item
-                                                                        if (!e.target.checked) {
-                                                                                if (this.state.ids.length > -1) {
-                                                                                        document.getElementById('allSelect').checked = false;
-                                                                                        let indexOfId = this.state.ids.indexOf(userId);
-                                                                                        if (indexOfId > -1) {
-                                                                                                this.state.ids.splice(indexOfId, 1)
-                                                                                        }
-                                                                                        if (this.state.ids.length === 0) {
-                                                                                                this.setState({ isDisabled: true })
-                                                                                        }
-                                                                                }
-                                                                        }
-                                                                        else {
-                                                                                this.setState({ ids: [...this.state.ids, userId] })
-                                                                                if (this.state.ids.length >= 0) {
-                                                                                        this.setState({ isDisabled: false })
-                                                                                }
-                                                                        }
-                                                                }} /></td>
+                                                <td><input type="checkbox" name="ids" className="SelectAll" value={item.userId}
+                                                onChange={(e) => {
+                                                   const {userId} = item
+                                                   if(!e.target.checked){
+                                                       document.getElementById('allSelect').checked=false;
+                                                       let indexOfId = this.state.ids.indexOf(userId);
+                                                       if(indexOfId > -1){
+                                                           this.state.ids.splice(indexOfId, 1);
+                                                       }
+                                                       if(this.state.ids.length === 0){
+                                                           this.setState({isDisabled: true});
+                                                       }
+                                                   }
+                                                   else {
+                                                       this.setState({ids: [...this.state.ids, userId]});
+                                                       if(this.state.ids.length >= 0){
+                                                           this.setState({isDisabled: false})
+                                                       }
+                                                   }
+                                                       
+                                                    }}/></td>
                                                         <td>{index + 1}</td>
                                                         <td>{item.userName}</td>
                                                         <td>{item.email}</td>
-                                                        <td>{item.tower_master.towerName}</td>
+                                                        <td>{item.tower_master?item.tower_master.towerName:''}</td>
 
-                                                        <td>{item.roles.map((i) => {
+                                                        <td>{item.roles?item.roles.map((i) => {
                                                                 currentRole = i.roleName
                                                                 return currentRole
-                                                        })}</td>
+                                                        }):''}</td>
                                                         {/* <td>{item.flatName}</td> */}
                                                         <td>{item.familyMember}</td>
                                                         <td>{item.parking}</td>
@@ -320,26 +319,15 @@ class displayPersonDetails extends Component {
                         this.setState({ isDisabled: true });
                 }
         }
-        deleteSelected(ids) {
-                this.setState({
-                        loading: true,
-                        isDisabled: true
-                });
-                if (window.confirm('Are You Sure ?')) {
-                        this.props.deleteMultiplePerson(ids)
-                                .then(() => {
-                                        this.props.viewPerson()
-                                                .then(() => this.setState({ loading: false }))
-                                })
-                                .catch(err => err.response.data.message);
-                }
-                else {
-                        this.props.viewPerson()
-                                .then(() => this.setState({ loading: false }))
-                }
-        }
 
 
+        deleteSelected(ids){
+                this.setState({loading:true,
+                isDisabled:true});
+                this.props.deleteMultiplePerson(ids)
+                .then(() => this.refreshData())
+                .catch(err => err.response.data.message);
+            }
 
         render() {
                 let tableData;

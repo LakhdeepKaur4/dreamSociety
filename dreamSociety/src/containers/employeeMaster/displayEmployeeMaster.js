@@ -204,29 +204,57 @@ ImageChange =(event)=>{
     }
 
     updateEmployee = (employeeId) => {
-        // console.log(employeeId,  "employeeId")
-        console.log("picture",this.state.profilePicture);
-        // console.log(this.state.documentOne, this.state.documentTwo, this.state.profilePicture, this.state.locationId, "documents");
-        // let errors = {};
-        // const {firstName,middleName,lastName,CTC}=this.state;
-        // if(!this.state.firstName){
-        //     errors.firstName= "first Name can't be empty. Please select."
-        // }
-        // if(!this.state.middleName){
-        //     errors.middleName= "middle Name can't be empty. Please select."
-        // }
-        // if(!this.state.lastName){
-        //     errors.lastName= "last Name can't be empty. Please select."
-        // }
-        // if(!this.state.CTC){
-        //     errors.CTC= "CTC can't be empty. Please select."
-        // }
-        // this.setState({ errors });
+        let errors ={};
+        // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
+       
+        if(!this.state.countryName){
+          errors.countryName = "Country Name  can't be empty. "
+         }
+         if(!this.state.stateName){
+          errors.stateName ="State Name can't be empty. "
+         }
+          if(!this.state.cityName){
+          errors.cityName ="City Name can't be empty."
+         }
+         if(!this.state.locationName){
+          errors.locationName ="Location Name can't be empty."
+         }
+         if(!this.state.documentOne){
+          errors.documentOne ="please select an ID."
+         }
+         if(!this.state.documentTwo){
+            errors.documentTwo ="please select an ID"
+         }
+         if(!this.state.profilePicture){
+          errors.profilePicture =" Profile picture can't be empty."
+         }
+         if(!this.state.firstName){
+         errors.firstName ="First Name can't be empty. "
+         }
+       
+         if(!this.state.lastName){
+       errors.lastName ="Last Name can't be empty."
+         }
+         if(!this.state.salary){
+            errors.salary ="salary can't be empty."
+              }
+              if(!this.state.address){
+                errors.address ="Address can't be empty."
+                  }
+         if(!this.state.startDate){
+          errors.startDate =" Start Date can't be empty ."
+         }
+         if(!this.state.endDate){
+         errors.endDate ="End Date can't be empty."
+         }
+         if(!this.state.CTC){
+        errors.CTC ="CTC can't be empty."
+         }
+         const data = new FormData() 
 
-        // const isValid = Object.keys(errors).length === 0
-    
-        // // const isValid = this.validate();
-        // if (isValid) {
+  this.setState({ errors });
+  const isValid = Object.keys(errors).length === 0
+  if (isValid) {        
      
         const data = new FormData()
         data.append('documentOne', this.state.documentOne)
@@ -252,7 +280,7 @@ ImageChange =(event)=>{
         })
 
     }
-// }
+}
 
     deleteEmployee(employeeId) {
         this.setState({ loading: true })
@@ -370,24 +398,14 @@ ImageChange =(event)=>{
         }
     }
    
-    deleteSelected(ids) {
-        this.setState({
-            loading: true,
-            isDisabled: true
-        });
-        if (window.confirm()) {
-            this.props.deleteMultipleEmployee(ids)
-                .then(() => {
-                    this.props.ViewEmployee()
-                        .then(() => this.setState({ loading: false }))
-                })
-                .catch(err => err.response.data.message);
-        }
-        else {
-            this.props.ViewEmployee()
-                .then(() => this.setState({ loading: false }))
-        }
+    deleteSelected(ids){
+        this.setState({loading:true,
+        isDisabled:true});
+        this.props.deleteMultipleEmployee(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
     }
+
     addEmployee =()=>{
 
         this.props.history.push('/superDashboard/employee')
@@ -507,7 +525,11 @@ ImageChange =(event)=>{
              
          }
      }
-     
+     logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
     
      locationName=({locationResult})=>{
         if(locationResult){
@@ -614,9 +636,9 @@ ImageChange =(event)=>{
                                   <Label > Salary</Label>
                                   <Input name="salary" value={this.state.salary}
                                       onChange={this.onChange}
-
-                                      onKeyPress={this.OnKeyPresshandler}
-
+                                       maxLength={20}
+                                      
+                                             
                                   />
                                    <span  className="error" >{this.state.errors.salary}</span>
                                    </FormGroup>
@@ -735,7 +757,7 @@ ImageChange =(event)=>{
             onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
         return (
             <div>
-                <UI  change={this.changePassword}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
