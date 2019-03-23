@@ -84,7 +84,10 @@ class SizeMaster extends Component {
 push=()=>{
     this.props.history.push('/superDashboard/display-size')
 }
-   
+changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+ }
+
    
     size=()=>{
         this.props.history.push('/superDashboard/display-size')
@@ -132,7 +135,7 @@ push=()=>{
                      
             
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change ={this.changePassword}>
                         
        {form}
            

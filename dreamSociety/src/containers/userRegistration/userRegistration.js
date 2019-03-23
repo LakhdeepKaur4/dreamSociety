@@ -23,7 +23,6 @@ class Registration extends Component {
             email: "",
             familyMember:"",
             parking:"",
-            floor:"",
             towerId: "",
             contact: "",
             password: "",
@@ -121,18 +120,17 @@ class Registration extends Component {
         if(!this.state.towerId){
             errors.towerId = "Tower can't be empty. Please select."
         }
-        if(this.state.floor === '') errors.floor = "Floor can't be empty."
         if(this.state.parking === '') errors.parking = "Parking can't be empty."
 
         if (this.state.firstName === '') errors.firstName = "First Name can't be empty.";
         else if (this.state.firstName.length < 2) errors.firstName = "First name can't be less than four."
-
         if (this.state.lastName === '') errors.lastName = "Last name can't be empty";
         else if (this.state.lastName.length < 2) errors.lastName = "Last name can't be less than two.";
         if(this.state.familyMember === '') errors.familyMember="Family Member can't be empty."
         if (this.state.userName === '') errors.userName = "User Name can't be empty.";
         if (this.state.email === '') errors.email = "Email can't be empty.";
         if (this.state.contact === '') errors.contact = "Contact can't be empty.";
+        else if(this.state.contact.length !== 10) errors.contact = "Contact length should be of 10."
         if (this.state.password === '') errors.password = "Password can't be empty.";
         else if (this.state.password !== this.state.passwordConfirmation) errors.passwordConfirmation = `Password doesn't match.`
 
@@ -191,7 +189,7 @@ class Registration extends Component {
     fetchTowers({tower}){
         if(tower){
             return (
-                tower.map((item) => {
+                tower.tower.map((item) => {
                     return (
                         <option value={item.towerId} key={item.towerId}>
                             {item.towerName}
@@ -214,7 +212,9 @@ class Registration extends Component {
         return this.props.history.replace('/superDashBoard');
     }
 
-
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
 
     render() {
         let formData;
@@ -255,10 +255,6 @@ class Registration extends Component {
                 parkingValue={this.state.parking}
                 parkingChange={this.onChange}
                 parkingError={this.state.errors.parking}
-                floorInputName="floor"
-                floorValue={this.state.floor}
-                floorError={this.state.errors.floor}
-                floorChange={this.onChange}
                 towerInputName = "towerId"
                 fetchingTower={this.fetchTowers(this.props.TowerDetails)}
                 towerValue={this.state.towerId}
@@ -285,7 +281,7 @@ class Registration extends Component {
         
         return (
         <div>
-            <UI onClick={this.logout}>
+            <UI onClick={this.logout} change={this.changePassword}>
                 <div>
                     <Form onSubmit={this.submit} method="POST">
                     <div>

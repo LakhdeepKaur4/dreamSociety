@@ -27,7 +27,8 @@ class DisplayEmployeeTypeMaster extends Component {
          ids: [],
         isDisabled: true,
         errors:{},
-        filterName:"serviceType"
+        filterName:"serviceType",
+        modalLoading:false
     }
     componentDidMount() {
 
@@ -37,7 +38,7 @@ class DisplayEmployeeTypeMaster extends Component {
 
   
     refreshData() {
-        this.props.getEmployee().then(() => this.setState({ loading: false }));
+        this.props.getEmployee().then(() => this.setState({ loading: false,modalLoading:false,editEmployeeModal:false }));
         this.props.getEmployeeType().then(() => this.setState({ loading: false }));
         this.props.getEmployeeWorkType().then(() => this.setState({ loading: false }));
         console.log("123", this.props.getEmployee())
@@ -96,7 +97,7 @@ class DisplayEmployeeTypeMaster extends Component {
 
 
         this.setState({
-            editEmployeeModal: false, loading: true
+         modalLoading: true
         })
     }
     }
@@ -256,6 +257,11 @@ searchFilter(search) {
         }
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
+
     render() {
         let tableData;
         tableData =
@@ -275,30 +281,9 @@ searchFilter(search) {
                     {this.getEmployee(this.props.employeeDetails)}
                 </tbody>
             </Table>
-        let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
-            onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
-        return (
 
-
-
-            <div>
-
-                <UI onClick={this.logout}>
-
-                    <div className="w3-container w3-margin-top w3-responsive">
-                        <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
-                            <span aria-hidden="true">&times;</span>
-                        </div>
-                        <div className="top-details" >
-                            <h3 align="center"> Employee Details</h3>
-                            <Button color="primary" onClick={this.addEmployee} > Add Employee</Button>
-                        </div>
-                        <Modal isOpen={this.state.editEmployeeModal} toggle={this.toggleEditEmployeeModal.bind(this)}>
-                            <ModalHeader toggle={this.toggleEditEmployeeModal.bind(this)}>Edit  Employee Details</ModalHeader>
-                            <ModalBody>
-
-
-                                <FormGroup>
+            let modalData =<div>
+                       <FormGroup>
                                     <Label for="eventType"> Service Type</Label>
                                     <Input name="serviceType" value={this.state.serviceType}
                                         onChange={this.onChange}
@@ -343,6 +328,31 @@ searchFilter(search) {
                                 </FormGroup>
 
 
+            </div>
+        let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
+            onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
+        return (
+
+
+
+            <div>
+
+                <UI onClick={this.logout}  change={this.changePassword}>
+
+                    <div className="w3-container w3-margin-top w3-responsive">
+                        <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                            <span aria-hidden="true">&times;</span>
+                        </div>
+                        <div className="top-details" >
+                            <h3 align="center"> Employee Details</h3>
+                            <Button color="primary" onClick={this.addEmployee} > Add Employee</Button>
+                        </div>
+                        <Modal isOpen={this.state.editEmployeeModal} toggle={this.toggleEditEmployeeModal.bind(this)}>
+                            <ModalHeader toggle={this.toggleEditEmployeeModal.bind(this)}>Edit  Employee Details</ModalHeader>
+                            <ModalBody>
+
+
+                                                {!this.state.modalLoading?modalData:<Spinner/>}
                                 <Button color="primary" className="mr-2" onClick={this.updateEmployee}>Save</Button>
                                 <Button color="danger" onClick={this.toggleEditEmployeeModal.bind(this)}>Cancel</Button>
 

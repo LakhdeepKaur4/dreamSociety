@@ -314,6 +314,11 @@ if(location){
   displayEmployee=()=>{
       this.props.history.push('/superDashboard/displayEmployee');
   }
+
+  changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+ }
+
 render(){
 let form;
 <Spinner/>
@@ -363,7 +368,7 @@ form=
         <span className="error">{this.state.errors.salary}</span>
     </div>
     <div  className="row">
-                    <div className="col-md-3">
+                    <div className="col-md-6">
                             <label>Country Name</label>
                            <select   className ="form-control" name="countryName"         defaultValue='no-value' onChange={this.onChangeCountry} >
                         <    DefaultSelect/> 
@@ -374,7 +379,7 @@ form=
 
 
 
-                    <div className="col-md-3">    
+                    <div className="col-md-6">    
                         <label>State Name</label>
                         <select  className ="form-control"  defaultValue='no-value'  name="stateName" onChange={this.onChangeState}>
                                <DefaultSelect/>
@@ -382,8 +387,9 @@ form=
                         </select>
                         <span className="error">{this.state.errors.stateId}</span>
                     </div>
-
-                      <div  className="col-md-3">    
+                          </div>
+                          <div className="row">    
+                      <div  className="col-md-6">    
                         <label>City Name</label>
                         <select  className ="form-control" defaultValue='no-value'  name="cityName" onChange={this.onChangeCity} >
                             <DefaultSelect/>
@@ -391,7 +397,7 @@ form=
                         </select>
                         <span className="error">{this.state.errors.cityId}</span>
                      </div>
-                     <div  className="col-md-3" >    
+                     <div  className="col-md-6" >    
                         <label>location</label>
                         <select  className ="form-control" defaultValue='no-value' onChange={this.onLocationChange} >
                              <DefaultSelect/>
@@ -409,7 +415,7 @@ form=
               </div>
 
 
-        <div className="form-group col-md-6 col-sm-6">
+        <div className="form-group">
           <label> Employment  Date</label>
           <input
             type="date"
@@ -452,8 +458,8 @@ form=
 // }
 
     return(
-        <div>
-            <UI>
+        <div  >
+            <UI  change={this.changePassword}>
           {form}
         </UI>
         </div>

@@ -107,6 +107,9 @@ if (isValid) {
     
     this.props.history.push('/superDashboard/displayEmployeeType')
 }
+changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+ }
 
 
 
@@ -151,7 +154,7 @@ else if(this.submit){
 
     return(
       <div>
-          <UI>
+          <UI  change={this.changePassword}>
               {form1}
           </UI>
 

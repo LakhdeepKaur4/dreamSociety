@@ -81,7 +81,7 @@ class AddTenant extends Component{
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]:e.target.value,messageContactErr:''});
+        this.setState({[e.target.name]:e.target.value.trim(),messageContactErr:''});
         console.log(this.state);
     }
 
@@ -91,7 +91,7 @@ class AddTenant extends Component{
 
     getTower = ({ tower }) => {
         if (tower) {
-            return tower.map((item) => {
+            return tower.tower.map((item) => {
                 return (
                     { ...item, label: item.towerName, value: item.towerId }
                 )
@@ -129,13 +129,13 @@ class AddTenant extends Component{
         });
     }
 
-    fetchFlatDetail = ({getFlatDetail}) => {
+    fetchFloorDetail = ({getFlatDetail}) => {
         console.log(getFlatDetail)
-        if(getFlatDetail && getFlatDetail.owner){
+        if(getFlatDetail){
             console.log(getFlatDetail)
-            return getFlatDetail.owner.map((item) => {
+            return getFlatDetail.tower.Floors.map((item) => {
             return (
-                <option value={item.flatDetailId} key={item.flatDetailId}>{item.flatNo}</option>
+                <option value={item.floorId} key={item.floorId}>{item.floorName}</option>
             )
             })
         }
@@ -187,11 +187,12 @@ class AddTenant extends Component{
             
     }
     onSubmit = (e) => {
+        this.setState({loading: true})
         console.log(this.state.societyId)
         e.preventDefault()
         let { tenantName, dob, gender, email, contact, profilePicture, aadhaarNumber, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, member, fileName, societyId, towerName, towerId } = this.state;
+            societyName, member, fileName, societyId, towerName, towerId, floorId } = this.state;
         console.log(this.state)
         
         let data;
@@ -209,11 +210,11 @@ class AddTenant extends Component{
         
         console.log(tenantName, dob, gender,aadhaarNumber, email, contact, profilePicture, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, societyId, member, towerName, fileName, towerId);
+            societyName, societyId, member, towerName, fileName, towerId, floorId);
 
         const data1 = {tenantName, dob, gender,aadhaarNumber, email, contact, profilePicture, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, societyId, member, towerName, fileName, towerId}
+            societyName, societyId, member, towerName, fileName, towerId, floorId}
 
         if(this.state.imageSizeError === '' && this.state.messageContactErr==='' && this.state.messageEmailErr===''){
             this.props.addTenantDetail(data1)
@@ -297,10 +298,11 @@ class AddTenant extends Component{
         if(this.state.step === 3){
             this.setState({ step: this.state.step + 1 })
         }
-        const { towerId, flatDetailId } = this.state;
+        const { towerId, floorId, flatDetailId } = this.state;
         if(this.state.step === 4){
             if(towerId === '') errors.towerId = `Please select Tower.`;
-            if(flatDetailId === '') errors.flatDetailId = `Please select a flat.`;
+            if(floorId === '') errors.floorId = `Please select a Floor.`;
+            if(flatDetailId === '') errors.flatDetailId = `Please select a Flat.`;
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -337,6 +339,10 @@ class AddTenant extends Component{
             event.preventDefault();
         }
     }
+
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
     
     bankValidation(e){
         const pattern = /^[a-zA-Z0-9_, ]+$/;
@@ -346,48 +352,73 @@ class AddTenant extends Component{
         }
     }
 
+    fetchFlatDetail = ({getFlatDetail}) => {
+        console.log(getFlatDetail)
+        console.log(this.state.floorId)
+        if(getFlatDetail){
+            console.log(getFlatDetail.flatDetail)
+            
+             return getFlatDetail.flatDetail.filter((i) => {
+                
+                return this.state.floorId == i.floorId
+            }).map((item) => {
+                if(item){
+                    return (
+                        <option value={item.flatDetailId} key={item.flatDetailId} >{item.flatNo}</option>
+                    )
+                }
+            })
+        }
+    }
+
+    floorChange = (e) => {
+        this.setState({floorId:e.target.value})
+        
+    }
+
     render(){
         
         let userDatas = [];
         for (let i = 0; i < this.state.noOfMembers; i++) {
             userDatas.push(<FormGroup key={i}>
                 <Row form>
-                    <Col md={4}>
+                    <Col md={6}>
                         <Label>Name</Label>
                         <Input placeholder="Name Of Member"
                         onKeyPress={this.OnKeyPressUserhandler}
                          name = {`memberName${i}`} onChange={this.memberDetailChange} 
                         className="input" />
                     </Col>
-                    <Col md={5}>
+                    <Col md={6}>
                         <Label>Relation With Owner</Label>
                         <Select name={`relationId${i}`} options={this.getRelationList(this.props.relationList)} 
                           onChange={this.relationHandler.bind(this,'relationId'+i )}  required/>
                     </Col>
-                    <Col md={3} style={{display: 'flex'}}>
-                    <Label>Gender: </Label>
-                        <Col md={1}>
-                            <Label>M</Label>
-                            <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange} 
-                            type="radio" value="Male"  required />
-                        </Col>
-                        <Col md={1}>
-                            <Label>F</Label>
-                            <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange}
-                             type="radio" value="Female" />
-                        </Col>
-                        <Col md={1}>
-                            <Label>O</Label>
-                            <Input name={`gender${i}`} style={{margin: '0px'}} onChange={this.memberDetailChange} 
-                            type="radio" value="Other" />
-                        </Col>
+                    <Col md={12} style={{marginTop:'20px', marginBottom:'20px'}}>
+                        <Label>Gender:</Label>
+                        <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
+                        <span><Input name={`gender${i}`} onChange={this.memberDetailChange}
+                                        type="radio" value="Female" /></span>
+                        
+                        
+                        <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
+                        <span><Input name={`gender${i}`} onChange={this.memberDetailChange}
+                                        type="radio" value="Female"/></span>
+                        
+                        
+                        <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
+                        <span><Input type="radio" onKeyPress={this.OnKeyPressUserhandler}
+                                    name = {`memberName${i}`} onChange={this.memberDetailChange} 
+                                    className="input"/></span>
                     </Col>
                     <Col md={12}>
                         <Label>Date of Birth</Label>
                         <Input type="date" max={this.maxDate()}  name={`memberDob${i}`} onChange={this.memberDetailChange} />
                     </Col>
                 </Row>
-            </FormGroup>);
+            </FormGroup>
+
+            );
         }
 
         let formData = <div>
@@ -407,27 +438,21 @@ class AddTenant extends Component{
                              {!this.state.dob ? <span className="error">{this.state.errors.dob}</span> : ''}
                         </FormGroup>
                         <FormGroup>
-                            <div style={{display: 'flex'}}>
-                            <Label>Gender: </Label>
-                            <Col md={3} style={{display: 'flex'}}>
-                                <Col md={1}>
-                                    <Label>M</Label>
-                                    <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio" value="Male" />
-                                </Col>
-                                <Col md={1}>
-                                    <Label>F</Label>
-                                    <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio" value="Female" />
-                                </Col>
-                                <Col md={1}>
-                                    <Label>O</Label>
-                                    <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio" value="Other" />
-                                </Col>
-                            </Col>
+                            <div>
+                                <Label>Gender:</Label>
+                                <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
+                                <span><Input type="radio" id="Gender1" name="gender" onChange={this.onChange} value="Male"/></span>
+                                
+                                
+                                <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
+                                <span><Input type="radio" id="Gender2" name="gender" onChange={this.onChange} value="Female"/></span>
+                                
+                                
+                                <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
+                                <span><Input type="radio" id="Gender3" name="gender" onChange={this.onChange} value="Other"/></span>
                             </div>
-                            <div style={{marginTop:'20px'}}>
-                            {!this.state.gender ? <span className="error">
-                                {this.state.errors.gender}
-                            </span> : ''}
+                            <div>
+                                {!this.state.gender ? <span className="error">{this.state.errors.gender}</span> : ''}
                             </div>
                         </FormGroup>
                         <FormGroup>
@@ -456,16 +481,6 @@ class AddTenant extends Component{
                                 {this.state.errors.aadhaarNumber}
                             </span> : ''}
                         </FormGroup>
-                        {/* <FormGroup>
-                            <Label>Society Name</Label>
-                            <Select placeholder="Society Name"
-                             options={this.getSociety(this.props.societyReducer)}
-                                onChange={this.societyChangeHandler.bind(this)}
-                                     />
-                            {!this.state.societyId ? <span className="error">
-                                {this.state.errors.societyId}
-                            </span> : ''}
-                        </FormGroup> */}
                         <FormGroup>
                             <Label>Corresponding Address</Label>
                             <Input type="textarea" onChange={this.onChange} maxLength="250"
@@ -559,12 +574,21 @@ class AddTenant extends Component{
                             {!this.state.towerId ? <span className="error">{this.state.errors.towerId}</span> : ''}
                         </FormGroup >
                         <FormGroup>
+                            <Label>Floor</Label>
+                            <Input defaultValue="no-value"
+                            type='select' name="floorId" onChange = {this.floorChange}  >
+                            <DefaultSelect />
+                            {/* {this.getFlats(this.props.tenantReducer)} */}
+                            {this.fetchFloorDetail(this.props.tenantReducer)}
+                            </Input>
+                            {!this.state.floorId ? <span className="error">{this.state.errors.floorId}</span> : ''}
+                        </FormGroup>
+                        <FormGroup>
                             <Label>Flat No.</Label>
                             <Input onKeyPress={this.numberValidation} onChange={this.flatChangeHandler}
                              placeholder="Flat No." defaultValue="no-value"
                             type='select' name="flatDetailId" >
                             <DefaultSelect />
-                            {/* {this.getFlats(this.props.tenantReducer)} */}
                             {this.fetchFlatDetail(this.props.tenantReducer)}
                             </Input>
                             {!this.state.flatDetailId ? <span className="error">{this.state.errors.flatDetailId}</span> : ''}
@@ -585,14 +609,14 @@ class AddTenant extends Component{
                     </div>
                     <div>
                         <Button color="primary" className="mr-2" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
-                        <Button color="primary" id="nextBtn" style={{ display: this.state.step == 5 ? 'none' : 'inline-block' }} disabled={this.state.step == 5} onClick={this.nextPrev}>Next</Button>
-                        <Button color="success" className="mr-2" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
-                        <Button color="danger" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }} onClick={this.routeToDetail}>Cancel</Button>
+                        <Button color="primary"className="mr-2" id="nextBtn" style={{ display: this.state.step == 5 ? 'none' : 'inline-block' }} disabled={this.state.step == 5} onClick={this.nextPrev}>Next</Button>
+                        <Button color="success"  style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
+                        <Button color="danger" onClick={this.routeToDetail}>Cancel</Button>
                     </div>
         </div>
 
         return(
-            <UI onClick={this.logout}>
+            <UI onClick={this.logout} change={this.changePassword}>
                 <Form onSubmit={this.onSubmit} method="post">
                     <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                         <span aria-hidden="true">&times;</span>

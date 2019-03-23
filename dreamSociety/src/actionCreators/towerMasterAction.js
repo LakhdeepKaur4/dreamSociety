@@ -36,11 +36,10 @@ export function deleteTower(towerId,isActive){
     }
 }
 
-export function updateTower(towerId,towerName,floors){
-    console.log(towerId,towerName,floors)
+export function updateTower(towerId,towerName){
     const request =
-    axios.put(`${URN}/towerFloor/update/` +towerId, {
-      towerName,floors
+    axios.put(`${URN}/tower/` +towerId, {
+      towerName
     }, { headers: authHeader() }).then() 
     return{
         type:UPDATE_TOWER,

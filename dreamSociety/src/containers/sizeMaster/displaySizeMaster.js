@@ -192,6 +192,11 @@ else {
 
 }
 
+changePassword=()=>{ 
+  return this.props.history.replace('/superDashboard/changePassword')
+}
+
+
   logout=()=>{
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');
@@ -264,6 +269,19 @@ selectAll = () => {
     </tbody>
 
   </Table>
+
+  let modalData =<div>
+        <FormGroup>
+                  <Label for="lastName"> Size Type</Label>
+                  <Input id="sizeType" name ="sizeType" value={this.state.sizeType} onChange={this.onChange}
+                  
+                  onKeyPress ={ this.OnKeyPresshandle}   maxLength={20}
+                   />
+                     <span className="error">{this.state.errors.sizeType}</span> 
+                     <span className="error">{this.state.message} </span>  
+                </FormGroup>
+
+  </div>
    if(!this.props.SizeDetails.getSize){
     tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching details</Spinner></div>
   }
@@ -273,7 +291,7 @@ selectAll = () => {
      
 
       <div>
-        <UI onClick={this.logout}>
+        <UI onClick={this.logout} change ={this.changePassword}>
 
           
           <div className ="w3-container w3-margin-top w3-responsive">
@@ -289,16 +307,7 @@ selectAll = () => {
               <ModalBody>
 
 
-                <FormGroup>
-                  <Label for="lastName"> Size Type</Label>
-                  <Input id="sizeType" name ="sizeType" value={this.state.sizeType} onChange={this.onChange}
-                  
-                  onKeyPress ={ this.OnKeyPresshandle}   maxLength={20}
-                   />
-                     <span className="error">{this.state.errors.sizeType}</span> 
-                     <span className="error">{this.state.message} </span>  
-                </FormGroup>
-
+            {!this.state.modalLoading?modalData:<Spinner/>}
 
              
              
@@ -321,7 +330,7 @@ selectAll = () => {
                             } 
                         }  
                     }/></label>
-         {!this.state.modalLoading?tableData:<Spinner/>}
+         {!this.state.loading?tableData:<Spinner/>}
           </div>
         </UI>
       </div>

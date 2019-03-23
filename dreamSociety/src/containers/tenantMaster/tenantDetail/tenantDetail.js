@@ -8,9 +8,7 @@ updateTenantDetail } from '../../../actionCreators/tenantMasterAction';
 import {PicURN} from '../../../actions/index';
 import { viewTower } from '../../../actionCreators/towerMasterAction';
 import { connect } from 'react-redux';
-import Select from 'react-select';
 import Spinner from '../../../components/spinner/spinner';
-import GoogleDocsViewer from 'react-google-docs-viewer';
 import "./tenantDetail.css"
 
 class TenantDetail extends Component {
@@ -45,7 +43,9 @@ class TenantDetail extends Component {
             gender:'',
             Male:'Male',
             Female:'Female',
-            Other:'Other'
+            Other:'Other',
+            floorId:'',
+            floorName:''
         }
     }
 
@@ -101,10 +101,10 @@ class TenantDetail extends Component {
         })
     }
 
-    edit = (picture,tenantName,gender, email, contact, aadhaarNumber, dob, permanentAddress, towerName,flatNo,towerId,flatDetailId, tenantId) =>{
-        console.log(tenantId)
+    edit = (picture,tenantName,gender, email, contact, aadhaarNumber, dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) =>{
+        console.log(floorName, floorId)
         this.setState({picture,tenantName,gender, email, contact, aadhaarNumber, dob, permanentAddress,
-            towerName,flatNo,towerId,flatDetailId,tenantId, editTenant: true})
+            towerName,floorName,flatNo,towerId,floorId,flatDetailId,tenantId, editTenant: true})
     }
 
     searchFilter(search){
@@ -172,14 +172,19 @@ class TenantDetail extends Component {
                             <td>{item.dob}</td>
                             <td>{item.permanentAddress}</td>
                             <td>{item.tower_master ? item.tower_master.towerName : ''}</td>
+                            <td>{item.floor_master ? item.floor_master.floorName : ''}</td>
                             <td>{item.flat_detail_master ? item.flat_detail_master.flatNo : ''}</td>
-                            <td><Button onClick={this.viewMembers.bind(this, item.tenantId)}>Member Details</Button></td>
+                            <td><Button color="success" onClick={this.viewMembers.bind(this, item.tenantId)}>
+                                Member Details</Button></td>
                             <td>
                                 <Button color="success" onClick={this.edit.bind(this,PicURN+item.picture.replace('../../',''),
                                      item.tenantName, item.gender, item.email,
                                     item.contact, item.aadhaarNumber, item.dob, item.permanentAddress,
-                                    item.tower_master ? item.tower_master.towerName:'',item.flat_detail_master.flatNo,
-                                    item.tower_master ? item.tower_master.towerId: '',item.flat_detail_master.flatDetailId, item.tenantId)} className="mr-2">Edit</Button>
+                                    item.tower_master ? item.tower_master.towerName:'',
+                                    item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master.flatNo,
+                                    item.tower_master ? item.tower_master.towerId: '',
+                                    item.floor_master ? item.floor_master.floorId: '',
+                                    item.flat_detail_master.flatDetailId, item.tenantId)} className="mr-2">Edit</Button>
                                 <Button color="danger" onClick={this.delete.bind(this, item.tenantId)}>Delete</Button>
                             </td>
                         </tr>
@@ -235,43 +240,64 @@ class TenantDetail extends Component {
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]:e.target.value})
-        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value });
+        }
     }
 
     getTower = ({ tower }) => {
         console.log(tower)
         if (tower) {
             console.log(tower)
-            return tower.map((item) => {
+            return tower.tower.map((item) => {
+                console.log(item)
                 return (
                     <option value={item.towerId} key={item.towerId}>{item.towerName}</option>
                 )
             }
             );
         }
-        else return [];
+        return [];
     }
 
     towerChangeHandler = (e) => {
         console.log(e)
         console.log(this.state)
-        this.setState({towerId:e.target.value, flatNo:'', flatDetailId:''})
+        this.setState({towerId:e.target.value, flatNo:'', floorId:'', floorName:'', flatDetailId:''})
         this.props.getFlatDetailViaTowerId(this.state.towerId)
     }
 
     contactChange = (e) => {
-        this.setState({contact: e.target.value,messageContactErr:'' })
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors,messageContactErr:'' });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value,messageContactErr:'' });
+        }
     }
 
     fetchFlatDetail = ({getFlatDetail}) => {
         console.log(getFlatDetail)
-        if(getFlatDetail && getFlatDetail.owner){
-            console.log(getFlatDetail)
-            return getFlatDetail.owner.map((item) => {
-            return (
-                <option value={item.flatDetailId} key={item.flatDetailId}>{item.flatNo}</option>
-            )
+        console.log(this.state.floorId)
+        if(getFlatDetail){
+            console.log(getFlatDetail.flatDetail)
+            
+             return getFlatDetail.flatDetail.filter((i) => {
+                
+                return this.state.floorId == i.floorId
+            }).map((item) => {
+                if(item){
+                    return (
+                        <option value={item.flatDetailId} key={item.flatDetailId} >{item.flatNo}</option>
+                    )
+                }
             })
         }
     }
@@ -284,6 +310,7 @@ class TenantDetail extends Component {
 
     refreshData = () => {
         this.props.getTenantDetail().then(() => this.setState({editTenant:false, loading: false}))
+        .catch(err => err)
     }
 
     refreshDataAfterUpdate = () => {
@@ -294,24 +321,46 @@ class TenantDetail extends Component {
         e.preventDefault();
         
         let {tenantName,gender, email, contact, aadhaarNumber,dob, permanentAddress, fileName, towerName, flatNo, towerId,
-        picture, flatDetailId, tenantId} = this.state;
+        picture, flatDetailId, tenantId, floorId} = this.state;
         let errors = {};
-        if(this.state.tenantName === '') errors.tenantName = `Tenant Name can't be empty.`;
+        if(this.state.tenantName === '') {
+            console.log('tenant');
+            errors.tenantName = `Tenant Name can't be empty.`;}
 
-        if(this.state.email === '') errors.email = `Email can't be empty.`;
-        if(this.state.contact === '') errors.contact = `Contact can't be empty.`;
-        if(this.state.aadhaarNumber === '') errors.aadhaarNumber = `Aadhaar Number can't be empty.`;
-        if(this.state.dob === '') errors.dob = `Date of birth can't be empty.`;
+        if(this.state.email === '')  {console.log('email');
+            errors.email = `Email can't be empty.`};
+        if(this.state.contact === '') {console.log('contact');
+            errors.contact = `Contact can't be empty.`;}
+        if(this.state.contact.length !== 10) {
+        errors.contact = `Contact number should be of 12 digit.`;}    
+        if(this.state.aadhaarNumber === '') {console.log('aadhaar');
+            errors.aadhaarNumber = `Aadhaar Number can't be empty.`;}
+        if(this.state.aadhaarNumber.length !== 12) {console.log('aadhaarLimit');
+            errors.aadhaarNumber = `Aadhaar Number should be 12 digit.`}
+        if(this.state.dob === '') {
+            console.log('dob');
+            errors.dob = `Date of birth can't be empty.`;
+        }
         if(this.state.permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
-        if(!this.state.towerId) errors.towerId = `Please select tower.`;
-        if(!this.state.flatDetailId) errors.flatDetailId=`Please select flat no.`;
+        if(!this.state.towerId) {
+            console.log('1');
+            errors.towerId = `Please select tower.`;
+        }
+        if(!this.state.flatDetailId) {
+            console.log('2');
+            errors.flatDetailId=`Please select flat no.`;
+        }
+        if(!this.state.floorId) {
+            console.log('3');
+            errors.floorId=`Please select floor.`
+        }
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         console.log(flatDetailId, picture, tenantId)
         if(isValid){
             this.setState({modalLoading: true})
             this.props.updateTenantDetail(tenantName,gender, email, contact, aadhaarNumber, dob,
-                permanentAddress, fileName, towerName, flatNo, towerId,
+                permanentAddress, fileName, towerName, flatNo, towerId, floorId,
                 picture, flatDetailId, tenantId)
                 .then(() => this.refreshDataAfterUpdate())
                 .catch((err) => {
@@ -347,6 +396,27 @@ class TenantDetail extends Component {
         
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+
+     fetchFloorDetail = ({getFlatDetail}) => {
+        console.log(getFlatDetail)
+        if(getFlatDetail){
+            console.log(getFlatDetail)
+            return getFlatDetail.tower.Floors.map((item) => {
+            return (
+                <option value={item.floorId} key={item.floorId}>{item.floorName}</option>
+            )
+            })
+        }
+    }
+
+    floorChange = (e) => {
+        this.setState({floorId:e.target.value})
+        
+    }
+
     render(){
         let TableData = <Table>
                            <thead>
@@ -365,6 +435,7 @@ class TenantDetail extends Component {
                                     <th>Date of Birth</th>
                                     <th>Permanent Address</th>
                                     <th>Tower Name</th>
+                                    <th>Floor</th>
                                     <th>Flat No.</th>
                                     <th>Member details</th>
                                     <th>Actions</th>
@@ -401,58 +472,52 @@ class TenantDetail extends Component {
             <FormGroup>
                 <Label>Tenant Name</Label>
                 <Input value={this.state.tenantName} name="tenantName" onChange={this.onChange} />
-                {!this.state.tenantName ? <span className='error'>{this.state.errors.tenantName}</span>: ''}
+                {<span className='error'>{this.state.errors.tenantName}</span>}
             </FormGroup>
             <FormGroup>
-                <div style={{display: 'flex'}}>
-                <Label>Gender: </Label>
-                <Col md={3} style={{display: 'flex'}}>
-                    <Col md={1}>
-                        <Label>M</Label>
-                        <Input name="gender" style={{margin: '0px'}}
+                <Label>Gender:</Label>
+                <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
+                <span><Input name="gender"
                         onChange={this.onChange} type="radio" value={this.state.Male}
-                        checked={this.state.Male===this.state.gender ? true : false} />
-                    </Col>
-                    <Col md={1}>
-                        <Label>F</Label>
-                        <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio"
-                        value={this.state.Female} checked={this.state.Female===this.state.gender ? true : false} />
-                    </Col>
-                    <Col md={1}>
-                        <Label>O</Label>
-                        <Input name="gender" style={{margin: '0px'}} onChange={this.onChange} type="radio"
-                        value={this.state.Other} checked={this.state.Other===this.state.gender ? true : false}/>
-                    </Col>
-                </Col>
-                </div>
+                        checked={this.state.Male===this.state.gender ? true : false}/></span>
+                
+                
+                <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
+                <span><Input name="gender" onChange={this.onChange} type="radio"
+                        value={this.state.Female} checked={this.state.Female===this.state.gender ? true : false} /></span>
+                
+                
+                <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
+                <span><Input name="gender" onChange={this.onChange} type="radio"
+                        value={this.state.Other} checked={this.state.Other===this.state.gender ? true : false}/></span>
             </FormGroup>
             <FormGroup>
                 <Label>Email</Label>
                 <Input value={this.state.email} name="email" onChange={this.emailChange} onKeyPress={this.emailValid} />
                 {this.state.messageEmailErr ? <span className='error'>{this.state.messageEmailErr}</span> : ''}
                 {this.state.emailValidError ? <span className='error'>{this.state.emailValidError}</span>:''}
-                {!this.state.email ? <span className='error'>{this.state.errors.email}</span>: ''}
+                {<span className='error'>{this.state.errors.email}</span>}
             </FormGroup>
             <FormGroup>
                 <Label>Contact</Label>
-                <Input value={this.state.contact} name="contact" onChange={this.contactChange} />
+                <Input value={this.state.contact} maxLength="10" name="contact" onChange={this.contactChange} />
                 {this.state.messageContactErr ? <span className='error'>{this.state.messageContactErr}</span> : ''}
-                {!this.state.contact ? <span className='error'>{this.state.errors.contact}</span>: ''}
+                {<span className='error'>{this.state.errors.contact}</span>}
             </FormGroup>
             <FormGroup>
                 <Label>Aadhar Number</Label>
-                <Input value={this.state.aadhaarNumber} name="aadhaarNumber" onChange={this.onChange} />
-                {!this.state.aadhaarNumber ? <span className='error'>{this.state.errors.aadhaarNumber}</span>: ''}
+                <Input value={this.state.aadhaarNumber} maxLength="12" name="aadhaarNumber" onChange={this.onChange} />
+                {<span className='error'>{this.state.errors.aadhaarNumber}</span>}
             </FormGroup>
             <FormGroup>
                 <Label>Date of Birth</Label>
                 <Input value={this.state.dob} type="date" name="dob" onChange={this.onChange} />
-                {!this.state.dob ? <span className='error'>{this.state.errors.dob}</span>: ''}
+                {<span className='error'>{this.state.errors.dob}</span>}
             </FormGroup>
             <FormGroup>
                 <Label>Permanent Address</Label>
-                <Input value={this.state.permanentAddress} name="permanentAddress" onChange={this.onChange} />
-                {!this.state.permanentAddress ? <span className='error'>{this.state.errors.permanentAddress}</span>: ''}
+                <Input type="textarea" maxLength="500" value={this.state.permanentAddress} name="permanentAddress" onChange={this.onChange} />
+                { <span className='error'>{this.state.errors.permanentAddress}</span>}
             </FormGroup>
             <FormGroup>
                 <Label>Tower Name</Label>
@@ -461,6 +526,18 @@ class TenantDetail extends Component {
                     {this.getTower(this.props.towerList)}
                 </Input>
                 {!this.state.towerId ? <span className='error'>{this.state.errors.towerId}</span>: ''}
+            </FormGroup>
+            <FormGroup>
+                <Label>Floor</Label>
+                <Input  name="floorId" onChange = {this.floorChange} type="select">
+                    {this.state.floorName ? <option>{this.state.floorName}</option> : <option disabled>--Select--</option>}
+                    {this.state.floorName ? <DefaultSelect />: null}
+                    {this.state.floorName ? null : this.fetchFloorDetail(this.props.tenantReducer)}
+                    {/* <option>{this.state.flatNo}</option>
+                    <DefaultSelect />
+                    {this.fetchFlatDetail(this.props.tenantReducer)} */}
+                </Input>
+                {!this.state.floorId ? <span className='error'>{this.state.errors.floorId}</span>: ''}
             </FormGroup>
             <FormGroup>
                 <Label>Flat No</Label>
@@ -482,7 +559,7 @@ class TenantDetail extends Component {
         </div>
 
         return(
-            <UI onClick={this.logout}>
+            <UI onClick={this.logout} change={this.changePassword}>
                 <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>

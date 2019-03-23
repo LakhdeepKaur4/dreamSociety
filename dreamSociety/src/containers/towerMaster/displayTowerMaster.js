@@ -12,8 +12,6 @@ import {fetchFloor} from '../../actionCreators/floorAction';
 class DisplayTowerMaster extends Component {
 
   state = {
-    floors:[],
-    selectedFloor:[],
     editTowerData: {
 
       towerId: [],
@@ -96,17 +94,14 @@ this.setState({loading:true});
 
   updateTower() {
     let errors={};
-        const {  towerId, towerName,floors } = this.state
+        const {  towerId, towerName,Floors } = this.state
     if(!this.state.towerName){
       errors.towerName ="tower Name cant be empty please Select"
-        }
-        else if(this.state.floors===[]){
-          errors.floor="floor can't be empty " 
         }
      this.setState({errors})
      const isValid = Object.keys(errors).length===0
     if(isValid  &&  this.state.message === ''){
-   this.props.updateTower(towerId,towerName,floors).then(()=>{this.refreshData()}).catch(err=>{ console.log(err.response.data.message)
+   this.props.updateTower(towerId,towerName,Floors).then(()=>{this.refreshData()}).catch(err=>{ console.log(err.response.data.message)
     this.setState({modalLoading:false,message: err.response.data.message, loading: false})
     })
     if(this.state.message === ''){
@@ -123,13 +118,12 @@ this.setState({loading:true});
 }
 
 
-  editTower(id, towerId, towerName,floor) {
-    console.log('efews', id, towerId, towerName,floor);
-const selectedFloor=floor.map(item=>item.floorId)
+  editTower(id, towerId, towerName) {
+    console.log('efews', id, towerId, towerName);
+
     this.setState({
-      id, towerId, towerName,selectedFloor, editTowerModal: !this.state.editTowerModal
+      id, towerId, towerName, editTowerModal: !this.state.editTowerModal
     })
-    console.log('kjdkfjdkfjdkfjdkf',this.state.selectedFloor)
   }
   searchFilter(search){
     return function(x){
@@ -177,7 +171,7 @@ const selectedFloor=floor.map(item=>item.floorId)
             <td>{item.towerName}</td>
             <td>{item.Floors.map((item)=>{return item.floorName}).join(",")}</td>
             <td>
-              <button className="btn btn-success mr-2" onClick={this.editTower.bind(this, item.id, item.towerId, item.towerName,item.Floors)}>edit </button>
+              <button className="btn btn-success mr-2" onClick={this.editTower.bind(this, item.id, item.towerId, item.towerName,item.floorName,item.floorId)}>edit </button>
               <button className="btn btn-danger" onClick={this.deleteTower.bind(this, item.towerId)}>delete</button>
             </td>
           </tr>
@@ -259,11 +253,6 @@ selectAll = () => {
             })
        }
     }
-
-    changePassword=()=>{ 
-      return this.props.history.replace('/superDashboard/changePassword')
-   }
-
     floorChangeHandler=(name,selectOption)=>{
         console.log('selectOption',selectOption)
         console.log('event')
@@ -317,7 +306,7 @@ selectAll = () => {
 
     return (
       <div>
-        <UI onClick={this.logout} change={this.changePassword}>
+        <UI onClick={this.logout}>
         
           <div className ="w3-container w3-margin-top w3-responsive">
           <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
@@ -346,11 +335,10 @@ selectAll = () => {
                 <FormGroup>
                   <Label for="towerName">Floors</Label>
                   <ReactMultiSelectCheckboxes
-                  checked={this.state.selectedFloor}
-                  // value={this.state.selectedFloor}
                  options={this.getFloor(this.props.floor)}
                  onChange={this.floorChangeHandler.bind(this,'floorId')}/>
-                   <span className="error">{this.state.errors.floor} </span>
+                    <span className="error">{this.state.errors.towerName} </span>
+                    <span className="error">{this.state.message}</span>
                 </FormGroup>
 
 
