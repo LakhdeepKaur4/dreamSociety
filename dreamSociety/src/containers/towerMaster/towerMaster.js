@@ -126,6 +126,10 @@ floorChangeHandler=(name,selectOption)=>{
     // this.state.floors.push(data)
      
 }
+changePassword=()=>{
+          
+    return this.props.history.replace('/superDashboard/changePassword')
+  }
     render() {
       let form;
       if(!this.state.loading){
@@ -168,7 +172,7 @@ floorChangeHandler=(name,selectOption)=>{
      
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                    {form}
                 </UI>
             </div>

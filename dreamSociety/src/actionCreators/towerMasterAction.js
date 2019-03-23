@@ -1,3 +1,4 @@
+
 import {authHeader} from '../helper/authHeader'
 import axios from 'axios';
 import {URN,ADD_TOWER,GET_TOWER,UPDATE_TOWER,DELETE_TOWER,DELETE_MULTIPLE_TOWER}  from '../actions/index' 
@@ -36,10 +37,11 @@ export function deleteTower(towerId,isActive){
     }
 }
 
-export function updateTower(towerId,towerName){
+export function updateTower(towerId,towerName,floors){
+    console.log(towerId,towerName,floors)
     const request =
-    axios.put(`${URN}/tower/` +towerId, {
-      towerName
+    axios.put(`${URN}/towerFloor/update/` +towerId, {
+      towerName,floors
     }, { headers: authHeader() }).then() 
     return{
         type:UPDATE_TOWER,

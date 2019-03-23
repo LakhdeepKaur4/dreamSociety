@@ -4,7 +4,7 @@ import UI from '../newUI/loginDashboard';
 import axios from 'axios';
 import {URN} from '../../actions/index';
  
-export default class AccountVarification extends Component {
+export default class AccountVerificationTenant extends Component {
   state={
     otp:'',
     message:'',
@@ -16,7 +16,7 @@ export default class AccountVarification extends Component {
     const data={
       otp:this.state.otp
     }
-   axios.post(`${URN}/ownerActivation?${window.location.href.split('?')[1]}`,data)
+   axios.post(`${URN}/tenantActivation?${window.location.href.split('?')[1]}`,data)
    .then((response)=>{
      this.setState({
        message:response.data.message
@@ -32,10 +32,9 @@ export default class AccountVarification extends Component {
   
   render() {
     return (
-      <div >
+      <div>
        
           <UI>
-            <div style={{margin:"25% 0 0 30%"}}>
              <h2>Submit OTP</h2> 
              <h2 style={{color:'red'}}>{this.state.message}</h2>
         <OtpInput
@@ -46,7 +45,6 @@ export default class AccountVarification extends Component {
         />
         <span><button style={{marginTop:'10px'}} onClick={this.submit}>Submit</button></span>
         <span><button style={{marginTop:'10px', marginLeft:'4px'}}>Resend</button></span>
-        </div>
         </UI>
       </div>
       

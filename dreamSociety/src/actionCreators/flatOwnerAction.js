@@ -24,7 +24,9 @@ export function addFlatOwner(data){
         member:data.member,
         profilePicture:data.profilePicture,
         gender:data.ownerGender,
-        fileName:data.fileName
+        fileName:data.fileName,
+        adhaarCardNo:data.Aadhaar,
+        floorId:data.floorId
     }
     // const data2={
     //     data1,
@@ -79,7 +81,7 @@ export function removeOwner(id){
         payload:request
     }
 }
-export function updateFlatOwner(ownerId,ownerName,
+export function updateFlatOwner(ownerId, ownerName,
     email,
     societyId,
     contact,
@@ -89,14 +91,17 @@ export function updateFlatOwner(ownerId,ownerName,
     accountHolderName,
     bankName,
     panCardNumber,
-    IFSCCode,     countryName,
+    IFSCCode, countryName,
     stateName,
     cityName,
     locationName,
     locationId,
     cityId,
     stateId,
-    countryId,gender){
+    countryId,
+    gender,floorId,Aadhaar,accountNumber){
+
+        console.log(accountNumber,'accountNumber')
         const data={ownerId,ownerName,
             email,
             societyId,
@@ -114,7 +119,7 @@ export function updateFlatOwner(ownerId,ownerName,
             locationId,
             cityId,
             stateId,
-            countryId,gender}
+            countryId,gender,accountNumber,floorId,Aadhaar}
             console.log('=============data============',data)
     const request=axios.put(`${URN}/owner/`+ownerId,data,{headers:authHeader()})
         .then(reponse=>reponse.data)
@@ -173,6 +178,15 @@ export function addNewMember(memberName,memberDob,gender,relationId,id){
     .then(response=>response.data)
     return {
         type:ADD_NEW_MEMBER,
+        payload:request
+    }
+}
+
+export function getAllFloor (id){
+    const request =axios.get(`${URN}/towerFloor/${id}`,{headers:authHeader()})
+    .then(response=>response.data)
+    return {
+        type:GET_ALL_FLOOR,
         payload:request
     }
 }
