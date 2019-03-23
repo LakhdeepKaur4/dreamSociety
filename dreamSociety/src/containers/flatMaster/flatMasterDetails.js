@@ -13,7 +13,7 @@ import SearchFilter from '../../components/searchFilter/searchFilter'
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
 import { URN } from '../../actions/index'
-import Pagination from "react-js-pagination";
+import Pagination from "react-js-pagination";   
 
 class flatMasterDetails extends Component {
    constructor(props){

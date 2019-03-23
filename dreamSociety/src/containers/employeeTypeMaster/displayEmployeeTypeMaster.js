@@ -38,7 +38,7 @@ class DisplayEmployeeTypeMaster extends Component {
 
   
     refreshData() {
-        this.props.getEmployee().then(() => this.setState({ loading: false }));
+        this.props.getEmployee().then(() => this.setState({ loading: false,modalLoading:false,editEmployeeModal:false }));
         this.props.getEmployeeType().then(() => this.setState({ loading: false }));
         this.props.getEmployeeWorkType().then(() => this.setState({ loading: false }));
         console.log("123", this.props.getEmployee())

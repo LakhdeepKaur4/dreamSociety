@@ -81,12 +81,28 @@ class AddTenant extends Component{
     }
 
     onChange = (e) => {
-        this.setState({[e.target.name]:e.target.value.trim(),messageContactErr:''});
+        
         console.log(this.state);
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(), errors });
+        }
+        else {
+            this.setState({[e.target.name]:e.target.value.trim(),messageContactErr:''});
+        }
     }
 
     ifscChange = (e) => {
-        this.setState({IFSCCode:e.target.value.toUpperCase()})
+        
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.toUpperCase(), errors });
+        }
+        else {
+            this.setState({IFSCCode:e.target.value.toUpperCase()});
+        }
     }
 
     getTower = ({ tower }) => {
@@ -247,7 +263,7 @@ class AddTenant extends Component{
         const file = files[0];
         console.log(file)
         let fileName = file.name;
-        if (files && file && file.size <= 40096) {
+        if (files && file) {
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload =  () =>{
@@ -322,13 +338,23 @@ class AddTenant extends Component{
 
     emailChange = (e) => {
         console.log(this.state.email)
-        this.setState({messageEmailErr:''})
+        this.setState({email:e.target.value, messageEmailErr:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value});
             console.log(this.state.email)
             this.setState({emailValidError: ''})
         }
         else{ this.setState({emailValidError: 'Invalid Email.'})}
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            console.log(this.state.email)
+            this.setState({ [e.target.name]: e.target.value, errors });
+        }
+        else {
+            this.setState({email:e.target.value});
+        }
+        
         
     }
 
@@ -429,13 +455,13 @@ class AddTenant extends Component{
                             <Input type="text" placeholder="Name" onKeyPress={this.OnKeyPressUserhandler} 
                             onChange={this.onChange} 
                             maxLength={100} name='tenantName' />
-                            {!this.state.tenantName ? <span className="error">{this.state.errors.tenantName}</span> : ''}
+                            {<span className="error">{this.state.errors.tenantName}</span>}
                         </FormGroup>
                         <FormGroup>
                             <Label>Date of Birth</Label>
                             <Input type="date" onChange={this.onChange} name="dob"
                              max={this.maxDate()} name="dob" />
-                             {!this.state.dob ? <span className="error">{this.state.errors.dob}</span> : ''}
+                             {<span className="error">{this.state.errors.dob}</span>}
                         </FormGroup>
                         <FormGroup>
                             <div>
@@ -452,51 +478,51 @@ class AddTenant extends Component{
                                 <span><Input type="radio" id="Gender3" name="gender" onChange={this.onChange} value="Other"/></span>
                             </div>
                             <div>
-                                {!this.state.gender ? <span className="error">{this.state.errors.gender}</span> : ''}
+                                {<span className="error">{this.state.errors.gender}</span>}
                             </div>
                         </FormGroup>
                         <FormGroup>
                             <Label>Contact Number</Label>
                             <Input onKeyPress={this.numberValidation} onChange={this.onChange}
-                             name="contact" placeholder="Contact Number" type="text" maxLength="10" />
-                             {!this.state.contact ? <span className="error">
+                             name="contact" placeholder="Contact Number" type="text" minLength="10" maxLength="10" />
+                             {<span className="error">
                                 {this.state.errors.contact}
-                            </span> : ''}
+                            </span>}
                         </FormGroup>
                         <FormGroup>
                             <Label>Email</Label>
                             <Input placeholder="Email" onChange={this.emailChange}
-                            onKeyPress={this.emailValid} name="email" type="email" />
-                            {!this.state.email ? <span className="error">
-                                {this.state.errors.email}
-                            </span> : ''}
+                            onKeyPress={this.emailValid} name="email" type="email" maxLength="70" />
                             {<span className="error">{this.state.emailValidError}</span>}
+                            <span><br/></span>
+                            {<span className="error">{this.state.errors.email}</span>}
+                            
                         </FormGroup>
                         <FormGroup>
                             <Label>Aadhaar Number</Label>
                             <Input placeholder="Aadhaar number" onChange={this.onChange}
                             name="aadhaarNumber"  onKeyPress={this.numberValidation} type="text"
                             maxLength="12" />
-                            {!this.state.aadhaarNumber ? <span className="error">
+                            {<span className="error">
                                 {this.state.errors.aadhaarNumber}
-                            </span> : ''}
+                            </span>}
                         </FormGroup>
                         <FormGroup>
                             <Label>Corresponding Address</Label>
                             <Input type="textarea" onChange={this.onChange} maxLength="250"
                              name="correspondingAddress" placeholder="Corresponding Address" />
-                             {!this.state.correspondingAddress ? <span className="error">
+                             {<span className="error">
                                 {this.state.errors.correspondingAddress}
-                            </span> : ''}
+                            </span>}
                         </FormGroup >
                         <FormGroup>
                             <Label>Permanent Address</Label>
                             <Input type="textarea" onChange={this.onChange}
                             maxLength="250"
                              name="permanentAddress" placeholder="Permanent Address" />
-                             {!this.state.permanentAddress ? <span className="error">
+                             {<span className="error">
                                 {this.state.errors.permanentAddress}
-                            </span> : ''}
+                            </span>}
                         </FormGroup>
                     </div>
                     <div style={{ 'display': this.state.step == 2 ? 'block' : 'none' }}>
@@ -507,21 +533,21 @@ class AddTenant extends Component{
                                 onKeyPress={this.bankValidation}
                                 maxLength="100"
                                  type="text" name="bankName" />
-                                 {!this.state.bankName ? <span className="error">{this.state.errors.bankName}</span> : ''}
+                                 {<span className="error">{this.state.errors.bankName}</span>}
                         </FormGroup>
                         <FormGroup>
                             <Label>Account Holder Name</Label>
                             <Input placeholder="Holder Name" onChange={this.onChange}
                             onKeyPress={this.OnKeyPressUserhandler} maxLength="80"
                              type="text" name='accountHolderName' />
-                             {!this.state.accountHolderName ? <span className="error">{this.state.errors.accountHolderName}</span> : ''}
+                             {<span className="error">{this.state.errors.accountHolderName}</span>}
                         </FormGroup>
                         <FormGroup >
                             <Label>Account Number</Label>
                             <Input onKeyPress={this.numberValidation} onChange={this.onChange}
                              placeholder="Account Number"
-                             type="text" className="quantity" name='accountNumber' minLength='14' maxLength='14'/>
-                             {!this.state.accountNumber ? <span className="error">{this.state.errors.accountNumber}</span> : ''}
+                             type="text" className="quantity" name='accountNumber' minLength='9' maxLength='18'/>
+                             {<span className="error">{this.state.errors.accountNumber}</span>}
                         </FormGroup>
                         <FormGroup>
                             <Label>PAN Card Number</Label>
@@ -535,13 +561,13 @@ class AddTenant extends Component{
                                     e.preventDefault();
                                 }
                             }}  />
-                             {!this.state.panCardNumber ? <span className="error">{this.state.errors.panCardNumber}</span> : ''}
+                             {<span className="error">{this.state.errors.panCardNumber}</span>}
                         </FormGroup>
                         <FormGroup>
                             <Label>IFSC Code</Label>
                             <Input placeholder="IFSC code" onChange={this.ifscChange}
-                            maxLength="16"
-                            minLength='16'
+                            maxLength="11"
+                            minLength='11'
                             value={this.state.IFSCCode.toUpperCase()}
                             onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
@@ -551,7 +577,7 @@ class AddTenant extends Component{
                                 }
                             }}
                              type='text' name="IFSCCode" />
-                             {!this.state.IFSCCode ? <span className="error">{this.state.errors.IFSCCode}</span> : ''}
+                             {<span className="error">{this.state.errors.IFSCCode}</span>}
                         </FormGroup>
                     </div>
                     <div style={{ 'display': this.state.step == 3 ? 'block' : 'none' }}>
@@ -566,7 +592,7 @@ class AddTenant extends Component{
                         {userDatas}
                     </div>
                     <div style={{ 'display': this.state.step == 4 ? 'block' : 'none' }}>
-                        <h3>Flat Owner Details</h3>
+                        <h3>Flat Details</h3>
                         <FormGroup>
                             <Label>Tower</Label>
                             <Select onChange={this.towerChangeHandler} placeholder="Tower" name="towerId"

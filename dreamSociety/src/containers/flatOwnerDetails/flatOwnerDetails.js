@@ -133,11 +133,22 @@ class FlatOwnerDetails extends Component {
         }, function () {
             console.log(selectOption.towerId)
         });
+        this.props.getAllFloor(selectOption.towerId);
     }
     flatChangeHandler=(name,selectOption)=>{
         this.setState({
             [name]: selectOption.value
         })
+        this.props.getAllFloor(selectOption.towerId);
+    }
+    floorChangeHandler=(name,selectOption)=>{
+        console.log('=======selectOption=======',selectOption.value);
+        this.setState({
+            [name]: selectOption.value
+        })
+console.log('lllllllll=======',this.state.floorId)
+    // this.getFlats(this.props.towerFloor);
+
     }
     relationHandler = (name,selectOption) => {
         this.setState(function (prevState, props) {
@@ -154,7 +165,7 @@ class FlatOwnerDetails extends Component {
     }
     nextPrev = () => {
         let errors = {};
-        const { societyName, number, ownerName, DOB, email, towerId, flatDetailId } = this.state
+        const { societyName, number, ownerName, DOB, email, towerId, flatDetailId,Aadhaar  } = this.state
         if (this.state.step === 1) {
             if (ownerName === '') {
                 errors.ownerName = "Owern Name can't be empty"
@@ -377,6 +388,39 @@ OnKeyPresshandlerEmail=(event)=> {
         }
        
   }
+  changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+ }
+
+ getFloor=({floor})=>{
+    console.log("floor",floor)
+    if(floor){
+        return floor.tower.Floors.map((item)=>{
+                  
+            return {...item ,label: item.floorName, value: item.floorId }
+        })
+      //   this.setState({
+      //     floorId:item.floorId
+      //   })
+    }
+    else {
+        return []
+    }}
+
+    getFlats=({floor})=>{
+        console.log('7777777jjjjjj',floor)
+        if(floor){
+          return  floor.flatDetail.filter((flatRecord)=>{
+                return flatRecord.floorId===this.state.floorId
+            }).map((selectFlat)=>{
+                console.log('bbbbbbbbbbbbbbbbb',selectFlat)
+                return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
+            });
+        }
+        else {
+            return []
+          }
+    }
     render() {
             
         let userDatas = [];
@@ -502,11 +546,18 @@ OnKeyPresshandlerEmail=(event)=> {
                                 <span className="error">{this.state.errors.tower}</span>
                             </FormGroup >
                             <FormGroup>
+                                <Label>Floor</Label>
+                                <Select options={this.getFloor(this.props.towerFloor)} 
+                                placeholder={PlaceHolder}
+                                onChange={this.floorChangeHandler.bind(this,'floorId')}
+                                />
+                            </FormGroup>
+                            <FormGroup>
                                 <Label>Flat Number</Label>
-                                <Select options={this.getflat(this.props.flatList)}
-                                    onChange={this.flatChangeHandler.bind(this, 'flatDetailId')}
-                                    placeholder={PlaceHolder} />
-                                <span className="error">{this.state.errors.flatNO}</span>
+                                <Select options={this.getFlats(this.props.towerFloor)}
+                                    placeholder={PlaceHolder} 
+                                  onChange={this.flatChangeHandler.bind(this,'flatDetailId')}
+                                    />
                             </FormGroup >
                         </div>
                         <div style={{ 'display': this.state.step === 2 ? 'block' : 'none' }}>
@@ -579,11 +630,12 @@ function mapStateToProps(state) {
         societyName: state.societyReducer,
         towerList: state.TowerDetails,
         relationList: state.RelationMasterReducer,
-        flatList:state.flatDetailMasterReducer,
+        // flatList:state.flatDetailMasterReducer,
+        towerFloor:state.FlatOwnerReducer,
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner }, dispatch)
+    return bindActionCreators({detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerDetails);
 

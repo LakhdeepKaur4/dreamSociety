@@ -205,8 +205,14 @@ logout=()=>{
 }
 
 onChange = (e) => {
-    console.log(this.state);
-    this.setState({[e.target.name]:e.target.value.trim()});
+    if (!!this.state.errors[e.target.name]) {
+        let errors = Object.assign({}, this.state.errors);
+        delete errors[e.target.name];
+        this.setState({ [e.target.name]: e.target.value.trim(), errors });
+    }
+    else {
+        this.setState({ [e.target.name]: e.target.value.trim() });
+    }
     
 }
 
@@ -224,7 +230,7 @@ fetchDesignation = ({designation}) => {
 sameAddress = (e) => {
     if(!!document.getElementById('isChecked').checked){
         console.log('is checked')
-       this.setState({permanentAddress: this.state.currentAddress})
+       this.setState({permanentAddress: this.state.currentAddress.trim()})
        document.getElementById('permanentaddr').disabled = true;
     }
    else{
@@ -326,12 +332,22 @@ emailValid(event) {
 emailChange = (e) => {
     console.log(this.state.email)
     this.setState({errors:{email: ''}})
+    this.setState({email:e.target.value, emailServerError:''})
     if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
         this.setState({[e.target.name]:e.target.value.trim()});
         console.log(this.state.email)
         this.setState({emailValidError: ''})
     }
     else{ this.setState({emailValidError: 'Invalid Email.'})}
+    if (!!this.state.errors[e.target.name]) {
+        let errors = Object.assign({}, this.state.errors);
+        delete errors[e.target.name];
+        console.log(this.state.email)
+        this.setState({ [e.target.name]: e.target.value.trim(), errors });
+    }
+    else {
+        this.setState({email:e.target.value});
+    }
     
 }
 
@@ -358,7 +374,15 @@ changePassword=()=>{
  }
 
 ifscChange = (e) => {
-    this.setState({IFSCCode:e.target.value.toUpperCase().trim()})
+    if (!!this.state.errors[e.target.name]) {
+        let errors = Object.assign({}, this.state.errors);
+        delete errors[e.target.name];
+        this.setState({ [e.target.name]: e.target.value.toUpperCase().trim(), errors });
+    }
+    else {
+        this.setState({[e.target.name]:e.target.value.toUpperCase().trim()});
+    }
+    
 }
 
     render(){
@@ -381,8 +405,9 @@ ifscChange = (e) => {
                          placeholder="Member Name"
                          name='societyBoardMemberName' 
                          onChange={this.onChange}
+                         maxLength="70"
                          onKeyPress={this.OnKeyPressUserhandler} />
-                        {!this.state.societyBoardMemberName ? <span className="error">{this.state.errors.societyBoardMemberName}</span>: ''}
+                        {<span className="error">{this.state.errors.societyBoardMemberName}</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label>Designation</Label>
@@ -393,7 +418,7 @@ ifscChange = (e) => {
                             <DefaultSelect />
                             {this.fetchDesignation(this.props.boardMemberReducer)}
                         </Input>
-                        {!this.state.designationId ? <span className="error">{this.state.errors.designationId}</span> : ''}
+                        {<span className="error">{this.state.errors.designationId}</span>}
                     </FormGroup>
                     <SocietyComponent onChangeCountry={this.onChangeCountry}
                         onChangeState={this.onChangeState}
@@ -425,7 +450,7 @@ ifscChange = (e) => {
                         name="currentAddress" 
                         onChange={this.onChange}
                         maxLength='150' />
-                        {!this.state.currentAddress ? <span className="error">{this.state.errors.currentAddress}</span> : ''}
+                        { <span className="error">{this.state.errors.currentAddress}</span> }
                     </FormGroup>
                     <FormGroup>
                     Is Your permanent address same as above?<Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
@@ -439,7 +464,7 @@ ifscChange = (e) => {
                          name="permanentAddress" 
                          onChange={this.onChange}
                          maxLength='150' />
-                         {!this.state.permanentAddress ? <span className="error">{this.state.errors.permanentAddress}</span> : ''}
+                         {<span className="error">{this.state.errors.permanentAddress}</span> }
                     </FormGroup>
                     <FormGroup>
                         <Label>Contact Number</Label>
@@ -451,7 +476,7 @@ ifscChange = (e) => {
                           maxLength='10'
                           minLength='10' />
                           {this.state.contactServerError ? <span className='error'>{this.state.contactServerError}</span> : null}
-                        {!this.state.contactNumber ? <span className="error">{this.state.errors.contactNumber}</span> : ''}
+                        {<span className="error">{this.state.errors.contactNumber}</span> }
                     </FormGroup>
                     <FormGroup>
                         <Label>Optional Contact Number</Label>
@@ -470,11 +495,13 @@ ifscChange = (e) => {
                         placeholder="Email" 
                         type="email" 
                         name="email" 
+                        maxLength="70"
                         onChange={this.emailChange}
                         onKeyPress={this.emailValid} />
-                        {!this.state.email ? <span className="error">{this.state.errors.email}</span> : ''}
+                        {this.state.emailServerError ? <span className="error">{this.state.emailServerError}</span> : null}
+                        <span><br/></span>
+                        {<span className="error">{this.state.errors.email}</span>}
                         {<span className="error">{this.state.emailValidError}</span>}
-                        {this.state.emailServerError ? <span className='error'>{this.state.emailServerError}</span> : null}
                     </FormGroup>
                     <FormGroup>
                         <Label>Optional Mail</Label>
@@ -491,17 +518,19 @@ ifscChange = (e) => {
                         type="text" 
                         name="bankName" 
                         onChange={this.onChange}
+                        maxLength="70"
                         onKeyPress={this.bankValidation} />
-                        {!this.state.bankName ? <span className="error">{this.state.errors.bankName}</span> : ''}
+                        {<span className="error">{this.state.errors.bankName}</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label>Account Holder Name</Label>
                         <Input placeholder="Account Holder Name"
                          type="text"
-                         name="accountHolderName" 
+                         name="accountHolderName"
+                         maxLength="70" 
                          onChange={this.onChange}
                          onKeyPress={this.OnKeyPressUserhandler} />
-                        {!this.state.accountHolderName ? <span className="error">{this.state.errors.accountHolderName}</span> : ''}
+                        {<span className="error">{this.state.errors.accountHolderName}</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label>Account Number</Label>
@@ -510,9 +539,9 @@ ifscChange = (e) => {
                          type="text" 
                          name="accountNumber" 
                          onChange={this.onChange}
-                         maxLength='16'
+                         maxLength='18'
                          onKeyPress={this.OnKeyPresshandlerPhone} />
-                         {!this.state.accountNumber ? <span className="error">{this.state.errors.accountNumber}</span> : ''}
+                         {<span className="error">{this.state.errors.accountNumber}</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label>Pan Card Number</Label>
@@ -532,7 +561,7 @@ ifscChange = (e) => {
                             }
                         }} 
                         onChange={this.onChange} />
-                        {!this.state.panCardNumber ? <span className="error">{this.state.errors.panCardNumber}</span> : ''}
+                        {<span className="error">{this.state.errors.panCardNumber}</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label>IFSC Code</Label>
@@ -551,12 +580,12 @@ ifscChange = (e) => {
                         }} 
                         minLength='11'
                         maxLength='11' />
-                        {!this.state.IFSCCode ? <span className="error">{this.state.errors.IFSCCode}</span> : ''}
+                        {<span className="error">{this.state.errors.IFSCCode}</span>}
                     </FormGroup>
                     <FormGroup>
                         <Label>Date of Birth</Label>
                         <Input type="date" max={this.maxDate()} name="dob" onChange={this.onChange} />
-                        {!this.state.dob ? <span className="error">{this.state.errors.dob}</span> : ''}
+                        {<span className="error">{this.state.errors.dob}</span>}
                     </FormGroup>
                     <Button color="success" className="mr-2">Add Member</Button>
                     <Button color="danger" onClick={this.route}>Cancel</Button>

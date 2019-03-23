@@ -148,7 +148,7 @@ class DisplayEmployeeMaster extends Component {
 //         this.setState({[event.target.name]:event.target.files,errors});
 //     }
 //     else{
-    onImageChange =(event)=>{
+ImageChange =(event)=>{
         if(!!this.state.errors[event.target.name]){
         
             let errors =Object.assign({},this.state.errors)
@@ -159,10 +159,11 @@ class DisplayEmployeeMaster extends Component {
         if (event.target.files && event.target.files[0]) {
           let reader = new FileReader();
           reader.onload = (e) => {
-            this.setState({picture:  reader.result,profilePicture:event.target.files[0]});
+            this.setState({picture:  reader.result});
           };
-          reader.readAsDataURL(event.target.files[0]);
         
+          reader.readAsDataURL(event.target.files[0]);
+          this.setState({profilePicture:event.target.files[0]})
         }
     }
 }
@@ -186,6 +187,7 @@ class DisplayEmployeeMaster extends Component {
          
  FileChange=(event)=>{
     if (event.target.files && event.target.files[0]) {
+        console.log("event",event.target.files[0])
         let reader = new FileReader();
         reader.onload = (e) => {
           this.setState({documentTwo:  reader.result});
@@ -202,8 +204,8 @@ class DisplayEmployeeMaster extends Component {
     }
 
     updateEmployee = (employeeId) => {
-        console.log(employeeId, "employeeId")
-
+        // console.log(employeeId,  "employeeId")
+        console.log("picture",this.state.profilePicture);
         // console.log(this.state.documentOne, this.state.documentTwo, this.state.profilePicture, this.state.locationId, "documents");
         // let errors = {};
         // const {firstName,middleName,lastName,CTC}=this.state;
@@ -240,8 +242,7 @@ class DisplayEmployeeMaster extends Component {
         data.append('locationId', this.state.locationId)
         data.append('startDate', this.state.editEmployeeData.startDate)
     
-        data.append('profilePicture', this.state.Profilepicture)
-        console.log(this.state.picture, "picture")
+        data.append('profilePicture', this.state.profilePicture)
 
         this.props.updateEmployee(this.state.editEmployeeData.employeeId,data).then(() =>  this.refreshData())
 
@@ -567,7 +568,7 @@ class DisplayEmployeeMaster extends Component {
 
 
                           
-                                  <input accept='image/*' type="file" name="profilePicture"   onChange={this.onImageChange} />
+                                  <input accept='image/*' type="file" name="profilePicture"   onChange={this.ImageChange} />
                                 
                                   <img id="target" src={this.state.picture}/>
                                
