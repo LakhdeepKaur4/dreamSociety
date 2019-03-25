@@ -117,6 +117,9 @@ FileChange=(event)=>{
             event.preventDefault();
         }
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
  
 
@@ -332,11 +335,16 @@ render(){
 let form;
 <Spinner/>
 
-let formData=<div>
+let formData=
+<form onSubmit={this.submit}>
+<div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+<span aria-hidden="true">&times;</span>
+</div>
+<div>
 <h3 align="center">Employee Master </h3>
 
-  <div class="input-container">
-        <label for ="upload-photo">Select Your Image</label>
+  <div className="input-container">
+        <label >Select Your Image</label>
         <input type="file" accept =".png, .jpg, .jpeg"   data-max-size="4194304"   name="profilePicture" onChange={this.onPicChange}/>
          
         <span className="error">{this.state.errors.profilePicture}</span>
@@ -455,26 +463,22 @@ let formData=<div>
   <button className="btn btn-danger"  onClick ={this.displayEmployee}>Cancel</button>
   </div>
   </div>
-
+  </form>
 
 
 
 
 
   
-// else if(this.submit){
-//     form =<Spinner/>
-// }
 
     return(
         <div  >
             <UI   onClick ={this.logout } change={this.changePassword}>
-            <form onSubmit={this.submit}>
-  
+        
    
  
   {!this.state.loading ? formData: <Spinner />} 
-  </form>
+ 
         </UI>
         </div>
         

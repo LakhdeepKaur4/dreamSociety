@@ -269,24 +269,6 @@ class vendorMaster extends Component {
             else if(this.state.rate1===''){
                 errors.rate1="Rate1 can't be empty"
             }
-            else if(this.state.serviceId2.serviceId===''){
-                errors.serviceId2="Service Id2 can't be empty"
-            } 
-            else if(this.state.rateId2.rateId===''){
-                errors.rateId2="Rate Id2 can't be empty"
-            }   
-            else if(this.state.rate2===''){
-                errors.rate2="Rate2 can't be empty"
-            }
-            else if(this.state.serviceId3.serviceId===''){
-                errors.serviceId3="Service Id3 can't be empty"
-            } 
-            else if(this.state.rateId3.rateId===''){
-                errors.rateId3="Rate Id3 can't be empty"
-            }  
-            else if(this.state.rate3===''){
-                errors.rate3="Rate3 can't be empty"
-            }
             else if(this.state.documentOne===''){
                 errors.documentOne="Document One can't be empty"
             }
@@ -416,7 +398,7 @@ class vendorMaster extends Component {
                                         <DefaultSelect/>
                                         {this.getDropDown(this.props.displayServiceMasterReducer)}
                                     </Input>
-                                    <span className="error">{this.state.errors.serviceId2}</span>
+                                  
                                 </FormGroup>
                             </Col>
 
@@ -427,14 +409,14 @@ class vendorMaster extends Component {
                                          <DefaultSelect/>
                                         {this.getRate(this.props.vendorMasterReducer)}
                                     </Input>
-                                    <span className="error">{this.state.errors.rateId2}</span>
+                               
                                 </FormGroup>
                             </Col>
                             <Col md={2}>
                                 <FormGroup>
                                     <Label> Rate 2</Label>
                                     <Input type="text" placeholder="Rate" name="rate2" maxLength={6} value={this.state.rate2}onChange={this.onRateChange}/>
-                                    <div>{!this.state.rate2 ? <span className="error">{this.state.errors.rate2}</span>: null}</div>
+                                  
                                 </FormGroup>
                             </Col>
                         </Row>
@@ -447,7 +429,7 @@ class vendorMaster extends Component {
                                         <DefaultSelect/>
                                         {this.getDropDown(this.props.displayServiceMasterReducer)}
                                     </Input>
-                                    <span className="error">{this.state.errors.serviceId3}</span>
+                                 
                                 </FormGroup>
                             </Col>
                             <Col md={4}>
@@ -457,14 +439,14 @@ class vendorMaster extends Component {
                                          <DefaultSelect/>
                                         {this.getRate(this.props.vendorMasterReducer)}
                                     </Input>
-                                    <span className="error">{this.state.errors.rateId3}</span>
+                                
                                 </FormGroup>
                             </Col>
                             <Col md={2}>
                                 <FormGroup>
                                     <Label> Rate 3</Label>
                                     <Input type="text" placeholder="Rate" name="rate3"  maxLength={6} value={this.state.rate3} onChange={this.onRateChange}/>
-                                    <div>{!this.state.rate3 ? <span className="error">{this.state.errors.rate3}</span>: null}</div>
+                                    
                                 </FormGroup>
                             </Col>
                         </Row>
