@@ -54,12 +54,10 @@ class DisplayTowerMaster extends Component {
     }
   }
   deleteTower(towerId) {
-this.setState({loading:true});
-
   let {isActive} =this.state.editTowerData;
-     this.props.deleteTower(towerId,isActive).then(()=>{this.refreshData()})
-
-        this.setState({editTowerData:{isActive:false}});
+  this.setState({loading:true});
+     this.props.deleteTower(towerId,isActive).then(()=>this.props.fetchFloor().then(()=>this.setState({loading:false})))
+        // this.setState({editTowerData:{isActive:false}});
 
 
   }
@@ -94,19 +92,20 @@ this.setState({loading:true});
     })
   }
 
+
   updateTower() {
     let errors={};
         const {  towerId, towerName,floors } = this.state
     if(!this.state.towerName){
       errors.towerName ="tower Name cant be empty please Select"
         }
-        else if(this.state.floors===[]){
+        else if(!this.state.floors.length){
           errors.floor="floor can't be empty " 
         }
      this.setState({errors})
      const isValid = Object.keys(errors).length===0
     if(isValid  &&  this.state.message === ''){
-   this.props.updateTower(towerId,towerName,floors).then(()=>{this.refreshData()}).catch(err=>{ console.log(err.response.data.message)
+   this.props.updateTower(towerId,towerName,floors).then(()=>this.props.fetchFloor().then(()=>this.setState({loading:false}))).catch(err=>{ console.log(err.response.data.message)
     this.setState({modalLoading:false,message: err.response.data.message, loading: false})
     })
     if(this.state.message === ''){
