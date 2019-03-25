@@ -21,8 +21,6 @@ class Registration extends Component {
             lastName: "",
             userName: "",
             email: "",
-            familyMember:"",
-            parking:"",
             towerId: "",
             contact: "",
             password: "",
@@ -120,13 +118,11 @@ class Registration extends Component {
         if(!this.state.towerId){
             errors.towerId = "Tower can't be empty. Please select."
         }
-        if(this.state.parking === '') errors.parking = "Parking can't be empty."
 
         if (this.state.firstName === '') errors.firstName = "First Name can't be empty.";
         else if (this.state.firstName.length < 2) errors.firstName = "First name can't be less than four."
         if (this.state.lastName === '') errors.lastName = "Last name can't be empty";
         else if (this.state.lastName.length < 2) errors.lastName = "Last name can't be less than two.";
-        if(this.state.familyMember === '') errors.familyMember="Family Member can't be empty."
         if (this.state.userName === '') errors.userName = "User Name can't be empty.";
         if (this.state.email === '') errors.email = "Email can't be empty.";
         if (this.state.contact === '') errors.contact = "Contact can't be empty.";
@@ -245,16 +241,7 @@ class Registration extends Component {
                 contactInputName="contact"
                 contactValue={this.state.contact}
                 contactChange={this.onChange}
-                familyInputName="familyMember"
-                familyValue={this.state.familyMember}
-                familyChange={this.onChange}
-                familyError={this.state.errors.familyMember}
                 contactError={this.state.contactError}
-                parkingInputName="parking"
-                parkingAndFloorKeyPress = {this.parkingAndFloorKeyPress}
-                parkingValue={this.state.parking}
-                parkingChange={this.onChange}
-                parkingError={this.state.errors.parking}
                 towerInputName = "towerId"
                 fetchingTower={this.fetchTowers(this.props.TowerDetails)}
                 towerValue={this.state.towerId}

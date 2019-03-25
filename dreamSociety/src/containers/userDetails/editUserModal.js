@@ -61,7 +61,7 @@ const editUserModal = (props) => {
                 </Input>
                 {!props.towerValue ? <span className='error'>{props.towerError}</span> : null}
             </FormGroup>
-            <FormGroup>
+            {/* <FormGroup>
                 <Label>No. of Family Members</Label>
                 <Input name={props.familyInputName}
                     placeholder="No. of Family Members"
@@ -71,8 +71,8 @@ const editUserModal = (props) => {
                     maxLength='1'
                     onKeyPress={props.contactKeyPress}  />
                 {!props.familyValue ? <span className='error'>{props.familyError}</span> : null}
-            </FormGroup>
-            <FormGroup>
+            </FormGroup> */}
+            {/* <FormGroup>
                 <Label>Parking Slot Name</Label>
                 <Input name={props.parkingInputName}
                     type="text"
@@ -82,7 +82,7 @@ const editUserModal = (props) => {
                     onKeyPress={props.parkingAndFloorKeyPress}
                     maxLength='20'  />
                 {!props.floorValue ? <span className='error'>{props.parkingError}</span> : null}
-            </FormGroup>
+            </FormGroup> */}
             <FormGroup>
                 <Label for="contact">Contact</Label>
                 <Input id="contact" onKeyPress = {props.contactValidation} name={props.contactInputName} 
