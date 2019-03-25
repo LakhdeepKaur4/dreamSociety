@@ -128,7 +128,7 @@ class userDetails extends Component {
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0;
             if (isValid && this.state.emailValidError==='') {
-                this.props.updateUser(userId, roleName, firstName, lastName, userName, email,towerName,floor, contact,towerId)
+                this.props.updateUser(userId, roleName, firstName, lastName, userName, email,towerName, contact,towerId)
                 .then(() => {
                     this.refreshDataAfterUpdate()
                 })
