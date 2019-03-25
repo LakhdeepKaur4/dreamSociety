@@ -88,7 +88,6 @@ const editUserModal = (props) => {
                 <Input id="contact" onKeyPress = {props.contactValidation} name={props.contactInputName} 
                 value={props.contactValue} onChange={props.contactValueChange}
                 maxLength='10' />
-                {!props.contactValue ? <span>{props.contactError}</span> : null}
                 {<span className="error">{props.contactError}</span>}
                 {props.contactServerError ? <span className="error">{props.contactServerError}</span> : null}
             </FormGroup>

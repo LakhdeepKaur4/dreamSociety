@@ -28,8 +28,14 @@ class AssetsTypeSubList extends Component {
         };
     }
     onChangeHandler = (event) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value, errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value});
+        }
     }
 
     toggle = (assetTypeId, assetType, description) => {
