@@ -34,6 +34,7 @@ class AddTenant extends Component{
             IFSCCode:'',
             noOfMembers:'',
             flatNo: '',
+            floorId:'',
             flatDetailId: '',
             societyName : '',
             societyId: '',
@@ -236,7 +237,7 @@ class AddTenant extends Component{
             this.props.addTenantDetail(data1)
                 .then(() => this.props.history.push('/superDashboard/tenantDetails'))
                 .catch(err => {
-                    err.response.data.message
+                    err.response
                     this.setState({messageContactErr:err.response.data.messageContactErr,messageEmailErr:err.response.data.messageEmailErr,
                          loading:false, member:[]})
                 });
@@ -292,6 +293,7 @@ class AddTenant extends Component{
             if(correspondingAddress === '') errors.correspondingAddress = `Corresponding Address can't be empty.`;
             if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
             if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
+            else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of 12 digit.`
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -304,7 +306,9 @@ class AddTenant extends Component{
             if(accountHolderName === '') errors.accountHolderName = `Account Holder name can't be empty.`;
             if(accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
             if(panCardNumber === '') errors.panCardNumber = `Pan Card number can't be empty.`;
+            else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
             if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
+            else if(IFSCCode.length !== 11) errors.IFSCCode = `IFSC code should be of 11 digit.`;
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -416,7 +420,7 @@ class AddTenant extends Component{
                         className="input" />
                     </Col>
                     <Col md={6}>
-                        <Label>Relation With Owner</Label>
+                        <Label>Relation With Tenant</Label>
                         <Select name={`relationId${i}`} options={this.getRelationList(this.props.relationList)} 
                           onChange={this.relationHandler.bind(this,'relationId'+i )}  required/>
                     </Col>
@@ -546,13 +550,13 @@ class AddTenant extends Component{
                             <Label>Account Number</Label>
                             <Input onKeyPress={this.numberValidation} onChange={this.onChange}
                              placeholder="Account Number"
-                             type="text" className="quantity" name='accountNumber' minLength='9' maxLength='18'/>
+                             type="text" className="quantity" name='accountNumber' maxLength='18'/>
                              {<span className="error">{this.state.errors.accountNumber}</span>}
                         </FormGroup>
                         <FormGroup>
                             <Label>PAN Card Number</Label>
                             <Input placeholder="Pan Number" onChange={this.onChange}
-                             type='text' name="panCardNumber" minLength='10'
+                             type='text' name="panCardNumber"
                              value={this.state.panCardNumber.toUpperCase()}
                              maxLength='10' onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
@@ -567,7 +571,6 @@ class AddTenant extends Component{
                             <Label>IFSC Code</Label>
                             <Input placeholder="IFSC code" onChange={this.ifscChange}
                             maxLength="11"
-                            minLength='11'
                             value={this.state.IFSCCode.toUpperCase()}
                             onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
@@ -636,7 +639,7 @@ class AddTenant extends Component{
                     <div>
                         <Button color="primary" className="mr-2" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
                         <Button color="primary"className="mr-2" id="nextBtn" style={{ display: this.state.step == 5 ? 'none' : 'inline-block' }} disabled={this.state.step == 5} onClick={this.nextPrev}>Next</Button>
-                        <Button color="success"  style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
+                        <Button color="success" className="mr-2" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
                         <Button color="danger" onClick={this.routeToDetail}>Cancel</Button>
                     </div>
         </div>

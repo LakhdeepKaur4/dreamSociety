@@ -140,6 +140,10 @@ OnKeyPresshandlerPhone(event) {
         event.preventDefault();
     }
 }
+changePassword=()=>{
+          
+    return this.props.history.replace('/superDashboard/changePassword')
+  }
 
 
     render() {
@@ -182,7 +186,7 @@ OnKeyPresshandlerPhone(event) {
     </div>
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
             <Form onSubmit={this.onSubmit}>
             <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
             <span aria-hidden="true">&times;</span>

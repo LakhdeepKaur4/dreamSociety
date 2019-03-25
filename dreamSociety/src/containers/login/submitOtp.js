@@ -36,15 +36,18 @@ export default class submitOT extends Component {
       <div>
        
           <UI>
+             <div style={{textAlign:'center'}}>
              <h2>Submit OTP</h2> 
-        <OtpInput
-        inputStyle={{width: '20px'}}
+        <div>
+        <OtpInput style={{left:'0px'}}className='mx-auto'
           onChange={otp => this.setState({otp})}
           numInputs={6}
           separator={<span>-</span>}
         />
+        </div>
         <span><button onClick={this.submit} style={{marginTop:'10px'}}>Submit</button></span>
         <span><button style={{marginTop:'10px', marginLeft:'4px'}}>Resend</button></span>
+             </div>
         </UI>
       </div>
       

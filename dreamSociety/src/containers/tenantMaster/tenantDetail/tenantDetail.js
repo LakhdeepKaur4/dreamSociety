@@ -205,7 +205,7 @@ class TenantDetail extends Component {
     }
 
     toggleTenant(){
-        this.setState({editTenant: !this.state.editTenant, emailValidError:'',messageContactErr:''})
+        this.setState({editTenant: !this.state.editTenant, emailValidError:'',messageContactErr:'',messageEmailErr:''})
     }
 
     browseBtn = (e) => {

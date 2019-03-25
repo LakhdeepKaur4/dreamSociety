@@ -90,6 +90,8 @@ import AddFloor from './containers/floorMaster/addFloor';
 import GetFloorDetail from './containers/floorMaster/getFloorDetail';
 import submitOTP from './containers/login/submitOtp';
 import token from './containers/token';
+import TokenVerification from './components/tokenVerification/tokenVerification';
+import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant'
 class App extends Component {
   render() {
     return (
@@ -174,8 +176,9 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/flatOwnerList' component={FlatOwnerList} />
             <PrivateRoute path='/superDashboard/flatMemberList' component={FlatMemberList} />
             <PrivateRoute path='/superDashboard/tenantDetails' component={TenantDetail} />
-            
+            <Route path='/login/accountVerificationTenant' exact component={AccountVerificationTenant} />
             <Route path='/login/accountVerification' exact component={AccountVarification} />
+            <Route path='/login/tokenVerification' exact component={TokenVerification} />
             <PrivateRoute path='/superDashBoard/tenantMemberDetail' component={TenantMemberDetail} />
             <PrivateRoute path='/superDashboard/addFloor' component={AddFloor} />
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
