@@ -73,15 +73,13 @@ export function deleteSelectedTenant(ids){
     }
 }
 
-export function updateTenantDetail(tenantName,gender, email, contact, aadhaarNumber, dob,
-    permanentAddress, fileName, towerName, flatNo, towerId, floorId,
-    picture, flatDetailId, tenantId){
-        console.log(tenantName,gender, email, contact, aadhaarNumber, dob,
-            permanentAddress, fileName, towerName, flatNo, towerId, floorId,
-            picture, flatDetailId, tenantId)
-        const request = axios.put(`${URN}/tenant/` + tenantId, {tenantName,gender, email, contact, aadhaarNumber, dob,
-            permanentAddress, fileName, towerName, flatNo, towerId, floorId,
-            picture, flatDetailId, tenantId}, {headers: authHeader()})
+export function updateTenantDetail(tenantName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber,
+    dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId){
+        console.log(tenantName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber,
+            dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId)
+        const request = axios.put(`${URN}/tenant/` + tenantId, {tenantName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber,
+            dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId},
+             {headers: authHeader()})
 
             return {
                 type: UPDATE_TENANT_DETAIL,

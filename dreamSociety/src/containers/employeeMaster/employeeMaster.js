@@ -210,6 +210,7 @@ FileChange=(event)=>{
     }
     
     onChangeCountry=(event)=>{
+        console.log(this.state)
         let selected= event.target.value;
       
         var data = _.find(this.props.locationMasterReducer.country,function(obj){
@@ -376,7 +377,7 @@ let formData=<div>
     <div  className="row">
                     <div className="col-md-6">
                             <label>Country Name</label>
-                           <select   className ="form-control" name="countryName"         defaultValue='no-value' onChange={this.onChangeCountry} >
+                           <select   className ="form-control" name="countryId"         defaultValue='no-value' onChange={this.onChangeCountry} >
                         <    DefaultSelect/> 
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
