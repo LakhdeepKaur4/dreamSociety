@@ -157,13 +157,13 @@ updateServices = () => {
     }   
 }
 
-    renderList = ({ vendors }) => {
+    renderList = ({ vendors }) => {    console.log(vendors)
 
         if (vendors) {
-            return vendors.vendor[0].vendor_services.sort((item1,item2)=>{  console.log(item1, item2)
-                var cmprVal = (item1.service_master[this.state.filterName].localeCompare(item2.service_master[this.state.filterName]))
+            return vendors.vendor[0] ? vendors.vendor[0].vendor_services.sort((item1,item2)=>{
+                var cmprVal = (item1.service_master[this.state.filterName].localeCompare(item2.service_master[this.state.filterName])) 
                 return this.state.sortVal ? cmprVal : -cmprVal;
-                }).filter(this.searchFilter(this.state.search)).map((item,index) => {
+                }) :[] .filter(this.searchFilter(this.state.search)).map((item,index) => {
                 return (
 
                     <tr key={item.vendorServiceId}>
@@ -286,7 +286,7 @@ updateServices = () => {
         }
            
 
-    render() {    
+    render() {   
             let tableData;
             tableData=
             <Table className="table table-bordered">
@@ -388,6 +388,7 @@ updateServices = () => {
 
 
 function mapStateToProps(state) {
+
     return {
         vendorMasterReducer: state.vendorMasterReducer,
         displayServiceMasterReducer: state.displayServiceMasterReducer

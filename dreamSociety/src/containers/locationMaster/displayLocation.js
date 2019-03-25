@@ -291,7 +291,7 @@ updateLocation = () => {
         this.setState({ modalLoading: true
     })
         }
-        console.log(locationId, countryId, stateId, cityId,locationName)
+
 }
 
 push=()=>{
