@@ -568,6 +568,7 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>PAN Card Number</Label>
                             <Input placeholder="Pan Number" onChange={this.panChange}
+                            value={this.state.panCardNumber.toUpperCase()}
                              type='text' name="panCardNumber"
                              maxLength='10' onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
