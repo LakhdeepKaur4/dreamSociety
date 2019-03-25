@@ -353,7 +353,7 @@ let formData=
     <div className="row">
     <div className="form-group col-md-4 ">
     <label>First Name</label>
-    <input  className="form-control" name="firstName" type="text"  onChange ={this.onChange}  maxLength={30}/>
+    <input  className="form-control" name="firstName" type="text"  onChange ={this.onChange}  onKeyPress={this.OnKeyPresshandler} maxLength={30}/>
      
     <span className="error">{this.state.errors.firstName}</span>
     </div>
