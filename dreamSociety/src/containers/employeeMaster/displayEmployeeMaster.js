@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Table, Input, Modal, Button, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
+import { Table, Input, Modal, Button, FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Row,Col } from 'reactstrap';
 
 import { getCountry, getState, getCity, getLocation } from './../../actionCreators/societyMasterAction';
 import { ViewEmployee, updateEmployee, deleteEmployee,deleteMultipleEmployee} from '../../actionCreators/employeeMasterAction';
@@ -207,18 +207,7 @@ ImageChange =(event)=>{
         let errors ={};
         // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
        
-        if(!this.state.countryName){
-          errors.countryName = "Country Name  can't be empty. "
-         }
-         if(!this.state.stateName){
-          errors.stateName ="State Name can't be empty. "
-         }
-          if(!this.state.cityName){
-          errors.cityName ="City Name can't be empty."
-         }
-         if(!this.state.locationName){
-          errors.locationName ="Location Name can't be empty."
-         }
+        
          if(!this.state.documentOne){
           errors.documentOne ="please select an ID."
          }
@@ -550,10 +539,11 @@ ImageChange =(event)=>{
      changePassword=()=>{ 
         return this.props.history.replace('/superDashboard/changePassword')
      }
-     browseBtn = (e) => {
-        document.getElementById('real-input').click();
+   
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
     }
-
+    
 
     render() {
         let tableData;
@@ -585,15 +575,24 @@ ImageChange =(event)=>{
             </Table>
 
            let modalData =<div>
-                <FormGroup>
-                                  
+                          
 
-
+                          <FormGroup>
+                      
+                <Row>
+                    <Col md={8}>
                           
                                   <input accept='image/*' type="file" name="profilePicture"   onChange={this.ImageChange} />
                                 
-                                  <img id="target" src={this.state.picture}/>
-                               
+                                  
+                                  </Col>
+                    <Col md={4}>
+                        <div style={{ textAlign:'center'}}>
+                            <img   id="target" src={this.state.picture} height='100px' width='100px' />
+                        </div>
+                    </Col>
+                    
+                </Row>
                                       
                                  
                               </FormGroup>

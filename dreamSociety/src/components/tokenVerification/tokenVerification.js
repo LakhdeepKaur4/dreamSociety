@@ -25,12 +25,15 @@ class  TokenVerification extends React.Component {
             }
         })
     }
+    sendLogin=()=>{
+        return this.props.history.push('/')
+       }
 render(){
     return (
         <div>
              <UI>
              <h2 style={{color:'red'}}>{this.state.message}</h2> 
-             
+             <span><button style={{marginTop:'10px', marginLeft:'4px',display:!this.state.tokenVerified?'block':'none'}} onClick={this.sendLogin}>login</button></span>
         </UI>
         </div>
     );
