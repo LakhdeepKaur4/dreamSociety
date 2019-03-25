@@ -294,7 +294,7 @@ selectAll = () => {
                   <th  onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'towerName'}})
-                        }}    style={{width:"40%"}}>Tower Name      <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                        }}    style={{width:"40%"}}>Tower Name      <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                  <th  style={{width:"20%"}}> Floors </th>
                   <th  style={{width:"20%"}}> Actions  </th>
                 </tr>
