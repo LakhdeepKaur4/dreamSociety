@@ -159,7 +159,7 @@ updateServices = () => {
 
     renderList = ({ vendors }) => {  
 
-        if (vendors) {
+        if (vendors && vendors.vendor[0]) {
             console.log(vendors.vendor[0])
             return   vendors.vendor[0].vendor_services.sort((item1,item2)=>{
                 var cmprVal = (item1.service_master[this.state.filterName].localeCompare(item2.service_master[this.state.filterName]))
