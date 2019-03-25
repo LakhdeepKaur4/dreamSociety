@@ -345,9 +345,8 @@ class SocietyManagementDetail extends Component {
     societyData = ({ detail_Society }) => {
      
         if (detail_Society) {
-            return detail_Society.filter(this.searchFilter(this.state.search)).map((item,index) => {
+            return detail_Society.map((item,index) => {
                
-
                 return (
                     <tr key={item.societyId}>
                   
@@ -453,28 +452,28 @@ class SocietyManagementDetail extends Component {
         }
     }
 
-    searchOnChange = (e) => {
-        this.setState({ search: e.target.value })
-    }
-    searchFilter(search) {
-        return function (x) {
-            return x.societyName.toLowerCase().includes(search.toLowerCase()) ||
-                x.country_master ? x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) : '' ||
-                x.state_master ? x.state_master.stateName.toLowerCase().includes(search.toLowerCase()) : '' || 
-                x.city_master ? x.city_master.cityName.toLowerCase().includes(search.toLowerCase()) : '' ||
-                x.location_master ? x.location_master.locationName.toLowerCase().includes(search.toLowerCase()) : '' ||
-                x.societyAddress.toLowerCase().includes(search.toLowerCase()) ||
-                x.bankName.toLowerCase().includes(search.toLowerCase()) ||
-                x.accountHolderName.toLowerCase().includes(search.toLowerCase()) ||
-                x.accountNumber.toLowerCase().includes(search.toLowerCase()) ||
-                x.IFSCCode.toLowerCase().includes(search.toLowerCase()) ||
-                x.email.toLowerCase().includes(search.toLowerCase()) ||
-                x.contactNumber.toLowerCase().includes(search.toLowerCase()) ||
-                x.registrationNumber.toLowerCase().includes(search.toLowerCase()) ||
-                x.totalBoardMembers.toLowerCase().includes(search.toLowerCase()) 
-                || !search;
-        }
-    }
+    // searchOnChange = (e) => {
+    //     this.setState({ search: e.target.value })
+    // }
+    // searchFilter(search) {
+    //     return function (x) {
+    //         return x.societyName.toLowerCase().includes(search.toLowerCase()) ||
+    //             x.country_master ? x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) : '' ||
+    //             x.state_master ? x.state_master.stateName.toLowerCase().includes(search.toLowerCase()) : '' || 
+    //             x.city_master ? x.city_master.cityName.toLowerCase().includes(search.toLowerCase()) : '' ||
+    //             x.location_master ? x.location_master.locationName.toLowerCase().includes(search.toLowerCase()) : '' ||
+    //             x.societyAddress.toLowerCase().includes(search.toLowerCase()) ||
+    //             x.bankName.toLowerCase().includes(search.toLowerCase()) ||
+    //             x.accountHolderName.toLowerCase().includes(search.toLowerCase()) ||
+    //             x.accountNumber.toLowerCase().includes(search.toLowerCase()) ||
+    //             x.IFSCCode.toLowerCase().includes(search.toLowerCase()) ||
+    //             x.email.toLowerCase().includes(search.toLowerCase()) ||
+    //             x.contactNumber.toLowerCase().includes(search.toLowerCase()) ||
+    //             x.registrationNumber.toLowerCase().includes(search.toLowerCase()) ||
+    //             x.totalBoardMembers.toLowerCase().includes(search.toLowerCase()) 
+    //             || !search;
+    //     }
+    // }
 
     
     logout=()=>{
@@ -530,14 +529,14 @@ class SocietyManagementDetail extends Component {
             
             <FormGroup>
                             <Label>Society Name</Label>
-                            <Input type="text" id="societyId" name="societyName"  value={this.state.societyName} onKeyPress={this.onKeyPressHandler} maxLength={100}/>
+                            <Input type="text" id="societyId" name="societyName"  value={this.state.societyName} onKeyPress={this.onKeyPressHandler} maxLength={100} readOnly/>
                             <span className="error">{this.state.errors.societyName}</span> 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Country Name</Label>
 
-                            <Input type="select" id="countryId" name="countryName" onChange={this.onChangeCountry}  value={this.state.countryName} required>
+                            <Input  id="countryId" name="countryName" onChange={this.onChangeCountry}  value={this.state.countryName} readOnly>
                                 {/* <option value={this.state.countryId}>{this.state.countryName}</option> */}
                                 <DefaultSelect/>
                                 {this.fetchCountry(this.props.societyReducer)}
@@ -546,7 +545,7 @@ class SocietyManagementDetail extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label>State Name</Label>
-                            <Input type="select" id="stateId" name="stateName" onChange={this.onChangeState} >
+                            <Input  id="stateId" name="stateName" onChange={this.onChangeState}  value={this.state.stateName} readOnly>
                             {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
                                   {this.state.stateName ? <DefaultSelect />: null}
                                     {this.state.stateName ? null : this.fetchState(this.props.societyReducer)}
@@ -555,7 +554,7 @@ class SocietyManagementDetail extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label>City Name</Label>
-                            <Input type="select" id="cityId" name="cityName" onChange={this.onChangeCity} >
+                            <Input id="cityId" name="cityName" onChange={this.onChangeCity} value={this.state.cityName}  readOnly>
                                {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
                                 {this.state.cityName ? <DefaultSelect />: null}
                                 {this.state.cityName ? null : this.fetchCity(this.props.societyReducer)}
@@ -564,7 +563,7 @@ class SocietyManagementDetail extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label>Location Name</Label>
-                            <Input type="select" id="locationId" name="locationName" onChange={this.onChangeLocation}>
+                            <Input  id="locationId" name="locationName" onChange={this.onChangeLocation} value={this.state.locationName} readOnly>
                             {this.state.locationName ? <option>{this.state.locationName}</option> : <option disabled>--Select--</option>}
                                  {this.state.locationName ? <DefaultSelect />: null}
                                  {this.state.locationName ? null : this.fetchLocation(this.props.societyReducer)}  
@@ -575,20 +574,26 @@ class SocietyManagementDetail extends Component {
                         
                         <FormGroup>
                             <Label>Society Address</Label>
-                            <Input type="textarea"  name="societyAddress" onChange={this.onChangeHandler} value={this.state.societyAddress}  maxLength={300}/>
+                            <Input   name="societyAddress" onChange={this.onChangeHandler} value={this.state.societyAddress}  maxLength={300} readOnly/>
                             <span className="error">{this.state.errors.societyAddress}</span> 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Bank Name</Label>
-                            <Input type="text"  name="bankName" onChange={this.onChangeHandler} value={this.state.bankName} onKeyPress={this.onKeyPressHandler} maxLength={50}/>
+                            <Input type="text"  name="bankName" onChange={this.onChangeHandler} value={this.state.bankName.toUpperCase()} onKeyPress={this.onKeyPressHandler} maxLength={50}/>
                             <span className="error">{this.state.errors.bankName}</span> 
                         </FormGroup>
 
                         
                         <FormGroup>
                             <Label>IFSC Code</Label>
-                            <Input type="text"  name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode}  maxLength={11} style={{'textTransform':'upperCase'}}/>
+                            <Input type="text"  name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode.toUpperCase()} onKeyPress={(e) => {
+                                const pattern = /^[a-zA-Z0-9]+$/;
+                                let inputChar = String.fromCharCode(e.charCode);
+                                if (!pattern.test(inputChar)) {
+                                    e.preventDefault();
+                                }
+                            }}  maxLength={11} style={{'textTransform':'upperCase'}}/>
                             <span className="error">{this.state.errors.IFSCCode}</span> 
                         </FormGroup>
                         
@@ -620,13 +625,13 @@ class SocietyManagementDetail extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label>Registration Number</Label>
-                            <Input type="text"  name="registrationNumber" onChange={this.onChangeHandler} value={this.state.registrationNumber}  maxLength={50}/>
+                            <Input type="text"  name="registrationNumber" onChange={this.onChangeHandler} value={this.state.registrationNumber.toUpperCase()}  maxLength={20}/>
                             <span className="error">{this.state.errors.registrationNumber}</span> 
                         </FormGroup>
 
                         <FormGroup>
                             <Label>Total Board Members</Label>
-                            <Input type="text"  name="totalBoardMembers" onChange={this.onChangeHandler} value={this.state.totalBoardMembers}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={3}/>
+                            <Input type="text"  name="totalBoardMembers" onChange={this.onChangeHandler} value={this.state.totalBoardMembers}  onKeyPress={this.OnKeyPresshandlerPhone} maxLength={2}/>
                             <span className="error">{this.state.errors.totalBoardMembers}</span> 
                         </FormGroup>
                         <Button color="primary mr-2" onClick={this.editSocietyType}>Save</Button> 
@@ -646,8 +651,8 @@ class SocietyManagementDetail extends Component {
                             </div>
                             <div>
                               
-                                <SearchFilter type="text" value={this.state.search}
-                                    onChange={this.searchOnChange} />
+                                {/* <SearchFilter type="text" value={this.state.search}
+                                    onChange={this.searchOnChange} /> */}
                             </div>
                             {/* <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button> */}
