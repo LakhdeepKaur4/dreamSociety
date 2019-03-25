@@ -50,7 +50,8 @@ class flatMasterDetails extends Component {
     toggleEditUserModal() {
         this.setState({
           editUserModal: ! this.state.editUserModal,
-          message: ''
+          message: '',
+          errors:{}
         });
       }
     

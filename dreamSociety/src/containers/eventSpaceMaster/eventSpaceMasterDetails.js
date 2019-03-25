@@ -64,7 +64,8 @@ class eventSpaceMasterDetails extends Component {
     toggleEditUserModal() {
         this.setState({
             editUserModal: !this.state.editUserModal,
-            message: ''
+            message: '',
+            errors :{}
         });
     }
     onChangeSizeType=(e)=>{

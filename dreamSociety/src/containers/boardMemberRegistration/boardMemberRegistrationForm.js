@@ -208,10 +208,10 @@ onChange = (e) => {
     if (!!this.state.errors[e.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[e.target.name];
-        this.setState({ [e.target.name]: e.target.value, errors });
+        this.setState({ [e.target.name]: e.target.value.trim(), errors });
     }
     else {
-        this.setState({ [e.target.name]: e.target.value });
+        this.setState({ [e.target.name]: e.target.value.trim() });
     }
     
 }
@@ -230,7 +230,7 @@ fetchDesignation = ({designation}) => {
 sameAddress = (e) => {
     if(!!document.getElementById('isChecked').checked){
         console.log('is checked')
-       this.setState({permanentAddress: this.state.currentAddress})
+       this.setState({permanentAddress: this.state.currentAddress.trim()})
        document.getElementById('permanentaddr').disabled = true;
     }
    else{
@@ -334,7 +334,7 @@ emailChange = (e) => {
     this.setState({errors:{email: ''}})
     this.setState({email:e.target.value, emailServerError:''})
     if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
-        this.setState({[e.target.name]:e.target.value});
+        this.setState({[e.target.name]:e.target.value.trim()});
         console.log(this.state.email)
         this.setState({emailValidError: ''})
     }
@@ -343,7 +343,7 @@ emailChange = (e) => {
         let errors = Object.assign({}, this.state.errors);
         delete errors[e.target.name];
         console.log(this.state.email)
-        this.setState({ [e.target.name]: e.target.value, errors });
+        this.setState({ [e.target.name]: e.target.value.trim(), errors });
     }
     else {
         this.setState({email:e.target.value});

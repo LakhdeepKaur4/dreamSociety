@@ -196,11 +196,11 @@ class TenantMemberDetail extends Component {
     }
 
     changeHandler = (e) => {
-        this.setState({[e.target.name]:e.target.value})
+        this.setState({[e.target.name]:e.target.value.trim()})
     }
 
     addNewMemberChange = (e) => {
-        this.setState({[e.target.name]:e.target.value})
+        this.setState({[e.target.name]:e.target.value.trim()})
         console.log(this.state)
     }
 

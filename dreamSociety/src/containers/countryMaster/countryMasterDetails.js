@@ -29,7 +29,7 @@ class CountryDetails extends Component{
                 editUserModal: false,
                  menuVisible: false,
                  search: '',
-                 errors:'',
+                 errors:{},
                  filterName:"countryName",
                  
         }
@@ -47,7 +47,8 @@ class CountryDetails extends Component{
     toggleEditUserModal() {
         this.setState({
           editUserModal: ! this.state.editUserModal,
-          message: ''
+          message: '',
+          errors:{}
         });
       }
 
@@ -82,6 +83,8 @@ class CountryDetails extends Component{
         if (countryName === '') errors.countryName = "Cant be empty";
 
         if (code === '') errors.code = "Cant be empty";
+
+        else if (this.state.code.length !== 3 && this.state.code.length !== 2) errors.code = "Characters should be of length 2 or 3"
 
         if (currency === '') errors.currency = "Cant be empty";
 
@@ -217,13 +220,13 @@ class CountryDetails extends Component{
             event.preventDefault();
         }
     }
-    // onKeyPressCode=(event)=>{
-    //     const pattern = /^[A-Z ]+$/;
-    //     let inputChar = String.fromCharCode(event.charCode);
-    //     if (!pattern.test(inputChar)) {
-    //         event.preventDefault();
-    //     }
-    // }
+    onKeyPressCode=(event)=>{
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
@@ -265,7 +268,15 @@ class CountryDetails extends Component{
 
     }
     onChangeCountry=(e)=>{
-       this.setState({code:e.target.value.toUpperCase()})
+        // let codeDetails= e.target.value.toUpperCase();
+        if (!this.state.errors[e.target.value]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            console.log('no errors');
+            this.setState({ [e.target.name]: e.target.value.toUpperCase().trim(''), errors });
+        } else {
+            this.setState({code:e.target.value.toUpperCase()});
+        }
 
     }
 
@@ -327,7 +338,7 @@ class CountryDetails extends Component{
                                         name="code"
                                         value={this.state.code}
                                         maxLength='3'
-                                        // onKeyPress={this.onKeyPressCode}
+                                        onKeyPress={this.onKeyPressCode}
                                         onChange={this.onChangeCountry} />
                                          <span  className='error'>{this.state.errors.code}</span>
                                 </FormGroup>

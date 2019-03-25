@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { getVendorMaster,getRateType,deleteSelectedVendorServices,updateVendorServices,deleteVendorServices} from '../../../actionCreators/vendorMasterAction';
+import {getVendorMaster, getRateType,deleteSelectedVendorServices,deleteVendorServices,updateVendorServices} from '../../../actionCreators/vendorMasterAction'
+
 import { getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,6 +10,7 @@ import DefaultSelect from '../../../constants/defaultSelect';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/vendorDashboardInside';
 import Spinner from '../../../components/spinner/spinner';
+import spinner from '../../../components/spinner/spinner';
 
 
 
@@ -17,6 +19,7 @@ class DisplayVendorServices extends Component {
 
 
     state = {
+            filterName:"serviceName",
             vendorServiceId:'',         
             serviceId: '',
             serviceName: '',
@@ -32,7 +35,8 @@ class DisplayVendorServices extends Component {
             search: '', 
             ids:[],
             isDisabled:true,    
-            errors:{}
+            errors:{},
+            modalLoading:false
         }
 
     componentDidMount() {
@@ -61,9 +65,9 @@ class DisplayVendorServices extends Component {
     }
 
     refreshData() {
-        this.props.getVendorMaster().then(()=> this.setState({loading:false}));
-        this.props.getServiceType().then(()=> this.setState({loading:false}));
-        this.props.getRateType().then(()=> this.setState({loading:false}));
+        this.props.getVendorMaster().then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false}));
+        this.props.getServiceType().then(()=> this.setState({loading:false, modalLoading: false}));
+        this.props.getRateType().then(()=> this.setState({loading:false, modalLoading: false}));
     }
 
     
@@ -141,17 +145,25 @@ updateServices = () => {
             if(isValid){           
                 this.props.updateVendorServices(vendorServiceId,serviceId,rateId,rate)
                     .then(() => this.refreshData())
-                this.setState({loading:true,
+                    .catch(err=>{
+                        this.setState({message: err.response.data.message, loading: true})
+                    
+                    }) 
+                this.setState({
                     vendorServiceId,serviceId,rateId,rate,
-                    editVendorModal: !this.state.editVendorModal
+                    
+                    modalLoading:true
                 })
     }   
 }
 
-    renderList = ({ vendors }) => {
+    renderList = ({ vendors }) => {    console.log(vendors)
 
         if (vendors) {
-            return vendors.vendor[0].vendor_services.filter(this.searchFilter(this.state.search)).map((item,index) => {
+            return vendors.vendor[0] ? vendors.vendor[0].vendor_services.sort((item1,item2)=>{
+                var cmprVal = (item1.service_master[this.state.filterName].localeCompare(item2.service_master[this.state.filterName])) 
+                return this.state.sortVal ? cmprVal : -cmprVal;
+                }) :[] .filter(this.searchFilter(this.state.search)).map((item,index) => {
                 return (
 
                     <tr key={item.vendorServiceId}>
@@ -274,7 +286,7 @@ updateServices = () => {
         }
            
 
-    render() {    
+    render() {   
             let tableData;
             tableData=
             <Table className="table table-bordered">
@@ -282,8 +294,11 @@ updateServices = () => {
             <tr>
                 <th  style={{width:'4%'}}></th>
                 <th  style={{width:'4%'}}>#</th>
-              
-                <th>Services</th>
+                <th onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:"serviceName"}});
+                        }}>Services  <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+        
                 <th>Rate Types </th>           
                 <th>Rates</th>             
                 <th>Actions</th>
@@ -296,21 +311,8 @@ updateServices = () => {
             {this.renderList(this.props.vendorMasterReducer)}
         </tbody>
     </Table>
-        let deleteSelectedButton = <Button color="danger" className="mb-2"
-        onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
-            return(
-            <div>
-                 <UI onClick={this.logout} change={this.changePassword}>
-
-                <div className="w3-container w3-margin-top w3-responsive">
-                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                    <span aria-hidden="true">&times;</span>
-            </div>
-           
-            <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
-                <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}> Edit Vendor Services</ModalHeader>
-                <ModalBody>                    
-                    <FormGroup>
+    let modalData=<div>
+             <FormGroup>
                         <Label>Service Types</Label>
                         <Input type="select" name="serviceId" value={this.state.serviceId}  onChange={this.onHandleChange}>                      
                         <option>{this.state.serviceName}</option>
@@ -328,7 +330,7 @@ updateServices = () => {
                     </FormGroup>
                     <FormGroup>
                         <Label> Rates</Label>
-                        <Input name="rate" value={this.state.rate} onChange={this.onRateChange}>
+                        <Input name="rate" value={this.state.rate} maxLength={6} onChange={this.onRateChange}>
                         </Input>
                         <div>{!this.state.rate ? <span className="error">{this.state.errors.rate}</span>: null}</div>
                     </FormGroup>
@@ -337,6 +339,22 @@ updateServices = () => {
                             <Button color="primary" className="mr-2" onClick={this.updateServices}>Save </Button>
                             <Button color="danger" onClick={this.toggleEditVendorModal.bind(this)}>Cancel</Button>
                         </FormGroup> 
+    </div>
+        let deleteSelectedButton = <Button color="danger" className="mb-2"
+        onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
+            return(
+            <div>
+                 <UI onClick={this.logout} change={this.changePassword}>
+
+                <div className="w3-container w3-margin-top w3-responsive">
+                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                    <span aria-hidden="true">&times;</span>
+            </div>
+           
+            <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
+                <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}> Edit Vendor Services</ModalHeader>
+                <ModalBody>                    
+                    {!this.state.modalLoading?modalData:<Spinner/>}
                 </ModalBody>
             </Modal>
             <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Vendor Services</h3>
@@ -370,6 +388,7 @@ updateServices = () => {
 
 
 function mapStateToProps(state) {
+
     return {
         vendorMasterReducer: state.vendorMasterReducer,
         displayServiceMasterReducer: state.displayServiceMasterReducer

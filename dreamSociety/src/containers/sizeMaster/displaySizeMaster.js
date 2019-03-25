@@ -144,28 +144,28 @@ else {
        var cmprVal=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
        return this.state.sortVal ?cmprVal:-cmprVal}).filter(this.searchFilter(this.state.search)).map((item,index) => {
         return (
+
           <tr key={item.sizeId}>
-               <td><input type="checkbox" name="ids" value={item.eventId} className="SelectAll"
-                         onChange={(e, i) => {
+                          <td><input type="checkbox" name="ids" className="SelectAll" value={item.sizeId}
+                         onChange={(e) => {
                             const {sizeId} = item
                             if(!e.target.checked){
-                                if(this.state.ids.length>-1){
-                                    document.getElementById('allSelect').checked=false;
+                                document.getElementById('allSelect').checked=false;
                                 let indexOfId = this.state.ids.indexOf(sizeId);
                                 if(indexOfId > -1){
-                                    this.state.ids.splice(indexOfId, 1)
+                                    this.state.ids.splice(indexOfId, 1);
                                 }
                                 if(this.state.ids.length === 0){
-                                    this.setState({isDisabled: true})
+                                    this.setState({isDisabled: true});
                                 }
                             }
-                        }
                             else {
-                                this.setState({ids: [...this.state.ids, sizeId]})
+                                this.setState({ids: [...this.state.ids, sizeId]});
                                 if(this.state.ids.length >= 0){
                                     this.setState({isDisabled: false})
                                 }
-                        } 
+                            }
+                                
                              }}/></td>
            <td>{index+1}</td>
 
@@ -213,40 +213,38 @@ selectAll = () => {
   let selectMultiple = document.getElementsByClassName('SelectAll');
   let ar =[];
       for(var i = 0; i < selectMultiple.length; i++){
-                  ar.push(parseInt(selectMultiple[i].value));
-                  selectMultiple[i].checked = true;
-          }
-          this.setState({ids: ar});
-          if(ar.length > 0){
-              this.setState({isDisabled: false});
-          }
-  }
-  unSelectAll = () =>{
-      let allIds = []
-      let unSelectMultiple = document.getElementsByClassName('SelectAll');
-      for(var i = 0; i < unSelectMultiple.length; i++){
-              unSelectMultiple[i].checked = false
+              ar.push(parseInt(selectMultiple[i].value));
+              selectMultiple[i].checked = true;
       }
+      this.setState({ids: ar});
+      if(ar.length > 0){
+          this.setState({isDisabled: false});
+      }
+}
 
-          this.setState({ids: [ ...allIds]});
-          if(allIds.length === 0){
-              this.setState({isDisabled: true});
-          }
+unSelectAll = () =>{
+  
+  let unSelectMultiple = document.getElementsByClassName('SelectAll');
+  let allIds = [];
+  for(var i = 0; i < unSelectMultiple.length; i++){
+          unSelectMultiple[i].checked = false
   }
-  deleteSelected(ids){
-          this.setState({loading:true,
-              isDisabled:true});
-              if(window.confirm('Are You Sure ?')){
-          this.props.deleteMultipleSize(ids)
-          .then(() => {this.props.displaySize()
-           .then(()=>this.setState({loading:false}))})
-           .catch(err => err.response.data.message);
-          }
-          else{
-              this.props.displaySize()
-           .then(()=>this.setState({loading:false}))
-          }
-      }
+  
+  this.setState({ids: [ ...allIds]});
+  if(allIds.length === 0){
+      this.setState({isDisabled: true});
+  }
+  
+}
+
+deleteSelected(ids){
+     this.setState({loading:true,
+     isDisabled:true});
+     this.props.deleteMultipleSize(ids)
+     .then(() => this.refreshData())
+     .catch(err => err.response.data.message);
+    }
+
 
   render() {
     let tableData;
@@ -275,7 +273,7 @@ selectAll = () => {
                   <Label for="lastName"> Size Type</Label>
                   <Input id="sizeType" name ="sizeType" value={this.state.sizeType} onChange={this.onChange}
                   
-                  onKeyPress ={ this.OnKeyPresshandle}   maxLength={20}
+                  onKeyPress ={ this.OnKeyPresshandle}   maxLength={30}
                    />
                      <span className="error">{this.state.errors.sizeType}</span> 
                      <span className="error">{this.state.message} </span>  
@@ -285,8 +283,10 @@ selectAll = () => {
    if(!this.props.SizeDetails.getSize){
     tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching details</Spinner></div>
   }
-  let deleteSelectedButton = <Button color="danger" className="mb-2"  disabled={this.state.isDisabled} 
-  onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
+
+  let deleteSelectedButton = <Button color="danger" className="mb-2"  
+  onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled} >Delete Selected</Button>
+
     return (
      
 

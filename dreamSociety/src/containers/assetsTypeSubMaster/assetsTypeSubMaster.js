@@ -7,7 +7,7 @@ import { getAssets, addAssetsSubType } from '../../actionCreators/assetsSubActio
 import UI from '../../components/newUI/superAdminDashboard';
 import { Form,FormGroup, Input, Button, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
-
+import DefaultSelect from './../../constants/defaultSelect';
 class AssetsTypeSubMaster extends Component {
     constructor(props) {
         super(props)
@@ -44,7 +44,7 @@ class AssetsTypeSubMaster extends Component {
             errors.description="Description can't be empty"
         }
         else if(this.state.assetId===''){
-            errors.assetId="AssetsId can't be empty"
+            errors.assetId="Assets type can't be empty"
         }
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
@@ -53,7 +53,7 @@ class AssetsTypeSubMaster extends Component {
             this.props.addAssetsSubType(assetsSubType, description, assetId)
             .then(() => this.props.history.push('/superDashBoard/assetsTypeSubMaster'))
         }
-       ;
+       console.log(this.state)
     }
 
     getAssetsName = ({ AssetsList }) => {
@@ -75,6 +75,10 @@ class AssetsTypeSubMaster extends Component {
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
+    changePassword=()=>{
+          
+        return this.props.history.replace('/superDashboard/changePassword')
+      }
 
     render() {
         let formData;
@@ -84,7 +88,8 @@ class AssetsTypeSubMaster extends Component {
                 <div>
                     <FormGroup>
                     <Label>Assets Type</Label>
-                    <Input type="select" onChange={this.onChangeHandler} name="assetId">
+                    <Input type="select" defaultValue='no-value' onChange={this.onChangeHandler} name="assetId">
+                    <DefaultSelect/>
                         {this.getAssetsName(this.props.assetsName)}
                     </Input>
                     <span className="error">{this.state.errors.assetId}</span>
@@ -111,7 +116,7 @@ class AssetsTypeSubMaster extends Component {
 
         return (
             <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword} >
                     <div>
                     <Form onSubmit={this.onSubmit}>
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>

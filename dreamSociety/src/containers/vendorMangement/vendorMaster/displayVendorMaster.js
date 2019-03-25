@@ -31,7 +31,9 @@ class DisplayVendorMaster extends Component {
             modalIsOpen: false,
             ids:[],
             isDisabled:true,    
-            errors:{}
+            errors:{},
+            message:'',
+            modalLoading: false,
         }
 
     componentDidMount() {
@@ -39,6 +41,7 @@ class DisplayVendorMaster extends Component {
     }
 
     onHandleChange=(e)=>{
+        this.setState({message:''})
         if(!!this.state.errors[e.target.name]){
             let errors =Object.assign({},this.state.errors)
             delete  errors[e.target.name]
@@ -60,19 +63,19 @@ class DisplayVendorMaster extends Component {
     }
 
     refreshData() {
-        this.props.getVendorMaster().then(()=> this.setState({loading:false}));
+        this.props.getVendorMaster().then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false}));
     }
 
     editUser(vendorId,vendorName,currentAddress,permanentAddress,contact,documentOne,documentTwo,picture){
     this.setState({
             vendorId,vendorName,currentAddress,permanentAddress,contact,documentOne,documentTwo,picture
-            ,editVendorModal: !this.state.editServiceModal})
+            ,editVendorModal: !this.state.editVendorModal})
             
     }
 
     toggleEditVendorModal() {
         this.setState({
-            editVendorModal: !this.state.editVendorModal
+            editVendorModal: !this.state.editVendorModal, message:''
         });
     }
     toggleModal() {
@@ -86,12 +89,25 @@ class DisplayVendorMaster extends Component {
         this.setState({ modalIsOpen: false });
     }
 
-    selectImages = (e) => {
-        this.setState({
-            profilePicture: e.target.files[0]
-        })
-
+    selectImages = (event) =>{
+        if(!!this.state.errors[event.target.name]){
+        
+            let errors =Object.assign({},this.state.errors)
+            delete  errors[event.target.name]
+            this.setState({[event.target.name]:event.target.files,errors});
+        }
+        else{
+        if (event.target.files && event.target.files[0]) {
+          let reader = new FileReader();
+          reader.onload = (e) => {
+            this.setState({picture:  reader.result});
+          };
+        
+          reader.readAsDataURL(event.target.files[0]);
+          this.setState({profilePicture:event.target.files[0]})
+        }
     }
+}
 
     selectImage = (e) => {
         this.setState({
@@ -146,7 +162,6 @@ class DisplayVendorMaster extends Component {
     }
 
     deleteSelected(ids){
-        console.log(ids)
         this.setState({loading:true,
         isDisabled:true});
         this.props.deleteSelectedVendor(ids)
@@ -177,9 +192,9 @@ class DisplayVendorMaster extends Component {
             } 
         const formData=new FormData();
         this.setState({ errors });
-        const isValid = Object.keys(errors).length === 0
-        if (isValid) {
-        this.setState({loading: true})
+        const isValid = Object.keys(errors).length === 0    
+        if (isValid  &&  this.state.message === '') {
+     
         formData.append('vendorId',this.state.vendorId)
         formData.append('vendorName',this.state.vendorName)
         formData.append('contact',this.state.contact)
@@ -188,8 +203,19 @@ class DisplayVendorMaster extends Component {
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)
-        this.props.updateVendor( this.state.vendorId,formData).then(() => this.refreshData());   
-        this.setState({ editVendorModal: !this.state.editVendorModal});
+        this.props.updateVendor( this.state.vendorId,formData).then(() => this.refreshData())
+        .catch(err=>{
+            this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+        
+        }) 
+        if(this.state.message === ''){
+            this.setState({editVendorModal: true})
+        }
+        else {
+            this.setState({editVendorModal: false})
+        }   
+        this.setState({ modalLoading: true
+        })
         }
    }
 
@@ -236,7 +262,7 @@ class DisplayVendorMaster extends Component {
                         <td><img style={{width:"100%", height:"15%"}} src={PicURN+ vendors.picture}></img></td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewServices.bind(this,vendors.vendorId)}>View Services</button></td>                   
                         <td>
-                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorId, vendors.vendorName,vendors.currentAddress,vendors.permanentAddress,vendors.contact,vendors.documentOne,vendors.documentTwo,vendors.picture)}>Edit</Button> 
+                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorId, vendors.vendorName,vendors.currentAddress,vendors.permanentAddress,vendors.contact,vendors.documentOne,vendors.documentTwo, PicURN+vendors.picture)}>Edit</Button> 
                 
                             <Button color="danger"onClick={this.delete.bind(this,vendors.vendorId)} >Delete</Button>
                         </td>
@@ -358,21 +384,8 @@ class DisplayVendorMaster extends Component {
             {this.renderList(this.props.vendorMasterReducer)}
         </tbody>
     </Table>
-        let deleteSelectedButton = <Button color="danger" className="mb-2"
-        onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
-            return(
-            <div>
-                 <UI onClick={this.logout} change={this.changePassword}>
-
-                <div className="w3-container w3-margin-top w3-responsive">
-                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                    <span aria-hidden="true">&times;</span>
-            </div>
-           
-            <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
-                <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}> Edit Vendor</ModalHeader>
-                <ModalBody>
-                    <FormGroup>
+          let modalData=<div>
+              <FormGroup>
                         <Label> Vendor Name</Label>
                         <Input name="vendorName" value={this.state.vendorName}  onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}>
                         </Input>
@@ -395,6 +408,7 @@ class DisplayVendorMaster extends Component {
                         <Input name="contact" value={this.state.contact} onKeyPress={this.OnKeyPresshandlerPhone}  maxLength={10} onChange={this.onHandleChange}>
                         </Input>
                         <span className="error">{this.state.errors.contact}</span>
+                        <span className="error">{this.state.message}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label> Document One</Label>
@@ -418,64 +432,82 @@ class DisplayVendorMaster extends Component {
                     <FormGroup>
                             <Label>Upload Another Id</Label>
                             <Input type="file" name="documentTwo"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage2} required  />
- 
+                         
                         </FormGroup>
                     <FormGroup>
                     <Label> Profile Picture</Label>
-                        <img style={{width:"30%", height:"35%"}} src={PicURN+ this.state.picture}></img>
+                        <img id="target" style={{width:"30%", height:"35%"}} src={this.state.picture}/>
                         <Input type="file" name="profilePicture" accept="image/*" onChange={this.selectImages} required /> 
+                        
                     </FormGroup>
-                    
+                  
                     <FormGroup>
                             <Button color="primary" className="mr-2" onClick={this.updateVendor}>Save </Button>
                             <Button color="danger" onClick={this.toggleEditVendorModal.bind(this)}>Cancel</Button>
                         </FormGroup>
-                </ModalBody>
-            </Modal>
-            <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Vendor Details</h3>
-            <Button color="primary" type="button" onClick={this.push}>Add Vendor</Button></div>
-            <SearchFilter type="text" value={this.state.search}
-                        onChange={this.searchOnChange} />
+          </div>
+                
+                        let deleteSelectedButton = <Button color="danger" className="mb-2"
+                        onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
+                            return(
+                            <div>
+                                <UI onClick={this.logout} change={this.changePassword}>
 
-                     {deleteSelectedButton}
-                     <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
-                        id="allSelect"
-                        type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        } }/>
-                    </Label>
-                         {!this.state.loading ? tableData : <Spinner />}
-            </div>
+                                <div className="w3-container w3-margin-top w3-responsive">
+                                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                    <span aria-hidden="true">&times;</span>
+                            </div>
+                        
+                            <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
+                                <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}> Edit Vendor</ModalHeader>
+                                <ModalBody>
+                                {!this.state.modalLoading?modalData:<Spinner/>}
+                                    </ModalBody>
+                                </Modal>
+                                <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Vendor Details</h3>
+                                <Button color="primary" type="button" onClick={this.push}>Add Vendor</Button></div>
+                                <SearchFilter type="text" value={this.state.search}
+                                            onChange={this.searchOnChange} />
 
-                <Modal 
-                     isOpen={this.state.modalIsOpen} >
-                  <ModalHeader toggle={this.toggleModal.bind(this)}/>
-                  <ModalBody style={{paddingLeft:"45px", paddingRight:"2px"}}>
-                      <GoogleDocsViewer
-                        width="400px"
-                        height="700px"
-                        fileUrl={DocURN+this.state.documentOne}/>
-                  </ModalBody>
-                </Modal>
+                                        {deleteSelectedButton}
+                                        <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                                            id="allSelect"
+                                            type="checkbox" onChange={(e) => {
+                                                if(e.target.checked) {
+                                                    this.selectAll();
+                                                }
+                                                else if(!e.target.checked){
+                                                    this.unSelectAll();
+                                                } 
+                                            } }/>
+                                        </Label>
+                                            {!this.state.loading ? tableData : <Spinner />}
+                                </div>
 
-                <Modal
-                     isOpen={this.state.modal} >
-                  <ModalHeader toggle={this.toggle.bind(this)}/>
-                  <ModalBody style={{paddingLeft:"45px", paddingRight:"2px"}}>
-                  
-                      <GoogleDocsViewer
-                        width="400px"
-                        height="700px"
-                        fileUrl={DocURN+this.state.documentTwo}/>
+                                <Modal 
+                                    isOpen={this.state.modalIsOpen} >
+                                <ModalHeader toggle={this.toggleModal.bind(this)}/>
+                                <ModalBody style={{paddingLeft:"45px", paddingRight:"2px"}}>
+                                    <GoogleDocsViewer
+                                        width="400px"
+                                        height="700px"
+                                        fileUrl={DocURN+this.state.documentOne}/>
+                                </ModalBody>
+                                </Modal>
 
-                  </ModalBody>
-              </Modal>
-                </UI>            
+                                <Modal
+                                    isOpen={this.state.modal} >
+                                <ModalHeader toggle={this.toggle.bind(this)}/>
+                                <ModalBody style={{paddingLeft:"45px", paddingRight:"2px"}}>
+                                
+                                    <GoogleDocsViewer
+                                        width="400px"
+                                        height="700px"
+                                        fileUrl={DocURN+this.state.documentTwo}/>
+
+                                </ModalBody>
+                            </Modal>
+                  </UI>            
             </div>
          )
     }

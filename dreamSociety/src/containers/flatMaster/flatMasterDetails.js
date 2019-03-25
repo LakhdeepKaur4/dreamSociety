@@ -71,7 +71,8 @@ class flatMasterDetails extends Component {
 
     toggleEditUserModal() {
         this.setState({
-            editUserModal: !this.state.editUserModal
+            editUserModal: !this.state.editUserModal,
+            errors:{}
         });
     }
 
@@ -83,7 +84,7 @@ class flatMasterDetails extends Component {
     }
     updateBook = (e) => {
         e.preventDefault();
-      
+    
        
         let { flatId, 
             // societyId,societyName,
@@ -497,7 +498,19 @@ class flatMasterDetails extends Component {
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                             <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
                             <ModalBody>
-                              
+                                {/* <FormGroup>
+                                    <Label for="roles">SocietyName</Label>
+                                    <Input type="select" 
+                                    name="societyId"
+                                            value={this.state.societyId} 
+                                            onChange={this.societyChange} >
+                                            
+                                            <option disabled>Select</option>
+                                            
+                                            {this.fetchDrop(this.props.flats)}     
+                                        </Input>
+                                        <span  className='error'>{this.state.errors.societyId}</span>
+                                </FormGroup> */}
                                  {!this.state.modalLoading  ? modalData : <Spinner />}
                                
                             </ModalBody>

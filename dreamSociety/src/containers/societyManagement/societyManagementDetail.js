@@ -174,7 +174,7 @@ class SocietyManagementDetail extends Component {
         
         
         else if(this.state.IFSCCode.length !== 11){
-            errors.IFSCCode="IFSC Code is not valid"
+            errors.IFSCCode="IFSC Code must be 11 digits"
         }
         
         
