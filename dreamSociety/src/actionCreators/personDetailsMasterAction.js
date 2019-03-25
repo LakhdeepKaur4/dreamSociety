@@ -36,9 +36,9 @@ export function getTower(){
      }
 
 
-export function addPerson( userName,email,towerId,roles,familyMember,parking){
+export function addPerson( userName,email,towerId,roles){
          
-      const request =axios.post(`${URN}/auth/signup`,{userName,email,towerId,roles,familyMember,parking},{headers:authHeader()}) 
+      const request =axios.post(`${URN}/auth/signup`,{userName,email,towerId,roles},{headers:authHeader()}) 
       .then(response => response.data)
 
       .then(viewPerson());
@@ -69,10 +69,10 @@ export function addPerson( userName,email,towerId,roles,familyMember,parking){
         }
     }
 
-    export function updatePerson( userId,userName,email,towerId,familyMember,parking,roleName){
+    export function updatePerson( userId,userName,email,towerId,roleName){
        
        console.log('shubhu',userId,userName,email)
-        const request=axios.put(`${URN}/user/` +userId, { userId,userName,email,towerId,familyMember,parking,roleName},
+        const request=axios.put(`${URN}/user/` +userId, { userId,userName,email,towerId,roleName},
         { headers: authHeader() }).then((response)=>{
 
         })

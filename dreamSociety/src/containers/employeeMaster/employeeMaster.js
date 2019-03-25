@@ -462,9 +462,6 @@ let formData=<div>
 
 
   
-// else if(this.submit){
-//     form =<Spinner/>
-// }
 
     return(
         <div  >

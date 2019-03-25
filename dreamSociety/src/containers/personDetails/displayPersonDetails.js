@@ -112,22 +112,22 @@ class displayPersonDetails extends Component {
                         editPersonModal: !this.state.editPersonModal, message: ''
                 })
         }
-        editPerson(userId, userName, roleName, email, towerId, id, roles, familyMember, parking, flatDetailId) {
-                console.log('i m in edit ', userName, email, towerId, id, roles, familyMember, parking);
+        editPerson(userId, userName, roleName, email, towerId, id, roles, flatDetailId) {
+                console.log('i m in edit ', userName, email, towerId, id, roles);
                 this.setState({
-                        userId, userName, email, towerId, id, familyMember, roleName, parking, flatDetailId,
+                        userId, userName, email, towerId, id,  roleName, flatDetailId,
                         editPersonModal: !this.state.editPersonModal
                 })
         }
-        loadingInactive = () => {
-                this.setState({modalLoading: false,editPersonModal: !this.state.editPersonModal})
-            }
+        // loadingInactive = () => {
+        //         this.setState({modalLoading: false,editPersonModal: !this.state.editPersonModal})
+        //     }
        
         updatePerson = () => {
                 let errors = {};
 
               
-                let { userId, userName, email, towerId, roleName, familyMember, parking } = this.state
+                let { userId, userName, email, towerId, roleName} = this.state
                 if (!this.state.userName) {
                         errors.userName = "  Username can't be empty. Please select."
                 }
@@ -137,24 +137,18 @@ class displayPersonDetails extends Component {
                 if (!this.state.towerId) {
                         errors.towerId = "  Tower Name can't be empty. Please select."
                 }
-                if (!this.state.flatDetailId) {
-                        errors.familyMember = "   Flat Number can't be empty. Please select."
-                }
+                
                 if (!this.state.roleName) {
                         errors.roleName = " Roles can't be empty. Please select."
                 }
-                if (!this.state.familyMember) {
-                        errors.familyMember = "Family Member can't be empty. Please select."
-                }
-                if (!this.state.parking) {
-                        errors.parking = "parking can't be empty. Please select."
-                }
+               
+                
                 this.setState({ errors });
                 const isValid = Object.keys(errors).length === 0
                 if (isValid) {
 
                         this.setState({modalLoading:true})
-                        this.props.updatePerson(userId, userName, email, towerId, familyMember, parking, roleName).then(() =>  this.loadingInactive()).catch(err => {
+                        this.props.updatePerson(userId, userName, email, towerId, roleName).then(() =>  this.refreshData()).catch(err => {
                                 console.log(err.response)
                                 this.setState({
                                         modalLoading: false,
@@ -262,12 +256,12 @@ class displayPersonDetails extends Component {
                                                                 return currentRole
                                                         }):''}</td>
                                                         {/* <td>{item.flatName}</td> */}
-                                                        <td>{item.familyMember}</td>
-                                                        <td>{item.parking}</td>
+                                                   
+                                                      
 
                                                         <td>
 
-                                                                <button className="btn btn-success mr-2" onClick={this.editPerson.bind(this, item.userId, item.userName, currentRole, item.email, item.towerId, item.flatDetailId, item.roles, item.familyMember, item.parking)}> Edit</button>
+                                                                <button className="btn btn-success mr-2" onClick={this.editPerson.bind(this, item.userId, item.userName, currentRole, item.email, item.towerId, item.flatDetailId, item.roles, item.familyMember)}> Edit</button>
 
                                                                 <button className="btn btn-danger" onClick={this.deletePerson.bind(this, item.userId)}>Delete</button>
                                                         </td>
@@ -341,8 +335,8 @@ class displayPersonDetails extends Component {
                                         <th>Email</th>
                                         <th>Tower Name </th>
                                         <th>Roles</th>
-                                        <th>Number  of family member</th>
-                                        <th>Parking</th>
+                                     
+                                        
                                         <th> Actions  </th>
                                 </tr>
                         </thead>
@@ -402,21 +396,8 @@ class displayPersonDetails extends Component {
 </Input>
 </FormGroup>
 
-<FormGroup>
-<Label> Number of family Members</Label>
-<Input type="text" name="familyMember" value={this.state.familyMember} onChange={this.onChange}
-        onKeyPress={this.OnkeyPressNumber} maxLength={2} required
-/>
-<span className="error"> {this.state.errors.familyMember}</span>
-</FormGroup>
-<FormGroup>
-<Label> Parking</Label>
-<Input type="text" name="parking" value={this.state.parking} onChange={this.onChange}
 
-        onKeyPress={this.OnKeyPressNumber} maxLength={2} required
-/>
-<span className="error"> {this.state.errors.parking}</span>
-</FormGroup>
+
 </div>
                 let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
                         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;

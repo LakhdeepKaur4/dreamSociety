@@ -169,31 +169,30 @@ ImageChange =(event)=>{
 }
 
     onFileChange=(event)=>{
-        // if (event.target.files && event.target.files[0]) {
-        //     let reader = new FileReader();
-        //     reader.onload = (e) => {
-        //       this.setState({documentOne:  reader.result});
-        //     };
-        //     reader.readAsDataURL(event.target.files[0]);
-        //   }
-
-    //     <GoogleDocsViewer
-    //     width="400px"
-    //     height="600px"
-    //     fileUrl={this.setState({documentOne:event.target.files[0]})}
-    // />
+        if(!!this.state.errors[event.target.name]){
+        
+            let errors =Object.assign({},this.state.errors)
+            delete  errors[event.target.name]
+            this.setState({[event.target.name]:event.target.files,errors});
+        }
+        else{
+      this.setState({ documentOne : event.target.files[0]})
+       
+        }
           }
  
          
  FileChange=(event)=>{
-    if (event.target.files && event.target.files[0]) {
-        console.log("event",event.target.files[0])
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          this.setState({documentTwo:  reader.result});
-        };
-        reader.readAsDataURL(event.target.files[0]);
-      }
+    if(!!this.state.errors[event.target.name]){
+        
+        let errors =Object.assign({},this.state.errors)
+        delete  errors[event.target.name]
+        this.setState({[event.target.name]:event.target.files,errors});
+    }
+    else{
+  this.setState({ documentTwo: event.target.files[0]})
+   
+    }
      }
      
 
@@ -208,15 +207,8 @@ ImageChange =(event)=>{
         // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
        
         
-         if(!this.state.documentOne){
-          errors.documentOne ="please select an ID."
-         }
-         if(!this.state.documentTwo){
-            errors.documentTwo ="please select an ID"
-         }
-         if(!this.state.profilePicture){
-          errors.profilePicture =" Profile picture can't be empty."
-         }
+    
+         
          if(!this.state.firstName){
          errors.firstName ="First Name can't be empty. "
          }
@@ -230,16 +222,11 @@ ImageChange =(event)=>{
               if(!this.state.address){
                 errors.address ="Address can't be empty."
                   }
-         if(!this.state.startDate){
+         if(!this.state.editEmployeeData.startDate){
           errors.startDate =" Start Date can't be empty ."
          }
-         if(!this.state.endDate){
-         errors.endDate ="End Date can't be empty."
-         }
-         if(!this.state.CTC){
-        errors.CTC ="CTC can't be empty."
-         }
-         const data = new FormData() 
+    
+      
 
   this.setState({ errors });
   const isValid = Object.keys(errors).length === 0
@@ -325,7 +312,7 @@ ImageChange =(event)=>{
                         } 
                              }}/></td>
                             <td>{index + 1}</td>
-                            <td > <img style={{ width: "70%", height: "35%" }} src={UR + item.picture} alt="desc">
+                            <td > <img style={{ width: "100%", height: "50%" }} src={UR + item.picture} alt="desc">
                             </img></td>
                             <td >{item.firstName}</td>
                             <td>{item.middleName}</td>
@@ -581,7 +568,7 @@ ImageChange =(event)=>{
                       
                 <Row>
                     <Col md={8}>
-                          
+                               <label>update your Photo</label> 
                                   <input accept='image/*' type="file" name="profilePicture"   onChange={this.ImageChange} />
                                 
                                   
