@@ -166,7 +166,6 @@ class RelationshipMasterDetail extends Component {
         
     }
 
-
    
 
 
@@ -267,7 +266,8 @@ class RelationshipMasterDetail extends Component {
                     {this.renderRelation(this.props.RelationMasterReducer)}
                 </tbody>
             </Table></div>
-            
+                  let deleteSelectButton=<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+                  onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
             let modalData=<div>
                   <FormGroup>
                                     <Label>Relation Name</Label>
@@ -297,9 +297,7 @@ class RelationshipMasterDetail extends Component {
                         </div>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
-
-<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+                          {deleteSelectButton}
          <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
                     id="allSelect"
                     type="checkbox" onChange={(e) => {
@@ -309,7 +307,7 @@ class RelationshipMasterDetail extends Component {
                             else if(!e.target.checked){
                                 this.unSelectAll();
                             } 
-                        }  
+                        }   
                     }/></Label>
 
                         {(this.state.loading) ? <Spinner /> : tableData}

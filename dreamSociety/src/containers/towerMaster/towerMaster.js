@@ -70,12 +70,14 @@ class TowerMaster extends Component {
         if(!this.state.towerName){
             errors.towerName = "Tower Name can't be empty. Please select."
         }
-        else if(floorId===[]){
+        else if(floorId.length===[]){
+            console.log(floorId)
             errors.floorId="No. Of Floor can't be empty"
         }
         
        console.log('==============',floorId)
         this.setState({ errors });
+
         const isValid = Object.keys(errors).length === 0
 
         // const isValid = this.validate();
@@ -150,9 +152,10 @@ changePassword=()=>{
                 <Label>No. Of Floors</Label>
                 <ReactMultiSelectCheckboxes
                  options={this.getFloor(this.props.floor)}
+                 name="floorId"
                  onChange={this.floorChangeHandler.bind(this,'floorId')}/>
                 {/* <Input type="text" className="form-control" placeholder="No. Of Floor" name="noOfFloor"  maxLength ={20} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange}  /> */}
-                 <span className="error">{this.state.errors.noOfFloor}</span>
+                 <span className="error">{this.state.errors.floorId}</span>
                {/* <span className="error">{this.state.message}</span>     */}
             </FormGroup>
             
