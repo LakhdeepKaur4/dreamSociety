@@ -138,8 +138,8 @@ FileChange=(event)=>{
           if(!this.state.cityId){
           errors.cityId ="City Name can't be empty."
          }
-         if(!this.state.locationName){
-          errors.locationName="Location Name can't be empty."
+         if(!this.state.locationId){
+          errors.locationId="Location Name can't be empty."
          }
          if(!this.state.documentOne){
           errors.documentOne ="please select an ID."
@@ -418,7 +418,7 @@ let formData=
                              <DefaultSelect/>
                             {this.getDropdown4(this.props.locationMasterReducer)}
                         </select>
-                        {!this.state.locationName?<span className="error">{this.state.errors.locationName}</span>:''}
+                        {!this.state.locationId?<span className="error">{this.state.errors.locationId}</span>:''}
                       </div>
                      </div>
                       
