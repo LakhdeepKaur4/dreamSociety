@@ -29,6 +29,8 @@ class TenantDetail extends Component {
             aadhaarNumber:'',
             dob:'',
             permanentAddress:'',
+            panCardNumber:'',
+            accountNumber:'',
             fileName:'',
             towerName:'',
             flatNo:'',
@@ -101,10 +103,11 @@ class TenantDetail extends Component {
         })
     }
 
-    edit = (picture,tenantName,gender, email, contact, aadhaarNumber, dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) =>{
+    edit = (picture,tenantName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber ,
+         dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) =>{
         console.log(floorName, floorId)
-        this.setState({picture,tenantName,gender, email, contact, aadhaarNumber, dob, permanentAddress,
-            towerName,floorName,flatNo,towerId,floorId,flatDetailId,tenantId, editTenant: true})
+        this.setState({picture,tenantName,gender, email, contact, aadhaarNumber,panCardNumber, accountNumber,
+             dob, permanentAddress,towerName,floorName,flatNo,towerId,floorId,flatDetailId,tenantId, editTenant: true})
     }
 
     searchFilter(search){
@@ -169,6 +172,8 @@ class TenantDetail extends Component {
                             <td>{item.email}</td>
                             <td>{item.contact}</td>
                             <td>{item.aadhaarNumber}</td>
+                            <td>{item.panCardNumber}</td>
+                            <td>{item.accountNumber}</td>
                             <td>{item.dob}</td>
                             <td>{item.permanentAddress}</td>
                             <td>{item.tower_master ? item.tower_master.towerName : ''}</td>
@@ -179,7 +184,8 @@ class TenantDetail extends Component {
                             <td>
                                 <Button color="success" onClick={this.edit.bind(this,PicURN+item.picture.replace('../../',''),
                                      item.tenantName, item.gender, item.email,
-                                    item.contact, item.aadhaarNumber, item.dob, item.permanentAddress,
+                                    item.contact, item.aadhaarNumber,item.panCardNumber,item.accountNumber,
+                                     item.dob, item.permanentAddress,
                                     item.tower_master ? item.tower_master.towerName:'',
                                     item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master.flatNo,
                                     item.tower_master ? item.tower_master.towerId: '',
@@ -320,7 +326,8 @@ class TenantDetail extends Component {
     updateTenant = (e) => {
         e.preventDefault();
         
-        let {tenantName,gender, email, contact, aadhaarNumber,dob, permanentAddress, fileName, towerName, flatNo, towerId,
+        let {tenantName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber ,dob,
+             permanentAddress, fileName, towerName, flatNo, towerId,
         picture, flatDetailId, tenantId, floorId} = this.state;
         let errors = {};
         if(this.state.tenantName === '') {
@@ -337,6 +344,9 @@ class TenantDetail extends Component {
             errors.aadhaarNumber = `Aadhaar Number can't be empty.`;}
         else if(this.state.aadhaarNumber.length !== 12) {console.log('aadhaarLimit');
             errors.aadhaarNumber = `Aadhaar Number should be of 12 digit.`}
+        if(panCardNumber === '') errors.panCardNumber = `Pan number can't be empty.`;
+        else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan card should be of 10 digit.`
+        if(accountNumber === '') errors.accountNumber = `Bank account number can't be empty.`;
         if(this.state.dob === '') {
             console.log('dob');
             errors.dob = `Date of birth can't be empty.`;
@@ -359,9 +369,8 @@ class TenantDetail extends Component {
         console.log(flatDetailId, picture, tenantId)
         if(isValid){
             this.setState({modalLoading: true})
-            this.props.updateTenantDetail(tenantName,gender, email, contact, aadhaarNumber, dob,
-                permanentAddress, fileName, towerName, flatNo, towerId, floorId,
-                picture, flatDetailId, tenantId)
+            this.props.updateTenantDetail(tenantName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber,
+                 dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId)
                 .then(() => this.refreshDataAfterUpdate())
                 .catch((err) => {
                     console.log(err.response.data)
@@ -455,6 +464,25 @@ class TenantDetail extends Component {
         
     }
 
+    numberValidation = (event) => {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    panChange = (e) => {
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.toUpperCase(), errors });
+        }
+        else {
+            this.setState({panCardNumber:e.target.value.toUpperCase()});
+        }
+    }
+
     render(){
         let TableData = <Table>
                            <thead>
@@ -470,6 +498,8 @@ class TenantDetail extends Component {
                                     <th>Email</th>
                                     <th>Contact No.</th>
                                     <th>Aadhaar Number</th>
+                                    <th>Pan Number</th>
+                                    <th>Bank Account Number</th>
                                     <th>Date of Birth</th>
                                     <th>Permanent Address</th>
                                     <th>Tower Name</th>
@@ -539,14 +569,33 @@ class TenantDetail extends Component {
             </FormGroup>
             <FormGroup>
                 <Label>Contact</Label>
-                <Input value={this.state.contact} maxLength="10" name="contact" onChange={this.contactChange} />
+                <Input value={this.state.contact} maxLength="10" name="contact" onKeyPress={this.numberValidation}
+                 onChange={this.contactChange} />
                 {this.state.messageContactErr ? <span className='error'>{this.state.messageContactErr}</span> : ''}
                 {<span className='error'>{this.state.errors.contact}</span>}
             </FormGroup>
             <FormGroup>
                 <Label>Aadhar Number</Label>
-                <Input value={this.state.aadhaarNumber} maxLength="12" name="aadhaarNumber" onChange={this.onChange} />
+                <Input value={this.state.aadhaarNumber} maxLength="12" 
+                onKeyPress={this.numberValidation} name="aadhaarNumber" onChange={this.onChange} />
                 {<span className='error'>{this.state.errors.aadhaarNumber}</span>}
+            </FormGroup>
+            <FormGroup>
+                <Label>Pan Number</Label>
+                <Input value={this.state.panCardNumber} maxLength="10" name="panCardNumber" 
+                onKeyPress={(e) => {
+                    const pattern = /^[a-zA-Z0-9]+$/;
+                    let inputChar = String.fromCharCode(e.charCode);
+                    if (!pattern.test(inputChar)) {
+                        e.preventDefault();
+                    }}} onChange={this.panChange} />
+                {<span className='error'>{this.state.errors.panCardNumber}</span>}
+            </FormGroup>
+            <FormGroup>
+                <Label>Bank Account Number</Label>
+                <Input value={this.state.accountNumber} maxLength="18" 
+                 onKeyPress={this.numberValidation} name="accountNumber" onChange={this.onChange} />
+                {<span className='error'>{this.state.errors.accountNumber}</span>}
             </FormGroup>
             <FormGroup>
                 <Label>Date of Birth</Label>

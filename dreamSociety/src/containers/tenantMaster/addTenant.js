@@ -94,6 +94,17 @@ class AddTenant extends Component{
         }
     }
 
+    panChange = (e) => {
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.toUpperCase(), errors });
+        }
+        else {
+            this.setState({panCardNumber:e.target.value.toUpperCase()});
+        }
+    }
+
     ifscChange = (e) => {
         
         if (!!this.state.errors[e.target.name]) {
@@ -289,6 +300,7 @@ class AddTenant extends Component{
             if(dob === '') errors.dob = `Date of Birth can't be empty.`;
             if(gender === '') errors.gender = `Gender can't be empty`;
             if(contact === '') errors.contact= `Contact can't be empty.`;
+            else if(contact.length !== 10) errors.contact= `Contact should be og 10 digit.`;
             if(email === '') errors.email = `Email can't be empty.`;
             if(correspondingAddress === '') errors.correspondingAddress = `Corresponding Address can't be empty.`;
             if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
@@ -422,7 +434,7 @@ class AddTenant extends Component{
                     <Col md={6}>
                         <Label>Relation With Tenant</Label>
                         <Select name={`relationId${i}`} options={this.getRelationList(this.props.relationList)} 
-                          onChange={this.relationHandler.bind(this,'relationId'+i )}  required/>
+                          onChange={this.relationHandler.bind(this,'relationId'+i )}/>
                     </Col>
                     <Col md={12} style={{marginTop:'20px', marginBottom:'20px'}}>
                         <Label>Gender:</Label>
@@ -488,7 +500,7 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>Contact Number</Label>
                             <Input onKeyPress={this.numberValidation} onChange={this.onChange}
-                             name="contact" placeholder="Contact Number" type="text" minLength="10" maxLength="10" />
+                             name="contact" placeholder="Contact Number" type="text" maxLength="10" />
                              {<span className="error">
                                 {this.state.errors.contact}
                             </span>}
@@ -555,9 +567,8 @@ class AddTenant extends Component{
                         </FormGroup>
                         <FormGroup>
                             <Label>PAN Card Number</Label>
-                            <Input placeholder="Pan Number" onChange={this.onChange}
+                            <Input placeholder="Pan Number" onChange={this.panChange}
                              type='text' name="panCardNumber"
-                             value={this.state.panCardNumber.toUpperCase()}
                              maxLength='10' onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
                                 let inputChar = String.fromCharCode(e.charCode);

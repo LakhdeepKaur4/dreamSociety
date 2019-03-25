@@ -126,8 +126,8 @@ FileChange=(event)=>{
         let errors ={};
         // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
        
-        if(!this.state.countryName){
-          errors.countryName = "Country Name  can't be empty. "
+        if(!this.state.countryId){
+          errors.countryId = "Country Name  can't be empty. "
          }
          if(!this.state.stateName){
           errors.stateName ="State Name can't be empty. "
@@ -214,6 +214,7 @@ FileChange=(event)=>{
     }
     
     onChangeCountry=(event)=>{
+        console.log(this.state)
         let selected= event.target.value;
       
         var data = _.find(this.props.locationMasterReducer.country,function(obj){
@@ -376,11 +377,11 @@ form=
     <div  className="row">
                     <div className="col-md-6">
                             <label>Country Name</label>
-                           <select   className ="form-control" name="countryName"         defaultValue='no-value' onChange={this.onChangeCountry} >
+                           <select   className ="form-control" name="countryId"         defaultValue='no-value' onChange={this.onChangeCountry} >
                         <    DefaultSelect/> 
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
-                           <span className="error">{this.state.errors.countryName}</span>
+                           {!this.state.countryId ? <span className="error">{this.state.errors.countryId}</span> : ''}
                     </div>
 
 
