@@ -157,13 +157,14 @@ updateServices = () => {
     }   
 }
 
-    renderList = ({ vendors }) => {    console.log(vendors)
+    renderList = ({ vendors }) => {  
 
-        if (vendors) {
-            return vendors.vendor[0] ? vendors.vendor[0].vendor_services.sort((item1,item2)=>{
-                var cmprVal = (item1.service_master[this.state.filterName].localeCompare(item2.service_master[this.state.filterName])) 
+        if (vendors && vendors.vendor[0]) {
+            console.log(vendors.vendor[0])
+            return   vendors.vendor[0].vendor_services.sort((item1,item2)=>{
+                var cmprVal = (item1.service_master[this.state.filterName].localeCompare(item2.service_master[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
-                }) :[] .filter(this.searchFilter(this.state.search)).map((item,index) => {
+                }).filter(this.searchFilter(this.state.search)).map((item,index) => {
                 return (
 
                     <tr key={item.vendorServiceId}>

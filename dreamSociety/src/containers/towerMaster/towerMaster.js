@@ -66,12 +66,13 @@ class TowerMaster extends Component {
         event.preventDefault();
         let errors = {};
         const { towerName,floorId,floors} = this.state
-        
-        if(!this.state.towerName){
+  
+        console.log('floorId',floorId)
+        if(this.state.towerName===''){
             errors.towerName = "Tower Name can't be empty. Please select."
         }
-        else if(floorId.length===[]){
-            console.log(floorId)
+        else if(!this.state.floorId.length){
+            console.log('this.state.floorId',this.state.floorId)
             errors.floorId="No. Of Floor can't be empty"
         }
         
@@ -120,9 +121,10 @@ floorChangeHandler=(name,selectOption)=>{
 //    this.state.floors.push(data)
     this.setState({
         [name]: selectOption.map((item)=>{return item.floorId}),
-        floors:selectOption.map((item)=>{return {floorId:item.floorId}})
+        floors:selectOption.map((item)=>{return {floorId:item.floorId}}),
+        errors:''
     })
-    console.log('jkldfjdsklfjdklfjdklfj',this.state)
+    console.log('jkldfjdsklfjdklfjdklfj',this.state.floorId)
     // const data={floorId:this.state.floorId}
     // console.log(data)
     // this.state.floors.push(data)
@@ -151,6 +153,7 @@ changePassword=()=>{
             <FormGroup>
                 <Label>No. Of Floors</Label>
                 <ReactMultiSelectCheckboxes
+                name="floorId"
                  options={this.getFloor(this.props.floor)}
                  name="floorId"
                  onChange={this.floorChangeHandler.bind(this,'floorId')}/>

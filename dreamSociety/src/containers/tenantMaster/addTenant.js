@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Form, FormGroup, Input, Button, Label, Col, Row } from 'reactstrap';
-import DefaultSelect from '../../constants/defaultSelect';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
+import {getAllFloor} from '../../actionCreators/flatOwnerAction';
 import Spinner from '../../components/spinner/spinner';
 import { getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail } from '../../actionCreators/tenantMasterAction';
 
@@ -157,31 +157,9 @@ class AddTenant extends Component{
         });
     }
 
-    fetchFloorDetail = ({getFlatDetail}) => {
-        console.log(getFlatDetail)
-        if(getFlatDetail){
-            console.log(getFlatDetail)
-            return getFlatDetail.tower.Floors.map((item) => {
-            return (
-                <option value={item.floorId} key={item.floorId}>{item.floorName}</option>
-            )
-            })
-        }
-    }
-
-    
-
-    towerChangeHandler = (selectTower) => {
-        this.setState({towerName:selectTower.towerName, towerId:selectTower.towerId})
-        this.props.getFlatDetailViaTowerId(selectTower.towerId)
-    }
 
 
-    flatChangeHandler = (e) => {
-        this.setState({flatDetailId: e.target.value});
-        console.log(this.state);
-        this.props.getOwnerDetailViaFlatId(e.target.value)
-    }
+
 
     getRelationList = ({ relationResult }) => {
         console.log(this.state)
@@ -394,29 +372,66 @@ class AddTenant extends Component{
         }
     }
 
-    fetchFlatDetail = ({getFlatDetail}) => {
-        console.log(getFlatDetail)
-        console.log(this.state.floorId)
-        if(getFlatDetail){
-            console.log(getFlatDetail.flatDetail)
-            
-             return getFlatDetail.flatDetail.filter((i) => {
-                
-                return this.state.floorId == i.floorId
-            }).map((item) => {
-                if(item){
-                    return (
-                        <option value={item.flatDetailId} key={item.flatDetailId} >{item.flatNo}</option>
-                    )
-                }
+    getFloor=({floor})=>{
+        console.log("floor",floor)
+        if(floor && floor.tower.Floors){
+            return floor.tower.Floors.map((item)=>{
+                      
+                return {...item ,label: item.floorName, value: item.floorId }
             })
+          //   this.setState({
+          //     floorId:item.floorId
+          //   })
         }
-    }
+        else {
+            return []
+        }}
 
-    floorChange = (e) => {
-        this.setState({floorId:e.target.value})
+        getFlats=({floor})=>{
+            console.log('7777777jjjjjj',floor)
+            if(floor){
+              return  floor.flatDetail.filter((flatRecord)=>{
+                    return flatRecord.floorId===this.state.floorId
+                }).map((selectFlat)=>{
+                    console.log('bbbbbbbbbbbbbbbbb',selectFlat)
+                    return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
+                });
+            }
+            else {
+                return []
+              }
+        }
+
         
-    }
+
+        towerChangeHandler = (name, selectOption) => {
+            this.setState(function (prevState, props) {
+                return {
+                    [name]: selectOption.value
+                }
+            }, function () {
+                console.log(selectOption.towerId)
+            });
+            this.props.getAllFloor(selectOption.towerId);
+        }
+    
+        floorChangeHandler=(name,selectOption)=>{
+            console.log('=======selectOption=======',selectOption.value);
+            this.setState({
+                [name]: selectOption.value
+            })
+            console.log('lllllllll=======',this.state.floorId)
+            // this.getFlats(this.props.towerFloor);
+        
+            }
+            flatChangeHandler=(name,selectOption)=>{
+                this.setState({
+                    [name]: selectOption.value
+                })
+                this.props.getAllFloor(selectOption.towerId);
+            }
+
+    
 
     render(){
         
@@ -568,6 +583,7 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>PAN Card Number</Label>
                             <Input placeholder="Pan Number" onChange={this.panChange}
+                            value={this.state.panCardNumber.toUpperCase()}
                              type='text' name="panCardNumber"
                              maxLength='10' onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
@@ -609,16 +625,30 @@ class AddTenant extends Component{
                         <h3>Flat Details</h3>
                         <FormGroup>
                             <Label>Tower</Label>
-                            <Select onChange={this.towerChangeHandler} placeholder="Tower" name="towerId"
+                            <Select onChange={this.towerChangeHandler.bind(this, 'towerId')} placeholder="Tower" name="towerId"
                             options={this.getTower(this.props.towerList)} />
                             {!this.state.towerId ? <span className="error">{this.state.errors.towerId}</span> : ''}
                         </FormGroup >
                         <FormGroup>
                             <Label>Floor</Label>
+                            <Select options={this.getFloor(this.props.towerFloor)}
+                            name="floorId"
+                            onChange={this.floorChangeHandler.bind(this,'floorId')}
+                            />
+                            {!this.state.floorId ? <span className="error">{this.state.errors.floorId}</span> : ''}
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Flat Number</Label>
+                            <Select options={this.getFlats(this.props.towerFloor)} name="flatDetailId"
+                                onChange={this.flatChangeHandler.bind(this,'flatDetailId')}
+                                />
+                            {!this.state.flatDetailId ? <span className="error">{this.state.errors.flatDetailId}</span> : ''}
+                        </FormGroup >
+                        {/* <FormGroup>
+                            <Label>Floor</Label>
                             <Input defaultValue="no-value"
                             type='select' name="floorId" onChange = {this.floorChange}  >
                             <DefaultSelect />
-                            {/* {this.getFlats(this.props.tenantReducer)} */}
                             {this.fetchFloorDetail(this.props.tenantReducer)}
                             </Input>
                             {!this.state.floorId ? <span className="error">{this.state.errors.floorId}</span> : ''}
@@ -632,7 +662,7 @@ class AddTenant extends Component{
                             {this.fetchFlatDetail(this.props.tenantReducer)}
                             </Input>
                             {!this.state.flatDetailId ? <span className="error">{this.state.errors.flatDetailId}</span> : ''}
-                        </FormGroup>
+                        </FormGroup> */}
                     </div>
                     <div style={{ 'display': this.state.step == 5 ? 'block' : 'none' }}>
                         <h3>Upload Your Image</h3>
@@ -673,11 +703,12 @@ const mapStateToProps = (state) => {
     return {
         societyReducer: state.societyReducer,
         towerList: state.TowerDetails,
+        towerFloor:state.FlatOwnerReducer,
         relationList: state.RelationMasterReducer,
         flatList:state.flatDetailMasterReducer,
         tenantReducer:state.tenantReducer,
     }
 }
 
-export default connect(mapStateToProps, {detailSociety, viewTower, getRelation,
+export default connect(mapStateToProps, {detailSociety, viewTower, getRelation,getAllFloor,
     getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail})(AddTenant);
