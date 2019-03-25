@@ -16,6 +16,7 @@ const nexmo = new Nexmo(
 
 const Vendor = db.vendor;
 const Service = db.service;
+const ServiceDetail = db.serviceDetail;
 const Rate =db.rate;
 const VendorService = db.vendorService;
 const Op = db.Sequelize.Op;
@@ -367,7 +368,7 @@ exports.get1 = async (req, res, next) => {
             where: { isActive: true },
             order: [['createdAt', 'DESC']],
             include: [
-            { model: VendorService ,include:[{model:Rate},{model:Service}]}]
+            { model: VendorService , where: { isActive: true },include:[{model:Rate},{model:Service}]}]
         });
         if (vendors) {
             vendors.map(vendor => {
@@ -459,6 +460,15 @@ exports.update1 = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
+        if(req.body.contact !== undefined && req.body.contact !== null){
+            let existingVendor1 = await Vendor.find({
+                where: {[Op.and]: [{contact: encrypt(key, req.body.contact)}, { vendorId: {[Op.ne]: req.params.id }}]}
+            
+            });
+            if(existingVendor1) {
+                return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: 'contact already exist'});
+            }
+        }
         const updatedVendor = await Vendor.find({ where: { vendorId: id } }).then(vendor => {
             // if(req.files.profilePicture[0]){
             //     deletePhoto(vendor);
@@ -545,7 +555,8 @@ exports.update1 = async (req, res, next) => {
                     where:{
                         vendorId:id,
                         vendorServiceId:req.body.vendorServiceId
-                    }
+                    },
+                    include:[{model:ServiceDetail}]
                     
                 });
                 vendorService.updateAttributes({
@@ -619,5 +630,42 @@ exports.deleteSelectedVendorServices = async (req, res, next) => {
 		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
 	}
 }
+
+
+exports.updateVendorService = async (req,res,next) => {
+    try{
+        let updAttr = {};
+        let attrArr = ['serviceId','rateId','rate'];
+        console.log("updating vendor");
+        console.log(":::::req.body==>",req.body)
+        const id = req.params.id;
+        console.log(":::::id",id)
+        if (!id) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const update = req.body;
+        
+        if (!update) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        const updatedVendorService = await VendorService.find({ where: { vendorServiceId: id } }).then(vendorService => {
+           
+           attrArr.forEach(attr => {
+               if(attr in req.body && req.body[attr]!==undefined && req.body[attr]!==null){
+                   updAttr[attr] = req.body[attr];
+               }
+           })
+           return vendorService.updateAttributes(updAttr);
+        });
+        return res.status(httpStatus.OK).json({
+            message: "VendorService Updated Page",
+            vendor: updatedVendorService
+        });
+    }catch(error){
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+
 
 

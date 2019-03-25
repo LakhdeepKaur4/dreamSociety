@@ -4,17 +4,20 @@ const httpStatus = require('http-status')
 const FlatDetail = db.flatDetail;
 const Flat = db.flat;
 const Tower = db.tower;
+const Floor = db.floor;
 const Op = db.Sequelize.Op;
 
 exports.create = async (req, res, next) => {
     try {
         let body = req.body;
+        console.log("body==>",body)
         body.userId = req.userId;
         const flat = await FlatDetail.findOne({
             where: {
                 [Op.and]: [
                     { flatNo: body.flatNo },
                     { towerId: body.towerId },
+                    { floorId: body.floorId },
                     { isActive: true }
                 ]
             }
@@ -56,7 +59,12 @@ exports.get = async (req, res, next) => {
             }, {
                 model: Tower,
                 attributes: ['towerId', 'towerName'],
-            }]
+            },
+            {
+                model: Floor,
+                attributes: ['floorId', 'floorName'],
+            }
+        ]
         });
         if (flatDetail) {
             return res.status(httpStatus.CREATED).json({
@@ -85,13 +93,16 @@ exports.update = async (req, res, next) => {
             where: {
                 [Op.and]: [
                     { flatNo: req.body.flatNo },
-                    { flatId: req.body.flatId },
+                    // { flatId: req.body.flatId },
                     { towerId: req.body.towerId },
+                    { floorId: req.body.floorId },
                     { isActive: true }
                 ]
             }
         })
+        console.log(flatNo);
         if (flatNo) {
+            console.log("in here");
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
                 message: "Flat number already exists",
             });
@@ -106,7 +117,8 @@ exports.update = async (req, res, next) => {
             });
         }
     } catch (error) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+        console.log(error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message:error.message});
     }
 }
 

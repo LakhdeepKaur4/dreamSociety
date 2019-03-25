@@ -1,19 +1,15 @@
 module.exports = (sequelize, Sequelize) => {
-	const FlatDetail = sequelize.define('flat_detail_master', {
-		flatDetailId: {
+	const TowerFloor = sequelize.define('tower_floor_master', {
+		towerFloorId: {
 			type: Sequelize.INTEGER,
 			autoIncrement: true,
 			primaryKey: true
 		},
-		flatNo: {
-			type: Sequelize.STRING,
-			// unique:'compositeIndex'
-		},
 		isActive: {
 			type: Sequelize.BOOLEAN,
 			defaultValue: true
-        },
-        createdAt: {
+		},
+		createdAt: {
             allowNull: false,
             type: Sequelize.DATE
         },
@@ -25,5 +21,5 @@ module.exports = (sequelize, Sequelize) => {
 		freezeTableName: true
 	});
 
-	return FlatDetail;
+	return TowerFloor;
 }

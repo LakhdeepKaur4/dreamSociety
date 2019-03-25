@@ -64,13 +64,17 @@ module.exports = (sequelize, Sequelize) => {
                   type: Sequelize.STRING,
                   allowNull: false
             },
+            adhaarCardNo:{
+                  type: Sequelize.STRING,
+                  allowNull: false
+            },
             noOfMembers: {
                   type: Sequelize.INTEGER,
                   allowNull: false
             },
             isActive: {
                   type: Sequelize.BOOLEAN,
-                  defaultValue: true
+                  defaultValue: false
             },
             createdAt: {
                   allowNull: false,

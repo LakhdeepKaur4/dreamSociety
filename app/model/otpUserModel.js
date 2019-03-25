@@ -1,23 +1,15 @@
 module.exports = (sequelize, Sequelize) => {
-    const TenantMembersDetail = sequelize.define('tenant_members_detail_master', {
-        memberId: {
+    const Otp = sequelize.define('otp_user_verify', {
+        otpId: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true
         },
-        memberName: {
-            type: Sequelize.STRING,
-            allowNull:false
+        otp: {
+            type: Sequelize.STRING
         },
-        memberDob: {
-            type: Sequelize.DATEONLY,
-            allowNull:false
-        },
-        gender: {
-            type: Sequelize.STRING,
-            allowNull: false
-      },
         isActive: {
+            allowNull: false,
             type: Sequelize.BOOLEAN,
             defaultValue: true
         },
@@ -33,5 +25,5 @@ module.exports = (sequelize, Sequelize) => {
             freezeTableName: true
         });
 
-    return TenantMembersDetail;
+    return Otp;
 }
