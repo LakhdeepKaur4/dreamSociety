@@ -138,16 +138,16 @@ class Country extends Component {
             console.log('no errors');
             this.setState({ [e.target.name]: e.target.value.toUpperCase().trim(''), errors });
         } else {
-            this.setState({code:e.target.value.toUpperCase()});
-        }
+        this.setState({code:e.target.value.toUpperCase().trim('')});
 
     }
+}
          
     close=()=>{
-        return this.props.history.replace('/superDashBoard')
+        return this.props.history.replace('/superDashBoard');
     }
     changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
+        return this.props.history.replace('/superDashboard/changePassword');
      }
 
 
@@ -233,6 +233,7 @@ class Country extends Component {
 
     }
 }
+
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ AddCountry }, dispatch)
 }

@@ -186,7 +186,7 @@ class FlatMaster extends Component {
                     placeholder="flat superArea"  
                     value={this.state.flatSuperArea}
                     onKeyPress = {this.OnKeyPresshandlerPhone}
-                    maxLength='3'
+                    maxLength='4'
                     onChange={this.onChange} />
                 <span  style={{color:'red'}}>{this.state.errors.flatSuperArea}</span>
             </FormGroup>
@@ -211,7 +211,7 @@ class FlatMaster extends Component {
                     placeholder="Cover Area"
                     value={this.state.coverArea}
                     onKeyPress = {this.OnKeyPresshandlerPhone}
-                    maxLength='3'
+                    maxLength='4'
                     onChange={this.onChange} />
                 <span  style={{color:'red'}}>{this.state.errors.coverArea}</span>
             </FormGroup>
