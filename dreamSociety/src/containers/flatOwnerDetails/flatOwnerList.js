@@ -270,12 +270,7 @@ class FlatOwnerList extends Component {
         });
         this.props.getAllFloor(selectOption.towerId);
     }
-    flatChangeHandler = (name, selectOption) => {
-        this.setState({
-            [name]: selectOption.value
-        })
-        console.log(this.state.flatNO)
-    }
+    
     getTower = ({ tower }) => {
         if (tower) {
             return tower.tower.map((item) => {

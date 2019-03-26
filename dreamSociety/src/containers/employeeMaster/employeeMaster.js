@@ -117,6 +117,9 @@ FileChange=(event)=>{
             event.preventDefault();
         }
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
  
 
@@ -135,8 +138,8 @@ FileChange=(event)=>{
           if(!this.state.cityId){
           errors.cityId ="City Name can't be empty."
          }
-         if(!this.state.locationName){
-          errors.locationName="Location Name can't be empty."
+         if(!this.state.locationId){
+          errors.locationId="Location Name can't be empty."
          }
          if(!this.state.documentOne){
           errors.documentOne ="please select an ID."
@@ -332,11 +335,16 @@ render(){
 let form;
 <Spinner/>
 
-let formData=<div>
+let formData=
+<form onSubmit={this.submit}>
+<div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+<span aria-hidden="true">&times;</span>
+</div>
+<div>
 <h3 align="center">Employee Master </h3>
 
   <div className="input-container">
-        <label for ="upload-photo">Select Your Image</label>
+        <label >Select Your Image</label>
         <input type="file" accept =".png, .jpg, .jpeg"   data-max-size="4194304"   name="profilePicture" onChange={this.onPicChange}/>
          
         <span className="error">{this.state.errors.profilePicture}</span>
@@ -345,7 +353,7 @@ let formData=<div>
     <div className="row">
     <div className="form-group col-md-4 ">
     <label>First Name</label>
-    <input  className="form-control" name="firstName" type="text"  onChange ={this.onChange}  maxLength={30}/>
+    <input  className="form-control" name="firstName" type="text"  onChange ={this.onChange}  onKeyPress={this.OnKeyPresshandler} maxLength={30}/>
      
     <span className="error">{this.state.errors.firstName}</span>
     </div>
@@ -410,7 +418,7 @@ let formData=<div>
                              <DefaultSelect/>
                             {this.getDropdown4(this.props.locationMasterReducer)}
                         </select>
-                        {!this.state.locationName?<span className="error">{this.state.errors.locationName}</span>:''}
+                        {!this.state.locationId?<span className="error">{this.state.errors.locationId}</span>:''}
                       </div>
                      </div>
                       
@@ -455,26 +463,22 @@ let formData=<div>
   <button className="btn btn-danger"  onClick ={this.displayEmployee}>Cancel</button>
   </div>
   </div>
-
+  </form>
 
 
 
 
 
   
-// else if(this.submit){
-//     form =<Spinner/>
-// }
 
     return(
         <div  >
             <UI   onClick ={this.logout } change={this.changePassword}>
-            <form onSubmit={this.submit}>
-  
+        
    
  
   {!this.state.loading ? formData: <Spinner />} 
-  </form>
+ 
         </UI>
         </div>
         

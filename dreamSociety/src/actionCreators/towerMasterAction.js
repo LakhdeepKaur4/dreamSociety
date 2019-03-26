@@ -29,8 +29,8 @@ return{
 }
 
 export function deleteTower(towerId,isActive){
-    const request=  axios.put(
-        `${URN}/tower/delete/` + towerId, {isActive},{ headers: authHeader() }).then()
+    const request=  axios.put(`${URN}/tower/delete/` + towerId, {isActive},{ headers: authHeader() })
+        .then(response=>response.data)
     return {
         type: DELETE_TOWER,
         payload:request

@@ -164,7 +164,13 @@ class locationMaster extends Component{
     push=()=>{
         this.props.history.push('/superDashboard/displayLocation')
     }
-
+    OnKeyPresshandler(event) {
+        const pattern = /[a-zA-Z _]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     logout=()=>{
         localStorage.removeItem('token');
@@ -212,7 +218,7 @@ class locationMaster extends Component{
                     </div>
                     <div>
                         <label>Location Name</label>
-                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  value={this.state.locationName}  onChange={this.onChange} ></input>
+                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}  value={this.state.locationName}  onChange={this.onChange}  onKeyPress={this.OnKeyPresshandler} ></input>
                         <span className='error'>{this.state.errors.locationName}</span>
                         <span className="error">{this.state.message}</span>
                     </div>
