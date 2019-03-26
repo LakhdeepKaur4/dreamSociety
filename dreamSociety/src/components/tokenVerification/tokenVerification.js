@@ -14,6 +14,7 @@ class  TokenVerification extends React.Component {
             this.setState({
                 message:response.data.message
             })
+            console.log(response.data.message)
             if(response.data.tokenVerified){
               
                 return this.props.history.push(`/login/accountVerification?${window.location.href.split('?')[1]}`)
@@ -24,12 +25,15 @@ class  TokenVerification extends React.Component {
             }
         })
     }
+    sendLogin=()=>{
+        return this.props.history.push('/')
+       }
 render(){
     return (
         <div>
              <UI>
              <h2 style={{color:'red'}}>{this.state.message}</h2> 
-             
+             <span><button style={{marginTop:'10px', marginLeft:'4px',display:!this.state.tokenVerified?'block':'none'}} onClick={this.sendLogin}>login</button></span>
         </UI>
         </div>
     );

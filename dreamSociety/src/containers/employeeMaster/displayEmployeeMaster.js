@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Table, Input, Modal, Button, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
+import { Table, Input, Modal, Button, FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Row,Col } from 'reactstrap';
 
 import { getCountry, getState, getCity, getLocation } from './../../actionCreators/societyMasterAction';
 import { ViewEmployee, updateEmployee, deleteEmployee,deleteMultipleEmployee} from '../../actionCreators/employeeMasterAction';
@@ -169,31 +169,30 @@ ImageChange =(event)=>{
 }
 
     onFileChange=(event)=>{
-        // if (event.target.files && event.target.files[0]) {
-        //     let reader = new FileReader();
-        //     reader.onload = (e) => {
-        //       this.setState({documentOne:  reader.result});
-        //     };
-        //     reader.readAsDataURL(event.target.files[0]);
-        //   }
-
-    //     <GoogleDocsViewer
-    //     width="400px"
-    //     height="600px"
-    //     fileUrl={this.setState({documentOne:event.target.files[0]})}
-    // />
+        if(!!this.state.errors[event.target.name]){
+        
+            let errors =Object.assign({},this.state.errors)
+            delete  errors[event.target.name]
+            this.setState({[event.target.name]:event.target.files,errors});
+        }
+        else{
+      this.setState({ documentOne : event.target.files[0]})
+       
+        }
           }
  
          
  FileChange=(event)=>{
-    if (event.target.files && event.target.files[0]) {
-        console.log("event",event.target.files[0])
-        let reader = new FileReader();
-        reader.onload = (e) => {
-          this.setState({documentTwo:  reader.result});
-        };
-        reader.readAsDataURL(event.target.files[0]);
-      }
+    if(!!this.state.errors[event.target.name]){
+        
+        let errors =Object.assign({},this.state.errors)
+        delete  errors[event.target.name]
+        this.setState({[event.target.name]:event.target.files,errors});
+    }
+    else{
+  this.setState({ documentTwo: event.target.files[0]})
+   
+    }
      }
      
 
@@ -207,27 +206,9 @@ ImageChange =(event)=>{
         let errors ={};
         // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
        
-        if(!this.state.countryName){
-          errors.countryName = "Country Name  can't be empty. "
-         }
-         if(!this.state.stateName){
-          errors.stateName ="State Name can't be empty. "
-         }
-          if(!this.state.cityName){
-          errors.cityName ="City Name can't be empty."
-         }
-         if(!this.state.locationName){
-          errors.locationName ="Location Name can't be empty."
-         }
-         if(!this.state.documentOne){
-          errors.documentOne ="please select an ID."
-         }
-         if(!this.state.documentTwo){
-            errors.documentTwo ="please select an ID"
-         }
-         if(!this.state.profilePicture){
-          errors.profilePicture =" Profile picture can't be empty."
-         }
+        
+    
+         
          if(!this.state.firstName){
          errors.firstName ="First Name can't be empty. "
          }
@@ -241,16 +222,11 @@ ImageChange =(event)=>{
               if(!this.state.address){
                 errors.address ="Address can't be empty."
                   }
-         if(!this.state.startDate){
+         if(!this.state.editEmployeeData.startDate){
           errors.startDate =" Start Date can't be empty ."
          }
-         if(!this.state.endDate){
-         errors.endDate ="End Date can't be empty."
-         }
-         if(!this.state.CTC){
-        errors.CTC ="CTC can't be empty."
-         }
-         const data = new FormData() 
+    
+      
 
   this.setState({ errors });
   const isValid = Object.keys(errors).length === 0
@@ -336,10 +312,10 @@ ImageChange =(event)=>{
                         } 
                              }}/></td>
                             <td>{index + 1}</td>
-                            <td > <img style={{ width: "70%", height: "35%" }} src={UR + item.picture} alt="desc">
+                            <td > <img style={{ width: "100%", height: "50%" }} src={UR + item.picture} alt="desc">
                             </img></td>
                             <td >{item.firstName}</td>
-                            <td>{item.middleName}</td>
+                            < td>{item.middleName}</td>
                             <td>{item.lastName}</td>
                             <td>{item.salary}</td>
 
@@ -550,10 +526,11 @@ ImageChange =(event)=>{
      changePassword=()=>{ 
         return this.props.history.replace('/superDashboard/changePassword')
      }
-     browseBtn = (e) => {
-        document.getElementById('real-input').click();
+   
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
     }
-
+    
 
     render() {
         let tableData;
@@ -585,15 +562,24 @@ ImageChange =(event)=>{
             </Table>
 
            let modalData =<div>
-                <FormGroup>
-                                  
-
-
                           
+
+                          <FormGroup>
+                      
+                <Row>
+                    <Col md={8}>
+                               <label>update your Photo</label> 
                                   <input accept='image/*' type="file" name="profilePicture"   onChange={this.ImageChange} />
                                 
-                                  <img id="target" src={this.state.picture}/>
-                               
+                                  
+                                  </Col>
+                    <Col md={4}>
+                        <div style={{ textAlign:'center'}}>
+                            <img   id="target" src={this.state.picture} height='100px' width='100px' />
+                        </div>
+                    </Col>
+                    
+                </Row>
                                       
                                  
                               </FormGroup>

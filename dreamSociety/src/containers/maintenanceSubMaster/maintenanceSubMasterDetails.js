@@ -83,10 +83,10 @@ class MaintenanceSubMasterDetails extends Component{
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
+            this.setState({modalLoading:true})
             this.props.updateMaintenanceSubMasterDetail(maintenanceTypeId, category, sizeType, rate, maintenanceId, sizeId)
             .then(() => this.modalRefresh())
-            this.setState({modalLoading:true})
-            .catch(err => {
+            .catch(err => { err
                 this.setState({modalLoading:false})
             });
         }

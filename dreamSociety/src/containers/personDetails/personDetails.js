@@ -51,7 +51,7 @@ OnKeyPressNumber(event) {
 }
 
 OnKeyPressmail(event){
-    const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/;
+    const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
     let inputChar = String.fromCharCode(event.charCode);
     if (!pattern.test(inputChar)) {
         event.preventDefault();
@@ -75,7 +75,7 @@ this.setState({[e.target.name]:e.target.value});
 submit=(e)=>{
  e.preventDefault()
  let errors={};
- let {userName,email,towerId,flatDetailId,roles,  familyMember,parking}= this.state 
+ let {userName,email,towerId,flatDetailId,roles,  familyMember}= this.state 
  if(!this.state.userName){
     errors.userName = "  Username can't be empty. Please select."
 }
@@ -91,17 +91,12 @@ if(!this.state.towerId){
 if(!this.state.roles){
     errors.roles = " Roles can't be empty. Please select."
 }
-if(!this.state.familyMember){
-    errors.familyMember = "Family Member can't be empty. Please select."
-}
-if(!this.state.parking){
-    errors.parking = "parking can't be empty. Please select."
-}
+
 this.setState({ errors });
 const isValid = Object.keys(errors).length === 0
 if (isValid) {
     this.setState({loading: true})
-this.props.addPerson(userName,email,towerId,roles,familyMember,parking)
+this.props.addPerson(userName,email,towerId,roles)
 .then(()=>
 this.props.history.push('/superDashboard/displayPerson')
 ).catch((err)=>this.setState({usernameMessage: err.response.data.messageUsernameErr, emailMessage:err.response.data.messageEmailErr, loading: false}))
@@ -139,7 +134,6 @@ Tower({get}){
   }
 }
 
-
 person=()=>{
     this.props.history.push('/superDashboard/displayPerson')
 }
@@ -169,7 +163,7 @@ form1 = <form onSubmit={this.submit}>
       <h3 align="center">  Add Person </h3>
           <div className="form-group">
               <label>Username</label>
-              <input type="text" name="userName" placeholder="Username"  onChange={this.onChange} maxLength={30} className="form-control" onKeyPress={this.OnKeyPresshandler}  />
+              <input type="text" name="userName" placeholder="Username"  onChange={this.onChange} maxLength={30} className="form-control"  />
          
               <span className="error">{this.state.errors.userName}</span>
               <span className="error">{this.state.usernameMessage}</span>
@@ -201,17 +195,7 @@ form1 = <form onSubmit={this.submit}>
               <span className="error">{this.state.errors.towerId}</span>
           </div>
           
-          <div className="form-group">
-              <label> Number of members in family</label>
-              <input type="text" name="familyMember"  placeholder="Family Member"  className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
-              <span className="error">{this.state.errors.familyMember}</span>
-          </div>
-         
-          <div className="form-group">
-              <label> parking</label>
-              <input type="text" name="parking" placeholder="Parking"   className="form-control" maxLength={2} onChange={this.onChange} onKeyPress={this.OnKeyPressNumber}  />
-              <span className="error">{this.state.errors.parking}</span>
-          </div>
+        
          
           <button className="btn btn-success"> Submit</button>
           <button className="btn btn-danger" onClick={this.person}>Cancel</button>

@@ -21,6 +21,7 @@ class MaintenanceMasterDetail extends Component {
             },
             filterName:'category',
             menuVisible: false,
+            modalLoading:false,
             search: '',
             modal: false,
             loading: true,
@@ -69,7 +70,7 @@ class MaintenanceMasterDetail extends Component {
     }
 
     refreshData() {
-        this.props.getMaintenance().then(() => this.setState({ loading: false }))
+        this.props.getMaintenance().then(() => this.setState({ loading: false,modalLoading:false, modal:false }))
        
     }
 

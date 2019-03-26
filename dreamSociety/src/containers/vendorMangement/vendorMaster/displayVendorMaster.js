@@ -32,7 +32,8 @@ class DisplayVendorMaster extends Component {
             ids:[],
             isDisabled:true,    
             errors:{},
-            message:''
+            message:'',
+            modalLoading: false,
         }
 
     componentDidMount() {
@@ -383,22 +384,8 @@ class DisplayVendorMaster extends Component {
             {this.renderList(this.props.vendorMasterReducer)}
         </tbody>
     </Table>
-    
-        let deleteSelectedButton = <Button color="danger" className="mb-2"
-        onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
-            return(
-            <div>
-                 <UI onClick={this.logout} change={this.changePassword}>
-
-                <div className="w3-container w3-margin-top w3-responsive">
-                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-                    <span aria-hidden="true">&times;</span>
-            </div>
-           
-            <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
-                <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}> Edit Vendor</ModalHeader>
-                <ModalBody>
-                    <FormGroup>
+          let modalData=<div>
+              <FormGroup>
                         <Label> Vendor Name</Label>
                         <Input name="vendorName" value={this.state.vendorName}  onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}>
                         </Input>
@@ -449,61 +436,78 @@ class DisplayVendorMaster extends Component {
                         </FormGroup>
                     <FormGroup>
                     <Label> Profile Picture</Label>
-                        <img id="target" src={this.state.picture}/>
+                        <img id="target" style={{width:"30%", height:"35%"}} src={this.state.picture}/>
                         <Input type="file" name="profilePicture" accept="image/*" onChange={this.selectImages} required /> 
                         
                     </FormGroup>
-                    
+                  
                     <FormGroup>
                             <Button color="primary" className="mr-2" onClick={this.updateVendor}>Save </Button>
                             <Button color="danger" onClick={this.toggleEditVendorModal.bind(this)}>Cancel</Button>
                         </FormGroup>
-                </ModalBody>
-            </Modal>
-            <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Vendor Details</h3>
-            <Button color="primary" type="button" onClick={this.push}>Add Vendor</Button></div>
-            <SearchFilter type="text" value={this.state.search}
-                        onChange={this.searchOnChange} />
+          </div>
+                
+                        let deleteSelectedButton = <Button color="danger" className="mb-2"
+                        onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
+                            return(
+                            <div>
+                                <UI onClick={this.logout} change={this.changePassword}>
 
-                     {deleteSelectedButton}
-                     <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
-                        id="allSelect"
-                        type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        } }/>
-                    </Label>
-                         {!this.state.loading ? tableData : <Spinner />}
-            </div>
+                                <div className="w3-container w3-margin-top w3-responsive">
+                                <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
+                                    <span aria-hidden="true">&times;</span>
+                            </div>
+                        
+                            <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
+                                <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}> Edit Vendor</ModalHeader>
+                                <ModalBody>
+                                {!this.state.modalLoading?modalData:<Spinner/>}
+                                    </ModalBody>
+                                </Modal>
+                                <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Vendor Details</h3>
+                                <Button color="primary" type="button" onClick={this.push}>Add Vendor</Button></div>
+                                <SearchFilter type="text" value={this.state.search}
+                                            onChange={this.searchOnChange} />
 
-                <Modal 
-                     isOpen={this.state.modalIsOpen} >
-                  <ModalHeader toggle={this.toggleModal.bind(this)}/>
-                  <ModalBody style={{paddingLeft:"45px", paddingRight:"2px"}}>
-                      <GoogleDocsViewer
-                        width="400px"
-                        height="700px"
-                        fileUrl={DocURN+this.state.documentOne}/>
-                  </ModalBody>
-                </Modal>
+                                        {deleteSelectedButton}
+                                        <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                                            id="allSelect"
+                                            type="checkbox" onChange={(e) => {
+                                                if(e.target.checked) {
+                                                    this.selectAll();
+                                                }
+                                                else if(!e.target.checked){
+                                                    this.unSelectAll();
+                                                } 
+                                            } }/>
+                                        </Label>
+                                            {!this.state.loading ? tableData : <Spinner />}
+                                </div>
 
-                <Modal
-                     isOpen={this.state.modal} >
-                  <ModalHeader toggle={this.toggle.bind(this)}/>
-                  <ModalBody style={{paddingLeft:"45px", paddingRight:"2px"}}>
-                  
-                      <GoogleDocsViewer
-                        width="400px"
-                        height="700px"
-                        fileUrl={DocURN+this.state.documentTwo}/>
+                                <Modal 
+                                    isOpen={this.state.modalIsOpen} >
+                                <ModalHeader toggle={this.toggleModal.bind(this)}/>
+                                <ModalBody style={{paddingLeft:"45px", paddingRight:"2px"}}>
+                                    <GoogleDocsViewer
+                                        width="400px"
+                                        height="700px"
+                                        fileUrl={DocURN+this.state.documentOne}/>
+                                </ModalBody>
+                                </Modal>
 
-                  </ModalBody>
-              </Modal>
-                </UI>            
+                                <Modal
+                                    isOpen={this.state.modal} >
+                                <ModalHeader toggle={this.toggle.bind(this)}/>
+                                <ModalBody style={{paddingLeft:"45px", paddingRight:"2px"}}>
+                                
+                                    <GoogleDocsViewer
+                                        width="400px"
+                                        height="700px"
+                                        fileUrl={DocURN+this.state.documentTwo}/>
+
+                                </ModalBody>
+                            </Modal>
+                  </UI>            
             </div>
          )
     }

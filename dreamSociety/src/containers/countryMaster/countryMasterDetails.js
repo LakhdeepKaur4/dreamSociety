@@ -85,6 +85,8 @@ class CountryDetails extends Component{
         if (code === '') errors.code = "Cant be empty";
         else if (this.state.code.length !== 3 && this.state.code.length !==2 ) errors.code = "Country code should be of length 2 or 3"
 
+        else if (this.state.code.length !== 3 && this.state.code.length !== 2) errors.code = "Characters should be of length 2 or 3"
+
         if (currency === '') errors.currency = "Cant be empty";
 
 
@@ -267,6 +269,7 @@ class CountryDetails extends Component{
 
     }
     onChangeCountry=(e)=>{
+        // let codeDetails= e.target.value.toUpperCase();
         if (!this.state.errors[e.target.value]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -274,6 +277,7 @@ class CountryDetails extends Component{
             this.setState({ [e.target.name]: e.target.value.toUpperCase().trim(''), errors });
         } else {
        this.setState({code:e.target.value.toUpperCase().trim('')})
+           
         }
 
     }

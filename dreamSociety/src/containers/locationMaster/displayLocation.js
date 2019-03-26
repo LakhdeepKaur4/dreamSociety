@@ -291,7 +291,7 @@ updateLocation = () => {
         this.setState({ modalLoading: true
     })
         }
-        console.log(locationId, countryId, stateId, cityId,locationName)
+
 }
 
 push=()=>{
@@ -334,6 +334,13 @@ unSelectAll = () =>{
     
 }
 
+logout=()=>{
+    localStorage.removeItem('token'); 
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
+
+
 render(){
     let tableData;
     tableData=
@@ -365,7 +372,7 @@ render(){
                   </Input>
                </FormGroup>
                <FormGroup>
-                   <Label>State Name</Label>
+                   <Label>State Name</Label>          
                    <Input type="select" id="stateId" name="stateId" onChange={this.onChangeState}>
                    {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
                             {this.state.stateName ? <DefaultSelect />: null}

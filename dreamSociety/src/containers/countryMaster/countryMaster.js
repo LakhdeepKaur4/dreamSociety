@@ -65,7 +65,7 @@ class Country extends Component {
 
         if (this.state.code === '') errors.code = "Cant be empty";
         // else if(this.state.code.length.<98) errors.code ="Country code should be in captital";
-        else if (this.state.code.length !== 3 && this.state.code.length !==2 ) errors.code = "Country code should be of length 2 or 3"
+        else if (this.state.code.length !== 3 && this.state.code.length !== 2) errors.code = "Characters should be of length 2 or 3."
         if (this.state.currency === '') errors.currency = "Cant be empty";
 
         if (this.state.phoneCode === '') errors.phoneCode = "Cant be empty";
@@ -136,18 +136,18 @@ class Country extends Component {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             console.log('no errors');
-            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+            this.setState({ [e.target.name]: e.target.value.toUpperCase().trim(''), errors });
         } else {
-        this.setState({code:e.target.value.toUpperCase().trim('')})
-        }
+        this.setState({code:e.target.value.toUpperCase().trim('')});
 
     }
+}
          
     close=()=>{
-        return this.props.history.replace('/superDashBoard')
+        return this.props.history.replace('/superDashBoard');
     }
     changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
+        return this.props.history.replace('/superDashboard/changePassword');
      }
 
 
@@ -233,6 +233,7 @@ class Country extends Component {
 
     }
 }
+
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ AddCountry }, dispatch)
 }

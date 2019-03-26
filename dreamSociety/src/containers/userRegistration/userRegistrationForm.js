@@ -64,17 +64,6 @@ const userRegistrationForm = (props) => (
                 
             </FormGroup>
             <FormGroup>
-                <Label>No. of Family Members</Label>
-                <Input name={props.familyInputName}
-                    placeholder="No. of Family Members"
-                    type="text"
-                    value={props.familyValue}
-                    onChange={props.familyChange}
-                    maxLength='1'
-                    onKeyPress={props.contactKeyPress}  />
-                <span className='error'>{props.familyError}</span>
-            </FormGroup>
-            <FormGroup>
                 <Label>Tower Name</Label>
                 <Input name={props.towerInputName}
                     type="select"
@@ -85,7 +74,7 @@ const userRegistrationForm = (props) => (
                 </Input>
                 <span className='error'>{props.towerError}</span>
             </FormGroup>
-            <FormGroup>
+            {/* <FormGroup>
                 <Label>Parking Slot Name</Label>
                 <Input name={props.parkingInputName}
                     type="text"
@@ -95,7 +84,7 @@ const userRegistrationForm = (props) => (
                     onKeyPress={props.parkingAndFloorKeyPress}
                     maxLength='20'  />
                 <span className='error'>{props.parkingError}</span>
-            </FormGroup>
+            </FormGroup> */}
             
             
             <FormGroup>

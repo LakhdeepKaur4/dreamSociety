@@ -117,6 +117,9 @@ FileChange=(event)=>{
             event.preventDefault();
         }
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
 
  
 
@@ -126,17 +129,17 @@ FileChange=(event)=>{
         let errors ={};
         // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
        
-        if(!this.state.countryName){
-          errors.countryName = "Country Name  can't be empty. "
+        if(!this.state.countryId){
+          errors.countryId= "Country Name  can't be empty. "
          }
-         if(!this.state.stateName){
-          errors.stateName ="State Name can't be empty. "
+         if(!this.state.stateId){
+          errors.stateId="State Name can't be empty. "
          }
-          if(!this.state.cityName){
-          errors.cityName ="City Name can't be empty."
+          if(!this.state.cityId){
+          errors.cityId ="City Name can't be empty."
          }
-         if(!this.state.locationName){
-          errors.locationName ="Location Name can't be empty."
+         if(!this.state.locationId){
+          errors.locationId="Location Name can't be empty."
          }
          if(!this.state.documentOne){
           errors.documentOne ="please select an ID."
@@ -163,12 +166,8 @@ FileChange=(event)=>{
          if(!this.state.startDate){
           errors.startDate =" Start Date can't be empty ."
          }
-         if(!this.state.endDate){
-         errors.endDate ="End Date can't be empty."
-         }
-         if(!this.state.CTC){
-        errors.CTC ="CTC can't be empty."
-         }
+         
+       
          const data = new FormData() 
 
   this.setState({ errors });
@@ -214,6 +213,7 @@ FileChange=(event)=>{
     }
     
     onChangeCountry=(event)=>{
+        console.log(this.state)
         let selected= event.target.value;
       
         var data = _.find(this.props.locationMasterReducer.country,function(obj){
@@ -298,7 +298,7 @@ onLocationChange=(event)=>{
 
 
   getDropdown4=({location})=>{
-      console.log(location)
+   
 if(location){
     return location.map((item)=>{
         return(
@@ -317,6 +317,12 @@ if(location){
         }
     }
 
+
+    logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/')
+    }
   displayEmployee=()=>{
       this.props.history.push('/superDashboard/displayEmployee');
   }
@@ -329,13 +335,16 @@ render(){
 let form;
 <Spinner/>
 
-form=
-<div>
+let formData=
 <form onSubmit={this.submit}>
-  <h3 align="center">Employee Master </h3>
+<div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+<span aria-hidden="true">&times;</span>
+</div>
+<div>
+<h3 align="center">Employee Master </h3>
 
-  <div class="input-container">
-        <label for ="upload-photo">Select Your Image</label>
+  <div className="input-container">
+        <label >Select Your Image</label>
         <input type="file" accept =".png, .jpg, .jpeg"   data-max-size="4194304"   name="profilePicture" onChange={this.onPicChange}/>
          
         <span className="error">{this.state.errors.profilePicture}</span>
@@ -344,7 +353,7 @@ form=
     <div className="row">
     <div className="form-group col-md-4 ">
     <label>First Name</label>
-    <input  className="form-control" name="firstName" type="text"  onChange ={this.onChange}  maxLength={30}/>
+    <input  className="form-control" name="firstName" type="text"  onChange ={this.onChange}  onKeyPress={this.OnKeyPresshandler} maxLength={30}/>
      
     <span className="error">{this.state.errors.firstName}</span>
     </div>
@@ -376,11 +385,11 @@ form=
     <div  className="row">
                     <div className="col-md-6">
                             <label>Country Name</label>
-                           <select   className ="form-control" name="countryName"         defaultValue='no-value' onChange={this.onChangeCountry} >
+                           <select   className ="form-control" name="countryId"         defaultValue='no-value' onChange={this.onChangeCountry} >
                         <    DefaultSelect/> 
                             {this.getDropdown1(this.props.locationMasterReducer)}
                         </select>
-                           <span className="error">{this.state.errors.countryName}</span>
+                           {!this.state.countryId?<span className="error">{this.state.errors.countryId}</span>:''}
                     </div>
 
 
@@ -391,7 +400,7 @@ form=
                                <DefaultSelect/>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
-                        <span className="error">{this.state.errors.stateName}</span>
+                        {!this.state.stateId?<span className="error">{this.state.errors.stateId}</span>:''}
                     </div>
                           </div>
                           <div className="row">    
@@ -401,7 +410,7 @@ form=
                             <DefaultSelect/>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
-                        <span className="error">{this.state.errors.cityName}</span>
+                        {!this.state.cityId?<span className="error">{this.state.errors.cityId}</span>:''}
                      </div>
                      <div  className="col-md-6" >    
                         <label>location</label>
@@ -409,7 +418,7 @@ form=
                              <DefaultSelect/>
                             {this.getDropdown4(this.props.locationMasterReducer)}
                         </select>
-                        <span className="error">{this.state.errors.locationName}</span>
+                        {!this.state.locationId?<span className="error">{this.state.errors.locationId}</span>:''}
                       </div>
                      </div>
                       
@@ -448,25 +457,28 @@ form=
         <input  accept='.docx,application/pdf' type="file" name ="documentTwo" onChange={this.FileChange}/>
         <span className="error">{this.state.errors.documentTwo}</span>
         </div>
+        </div>
+<div style={{paddingTop:"30px"}}>
+  <button className="btn btn-success mr-2">Submit</button>
+  <button className="btn btn-danger"  onClick ={this.displayEmployee}>Cancel</button>
   </div>
-   
- 
-
-    <button className="btn btn-success mr-2">Submit</button>
-    <button className="btn btn-danger"  onClick ={this.displayEmployee}>Cancel</button>
-    {/* {!this.state.loading ? formData: <Spinner />}  */}
-    </form>
-    </div>
+  </div>
+  </form>
 
 
-// else if(this.submit){
-//     form =<Spinner/>
-// }
+
+
+
+  
 
     return(
         <div  >
-            <UI  change={this.changePassword}>
-          {form}
+            <UI   onClick ={this.logout } change={this.changePassword}>
+        
+   
+ 
+  {!this.state.loading ? formData: <Spinner />} 
+ 
         </UI>
         </div>
         

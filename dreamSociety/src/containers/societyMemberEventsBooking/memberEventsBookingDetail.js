@@ -174,7 +174,7 @@ class MemberEventsBookingDetail extends Component {
     deleteSelected(ids){
         this.setState({loading:true,  isDisabled:true});
 
-        this.props.deleteSelectMemberEvent(ids)
+        this.props.deleteSelectEventBooking(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
         
@@ -353,7 +353,8 @@ class MemberEventsBookingDetail extends Component {
                     {this.renderBookingEvent(this.props.memberEventsBookingReducer)}
                 </tbody>
             </Table></div>
-
+              let deleteSelectButton=<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+              onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
             let modalData=<div>
                  <FormGroup>
                                     <Label>Event Type</Label>
@@ -419,8 +420,8 @@ class MemberEventsBookingDetail extends Component {
                         </div>
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
-                             <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+                             {deleteSelectButton}
+
          <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
                     id="allSelect"
                     type="checkbox" onChange={(e) => {

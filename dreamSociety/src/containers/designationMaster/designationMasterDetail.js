@@ -21,8 +21,8 @@ class DesignationMasterDetail extends Component {
                 isActive: false,
 
             },
-            
-            message:'',
+
+            message: '',
             menuVisible: false,
             search: '',
             modalLoading: false,
@@ -43,13 +43,13 @@ class DesignationMasterDetail extends Component {
     }
 
     refreshData() {
-        this.props.getDesignation().then(() => this.setState({ loading: false,  modalLoading: false, modal:false }))
-       
+        this.props.getDesignation().then(() => this.setState({ loading: false, modalLoading: false, modal: false }))
+
     }
 
     onChangeHandler = (event) => {
-        this.setState({message:'' })
-       
+        this.setState({ message: '' })
+
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -66,8 +66,8 @@ class DesignationMasterDetail extends Component {
         this.setState({
             designationId,
             designationName,
-         
-           
+
+
             modal: !this.state.modal
         })
     }
@@ -76,8 +76,8 @@ class DesignationMasterDetail extends Component {
 
 
     toggleModal = () => {
-        
-        this.setState({ modal: !this.state.modal, message:'', })
+
+        this.setState({ modal: !this.state.modal, message: '', })
     }
 
 
@@ -85,7 +85,7 @@ class DesignationMasterDetail extends Component {
 
     editdesignationName = (e) => {
         e.preventDefault();
-    
+
         const { designationId, designationName } = this.state
 
         let errors = {};
@@ -94,25 +94,26 @@ class DesignationMasterDetail extends Component {
         }
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
-        
-        if (isValid &&  this.state.message === '') {
-           
-        this.props.updateDesignation(designationId, designationName)
-            .then(() => this.refreshData())
-            .catch(err=>{ console.log(err.response.data.message)
-                this.setState({modalLoading:false,message: err.response.data.message})
+
+        if (isValid && this.state.message === '') {
+
+            this.props.updateDesignation(designationId, designationName)
+                .then(() => this.refreshData())
+                .catch(err => {
+                    console.log(err.response.data.message)
+                    this.setState({ modalLoading: false, message: err.response.data.message })
                 })
-                if(this.state.message === ''){
-                    this.setState({modal: true})
-                }
-                else {
-                    this.setState({modal: false})
-                }
-        
-        this.setState({
-            modalLoading: true
-        })
-    }
+            if (this.state.message === '') {
+                this.setState({ modal: true })
+            }
+            else {
+                this.setState({ modal: false })
+            }
+
+            this.setState({
+                modalLoading: true
+            })
+        }
     }
 
     deleteDesignationName = (designationId) => {
@@ -120,9 +121,9 @@ class DesignationMasterDetail extends Component {
         this.setState({ loading: true })
         this.props.deleteDesignation(designationId, isActive)
             .then(() => this.refreshData())
-        this.setState({editDesignationData: { isActive: false } })
-      
-      }
+        this.setState({ editDesignationData: { isActive: false } })
+
+    }
 
 
 
@@ -141,40 +142,40 @@ class DesignationMasterDetail extends Component {
     deleteSelected(ids) {
         this.setState({ loading: true, isDisabled: true });
         this.props.deleteSelectDesignation(ids)
-        .then(() => this.refreshData())
-        .catch(err => err.response.data.message);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-      
+            .then(() => this.refreshData())
+            .catch(err => err.response.data.message);
+
+
     }
 
-     
-   
+
+
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
-        let ar =[];
-            for(var i = 0; i < selectMultiple.length; i++){
-                    ar.push(parseInt(selectMultiple[i].value));
-                    selectMultiple[i].checked = true;
-            }
-            this.setState({ids: ar});
-            if(ar.length > 0){
-                this.setState({isDisabled: false});
-            }
+        let ar = [];
+        for (var i = 0; i < selectMultiple.length; i++) {
+            ar.push(parseInt(selectMultiple[i].value));
+            selectMultiple[i].checked = true;
+        }
+        this.setState({ ids: ar });
+        if (ar.length > 0) {
+            this.setState({ isDisabled: false });
+        }
     }
 
-    unSelectAll = () =>{
-        
+    unSelectAll = () => {
+
         let unSelectMultiple = document.getElementsByClassName('SelectAll');
         let allIds = [];
-        for(var i = 0; i < unSelectMultiple.length; i++){
-                unSelectMultiple[i].checked = false
+        for (var i = 0; i < unSelectMultiple.length; i++) {
+            unSelectMultiple[i].checked = false
         }
-        
-        this.setState({ids: [ ...allIds]});
-        if(allIds.length === 0){
-            this.setState({isDisabled: true});
+
+        this.setState({ ids: [...allIds] });
+        if (allIds.length === 0) {
+            this.setState({ isDisabled: true });
         }
-        
+
     }
 
 
@@ -189,30 +190,30 @@ class DesignationMasterDetail extends Component {
 
                 return (
                     <tr key={item.designationId} >
-                      <td><input type="checkbox" name="ids" className="SelectAll" value={item.designationId}
-                         onChange={(e) => {
-                            const {designationId} = item
-                            if(!e.target.checked){
-                                document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(designationId);
-                                if(indexOfId > -1){
-                                    this.state.ids.splice(indexOfId, 1);
+                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.designationId}
+                            onChange={(e) => {
+                                const { designationId } = item
+                                if (!e.target.checked) {
+                                    document.getElementById('allSelect').checked = false;
+                                    let indexOfId = this.state.ids.indexOf(designationId);
+                                    if (indexOfId > -1) {
+                                        this.state.ids.splice(indexOfId, 1);
+                                    }
+                                    if (this.state.ids.length === 0) {
+                                        this.setState({ isDisabled: true });
+                                    }
                                 }
-                                if(this.state.ids.length === 0){
-                                    this.setState({isDisabled: true});
+                                else {
+
+                                    this.setState({ ids: [...this.state.ids, designationId] });
+
+                                    if (this.state.ids.length >= 0) {
+                                        this.setState({ isDisabled: false })
+                                    }
                                 }
-                            }
-                            else {
-                      
-                                this.setState({ids: [...this.state.ids, designationId]});
-                                
-                                if(this.state.ids.length >= 0){
-                                    this.setState({isDisabled: false})
-                                }
-                            }
-                                  
-                             }}/></td>
-                        <td >{index+1}</td>
+
+                            }} /></td>
+                        <td >{index + 1}</td>
                         <td>{item.designationName}</td>
                         <td>
                             <Button color="success mr-2" onClick={this.toggle.bind(this, item.designationId, item.designationName)} >Edit</Button>
@@ -235,10 +236,10 @@ class DesignationMasterDetail extends Component {
         return this.props.history.replace('/')
     }
 
-    
-    changePassword=()=>{ 
+
+    changePassword = () => {
         return this.props.history.replace('/superDashboard/changePassword')
-     }
+    }
 
     routeToAddNewDesignation = () => {
         this.props.history.push('/superDashboard/designationMaster')
@@ -265,14 +266,18 @@ class DesignationMasterDetail extends Component {
             <Table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th style={{width: "4%"}}></th>
+                        <th style={{ width: "4%" }}></th>
                         <th>#</th>
-                        <th onClick={()=>{
-                             this.setState((state)=>{return {sortVal:!state.sortVal,
-                                filterName:'designationName'}});
-                        }}>Designation Position 
+                        <th onClick={() => {
+                            this.setState((state) => {
+                                return {
+                                    sortVal: !state.sortVal,
+                                    filterName: 'designationName'
+                                }
+                            });
+                        }}>Designation Position
                          <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-                       
+
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -281,23 +286,23 @@ class DesignationMasterDetail extends Component {
 
                 </tbody>
             </Table></div>
-            let deleteSelectButton=<Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+        let deleteSelectButton = <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
             onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
-            let modalData=<div>
-                     <FormGroup>
-                                    <Label>Designation Type</Label>
-                                    <Input type="text" id="designationId" name="designationName" onChange={this.onChangeHandler} value={this.state.designationName} maxLength={50} onKeyPress={this.onKeyPressHandler} />
-                                    <span className="error">{this.state.errors.designationName}</span>
-                                    <span className="error">{this.state.message}</span>
-                                </FormGroup>
+        let modalData = <div>
+            <FormGroup>
+                <Label>Designation Type</Label>
+                <Input type="text" id="designationId" name="designationName" onChange={this.onChangeHandler} value={this.state.designationName} maxLength={50} onKeyPress={this.onKeyPressHandler} />
+                <span className="error">{this.state.errors.designationName}</span>
+                <span className="error">{this.state.message}</span>
+            </FormGroup>
 
 
-                                <FormGroup>
-                                    <Button color="primary mr-2" onClick={this.editdesignationName}>Save</Button>
+            <FormGroup>
+                <Button color="primary mr-2" onClick={this.editdesignationName}>Save</Button>
 
-                                    <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                                </FormGroup>
-            </div>
+                <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+            </FormGroup>
+        </div>
         return (
             <div>
 
@@ -313,23 +318,23 @@ class DesignationMasterDetail extends Component {
                         <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
 
-                            {deleteSelectButton}
-                           <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
-                    id="allSelect"
-                    type="checkbox" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
+                        {deleteSelectButton}
+                        <Label htmlFor="allSelect" style={{ alignContent: 'baseline', marginLeft: "10px", fontWeight: "700" }}>Select All<input className="ml-2"
+                            id="allSelect"
+                            type="checkbox" onChange={(e) => {
+                                if (e.target.checked) {
+                                    this.selectAll();
+                                }
+                                else if (!e.target.checked) {
+                                    this.unSelectAll();
+                                }
                             }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></Label>
-                         {(this.state.loading) ? <Spinner /> : tableData}
+                            } /></Label>
+                        {(this.state.loading) ? <Spinner /> : tableData}
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Edit</ModalHeader>
                             <ModalBody>
-                            {!this.state.modalLoading  ? modalData : <Spinner />}
+                                {!this.state.modalLoading ? modalData : <Spinner />}
                             </ModalBody>
                         </Modal>
 
