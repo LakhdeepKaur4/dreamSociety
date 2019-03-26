@@ -17,7 +17,7 @@ export function addTenantDetail(values){
 
 export function getFlatDetailViaTowerId(towerId){
     console.log(towerId)
-    const request = axios.get(`${URN}/towerFloor/${towerId}`, {headers: authHeader()})
+    const request = axios.get(`${URN}/tower/towerFloor/${towerId}`, {headers: authHeader()})
     .then((response) => response.data)
 
     return {

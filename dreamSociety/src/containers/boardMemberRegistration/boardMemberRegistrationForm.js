@@ -277,7 +277,7 @@ submit = (e) => {
         if(this.state.accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
         if(this.state.panCardNumber === '') errors.panCardNumber = `Pan card number can't be empty.`;
         if(this.state.IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
-        if(this.state.dob === '') errors.dob = `cDate of birth can't be empty.`;
+        if(this.state.dob === '') errors.dob = `Date of birth can't be empty.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.emailValidError===''){
