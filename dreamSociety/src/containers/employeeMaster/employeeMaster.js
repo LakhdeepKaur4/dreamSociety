@@ -335,7 +335,7 @@ let form;
 let formData=<div>
 <h3 align="center">Employee Master </h3>
 
-  <div class="input-container">
+  <div className="input-container">
         <label for ="upload-photo">Select Your Image</label>
         <input type="file" accept =".png, .jpg, .jpeg"   data-max-size="4194304"   name="profilePicture" onChange={this.onPicChange}/>
          

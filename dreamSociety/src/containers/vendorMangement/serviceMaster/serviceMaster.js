@@ -164,16 +164,10 @@ class ServiceMaster extends Component {
                     <span aria-hidden="true">&times;</span>
                  </div>
                     <div><h3 style={{textAlign:'center', marginBottom: '10px'}}>Add Services</h3></div>
-                    {!this.state.loading ? form : <Spinner /> }
-                       
-                   
-                    </form>
-              
-            </UI>
-           
-
+                    {!this.state.loading ? form : <Spinner /> }                                      
+                </form>            
+            </UI>        
         </div>
-
         )
     }
 
