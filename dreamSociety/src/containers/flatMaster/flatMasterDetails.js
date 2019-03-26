@@ -444,7 +444,7 @@ class flatMasterDetails extends Component {
                                         value={this.state.flatSuperArea}
                                         onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
-                                        maxLength='3' />
+                                        maxLength='4' />
                                         <span  className='error'>{this.state.errors.flatSuperArea}</span>
                                 </FormGroup>
                                 <FormGroup>
@@ -469,7 +469,7 @@ class flatMasterDetails extends Component {
                                         value={this.state.coverArea}
                                         onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
-                                        maxLength='3' />
+                                        maxLength='4' />
                                         <span  className='error'>{this.state.errors.coverArea}</span>
 
                                 </FormGroup>
