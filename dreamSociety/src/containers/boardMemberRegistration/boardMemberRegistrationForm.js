@@ -385,6 +385,19 @@ ifscChange = (e) => {
     
 }
 
+panChange = (e) => {
+    console.log(this.state.panCardNumber)
+    if (!!this.state.errors[e.target.name]) {
+        let errors = Object.assign({}, this.state.errors);
+        delete errors[e.target.name];
+        this.setState({ [e.target.name]: e.target.value.toUpperCase(), errors });
+    }
+    else {
+        this.setState({panCardNumber:e.target.value.toUpperCase()})
+    }
+    
+}
+
     render(){
         let formData = <div>
             {/* <FormGroup>
@@ -400,7 +413,7 @@ ifscChange = (e) => {
                         {!this.state.societyId ? <span className="error">{this.state.errors.societyId}</span>: ''}
                     </FormGroup> */}
                     <FormGroup>
-                        <Label>Member Name</Label>
+                        <Label>Board Member Name</Label>
                         <Input type='text'
                          placeholder="Member Name"
                          name='societyBoardMemberName' 
@@ -560,7 +573,7 @@ ifscChange = (e) => {
                                 e.preventDefault();
                             }
                         }} 
-                        onChange={this.onChange} />
+                        onChange={this.panChange} />
                         {<span className="error">{this.state.errors.panCardNumber}</span>}
                     </FormGroup>
                     <FormGroup>
