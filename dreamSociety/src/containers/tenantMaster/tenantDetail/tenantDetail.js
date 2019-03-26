@@ -372,11 +372,12 @@ class TenantDetail extends Component {
 
     refreshData = () => {
         this.props.getTenantDetail().then(() => this.setState({editTenant:false, loading: false}))
-        .catch(err => err)
+        .catch(() => this.setState({loading:false,editTenant:false}));
     }
 
     refreshDataAfterUpdate = () => {
         this.props.getTenantDetail().then(() => this.setState({editTenant:false, modalLoading: false}))
+        .catch(() => this.setState({modalLoading:false}));
     }
 
     updateTenant = (e) => {

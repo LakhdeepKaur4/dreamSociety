@@ -13,7 +13,7 @@ class Parking extends Component {
     }
 
     renderParking(){
-        this.props.fetchBasement().then(() => this.setState({loading: false}))
+        this.props.fetchBasement().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
     }
 
     state = {
