@@ -99,7 +99,10 @@ class flatMasterDetails extends Component {
 
         
         if (coverArea === '') errors.coverArea = "Cant be empty";
-        else if (parseInt(coverArea,10) >= parseInt(flatSuperArea,10)) errors.coverArea= "CoverArea cannot be greater then flatSuperArea";
+        else if (parseInt(coverArea,10) >parseInt(flatSuperArea,10)) errors.coverArea= "CoverArea cannot be greater then flatSuperArea";
+        
+        else if (parseInt(this.state.coverArea) == parseInt(this.state.flatSuperArea)) errors.coverArea=
+        "CoverArea cannot be equal to FlatSuperArea";
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
