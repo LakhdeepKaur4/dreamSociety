@@ -347,7 +347,7 @@ class eventSpaceMasterDetails extends Component {
                                         value={this.state.spaceName}
                                         onKeyPress={this.onKeyPressHandler}
                                         onChange={this.onChange} 
-                                        maxLength='20'/>
+                                        maxLength='50'/>
                                         <span  className='error'>{this.state.errors.spaceName}</span>  
                                          <span className='error'>{this.state.message}</span>
 
@@ -420,7 +420,7 @@ class eventSpaceMasterDetails extends Component {
                                         onKeyPress = {this.OnKeyPresshandlerPhone}
                                         onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
-                                        maxLength='3' />
+                                        maxLength='4' />
                                         <span  className='error'>{this.state.errors.area}</span>
 
                                 </FormGroup>
