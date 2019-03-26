@@ -259,7 +259,7 @@ class DisplayVendorMaster extends Component {
                         <td>{vendors.contact}</td>
                         <td><button className="btn btn-light" onClick={this.openModal.bind(this, vendors.documentOne)}>View Document</button></td>
                         <td><button className="btn btn-light" onClick={this.Modal.bind(this, vendors.documentTwo)}>View Document </button></td>
-                        <td><img style={{width:"100%", height:"15%"}} src={PicURN+ vendors.picture}></img></td>
+                        <td><img style={{maxWidth: "100%",height: "auto",width: "auto\9"}} src={PicURN+ vendors.picture}></img></td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewServices.bind(this,vendors.vendorId)}>View Services</button></td>                   
                         <td>
                              <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorId, vendors.vendorName,vendors.currentAddress,vendors.permanentAddress,vendors.contact,vendors.documentOne,vendors.documentTwo, PicURN+vendors.picture)}>Edit</Button> 
