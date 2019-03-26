@@ -75,10 +75,10 @@ class flatDetails extends Component {
 
     searchFilter = (search) => {
         return function (x) {
-            return x.floor_master ? x.floor_master.floorName.toLowerCase().includes(search.toLowerCase()) : '' ||
-                x.tower_master ? x.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) : '' ||
-                    x.flat_master ? x.flat_master.flatType.toLowerCase().includes(search.toLowerCase()) : '' ||
-                        x.flatNo ? x.flatNo.toLowerCase().includes(search.toLowerCase()) : ''
+            return  x.floor_master.floorName.toLowerCase().includes(search.toLowerCase()) ||
+                x.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
+                   x.flat_master.flatType.toLowerCase().includes(search.toLowerCase())  ||
+                        x.flatNo.toLowerCase().includes(search.toLowerCase()) 
 
                         || !search;
         }

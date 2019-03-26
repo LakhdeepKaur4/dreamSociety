@@ -312,7 +312,7 @@ ImageChange =(event)=>{
                         } 
                              }}/></td>
                             <td>{index + 1}</td>
-                            <td > <img style={{ width: "100%", height: "50%" }} src={UR + item.picture} alt="desc">
+                            <td > <img  style={{maxWidth: "100%",height: "auto",width: "auto\9"}}  src={UR + item.picture} alt="desc">
                             </img></td>
                             <td >{item.firstName}</td>
                             < td>{item.middleName}</td>
