@@ -246,7 +246,7 @@ class MemberEventsBookingDetail extends Component {
     renderBookingEvent = ({ memberEventsResult }) => {
         if (memberEventsResult){
             return memberEventsResult.events.sort((item1,item2)=>{ 
-                var cmprVal = (item1.societyMemberEventName && item2.societyMemberEventName) ? (item1.society_member_event_master[this.state.filterName].localeCompare(item2.society_member_event_master[this.state.filterName])) : ''
+                var cmprVal = (item1.society_member_event_master && item2.society_member_event_master) ? (item1.society_member_event_master[this.state.filterName].localeCompare(item2.society_member_event_master[this.state.filterName])) : ''
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
