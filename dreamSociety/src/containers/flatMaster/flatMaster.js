@@ -46,13 +46,13 @@ class FlatMaster extends Component {
         if (this.state.flatSuperArea === '') errors.flatSuperArea = "Cant be empty";
 
         if (!this.state.sizeId) {
-            errors.sizeId = "SizeType cannot be empty";
+            errors.sizeId = "Size Type cannot be empty";
         }
         if (this.state.coverArea === '') errors.coverArea = "Cant be empty";
         else if (parseInt(this.state.coverArea) > parseInt(this.state.flatSuperArea)) errors.coverArea=
-         "CoverArea cannot be greater then FlatSuperArea";
+         "Cover Area cannot be greater then Flat Super Area";
          else if (parseInt(this.state.coverArea) == parseInt(this.state.flatSuperArea)) errors.coverArea=
-         "CoverArea cannot be equal to FlatSuperArea";
+         "Cover Area cannot be equal to Flat Super Area";
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;

@@ -85,7 +85,7 @@ class CountryDetails extends Component{
         if (code === '') errors.code = "Cant be empty";
         else if (this.state.code.length !== 3 && this.state.code.length !==2 ) errors.code = "Country code should be of length 2 or 3"
 
-        else if (this.state.code.length !== 3 && this.state.code.length !== 2) errors.code = "Characters should be of length 2 or 3"
+      
 
         if (currency === '') errors.currency = "Cant be empty";
 
