@@ -99,7 +99,10 @@ class flatMasterDetails extends Component {
 
         
         if (coverArea === '') errors.coverArea = "Cant be empty";
-        else if (parseInt(coverArea,10) >= parseInt(flatSuperArea,10)) errors.coverArea= "CoverArea cannot be greater then flatSuperArea";
+        else if (parseInt(coverArea,10) >parseInt(flatSuperArea,10)) errors.coverArea= "Cover Area cannot be greater then Flat Super Area";
+        
+        else if (parseInt(this.state.coverArea) == parseInt(this.state.flatSuperArea)) errors.coverArea=
+        "Cover Area cannot be equal to Flat Super Area";
         this.setState({ errors });
 
         const isValid = Object.keys(errors).length === 0;
@@ -444,7 +447,7 @@ class flatMasterDetails extends Component {
                                         value={this.state.flatSuperArea}
                                         onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
-                                        maxLength='3' />
+                                        maxLength='4' />
                                         <span  className='error'>{this.state.errors.flatSuperArea}</span>
                                 </FormGroup>
                                 <FormGroup>
@@ -469,7 +472,7 @@ class flatMasterDetails extends Component {
                                         value={this.state.coverArea}
                                         onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
-                                        maxLength='3' />
+                                        maxLength='4' />
                                         <span  className='error'>{this.state.errors.coverArea}</span>
 
                                 </FormGroup>
