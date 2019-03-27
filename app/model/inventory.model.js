@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
       autoGenerate:{
         type: Sequelize.BOOLEAN,
         defaultValue: true
-      },
+      },  
       rate:{
         type:Sequelize.FLOAT,
         defaultValue: true

@@ -132,6 +132,10 @@
 
 
 
+// new Code
+
+
+
 
 
 
@@ -192,6 +196,14 @@ function decrypt(key, data) {
     return decrypted;
   }
 
+  function encrypt1(key, data) {
+    var cipher = crypto.createCipher("aes-128-cbc", key);
+    var crypted = cipher.update(data, "utf-8", "hex");
+    crypted += cipher.final("hex");
+  
+    return crypted;
+  }
+
 
   let mailToUser = (owner) => {
     let email = decrypt(key,owner.email);
@@ -227,6 +239,38 @@ function decrypt(key, data) {
   }
   
 
+  let mailToTenant = (tenant) => {
+    let email = decrypt1(key,tenant.email);
+    let password = tenant.password;
+    let userName = decrypt1(key,tenant.userName);
+      const request = mailjet.post("send", { 'version': 'v3.1' })
+          .request({
+              "Messages": [
+                  {
+                      "From": {
+                          "Email": "rohit.khandelwal@greatwits.com",
+                          "Name": "Greatwits"
+                      },
+                      "To": [
+                          {
+                              "Email": email,
+                              "Name": 'Atin' + ' ' + 'Tanwar'
+                          }
+                      ],
+                      "Subject": "Activation link username and password",
+                      "HTMLPart": `your username is: ${userName} and password is: ${password}. `
+                  }
+              ]
+          })
+      request
+          .then((result) => {
+              console.log(result.body)
+              // console.log(`http://192.168.1.105:3000/submitotp?userId=${encryptedId}token=${encryptedToken}`);
+          })
+          .catch((err) => {
+              console.log(err.statusCode)
+          })
+  }
 
   function sendMail(owner) {
     let email = decrypt(key,owner.email);
@@ -280,8 +324,9 @@ exports.checkOtp = async (req,res,next) => {
             let ownerId = decrypt(key,req.query.ownerId);
             console.log(ownerId);
             let owner = await Owner.findOne({where:{ownerId:ownerId,isActive:false}});
+            console.log("owner====>",owner);
             if(!owner){
-                return res.status(200).json(
+                return res.status(403).json(
                     {
                     otpVerified: false,    
                     message: 'owner does not exist or have already been activated'
@@ -304,30 +349,69 @@ exports.checkOtp = async (req,res,next) => {
             if(updatedOwner){
                 //  console.log('owner Successfully activated');
                  mailToUser(updatedOwner);
+                 let userName = decrypt(key,updatedOwner.userName);
+                // set users
+                let user = await User.findOne({
+                    where:{userName:encrypt1(key,userName),
+                    isActive:false
+                    }
+                });
+                console.log("user==>",user);
+                if(user){
+                    user.updateAttributes({isActive:true});
+                }
                  return res.status(200).json(
                     {
-                    otpVerified: true,    
+                    otpVerified: true, 
                     message: 'owner Successfully Activated'
                 });
             }
         }
         if(req.query.tenantId){
+        
         let tenantId = decrypt1(key,req.query.tenantId);
         console.log(tenantId);
         let tenant = await Tenant.findOne({where:{tenantId:tenantId,isActive:false}});
         if(tenant===undefined || tenant===null){
-        return console.log("tenant does not exist or have already been activated");
+            return res.status(403).json(
+                {
+                otpVerified: false,    
+                message: 'tenant does not exist or have already been activated'
+            });
         }
         let otpToCheck = parseInt(req.body.otp);
         let tenantKey = tenant.tenantId;
         let findOtp = await Otp.findOne({where:{otpvalue:otpToCheck,tenantId:tenantKey}});
         if(findOtp===null || findOtp===undefined){
-             return console.log('either your otp has expired or it is invalid');
+             return res.status(200).json(
+                    {
+                    otpVerified: false,    
+                    message: 'otp is invalid or expired'
+                });
         }
         let updatedTenant = await tenant.updateAttributes({isActive:true});
+        console.log(updatedTenant);
         if(updatedTenant){
-             console.log('tenant Successfully activated');
-             mailToUser(updatedTenant);
+             mailToTenant(updatedTenant);
+
+            // set user
+            let userName = decrypt1(key,updatedTenant.userName);
+            // set users
+            let user = await User.findOne({
+                where:{userName:encrypt1(key,userName)}
+            });
+            console.log("user===>======>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",user);
+            if(user){
+                user.updateAttributes({isActive:true});
+            }
+           
+            // set roles
+
+             return res.status(200).json(
+                {
+                otpVerified: false,    
+                message: 'tenant successfully activated'
+            });
         }
         }
         

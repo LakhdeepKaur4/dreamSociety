@@ -1,12 +1,4 @@
 
-
-
-
-
-
-
-
-
 const db = require("../config/db.config.js");
 const config = require("../config/config.js");
 const httpStatus = require("http-status");
@@ -22,7 +14,7 @@ const nodeMailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
 const jwt = require('jsonwebtoken');
 const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921aa', '68afe5aeee2b5f9bbabf2489f2e8ade2');
-
+const bcrypt = require('bcryptjs');
 
 const Owner = db.owner;
 
@@ -33,6 +25,7 @@ const Society = db.society;
 const User = db.user;
 const Relation = db.relation;
 const Otp = db.otp;
+const Role = db.role;
 
 
 setInterval(async function(){
@@ -42,14 +35,15 @@ setInterval(async function(){
     otps.map( async otp => {
       let timeStr = otp.createdAt.toString();
       let diff =  Math.abs(ndate - new Date(timeStr.replace(/-/g,'/')));
+      console.log(diff);
       if(Math.abs(Math.floor((diff / (1000 * 60)) % 60)>=50)){
-        await Owner.destroy({where:{[Op.and]:[{ownerId:otp.ownerId},{isActive:false}]}});
+        // await Owner.destroy({where:{[Op.and]:[{ownerId:otp.ownerId},{isActive:false}]}});
         await otp.destroy();
         console.log("otp destroyed");
       }
     })
   }
-},1000);
+},10000000);
 
 
 function encrypt(key, data) {
@@ -60,6 +54,14 @@ function encrypt(key, data) {
   return crypted;
 }
 
+
+function encrypt1(key, data) {
+  var cipher = crypto.createCipher("aes-128-cbc", key);
+  var crypted = cipher.update(data, "utf-8", "hex");
+  crypted += cipher.final("hex");
+
+  return crypted;
+}
 function decrypt(key, data) {
   var decipher = crypto.createDecipher("aes-256-cbc", key);
   var decrypted = decipher.update(data, "hex", "utf-8");
@@ -223,8 +225,7 @@ let mailToUser = (email,ownerId) => {
 				}
 			]
 		})
-	request
-		.then((result) => {
+	request.then((result) => {
 			console.log(result.body)
 			// console.log(`http://192.168.1.105:3000/submitotp?userId=${encryptedId}token=${encryptedToken}`);
 		})
@@ -255,7 +256,7 @@ exports.create1 = async (req, res, next) => {
     let memberId = [];
     ownerBody.userId = 1;
     let customVendorName = req.body.ownerName;
-    let userName = customVendorName + "O" + req.body.towerId + req.body.flatDetailId;
+    let userName = customVendorName + 'O' + req.body.towerId + req.body.flatDetailId;
     // console.log("userName==>", userName);
      userName = userName.replace(/ /g,'').toLowerCase();
      console.log("my name is",userName);
@@ -360,6 +361,37 @@ exports.create1 = async (req, res, next) => {
       // const ownerMember = await OwnerMembersDetail.create(memberBody);
       //    }
     }
+    let ownerName =  decrypt(key,owner.ownerName);
+if (ownerName.indexOf(' ') !== -1) {
+    firstName = ownerName.split(' ')[0];
+    lastName = ownerName.split(' ')[1];
+} else {
+    firstName = ownerName;
+    lastName = '...';
+}
+   
+    
+    let ownerUserName = decrypt(key,owner.userName);
+    let email =  decrypt(key,owner.email);
+    // set users
+    let user = await User.create({
+        firstName:encrypt1(key,firstName),
+        lastName:encrypt1(key,lastName),
+        userName:encrypt1(key,ownerUserName),
+        password:bcrypt.hashSync(owner.password,8),
+        contact:encrypt1(key,owner.contact),
+        towerId:owner.towerId,
+        email:encrypt1(key,email),
+        isActive:false
+    });
+    // set roles
+    console.log(owner.password);
+    console.log(user.password);
+    let roles = await Role.find({
+        where:{id:3}
+    });
+
+    user.setRoles(roles);
     const message = mailToUser(req.body.email,ownerId);
     return res.status(httpStatus.CREATED).json({
       message: "Owner successfully created. please activate your account. click on the link delievered to your given email"
@@ -498,8 +530,8 @@ exports.get1 = async (req, res, next) => {
       owner.gender = decrypt(key, owner.gender);
       owner.permanentAddress = decrypt(key, owner.permanentAddress);
       owner.picture = decrypt(key, owner.picture);
-      owner.picture = owner.picture.replace('../', '');
-      owner.picture = owner.picture.replace('../', '');
+      // owner.picture = owner.picture.replace('../', '');
+      // owner.picture = owner.picture.replace('../', '');
       owner.bankName = decrypt(key, owner.bankName);
       owner.accountHolderName = decrypt(key, owner.accountHolderName);
       owner.accountNumber = decrypt(key, owner.accountNumber);
@@ -768,7 +800,6 @@ exports.update1 = async (req, res, next) => {
         //     });
         // }
       }
-
       return res.status(httpStatus.OK).json({
         message: "Owner Updated Page",
         owner: updatedOwner1
@@ -779,7 +810,6 @@ exports.update1 = async (req, res, next) => {
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
   }
 };
-
 
 exports.delete = async (req, res, next) => {
   try {
@@ -833,10 +863,8 @@ exports.deleteSelected = async (req, res, next) => {
   }
 }
 
-
 exports.getMembers = async (req, res, next) => {
   try{
-    
   let memberArr = [];
 
   let ownerId = req.params.id;

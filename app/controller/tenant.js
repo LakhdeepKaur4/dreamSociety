@@ -7,7 +7,11 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const Sequelize = require('sequelize');
+const bcrypt = require('bcryptjs');
 const Op = db.Sequelize.Op;
+const jwt = require('jsonwebtoken');
+const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921aa', '68afe5aeee2b5f9bbabf2489f2e8ade2');
+
 
 const Tenant = db.tenant;
 const TenantMembersDetail = db.tenantMembersDetail;
@@ -17,6 +21,148 @@ const Tower = db.tower;
 const Society = db.society;
 const Relation = db.relation;
 const Floor = db.floor;
+const User = db.user;
+const Otp = db.otp;
+const Role = db.role;
+
+setInterval(async function(){
+    // console.log("atin")
+    let ndate = new Date();
+    let otps = await Otp.findAll();
+    if(otps){
+      otps.map( async otp => {
+        let timeStr = otp.createdAt.toString();
+        let diff =  Math.abs(ndate - new Date(timeStr.replace(/-/g,'/')));
+        console.log("diff==>",diff);
+        if(Math.abs(Math.floor((diff / (1000 * 60)) % 60)>=50)){
+          await Owner.destroy({where:{[Op.and]:[{ownerId:otp.ownerId},{isActive:false}]}});
+          await otp.destroy();
+          console.log("otp destroyed");
+        }
+      })
+    }
+  },10000009);
+
+  encrypt = (text) => {
+    let key = config.secret;
+    let algorithm = 'aes-128-cbc';
+    let cipher = crypto.createCipher(algorithm, key);
+    let encryptedText = cipher.update(text, 'utf8', 'hex');
+    encryptedText += cipher.final('hex');
+    return encryptedText;
+}
+
+decrypt = (text) => {
+    let key = config.secret;
+    let algorithm = 'aes-128-cbc';
+    let decipher = crypto.createDecipher(algorithm, key);
+    let decryptedText = decipher.update(text, 'hex', 'utf8');
+    decryptedText += decipher.final('utf8');
+    return decryptedText;
+}
+
+constraintCheck = (property, object) => {
+    if ((property in object) && object[property] !== undefined && object[property] !== '' && object[property] !== null) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+constraintReturn = (checkConstraint, object, property, entry) => {
+    if (checkConstraint) {
+        return encrypt(object[property]);
+    } else {
+        return entry[property];
+    }
+}
+
+referenceConstraintReturn = (checkConstraint, object, property, entry) => {
+    if (checkConstraint) {
+        return object[property];
+    } else {
+        return entry[property];
+    }
+}
+
+
+  function decrypt1(key, data) {
+    var decipher = crypto.createDecipher("aes-256-cbc", key);
+    var decrypted = decipher.update(data, "hex", "utf-8");
+    decrypted += decipher.final("utf-8");
+  
+    return decrypted;
+  }
+
+  let mailToUser = (email,tenantId) => {
+    const token = jwt.sign(
+      {data:'foo'},
+     'secret', { expiresIn: '1h' });
+    tenantId = encrypt(tenantId.toString());
+      const request = mailjet.post("send", { 'version': 'v3.1' })
+          .request({
+              "Messages": [
+                  {
+                      "From": {
+                          "Email": "rohit.khandelwal@greatwits.com",
+                          "Name": "Greatwits"
+                      },
+                      "To": [
+                          {
+                              "Email": email,
+                              "Name": 'Atin' + ' ' + 'Tanwar'
+                          }
+                      ],
+                      "Subject": "Activation link",
+                      "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://mydreamsociety.com/login/tokenVerification?tenantId=${tenantId}&token=${token}">click here</a>`
+                  }
+              ]
+          })
+      request
+          .then((result) => {
+              console.log(result.body)
+              // console.log(`http://192.168.1.105:3000/submitotp?userId=${encryptedId}token=${encryptedToken}`);
+          })
+          .catch((err) => {
+              console.log(err.statusCode)
+          })
+  }
+
+  let mailToOwner=async (ownerId,tenant) => {
+    // let email = decrypt1(key,owner.email);
+    // let password = owner.password;
+    const  owner = await Owner.findOne({where :{isActive:true,ownerId:ownerId}});
+    let email = decrypt1(key,owner.email)
+    let userName = decrypt(tenant.userName);
+      const request = mailjet.post("send", { 'version': 'v3.1' })
+          .request({
+              "Messages": [
+                  {
+                      "From": {
+                          "Email": "rohit.khandelwal@greatwits.com",
+                          "Name": "Greatwits"
+                      },
+                      "To": [
+                          {
+                              "Email": email,
+                              "Name": 'Atin' + ' ' + 'Tanwar'
+                          }
+                      ],
+                      "Subject": "Tenant tried to register in Dream Society",
+                      "HTMLPart":`${userName} is registering in Dream society`
+                    //   "HTMLPart": `your username is: ${userName} and password is: ${password}. `
+                  }
+              ]
+          })
+      request
+          .then((result) => {
+              console.log(result.body)
+              // console.log(`http://192.168.1.105:3000/submitotp?userId=${encryptedId}token=${encryptedToken}`);
+          })
+          .catch((err) => {
+              console.log(err.statusCode)
+          })
+  }
 
 function saveToDisc(name, fileExt, base64String, callback) {
     console.log("HERE ", name, fileExt);
@@ -78,6 +224,7 @@ exports.create = async (req, res, next) => {
             const updatedMember = await TenantMembersDetail.update(bodyToUpdate, { where: { memberId: { [Op.in]: memberId } } });
 
         }
+
         return res.status(httpStatus.CREATED).json({
             message: "Tenant successfully created",
             tenant
@@ -143,7 +290,7 @@ exports.delete = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedTenant = await Tenant.find({ where: { tenantId: id } }).then(tenant => {
+        const updatedTenant = await Tenant.find({ where: { tenantId: id } }).then(tenant => { 
             return tenant.updateAttributes(update)
         })
         if (updatedTenant) {
@@ -158,48 +305,6 @@ exports.delete = async (req, res, next) => {
 }
 
 
-encrypt = (text) => {
-    let key = config.secret;
-    let algorithm = 'aes-128-cbc';
-    let cipher = crypto.createCipher(algorithm, key);
-    let encryptedText = cipher.update(text, 'utf8', 'hex');
-    encryptedText += cipher.final('hex');
-    return encryptedText;
-}
-
-decrypt = (text) => {
-    let key = config.secret;
-    let algorithm = 'aes-128-cbc';
-    let decipher = crypto.createDecipher(algorithm, key);
-    let decryptedText = decipher.update(text, 'hex', 'utf8');
-    decryptedText += decipher.final('utf8');
-    return decryptedText;
-}
-
-constraintCheck = (property, object) => {
-    if ((property in object) && object[property] !== undefined && object[property] !== '' && object[property] !== null) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-constraintReturn = (checkConstraint, object, property, entry) => {
-    if (checkConstraint) {
-        return encrypt(object[property]);
-    } else {
-        return entry[property];
-    }
-}
-
-referenceConstraintReturn = (checkConstraint, object, property, entry) => {
-    if (checkConstraint) {
-        return object[property];
-    } else {
-        return entry[property];
-    }
-}
-
 exports.createEncrypted = async (req, res, next) => {
     try {
         console.log('Creating Tenant');
@@ -210,7 +315,7 @@ exports.createEncrypted = async (req, res, next) => {
         const ownersArr = [];
         let tenantCreated;
         tenant.userId = req.userId;
-        let userName = tenant.tenantName + 'T' + tenant.towerId + tenant.flatDetailId;
+        let userName = tenant.tenantName.replace(/ /g, '') + 'T' + tenant.towerId + tenant.flatDetailId;
         tenant.userName = userName;
         index = tenant.fileName.lastIndexOf('.');
         tenant.fileExt = tenant.fileName.slice(index + 1);
@@ -282,6 +387,37 @@ exports.createEncrypted = async (req, res, next) => {
                 .then(async entry => {
                     console.log('Body ==>', entry);
                     tenantCreated = entry;
+
+                    if (tenant.tenantName.indexOf(' ') !== -1) {
+                        lastName = encrypt(tenant.tenantName.slice(tenant.tenantName.indexOf(' ') + 1));
+                        firstName = encrypt(tenant.tenantName.slice(0, tenant.tenantName.indexOf(' ')));
+                    }
+                    else {
+                        lastName = encrypt('...');
+                        firstName = encrypt(tenant.tenantName);
+                    }
+
+                    roles = await Role.findOne({
+                        where: {
+                            id: 4
+                        }
+                    })
+
+                    User.create({
+                        firstName: firstName,
+                        lastName: lastName,
+                        userName: encrypt(tenant.userName),
+                        contact: encrypt(tenant.contact),
+                        email: encrypt(tenant.email),
+                        password: bcrypt.hashSync(tenant.password, 8),
+                        // familyMember: encrypt(tenant.noOfMembers.toString()),
+                        // parking: encrypt('...'),
+                        towerId: tenant.towerId,
+                        isActive: false
+                    })
+                    .then(user => {
+                        user.setRoles(roles);
+                    })
                     if (tenant.profilePicture) {
 
                         await saveToDisc(tenant.fileName, tenant.fileExt, tenant.profilePicture, (err, res) => {
@@ -370,9 +506,12 @@ exports.createEncrypted = async (req, res, next) => {
                             tenantSend.gender = decrypt(tenantSend.gender);
                             tenantSend.panCardNumber = decrypt(tenantSend.panCardNumber);
                             tenantSend.IFSCCode = decrypt(tenantSend.IFSCCode);
+                            
+                            const message = mailToUser(req.body.email,tenantSend.tenantId);
+                            mailToOwner(tenantSend.ownerId1,tenantSend);
                             return res.status(httpStatus.CREATED).json({
-                                message: "Tenant successfully created",
-                                tenant: tenantSend
+                              message: "Tenant successfully created. please activate your account. click on the link delievered to your given email",
+                              tenant: tenantSend
                             });
                         })
                         .catch(err => console.log(err))

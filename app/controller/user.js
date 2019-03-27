@@ -29,6 +29,15 @@ exports.start = (req, res) => {
 	res.send('Dream Society Api Running');
 }
 
+
+function decrypt1(key, data) {
+	var decipher = crypto.createDecipher("aes-128-cbc", key);
+	var decrypted = decipher.update(data, "hex", "utf-8");
+	decrypted += decipher.final("utf-8");
+
+	return decrypted;
+}
+
 exports.signup = async (req, res) => {
 	// Save User to Database
 	let alreadyExists = false;
@@ -887,8 +896,8 @@ exports.signupEncrypted = async (req, res, next) => {
 				password: bcrypt.hashSync(userBody.password, 8),
 				towerId: req.body.towerId,
 				// // flatDetailId: req.body.flatDetailId,
-				familyMember: encrypt(userBody.familyMember),
-				parking: encrypt(userBody.parking),
+				// familyMember: encrypt(userBody.familyMember),
+				// parking: encrypt(userBody.parking),
 				// floor: encrypt(userBody.floor)
 			}
 		} else {
@@ -901,8 +910,8 @@ exports.signupEncrypted = async (req, res, next) => {
 				password: bcrypt.hashSync(userBody.password, 8),
 				towerId: req.body.towerId,
 				// // flatDetailId: req.body.flatDetailId,
-				familyMember: encrypt(userBody.familyMember),
-				parking: encrypt(userBody.parking),
+				// familyMember: encrypt(userBody.familyMember),
+				// parking: encrypt(userBody.parking),
 				// floor: encrypt(userBody.floor)
 			}
 		}
@@ -1216,7 +1225,7 @@ exports.updateEncrypted = async (req, res, next) => {
 		passwordCheck = constraintCheck('password', update);
 		towerIdCheck = constraintCheck('towerId', update);
 		// // flatDetailIdCheck = constraintCheck('flatDetailId', update);
-		familyMemberCheck = constraintCheck('familyMember', update);
+		// familyMemberCheck = constraintCheck('familyMember', update);
 		parkingCheck = constraintCheck('parking', update);
 		// floorCheck = constraintCheck('floor', update);
 
@@ -1225,8 +1234,8 @@ exports.updateEncrypted = async (req, res, next) => {
 		userName = constraintReturn(userNameCheck, update, 'userName', user);
 		email = constraintReturn(emailCheck, update, 'email', user);
 		contact = constraintReturn(contactCheck, update, 'contact', user);
-		familyMember = constraintReturn(familyMemberCheck, update, 'familyMember', user);
-		parking = constraintReturn(parkingCheck, update, 'parking', user);
+		// familyMember = constraintReturn(familyMemberCheck, update, 'familyMember', user);
+		// parking = constraintReturn(parkingCheck, update, 'parking', user);
 		// floor = constraintReturn(floorCheck, update, 'floor', user);
 		towerId = referenceConstraintReturn(towerIdCheck, update, 'towerId', user);
 		// // // flatDetailId = referenceConstraintReturn(flatDetailIdCheck, update, 'flatDetailId', user);
@@ -1241,8 +1250,8 @@ exports.updateEncrypted = async (req, res, next) => {
 			password: password,
 			towerId: towerId,
 			// // flatDetailId: flatDetailId,
-			familyMember: familyMember,
-			parking: parking,
+			// familyMember: familyMember,
+			// parking: parking,
 			// floor: floor
 		}
 
@@ -1268,8 +1277,8 @@ exports.updateEncrypted = async (req, res, next) => {
 					user.userName = decrypt(user.userName);
 					user.email = decrypt(user.email);
 					user.contact = decrypt(user.contact);
-					user.familyMember = decrypt(user.familyMember);
-					user.parking = decrypt(user.parking);
+					// user.familyMember = decrypt(user.familyMember);
+					// user.parking = decrypt(user.parking);
 					// user.floor = decrypt(user.floor);
 				} else {
 					// user.firstName = decrypt(user.firstName);
@@ -1277,8 +1286,8 @@ exports.updateEncrypted = async (req, res, next) => {
 					user.userName = decrypt(user.userName);
 					user.email = decrypt(user.email);
 					// user.contact = decrypt(user.contact);
-					user.familyMember = decrypt(user.familyMember);
-					user.parking = decrypt(user.parking);
+					// user.familyMember = decrypt(user.familyMember);
+					// user.parking = decrypt(user.parking);
 					// user.floor = decrypt(user.floor);
 				}
 				res.status(httpStatus.OK).json({
@@ -1374,8 +1383,8 @@ exports.signinDecrypted = async (req, res, next) => {
 			user.userName = decrypt(user.userName);
 			user.email = decrypt(user.email);
 			user.contact = decrypt(user.contact);
-			user.familyMember = decrypt(user.familyMember);
-			user.parking = decrypt(user.parking);
+			// user.familyMember = decrypt(user.familyMember);
+			// user.parking = decrypt(user.parking);
 			// user.floor = decrypt(user.floor);
 		} else {
 			// user.firstName = decrypt(user.firstName);
@@ -1383,12 +1392,14 @@ exports.signinDecrypted = async (req, res, next) => {
 			user.userName = decrypt(user.userName);
 			user.email = decrypt(user.email);
 			// user.contact = decrypt(user.contact);
-			user.familyMember = decrypt(user.familyMember);
-			user.parking = decrypt(user.parking);
+			// user.familyMember = decrypt(user.familyMember);
+			// user.parking = decrypt(user.parking);
 			// user.floor = decrypt(user.floor);
 		}
 
 		var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+		// const password = User.findOne({where:{password:decrypt(req.body.password),isActive:true}});
+
 		console.log("isvalid===>", passwordIsValid)
 		if (!passwordIsValid) {
 			return res.status(httpStatus.OK).send({
@@ -1396,7 +1407,6 @@ exports.signinDecrypted = async (req, res, next) => {
 				auth: false,
 				user: user,
 				message: "Invalid Password!"
-
 			});
 		}
 
@@ -1416,7 +1426,7 @@ exports.signinDecrypted = async (req, res, next) => {
 		});
 
 	}).catch(err => {
-		console.log('123',err)
+		console.log('123', err)
 		res.status(500).json({
 			"message": err
 		});
@@ -1452,8 +1462,8 @@ exports.getUserDecrypted = (req, res, next) => {
 						item.userName = decrypt(item.userName);
 						item.email = decrypt(item.email);
 						item.contact = decrypt(item.contact);
-						item.familyMember = decrypt(item.familyMember);
-						item.parking = decrypt(item.parking);
+						// item.familyMember = decrypt(item.familyMember);
+						// item.parking = decrypt(item.parking);
 						// item.floor = decrypt(item.floor);
 						usersArr.push(item);
 					} else {
@@ -1462,8 +1472,8 @@ exports.getUserDecrypted = (req, res, next) => {
 						item.userName = decrypt(item.userName);
 						item.email = decrypt(item.email);
 						// item.contact = decrypt(item.contact);
-						item.familyMember = decrypt(item.familyMember);
-						item.parking = decrypt(item.parking);
+						// item.familyMember = decrypt(item.familyMember);
+						// item.parking = decrypt(item.parking);
 						// user.floor = decrypt(user.floor);
 					}
 				})
@@ -1507,8 +1517,8 @@ exports.getPersonDecrypted = (req, res, next) => {
 						item.userName = decrypt(item.userName);
 						item.email = decrypt(item.email);
 						item.contact = decrypt(item.contact);
-						item.familyMember = decrypt(item.familyMember);
-						item.parking = decrypt(item.parking);
+						// item.familyMember = decrypt(item.familyMember);
+						// item.parking = decrypt(item.parking);
 						// item.floor = decrypt(item.floor);
 					} else {
 						// item.firstName = decrypt(item.firstName);
@@ -1516,8 +1526,8 @@ exports.getPersonDecrypted = (req, res, next) => {
 						item.userName = decrypt(item.userName);
 						item.email = decrypt(item.email);
 						// item.contact = decrypt(item.contact);
-						item.familyMember = decrypt(item.familyMember);
-						item.parking = decrypt(item.parking);
+						// item.familyMember = decrypt(item.familyMember);
+						// item.parking = decrypt(item.parking);
 						// user.floor = decrypt(user.floor);
 						usersArr.push(item);
 					}
@@ -1555,7 +1565,7 @@ exports.forgottenPassword = (req, res, next) => {
 				Token.create({
 					token: token
 				})
-				
+
 				res.status(httpStatus.OK).json({
 					message: 'Email with reset link is sent to registered email id'
 				});
@@ -1669,9 +1679,9 @@ exports.otpVerify = (req, res, next) => {
 						token: token
 					}
 				})
-				.then(token => {
-					token.destroy();
-				})
+					.then(token => {
+						token.destroy();
+					})
 				res.status(httpStatus.OK).json({
 					message: 'OTP verified successfully'
 				})
@@ -1746,3 +1756,14 @@ schedule.scheduleJob(rule, () => {
 		})
 		.catch(err => console.log(err))
 });
+
+exports.assignRoles = async (req, res, next) => {
+	try {
+	console.log("assigning roles==>")
+	const user = await User.findOne({where:{isActive:true,userName:req.body.userName}})
+	console.log("user",user);
+	} catch (error) {
+		console.log(error);
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Sequelize Error' })
+	}
+}

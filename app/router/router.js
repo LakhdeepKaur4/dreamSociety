@@ -52,6 +52,8 @@ module.exports = function (app) {
 
 	app.get('/api/user', [authJwt.verifyToken], userController.getUserDecrypted);
 
+	app.post('/api/assignRoles',[authJwt.verifyToken],userController.assignRoles);
+
 	app.get('/api/person', [authJwt.verifyToken], userController.getPersonDecrypted);
 
 	app.get('/api/user/search', userController.search);
@@ -155,6 +157,8 @@ module.exports = function (app) {
 	app.get('/api/tower', [authJwt.verifyToken], towerController.get);
 
 	app.get('/api/towerFloor', [authJwt.verifyToken], towerController.getTowerAndFloor);
+
+	app.get('/api/tower/towerFloor/:id', [authJwt.verifyToken], towerController.getFloorByTowerIdForTenant);
 
 	app.get('/api/towerFloor/:id', [authJwt.verifyToken], towerController.getFloorByTowerId);
 
