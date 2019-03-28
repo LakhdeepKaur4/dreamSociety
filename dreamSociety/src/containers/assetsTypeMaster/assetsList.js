@@ -267,7 +267,7 @@ class AssetList extends Component {
                                     <Input  style={{'textTransform': 'capitalize' }} maxLength={30} type="text" id="AssetName" name="assets" onChange={this.onChangeHandler} value={this.state.assets} onKeyPress={this.onKeyPressHandler }/>
                                     <div className="error">{this.state.errors.assets}</div>
                                     <Label htmlFor="description">Description</Label>
-                                    <Input  style={{'textTransform': 'capitalize' }} maxLength={30} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description}/>
+                                    <Input  style={{'textTransform': 'capitalize' }} maxLength={1000} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description}/>
                                     <span className="error">{this.state.errors.description}</span>
                                 </FormGroup>
                           

@@ -80,7 +80,7 @@ class FlatOwnerList extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-    toggle = (ownerId, ownerName, dob, gender, contact, email,Aadhaar, permanentAddress, bankName, 
+    toggle = (ownerId, ownerName, dob, gender, contact, email,Aadhaar,societyName, societyId,permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode,) => {
         console.log("======================="+accountNumber);
         this.setState({
@@ -97,9 +97,12 @@ class FlatOwnerList extends Component {
             panCardNumber,
             IFSCCode,
             Aadhaar,
+            societyName,
+            currentSociety:{label:societyName,value:societyId},
             modal: !this.state.modal
             
         })
+        console.log('society name is ',this.state.societyName)
     }
     delete = (ownerId) => {
         this.setState({ loading: true })
@@ -168,6 +171,7 @@ class FlatOwnerList extends Component {
     }
     getSociety = ({ detail_Society }) => {
         if (detail_Society) {
+            console.log('society details are ',detail_Society)
             return detail_Society.map((item) => {
                 return (
                     { ...item, label: item.societyName, value: item.societyId }
@@ -193,7 +197,7 @@ class FlatOwnerList extends Component {
         let locationId = selectOption.location_master.locationId;
         this.setState(function (prevState, props) {
             return {
-                'societyName': selectOption.value,
+                societyName: selectOption.value,
                 countryName,
                 stateName,
                 cityName,
@@ -201,7 +205,8 @@ class FlatOwnerList extends Component {
                 locationId,
                 cityId,
                 stateId,
-                countryId
+                countryId,
+                currentSociety:selectOption
             }
         }, function () {
         });
@@ -249,7 +254,7 @@ class FlatOwnerList extends Component {
                         <td style={{ textAlign: "center" }}>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, 
                                 items.ownerName, items.dob, items.gender, items.contact, items.email,
-                                items.adhaarCardNo, items.permanentAddress, items.bankName, items.accountHolderName,
+                                items.adhaarCardNo,items.society_master.societyName,items.society_master.societyId, items.permanentAddress, items.bankName, items.accountHolderName,
                                 items.accountNumber, items.panCardNumber, items.IFSCCode)}>Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.ownerId)} >Delete</button>
                         </td>
@@ -519,13 +524,14 @@ class FlatOwnerList extends Component {
                                     </FormGroup>
                                     <FormGroup>
                                 <Label>Aadhaar Number</Label>
-                                <Input placeholder='Aadhaar Number' onChange={this.onChangeHandler} name='Aadhaar' onKeyPress={this.OnKeyPresshandlerPhone} type="text" maxLength={12}/>
+                                <Input placeholder='Aadhaar Number' value={this.state.Aadhaar} onChange={this.onChangeHandler} name='Aadhaar' onKeyPress={this.OnKeyPresshandlerPhone} type="text" maxLength={12}/>
                                 <span className="error">{this.state.errors.Aadhaar}</span>
                             </FormGroup>
                                     <FormGroup>
                                         <Label>Society Name</Label>
                                         <Select options={this.getSociety(this.props.societyName)}
                                             onChange={this.societyChangeHandler.bind(this)}
+                                            value={this.state.currentSociety}
                                             placeholder={PlaceHolder} />
                                         <span className="error">{this.state.errors.societyName}</span>
                                     </FormGroup>
@@ -553,6 +559,7 @@ class FlatOwnerList extends Component {
                                         <Label>Tower</Label>
                                         <Select options={this.getTower(this.props.towerList)}
                                             onChange={this.towerChangeHandler.bind(this, 'towerId')}
+                                            value={this.state.societyName}
                                             placeholder={PlaceHolder} />
                                         <span className="error">{this.state.errors.tower}</span>
                                     </FormGroup >
