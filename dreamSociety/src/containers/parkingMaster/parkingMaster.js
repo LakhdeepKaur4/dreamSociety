@@ -23,7 +23,7 @@ class ParkingMaster extends Component {
     }
 
     refreshData(){
-        this.props.fetchParking().then(() => this.setState({loading: false}))
+        this.props.fetchParking().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
     }
 
 

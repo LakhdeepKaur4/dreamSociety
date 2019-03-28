@@ -50,13 +50,13 @@ class BoardMemberRegistrationForm extends Component {
     }
 
     componentDidMount=()=>{
-        this.props.getCountry().then(() => this.setState({loading: false}));
-        this.props.getState().then(() => this.setState({loading: false}));
-        this.props.getCity().then(() => this.setState({loading: false}));
-        this.props.getMemberDetails().then(() => this.setState({loading: false}));
-        this.props.getMemberDesignation().then(() => this.setState({loading: false}));
-        this.props.getSocietyId().then(() => this.setState({loading: false}));
-        this.props.getLocation().then(() => this.setState({loading: false}));  
+        this.props.getCountry().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
+        this.props.getState().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
+        this.props.getCity().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
+        this.props.getMemberDetails().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
+        this.props.getMemberDesignation().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
+        this.props.getSocietyId().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
+        this.props.getLocation().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;  
         let societyId = localStorage.getItem('societyId')
         console.log(societyId);
         this.setState({societyId})
@@ -277,7 +277,7 @@ submit = (e) => {
         if(this.state.accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
         if(this.state.panCardNumber === '') errors.panCardNumber = `Pan card number can't be empty.`;
         if(this.state.IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
-        if(this.state.dob === '') errors.dob = `cDate of birth can't be empty.`;
+        if(this.state.dob === '') errors.dob = `Date of birth can't be empty.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.emailValidError===''){
@@ -385,6 +385,19 @@ ifscChange = (e) => {
     
 }
 
+panChange = (e) => {
+    console.log(this.state.panCardNumber)
+    if (!!this.state.errors[e.target.name]) {
+        let errors = Object.assign({}, this.state.errors);
+        delete errors[e.target.name];
+        this.setState({ [e.target.name]: e.target.value.toUpperCase(), errors });
+    }
+    else {
+        this.setState({panCardNumber:e.target.value.toUpperCase()})
+    }
+    
+}
+
     render(){
         let formData = <div>
             {/* <FormGroup>
@@ -400,7 +413,7 @@ ifscChange = (e) => {
                         {!this.state.societyId ? <span className="error">{this.state.errors.societyId}</span>: ''}
                     </FormGroup> */}
                     <FormGroup>
-                        <Label>Member Name</Label>
+                        <Label>Board Member Name</Label>
                         <Input type='text'
                          placeholder="Member Name"
                          name='societyBoardMemberName' 
@@ -560,7 +573,7 @@ ifscChange = (e) => {
                                 e.preventDefault();
                             }
                         }} 
-                        onChange={this.onChange} />
+                        onChange={this.panChange} />
                         {<span className="error">{this.state.errors.panCardNumber}</span>}
                     </FormGroup>
                     <FormGroup>

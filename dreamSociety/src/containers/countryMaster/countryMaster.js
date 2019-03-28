@@ -117,7 +117,7 @@ class Country extends Component {
         }
     }
     onKeyPressHandle1=(event)=>{
-        const pattern = /^[a-zA-Z$]+$/;
+        const pattern = /^[a-zA-Z$ ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -138,16 +138,16 @@ class Country extends Component {
             console.log('no errors');
             this.setState({ [e.target.name]: e.target.value.toUpperCase().trim(''), errors });
         } else {
-            this.setState({code:e.target.value.toUpperCase()});
-        }
+        this.setState({code:e.target.value.toUpperCase().trim('')});
 
     }
+}
          
     close=()=>{
-        return this.props.history.replace('/superDashBoard')
+        return this.props.history.replace('/superDashBoard');
     }
     changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
+        return this.props.history.replace('/superDashboard/changePassword');
      }
 
 
@@ -191,7 +191,7 @@ class Country extends Component {
                     name="currency"
                     placeholder="Currency"
                     onKeyPress={this.onKeyPressHandle1}
-                    maxLength='10'
+                    maxLength='40'
                     onChange={this.onChange} />
                 <span className='error'>{this.state.errors.currency}</span>
             </FormGroup>
@@ -233,6 +233,7 @@ class Country extends Component {
 
     }
 }
+
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ AddCountry }, dispatch)
 }

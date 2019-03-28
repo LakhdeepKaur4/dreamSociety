@@ -62,13 +62,13 @@ class BoardMemberDetails extends Component{
     }
 
     refreshData(){
-        this.props.getSocietyId().then(() => this.setState({loading:false}));;
-        this.props.getMemberDetails().then(() => this.setState({loading:false}));;
-        this.props.getMemberDesignation().then(() => this.setState({loading:false}));;
-        this.props.getCountry().then(() => this.setState({loading:false}));;
-        this.props.getState().then(() => this.setState({loading:false}));;
-        this.props.getCity().then(() => this.setState({loading:false}));;
-        this.props.getLocation().then(() => this.setState({loading:false}));; 
+        this.props.getSocietyId().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
+        this.props.getMemberDetails().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
+        this.props.getMemberDesignation().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
+        this.props.getCountry().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
+        this.props.getState().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
+        this.props.getCity().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
+        this.props.getLocation().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));; 
     }
 
     editMember(societyId,societyBoardMemberId,societyBoardMemberName,designationName,countryName,stateName,cityName,
@@ -112,64 +112,66 @@ class BoardMemberDetails extends Component{
                     return this.state.sortVal ? cmprVal : -cmprVal;
                 }
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
-                return (
-                    <tr key={item.societyBoardMemberId}>
-                        <td><input type="checkbox" name="ids" className="SelectAll"  value={item.societyBoardMemberId}
-                         onChange={(e) => {
-                            let {societyBoardMemberId} = item
-                            if(!e.target.checked){
-                                document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(societyBoardMemberId);
-                                if(indexOfId > -1){
-                                    this.state.ids.splice(indexOfId, 1)
+                if(item && item.country_master && item.state_master && item.city_master && item.location_master){
+                    return (
+                        <tr key={item.societyBoardMemberId}>
+                            <td><input type="checkbox" name="ids" className="SelectAll"  value={item.societyBoardMemberId}
+                             onChange={(e) => {
+                                let {societyBoardMemberId} = item
+                                if(!e.target.checked){
+                                    document.getElementById('allSelect').checked=false;
+                                    let indexOfId = this.state.ids.indexOf(societyBoardMemberId);
+                                    if(indexOfId > -1){
+                                        this.state.ids.splice(indexOfId, 1)
+                                    }
+                                    if(this.state.ids.length === 0){
+                                        this.setState({isDisabled: true})
+                                    }
                                 }
-                                if(this.state.ids.length === 0){
-                                    this.setState({isDisabled: true})
-                                }
-                            }
-                            else{
-                                this.setState({ids: [...this.state.ids, societyBoardMemberId]});
-                                if(this.state.ids.length >= 0){
-                                    this.setState({isDisabled: false})
-                                }
-                            }  
-                             }}/></td>
-                        <td>{index + 1}</td>
-                        <td>{item.societyBoardMemberName}</td>
-                        <td>{item.designation_master.designationName}</td>
-                        <td>{item.country_master.countryName}</td>
-                        <td>{item.state_master.stateName}</td>
-                        <td>{item.city_master.cityName}</td>
-                        <td>{item.location_master.locationName}</td>
-                        <td>{item.currentAddress}</td>
-                        <td>{item.permanentAddress}</td>
-                        <td>{item.contactNumber}</td>
-                        <td>{item.email}</td>
-                        <td>{item.bankName}</td>
-                        <td>{item.accountNumber}</td>
-                        <td>{item.panCardNumber}</td>
-                        <td>{item.dob}</td>
-                        <td>
-                            <Button color="success" className="mr-2" onClick={this.editMember.bind(this,
-                                item.societyId,
-                                item.societyBoardMemberId,item.societyBoardMemberName,item.designation_master.designationName,
-                                item.country_master.countryName,
-                                item.state_master.stateName,
-                                item.city_master.cityName,
-                                item.location_master.locationName,
-                                item.currentAddress,
-                                item.permanentAddress,
-                                item.contactNumber,
-                                item.email,item.bankName,item.accountNumber,item.panCardNumber,item.dob,
-                                item.designation_master.designationId,
-                                item.country_master.countryId,item.state_master.stateId,
-                                item.city_master.cityId,
-                                item.location_master.locationId
-                                )} >Edit</Button>
-                            <Button color="danger" onClick={this.deleteSocietyMember.bind(this, item.societyBoardMemberId)}>Delete</Button>
-                        </td>
-                    </tr>
-                )
+                                else{
+                                    this.setState({ids: [...this.state.ids, societyBoardMemberId]});
+                                    if(this.state.ids.length >= 0){
+                                        this.setState({isDisabled: false})
+                                    }
+                                }  
+                                 }}/></td>
+                            <td>{index + 1}</td>
+                            <td>{item.societyBoardMemberName}</td>
+                            <td>{item.designation_master.designationName}</td>
+                            <td>{item.country_master.countryName}</td>
+                            <td>{item.state_master.stateName}</td>
+                            <td>{item.city_master.cityName}</td>
+                            <td>{item.location_master.locationName}</td>
+                            <td>{item.currentAddress}</td>
+                            <td>{item.permanentAddress}</td>
+                            <td>{item.contactNumber}</td>
+                            <td>{item.email}</td>
+                            <td>{item.bankName}</td>
+                            <td>{item.accountNumber}</td>
+                            <td>{item.panCardNumber}</td>
+                            <td>{item.dob}</td>
+                            <td>
+                                <Button color="success" className="mr-2" onClick={this.editMember.bind(this,
+                                    item.societyId,
+                                    item.societyBoardMemberId,item.societyBoardMemberName,item.designation_master.designationName,
+                                    item.country_master.countryName,
+                                    item.state_master.stateName,
+                                    item.city_master.cityName,
+                                    item.location_master.locationName,
+                                    item.currentAddress,
+                                    item.permanentAddress,
+                                    item.contactNumber,
+                                    item.email,item.bankName,item.accountNumber,item.panCardNumber,item.dob,
+                                    item.designation_master.designationId,
+                                    item.country_master.countryId,item.state_master.stateId,
+                                    item.city_master.cityId,
+                                    item.location_master.locationId
+                                    )} >Edit</Button>
+                                <Button color="danger" onClick={this.deleteSocietyMember.bind(this, item.societyBoardMemberId)}>Delete</Button>
+                            </td>
+                        </tr>
+                    )
+                }
             })
         } 
     }
@@ -221,6 +223,7 @@ class BoardMemberDetails extends Component{
     }
 
     panChange = (e) => {
+        console.log(this.state.panCardNumber)
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -551,7 +554,7 @@ class BoardMemberDetails extends Component{
 
         let modalData = <div>
             <FormGroup>
-                        <Label>Society Member Name</Label>
+                        <Label>Board Member Name</Label>
                         <Input name="societyBoardMemberName" type="text" value={this.state.societyBoardMemberName} 
                             onChange={this.onChange}  maxLength='40' />
                         {!this.state.societyBoardMemberName ? <span className="error">{this.state.errors.societyBoardMemberName}</span>: ''}

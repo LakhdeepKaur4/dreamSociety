@@ -83,8 +83,9 @@ class CountryDetails extends Component{
         if (countryName === '') errors.countryName = "Cant be empty";
 
         if (code === '') errors.code = "Cant be empty";
+        else if (this.state.code.length !== 3 && this.state.code.length !==2 ) errors.code = "Country code should be of length 2 or 3"
 
-        else if (this.state.code.length !== 3 && this.state.code.length !== 2) errors.code = "Characters should be of length 2 or 3"
+      
 
         if (currency === '') errors.currency = "Cant be empty";
 
@@ -275,7 +276,8 @@ class CountryDetails extends Component{
             console.log('no errors');
             this.setState({ [e.target.name]: e.target.value.toUpperCase().trim(''), errors });
         } else {
-            this.setState({code:e.target.value.toUpperCase()});
+       this.setState({code:e.target.value.toUpperCase().trim('')})
+           
         }
 
     }
@@ -323,7 +325,7 @@ class CountryDetails extends Component{
                                         placeholder="enter countryName"
                                         name="countryName"
                                         value={this.state.countryName}
-                                        maxLength='35'
+                                        maxLength='50'
                                         onKeyPress={this.onKeyPressHandler}
                                         onChange={this.onChange}
                                          />
@@ -350,7 +352,7 @@ class CountryDetails extends Component{
                                         name="currency"
                                         value={this.state.currency}
                                         onKeyPress={this.onKeyPressHandle1}
-                                        maxLength='10'
+                                        maxLength='40'
                                         onChange={this.onChange} />
                                          <span  className='error'>{this.state.errors.currency}</span>
                                 </FormGroup>
