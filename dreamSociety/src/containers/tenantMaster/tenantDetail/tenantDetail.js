@@ -26,6 +26,7 @@ class TenantDetail extends Component {
             isDisabled: true,
             modalLoading:false,
             editTenant:false,
+            viewData:false,
             firstName:'',
             lastName:'',
             tenantId:'',
@@ -64,7 +65,10 @@ class TenantDetail extends Component {
             locationId:'',
             locationName:'',
             editPermanent:false,
-            editAddress:''
+            editAddress:'',
+            accountHolderName:'',
+            IFSCCode:'',
+            bankName:''
         }
     }
 
@@ -125,11 +129,11 @@ class TenantDetail extends Component {
         })
     }
 
-    edit = (picture,firstName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber ,
-         dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) =>{
+    edit = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
+        accountHolderName, accountNumber , dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) =>{
         console.log(floorName, floorId)
-        this.setState({picture,firstName,gender, email, contact, aadhaarNumber,panCardNumber, accountNumber,
-             dob, permanentAddress,towerName,floorName,flatNo,towerId,floorId,flatDetailId,tenantId, readOnly:permanentAddress,
+        this.setState({picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
+            accountHolderName, accountNumber , dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId, readOnly:permanentAddress,
               editTenant: true})
     }
 
@@ -154,27 +158,18 @@ class TenantDetail extends Component {
         this.props.history.push('/superDashBoard/tenantMemberDetail');
     }
 
-    viewTenantDetail = (picture,firstName, gender, email, contact, aadhaar, panNumber, accNumber, dob, address, towerName, floor, flatNo) => {
-        console.log(picture,firstName, gender, email, contact, aadhaar, panNumber, accNumber, dob, address, towerName, floor, flatNo)
-        // localStorage.setItem('picture', picture);
-        // localStorage.setItem('firstName', firstName);
-        // localStorage.setItem('gender', gender);
-        // localStorage.setItem('email', email);
-        // localStorage.setItem('contact', contact);
-        // localStorage.setItem('aadhaar', aadhaar);
-        // localStorage.setItem('panNumber', panNumber);
-        // localStorage.setItem('accNumber', accNumber);
-        // localStorage.setItem('dob', dob);
-        // localStorage.setItem('address', address);
-        // localStorage.setItem('towerName', towerName);
-        // localStorage.setItem('floor', floor);
-        // localStorage.setItem('flatNo', flatNo);
-        let tenant = [{
-            picture,firstName, gender, email, contact, aadhaar, panNumber, accNumber, dob, address, towerName, floor, flatNo
-        }]
+    viewTenantDetail = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
+        accountHolderName, accountNumber , dob, permanentAddress, correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) => {
+        console.log(picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
+            accountHolderName, accountNumber , dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId)
 
-        localStorage.setItem('tenantDetails', JSON.stringify(tenant))
-        this.props.history.push('/superDashBoard/viewTenantDetail');
+        this.setState({picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode, viewData: !this.state.viewData ,
+            accountHolderName, accountNumber , dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId})
+        
+        
+
+        // localStorage.setItem('tenantDetails', JSON.stringify(tenant))
+        // this.props.history.push('/superDashBoard/viewTenantDetail');
     }
 
     renderList = ({getTenantDetail}) => {
@@ -224,20 +219,20 @@ class TenantDetail extends Component {
                                 View</Button></td>
                             <td>
                                 <Button color="success" onClick={this.viewTenantDetail.bind(this,PicURN+item.picture.replace('../../',''),
-                                     item.firstName, item.gender, item.email,
-                                    item.contact, item.aadhaarNumber,item.panCardNumber,item.accountNumber,
-                                     item.dob, item.permanentAddress,
+                                     item.firstName, item.lastName, item.gender, item.email,
+                                    item.contact, item.aadhaarNumber,item.panCardNumber,item.bankName, item.IFSCCode,  item.accountHolderName,
+                                    item.accountNumber, item.dob, item.permanentAddress, item.correspondenceAddress,
                                     item.tower_master ? item.tower_master.towerName:'',
                                     item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master.flatNo,
                                     item.tower_master ? item.tower_master.towerId: '',
                                     item.floor_master ? item.floor_master.floorId: '',
-                                    item.flat_detail_master.flatDetailId, item.tenantId )}>View</Button>
+                                    item.flat_detail_master.flatDetailId, item.tenantId)}>View</Button>
                             </td>
                             <td>
                                 <Button color="success" onClick={this.edit.bind(this,PicURN+item.picture.replace('../../',''),
-                                     item.firstName, item.gender, item.email,
-                                    item.contact, item.aadhaarNumber,item.panCardNumber,item.accountNumber,
-                                     item.dob, item.permanentAddress,
+                                     item.firstName, item.lastName, item.gender, item.email,
+                                    item.contact, item.aadhaarNumber,item.panCardNumber,item.bankName, item.IFSCCode,  item.accountHolderName,
+                                    item.accountNumber, item.dob, item.permanentAddress,
                                     item.tower_master ? item.tower_master.towerName:'',
                                     item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master.flatNo,
                                     item.tower_master ? item.tower_master.towerId: '',
@@ -266,6 +261,10 @@ class TenantDetail extends Component {
         this.setState({editTenant: !this.state.editTenant, emailValidError:'',messageContactErr:'',messageEmailErr:'',
     permanentAddressVisible:true, editPermanent:false, permanentAddress:this.state.readOnly, countryId:'',
     stateId:'', cityId:'', locationId:''})
+    }
+
+    toggleData(){
+        this.setState({viewData: !this.state.viewData})
     }
 
     browseBtn = (e) => {
@@ -436,13 +435,16 @@ class TenantDetail extends Component {
     updateTenant = (e) => {
         e.preventDefault();
         
-        let {firstName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber ,dob,
-             permanentAddress, fileName, towerName, flatNo, towerId,
-        picture, flatDetailId, tenantId, floorId} = this.state;
+        let {firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
+            accountHolderName ,accountNumber ,dob, permanentAddress, fileName, towerName, flatNo, towerId,
+        picture, flatDetailId, tenantId, floorId, countryId, stateId, cityId, locationId} = this.state;
         let errors = {};
         if(this.state.firstName === '') {
             console.log('tenant');
-            errors.firstName = `Tenant Name can't be empty.`;}
+            errors.firstName = `First Name can't be empty.`;}
+        if(lastName === '') {
+            errors.lastName = `Last Name can't be empty.`
+        }
 
         if(this.state.email === '')  {console.log('email');
             errors.email = `Email can't be empty.`};
@@ -461,6 +463,10 @@ class TenantDetail extends Component {
             console.log('dob');
             errors.dob = `Date of birth can't be empty.`;
         }
+        if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
+        else if(IFSCCode.length < 11) errors.IFSCCode = `IFSC code should be of 11 digits.`
+        if(bankName === '') errors.bankName = `Bank name can't be empty.`
+        if(accountHolderName === '') errors.accountHolderName = `Acoount Holder Name can't be empty.`
         if(this.state.editAddress === '' && !!this.state.editPermanent) errors.editAddress = `Permanent Address can't be empty.`;
         // if(!this.state.towerId) {
         //     console.log('1');
@@ -480,13 +486,15 @@ class TenantDetail extends Component {
         if(isValid){
             console.log(this.state.floorId)
             this.setState({modalLoading: true})
-            this.props.updateTenantDetail(firstName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber,
-                 dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId)
+            this.props.updateTenantDetail(firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
+                 accountNumber,accountHolderName, dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId,
+                 countryId, stateId, cityId, locationId)
                 .then(() => this.refreshDataAfterUpdate())
                 .catch((err) => {
                     console.log(err.response.data)
                     this.setState({messageEmailErr: err.response.data.messageEmailErr, messageContactErr: err.response.data.messageContactErr,
-                         modalLoading:false})
+                         modalLoading:false,permanentAddressVisible:true, editPermanent:false, permanentAddress:this.state.readOnly, countryId:'',
+                         stateId:'', cityId:'', locationId:''})
                 })
         }
         
@@ -494,6 +502,18 @@ class TenantDetail extends Component {
 
     close = () => {
         return this.props.history.replace('/superDashBoard');
+    }
+
+    ifscChange = (e) => {
+        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.toUpperCase(), errors });
+        }
+        else {
+            this.setState({IFSCCode:e.target.value.toUpperCase()});
+        }
     }
 
     emailValid(event) {
@@ -536,35 +556,6 @@ class TenantDetail extends Component {
     changePassword=()=>{ 
         return this.props.history.replace('/superDashboard/changePassword')
      }
-
-    //  fetchFloorDetail = ({getFlatDetail}) => {
-    //     console.log(getFlatDetail)
-    //     if(getFlatDetail && getFlatDetail.tower){
-    //         console.log(getFlatDetail)
-    //         return getFlatDetail.tower.Floors.map((item) => {
-    //         return (
-    //             <option value={item.floorId} key={item.floorId}>{item.floorName}</option>
-    //         )
-    //         })
-    //     }
-    // }
-
-    // floorChange = (e) => {
-    //     this.setState({floorId:e.target.value, flatDetailId:'', flatNo:''})
-        
-    // }
-
-    //  fetchFloorDetail = ({getFlatDetail}) => {
-    //     console.log(getFlatDetail)
-    //     if(getFlatDetail && getFlatDetail.tower.Floors){
-    //         console.log(getFlatDetail)
-    //         return getFlatDetail.tower.Floors.map((item) => {
-    //         return (
-    //             <option value={item.floorId} key={item.floorId}>{item.floorName}</option>
-    //         )
-    //         })
-    //     }
-    // }
 
 
     numberValidation = (event) => {
@@ -718,7 +709,122 @@ class TenantDetail extends Component {
             }
     }
 
+    OnKeyPressUserhandler(event) {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    fNameKeyPress(event){
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    nameKeyPress(event){
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
     render(){
+
+        let viewTenantData = <div>
+            <FormGroup>
+                    <div style={{border: '1px solid black', textAlign:'center'}}>
+                        <img src={this.state.picture} height='100px' width='100px' />
+                    </div>
+            </FormGroup>
+           <FormGroup>
+               <Row md={12}>
+                <Col md={6}>
+                    <Label>First Name</Label>
+                    <Input value={this.state.firstName} disabled name="firstName" onChange={this.onChange} />
+                </Col>
+                <Col md={6}>
+                    <Label>Last Name</Label>
+                    <Input value={this.state.lastName} disabled name="lastName" onChange={this.onChange} />
+                </Col>
+               </Row>
+           </FormGroup>
+           <FormGroup>
+                <Label>Date of Birth</Label>
+                <Input value={this.state.dob} type="date"  disabled onChange={this.onChange} />
+            </FormGroup>
+            <FormGroup>
+                <Label>Gender:</Label>
+                <Input value={this.state.gender} disabled />
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={6}>
+                        <Label>Email</Label>
+                        <Input value={this.state.email} name="email" onChange={this.emailChange} disabled />
+                    </Col>
+                    <Col md={6}>
+                        <Label>Contact</Label>
+                        <Input value={this.state.contact} disabled onChange={this.contactChange} />
+                    </Col>
+                </Row>
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={6}>
+                        <Label>Aadhar Number</Label>
+                        <Input value={this.state.aadhaarNumber}  disabled name="aadhaarNumber" onChange={this.onChange} />
+                    </Col>
+                    <Col md={6}>
+                        <Label>Pan Number</Label>
+                        <Input value={this.state.panCardNumber} disabled onChange={this.panChange} />
+                    </Col>
+                </Row>
+            </FormGroup>
+            <FormGroup>
+                <h4 style={{textAlign:'center', marginBottom:'20px', fontWeight:'600'}}>Bank Details</h4>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={6}>
+                            <Label>Bank Name</Label>
+                            <Input disabled onChange={this.onChange} value={this.state.bankName} />
+                        </Col>
+                        <Col md={6}>
+                            <Label>IFSC Code</Label>
+                            <Input disabled onChange={this.onChange} value={this.state.IFSCCode} />
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={6}>
+                            <Label>Account Holder Name</Label>
+                            <Input disabled onChange={this.onChange} value={this.state.accountHolderName} />
+                        </Col>
+                        <Col md={6}>
+                            <Label>Bank Account Number</Label>
+                            <Input disabled value={this.state.accountNumber} onChange={this.onChange} />
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Label>Permanent Address</Label>
+                    <Input type="textarea" value={this.state.permanentAddress} disabled onChange={this.onChange} />
+                </FormGroup>
+                <FormGroup>
+                    <Label>Correspondence Address</Label>
+                    <Input type="textarea" value={this.state.correspondenceAddress} disabled onChange={this.onChange} />
+                </FormGroup>
+                <FormGroup>
+                    <Button color="primary" onClick={this.toggleData.bind(this)}>Cancel</Button>
+                </FormGroup>
+            </FormGroup>
+            
+        </div>
         
         let TableData = <Table bordered>
                            <thead>
@@ -774,15 +880,24 @@ class TenantDetail extends Component {
                 
                 <span className="error">{this.state.imageSizeError}</span>
             </FormGroup>
-            <FormGroup>
-                <Label>First Name</Label>
-                <Input value={this.state.firstName} name="firstName" maxLength="70" onChange={this.onChange} />
-                {<span className='error'>{this.state.errors.firstName}</span>}
-            </FormGroup>
-            <FormGroup>
-                <Label>Last Name</Label>
-                <Input value={this.state.lastName} name="firstName" maxLength="70" onChange={this.onChange} />
-                {<span className='error'>{this.state.errors.lastName}</span>}
+           <FormGroup>
+               <Row md={12}>
+                <Col md={6}>
+                    <Label>First Name</Label>
+                    <Input value={this.state.firstName} onKeyPress={this.fNameKeyPress} name="firstName" maxLength="70" onChange={this.onChange} />
+                    {<span className='error'>{this.state.errors.firstName}</span>}
+                </Col>
+                <Col md={6}>
+                    <Label>Last Name</Label>
+                    <Input value={this.state.lastName} onKeyPress={this.fNameKeyPress} name="lastName" maxLength="70" onChange={this.onChange} />
+                    {<span className='error'>{this.state.errors.lastName}</span>}
+                </Col>
+               </Row>
+           </FormGroup>
+           <FormGroup>
+                <Label>Date of Birth</Label>
+                <Input value={this.state.dob} type="date" name="dob" max={this.maxDate()} onChange={this.onChange} />
+                {<span className='error'>{this.state.errors.dob}</span>}
             </FormGroup>
             <FormGroup>
                 <Label>Gender:</Label>
@@ -802,84 +917,129 @@ class TenantDetail extends Component {
                         value={this.state.Other} checked={this.state.Other===this.state.gender ? true : false}/></span>
             </FormGroup>
             <FormGroup>
-                <Label>Email</Label>
-                <Input value={this.state.email} name="email" onChange={this.emailChange} onKeyPress={this.emailValid} />
-                {this.state.messageEmailErr ? <span className='error'>{this.state.messageEmailErr}</span> : ''}
-                {<span className="error">{this.state.emailValidError}</span>}
-                <span><br/></span>
-                {<span className="error">{this.state.errors.email}</span>}
+                <Row md={12}>
+                <Col md={6}>
+                    <Label>Email</Label>
+                    <Input value={this.state.email} name="email" onChange={this.emailChange} onKeyPress={this.emailValid} />
+                    {this.state.messageEmailErr ? <span className='error'>{this.state.messageEmailErr}</span> : ''}
+                    {<span className="error">{this.state.emailValidError}</span>}
+                    <span><br/></span>
+                    {<span className="error">{this.state.errors.email}</span>}
+                </Col>
+                <Col md={6}>
+                    <Label>Contact</Label>
+                    <Input value={this.state.contact} maxLength="10" name="contact" onKeyPress={this.numberValidation}
+                    onChange={this.contactChange} />
+                    {this.state.messageContactErr ? <span className='error'>{this.state.messageContactErr}</span> : ''}
+                    {<span className='error'>{this.state.errors.contact}</span>}
+                </Col>
+                </Row>
             </FormGroup>
             <FormGroup>
-                <Label>Contact</Label>
-                <Input value={this.state.contact} maxLength="10" name="contact" onKeyPress={this.numberValidation}
-                 onChange={this.contactChange} />
-                {this.state.messageContactErr ? <span className='error'>{this.state.messageContactErr}</span> : ''}
-                {<span className='error'>{this.state.errors.contact}</span>}
+                <Row md={12}>
+                    <Col md={6}>
+                        <Label>Aadhar Number</Label>
+                        <Input value={this.state.aadhaarNumber} maxLength="12" 
+                        onKeyPress={this.numberValidation} name="aadhaarNumber" onChange={this.onChange} />
+                        {<span className='error'>{this.state.errors.aadhaarNumber}</span>}
+                    </Col>
+                    <Col md={6}>
+                        <Label>Pan Number</Label>
+                        <Input value={this.state.panCardNumber} maxLength="10" name="panCardNumber" 
+                        onKeyPress={(e) => {
+                            const pattern = /^[a-zA-Z0-9]+$/;
+                            let inputChar = String.fromCharCode(e.charCode);
+                            if (!pattern.test(inputChar)) {
+                                e.preventDefault();
+                            }}} onChange={this.panChange} />
+                        {<span className='error'>{this.state.errors.panCardNumber}</span>}
+                    </Col>
+                </Row>
             </FormGroup>
             <FormGroup>
-                <Label>Aadhar Number</Label>
-                <Input value={this.state.aadhaarNumber} maxLength="12" 
-                onKeyPress={this.numberValidation} name="aadhaarNumber" onChange={this.onChange} />
-                {<span className='error'>{this.state.errors.aadhaarNumber}</span>}
-            </FormGroup>
-            <FormGroup>
-                <Label>Pan Number</Label>
-                <Input value={this.state.panCardNumber} maxLength="10" name="panCardNumber" 
-                onKeyPress={(e) => {
-                    const pattern = /^[a-zA-Z0-9]+$/;
-                    let inputChar = String.fromCharCode(e.charCode);
-                    if (!pattern.test(inputChar)) {
-                        e.preventDefault();
-                    }}} onChange={this.panChange} />
-                {<span className='error'>{this.state.errors.panCardNumber}</span>}
-            </FormGroup>
-            <FormGroup>
-                <Label>Bank Account Number</Label>
-                <Input value={this.state.accountNumber} maxLength="18" 
-                 onKeyPress={this.numberValidation} name="accountNumber" onChange={this.onChange} />
-                {<span className='error'>{this.state.errors.accountNumber}</span>}
-            </FormGroup>
-            <FormGroup>
-                <Label>Date of Birth</Label>
-                <Input value={this.state.dob} type="date" name="dob" max={this.maxDate()} onChange={this.onChange} />
-                {<span className='error'>{this.state.errors.dob}</span>}
-            </FormGroup>
-            <FormGroup>
-                Do you want to edit your permanent address?<Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
+                <span style={{fontWeight:'bold'}}>Do you want to edit your permanent address?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
             </FormGroup>
             {this.state.permanentAddressVisible ? <FormGroup>
                 <Label>Permanent Address</Label>
                 <Input type="textarea" id="permanentaddr" disabled maxLength="500" value={this.state.permanentAddress} name="permanentAddress" onChange={this.onChange} />
             </FormGroup> : ''}
             {this.state.editPermanent ? <div>
-                <h3 style={{textAlign:'center'}}>Permanent Address</h3>
+                <h4 style={{textAlign:'center', marginBottom:'20px', fontWeight:'600'}}>Permanent Address</h4>
                 <FormGroup>
-                <Label>Country</Label>
-                <Select placeholder={<DefaultSelect/>} options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
-            </FormGroup>
-            <FormGroup>
-                <Label>State</Label>
-                <Select placeholder={<DefaultSelect/>} options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
-            </FormGroup>
-            <FormGroup>
-                <Label>City</Label>
-                <Select placeholder={<DefaultSelect/>} options={this.cityName(this.props.societyReducer)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
-            </FormGroup>
-            <FormGroup>
-                <Label>Location</Label>
-                <Select placeholder={<DefaultSelect/>} options={this.locationName(this.props.societyReducer)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
-            </FormGroup>
-            <FormGroup>
-                <Label>Address</Label>
-                <Input type="textarea" disabled={!(this.state.countryId && this.state.stateId
-                && this.state.cityId && this.state.locationId) ? true : false} onChange={this.permanentAddressChange}
-                maxLength="250"
-                    name="editAddress" placeholder="Permanent Address" />
-                    {<span className="error">
-                    {this.state.errors.editAddress}
-                </span>}
-            </FormGroup>
+                    <Row md={12}>
+                        <Col md={6}>
+                            <Label>Country</Label>
+                            <Select placeholder={<DefaultSelect/>} options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                        </Col>
+                        <Col md={6}>
+                            <Label>State</Label>
+                            <Select placeholder={<DefaultSelect/>} options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={6}>
+                            <Label>City</Label>
+                            <Select placeholder={<DefaultSelect/>} options={this.cityName(this.props.societyReducer)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
+                        </Col>
+                        <Col md={6}>
+                            <Label>Location</Label>
+                            <Select placeholder={<DefaultSelect/>} options={this.locationName(this.props.societyReducer)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Label>Address</Label>
+                    <Input type="textarea" disabled={!(this.state.countryId && this.state.stateId
+                    && this.state.cityId) ? true : false} onChange={this.permanentAddressChange}
+                    maxLength="250"
+                        name="editAddress" placeholder="Permanent Address" />
+                        {<span className="error">
+                        {this.state.errors.editAddress}
+                    </span>}
+                </FormGroup>
             </div> : ''}
+            <FormGroup>
+                <h4 style={{textAlign:'center', marginBottom:'20px', fontWeight:'600'}}>Bank Details</h4>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={6}>
+                            <Label>Bank Name</Label>
+                            <Input name="bankName" maxLength="100" onChange={this.onChange} onKeyPress={this.OnKeyPressUserhandler} value={this.state.bankName} />
+                            {<span className='error'>{this.state.errors.bankName}</span>}
+                        </Col>
+                        <Col md={6}>
+                            <Label>IFSC Code</Label>
+                            <Input name="IFSCCode" onChange={this.ifscChange} value={this.state.IFSCCode} onKeyPress={(e) => {
+                                        const pattern = /^[a-zA-Z0-9]+$/;
+                                        let inputChar = String.fromCharCode(e.charCode);
+                                        if (!pattern.test(inputChar)) {
+                                            e.preventDefault();
+                                        }}} maxLength='11' />
+                            {<span className='error'>{this.state.errors.IFSCCode}</span>}
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={6}>
+                            <Label>Account Holder Name</Label>
+                            <Input name="accountHolderName" maxLength="70" onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler}
+                             value={this.state.accountHolderName} />
+                              {<span className='error'>{this.state.errors.accountHolderName}</span>}
+                        </Col>
+                        <Col md={6}>
+                            <Label>Bank Account Number</Label>
+                            <Input value={this.state.accountNumber} maxLength="18" 
+                            onKeyPress={this.numberValidation} name="accountNumber" onChange={this.onChange} />
+                            {<span className='error'>{this.state.errors.accountNumber}</span>}
+                        </Col>
+                    </Row>
+                </FormGroup>
+            </FormGroup>
+            
+            
             
             {/* <FormGroup>
                 <Label>Tower Name</Label>
@@ -960,6 +1120,12 @@ class TenantDetail extends Component {
                             } 
                         }  
                     }/></Label>
+                    <Modal isOpen={this.state.viewData} toggle={this.toggleData.bind(this)}>
+                        <ModalHeader toggle={this.toggleData.bind(this)}>Tenant's Detail</ModalHeader>
+                        <ModalBody>
+                            {viewTenantData}
+                        </ModalBody>
+                    </Modal>
                     <Modal isOpen={this.state.editTenant} toggle={this.toggleTenant.bind(this)}>
                         <ModalHeader toggle={this.toggleTenant.bind(this)}>Edit Tenant Details</ModalHeader>
                         <ModalBody>

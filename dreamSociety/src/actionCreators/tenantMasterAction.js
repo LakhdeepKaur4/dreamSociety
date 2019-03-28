@@ -73,12 +73,16 @@ export function deleteSelectedTenant(ids){
     }
 }
 
-export function updateTenantDetail(tenantName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber,
-    dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId){
-        console.log(tenantName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber,
-            dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId)
-        const request = axios.put(`${URN}/tenant/` + tenantId, {tenantName,gender, email, contact, aadhaarNumber, panCardNumber, accountNumber,
-            dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId},
+export function updateTenantDetail(firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
+    accountNumber,accountHolderName, dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId,
+    countryId, stateId, cityId, locationId){
+        console.log(firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
+            accountNumber,accountHolderName, dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId,
+            countryId, stateId, cityId, locationId)
+        
+        const request = axios.put(`${URN}/tenant/` + tenantId, {firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
+            accountNumber,accountHolderName, dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId,
+            countryId, stateId, cityId, locationId},
              {headers: authHeader()})
 
             return {

@@ -48,8 +48,13 @@ class Login extends Component {
                 localStorage.setItem('firstName',loginData.payload.data.user.firstName);
                 localStorage.setItem('societyId',loginData.payload.data.society.societyId);
                 localStorage.setItem('societyName',loginData.payload.data.society.societyName)
+                localStorage.setItem('countryName',loginData.payload.data.society.country_master.countryName)
+                localStorage.setItem('stateName',loginData.payload.data.society.state_master.stateName)
+                localStorage.setItem('cityName',loginData.payload.data.society.city_master.cityName)
+                localStorage.setItem('locationName',loginData.payload.data.society.location_master.locationName)
                 localStorage.setItem('userId',loginData.payload.data.user.userId)
                 console.log(loginData.payload.data.society)
+                console.log(loginData.payload.data.society.country_master.countryName)
                         switch(loginData.payload.data.user.roles[0].roleName) {
                             case 'SUPER ADMIN':
                                 return this.props.history.push('/superDashboard');

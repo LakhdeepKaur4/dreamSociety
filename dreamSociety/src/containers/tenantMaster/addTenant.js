@@ -61,7 +61,12 @@ class AddTenant extends Component{
             locationName:'',
             locationId:'',
             permanentAddrDefault:true,
-            permanentAddressUser:''
+            permanentAddressUser:'',
+            societyCountry:'',
+            societyState:'',
+            societyCity:'',
+            societyLocation:"",
+            defaultPermanentAddress:''
         }
     }
 
@@ -78,6 +83,11 @@ class AddTenant extends Component{
         this.setState({societyId})
         console.log(this.state.societyId)
         this.setState({societyId: localStorage.getItem('societyId')})
+        this.setState({societyName: localStorage.getItem('societyName')})
+        this.setState({societyCountry: localStorage.getItem('countryName')})
+        this.setState({societyState: localStorage.getItem('stateName')})
+        this.setState({societyCity: localStorage.getItem('cityName')})
+        this.setState({societyLocation: localStorage.getItem('locationName')})
         console.log(this.state.societyId) 
     }
 
@@ -112,6 +122,26 @@ class AddTenant extends Component{
             this.setState({[e.target.name]:e.target.value.trim(),messageContactErr:''});
         }
     }
+
+    correspondenceAddressChange = (e) => {
+        console.log(this.state);
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(), errors, defaultPermanentAddress: e.target.value,
+             });
+        }
+        else {
+            this.setState({[e.target.name]:e.target.value.trim(),messageContactErr:'', defaultPermanentAddress: e.target.value,
+            });
+        }
+
+        if(!!document.getElementById('isChecked').checked){
+            this.setState({permanentAddress: e.target.value})
+        }
+    }
+
+
 
     panChange = (e) => {
         if (!!this.state.errors[e.target.name]) {
@@ -290,57 +320,59 @@ class AddTenant extends Component{
     }
 
     nextPrev = () => {
-        // let errors = {};
-        // const {firstName, dob, gender, contact, email, correspondenceAddress, aadhaarNumber, permanentAddress} = this.state;
-        // if(this.state.step === 1){
-        //     if(firstName === '') errors.firstName = `Tenant Name can't be empty.`;
-        //     if(dob === '') errors.dob = `Date of Birth can't be empty.`;
-        //     if(gender === '') errors.gender = `Gender can't be empty`;
-        //     if(contact === '') errors.contact= `Contact can't be empty.`;
-        //     else if(contact.length !== 10) errors.contact= `Contact should be og 10 digit.`;
-        //     if(email === '') errors.email = `Email can't be empty.`;
-        //     if(correspondenceAddress === '') errors.correspondenceAddress = `Corresponding Address can't be empty.`;
-        //     if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
-        //     if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
-        //     else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of 12 digit.`
-        //     const isValid = Object.keys(errors).length === 0
-        //     this.setState({ errors });
-        //     if (isValid) {
-        //         this.setState({ step: this.state.step + 1 })
-        //     }
-        // }
-        // const { bankName, accountHolderName, accountNumber, panCardNumber, IFSCCode } = this.state;
-        // if(this.state.step === 2){
-        //     if(bankName === '') errors.bankName = `Bank name can't be empty.`;
-        //     if(accountHolderName === '') errors.accountHolderName = `Account Holder name can't be empty.`;
-        //     if(accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
-        //     if(panCardNumber === '') errors.panCardNumber = `Pan Card number can't be empty.`;
-        //     else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
-        //     if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
-        //     else if(IFSCCode.length !== 11) errors.IFSCCode = `IFSC code should be of 11 digit.`;
-        //     const isValid = Object.keys(errors).length === 0
-        //     this.setState({ errors });
-        //     if (isValid) {
-        //         this.setState({ step: this.state.step + 1 })
-        //     }
-        // }
-        // if(this.state.step === 3){
-        //     this.setState({ step: this.state.step + 1 })
-        // }
-        // const { towerId, floorId, flatDetailId } = this.state;
-        // if(this.state.step === 4){
-        //     if(towerId === '') errors.towerId = `Please select Tower.`;
-        //     if(floorId === '') errors.floorId = `Please select a Floor.`;
-        //     if(flatDetailId === '') errors.flatDetailId = `Please select a Flat.`;
-        //     const isValid = Object.keys(errors).length === 0
-        //     this.setState({ errors });
-        //     if (isValid) {
-        //         this.setState({ step: this.state.step + 1 })
-        //     }
-        // }
-        this.setState({ step: this.state.step + 1 })
+        let errors = {};
+        const {firstName, lastName, dob, gender, contact, email, correspondenceAddress, aadhaarNumber, permanentAddress} = this.state;
+        if(this.state.step === 1){
+            if(firstName === '') errors.firstName = `First Name can't be empty.`;
+            if(lastName === '') errors.lastName = `Last Name can't be empty.`;
+            if(dob === '') errors.dob = `Date of Birth can't be empty.`;
+            if(gender === '') errors.gender = `Gender can't be empty`;
+            if(contact === '') errors.contact= `Contact can't be empty.`;
+            else if(contact.length !== 10) errors.contact= `Contact should be og 10 digit.`;
+            if(email === '') errors.email = `Email can't be empty.`;
+            if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
+            else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of 12 digit.`
+            const isValid = Object.keys(errors).length === 0
+            this.setState({ errors });
+            if (isValid) {
+                this.setState({ step: this.state.step + 1 })
+            }
+        }
+        const { bankName, accountHolderName, accountNumber, panCardNumber, IFSCCode } = this.state;
+        if(this.state.step === 2){
+            if(bankName === '') errors.bankName = `Bank name can't be empty.`;
+            if(accountHolderName === '') errors.accountHolderName = `Account Holder name can't be empty.`;
+            if(accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
+            if(panCardNumber === '') errors.panCardNumber = `Pan Card number can't be empty.`;
+            else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
+            if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
+            else if(IFSCCode.length !== 11) errors.IFSCCode = `IFSC code should be of 11 digit.`;
+            const isValid = Object.keys(errors).length === 0
+            this.setState({ errors });
+            if (isValid) {
+                this.setState({ step: this.state.step + 1 })
+            }
+        }
+        if(this.state.step === 3){
+            this.setState({ step: this.state.step + 1 })
+        }
+        const { towerId, floorId, flatDetailId } = this.state;
+        if(this.state.step === 4){
+            if(towerId === '') errors.towerId = `Please select Tower.`;
+            if(floorId === '') errors.floorId = `Please select a Floor.`;
+            if(flatDetailId === '') errors.flatDetailId = `Please select a Flat.`;
+            if(correspondenceAddress === '') errors.correspondenceAddress = `Corresponding Address can't be empty.`;
+            if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
+            const isValid = Object.keys(errors).length === 0
+            this.setState({ errors });
+            if (isValid) {
+                this.setState({ step: this.state.step + 1 })
+            }
+        }
 
     }
+
+    
 
     emailValid(event) {
         const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
@@ -443,7 +475,8 @@ class AddTenant extends Component{
             this.setState({
                 floorName: selectOption.floorName,
                 floorId: selectOption.floorId,
-                correspondenceAddress: this.state.correspondenceAddress + ' , ' + 'Floor : ' + selectOption.floorName
+                correspondenceAddress: 'Floor : ' + selectOption.floorName + ' , ' + this.state.correspondenceAddress
+                
             })
             console.log('lllllllll=======',this.state.floorId)
             // this.getFlats(this.props.towerFloor);
@@ -455,7 +488,9 @@ class AddTenant extends Component{
                 this.setState({
                     flatNo: selectOption.flatNo,
                     flatDetailId: selectOption.flatDetailId,
-                    correspondenceAddress: this.state.correspondenceAddress + ' , ' + 'Flat Number : ' + selectOption.flatNo
+                    correspondenceAddress: ('Flat Number : ' + selectOption.flatNo  + ' , ' + this.state.correspondenceAddress) + 
+                    ' , ' +this.state.societyName + ' , ' +this.state.societyLocation + ' , ' + this.state.societyCity +
+                    ' , ' + this.state.societyState + ' , ' + this.state.societyCountry
                 })
                 this.props.getAllFloor(selectOption.towerId);
             }
@@ -577,10 +612,21 @@ class AddTenant extends Component{
                 this.state.cityName + ' , ' + this.state.stateName + ' , ' + this.state.countryName })
                     console.log(this.state)
             }
-    
+            
+    defaultPermanentAddressChange = (e) =>{
+        this.setState({defaultPermanentAddress: this.state.correspondenceAddress ,permanentAddress: e.target.value})
+    }
+
+    fNameKeyPress(event){
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     render(){
-        
+        console.log(this.state.societyCountry)
         let userDatas = [];
         for (let i = 0; i < this.state.noOfMembers; i++) {
             userDatas.push(<FormGroup key={i}>
@@ -629,14 +675,14 @@ class AddTenant extends Component{
                         <h3>Tenant Details</h3>
                         <FormGroup>
                             <Label>First Name</Label>
-                            <Input type="text" placeholder="First Name" onKeyPress={this.OnKeyPressUserhandler} 
+                            <Input type="text" placeholder="First Name"  onKeyPress={this.fNameKeyPress}
                             onChange={this.onChange} 
                             maxLength={100} name='firstName' />
                             {<span className="error">{this.state.errors.firstName}</span>}
                         </FormGroup>
                         <FormGroup>
                             <Label>Last Name</Label>
-                            <Input type="text" placeholder="Last Name" onKeyPress={this.OnKeyPressUserhandler} 
+                            <Input type="text" placeholder="Last Name"  onKeyPress={this.fNameKeyPress} 
                             onChange={this.onChange} 
                             maxLength={100} name='lastName' />
                             {<span className="error">{this.state.errors.lastName}</span>}
@@ -783,7 +829,7 @@ class AddTenant extends Component{
                         </FormGroup >
                         <FormGroup>
                             <Label>Corresponding Address</Label>
-                            <Input type="textarea" value={this.state.correspondenceAddress} onChange={this.onChange} maxLength="250"
+                            <Input type="textarea" value={this.state.correspondenceAddress} onChange={this.correspondenceAddressChange} maxLength="250"
                              name="correspondenceAddress" placeholder="Corresponding Address" />
                              {<span className="error">
                                 {this.state.errors.correspondenceAddress}
@@ -791,17 +837,14 @@ class AddTenant extends Component{
                         </FormGroup >
                         
                         <FormGroup>
-                            Is Your permanent address same as correspondence address?<Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
+                           <span style={{fontWeight:'bold'}}>Is Your permanent address same as correspondence address?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
                         </FormGroup>
                         <h3 style={{textAlign:'center'}}>Permanent Address</h3>
                         {this.state.defaultPermanent ? <FormGroup>
                             <Label>Permanent Address</Label>
-                            <Input id="permanentaddr" disabled type="textarea" onChange={this.onChange}
-                            maxLength="250" value={this.state.permanentAddress}
-                             name="permanentAddress" placeholder="Permanent Address" />
-                             {<span className="error">
-                                {this.state.errors.permanentAddress}
-                            </span>}
+                            <Input id="permanentaddr" readOnly type="textarea" onChange={this.defaultPermanentAddressChange}
+                            maxLength="250" value={this.state.defaultPermanentAddress}
+                             name="defaultPermanentAddress" placeholder="Permanent Address" />
                         </FormGroup> : ''}
                         {this.state.permanentAddrDefault ? <div>
                             <FormGroup>
@@ -823,7 +866,8 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>Permanent Address</Label>
                             <Input type="textarea" onChange={this.permanentAddressChange}
-                            maxLength="250"
+                            maxLength="250" disabled={!(this.state.countryId && this.state.stateId
+                                && this.state.cityId)}
                              name="permanentAddressUser" placeholder="Permanent Address" />
                              {<span className="error">
                                 {this.state.errors.permanentAddress}
