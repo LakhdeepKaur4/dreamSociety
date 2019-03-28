@@ -786,6 +786,14 @@ class TenantDetail extends Component {
                 </Row>
             </FormGroup>
             <FormGroup>
+                <Label>Permanent Address</Label>
+                <Input type="textarea" value={this.state.permanentAddress} disabled onChange={this.onChange} />
+            </FormGroup>
+            <FormGroup>
+                <Label>Correspondence Address</Label>
+                <Input type="textarea" value={this.state.correspondenceAddress} disabled onChange={this.onChange} />
+            </FormGroup>
+            <FormGroup>
                 <h4 style={{textAlign:'center', marginBottom:'20px', fontWeight:'600'}}>Bank Details</h4>
                 <FormGroup>
                     <Row md={12}>
@@ -810,14 +818,6 @@ class TenantDetail extends Component {
                             <Input disabled value={this.state.accountNumber} onChange={this.onChange} />
                         </Col>
                     </Row>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Permanent Address</Label>
-                    <Input type="textarea" value={this.state.permanentAddress} disabled onChange={this.onChange} />
-                </FormGroup>
-                <FormGroup>
-                    <Label>Correspondence Address</Label>
-                    <Input type="textarea" value={this.state.correspondenceAddress} disabled onChange={this.onChange} />
                 </FormGroup>
                 <FormGroup>
                     <Button color="primary" onClick={this.toggleData.bind(this)}>Cancel</Button>
