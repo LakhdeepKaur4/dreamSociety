@@ -30,20 +30,30 @@ export default class AccountVerificationTenant extends Component {
      }
    })
      }
+
+     logout = () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user-type');
+      return this.props.history.replace('/');
+  }
+
+  changePassword=()=>{ 
+      return this.props.history.replace('/superDashboard/changePassword')
+   }
   
   render() {
     return (
       <div>
        
-          <UI>
+          <UI onClick={this.logout} change={this.changePassword}>
              <h2>Submit OTP</h2> 
              <h2 style={{color:'red'}}>{this.state.message}</h2>
-        <OtpInput
-        inputStyle={{width: '20px'}}
-          onChange={otp => this.setState({otp})}
-          numInputs={6}
-          separator={<span>-</span>}
-        />
+          <OtpInput
+          inputStyle={{width: '20px'}}
+            onChange={otp => this.setState({otp})}
+            numInputs={6}
+            separator={<span>-</span>}
+          />
         <span><button style={{marginTop:'10px'}} onClick={this.submit}>Submit</button></span>
         <span><button style={{marginTop:'10px', marginLeft:'4px'}}>Resend</button></span>
         <span><button style={{marginTop:'10px', marginLeft:'4px',display:this.state.otpVerified?'block':'none'}} onClick={this.sendLogin}>login</button></span>
