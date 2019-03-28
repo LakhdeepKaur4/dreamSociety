@@ -62,13 +62,13 @@ class BoardMemberDetails extends Component{
     }
 
     refreshData(){
-        this.props.getSocietyId().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
-        this.props.getMemberDetails().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
-        this.props.getMemberDesignation().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
-        this.props.getCountry().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
-        this.props.getState().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
-        this.props.getCity().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));;
-        this.props.getLocation().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));; 
+        this.props.getSocietyId().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));
+        this.props.getMemberDetails().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));
+        this.props.getMemberDesignation().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));
+        this.props.getCountry().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));
+        this.props.getState().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));
+        this.props.getCity().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false}));
+        this.props.getLocation().then(() => this.setState({loading:false})).catch(() => this.setState({loading:false})); 
     }
 
     editMember(societyId,societyBoardMemberId,societyBoardMemberName,designationName,countryName,stateName,cityName,
