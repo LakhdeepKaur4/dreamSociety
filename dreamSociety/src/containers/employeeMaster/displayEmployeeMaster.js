@@ -697,6 +697,16 @@ ImageChange =(event)=>{
                                    
                                    </FormGroup>
                                    <FormGroup>
+                                  <Label > Address</Label>
+                                  <Input name="address" value={this.state.address}
+                                      onChange={this.onChange}
+
+                                    
+
+                                  />
+                                   <span  className="error" >{this.state.errors.address}</span>
+                                   </FormGroup>
+                                   <FormGroup>
                               <Label>Country Name</Label>
                               <Input type="select" name="countryId"  onChange={this.onChangeCountry} 
                               value={this.state.countryName} required>
@@ -741,16 +751,7 @@ ImageChange =(event)=>{
                            
                           </FormGroup> 
                                  
-                                  <FormGroup>
-                                  <Label > Address</Label>
-                                  <Input name="address" value={this.state.address}
-                                      onChange={this.onChange}
-
-                                    
-
-                                  />
-                                   <span  className="error" >{this.state.errors.address}</span>
-                                   </FormGroup>
+                                  
                               <FormGroup>
                                 
                                   <Label > Document One</Label>
