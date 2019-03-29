@@ -6,6 +6,7 @@ var crypto = require('crypto');
 var generator = require('generate-password');
 const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921aa', '68afe5aeee2b5f9bbabf2489f2e8ade2');
 var schedule = require('node-schedule');
+const key = config.secret;
 
 const User = db.user;
 const Role = db.role;
@@ -16,6 +17,11 @@ const City = db.city;
 const Country = db.country;
 const State = db.state;
 const Location = db.location;
+const Owner = db.owner;
+const Tenant = db.tenant;
+const Vendor = db.vendor;
+const Employee = db.employee;
+const FlatDetail = db.flatDetail;
 const OTPTable = db.otpUserVerify;
 const Token = db.tokenVerify;
 
@@ -31,11 +37,104 @@ exports.start = (req, res) => {
 
 
 function decrypt1(key, data) {
-	var decipher = crypto.createDecipher("aes-128-cbc", key);
+	var decipher = crypto.createDecipher("aes-256-cbc", key);
 	var decrypted = decipher.update(data, "hex", "utf-8");
 	decrypted += decipher.final("utf-8");
 
 	return decrypted;
+}
+
+
+encrypt = (text) => {
+	let key = config.secret;
+	let algorithm = 'aes-128-cbc';
+	let cipher = crypto.createCipher(algorithm, key);
+	let encryptedText = cipher.update(text, 'utf8', 'hex');
+	encryptedText += cipher.final('hex');
+	return encryptedText;
+}
+
+decrypt = (text) => {
+	let key = config.secret;
+	let algorithm = 'aes-128-cbc';
+	let decipher = crypto.createDecipher(algorithm, key);
+	let decryptedText = decipher.update(text, 'hex', 'utf8');
+	decryptedText += decipher.final('utf8');
+	return decryptedText;
+}
+
+constraintCheck = (property, object) => {
+	if ((property in object) && object[property] !== undefined && object[property] !== '' && object[property] !== null) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+constraintReturn = (checkConstraint, object, property, entry) => {
+	if (checkConstraint) {
+		return encrypt(object[property]);
+	} else {
+		return entry[property];
+	}
+}
+
+referenceConstraintReturn = (checkConstraint, object, property, entry) => {
+	if (checkConstraint) {
+		return object[property];
+	} else {
+		return entry[property];
+	}
+}
+
+passwordConstraintReturn = (checkConstraint, object, property, entry) => {
+	if (checkConstraint) {
+		return bcrypt.hashSync(object[property], 8);
+	} else {
+		return entry[property];
+	}
+}
+
+mailToUser = (email, firstName, lastName, id, token) => {
+	const encryptedId = encrypt(id.toString());
+	const encryptedToken = encrypt(token);
+	const request = mailjet.post("send", { 'version': 'v3.1' })
+		.request({
+			"Messages": [
+				{
+					"From": {
+						"Email": "rohit.khandelwal@greatwits.com",
+						"Name": "Greatwits"
+					},
+					"To": [
+						{
+							"Email": decrypt(email),
+							"Name": decrypt(firstName) + ' ' + decrypt(lastName)
+						}
+					],
+					"Subject": "Password reset link",
+					"HTMLPart": `<h3>Hi ${decrypt(firstName)},</h3><br />Please click on the below link to reset your password.<br /><a href=\`http://mydreamsociety.com/token?userId=${encryptedId}&&token=${encryptedToken}\`>Click Here</a>`
+				}
+			]
+		})
+	request
+		.then((result) => {
+			console.log(result.body)
+			console.log(`http://mydreamsociety.com/api/token?userId=${encryptedId}token=${encryptedToken}`);
+		})
+		.catch((err) => {
+			console.log(err.statusCode)
+		})
+}
+
+generateOTP = () => {
+	const OTP = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+	return OTP;
+}
+
+generateToken = () => {
+	const token = Math.random().toString(36).replace('0.', '');
+	return token;
 }
 
 exports.signup = async (req, res) => {
@@ -764,98 +863,6 @@ exports.deleteSelected = async (req, res, next) => {
 		console.log(error)
 		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
 	}
-}
-
-encrypt = (text) => {
-	let key = config.secret;
-	let algorithm = 'aes-128-cbc';
-	let cipher = crypto.createCipher(algorithm, key);
-	let encryptedText = cipher.update(text, 'utf8', 'hex');
-	encryptedText += cipher.final('hex');
-	return encryptedText;
-}
-
-decrypt = (text) => {
-	let key = config.secret;
-	let algorithm = 'aes-128-cbc';
-	let decipher = crypto.createDecipher(algorithm, key);
-	let decryptedText = decipher.update(text, 'hex', 'utf8');
-	decryptedText += decipher.final('utf8');
-	return decryptedText;
-}
-
-constraintCheck = (property, object) => {
-	if ((property in object) && object[property] !== undefined && object[property] !== '' && object[property] !== null) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-constraintReturn = (checkConstraint, object, property, entry) => {
-	if (checkConstraint) {
-		return encrypt(object[property]);
-	} else {
-		return entry[property];
-	}
-}
-
-referenceConstraintReturn = (checkConstraint, object, property, entry) => {
-	if (checkConstraint) {
-		return object[property];
-	} else {
-		return entry[property];
-	}
-}
-
-passwordConstraintReturn = (checkConstraint, object, property, entry) => {
-	if (checkConstraint) {
-		return bcrypt.hashSync(object[property], 8);
-	} else {
-		return entry[property];
-	}
-}
-
-mailToUser = (email, firstName, lastName, id, token) => {
-	const encryptedId = encrypt(id.toString());
-	const encryptedToken = encrypt(token);
-	const request = mailjet.post("send", { 'version': 'v3.1' })
-		.request({
-			"Messages": [
-				{
-					"From": {
-						"Email": "rohit.khandelwal@greatwits.com",
-						"Name": "Greatwits"
-					},
-					"To": [
-						{
-							"Email": decrypt(email),
-							"Name": decrypt(firstName) + ' ' + decrypt(lastName)
-						}
-					],
-					"Subject": "Password reset link",
-					"HTMLPart": `<h3>Hi ${decrypt(firstName)},</h3><br />Please click on the below link to reset your password.<br /><a href=\`http://mydreamsociety.com/token?userId=${encryptedId}&&token=${encryptedToken}\`>Click Here</a>`
-				}
-			]
-		})
-	request
-		.then((result) => {
-			console.log(result.body)
-			console.log(`http://mydreamsociety.com/api/token?userId=${encryptedId}token=${encryptedToken}`);
-		})
-		.catch((err) => {
-			console.log(err.statusCode)
-		})
-}
-
-generateOTP = () => {
-	const OTP = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
-	return OTP;
-}
-
-generateToken = () => {
-	const token = Math.random().toString(36).replace('0.', '');
-	return token;
 }
 
 exports.signupEncrypted = async (req, res, next) => {
@@ -1759,11 +1766,251 @@ schedule.scheduleJob(rule, () => {
 
 exports.assignRoles = async (req, res, next) => {
 	try {
-	console.log("assigning roles==>")
-	const user = await User.findOne({where:{isActive:true,userName:req.body.userName}})
-	console.log("user",user);
+		console.log("assigning roles==>");
+		let userArr = [];
+		const user = await User.findOne({ where: { isActive: true, userId: req.body.userId }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role }] })
+		user.firstName = decrypt(user.firstName);
+		user.lastName = decrypt(user.lastName);
+		user.userName = decrypt(user.userName);
+		userArr.push(user);
+		const role = await Role.find({ where: { id: req.body.id } });
+
+		const roleAssigned = await user.setRoles(role);
+		res.json({ userArr, role, roleAssigned });
+
 	} catch (error) {
 		console.log(error);
 		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Sequelize Error' })
 	}
 }
+
+exports.getRolesForActivation = async (req, res, next) => {
+	try {
+		const role = await Role.findAll({ where: { id: { [Op.notIn]: [1, 2] } } });
+		console.log(role);
+		return res.status(httpStatus.OK).json({ role: role });
+	} catch (error) {
+		console.log(error);
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Sequelize Error' })
+	}
+}
+
+exports.activeUsersByRole = async (req, res, next) => {
+	try {
+		const roleId = req.params.id;
+		console.log(roleId);
+		const tenantsArr = [];
+		const ownersArr = [];
+		const vendorsArr = [];
+		const employeesArr = [];
+		console.log(roleId);
+		switch (roleId) {
+			case "3":
+				const owners = await Owner.findAll({ where: { isActive: true }, attributes: ['ownerId', 'ownerName'] });
+				owners.map(owner => {
+					owner.ownerName = decrypt1(key, owner.ownerName);
+					ownersArr.push(owner);
+				})
+				res.status(httpStatus.OK).json({ users: ownersArr });
+				break;
+			case "4":
+				const tenants = await Tenant.findAll({ where: { isActive: true }, attributes: ['tenantId', 'firstName'] });
+				// console.log(tenants)
+				tenants.map(tenant => {
+					let firstName = decrypt(tenant.firstName);
+					let lastName = decrypt(tenant.lastName);
+					tenant.fullName = firstName + " " + lastName;
+					tenantArr['fullName'] = fullName;
+					tenantsArr['type'] = 'Tenant',
+						tenantsArr.push({ fullName: fullName, userId: tenant.tenantId, type: 'ActiveTenant' });
+				})
+				res.status(httpStatus.OK).json({ users: tenants });
+				break;
+			case "5":
+				const vendors = await Vendor.findAll({ where: { isActive: true }, attributes: ['vendorId', 'userName'] });
+				vendors.map(vendor => {
+					let firstName = decrypt1(key, vendor.firstName);
+					let lastName = decrypt1(key, vendor.lastName);
+					vendorsArr['fullName'] = fullName;
+					vendorsArr.push({ fullName: fullName, userId: vendor.vendorId, type: 'ActiveVendor' });
+				})
+				res.status(httpStatus.OK).json({ users: vendorsArr });
+				break;
+			case "6":
+				const employees = await Employee.findAll({ where: { isActive: true }, attributes: ['employeeId', 'firstName', 'middleName', 'lastName'] });
+				employees.map(employee => {
+
+					let firstName = decrypt(employee.firstName);
+					let middleName = decrypt(employee.middleName);
+					let lastName = decrypt(employee.lastName);
+					let fullName = firstName + " " + middleName + " " + lastName
+					employeesArr['fullName'] = fullName;
+					employeesArr.push({ fullName: fullName, userId: employee.employeeId, type: 'ActiveEmployee' });
+				})
+				console.log(employeesArr)
+				res.status(httpStatus.OK).json({ users: employeesArr });
+				break;
+			default:
+				res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No Role Found with this Id" })
+		}
+
+
+		// const user = await User.findAll({
+		// 	where:{isActive:true},
+		//     attributes: ['userId', 'userName'],
+		//      include: [{
+		// 		raw:true,
+		//         model: Role,
+		//         where: { id:roleId },
+		//         attributes: ['id', 'roleName'],
+		//     },
+		//     ]
+		// });
+		// console.log("user==>",user);
+		// res.send(user)
+	} catch (error) {
+		console.log(error);
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Sequelize Error' })
+	}
+}
+
+exports.deactiveUsersByRole = async (req, res, next) => {
+	try {
+		const roleId = req.body.id;
+		const tenantsArr = [];
+		const ownersArr = [];
+		const vendorsArr = [];
+		const employeesArr = [];
+		console.log(roleId)
+		switch (roleId) {
+			case "3":
+				const owners = await Owner.findAll({ where: { isActive: false }, attributes: ['ownerId', 'ownerName'] });
+				owners.map(owner => {
+					owner.ownerName = decrypt1(key, owner.ownerName);
+					ownersArr.push(owner);
+				})
+				res.status(httpStatus.OK).json({ users: ownersArr });
+				break;
+			case "4":
+				const tenants = await Tenant.findAll({ where: { isActive: false }, attributes: ['tenantId', 'firstName'] });
+				// console.log(tenants)
+				tenants.map(tenant => {
+					let firstName = decrypt(tenant.firstName);
+					let lastName = decrypt(tenant.lastName);
+					tenant.fullName = firstName + " " + lastName;
+					tenantArr['fullName'] = fullName;
+					tenantsArr.push({ fullName: fullName, userId: tenant.tenantId, type: 'DeactiveTenant' });
+				})
+				res.status(httpStatus.OK).json({ users: tenants });
+				break;
+			case "5":
+				const vendors = await Vendor.findAll({ where: { isActive: false }, attributes: ['vendorId', 'userName'] });
+				vendors.map(vendor => {
+					let firstName = decrypt1(key, vendor.firstName);
+					let lastName = decrypt1(key, vendor.lastName);
+					vendorsArr['fullName'] = fullName;
+					vendorsArr.push({ fullName: fullName, userId: vendor.vendorId, type: 'DeactiveVendor' });
+				})
+				res.status(httpStatus.OK).json({ users: vendorsArr });
+				break;
+			case "6":
+				const employees = await Employee.findAll({ where: { isActive: false }, attributes: ['employeeId', 'firstName', 'lastName', 'middleName'] });
+				employees.map(employee => {
+					let firstName = decrypt(employee.firstName);
+
+					let middleName = decrypt(employee.middleName);
+					let lastName = decrypt(employee.lastName);
+					let fullName = firstName + " " + middleName + " " + lastName
+					employeesArr['fullName'] = fullName;
+					employeesArr.push({ fullName: fullName, userId: employee.employeeId, type: 'DeactiveEmployee' });
+				})
+				res.status(httpStatus.OK).json({ users: employeesArr });
+				break;
+			default:
+				res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No Role Found with this Id" })
+		}
+
+
+		// const user = await User.findAll({
+		// 	where:{isActive:true},
+		//     attributes: ['userId', 'userName'],
+		//      include: [{
+		// 		raw:true,
+		//         model: Role,
+		//         where: { id:roleId },
+		//         attributes: ['id', 'roleName'],
+		//     },
+		//     ]
+		// });
+		// console.log("user==>",user);
+		// res.send(user)
+	} catch (error) {
+		console.log(error);
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Sequelize Error' })
+	}
+}
+
+exports.rolesToAssign = async (req, res, next) => {
+	try {
+		const role = await Role.findAll({
+			where: {
+				id: {
+					[Op.in]: [1, 2]
+				},
+			},
+		});
+		if (role) {
+			return res.status(httpStatus.OK).json(role);
+		}
+	} catch (error) {
+		console.log(error);
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Sequelize Error' })
+	}
+}
+
+exports.deactivateUsers = async (req, res, next) => {
+	try {
+		console.log(req.body);
+		const userId = req.body.userId;
+		const type = req.body.type;
+		const update = { isActive: false };
+		switch (type) {
+			case "ActiveTenant":
+				const tenant = await Tenant.findOne({ where: { tenantId: userId, isActive: true } });
+				if (tenant) {
+					await Tenant.update(update, { where: { tenantId: userId } });
+					res.status(httpStatus.OK).json({ message: "Tenant deactivated successfully" });
+				}
+				break;
+			case "ActiveOwner":
+				const owner = await Owner.findOne({ where: { ownerId: userId, isActive: true } });
+				if (owner) {
+					await Owner.update(update, { where: { ownerId: userId } });
+					res.status(httpStatus.OK).json({ message: "Owner deactivated successfully" });
+				}
+				break;
+			case "ActiveVendor":
+				const vendor = await Vendor.findOne({ where: { tenantId: userId, isActive: true } });
+				if (vendor) {
+					await Vendor.update(update, { where: { vendorId: userId } });
+					res.status(httpStatus.OK).json({ message: "Vendor deactivated successfully" });
+				}
+				break;
+			case "ActiveEmployee":
+				const employee = await Employee.findOne({ where: { employeeId: userId, isActive: true } });
+				if (employee) {
+					await Employee.update(update, { where: { employeeId: userId } });
+					res.status(httpStatus.OK).json({ message: "Employee deactivated successfully" });
+				}
+				break;
+			default:
+				res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: 'No user found with this userId' });
+
+		}
+	} catch (error) {
+		console.log(error);
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Sequelize Error' })
+	}
+}
+
+

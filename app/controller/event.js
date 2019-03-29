@@ -164,7 +164,8 @@ exports.getEventOrganiser = async (req, res, next) => {
             attributes: ['userId', 'userName'],
              include: [{
                 model: Role,
-                where: { roleName: 'ADMIN' },
+                where: { id: { [Op.in]: [1, 2] } },
+                // where:{ [Op.and]:{ roleName: 'ADMIN' },{roleName:''}},
                 attributes: ['id', 'roleName'],
             },
             ]
