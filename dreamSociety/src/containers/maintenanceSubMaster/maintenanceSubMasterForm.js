@@ -22,8 +22,8 @@ class MaintenanceSubMasterForm extends Component{
     }
 
     componentDidMount(){
-        this.props.getMaintenanceSubSize().then(() => this.setState({loading: false}));
-        this.props.getMaintenanceType().then(() => this.setState({loading: false}));
+        this.props.getMaintenanceSubSize().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
+        this.props.getMaintenanceType().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
     }
 
     OnKeyPresshandlerPhone(event) {

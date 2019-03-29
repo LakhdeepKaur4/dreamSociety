@@ -40,8 +40,10 @@ export function fetchAssets() {
     }
 }
 
-export function updateAssetsSub(id, assetName, description) {
+export function updateAssetsSub(id, assets,assetName, description) {
+    console.log(assets)
     const data = {
+        assetId:assets,
         assetTypeId: id,
         assetType: assetName,
         description: description,
