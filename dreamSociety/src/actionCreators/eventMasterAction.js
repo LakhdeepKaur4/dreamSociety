@@ -25,8 +25,8 @@ export function ViewEvent(){
     
     
     
-    export  function AddEvent(eventType,eventName, eventOrganiser,startDate,endDate){
-        const request= axios.post(`${URN}/event`,{eventType,eventName, eventOrganiser,startDate,endDate},{headers:authHeader()}).then(ViewEvent())
+    export  function AddEvent(eventType,eventName, eventOrganiser){
+        const request= axios.post(`${URN}/event`,{eventType,eventName, eventOrganiser},{headers:authHeader()}).then(ViewEvent())
         return{
             type:ADD_EVENT,
             payload:request
@@ -45,10 +45,10 @@ export function ViewEvent(){
                     payload:request
                 }
     }
-    export function updateEvent( eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId ){
-   console.log( eventId, eventType, eventName, eventOrganiser, startDate, endDate, userId );
+    export function updateEvent( eventId, eventType, eventName, eventOrganiser, userId ){
+   console.log( eventId, eventType, eventName, eventOrganiser, userId );
         const request =
-        axios.put(`${URN}/event/`+eventId,{ userId, eventType, eventName, eventOrganiser, startDate, endDate },{headers:authHeader()}).then((response)=>{
+        axios.put(`${URN}/event/`+eventId,{ userId, eventType, eventName, eventOrganiser },{headers:authHeader()}).then((response)=>{
 
         })
  

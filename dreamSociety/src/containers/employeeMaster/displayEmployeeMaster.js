@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { Table, Input, Modal, Button, FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Row,Col } from 'reactstrap';
 
 import { getCountry, getState, getCity, getLocation } from './../../actionCreators/societyMasterAction';
+import {getEmployee,getEmployeeType,getEmployeeWorkType} from '../../actionCreators/employeeTypeMasterAction';
+
 import { ViewEmployee, updateEmployee, deleteEmployee,deleteMultipleEmployee} from '../../actionCreators/employeeMasterAction';
 import { bindActionCreators } from 'redux';
 import { UR } from '../../actions';
@@ -50,6 +52,7 @@ class DisplayEmployeeMaster extends Component {
         lastName: '',
         salary: '',
         address:'',
+        serviceType:'',
         ids: [],
         isDisabled: true,
         documentOne: '',
@@ -79,6 +82,7 @@ class DisplayEmployeeMaster extends Component {
         this.props.getState().then(() => this.setState({ loading: false,modalLoading:false }))
         this.props.getCity().then(() => this.setState({ loading: false,modalLoading:false }))
         this.props.getLocation().then(() => this.setState({ loading: false,modalLoading:false }))
+        this.props.getEmployee().then(()=>this.setState({loading:false}))
     }
 
     onChange=(e)=> {
@@ -196,9 +200,9 @@ ImageChange =(event)=>{
      }
      
 
-    editEmployee(employeeId, picture, firstName, middleName, lastName, salary,address, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate) {
+    editEmployee(employeeId, picture, firstName, middleName, lastName, salary,address, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate,contact,email,serviceType) {
 
-        this.setState({ editEmployeeData: { employeeId,  startDate },   documentOne, documentTwo, picture, firstName, middleName, lastName, salary, address,countryName, stateName, cityName, locationName, editEmployeeModal: !this.state.editEmployeeModal })
+        this.setState({ editEmployeeData: { employeeId,  startDate }, serviceType,contact,email,  documentOne, documentTwo, picture, firstName, middleName, lastName, salary, address,countryName, stateName, cityName, locationName, editEmployeeModal: !this.state.editEmployeeModal })
 
     }
 
@@ -245,7 +249,10 @@ ImageChange =(event)=>{
         data.append('cityId', this.state.cityId)
         data.append('locationId', this.state.locationId)
         data.append('startDate', this.state.editEmployeeData.startDate)
-    
+        data.append('email',this.state.email)
+        data.append('contact',this.state.contact)
+        data.append('serviceType',this.state.serviceType)
+        
         data.append('profilePicture', this.state.profilePicture)
 
         this.props.updateEmployee(this.state.editEmployeeData.employeeId,data).then(() =>  this.refreshData())
@@ -266,6 +273,14 @@ ImageChange =(event)=>{
         this.props.deleteEmployee(employeeId, isActive).then(() => this.refreshData())
         this.setState({ editEmployeeData: { isActive: false } })
     }
+
+    OnKeyPressNumber(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }   
 
     searchOnChange = (e) => {
 
@@ -318,7 +333,9 @@ ImageChange =(event)=>{
                             < td>{item.middleName}</td>
                             <td>{item.lastName}</td>
                             <td>{item.salary}</td>
-
+                            <td>{item.serviceType}</td>
+                            <td>{item.contact}</td>
+                            <td> {item.email}</td>
                             <td> {item.address},{item.location_master.locationName},{item.city_master.cityName},{item.state_master.stateName},{item.country_master.countryName}</td>
 
                             <td>
@@ -330,7 +347,7 @@ ImageChange =(event)=>{
                             
 
                             <td>
-                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeId, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.address,item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, UR+item.documentOne, UR+item.documentTwo, item.startDate)} >Edit</button>
+                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeId, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.address,item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, UR+item.documentOne, UR+item.documentTwo, item.startDate,item.contact,item.email,item.serviceType)} >Edit</button>
                                 <button className="btn btn-danger" onClick={this.deleteEmployee.bind(this, item.employeeId)}> Delete</button>
                             </td>
 
@@ -523,6 +540,20 @@ ImageChange =(event)=>{
              
          }
      }
+
+     getService=({getEmployee})=>{
+        console.log("abc",getEmployee)
+        if(getEmployee){
+            return getEmployee.employeeDetail.map((item)=>{
+          return(
+              <option key={item.employeeDetailId} value={item.employeeDetailId}>
+                  {item.serviceType}-{item.employee_work_type_master.employeeWorkType}-
+                                   {item.employee_type_master.employeeType}
+              </option>
+          )
+            })
+        }
+         }
      changePassword=()=>{ 
         return this.props.history.replace('/superDashboard/changePassword')
      }
@@ -549,6 +580,10 @@ ImageChange =(event)=>{
                         <th> Middle Name</th>
                         <th> Last Name</th>
                         <th> salary</th>
+                        <th> Service Type</th>
+                         <th> Contact</th>
+                        <th>Email Address </th>
+                     
                         <th>Address</th>
                         <th>ID</th>
                         <th>ID2</th>
@@ -619,14 +654,47 @@ ImageChange =(event)=>{
                                    <span  className="error">{this.state.errors.lastName}</span>
                               </FormGroup>
                               <FormGroup>
-                                  <Label > Salary</Label>
+                                  <Label > Salary(In terms of CTC)</Label>
                                   <Input name="salary" value={this.state.salary}
+                                      onChange={this.onChange}
+                                       maxLength={20}
+                                      onkeyPress={this.OnkeyPressNumber}
+                                             
+                                  />
+                                   <span  className="error" >{this.state.errors.salary}</span>
+                                   </FormGroup>
+                                   <FormGroup>
+                                  <Label > Service Type</Label>
+                                  <Input type="select" name="serviceType" value={this.state.serviceType}
+                                      onChange={this.onChange}
+                                       maxLength={20}
+                                      
+                                             
+                                  >
+                                     <DefaultSelect/>
+          {this.getService(this.props.employeeDetails)}
+                             </Input>
+                                   </FormGroup>
+
+                                   <FormGroup>
+                                  <Label > Contact</Label>
+                                  <Input name="contact" value={this.state.contact}
                                       onChange={this.onChange}
                                        maxLength={20}
                                       
                                              
                                   />
-                                   <span  className="error" >{this.state.errors.salary}</span>
+                                    
+                                   </FormGroup>
+                                   <FormGroup>
+                                  <Label > Email</Label>
+                                  <Input name="email" value={this.state.email}
+                                      onChange={this.onChange}
+                                       maxLength={100}
+                                      
+                                             
+                                  />
+                                   
                                    </FormGroup>
                                    <FormGroup>
                               <Label>Country Name</Label>
@@ -695,7 +763,7 @@ ImageChange =(event)=>{
                                 
                              
                               <Label> Update your Id</Label>
-                                  <input accept='.docx ,.doc,application/pdf' type="file" name="documentOne" onChange={this.onFileChange} />
+                                  <input accept='.docx ,.doc,application/pdf' type="file" name="documentOne"  onChange={this.onFileChange} />
                                
                               </FormGroup>
                               
@@ -819,12 +887,13 @@ function mapStateToProps(state) {
     return {
         EmpDetails: state.EmpDetails,
         locationMasterReducer: state.locationMasterReducer,
-        societyReducer: state.societyReducer
+        societyReducer: state.societyReducer,
+        employeeDetails:state.employeeDetails
 
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ ViewEmployee, getCountry, getState, getCity, getLocation, updateEmployee, deleteEmployee,deleteMultipleEmployee }, dispatch)
+    return bindActionCreators({ ViewEmployee, getCountry, getState, getCity, getLocation, updateEmployee, deleteEmployee,deleteMultipleEmployee,getEmployee}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayEmployeeMaster) 

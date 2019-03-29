@@ -4,6 +4,7 @@ import  UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 import {getCountryName,getStateName,getCityName, getLocationName} from '../../actionCreators/locationMasterAction';
 import {AddEmployee} from '../../actionCreators/employeeMasterAction';
+import {getEmployee,getEmployeeType,getEmployeeWorkType} from '../../actionCreators/employeeTypeMasterAction';
 import {bindActionCreators} from 'redux';
 import DefaultSelect from '../../constants/defaultSelect'
 import _ from 'underscore';
@@ -31,10 +32,13 @@ class EmployeeMaster extends Component{
         middleName:'',
         lastName:'',
         startDate:'',
-       
+        serviceType:'',
         salary:'',
         file:'',
-        errors:{}
+        errors:{},
+        contact:'',
+        email:'',
+        employeeDetailId:''
     }
 
     
@@ -105,6 +109,7 @@ FileChange=(event)=>{
         this.props.getStateName().then(()=>this.setState({loading:false}))
         this.props.getCityName().then(()=>this.setState({loading:false}))
         this.props.getLocationName().then(()=>this.setState({loading:false}))
+        this.props.getEmployee().then(()=>this.setState({loading:false}))
       
     }
 
@@ -124,7 +129,7 @@ FileChange=(event)=>{
  
 
     submit=(event)=> {
-        
+        console.log(this.state.contact,this.state.email,this.state.serviceType,this.state.countryId)
         event.preventDefault();
         let errors ={};
         // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
@@ -189,7 +194,9 @@ FileChange=(event)=>{
         data.append('countryId',this.state.countryId)
         data.append('cityId',this.state.cityId)
         data.append('locationId',this.state.locationId)
-       
+        data.append('email',this.state.email)
+        data.append('contact',this.state.contact)
+        data.append('serviceType',this.state.serviceType)
         
           
         this.props.AddEmployee(data).then(()=>this.props.history.push('/superDashboard/displayEmployee'));
@@ -198,7 +205,20 @@ FileChange=(event)=>{
     }
     }
  
-  
+ 
+    getService=({getEmployee})=>{
+ console.log("abc",getEmployee)
+ if(getEmployee){
+     return getEmployee.employeeDetail.map((item)=>{
+   return(
+       <option key={item.employeeDetailId} value={item.employeeDetailId}>
+           {item.serviceType}-{item.employee_work_type_master.employeeWorkType}-
+                            {item.employee_type_master.employeeType}
+       </option>
+   )
+     })
+ }
+  }
          
     getDropdown1=({country})=>{
         if(country){
@@ -374,12 +394,46 @@ let formData=
     </div>
 
     
+      <div>
+          <label> Service Type</label>
+          <select className="form-control" name="serviceType"  onChange ={this.onChange} defaultValue='no-value'>
+          <DefaultSelect/>
+          {this.getService(this.props.employeeDetails)}
+          </select>
+
+      </div>
+    <div>
+                        <label>Contact Number</label>
+                        <input className ="form-control"
+                         type="text"
+                          name="contact" 
+                          onChange={this.onChange}
+                          onKeyPress={this.OnKeyPressNumber}
+                          maxLength='10'
+                          minLength='10' />
+                          {this.state.contactServerError ? <span className='error'>{this.state.contactServerError}</span> : null}
+                        {<span className="error">{this.state.errors.contactNumber}</span> }
+                        </div>
+                         <div>
+                        <label>Email</label>
+                        <input  className ="form-control"
+                     
+                        type="email" 
+                        name="email" 
+                        maxLength="70"
+                        onChange={this.onChange}
+                        onKeyPress={this.emailValid} />
+                        {/* {this.state.emailServerError ? <span className="error">{this.state.emailServerError}</span> : null}
+                        <span><br/></span> */}
+                        {<span className="error">{this.state.errors.email}</span>}
+                        {<span className="error">{this.state.emailValidError}</span>}
+                    </div>
 
     <div className="form-group">
 
-        <label> Salary</label>
+        <label> Salary(In Terms of CTC)</label>
        
-        <input type="text" className="form-control" name ="salary" onChange ={this.onChange} maxLength={20}/>
+        <input type="text"  className="form-control" name ="salary" onChange ={this.onChange} onKeyPress={ this.OnKeyPressNumber} maxLength={20}/>
         <span className="error">{this.state.errors.salary}</span>
     </div>
     <div  className="row">
@@ -491,11 +545,12 @@ function mapStateToProps(state){
     console.log("location", state)
  return {
      empDetails:state.empDetails,
-     locationMasterReducer : state.locationMasterReducer
+     locationMasterReducer : state.locationMasterReducer,
+     employeeDetails:state.employeeDetails
      
  }
 }
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({AddEmployee,getCountryName,getStateName,getCityName,getLocationName},dispatch)
+    return bindActionCreators({AddEmployee,getCountryName,getStateName,getCityName,getLocationName,getEmployee,getEmployeeType,getEmployeeWorkType},dispatch)
 }
 export default connect(mapStateToProps,mapDispatchToProps)(EmployeeMaster)
