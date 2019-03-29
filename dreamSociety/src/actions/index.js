@@ -1,21 +1,15 @@
-
-// export  const URN = 'https://dreamsociety.herokuapp.com/api';
-// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
-// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-// export  const UR = 'https://dreamsociety.herokuapp.com/';
-// export  const URN = 'https://mydreamsociety.herokuapp.com/api';
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 export  const DocURN = 'https://dreamsociety.herokuapp.com/';
 export  const UR = 'https://dreamsociety.herokuapp.com/';
-//    export  const URN = 'http://192.168.1.4:8081/api';
+
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
 export const DELETE_USER='delete_user';
 export const DELETE_SELECTED_USERS = 'DELETE_SELECTED_USERS';
 export const ADD_USER='add_user';
-export const ADD_TOWER='add_tower';
+export const ADD_TOWER='add_tower'; 
 export const GET_TOWER='get_tower';
 export const ADD_SIZE='add_size';
 export const GET_SIZE='get_size';
