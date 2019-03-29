@@ -66,6 +66,7 @@ db.otpUserVerify = require('../model/otpUserModel')(sequelize, Sequelize);
 db.tokenVerify = require('../model/tokenModel')(sequelize, Sequelize);
 db.userRole = require('../model/userRoles.model')(sequelize, Sequelize);
 
+
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
 db.otp.belongsTo(db.tenant, { foreignKey: 'tenantId' });
 db.otp.belongsTo(db.employee, { foreignKey: 'employeeId' });

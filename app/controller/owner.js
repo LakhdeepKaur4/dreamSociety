@@ -273,7 +273,9 @@ exports.create1 = async (req, res, next) => {
     });
     ownerBody.password = password;
     const owner = await Owner.create({
-      ownerName: encrypt(key, ownerBody.ownerName),
+      // ownerName: encrypt(key, ownerBody.ownerName),
+      firstName: encrypt(key, ownerBody.firstName),
+      lastName: encrypt(key, ownerBody.lastName),
       userName: encrypt(key, ownerBody.userName),
       dob: ownerBody.dob,
       email: encrypt(key, ownerBody.email),
@@ -403,83 +405,6 @@ if (ownerName.indexOf(' ') !== -1) {
   }
 };
 
-// exports.test = async (req, res, next) => {
-//     try {
-//         console.log("creating owner");
-//         let ownerBody = req.body;
-//         let memberBody = req.body;
-//         ownerBody.userId = req.userId;
-//         let customVendorName = req.body.ownerName;
-//         const userName = customVendorName + 'O' + req.body.towerId + req.body.flatDetailId;
-//         console.log("userName==>", userName);
-//         ownerBody.userName = userName;
-//         const password = passwordGenerator.generate({
-//             length: 10,
-//             numbers: true
-//         });
-//         ownerBody.password = password;
-//         const owner = await Owner.create(ownerBody);
-//         const ownerId = owner.ownerId;
-//         if (req.files) {
-//             profileImage = req.files.profilePicture[0].path;
-//             // }
-//             const updatedImage = {
-//                 picture: profileImage
-//             };
-//             const imageUpdate = await Owner.find({ where: { ownerId: ownerId } }).then(owner => {
-//                 return owner.updateAttributes(updatedImage)
-//             })
-//         }
-//         if (ownerBody.noOfMembers) {
-
-//             // let result = [];
-//             // console.log("no of members===",ownerBody.noOfMembers);
-//             // result = Object.keys(ownerBody);
-//             // for (i = 1; i <= ownerBody.noOfMembers; i++) {
-//             //  result.forEach(item => {
-//             //      let memberName = item + [i];
-//             //      console.log(memberName);
-//             // if(item === 'memberName+[i]'){
-
-//             // }
-//             //      })
-//             // // let ownerMemberBody = {};
-//             // // let test = ownerBody.memberName1;
-//             // // console.log(test)
-//             // // console.log(test + [i])
-//             // // console.log(ownerBody.memberName+[i]);
-//             // // //  const body= {
-//             // // //         ownerId = ownerId,
-//             // // //         userId = req.userId,
-//             // //     }
-//             memberBody.userId = req.userId;
-//             memberBody.ownerId = ownerId;
-//             const ownerMember = await OwnerMembersDetail.create(memberBody);
-//             //    }
-//         }
-//         //    const ownerMember =  OwnerMembersDetail.bulkCreate(req.body.memberArray,
-//         //         {
-//         //             fields:["memberName", "memberDob", "relationId"] ,
-//         //             // updateOnDuplicate: ["name"]
-//         //         } )
-//         //         console.log("ownerMember==>",ownerMember);
-//         //         const bodyToUpdate = {
-//         //         ownerId :ownerId,
-//         //         userId:req.userId
-//         //         }
-//         //         const ownerMemberUpdate = await OwnerMember.find({ where: { memberId: ownerMember.memberId } }).then(ownerMember => {
-//         //             return ownerMember.updateAttributes(bodyToUpdate);
-//         //         })
-//         // }
-//         return res.status(httpStatus.CREATED).json({
-//             message: "Owner successfully created",
-//             owner
-//         });
-//     } catch (error) {
-//         console.log("error==>", error);
-//         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-//     }
-// }
 
 exports.get = async (req, res, next) => {
   try {
@@ -524,7 +449,8 @@ exports.get1 = async (req, res, next) => {
     // console.log(owners);
 
     owners.map(owner => {
-      owner.ownerName = decrypt(key, owner.ownerName);
+      owner.firstName = decrypt(key, owner.firstName);
+      owner.lastName = decrypt(key, owner.lastName);
       owner.userName = decrypt(key, owner.userName);
       owner.email = decrypt(key, owner.email);
       owner.contact = decrypt(key, owner.contact);
@@ -685,7 +611,8 @@ exports.update1 = async (req, res, next) => {
   }
   let updAttr = {};
   let attrArr = [
-    "ownerName",
+    "firstName",
+    "lastName",
     "email",
     "contact",
     "gender",
@@ -779,12 +706,17 @@ exports.update1 = async (req, res, next) => {
 
     if (updatedOwner1) {
       // updatedOwner1.userName = decrypt(key, updatedOwner1.userName);
-      updatedOwner1.ownerName = decrypt(key, updatedOwner1.ownerName);
+      updatedOwner1.firstName = decrypt(key, updatedOwner1.firstName);
+      updatedOwner1.lastName = decrypt(key, updatedOwner1.lastName);
       updatedOwner1.picture = decrypt(key, updatedOwner1.picture);
       updatedOwner1.email = decrypt(key, updatedOwner1.email);
       updatedOwner1.permanentAddress = decrypt(
         key,
         updatedOwner1.permanentAddress
+      );
+      updatedOwner1.correspondenceAddress = decrypt(
+        key,
+        updatedOwner1.correspondenceAddress
       );
       updatedOwner1.contact = decrypt(key, updatedOwner1.contact);
       updatedOwner1.gender = decrypt(key, updatedOwner1.gender);

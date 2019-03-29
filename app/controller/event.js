@@ -161,7 +161,7 @@ exports.getEventOrganiser = async (req, res, next) => {
     try {
         let events=[];
         const user = await User.findAll({
-            attributes: ['userId', 'userName'],
+            attributes: ['userId', 'firstName','lastName'],
              include: [{
                 model: Role,
                 where: { id: { [Op.in]: [1, 2] } },
@@ -172,7 +172,8 @@ exports.getEventOrganiser = async (req, res, next) => {
         });
         // console.log("user==>",user)
         user.map(e=>{
-            e.userName = decrypt(e.userName);
+            e.firstName = decrypt(e.firstName);
+            e.lastName = decrypt(e.lastName);
             events.push(e)
 
         })
