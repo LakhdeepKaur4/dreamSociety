@@ -145,7 +145,7 @@ class FlatMaster extends Component {
                     type="text"
                     name="stateName"
                     placeholder='StateName'
-                    maxLength='35'
+                    maxLength='45'
                     onKeyPress={this.onStateChange}
                     // value={this.state.flatType} 
                     onChange={this.onChange} />

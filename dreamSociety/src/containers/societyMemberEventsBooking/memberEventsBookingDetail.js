@@ -162,11 +162,11 @@ class MemberEventsBookingDetail extends Component {
     searchFilter = (search) => {
         return function (x) {
            
-            return x.society_member_event_master ? x.society_member_event_master.societyMemberEventName.toLowerCase().includes(search.toLowerCase()) : '' ||
+            return x.society_member_event_master.societyMemberEventName.toLowerCase().includes(search.toLowerCase())  ||
                    x.startDate.toLowerCase().includes(search.toLowerCase())  ||
                    x.endDate.toLowerCase().includes(search.toLowerCase())  ||
                    x.numberOfGuestExpected.toLowerCase().includes(search.toLowerCase())  ||
-                   x.event_space_master ? x.event_space_master.spaceName.toLowerCase().includes(search.toLowerCase()) : '' ||
+                   x.event_space_master.spaceName.toLowerCase().includes(search.toLowerCase())  ||
                  !search;
         }
     }

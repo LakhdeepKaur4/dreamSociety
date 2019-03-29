@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Select from 'react-select';
 import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
+import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
 import {getAllFloor} from '../../actionCreators/flatOwnerAction';
 import Spinner from '../../components/spinner/spinner';
@@ -16,8 +17,9 @@ class AddTenant extends Component{
         this.state = {
             currentTab: 0,
             tab: "none",
+            lastName:'',
             step: 1,
-            tenantName:'',
+            firstName:'',
             tenantId:'',
             dob:'',
             gender:'',
@@ -25,7 +27,7 @@ class AddTenant extends Component{
             contact:'',
             profilePicture:'',
             permanentAddress:'',
-            correspondingAddress:'',
+            correspondenceAddress:'',
             bankName:'',
             accountHolderName:'',
             accountNumber:'',
@@ -35,6 +37,7 @@ class AddTenant extends Component{
             noOfMembers:'',
             flatNo: '',
             floorId:'',
+            floorName:'',
             flatDetailId: '',
             societyName : '',
             societyId: '',
@@ -42,11 +45,28 @@ class AddTenant extends Component{
             towerId:'',
             towerName:'',
             fileName: '',
+            flatNo: '',
             imageSizeError:'',
             errors:{},
             loading: false,
             messageContactErr:'',
-            messageEmailErr:''
+            defaultPermanent: false,
+            messageEmailErr:'',
+            countryId:'',
+            countryName:'',
+            cityName:'',
+            cityId:'',
+            stateName:'',
+            stateId:'',
+            locationName:'',
+            locationId:'',
+            permanentAddrDefault:true,
+            permanentAddressUser:'',
+            societyCountry:'',
+            societyState:'',
+            societyCity:'',
+            societyLocation:"",
+            defaultPermanentAddress:''
         }
     }
 
@@ -54,11 +74,20 @@ class AddTenant extends Component{
         this.props.detailSociety();
         this.props.viewTower();
         this.props.getRelation();
+        this.props.getCountry()
+        this.props.getState()
+        this.props.getCity()
+        this.props.getLocation()
         let societyId = localStorage.getItem('societyId')
         console.log(societyId);
         this.setState({societyId})
         console.log(this.state.societyId)
         this.setState({societyId: localStorage.getItem('societyId')})
+        this.setState({societyName: localStorage.getItem('societyName')})
+        this.setState({societyCountry: localStorage.getItem('countryName')})
+        this.setState({societyState: localStorage.getItem('stateName')})
+        this.setState({societyCity: localStorage.getItem('cityName')})
+        this.setState({societyLocation: localStorage.getItem('locationName')})
         console.log(this.state.societyId) 
     }
 
@@ -93,6 +122,26 @@ class AddTenant extends Component{
             this.setState({[e.target.name]:e.target.value.trim(),messageContactErr:''});
         }
     }
+
+    correspondenceAddressChange = (e) => {
+        console.log(this.state);
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(), errors, defaultPermanentAddress: e.target.value,
+             });
+        }
+        else {
+            this.setState({[e.target.name]:e.target.value.trim(),messageContactErr:'', defaultPermanentAddress: e.target.value,
+            });
+        }
+
+        if(!!document.getElementById('isChecked').checked){
+            this.setState({permanentAddress: e.target.value})
+        }
+    }
+
+
 
     panChange = (e) => {
         if (!!this.state.errors[e.target.name]) {
@@ -176,6 +225,7 @@ class AddTenant extends Component{
 
     maxDate = () => {
         var d = new Date();
+        d.setFullYear(d.getFullYear()-18, d.getMonth());
         return d.toISOString().split('T')[0];
     }
 
@@ -196,9 +246,9 @@ class AddTenant extends Component{
         this.setState({loading: true})
         console.log(this.state.societyId)
         e.preventDefault()
-        let { tenantName, dob, gender, email, contact, profilePicture, aadhaarNumber, permanentAddress, bankName, 
+        let { firstName,lastName, dob, gender, email, contact, profilePicture, aadhaarNumber, permanentAddress, correspondenceAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, member, fileName, societyId, towerName, towerId, floorId } = this.state;
+            societyName, member, fileName, societyId, towerName, towerId, floorId, countryId, stateId, cityId, locationId } = this.state;
         console.log(this.state)
         
         let data;
@@ -214,13 +264,12 @@ class AddTenant extends Component{
         }
         
         
-        console.log(tenantName, dob, gender,aadhaarNumber, email, contact, profilePicture, permanentAddress, bankName, 
+        console.log(firstName,lastName, dob, gender,aadhaarNumber, email, contact, profilePicture, correspondenceAddress, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, societyId, member, towerName, fileName, towerId, floorId);
+            societyName, societyId, member, towerName, fileName, towerId, floorId, countryId, stateId, cityId, locationId );
 
-        const data1 = {tenantName, dob, gender,aadhaarNumber, email, contact, profilePicture, permanentAddress, bankName, 
-            accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, societyId, member, towerName, fileName, towerId, floorId}
+        const data1 = {firstName,lastName, dob, gender,aadhaarNumber, email, contact, profilePicture, correspondenceAddress, permanentAddress, bankName, 
+            accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, societyName, societyId, member, towerName, fileName, towerId, floorId, countryId, stateId, cityId, locationId }
 
         if(this.state.imageSizeError === '' && this.state.messageContactErr==='' && this.state.messageEmailErr===''){
             this.props.addTenantDetail(data1)
@@ -272,16 +321,15 @@ class AddTenant extends Component{
 
     nextPrev = () => {
         let errors = {};
-        const {tenantName, dob, gender, contact, email, correspondingAddress, aadhaarNumber, permanentAddress} = this.state;
+        const {firstName, lastName, dob, gender, contact, email, correspondenceAddress, aadhaarNumber, permanentAddress} = this.state;
         if(this.state.step === 1){
-            if(tenantName === '') errors.tenantName = `Tenant Name can't be empty.`;
+            if(firstName === '') errors.firstName = `First Name can't be empty.`;
+            if(lastName === '') errors.lastName = `Last Name can't be empty.`;
             if(dob === '') errors.dob = `Date of Birth can't be empty.`;
             if(gender === '') errors.gender = `Gender can't be empty`;
             if(contact === '') errors.contact= `Contact can't be empty.`;
             else if(contact.length !== 10) errors.contact= `Contact should be og 10 digit.`;
             if(email === '') errors.email = `Email can't be empty.`;
-            if(correspondingAddress === '') errors.correspondingAddress = `Corresponding Address can't be empty.`;
-            if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
             if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
             else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of 12 digit.`
             const isValid = Object.keys(errors).length === 0
@@ -313,6 +361,8 @@ class AddTenant extends Component{
             if(towerId === '') errors.towerId = `Please select Tower.`;
             if(floorId === '') errors.floorId = `Please select a Floor.`;
             if(flatDetailId === '') errors.flatDetailId = `Please select a Flat.`;
+            if(correspondenceAddress === '') errors.correspondenceAddress = `Corresponding Address can't be empty.`;
+            if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -321,6 +371,8 @@ class AddTenant extends Component{
         }
 
     }
+
+    
 
     emailValid(event) {
         const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
@@ -404,10 +456,13 @@ class AddTenant extends Component{
 
         
 
-        towerChangeHandler = (name, selectOption) => {
+        towerChangeHandler = (towerId, towerName, selectOption) => {
+            console.log(towerId, towerName, selectOption)
             this.setState(function (prevState, props) {
                 return {
-                    [name]: selectOption.value
+                    towerId: selectOption.towerId,
+                    towerName: selectOption.towerName,
+                    correspondenceAddress: 'Tower : ' + selectOption.towerName
                 }
             }, function () {
                 console.log(selectOption.towerId)
@@ -415,26 +470,163 @@ class AddTenant extends Component{
             this.props.getAllFloor(selectOption.towerId);
         }
     
-        floorChangeHandler=(name,selectOption)=>{
-            console.log('=======selectOption=======',selectOption.value);
+        floorChangeHandler=(floorName, floorId,selectOption)=>{
+            console.log(floorName, floorId,selectOption);
             this.setState({
-                [name]: selectOption.value
+                floorName: selectOption.floorName,
+                floorId: selectOption.floorId,
+                correspondenceAddress: 'Floor : ' + selectOption.floorName + ' , ' + this.state.correspondenceAddress
+                
             })
             console.log('lllllllll=======',this.state.floorId)
             // this.getFlats(this.props.towerFloor);
         
             }
-            flatChangeHandler=(name,selectOption)=>{
+            flatChangeHandler=(flatNo, flatDetailId ,selectOption)=>{
+                console.log(flatNo, flatDetailId ,selectOption)
+                console.log(this.state.flatDetailId)
                 this.setState({
-                    [name]: selectOption.value
+                    flatNo: selectOption.flatNo,
+                    flatDetailId: selectOption.flatDetailId,
+                    correspondenceAddress: ('Flat Number : ' + selectOption.flatNo  + ' , ' + this.state.correspondenceAddress) + 
+                    ' , ' +this.state.societyName + ' , ' +this.state.societyLocation + ' , ' + this.state.societyCity +
+                    ' , ' + this.state.societyState + ' , ' + this.state.societyCountry
                 })
                 this.props.getAllFloor(selectOption.towerId);
             }
 
+            countryName = ({countryResult}) => {
+                if(countryResult){
+                  
+                   return( 
+                    countryResult.map((item) =>{
+                           return(
+                            { ...item, label: item.countryName, value: item.countryId }
+                           )
+                       })
+                   )
+                    
+                }
+            }
+
+            onChangeCountry = (countryId, countryName, selectOption) => {
+                console.log(countryId, countryName, selectOption)
+            
+                this.setState({
+                    countryName: selectOption.countryName,
+                    countryId:selectOption.countryId, 
+                })
+                
+                this.props.getState(selectOption.countryId)
+            }
+           
+            stateName = ({stateResult}) => {
+                if(stateResult){
+                  console.log(stateResult)
+                   return( 
+                    stateResult.map((item) =>{ 
+                           return(
+                            { ...item, label: item.stateName, value: item.stateId }
+                           )
+                       })
+                   )
+                    
+                }
+            }
+
+            onChangeState = (stateName, stateId, selectOption) => {
+                console.log(stateName, stateId, selectOption)
+                this.setState({
+                    stateName: selectOption.stateName,
+                    stateId:selectOption.stateId
+                })
+                this.props.getCity(selectOption.stateId);
+            }
+           
+            cityName=({cityResult})=>{
+               
+                if(cityResult){
+                    
+                   return( 
+                    cityResult.map((item) =>{ 
+                           return(
+                            { ...item, label: item.cityName, value: item.cityId }
+                           )
+                       }
+                       )
+                   )
+                    
+                }
+            }
+
+            onChangeCity = (cityName, cityId, selectOption) => {
+                console.log(cityName, cityId, selectOption)
+                this.setState({
+                    cityName: selectOption.cityName,
+                    cityId:selectOption.cityId
+                })
+                this.props.getLocation(selectOption.cityId)
+            }
+            
+           
+            locationName=({locationResult})=>{
+               if(locationResult){
+                    
+                   return( 
+                       locationResult.map((item) =>{ 
+                           return(
+                            { ...item, label: item.locationName, value: item.locationId }
+                           )
+                       }
+                       )
+                   )
+                    
+                }
+            }
+
+            onChangeLocation = (locationName, locationId, selectOption) => {
+                console.log(locationName, locationId, selectOption)
+                this.setState({
+                    locationName: selectOption.locationName,
+                    locationId:selectOption.locationId,
+                    
+                })
+            }
+
     
+            sameAddress = (e) => {
+                if(!!document.getElementById('isChecked').checked){
+                    console.log('is checked')
+                   this.setState({permanentAddress: this.state.correspondenceAddress.trim(), defaultPermanent:true,
+                permanentAddrDefault:false})
+                   
+                }
+               else{
+                    this.setState({permanentAddress: '', defaultPermanent:false, permanentAddrDefault:true})
+                }
+            }
+
+            permanentAddressChange = (e) => {
+                this.setState({[e.target.name]: e.target.value, 
+                    permanentAddress: this.state.permanentAddressUser + ' , ' + this.state.locationName + ' , ' +
+                this.state.cityName + ' , ' + this.state.stateName + ' , ' + this.state.countryName })
+                    console.log(this.state)
+            }
+            
+    defaultPermanentAddressChange = (e) =>{
+        this.setState({defaultPermanentAddress: this.state.correspondenceAddress ,permanentAddress: e.target.value})
+    }
+
+    fNameKeyPress(event){
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     render(){
-        
+        console.log(this.state.societyCountry)
         let userDatas = [];
         for (let i = 0; i < this.state.noOfMembers; i++) {
             userDatas.push(<FormGroup key={i}>
@@ -482,11 +674,18 @@ class AddTenant extends Component{
             <div style={{ 'display': this.state.step == 1 ? 'block' : 'none' }}>
                         <h3>Tenant Details</h3>
                         <FormGroup>
-                            <Label>Tenant Name</Label>
-                            <Input type="text" placeholder="Name" onKeyPress={this.OnKeyPressUserhandler} 
+                            <Label>First Name</Label>
+                            <Input type="text" placeholder="First Name"  onKeyPress={this.fNameKeyPress}
                             onChange={this.onChange} 
-                            maxLength={100} name='tenantName' />
-                            {<span className="error">{this.state.errors.tenantName}</span>}
+                            maxLength={100} name='firstName' />
+                            {<span className="error">{this.state.errors.firstName}</span>}
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Last Name</Label>
+                            <Input type="text" placeholder="Last Name"  onKeyPress={this.fNameKeyPress} 
+                            onChange={this.onChange} 
+                            maxLength={100} name='lastName' />
+                            {<span className="error">{this.state.errors.lastName}</span>}
                         </FormGroup>
                         <FormGroup>
                             <Label>Date of Birth</Label>
@@ -538,23 +737,7 @@ class AddTenant extends Component{
                                 {this.state.errors.aadhaarNumber}
                             </span>}
                         </FormGroup>
-                        <FormGroup>
-                            <Label>Corresponding Address</Label>
-                            <Input type="textarea" onChange={this.onChange} maxLength="250"
-                             name="correspondingAddress" placeholder="Corresponding Address" />
-                             {<span className="error">
-                                {this.state.errors.correspondingAddress}
-                            </span>}
-                        </FormGroup >
-                        <FormGroup>
-                            <Label>Permanent Address</Label>
-                            <Input type="textarea" onChange={this.onChange}
-                            maxLength="250"
-                             name="permanentAddress" placeholder="Permanent Address" />
-                             {<span className="error">
-                                {this.state.errors.permanentAddress}
-                            </span>}
-                        </FormGroup>
+                        
                     </div>
                     <div style={{ 'display': this.state.step == 2 ? 'block' : 'none' }}>
                         <h3>Bank Details</h3>
@@ -625,7 +808,7 @@ class AddTenant extends Component{
                         <h3>Flat Details</h3>
                         <FormGroup>
                             <Label>Tower</Label>
-                            <Select onChange={this.towerChangeHandler.bind(this, 'towerId')} placeholder="Tower" name="towerId"
+                            <Select onChange={this.towerChangeHandler.bind(this, 'towerId', 'towerName')} placeholder="Tower" name="towerId"
                             options={this.getTower(this.props.towerList)} />
                             {!this.state.towerId ? <span className="error">{this.state.errors.towerId}</span> : ''}
                         </FormGroup >
@@ -633,17 +816,64 @@ class AddTenant extends Component{
                             <Label>Floor</Label>
                             <Select options={this.getFloor(this.props.towerFloor)}
                             name="floorId"
-                            onChange={this.floorChangeHandler.bind(this,'floorId')}
+                            onChange={this.floorChangeHandler.bind(this,'floorName','floorId')}
                             />
                             {!this.state.floorId ? <span className="error">{this.state.errors.floorId}</span> : ''}
                         </FormGroup>
                         <FormGroup>
                             <Label>Flat Number</Label>
                             <Select options={this.getFlats(this.props.towerFloor)} name="flatDetailId"
-                                onChange={this.flatChangeHandler.bind(this,'flatDetailId')}
+                                onChange={this.flatChangeHandler.bind(this, 'flatNo' , 'flatDetailId')}
                                 />
                             {!this.state.flatDetailId ? <span className="error">{this.state.errors.flatDetailId}</span> : ''}
                         </FormGroup >
+                        <FormGroup>
+                            <Label>Corresponding Address</Label>
+                            <Input type="textarea" value={this.state.correspondenceAddress} onChange={this.correspondenceAddressChange} maxLength="250"
+                             name="correspondenceAddress" placeholder="Corresponding Address" />
+                             {<span className="error">
+                                {this.state.errors.correspondenceAddress}
+                            </span>}
+                        </FormGroup >
+                        
+                        <FormGroup>
+                           <span style={{fontWeight:'bold'}}>Is Your permanent address same as correspondence address?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
+                        </FormGroup>
+                        <h3 style={{textAlign:'center'}}>Permanent Address</h3>
+                        {this.state.defaultPermanent ? <FormGroup>
+                            <Label>Permanent Address</Label>
+                            <Input id="permanentaddr" readOnly type="textarea" onChange={this.defaultPermanentAddressChange}
+                            maxLength="250" value={this.state.defaultPermanentAddress}
+                             name="defaultPermanentAddress" placeholder="Permanent Address" />
+                        </FormGroup> : ''}
+                        {this.state.permanentAddrDefault ? <div>
+                            <FormGroup>
+                            <Label>Country</Label>
+                            <Select options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>State</Label>
+                            <Select options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>City</Label>
+                            <Select options={this.cityName(this.props.societyReducer)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Location</Label>
+                            <Select options={this.locationName(this.props.societyReducer)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Permanent Address</Label>
+                            <Input type="textarea" onChange={this.permanentAddressChange}
+                            maxLength="250" disabled={!(this.state.countryId && this.state.stateId
+                                && this.state.cityId)}
+                             name="permanentAddressUser" placeholder="Permanent Address" />
+                             {<span className="error">
+                                {this.state.errors.permanentAddress}
+                            </span>}
+                        </FormGroup>
+                        </div> : ''}
                         {/* <FormGroup>
                             <Label>Floor</Label>
                             <Input defaultValue="no-value"
@@ -707,8 +937,9 @@ const mapStateToProps = (state) => {
         relationList: state.RelationMasterReducer,
         flatList:state.flatDetailMasterReducer,
         tenantReducer:state.tenantReducer,
+        
     }
 }
 
 export default connect(mapStateToProps, {detailSociety, viewTower, getRelation,getAllFloor,
-    getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail})(AddTenant);
+    getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail, getCountry,getState,getCity, getLocation})(AddTenant);

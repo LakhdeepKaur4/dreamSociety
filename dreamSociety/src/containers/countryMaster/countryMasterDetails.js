@@ -325,7 +325,7 @@ class CountryDetails extends Component{
                                         placeholder="enter countryName"
                                         name="countryName"
                                         value={this.state.countryName}
-                                        maxLength='35'
+                                        maxLength='50'
                                         onKeyPress={this.onKeyPressHandler}
                                         onChange={this.onChange}
                                          />
@@ -352,7 +352,7 @@ class CountryDetails extends Component{
                                         name="currency"
                                         value={this.state.currency}
                                         onKeyPress={this.onKeyPressHandle1}
-                                        maxLength='10'
+                                        maxLength='40'
                                         onChange={this.onChange} />
                                          <span  className='error'>{this.state.errors.currency}</span>
                                 </FormGroup>

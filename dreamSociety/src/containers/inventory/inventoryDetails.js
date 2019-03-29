@@ -173,7 +173,7 @@ class InventoryDetails extends Component {
                         <td style={{textAlign:"center"}}>{items.asset_type_master.assetType}</td>
                         <td style={{textAlign:"center"}}>{items.number}</td>
                         <td style={{textAlign:"center"}}>{items.rate}</td>
-                        <td style={{textAlign:"center"}}>{items.serialNumber}</td>
+                        {/* <td style={{textAlign:"center"}}>{items.serialNumber}</td> */}
                         <td>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.inventoryId, items.assetId, items.number, items.rate, items.assetTypeId, items.serialNumber)} >Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.inventoryId)} >Delete</button>
@@ -243,7 +243,7 @@ class InventoryDetails extends Component {
                     <th style={{textAlign:"center"}}>Asset Sub Type</th>
                     <th style={{width:"10%"}}>Number Of Inventory</th>
                     <th style={{width:"10%"}}>Rate Per Inventory</th>
-                    <th style={{width:"10%"}}>Serial Number Of Inventory</th>
+                    {/* <th style={{width:"10%"}}>Serial Number Of Inventory</th> */}
                     <th style={{width:"15%",textAlign:"center"}}>Actions</th>
                 </tr>
             </thead>

@@ -2,13 +2,13 @@ import axios from 'axios'
 import { URN, ADD_INVENTORY, GET_INVENTORY, UPDATE_INVENTORY, REMOVE_INVENTORY, DELETE_MULTIPLE_INVENTORY } from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
-export function addInventory(assetId, assetTypeId, number, rate, serialNumber) {
+export function addInventory(assetId, assetTypeId, number, rate, serialNumber,dateOfPurchase) {
     const data = {
         assetId,
         assetTypeId,
         number,
         rate,
-        serialNumber
+        serialNumber,dateOfPurchase
     }
     const request = axios.post(`${URN}/inventory/`, data, { headers: authHeader() })
         .then(response => response.data)
