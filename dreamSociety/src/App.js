@@ -92,6 +92,8 @@ import submitOTP from './containers/login/submitOtp';
 import token from './containers/token';
 import TokenVerification from './components/tokenVerification/tokenVerification';
 import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant'
+import AssignRoles from './components/assignRoles/assignRoles';
+import IndividualVendor from './containers/individualVendor/individualVendor';
 class App extends Component {
   render() {
     return (
@@ -184,6 +186,9 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
+            <PrivateRoute path='/superDashboard/assignRoles' component={AssignRoles} />
+            <PrivateRoute path='/superDashboard/individualVendor' component={IndividualVendor} />
+           
            
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
