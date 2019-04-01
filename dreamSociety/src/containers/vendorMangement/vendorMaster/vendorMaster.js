@@ -248,7 +248,6 @@ class vendorMaster extends Component {
    
 
     onSubmit = (event) => {
-        console.log("email",this.state.email,this.state.vendorName)
         event.preventDefault();
         let errors = {};
         if(this.state.firstName===''){
@@ -318,22 +317,6 @@ class vendorMaster extends Component {
         }) 
         this.refreshData();
         }
-        console.log("firstName",this.state.firstName);
-        console.log("firstName",this.state.lastName);
-        console.log("vendorName",this.state.contact);
-        console.log("vendorName",this.state.email);
-        console.log("vendorName",this.state.currentAddress);
-        console.log("vendorName",this.state.permanentAddress);
-        console.log("vendorName",this.state.serviceId1.serviceId);
-        console.log("vendorName",this.state.serviceId2.serviceId);
-        console.log("vendorName",this.state.serviceId3.serviceId);
-        console.log("vendorName",this.state.rateId1.rateId);
-        console.log("vendorName",this.state.rateId2.rateId);
-        console.log("vendorName",this.state.rateId3.rateId);
-        console.log("vendorName",this.state.rate1);
-        console.log("vendorName",this.state.profilePicture.name);
-        console.log("vendorName",this.state.documentOne.name);
-        console.log("vendorName",this.state.documentTwo.name);
     }
 
 

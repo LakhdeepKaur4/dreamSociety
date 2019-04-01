@@ -1,42 +1,50 @@
 import  React, {Component} from 'react';  
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {Form, Row, Col, FormGroup, Label, Input} from 'reactstrap';
+import {Form, Row, Col,Button, FormGroup, Label, Input} from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import DefaultSelect from '../../constants/defaultSelect';
-import { ViewEvent} from '../../actionCreators/eventMasterAction';
+import {ViewEvent,GetEventOrganiser} from '../../actionCreators/eventMasterAction';
+import {addSocietyEvents} from '../../actionCreators/societyEventBooking';
 
 class SocietyEventBooking extends Component {
     constructor(props) {
         super(props);
         this.state = {
            eventId:'', 
-           eventName : '',
+           societyEventName : '',
            organisedBy:'',
            startDate:'',
            endDate:'',
            startTime:'',
            endTime:'',         
-           breakfast:'',
-           lunch:'',
-           eveningSnacks:'',
-           dinner:'',
-           dJ:'',
-           drinks:'',
-           invitationCard:'',
+           breakfast:false,
+           lunch:false,
+           eveningSnacks:false,
+           dinner:false,
+           dJ:false,
+           drinks:false,
+           invitationCardPicture:'',
            perPersonCharge:'',
            childAbove:'',
            charges:'',
-           description:''
+           description:'',
+           loading:false,
         }
     }
 
     componentDidMount(){
         this.props.ViewEvent();
+        this.props.GetEventOrganiser();
     }
 
     handleChange=(event)=> {
        this.setState({ [event.target.name]: event.target.value})
+    }
+
+    h=(event)=>{
+        this.setState({ [event.target.name]: event.target.checked})
+
     }
 
     FileChange=(event)=>{
@@ -49,7 +57,7 @@ class SocietyEventBooking extends Component {
           reader.readAsDataURL(file);
           reader.onload =  () =>{
               this.setState({
-                invitationCard :
+                invitationCardPicture :
                   reader.result,
                   fileName
               })          
@@ -68,6 +76,31 @@ class SocietyEventBooking extends Component {
             })
         }
     }
+
+    getEventOrganiser({events}){
+        if(events){
+            return events.event.map((item) => {
+                return (
+                    <option key={item.userId} value={item.userId}>
+                        {item.firstName}</option>
+                )
+            })
+        }
+    }
+    
+    toggleChange = () => {
+        this.setState({
+          isChecked: !this.state.isChecked,
+        });
+      }
+    onSubmit=(event)=>{
+        event.preventDefault();
+        const Events= this.state;
+    
+        this.setState({loading: true});
+        this.props.addSocietyEvents(Events)
+        console.log(Events)
+    }
     
     logout = () => {
         localStorage.removeItem('token');
@@ -79,7 +112,7 @@ class SocietyEventBooking extends Component {
         return this.props.history.replace('/superDashboard/changePassword')
     }
     
-    render(){
+    render(){console.log(this.state)
         return(
             <div>
                 <UI onClick={this.logout} change={this.changePassword}>
@@ -94,7 +127,7 @@ class SocietyEventBooking extends Component {
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event Name</Label>
-                                <Input type="select" name="eventName" placeholder="Event Name" defaultValue='no-value' onChange={this.handleChange}>
+                                <Input type="select" name="societyEventName" defaultValue='no-value' onChange={this.handleChange}>
                                 <DefaultSelect/>
                                 {this.getEventName(this.props.EventDetails)}                  
                                 </Input>
@@ -106,7 +139,7 @@ class SocietyEventBooking extends Component {
                             <Label>Event Oragnised By</Label>
                             <Input type="select" name="organisedBy" defaultValue='no-value' onChange={this.handleChange}>
                             <DefaultSelect/>
-                            {this.getEventName(this.props.EventDetails)}                  
+                            {this.getEventOrganiser(this.props.EventDetails)}                  
                             </Input>
                             </FormGroup>
                             </Col>
@@ -150,27 +183,32 @@ class SocietyEventBooking extends Component {
                             
                             <FormGroup check>
                                 <Label check>   
-                                <Input type="checkbox" name="breakfast" value={this.state.breakfast} onChange={this.handleChange} />Breakfast
+                                <Input type="checkbox" name="breakfast" onChange={this.h} />Breakfast
                                 </Label>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>   
-                                <Input type="checkbox" name="lunch" value={this.state.lunch} onChange={this.handleChange} />Lunch
+                                <Input type="checkbox" name="lunch" onChange={this.h} />Lunch
                                 </Label>
                             </FormGroup>
                             <FormGroup check>                                                                                                                                                                                                                            
                                 <Label check>   
-                                <Input type="checkbox" name="eveningSnacks" value={this.state.eveningSnacks} onChange={this.handleChange}/>Evening Snacks
+                                <Input type="checkbox" name="eveningSnacks"  onChange={this.h}/>Evening Snacks
                                 </Label>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>   
-                                <Input type="checkbox" name="dinner" value={this.state.dinner} onChange={this.handleChange}/>Dinner
+                                <Input type="checkbox" name="dinner" onChange={this.h}/>Dinner
                                 </Label>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>   
-                                <Input type="checkbox" name="dJ" value={this.state.dJ} onChange={this.handleChange}/>DJ
+                                <Input type="checkbox" name="drinks" onChange={this.h}/>Drinks
+                                </Label>
+                            </FormGroup>
+                            <FormGroup check>
+                                <Label check>   
+                                <Input type="checkbox" name="dJ" onChange={this.h}/>DJ
                                 </Label>
                             </FormGroup><br/>
 
@@ -178,7 +216,7 @@ class SocietyEventBooking extends Component {
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Upload Your Invitation Card</Label>                               
-                                <Input accept='image/*' style={{display:'inline-block'}}type="file" name ="invitationCard" onChange={this.FileChange} />
+                                <Input accept='image/*' style={{display:'inline-block'}}type="file" name ="invitationCardPicture" onChange={this.FileChange} />
                             </FormGroup>
                             </Col>
                             <Col md={6}>
@@ -186,9 +224,9 @@ class SocietyEventBooking extends Component {
                                 <Label>Per Person Charge</Label>                               
                                 <Input type="text" name ="perPersonCharge"  placeholder="Enter Price"  onChange={this.handleChange}/>
                             </FormGroup>
-                            </Col>
+                            </Col> 
                         </Row>
-                        <Row>
+                        <Row form>
                             <Col md={6}>
                             <FormGroup>                               
                                 <Label>Child Above </Label>                               
@@ -206,6 +244,8 @@ class SocietyEventBooking extends Component {
                                 <Label>Description</Label>                               
                                 <Input type="text" name ="description" placeholder="Description"  maxLength={3000} onChange={this.handleChange}/>
                             </FormGroup>
+                            <Button color="success" className="mr-2">Submit</Button>             
+                            <Button color="danger" >Cancel</Button>
 
                     </Form>
                 </UI>
@@ -217,13 +257,14 @@ class SocietyEventBooking extends Component {
 
 function mapStateToProps(state) {
     return {
-        EventDetails: state.EventDetails
+        EventDetails: state.EventDetails,
+        societyEventBookingReducer: state.societyEventBookingReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ViewEvent}, dispatch);
+    return bindActionCreators({ViewEvent,GetEventOrganiser,addSocietyEvents}, dispatch);
 }
 
 

@@ -1,7 +1,8 @@
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
+// export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 export  const DocURN = 'https://dreamsociety.herokuapp.com/';
 export  const UR = 'https://dreamsociety.herokuapp.com/';
+export  const URN = 'http://192.168.1.105:8082/api';
 
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
@@ -231,3 +232,7 @@ export const GET_FLOOR_DATA='GET_FLOOR_DATA';
 export const RESET_PASSWORD="RESET_PASSWORD";
 export const GET_TOKEN="GET_TOKEN";
 export const GET_ALL_FLOOR='GET_ALL_FLOOR';
+
+export const ADD_SOCIETY_EVENTS='add_society_events';
+export const GET_SOCIETY_EVENTS ='get_society_events'
+export const UPDATE_SOCIETY_EVENTS='update_society_events';

@@ -93,7 +93,7 @@ import token from './containers/token';
 import TokenVerification from './components/tokenVerification/tokenVerification';
 import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant';
 import SocietyEventBooking from './containers/societyEventBooking/societyEventBooking';
-
+import DisplaySocietyEventBooking from './containers/societyEventBooking/displaySocietyEventBooking';
 import ViewTenantDetail from './containers/tenantMaster/tenantDetail/viewTenantDetail';
 class App extends Component {
   render() {
@@ -188,7 +188,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
             <PrivateRoute path='/superDashboard/SocietyEventBooking' component={SocietyEventBooking}/>
-           
+            <PrivateRoute path='/superDashboard/DisplaySocietyEventBooking' component={DisplaySocietyEventBooking}/>
             <PrivateRoute path='/superDashBoard/viewTenantDetail' component={ViewTenantDetail} />
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>

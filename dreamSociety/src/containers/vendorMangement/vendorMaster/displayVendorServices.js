@@ -36,7 +36,8 @@ class DisplayVendorServices extends Component {
             ids:[],
             isDisabled:true,    
             errors:{},
-            modalLoading:false
+            modalLoading:false,
+            message:''
         }
 
     componentDidMount() {
@@ -44,6 +45,7 @@ class DisplayVendorServices extends Component {
     }
 
     onHandleChange=(e)=>{
+        this.setState({message:''})
         if(!!this.state.errors[e.target.name]){
             let errors =Object.assign({},this.state.errors)
             delete  errors[e.target.name]
@@ -125,7 +127,7 @@ editUser(vendorServiceId,serviceId,rateId,serviceName,rateType,rate){
 
 toggleEditVendorModal() {
         this.setState({
-            editVendorModal: !this.state.editVendorModal
+            editVendorModal: !this.state.editVendorModal,message:''
         });
     }
 
@@ -142,18 +144,20 @@ updateServices = () => {
             this.setState({ errors });
             
             const isValid =Object.keys(errors).length===0;
-            if(isValid){           
+            if(isValid && this.state.message === ''){           
                 this.props.updateVendorServices(vendorServiceId,serviceId,rateId,rate)
                     .then(() => this.refreshData())
                     .catch(err=>{
-                        this.setState({message: err.response.data.message, loading: true})
-                    
-                    }) 
-                this.setState({
-                    vendorServiceId,serviceId,rateId,rate,
-                    
-                    modalLoading:true
-                })
+                        this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                        })
+                        if(this.state.message === ''){
+                            this.setState({editVendorModal: true})
+                        }
+                        else {
+                            this.setState({editVendorModal: false})
+                        }       
+                    this.setState({ modalLoading: true
+               })
     }   
 }
 
@@ -320,6 +324,7 @@ updateServices = () => {
                         <DefaultSelect/>
                         {this.getDropDown(this.props.displayServiceMasterReducer)}
                         </Input>
+                        <span className="error">{this.state.message}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label>Rate Types</Label>

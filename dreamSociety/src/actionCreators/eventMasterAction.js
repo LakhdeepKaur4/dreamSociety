@@ -14,7 +14,6 @@ export function ViewEvent(){
     }
     
     export function GetEventOrganiser(){
-          console.log('hii')
         const request = axios.get(`${URN}/eventOrganiser`,{headers:authHeader()})
         .then(response=> response.data )
         return{
