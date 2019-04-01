@@ -93,7 +93,6 @@ import token from './containers/token';
 import TokenVerification from './components/tokenVerification/tokenVerification';
 import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant';
 import InventoryList from './containers/inventory/inventoryList'
-import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant'
 import ShowList from './containers/activeDeactiveList/activeDeactiveList';
 import ShowActiveListDetails from  './containers/activeDeactiveList/activeDeactiveListDetails';
 import SWhowDeactiveListDetails from './containers/activeDeactiveList/deactivateActiveListDeatils';
