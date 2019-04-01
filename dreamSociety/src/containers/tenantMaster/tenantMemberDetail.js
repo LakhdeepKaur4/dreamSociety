@@ -334,12 +334,12 @@ class TenantMemberDetail extends Component {
     let addForm = <div>
         <FormGroup>
             <Label>Member Name</Label>
-            <Input name="memberName" onChange={this.addNewMemberChange} />
+            <Input name="memberName" onChange={this.addNewMemberChange} placeholder="Member Name" />
             {!this.state.memberName ? <span className="error">{this.state.errors.memberName}</span> : ''}
         </FormGroup>
         <FormGroup>
             <Label>Date of Birth</Label>
-            <Input max={this.maxDate()} type="date" name="memberDob" value={this.state.memberDob} onChange={this.addNewMemberChange} />
+            <Input max={this.maxDate()} type="date" name="memberDob" onChange={this.addNewMemberChange} />
             {!this.state.memberDob ? <span className="error">{this.state.errors.memberDob}</span> : ''}
         </FormGroup>
         <FormGroup>
@@ -364,7 +364,8 @@ class TenantMemberDetail extends Component {
         </FormGroup>
         <FormGroup>
             <Label>Relation with Tenant</Label>
-            <Select name='relationId' options={this.getRelationList(this.props.relationList)} 
+            <Select name='relationId' options={this.getRelationList(this.props.relationList)}
+            placeholder={<DefaultSelect />} 
                 onChange={this.relationHandler.bind(this,'relationId' )}  required/>
             {!this.state.relationId ? <span className="error">{this.state.errors.relationId}</span> : ''}
         </FormGroup>

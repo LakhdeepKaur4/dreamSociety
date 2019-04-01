@@ -39,13 +39,15 @@ import { authHeader } from '../helper/authHeader';
    }
 }
 
-export function updateSocietyMemberDetails(societyId, firstName,lastName, designationId,
+
+
+export function updateSocietyMemberDetails(societyId, firstName,lastName, designationId,gender,
    countryId, stateId, cityId,
    locationId, currentAddress, permanentAddress,
    contactNumber, email, bankName,
    accountNumber, panCardNumber, dob, IFSCCode, accountHolderName, societyBoardMemberId){
    const request = axios.put(`${URN}/societyBoardMember/` + societyBoardMemberId, {societyId,firstName, lastName, designationId
-      ,countryId,stateId,cityId,
+      ,gender, countryId,stateId,cityId,
       locationId,currentAddress,permanentAddress,
       contactNumber,email,bankName,
       accountNumber,panCardNumber,dob, IFSCCode, accountHolderName,societyBoardMemberId}, {headers: authHeader()})
