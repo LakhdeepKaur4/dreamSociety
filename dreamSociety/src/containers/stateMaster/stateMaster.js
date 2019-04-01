@@ -36,7 +36,7 @@ class FlatMaster extends Component {
         e.preventDefault();
         let errors = {};
         if (!this.state.countryId) {
-            errors.countryId = "CountryName  cannot be empty"
+            errors.countryId = "Country Name  cannot be empty"
         }
         if (this.state.stateName === '') errors.stateName = "Cant be empty";
 
@@ -145,7 +145,7 @@ class FlatMaster extends Component {
                     type="text"
                     name="stateName"
                     placeholder='StateName'
-                    maxLength='35'
+                    maxLength='45'
                     onKeyPress={this.onStateChange}
                     // value={this.state.flatType} 
                     onChange={this.onChange} />

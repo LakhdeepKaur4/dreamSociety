@@ -45,7 +45,7 @@ class EventSpaceMaster extends Component {
         if (this.state.capacity === '') errors.capacity = "Cant be empty";
 
         if (!this.state.sizeId) {
-            errors.sizeId = "SizeType cannot be empty";
+            errors.sizeId = "Size Type cannot be empty";
         }
        
 
@@ -238,7 +238,7 @@ class EventSpaceMaster extends Component {
                     type="text"
                     name="area"
                     placeholder="enter area"
-                    maxLength='3'
+                    maxLength='4'
                     onKeyPress = {this.OnKeyPresshandlerPhone}
                     // value={this.state.area}
                     onChange={this.onChange} />

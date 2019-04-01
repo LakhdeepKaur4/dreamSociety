@@ -335,7 +335,7 @@ unSelectAll = () =>{
 }
 
 logout=()=>{
-    localStorage.removeItem('token');
+    localStorage.removeItem('token'); 
     localStorage.removeItem('user-type');
     return this.props.history.replace('/') 
 }
@@ -372,7 +372,7 @@ render(){
                   </Input>
                </FormGroup>
                <FormGroup>
-                   <Label>State Name</Label>
+                   <Label>State Name</Label>          
                    <Input type="select" id="stateId" name="stateId" onChange={this.onChangeState}>
                    {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
                             {this.state.stateName ? <DefaultSelect />: null}

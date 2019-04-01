@@ -43,7 +43,8 @@ class FlatMemberList extends Component {
     }
     deleteMember(id) {
         this.props.deleteMember(id)
-            .then(() => this.props.getOwnerMember(id))
+            .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
+            .catch(err => err.response.data.message);
     }
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');

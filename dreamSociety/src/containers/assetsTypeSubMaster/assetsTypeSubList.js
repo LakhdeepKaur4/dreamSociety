@@ -6,10 +6,14 @@ import { Button, Modal, FormGroup, Table, ModalBody, ModalHeader, ModalFooter, I
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
+import DefaultSelect from './../../constants/defaultSelect';
+import { getAssets} from '../../actionCreators/assetsSubAction';
 class AssetsTypeSubList extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            assets:'',
+            assetId:'',
             filterName: "assetType",
             pageData: [],
             activePage: 0,
@@ -36,29 +40,34 @@ class AssetsTypeSubList extends Component {
         else {
             this.setState({ [event.target.name]: event.target.value});
         }
+         
     }
 
-    toggle = (assetTypeId, assetType, description) => {
+    toggle = (assetTypeId, assetId,assets,assetType, description) => {
 
         this.setState({
+            assetId,
             assetTypeId,
+            assets,
             assetType,
             description,
             menuVisible: false,
             search: '',
             modal: !this.state.modal
         })
+        console.log(this.state.assets)
     }
     toggles = () => {
         this.setState({ modal: !this.state.modal })
     }
     componentWillMount() {
+        this.props.getAssets()
         this.props.fetchAssets().then(() => this.setState({ loading: false }))
     }
 
 
     editAssetsSubType = () => {
-        const { assetTypeId, assetType, description } = this.state
+        const {assetId,assetTypeId, assetType, description } = this.state
         console.log(assetTypeId, assetType, description )
         let errors = {};
         if(this.state.assetType===''){
@@ -67,11 +76,14 @@ class AssetsTypeSubList extends Component {
         else if(this.state.description===''){
             errors.description="Description can't be empty"
         }
+        else if(assetId===""){
+            errors.assetId="Assets Name can't be empty"
+        }
         this.setState({errors});
         const isValid = Object.keys(errors).length === 0
         if (isValid) {
             this.setState({loading: true})
-            this.props.updateAssetsSub(assetTypeId, assetType, description)
+            this.props.updateAssetsSub(assetTypeId,assetId, assetType, description)
             .then(() => this.props.fetchAssets().then(()=>this.setState({loading:false})))
             this.setState({ modal: !this.state.modal })
         }
@@ -140,7 +152,7 @@ class AssetsTypeSubList extends Component {
                             <td style={{textAlign:"center"}}>{item.assetType}</td>
                             <td style={{textAlign:"center"}}>{item.description}</td>
                             <td style={{textAlign:"center"}}>
-                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, item.assetTypeId, item.assetType, item.description)} >Edit</button>
+                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, item.assetTypeId, item.asset_master.assetId,item.asset_master.assetName, item.assetType, item.description)} >Edit</button>
                              <button className="btn btn-danger" onClick={this.delete.bind(this, item.assetTypeId)} >Delete</button>
                             </td>
                         </tr>
@@ -195,6 +207,16 @@ class AssetsTypeSubList extends Component {
                 if(allIds.length === 0){
                     this.setState({isDisabled: true});
                 }
+        }
+        getAssetsName = ({ AssetsList }) => {
+            if (AssetsList) {
+                return AssetsList.assets.map((item) => {
+                    return (
+                        <option key={item.assetId} value={item.assetId}>{item.assetName}</option>
+                    )
+                })
+            }
+    
         }
         changePassword=()=>{
           
@@ -270,11 +292,19 @@ class AssetsTypeSubList extends Component {
                             <ModalHeader toggle={this.toggle}>Edit Assets Sub Type</ModalHeader>
                             <ModalBody>
                                 <FormGroup>
+                            <Label>Assets Type</Label>
+                    <Input type="select" defaultValue='no-value'  value={this.state.assetId} onChange={this.onChangeHandler} name="assetId">
+                    <DefaultSelect/>
+                        {this.getAssetsName(this.props.assetsName)}
+                    </Input>
+                    <span className="error">{this.state.errors.assetId}</span>
+                    </FormGroup>
+                                <FormGroup>
                                     <Label htmlFor="assetType">Assets Sub Type Name</Label>
                                     <Input  style={{'textTransform': 'capitalize' }} maxLength={30} type="text" id="AssetName" name="assetType" onChange={this.onChangeHandler} value={this.state.assetType} />
                                     <div className="error">{this.state.errors.assetType}</div>
                                     <Label htmlFor="description">Description</Label>
-                                    <Input  style={{'textTransform': 'capitalize' }} maxLength={30} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description} />
+                                    <Input  style={{'textTransform': 'capitalize' }} maxLength={1000} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description} />
                                     <span className="error">{this.state.errors.description}</span>
                                 </FormGroup>
                            
@@ -296,11 +326,12 @@ function mapStatToProps(state) {
     console.log('dflkjdklfjkkkkkkkkkk',state.AssetsTypeReducer)
     return {
         ListOfAssets: state.AssetsTypeReducer,
+        assetsName: state.AssetsReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ fetchAssets, updateAssetsSub, removeAssetsSub,deleteMultiple }, dispatch)
+    return bindActionCreators({ fetchAssets, updateAssetsSub, removeAssetsSub,deleteMultiple,getAssets }, dispatch)
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(AssetsTypeSubList);

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { addVendorMaster, getRateType,getVendorMaster } from '../../../actionCreators/vendorMasterAction';
-import { Col, Row, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import UI from '../../../components/newUI/vendorDashboardInside';
 import DefaultSelect from '../../../constants/defaultSelect';
 
@@ -13,8 +13,10 @@ class vendorMaster extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            vendorName: '',
+            firstName: '',
+            lastName:'',
             contact: '',
+            email:'',
             currentAddress: '',
             permanentAddress: '',
             serviceId1: {
@@ -246,11 +248,15 @@ class vendorMaster extends Component {
    
 
     onSubmit = (event) => {
+        console.log("email",this.state.email,this.state.vendorName)
         event.preventDefault();
         let errors = {};
-        if(this.state.vendorName===''){
-            errors.vendorName="Vendor Name can't be empty"
+        if(this.state.firstName===''){
+            errors.firstName="First Name can't be empty"
         }
+            else if(this.state.lastName===''){
+                errors.lastName="Last Name can't be empty"
+            }
            else if(this.state.currentAddress===''){
                 errors.currentAddress="Current Address can't be empty"
             }
@@ -259,6 +265,9 @@ class vendorMaster extends Component {
             }
             else if(this.state.contact===''){
                 errors.contact="Contact can't be empty"                
+            }
+            else if(this.state.email===''){
+                errors.email="Email can't be empty"                
             }
             else if(this.state.serviceId1.serviceId===''){
                 errors.serviceId1="Service Id1 can't be empty"
@@ -284,8 +293,10 @@ class vendorMaster extends Component {
         if (isValid) {
         this.setState({loading: true})
         
-        formData.append('vendorName',this.state.vendorName)
+        formData.append('firstName',this.state.firstName)
+        formData.append('lastName',this.state.lastName)
         formData.append('contact',this.state.contact)
+        formData.append('email',this.state.email)
         formData.append('currentAddress',this.state.currentAddress)
         formData.append('permanentAddress',this.state.permanentAddress)
         formData.append('serviceId1',this.state.serviceId1.serviceId)
@@ -306,9 +317,26 @@ class vendorMaster extends Component {
         
         }) 
         this.refreshData();
-
         }
+        console.log("firstName",this.state.firstName);
+        console.log("firstName",this.state.lastName);
+        console.log("vendorName",this.state.contact);
+        console.log("vendorName",this.state.email);
+        console.log("vendorName",this.state.currentAddress);
+        console.log("vendorName",this.state.permanentAddress);
+        console.log("vendorName",this.state.serviceId1.serviceId);
+        console.log("vendorName",this.state.serviceId2.serviceId);
+        console.log("vendorName",this.state.serviceId3.serviceId);
+        console.log("vendorName",this.state.rateId1.rateId);
+        console.log("vendorName",this.state.rateId2.rateId);
+        console.log("vendorName",this.state.rateId3.rateId);
+        console.log("vendorName",this.state.rate1);
+        console.log("vendorName",this.state.profilePicture.name);
+        console.log("vendorName",this.state.documentOne.name);
+        console.log("vendorName",this.state.documentTwo.name);
     }
+
+
 
     logout = () => {
         localStorage.removeItem('token');
@@ -320,7 +348,7 @@ class vendorMaster extends Component {
     }
 
 
-    render() {
+    render() {console.log(this.state)
     
         return (
             <div>
@@ -334,32 +362,36 @@ class vendorMaster extends Component {
                         <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Add Vendor</h3></div>
 
                         <FormGroup>
-                            <Label>Vendor Name</Label>
-                            <Input type="text" placeholder="Vendor Name" name="vendorName" maxLength={20} value={this.state.vendorName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  />
-                            <span className="error">{this.state.errors.vendorName}</span>
+                            <Label>First Name</Label>
+                            <Input type="text" placeholder="First Name" name="firstName" maxLength={20} value={this.state.firstName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  />
+                            <span className="error">{this.state.errors.firstName}</span>
                         </FormGroup>
-
-
+                        <FormGroup>
+                            <Label>Last Name</Label>
+                            <Input type="text" placeholder="Last Name" name="lastName" maxLength={20} value={this.state.lastName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  />
+                            <span className="error">{this.state.errors.lastName}</span>
+                        </FormGroup>
                         <FormGroup>
                             <Label>Current Address</Label>
                             <Input type="text" placeholder="Current Address" name="currentAddress" maxLength={50} value={this.state.currentAddress} onChange={this.handleChange} />
                             <span className="error">{this.state.errors.currentAddress}</span>
                         </FormGroup>
-
-
                         <FormGroup>
                             <Label>Permanent Address</Label>
                             <Input type="text" placeholder="Permanent Address" name="permanentAddress" maxLength={50} value={this.state.permanentAddress} onChange={this.handleChange} />
                             <span className="error">{this.state.errors.permanentAddress}</span>
                         </FormGroup>
-
                         <FormGroup>
                             <Label>Contact Number</Label>
                             <Input type="text" placeholder="Contact Number" name="contact" maxLength={10} onKeyPress={this.OnKeyPresshandlerPhone} value={this.state.contact} onChange={this.handleChange} />
                             <span className="error">{this.state.errors.contact}</span>
                             <span className="error">{this.state.message}</span>
                         </FormGroup>
-
+                        <FormGroup>
+                            <Label>Email</Label>
+                            <Input type="email" placeholder="Email" name="email" maxLength={80}  value={this.state.email} onChange={this.handleChange} />
+                            <span className="error">{this.state.errors.email}</span>
+                        </FormGroup>
                         <Row form>
                             <Col md={6}>
                                 <FormGroup>
@@ -389,7 +421,6 @@ class vendorMaster extends Component {
                                 </FormGroup>
                             </Col>
                         </Row>
-
                         <Row form>
                             <Col md={6}>
                                 <FormGroup>
@@ -397,8 +428,7 @@ class vendorMaster extends Component {
                                     <Input type="select" name="serviceId2" defaultValue='no-value'onChange={this.onServiceChange2} >
                                         <DefaultSelect/>
                                         {this.getDropDown(this.props.displayServiceMasterReducer)}
-                                    </Input>
-                                  
+                                    </Input>                                  
                                 </FormGroup>
                             </Col>
 
@@ -408,8 +438,7 @@ class vendorMaster extends Component {
                                     <Input type="select" name="rateId2" defaultValue='no-value'  onChange={this.onRateChange2}>
                                          <DefaultSelect/>
                                         {this.getRate(this.props.vendorMasterReducer)}
-                                    </Input>
-                               
+                                    </Input>                             
                                 </FormGroup>
                             </Col>
                             <Col md={2}>
@@ -419,8 +448,7 @@ class vendorMaster extends Component {
                                   
                                 </FormGroup>
                             </Col>
-                        </Row>
-
+                     </Row>
                         <Row form>
                             <Col md={6}>
                                 <FormGroup>
@@ -435,11 +463,10 @@ class vendorMaster extends Component {
                             <Col md={4}>
                                 <FormGroup>
                                     <Label> Rate Type 3</Label>
-                                    <Input type="select" name="rateId3" defaultValue='no-value'   onChange={this.onRateChange3}>
+                                    <Input type="select" name="rateId3" defaultValue='no-value' onChange={this.onRateChange3}>
                                          <DefaultSelect/>
                                         {this.getRate(this.props.vendorMasterReducer)}
-                                    </Input>
-                                
+                                    </Input>                              
                                 </FormGroup>
                             </Col>
                             <Col md={2}>
@@ -450,7 +477,6 @@ class vendorMaster extends Component {
                                 </FormGroup>
                             </Col>
                         </Row>
-
                         <FormGroup>
                             <Label>Upload Your Id</Label>
                             <Input type="file" name="documentOne"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage}/>
@@ -468,12 +494,9 @@ class vendorMaster extends Component {
                             <Input type="file" name="profilePicture" accept="image/*" onChange={this.selectImages} />
                             <span className="error">{this.state.errors.profilePicture}</span>
                         </FormGroup>
-
-
                     
-                            <Button color="success" className="mr-2">Submit</Button>
-                     
-                        <Button color="danger" onClick={this.push}>Cancel</Button>
+                            <Button color="success" className="mr-2">Submit</Button>             
+                            <Button color="danger" onClick={this.push}>Cancel</Button>
 
                     </Form>
 

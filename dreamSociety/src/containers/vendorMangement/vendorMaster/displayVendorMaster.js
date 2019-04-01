@@ -13,10 +13,12 @@ import GoogleDocsViewer from 'react-google-docs-viewer';
 class DisplayVendorMaster extends Component {
 
     state = {
-            filterName:"vendorName",
+            filterName:"firstName",
             vendorId:'',
-            vendorName: '',
+            firstName: '',
+            lastName:'',
             contact: '',
+            email:'',
             currentAddress: '',
             permanentAddress: '',
             documentOne: null,
@@ -54,7 +56,7 @@ class DisplayVendorMaster extends Component {
 
     searchFilter(search) {
         return function (x) {
-            return x.vendorName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.firstName.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
 
@@ -66,9 +68,9 @@ class DisplayVendorMaster extends Component {
         this.props.getVendorMaster().then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false}));
     }
 
-    editUser(vendorId,vendorName,currentAddress,permanentAddress,contact,documentOne,documentTwo,picture){
+    editUser(vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,documentOne,documentTwo,picture){
     this.setState({
-            vendorId,vendorName,currentAddress,permanentAddress,contact,documentOne,documentTwo,picture
+            vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,documentOne,documentTwo,picture
             ,editVendorModal: !this.state.editVendorModal})
             
     }
@@ -124,7 +126,7 @@ class DisplayVendorMaster extends Component {
     
     searchFilter(search) {
         return function (x) {
-            return x.vendorName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.firstName.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
   
@@ -175,9 +177,12 @@ class DisplayVendorMaster extends Component {
 
    updateVendor=()=>{
         let errors = {};
-        if(this.state.vendorName===''){
-            errors.vendorName="Vendor Name can't be empty"
+        if(this.state.firstName===''){
+            errors.firstName="First Name can't be empty"
         }
+            else if(this.state.lastName===''){
+                errors.lastName="Last Name can't be empty"
+            }
            else if(this.state.currentAddress===''){
                 errors.currentAddress="Current Address can't be empty"
             }
@@ -186,6 +191,9 @@ class DisplayVendorMaster extends Component {
             }
             else if(this.state.contact===''){
                 errors.contact="Contact can't be empty"                
+            }
+            else if(this.state.email===''){
+                errors.email="Email can't be empty"                
             }
             else if(this.state.rate1===''){
                 errors.rate1="Rate can't be empty"                
@@ -196,8 +204,10 @@ class DisplayVendorMaster extends Component {
         if (isValid  &&  this.state.message === '') {
      
         formData.append('vendorId',this.state.vendorId)
-        formData.append('vendorName',this.state.vendorName)
+        formData.append('firstName',this.state.firstName)
+        formData.append('lastName',this.state.lastName)
         formData.append('contact',this.state.contact)
+        formData.append('email',this.state.email)
         formData.append('currentAddress',this.state.currentAddress)
         formData.append('permanentAddress',this.state.permanentAddress)
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
@@ -206,10 +216,11 @@ class DisplayVendorMaster extends Component {
         this.props.updateVendor( this.state.vendorId,formData).then(() => this.refreshData())
         .catch(err=>{
             this.setState({modalLoading:false,message: err.response.data.message, loading: false})
-        
+         
         }) 
         if(this.state.message === ''){
             this.setState({editVendorModal: true})
+            
         }
         else {
             this.setState({editVendorModal: false})
@@ -222,9 +233,9 @@ class DisplayVendorMaster extends Component {
 
     renderList = ({ vendors }) => {
  
-        if (vendors) {
+        if (vendors ) {
             return vendors.vendor.sort((item1,item2)=>{
-                var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+                var cmprVal =  (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
                 }).filter(this.searchFilter(this.state.search)).map((vendors,index) => {
                 
@@ -253,16 +264,18 @@ class DisplayVendorMaster extends Component {
                                 
                              }}/></td>
                         <td>{index+1}</td>
-                        <td>{vendors.vendorName}</td>
+                        <td>{vendors.firstName}</td>
+                        <td>{vendors.lastName}</td>
                         <td>{vendors.currentAddress}</td>
                         <td>{vendors.permanentAddress}</td>
                         <td>{vendors.contact}</td>
+                        <td>{vendors.email}</td>
                         <td><button className="btn btn-light" onClick={this.openModal.bind(this, vendors.documentOne)}>View Document</button></td>
                         <td><button className="btn btn-light" onClick={this.Modal.bind(this, vendors.documentTwo)}>View Document </button></td>
-                        <td><img style={{width:"100%", height:"15%"}} src={PicURN+ vendors.picture}></img></td>
+                        <td><img style={{maxWidth: "100%",height: "auto",width: "auto\9"}} src={PicURN+ vendors.picture}></img></td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewServices.bind(this,vendors.vendorId)}>View Services</button></td>                   
                         <td>
-                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorId, vendors.vendorName,vendors.currentAddress,vendors.permanentAddress,vendors.contact,vendors.documentOne,vendors.documentTwo, PicURN+vendors.picture)}>Edit</Button> 
+                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorId, vendors.firstName,vendors.lastName,vendors.currentAddress,vendors.permanentAddress,vendors.contact,vendors.email,vendors.documentOne,vendors.documentTwo, PicURN+vendors.picture)}>Edit</Button> 
                 
                             <Button color="danger"onClick={this.delete.bind(this,vendors.vendorId)} >Delete</Button>
                         </td>
@@ -365,11 +378,13 @@ class DisplayVendorMaster extends Component {
                 <th  style={{width:'4%'}}>#</th>
                 <th  onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
-                                filterName:"vendorName"}});
-                        }}>Vendor Name  <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                                filterName:"firstName"}});
+                        }}>first Name  <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                <th>Last Name</th>
                 <th>Current Address</th>
                 <th style={{ textAlign: "center", width: "16%" }}>Permanent Address</th>
                 <th>Contact</th>
+                <th>Email</th>
                 <th>Document 1</th>
                 <th>Document 2</th>
                 <th>Profile Picture</th>
@@ -385,11 +400,17 @@ class DisplayVendorMaster extends Component {
         </tbody>
     </Table>
           let modalData=<div>
-              <FormGroup>
-                        <Label> Vendor Name</Label>
-                        <Input name="vendorName" value={this.state.vendorName}  onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}>
+                    <FormGroup>
+                        <Label> First Name</Label>
+                        <Input name="firstName" value={this.state.firstName}  onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}>
                         </Input>
-                        <span className="error">{this.state.errors.vendorName}</span>
+                        <span className="error">{this.state.errors.firstName}</span>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label> Last Name</Label>
+                        <Input name="lastName" value={this.state.lastName}  onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}>
+                        </Input>
+                        <span className="error">{this.state.errors.lastName}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label> Current Address</Label>
@@ -408,6 +429,13 @@ class DisplayVendorMaster extends Component {
                         <Input name="contact" value={this.state.contact} onKeyPress={this.OnKeyPresshandlerPhone}  maxLength={10} onChange={this.onHandleChange}>
                         </Input>
                         <span className="error">{this.state.errors.contact}</span>
+                        <span className="error">{this.state.message}</span>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label>Email</Label>
+                        <Input type="email" name="email" value={this.state.email}  maxLength={30} onChange={this.onHandleChange}>
+                        </Input>
+                        <span className="error">{this.state.errors.email}</span>
                         <span className="error">{this.state.message}</span>
                     </FormGroup>
                     <FormGroup>
