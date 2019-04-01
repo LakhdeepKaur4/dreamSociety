@@ -90,6 +90,7 @@ class AssignRoles extends Component{
     }
 
     roleDetail=({getRoles})=>{
+        console.log(getRoles)
         if(getRoles){
            return(
             getRoles.role.map((item) =>{
