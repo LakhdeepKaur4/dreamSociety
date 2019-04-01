@@ -222,7 +222,7 @@ class AssetList extends Component {
                                 }
                             });
                         }} style={{textAlign:"center"}}>Asset Name  <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-                    <th style={{textAlign:"center"}}>Description</th>
+                    <th style={{textAlign:"center",width:'40%'}}>Description</th>
                     <th style={{textAlign:"center"}}>Actions</th>
                 </tr>
             </thead>

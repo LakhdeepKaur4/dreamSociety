@@ -240,6 +240,7 @@ class AssetsTypeSubList extends Component {
                     }/></th> */}
                     <th style={{width:"4%"}}></th>
                     <th style={{textAlign:"center",width:"4%"}}>#</th>
+                    <th  style={{textAlign:"center"}}>Asset Name  </th>
                     <th  onClick={() => {
                             this.setState((state) => {
                                 return {
@@ -247,9 +248,8 @@ class AssetsTypeSubList extends Component {
                                     filterName: 'assetType'
                                 }
                             });
-                        }} style={{textAlign:"center"}}>Asset Name  <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-                    <th style={{textAlign:"center"}}>Assets Sub Type Name</th>
-                    <th style={{textAlign:"center"}}>Description</th>
+                        }} style={{textAlign:"center"}}>Assets Sub Type Name <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                    <th style={{textAlign:"center", width:'40%'}}>Description</th>
                     <th style={{textAlign:"center"}}>Actions</th>
                 </tr>
             </thead>
