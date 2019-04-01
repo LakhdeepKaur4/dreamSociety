@@ -389,10 +389,6 @@ submit = (e) => {
         }
         if(this.state.pin === '') errors.pin = `Please enter Pin/Zip Code.`
         if(this.state.pin1 === '') errors.pin1 = `Please enter Pin/Zip Code.`
-        if(!this.state.countryId) errors.countryId = `Country can't be empty.`;
-        if(!this.state.stateId) errors.stateId = `State can't be empty.`;
-        if(!this.state.cityId) errors.cityId = `City can't be empty.`;
-        if(!this.state.locationId) errors.locationId = `Location can't be empty.`;
         if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
         if(this.state.permanentAddressDefault === '') errors.permanentAddressDefault = `Permanent Address can't be empty.`;
         if(this.state.contactNumber === '') errors.contactNumber = `Contact can't be empty.`;

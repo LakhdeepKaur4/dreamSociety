@@ -551,13 +551,14 @@ class BoardMemberDetails extends Component {
     update = (e) => {
         console.log('hello')
         e.preventDefault();
-        let { societyId, firstName,lastName, designationId, countryId, stateId, cityId,
+        let { societyId, firstName,lastName, designationId,gender, countryId, stateId, cityId,
             locationId, currentAddress, permanentAddress,pin1,accountHolderName,
             contactNumber, email, bankName,IFSCCode,
             accountNumber, panCardNumber, dob, societyBoardMemberId, pin } = this.state;
         let errors = {};
         if (firstName === '') errors.firstName = `First Name can't be empty.`
         if(lastName === '') errors.lastName = `Last Name can't be empty.`
+        if(!gender) errors.gender = `Please select gender.`
         if(IFSCCode === '') errors.IFSCCode=`IFSC code can't be empty.`
         else if(IFSCCode.length !== 11) errors.IFSCCode=`IFSC code should be of 11 digits.`
         if (currentAddress === '') { errors.currentAddress = `Current Address can't be empty.` }
@@ -592,7 +593,7 @@ class BoardMemberDetails extends Component {
             console.log('hello1')
             this.setState({ modalLoading: true })
 
-            this.props.updateSocietyMemberDetails(societyId, firstName,lastName, designationId,
+            this.props.updateSocietyMemberDetails(societyId, firstName,lastName, designationId,gender,
                 countryId, stateId, cityId,
                 locationId, currentAddress, permanentAddress,
                 contactNumber, email, bankName,
