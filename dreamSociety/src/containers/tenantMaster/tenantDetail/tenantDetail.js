@@ -216,7 +216,6 @@ class TenantDetail extends Component {
                             <td>{item.email}</td>
                             <td>{item.contact}</td>
                             <td>{item.dob}</td>
-                            <td>{item.permanentAddress}</td>
                             <td><Button color="success" onClick={this.viewMembers.bind(this, item.tenantId)}>
                                 View</Button></td>
                             <td>
@@ -881,7 +880,6 @@ class TenantDetail extends Component {
                                     <th>Email</th>
                                     <th>Contact No.</th>
                                     <th>Date of Birth</th>
-                                    <th>Permanent Address</th>
                                     <th>Member details</th>
                                     <th>Tenant Detail</th>
                                     <th>Actions</th>

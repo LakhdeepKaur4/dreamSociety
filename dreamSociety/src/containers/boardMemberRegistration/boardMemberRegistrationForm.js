@@ -636,7 +636,7 @@ updatePermanentAddress = (pin) => {
                             <Col md={3}>
                                 <Label>Last Name</Label>
                                 <Input type='text'
-                                placeholder="Member Name"
+                                placeholder="Last Name"
                                 name='lastName' 
                                 onChange={this.onChange}
                                 maxLength="70"
