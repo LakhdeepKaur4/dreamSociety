@@ -183,9 +183,7 @@ class BoardMemberDetails extends Component {
                                 }} /></td>
                             <td>{index + 1}</td>
                             <td>{item.firstName}{' '}{item.lastName}</td>
-                            <td>{item.dob}</td>
                             <td>{item.designation_master.designationName}</td>
-                            <td>{item.gender}</td>
                             <td>{item.contactNumber}</td>
                             <td>{item.email}</td>
                             <td>
@@ -800,9 +798,7 @@ ifscChange = (e) => {
                             }
                         });
                     }}>Member Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-                    <th>Date of Birth</th>
                     <th>Designation</th>
-                    <th>Gender</th>
                     <th>Contact Number</th>
                     <th>Email</th>
                     <th>View Member Detail</th>

@@ -212,10 +212,8 @@ class TenantDetail extends Component {
                             <td>{index + 1}</td>
                             <td style={{width:'4%'}}><img style={{ width: "100%", height: "20%" }} src={PicURN+item.picture} alt="Profile Pic" /></td>
                             <td>{item.firstName}{`  `}{item.lastName} </td>
-                            <td>{item.gender}</td>
                             <td>{item.email}</td>
                             <td>{item.contact}</td>
-                            <td>{item.dob}</td>
                             <td><Button color="success" onClick={this.viewMembers.bind(this, item.tenantId)}>
                                 View</Button></td>
                             <td>
@@ -876,10 +874,8 @@ class TenantDetail extends Component {
                                         this.setState((state)=>{return {sortVal:!state.sortVal,
                                         filterName:'firstName'}});
                                     }}>Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-                                    <th>Gender</th>
                                     <th>Email</th>
                                     <th>Contact No.</th>
-                                    <th>Date of Birth</th>
                                     <th>Member details</th>
                                     <th>Tenant Detail</th>
                                     <th>Actions</th>
