@@ -41,6 +41,7 @@ import FloorDetail from './floorReducer/floorReducer'
 
 import ChangePassword from './changePasswordReducer.js/changePasswordReducer';
 import resetPasswordReducer from './resetpasswordReducer/resetPasswordReducer';
+import activeDeactive from './activeDeactive/activeDeactiveReducer';
 const rootReducer = combineReducers({
     loginReducer,
     userDetail,
@@ -80,6 +81,7 @@ const rootReducer = combineReducers({
     FloorDetail,
 
     ChangePassword,
-    resetPasswordReducer
+    resetPasswordReducer,
+    activeDeactive
 })
 export default rootReducer;

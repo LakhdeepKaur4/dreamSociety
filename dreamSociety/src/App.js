@@ -92,6 +92,9 @@ import submitOTP from './containers/login/submitOtp';
 import token from './containers/token';
 import TokenVerification from './components/tokenVerification/tokenVerification';
 import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant'
+import ShowList from './containers/activeDeactiveList/activeDeactiveList';
+import ShowActiveListDetails from  './containers/activeDeactiveList/activeDeactiveListDetails';
+import SWhowDeactiveListDetails from './containers/activeDeactiveList/deactivateActiveListDeatils';
 class App extends Component {
   render() {
     return (
@@ -184,6 +187,9 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
+            <PrivateRoute path='/superDashboard/showList'exact component={ShowList} />
+            <PrivateRoute path='/superDashboard/showList/showListDetails' component={ShowActiveListDetails} />
+            <PrivateRoute path='/superDashboard/showList/showListDetails2' component={SWhowDeactiveListDetails} />
            
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>

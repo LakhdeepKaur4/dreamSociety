@@ -1,9 +1,9 @@
 
-// export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export  const URN = 'https://dreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://dreamsociety.herokuapp.com/';
 // export  const UR = 'https://dreamsociety.herokuapp.com/';
-export  const URN = 'https://mydreamsociety.herokuapp.com/api';
+// export  const URN = 'https://mydreamsociety.herokuapp.com/api';
 // export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
 export  const PicURN = 'https:///mydreamsociety.herokuapp.com/';
 export  const DocURN = 'https:///mydreamsociety.herokuapp.com/';
@@ -241,3 +241,9 @@ export const GET_FLOOR_DATA='GET_FLOOR_DATA';
 export const RESET_PASSWORD="RESET_PASSWORD";
 export const GET_TOKEN="GET_TOKEN";
 export const GET_ALL_FLOOR='GET_ALL_FLOOR';
+export const GET_ROLES1="GET_ROLES1";
+export const GET_ACTIVE_LIST="GET_ACTIVE_LIST";
+export const GET_DEACTIVE_LIST="GET_DEACTIVE_LIST";
+export const DEACTIVATE_MEMBER="DEACTIVATE_MEMBER";
+export const DEACTIVATE_MULTIPLE_MEMBER="DEACTIVATE_MULTIPLE_MEMBER";
+export const DELETE_MULTIPLE_MEMBER1="DELETE_MULTIPLE_MEMBER1";
