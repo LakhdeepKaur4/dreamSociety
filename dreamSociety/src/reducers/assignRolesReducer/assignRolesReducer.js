@@ -1,4 +1,4 @@
-import {ASSIGN_ROLES, ASSIGN_OWNER, ASSIGN_CHANGES, ASSIGN_POST} from  './../../actions/index';
+import {ASSIGN_ROLES, ASSIGN_OWNER, ASSIGN_CHANGES, ASSIGN_POST, ASSIGN_DISPLAY} from  './../../actions/index';
 export default function(state={},action){
   
     switch(action.type){
@@ -13,6 +13,10 @@ export default function(state={},action){
 
     case ASSIGN_POST:
     return { ...state, assignPost: action.payload};
+
+    case ASSIGN_DISPLAY:
+    return {...state, assignDisplay: action.payload};
+
 
     default:
     return state;
