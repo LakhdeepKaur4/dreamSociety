@@ -91,6 +91,9 @@ import GetFloorDetail from './containers/floorMaster/getFloorDetail';
 import submitOTP from './containers/login/submitOtp';
 import token from './containers/token';
 import TokenVerification from './components/tokenVerification/tokenVerification';
+
+import AssignRoles from './components/assignRoles/assignRoles';
+import IndividualVendor from './containers/individualVendor/individualVendor';
 import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant';
 import SocietyEventBooking from './containers/societyEventBooking/societyEventBooking';
 
@@ -187,6 +190,9 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
+            <PrivateRoute path='/superDashboard/assignRoles' component={AssignRoles} />
+            <PrivateRoute path='/superDashboard/individualVendor' component={IndividualVendor} />
+           
             <PrivateRoute path='/superDashboard/SocietyEventBooking' component={SocietyEventBooking}/>
            
             <PrivateRoute path='/superDashBoard/viewTenantDetail' component={ViewTenantDetail} />
