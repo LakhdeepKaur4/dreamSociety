@@ -67,7 +67,7 @@ class ShowList extends Component {
         let errors = {};
 
         if (!this.state.id) {
-            errors.id = "Country Name  cannot be empty"
+            errors.id = "Please select role"
         } 
          console.log(this.state)
          let id=this.state.id
@@ -102,7 +102,7 @@ class ShowList extends Component {
         let errors = {};
 
         if (!this.state.id) {
-            errors.id = "Country Name  cannot be empty"
+            errors.id = "Please select role"
         } 
          console.log(this.state)
          let id=this.state.id
