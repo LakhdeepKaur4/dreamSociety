@@ -168,8 +168,7 @@ class userDetails extends Component {
     searchFilter(search){
         return function(x){
                 return x.roles.map((i) => i.roleName).toString().toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                x.firstName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                x.lastName.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                (x.firstName + ' ' + x.lastName).toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                 x.email.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                 !search;
         }
@@ -238,8 +237,7 @@ class userDetails extends Component {
                                     return currentRole
                                 }
                             })}</td>
-                            <td>{item.firstName}</td>
-                            <td>{item.lastName}</td>
+                            <td>{item.firstName}{`  `}{item.lastName} </td>
                             <td>{item.userName}</td>
                             <td>{item.email}</td>
                             <td>{currentTower}</td>
@@ -367,8 +365,7 @@ class userDetails extends Component {
                     <th style={{cursor:'pointer'}} onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'firstName'}});
-                        }}>First Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-                    <th>Last Name</th>
+                        }}>Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th>Username</th>
                     <th>Email</th>
                     <th>Tower Name</th>

@@ -95,6 +95,13 @@ import AccountVerificationTenant from './components/accountVerificationTenant/ac
 import ShowList from './containers/activeDeactiveList/activeDeactiveList';
 import ShowActiveListDetails from  './containers/activeDeactiveList/activeDeactiveListDetails';
 import SWhowDeactiveListDetails from './containers/activeDeactiveList/deactivateActiveListDeatils';
+
+import AssignRoles from './components/assignRoles/assignRoles';
+import IndividualVendor from './containers/individualVendor/individualVendor';
+// import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant';
+import SocietyEventBooking from './containers/societyEventBooking/societyEventBooking';
+
+import ViewTenantDetail from './containers/tenantMaster/tenantDetail/viewTenantDetail';
 class App extends Component {
   render() {
     return (
@@ -190,7 +197,12 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/showList'exact component={ShowList} />
             <PrivateRoute path='/superDashboard/showList/showListDetails' component={ShowActiveListDetails} />
             <PrivateRoute path='/superDashboard/showList/showListDetails2' component={SWhowDeactiveListDetails} />
+            <PrivateRoute path='/superDashboard/assignRoles' component={AssignRoles} />
+            <PrivateRoute path='/superDashboard/individualVendor' component={IndividualVendor} />
            
+            <PrivateRoute path='/superDashboard/SocietyEventBooking' component={SocietyEventBooking}/>
+           
+            <PrivateRoute path='/superDashBoard/viewTenantDetail' component={ViewTenantDetail} />
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
           </Switch>

@@ -351,7 +351,7 @@ let modalData=<div>
                                                 <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                                                         <span aria-hidden="true">&times;</span>
                                                 </div>
-                                                <div className="top-details" >
+                                                <div className="top-details">
                                                         <h3 align="center"> Event Details</h3>
                                                         <Button color="primary" onClick={this.addEvent} > Add Event</Button>
                                                 </div>

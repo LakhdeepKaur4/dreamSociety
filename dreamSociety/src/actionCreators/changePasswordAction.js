@@ -7,7 +7,7 @@ import { authHeader } from '../helper/authHeader';
 export const changePassword=(values)=>{
    
     console.log(values)
-    // app.get('/api/user/changePassword', [authJwt.verifyToken], userController.changePassword);
+   
     const request = axios.post(`${URN}/user/changePassword` ,values , {headers:authHeader()})
      .then(response => response.data)
   

@@ -21,10 +21,13 @@ class Inventory extends Component {
             assetSubTypeId:'',
             numberOfInventory: '',
             ratePerInventory:'',
-            serialNo:'',
+            autoGenerate:false,
+            serialNumbers:[],
+            serialNo:[],
             loading: true ,
             errors: {},
-            disabled:true
+            disabled:true,
+            dateOfPurchase:''
         }
     }
     componentDidMount() {
@@ -78,7 +81,9 @@ class Inventory extends Component {
 
     onSubmit = (e) => {assetSubTypeId
         e.preventDefault();
-        const {assetId,assetSubTypeId,numberOfInventory,ratePerInventory,serialNo } = this.state
+        console.log("state", this.state);
+        const {assetId,assetSubTypeId,numberOfInventory,ratePerInventory,serialNo,dateOfPurchase,autoGenerate, serialNumbers } = this.state
+        console.log(assetId,assetSubTypeId,numberOfInventory,ratePerInventory,serialNo,dateOfPurchase,autoGenerate, serialNumbers)
         let errors = {};
         if(assetId===''){
             errors.assetId="Assets Name can't be empty"
@@ -99,12 +104,13 @@ class Inventory extends Component {
         const isValid = Object.keys(errors).length === 0
         if (isValid) {
             this.setState({loading: true})
-            this.props.addInventory(assetId,assetSubTypeId,numberOfInventory,ratePerInventory,serialNo)
+            this.props.addInventory(assetId,assetSubTypeId,numberOfInventory,ratePerInventory,serialNumbers,dateOfPurchase,autoGenerate)
             .then(() => this.props.history.push('/superDashBoard/inventoryDetails'))
         }
        ;
     }
 onChangeHandler=(event)=>{
+
     if (!!this.state.errors[event.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[event.target.name];
@@ -113,6 +119,7 @@ onChangeHandler=(event)=>{
     else {
         this.setState({ [event.target.name]: event.target.value.trim('') });
     }
+
 }
 
     logout=()=>{
@@ -145,6 +152,26 @@ changePassword=()=>{
     return this.props.history.replace('/superDashboard/changePassword')
   }
 
+  onSerialsChangeHandler=(event,serialIndex)=>{
+    let value = event.target.value;
+    this.setState((prevState)=>{
+        let serialNumbers = [...prevState.serialNumbers];        
+        serialNumbers[serialIndex] = value;
+        return {serialNumbers}
+    });
+  }
+
+  onChangeHandlerSerial=(event)=>{
+    this.setState({
+        autoGenerate:event.target.checked
+    })
+
+  }
+  maxDate = () => {
+    var d = new Date();
+    return d.toISOString().split('T')[0];
+}
+
 
     render() {
         let formData;
@@ -171,12 +198,40 @@ changePassword=()=>{
             <Label>Rate Per Inventory</Label>
             <Input type="text" onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10}  placeholder="Enter Rate" onChange={this.onChangeHandler} className="form-control"  name='ratePerInventory' />
             <span className="error">{this.state.errors.ratePerInventory}</span>
-        </div>   
-        {/* <div>
-            <Label>Serial Number</Label>
-            <Input type="text" maxLength={6} disabled={this.state.disabled} placeholder="Enter Serial Number" onChange={this.onChangeHandler} className="form-control" name='serialNo' />
+        </div> 
+        <div>
+            <Label>Date Of Purchase</Label>
+            <Input type="date" max={this.maxDate()} name="dateOfPurchase" onChange={this.onChangeHandler}/>
+            </div>  
+        <div>
+            <Label>Auto Generate Serial No.</Label>
+            <Input type="checkbox" onChange={this.onChangeHandlerSerial} name="autoGenerate" value={!this.state.autoGenerate} style={{marginLeft: "20px"}}/>
+        </div>
+        <div>
+            <Label>Serial Number 1</Label>    
+            <Input type="text" maxLength={6} disabled={this.state.autoGenerate} placeholder="Enter Serial Number" onChange={(e)=>{this.onSerialsChangeHandler(e,0)}} className="form-control" name='serialNo' />
             <span className="error">{this.state.errors.serialNo}</span>
-        </div> */}
+        </div>
+        <div>
+            <Label>Serial Number 2</Label>    
+            <Input type="text" maxLength={6} disabled={this.state.autoGenerate} placeholder="Enter Serial Number" onChange={(e)=>{this.onSerialsChangeHandler(e,1)}} className="form-control" name='serialNo' />
+            <span className="error">{this.state.errors.serialNo}</span>
+        </div>
+        <div>
+            <Label>Serial Number 3</Label>    
+            <Input type="text" maxLength={6} disabled={this.state.autoGenerate} placeholder="Enter Serial Number" onChange={(e)=>{this.onSerialsChangeHandler(e,2)}} className="form-control" name='serialNo' />
+            <span className="error">{this.state.errors.serialNo}</span>
+        </div>
+        <div>
+            <Label>Serial Number 4</Label>    
+            <Input type="text" maxLength={6} disabled={this.state.autoGenerate} placeholder="Enter Serial Number" onChange={(e)=>{this.onSerialsChangeHandler(e,3)}} className="form-control" name='serialNo' />
+            <span className="error">{this.state.errors.serialNo}</span>
+        </div>
+        <div>
+            <Label>Serial Number 5</Label>    
+            <Input type="text" maxLength={6} disabled={this.state.autoGenerate} placeholder="Enter Serial Number" onChange={(e)=>{this.onSerialsChangeHandler(e,4)}} className="form-control" name='serialNo' />
+            <span className="error">{this.state.errors.serialNo}</span>
+        </div>
         <div>
             <Button className="btn btn-success" id="addAssets" >Add Inventory</Button>
             <Link to='/superDashBoard/inventoryDetails'>
