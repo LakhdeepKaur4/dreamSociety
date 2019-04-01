@@ -671,11 +671,11 @@ pinChange1 = (e) => {
     this.updatePermanentAddress(e.target.value)
 }
 
-updatePermanentAddress = (pin) => {
-    console.log(pin)
-    this.setState({pin})
+updatePermanentAddress = (pin1) => {
+    console.log(pin1)
+    this.setState({pin1})
     this.setState({permanentAddress: this.state.permanentAddressDefault  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
-    this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin})
+    this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin1})
     console.log('updatePermanentAddress', this.state.permanentAddress)
 }
 
