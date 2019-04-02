@@ -86,10 +86,11 @@ class AssignRoles extends Component{
 
     
     dashbordPage=()=>{
-        this.props.history.push('/superDashboard');
+        this.props.history.push('/superDashboard/assignRolesDetail');
     }
 
     roleDetail=({getRoles})=>{
+        console.log(getRoles)
         if(getRoles){
            return(
             getRoles.role.map((item) =>{
@@ -105,6 +106,7 @@ class AssignRoles extends Component{
     }
 
     roleOwner=({getOwner})=>{
+        console.log(getOwner)
         if(getOwner  &&  getOwner.users){    
            return(
             getOwner.users.map((item) =>{
@@ -120,6 +122,7 @@ class AssignRoles extends Component{
     }
 
     roleChanges=({getChanges})=>{
+        console.log(getChanges)
         if(getChanges){
        
            return(
@@ -166,7 +169,7 @@ class AssignRoles extends Component{
                 <span className="error">{this.state.errors.id}</span>          
             </FormGroup>
 
-            <Button color="success" className="mr-2">Change Role</Button>
+            <Button color="success" className="mr-2">Display Role</Button>
             <Button color="danger" onClick={this.dashbordPage}>Cancel</Button>
             </div>
         return(

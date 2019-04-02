@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URN, ASSIGN_ROLES, ASSIGN_OWNER, ASSIGN_CHANGES, ASSIGN_POST } from '../actions/index'
+import { URN, ASSIGN_ROLES, ASSIGN_OWNER, ASSIGN_CHANGES, ASSIGN_POST,ASSIGN_DISPLAY } from '../actions/index'
 import { authHeader } from '../helper/authHeader';
 
 
@@ -42,12 +42,25 @@ export const assignRole=()=>{
 
  export const assignPost=(values)=>{
      console.log(values)
-    const request = axios.post(`${URN}/assignRoles`, {values} , {headers:authHeader()})
+    const request = axios.post(`${URN}/assignRoles`, values , {headers:authHeader()})
      .then(response => response.data)
   
      return{
  
          type:ASSIGN_POST,
+         payload: request 
+     }
+ 
+ }
+
+ export const assignRoleData=()=>{
+     console.log('djhduhcudsu');
+    const request = axios.get(`${URN}/user` , {headers:authHeader()})
+     .then(response => response.data)
+  
+     return{
+ 
+         type:ASSIGN_DISPLAY,
          payload: request 
      }
  

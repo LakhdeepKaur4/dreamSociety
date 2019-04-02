@@ -37,14 +37,9 @@ class InventoryDetails extends Component {
         this.setState({ [name]: value });
     }
 
-    toggle = (inventoryId, assetId, numberOfInventory, ratePerInventory, assetTypeId, serialNumber) => {
+    toggle = (inventoryId, assetName,assetSubType,assetId,assetTypeId) => {
         this.setState({
-            inventoryId,
-            assetId,
-            numberOfInventory,
-            ratePerInventory,
-            assetTypeId,
-            serialNumber,
+            inventoryId, assetName,assetSubType,assetId,assetTypeId,
             modal: !this.state.modal
         })
     }
@@ -59,25 +54,22 @@ class InventoryDetails extends Component {
     }
     editAssets = () => {
 
-        const { assetId, inventoryId, serialNumber, ratePerInventory, assetTypeId, numberOfInventory } = this.state
+        const { assetId, inventoryId,assetTypeId, } = this.state
+        console.log(this.state)
         let errors = {};
         if (this.state.assetId === '') {
             errors.assetId = "Assets can't be empty"
         }
-        else if (this.state.ratePerInventory === '') {
-            errors.ratePerInventory = "Rate Per Inventory can't be empty"
-        }
+
         else if (this.state.assetTypeId === '') {
             errors.assetTypeId = "Asset Type Name can't be empty"
         }
-        else if (this.state.numberOfInventory === '') {
-            errors.numberOfInventory = "Number Of Inventory can't be empty"
-        }
+   
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
         if (isValid) {
             this.setState({ loading: true })
-            this.props.updateInventory(assetId, inventoryId, serialNumber, ratePerInventory, assetTypeId, numberOfInventory)
+            this.props.updateInventory(assetId, inventoryId,  assetTypeId, )
                 .then(() => this.props.getInventory().then(() => this.setState({ loading: false })));
             this.setState({ modal: !this.state.modal })
         }
@@ -100,13 +92,13 @@ class InventoryDetails extends Component {
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
     }
-    searchFilter(search) {
-        return function (x) {
-            return x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||
-                x.serialNumber.toLowerCase().includes(search.toLowerCase()) ||
-                x.asset_type_master.assetType.toLowerCase().includes(search.toLowerCase()) || !search;
-        }
-    }
+    // searchFilter(search) {
+    //     return function (x) {
+    //         return x.assetName.toLowerCase().includes(search.toLowerCase()) ||
+    //             // x.serialNumber.toLowerCase().includes(search.toLowerCase()) ||
+    //             x.assetType.toLowerCase().includes(search.toLowerCase()) || !search;
+    //     }
+    // }
     assetsName = ({ AssetsList }) => {
         if (AssetsList) {
             return AssetsList.assets.map((item) => {
@@ -142,7 +134,7 @@ class InventoryDetails extends Component {
     }
     renderList = ({ getInventory }) => {
         if (getInventory) {
-            return getInventory.inventory.filter(this.searchFilter(this.state.search)).map((items, index) => {
+            return getInventory.inventory.map((items, index) => {
                 return (
                     <tr key={items.inventoryId}>
                         <td><input type="checkbox" name="ids" value={items.inventoryId} className="SelectAll"
@@ -171,13 +163,14 @@ class InventoryDetails extends Component {
                         <td style={{textAlign:"center"}}>{index + 1}</td>
                         <td style={{textAlign:"center"}}>{items.asset_master.assetName}</td>
                         <td style={{textAlign:"center"}}>{items.asset_type_master.assetType}</td>
-                        <td style={{textAlign:"center"}}>{items.number}</td>
-                        <td style={{textAlign:"center"}}>{items.rate}</td>
-                        {/* <td style={{textAlign:"center"}}>{items.serialNumber}</td> */}
-                        <td>
-                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.inventoryId, items.assetId, items.number, items.rate, items.assetTypeId, items.serialNumber)} >Edit</button>
+                        <td style={{textAlign:"center"}}>{items.count}</td>
+                        <td style={{textAlign:"center"}}>{items.sum}</td>
+                        <td style={{textAlign:"center"}}>{items.avgRate.toFixed(2)}</td>
+                        <td><button className="btn btn-success mr-2" onClick={this.viewInventoryDetails.bind(this, items.asset_master.assetId)}>Details</button></td>
+                        {/* <td>
+                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.inventoryId,items.asset_master.assetName , items.asset_type_master.assetType,items.asset_master.assetId,items.asset_type_master.assetTypeId )} >Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.inventoryId)} >Delete</button>
-                        </td>
+                        </td> */}
                     </tr>
                 )
             })
@@ -221,6 +214,12 @@ class InventoryDetails extends Component {
           
         return this.props.history.replace('/superDashboard/changePassword')
       }
+      viewInventoryDetails(id) {
+          console.log('pppppppppppp',id)
+        localStorage.setItem('assetId', id)
+        this.props.history.push('/superDashboard/inventoryList')
+
+    }
 
     render() {
         let tableData;
@@ -242,9 +241,10 @@ class InventoryDetails extends Component {
                     <th style={{textAlign:"center"}}>Asset Type</th>
                     <th style={{textAlign:"center"}}>Asset Sub Type</th>
                     <th style={{width:"10%"}}>Number Of Inventory</th>
-                    <th style={{width:"10%"}}>Rate Per Inventory</th>
-                    {/* <th style={{width:"10%"}}>Serial Number Of Inventory</th> */}
-                    <th style={{width:"15%",textAlign:"center"}}>Actions</th>
+                    <th style={{width:"10%"}}>Total Price</th>
+                    <th style={{width:"10%"}}>Average Price</th>
+                    <th style={{width:"10%"}}>Details</th>
+                    {/* <th style={{width:"15%",textAlign:"center"}}>Actions</th> */}
                 </tr>
             </thead>
             <tbody>
@@ -294,12 +294,12 @@ class InventoryDetails extends Component {
                                         {this.assetsType(this.props.AssetType)}
                                     </Input>
                                     <div className="error">{this.state.errors.assetTypeId}</div>
-                                    <Label>Number Of Inventory</Label>
+                                    {/* <Label>Number Of Inventory</Label>
                                     <Input maxLength={30} type="text" id="numberOfInventory" name="numberOfInventory" onChange={this.onChangeHandler} value={this.state.numberOfInventory} />
                                     <div className="error">{this.state.errors.numberOfInventory}</div>
                                     <Label>Rate Per Inventory</Label>
                                     <Input maxLength={30} type="text" id="ratePerInventory" name="ratePerInventory" onChange={this.onChangeHandler} value={this.state.ratePerInventory} />
-                                    <div className="error">{this.state.errors.ratePerInventory}</div>
+                                    <div className="error">{this.state.errors.ratePerInventory}</div> */}
                                 </FormGroup>
                                 <FormGroup>
                                     <Button color="primary mr-2" onClick={this.editAssets}>Save</Button>
@@ -313,7 +313,7 @@ class InventoryDetails extends Component {
         );
     }
 }
-function mapStatToProps(state) {
+function mapStateToProps(state) {
     return {
         inventory: state.Inventory,
         AssetName: state.AssetsReducer,
@@ -323,4 +323,4 @@ function mapStatToProps(state) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ getInventory, getAssets, fetchAssets, updateInventory, removeInventory, multipleDelete }, dispatch);
 }
-export default connect(mapStatToProps, mapDispatchToProps)(InventoryDetails);
+export default connect(mapStateToProps, mapDispatchToProps)(InventoryDetails);

@@ -4,33 +4,29 @@ import { bindActionCreators } from 'redux';
 import UI from '../../components/newUI/superAdminDashboard';
 import { PicURN } from '../../actions/index'
 import { PlaceHolder } from '../../actions/index';
+import DefaultSelect from '../../constants/defaultSelect';
 import Select from 'react-select';
 import Spinner from '../../components/spinner/spinner';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getFlatDetails } from '../../actionCreators/flatDetailMasterAction';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
+import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
+import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label,Col, Row } from 'reactstrap';
 import { getOwnerMember, getOwnerList, multipleDelete, removeOwner, updateFlatOwner,getAllFloor } from '../../actionCreators/flatOwnerAction'
 class FlatOwnerList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            filterName: "ownerName",
+            filterName: "firstName",
             ownerId: '',
             profilePic: '',
-            ownerName: '',
+            firstName: '',
+            lastName:'',
             contact: '',
             dob: '',
             email: '',
-            accountHolderName: '',
-            panCardNumber: '',
-            societyName: '',
-            bankName: '',
-            IFSCCode: '',
             permanentAddress: '',
-            towerName: '',
-            flatDetailId: '',
             menuVisible: false,
             search: '',
             modal: false,
@@ -52,7 +48,21 @@ class FlatOwnerList extends Component {
             messageError: '',
             Aadhaar:'',
             floorId:'',
-            accountNumber:''
+            accountNumber:'',
+            correspondingAddress:'',
+            Male:'male',
+            Female:'female',
+            Other:'other',
+            gender:'',
+            readOnlyPermanent: '',
+            readOnlyCurrent: '',
+            editPermanent: false,
+            editCurrent: false,
+            userPermanent: false,
+            permanentAddressDefault:'',
+            currentAddressDefault:'',
+            profilePicture:'',
+            fileName:''
         }
     }
     toggles = () => {
@@ -62,6 +72,10 @@ class FlatOwnerList extends Component {
         this.props.getOwnerList();
         this.props.detailSociety();
         this.props.viewTower();
+        this.props.getCountry()
+        this.props.getState()
+        this.props.getCity()
+        this.props.getLocation()
         this.props.getFlatDetails()
             .then(() => this.setState({ loading: false }))
     }
@@ -80,29 +94,21 @@ class FlatOwnerList extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-    toggle = (ownerId, ownerName, dob, gender, contact, email,Aadhaar,societyName, societyId,permanentAddress, bankName, 
-            accountHolderName, accountNumber, panCardNumber, IFSCCode,) => {
-        console.log("======================="+accountNumber);
+    toggle = (ownerId, firstName,lastName, dob, gender, contact, email,Aadhaar,permanentAddress) => {
+        console.log("======================="+ownerId, firstName,lastName, dob, gender, contact, email,Aadhaar,permanentAddress);
         this.setState({
             ownerId,
-            ownerName,
+            firstName,
+            lastName,
             dob,
             gender,
             contact,
             email,
-            permanentAddress,
-            bankName,
-            accountHolderName,
-            accountNumber,
-            panCardNumber,
-            IFSCCode,
             Aadhaar,
-            societyName,
-            currentSociety:{label:societyName,value:societyId},
+            readOnlyPermanent: permanentAddress,      
             modal: !this.state.modal
             
         })
-        console.log('society name is ',this.state.societyName)
     }
     delete = (ownerId) => {
         this.setState({ loading: true })
@@ -123,7 +129,7 @@ class FlatOwnerList extends Component {
     }
     searchFilter(search) {
         return function (x) {
-            return x.ownerName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.firstName.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
     selectAll = () => {
@@ -245,17 +251,15 @@ class FlatOwnerList extends Component {
                         <td style={{ textAlign: "center" }}>{index + 1}</td>
                         <td style={{ width: "8%", height: "8%" }}> <img style={{ width: "100%", height: "15%" }} src={PicURN + items.picture} alt="Profile Pic">
                         </img></td>
-                        <td style={{ textAlign: "center", width: '10px' }}>{items.ownerName}</td>
+                        <td style={{ textAlign: "center", width: '10px',textTransform: 'capitalize'  }}  >{items.firstName+' '+items.lastName}</td>
                         <td style={{ textAlign: "center" }}>{items.contact}</td>
+                        <td style={{ textAlign: "center" }}>{items.correspondenceAddress}</td>
                         <td style={{ textAlign: "center" }}>{items.permanentAddress}</td>
-                        <td style={{ textAlign: "center" }}>{items.tower_master.towerName}</td>
-                        <td style={{ textAlign: "center" }}>{items.flat_detail_master.flatNo}</td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewMember.bind(this, items.ownerId)}>View Member</button></td>
                         <td style={{ textAlign: "center" }}>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, 
-                                items.ownerName, items.dob, items.gender, items.contact, items.email,
-                                items.adhaarCardNo,items.society_master.societyName,items.society_master.societyId, items.permanentAddress, items.bankName, items.accountHolderName,
-                                items.accountNumber, items.panCardNumber, items.IFSCCode)}>Edit</button>
+                                items.firstName, items.lastName,items.dob, items.gender, items.contact, items.email,
+                                items.adhaarCardNo, items.permanentAddress)}>Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.ownerId)} >Delete</button>
                         </td>
                     </tr>
@@ -296,6 +300,99 @@ class FlatOwnerList extends Component {
             })
         }
     }
+    countryName = ({countryResult}) => {
+        console.log(countryResult)
+        if(countryResult){
+          
+           return( 
+            countryResult.map((item) =>{
+                   return(
+                    { ...item, label: item.countryName, value: item.countryId }
+                   )
+               })
+           )
+            
+        }
+    }
+    onChangeCountry = (countryId, countryName, selectOption) => {
+        console.log(countryId, countryName, selectOption)
+    
+        this.setState({
+            countryName: selectOption.countryName,
+            countryId:selectOption.countryId, 
+        })
+        
+        this.props.getState(selectOption.countryId)
+    }
+    stateName = ({stateResult}) => {
+        if(stateResult){
+          console.log(stateResult)
+           return( 
+            stateResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.stateName, value: item.stateId }
+                   )
+               })
+           )
+            
+        }
+    }
+
+    onChangeState = (stateName, stateId, selectOption) => {
+        console.log(stateName, stateId, selectOption)
+        this.setState({
+            stateName: selectOption.stateName,
+            stateId:selectOption.stateId
+        })
+        this.props.getCity(selectOption.stateId);
+    }
+    cityName=({cityResult})=>{
+               
+        if(cityResult){
+            
+           return( 
+            cityResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.cityName, value: item.cityId }
+                   )
+               }
+               )
+           )
+            
+        }
+    }
+
+    onChangeCity = (cityName, cityId, selectOption) => {
+        console.log(cityName, cityId, selectOption)
+        this.setState({
+            cityName: selectOption.cityName,
+            cityId:selectOption.cityId
+        })
+        this.props.getLocation(selectOption.cityId)
+    }
+    locationName=({locationResult})=>{
+        if(locationResult){
+             
+            return( 
+                locationResult.map((item) =>{ 
+                    return(
+                     { ...item, label: item.locationName, value: item.locationId }
+                    )
+                }
+                )
+            )
+             
+         }
+     }
+
+     onChangeLocation = (locationName, locationId, selectOption) => {
+         console.log(locationName, locationId, selectOption)
+         this.setState({
+             locationName: selectOption.locationName,
+             locationId:selectOption.locationId,
+            
+         })
+     }
     flatChangeHandler=(name,selectOption)=>{
         this.setState({
             [name]: selectOption.value
@@ -310,26 +407,24 @@ class FlatOwnerList extends Component {
     }
     editFlatOwnerDetails = () => {
         let errors = {};
-        const { ownerId, ownerName,
-            countryName,
-            stateName,
-            cityName,
-            locationName,
-            locationId,
-            cityId,
-            stateId,
-            countryId,
+        const { ownerId, 
+            firstName,
+            lastName,
+            email,
             dob,
             contact,
-            email,
-            societyName,
             permanentAddress,
-            towerId,
-            flatDetailId,
-            bankName, panCardNumber, IFSCCode, accountHolderName, gender,floorId,Aadhaar,accountNumber } = this.state
-        if (ownerName === '') {
-            errors.ownerName = "Owern Name can't be empty"
+             gender,
+             Aadhaar,
+             profilePicture,
+             fileName
+            } = this.state
+        if (firstName === '') {
+            errors.firstName = "Owern Name can't be empty"
         }
+    //    else if (lastName === '') {
+    //         errors.firstName = "Owern Name can't be empty"
+    //     }
         else if (dob === '') {
             errors.DOB = "Date of birth can't be empty"
         }
@@ -339,15 +434,15 @@ class FlatOwnerList extends Component {
         else if (email === '') {
             errors.email = "email can't be empty"
         }
-        else if (flatDetailId === '') {
-            errors.flatNO = "flat number can't be empty"
-        }
-        else if (towerId === '') {
-            errors.tower = "tower can't be empty"
-        }
-        else if (societyName === '') {
-            errors.societyName = "society name can't be empty"
-        }
+        // else if (flatDetailId === '') {
+        //     errors.flatNO = "flat number can't be empty"
+        // }
+        // else if (towerId === '') {
+        //     errors.tower = "tower can't be empty"
+        // }
+        // else if (societyName === '') {
+        //     errors.societyName = "society name can't be empty"
+        // }
 
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
@@ -355,25 +450,18 @@ class FlatOwnerList extends Component {
             this.setState({ loading: true })
             this.setState({ modal: !this.state.modal })
           console.log(  this.state.accountNumber)
-            this.props.updateFlatOwner(ownerId, ownerName,
+            this.props.updateFlatOwner(
+                ownerId,
+                firstName,
+                lastName,
                 email,
-                societyName,
                 contact,
                 permanentAddress,
-                towerId,
-                flatDetailId,
-                accountHolderName,
-                bankName,
-                panCardNumber,
-                IFSCCode, countryName,
-                stateName,
-                cityName,
-                locationName,
-                locationId,
-                cityId,
-                stateId,
-                countryId,
-                gender,floorId,Aadhaar,accountNumber)
+                gender,
+                Aadhaar,
+                profilePicture,
+                fileName
+                )
                 .then(() => this.props.getOwnerList().then(() => this.setState({ loading: false })))
                 .catch(err => {
                     this.setState({ messageError: err.response.data.message, modal: !this.state.modal })
@@ -419,7 +507,60 @@ class FlatOwnerList extends Component {
                 return []
               }
         }
+
+        FileChange=(event)=>{
+
+            const files = event.target.files;
+            const file = files[0];
+            const fileName=file.name
+            if (files && file) {
+              const reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onload =  () =>{
+                  this.setState({
+                    profilePicture :
+                      reader.result,
+                      fileName
+                  })
+               
+              };
+            }
+           
+      }
+
+        editPermanentAddress = () => {
+            if (!!document.getElementById('isChecked').checked) {
+                console.log('is checked')
+                //    this.setState({permanentAddress: this.state.currentAddress, permanentAddressVisible:true, editPermanent:false})
+                this.setState({ editPermanent: true, permanentAddress: '', userPermanent: true, countryId:'',stateId:'',
+            cityId:'', locationId:'' })
+            }
+            else {
+                // this.setState({permanentAddress: '' , permanentAddressVisible:false, editPermanent:true})
+                this.setState({ editPermanent: false, permanentAddress: this.state.readOnlyPermanent, userPermanent: false,
+                countryId:this.state.readOnlyCountryId, stateId:this.state.readOnlyStateId, cityId:this.state.readOnlyCityId,
+            locationId: this.state.readOnlyLocationId })
+            }
+        }
     
+        permanentAddressChange = (e) => {
+            console.log(this.state)
+            if (!!this.state.errors[e.target.name]) {
+                let errors = Object.assign({}, this.state.errors);
+                delete errors[e.target.name];
+                this.setState({ permanentAddressDefault: e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+                this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1 , errors });
+            }
+            else {
+                this.setState({permanentAddressDefault: e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+                this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
+            }
+            // if(!!document.getElementById('isChecked1').checked){
+            //     this.setState({currentAddress: e.target.value + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+            //     this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
+            // }
+        }
+
     close = () => {
         return this.props.history.replace('/superDashBoard')
     }
@@ -439,14 +580,13 @@ class FlatOwnerList extends Component {
                             this.setState((state) => {
                                 return {
                                     sortVal: !state.sortVal,
-                                    filterName: 'ownerName'
+                                    filterName: 'firstName'
                                 }
                             });
                         }}>Name <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th style={{ textAlign: "center" }}>Contact No.</th>
+                    <th style={{ textAlign: "center", width: "16%" }}>Corresponding Address</th>
                     <th style={{ textAlign: "center", width: "16%" }}>Permanent Address</th>
-                    <th style={{ textAlign: "center" }}>Tower Name</th>
-                    <th style={{ textAlign: "center" }}>Flat No.</th>
                     <th style={{ textAlign: "center", width: "8%" }}>View Member</th>
                     <th style={{ textAlign: "center" }}>Actions</th>
                 </tr>
@@ -484,51 +624,63 @@ class FlatOwnerList extends Component {
                                 }
                                 } /></Label>
                             {!this.state.loading ? tableData : <Spinner />}
-                            <Modal isOpen={this.state.modal} toggle={this.toggles}>
+                            <Modal isOpen={this.state.modal} toggle={this.toggles} style={{width:"100% !important"}}>
                                 <ModalHeader toggle={this.toggle}>Edit Flat Owner</ModalHeader>
                                 <ModalBody>
-                                    <h3>Flat Owner Details</h3>
-                                    <FormGroup>
-                                        <span className="error">{this.state.message}</span>
-                                        <Label>Owner Name</Label>
-                                        <Input style={{ 'textTransform': 'capitalize' }} placeholder="Full Name" maxLength={50} name='ownerName' onChange={this.onChangeHandler} value={this.state.ownerName} />
-                                        <span className="error">{this.state.errors.ownerName}</span>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>Date Of Birth</Label>
-                                        <Input type='date' max={this.maxDate()} name='dob' onChange={this.onChangeHandler} />
-                                        <span className="error">{this.state.errors.DOB}</span>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>Gender:</Label>
-                                        <Label htmlFor="Gender1" style={{ paddingRight: '35px', paddingLeft: '20px' }}>Male</Label>
-                                        <span><Input type="radio" id="Gender1" name="gender" onChange={this.onChangeHandler} value="male" /></span>
-                                        <Label htmlFor="Gender2" style={{ paddingRight: '35px', paddingLeft: '20px' }}>Female</Label>
-                                        <span><Input type="radio" id="Gender2" name="gender" onChange={this.onChangeHandler} value="female" /></span>
-                                        <Label htmlFor="Gender3" style={{ paddingRight: '35px', paddingLeft: '20px' }}>Other</Label>
-                                        <span><Input type="radio" id="Gender3" name="gender" onChange={this.onChangeHandler} value="other" /></span>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>Contact Number</Label>
-                                        <Input placeholder="Contact Number" onKeyPress={this.OnKeyPresshandlerPhone} type="text" maxLength={10} value={this.state.contact} onChange={this.onChangeHandler} name="contact" />
-                                        <span className="error">{this.state.errors.number}</span>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>Email </Label>
-                                        <Input placeholder="Email" type='email' name='email'
-                                            onChange={this.onChangeHandler}
-                                            onBlur={this.OnKeyPresshandlerEmail}
-                                            onKeyPress={this.OnKeyPresshandlerEmail} value={this.state.email} />
-                                        <span className="error">{this.state.errors.email}</span>
-                                        <span style={{ display: this.state.emailError ? 'block' : 'none', color: 'red' }}>email is not valid</span>
-                                    </FormGroup>
-                                    <FormGroup>
+                                <FormGroup>
+                            <Label>Upload Profile Pic</Label>                               
+                                <Input accept='image/*' style={{display:'inline-block'}}type="file" name ="profilePic" onChange={this.FileChange} />
+                            </FormGroup>
+                                <FormGroup>
+                                <Label>First Name</Label>
+                                <Input  style={{'textTransform': 'capitalize' }} placeholder="First Name" maxLength={50} name='firstName' onChange={this.onChangeHandler} value={this.state.firstName} />
+                                <span className="error">{this.state.errors.ownerName}</span>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Last Name</Label>
+                                <Input  style={{'textTransform': 'capitalize' }} placeholder="Last Name" maxLength={50} name='lastName' onChange={this.onChangeHandler} value={this.state.lastName}/>
+                                <span className="error">{this.state.errors.ownerName}</span>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Date Of Birth</Label>
+                                <Input  type='date' max={this.maxDate()} name='dob' onChange={this.onChangeHandler} value={this.state.dob}/>
+                                <span className="error">{this.state.errors.DOB}</span>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Gender:</Label>
+                                <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
+                                <span><Input type="radio" id="Gender1" name="gender" onChange={this.onChangeHandler} value={this.state.Male} checked={this.state.Male===this.state.gender ? true : false}/></span>
+                                
+                                
+                                <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
+                                <span><Input type="radio" id="Gender2" name="gender" onChange={this.onChangeHandler} value={this.state.Female} checked={this.state.Female===this.state.gender ? true : false}/></span>
+                               
+                               
+                                <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
+                                <span><Input type="radio" id="Gender3" name="gender" onChange={this.onChangeHandler} value={this.state.Other} checked={this.state.Other===this.state.gender ? true : false}/></span>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Contact Number</Label>
+                                <Input placeholder="Contact Number" onKeyPress={this.OnKeyPresshandlerPhone} type="text" maxLength={10} value={this.state.contact} onChange={this.onChangeHandler} name="contact" />
+                                <span className="error">{this.state.errors.number}</span>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Email </Label>
+                                <Input placeholder="Email" type='email' name='email' 
+                                onChange={this.onChangeHandler} 
+                                onBlur={this.OnKeyPresshandlerEmail}
+                                onKeyPress={this.OnKeyPresshandlerEmail}
+                                value={this.state.email} />
+                                <span className="error">{this.state.errors.email}</span>
+                                <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
+                            </FormGroup>
+                            <FormGroup>
                                 <Label>Aadhaar Number</Label>
-                                <Input placeholder='Aadhaar Number' value={this.state.Aadhaar} onChange={this.onChangeHandler} name='Aadhaar' onKeyPress={this.OnKeyPresshandlerPhone} type="text" maxLength={12}/>
+                                <Input placeholder='Aadhaar Number' onChange={this.onChangeHandler} name='Aadhaar' onKeyPress={this.OnKeyPresshandlerPhone} type="text" value={this.state.Aadhaar} maxLength={12}/>
                                 <span className="error">{this.state.errors.Aadhaar}</span>
                             </FormGroup>
-                                    <FormGroup>
-                                        <Label>Society Name</Label>
+
+                                        {/* <Label>Society Name</Label>
                                         <Select options={this.getSociety(this.props.societyName)}
                                             onChange={this.societyChangeHandler.bind(this)}
                                             value={this.state.currentSociety}
@@ -550,12 +702,77 @@ class FlatOwnerList extends Component {
                                     <FormGroup>
                                         <Label>Location</Label>
                                         <Input readOnly type="text" placeholder="Location Name" value={this.state.locationName} />
-                                    </FormGroup>
-                                    <FormGroup>
+                                    </FormGroup> */}
+                                    {/* <FormGroup>
                                         <Label>Permanent Address</Label>
-                                        <Input type="text" style={{ 'textTransform': 'capitalize' }} maxLength={100} placeholder="Permanent Address" name="permanentAddress" onChange={this.onChangeHandler} value={this.state.permanentAddress} />
+                                        <Input type="textarea" style={{ 'textTransform': 'capitalize' }} maxLength={100} placeholder="Permanent Address" name="permanentAddress" onChange={this.onChangeHandler} value={this.state.permanentAddress} />
                                     </FormGroup >
+                                    <FormGroup> */}
                                     <FormGroup>
+                <Row md={12}>
+                    {!this.state.editPermanent ? <Col md={6}>
+                        <Label>Permanent Address</Label>
+                        <Input type="textarea"
+                            value={this.state.readOnlyPermanent}
+                            placeholder="Permanent Address"
+                            name="readOnlyPermanent" disabled
+                            onChange={this.onChange}
+                            maxLength='250' />
+                        {/* {!this.state.permanentAddress ? <span className="error">{this.state.errors.permanentAddress}</span>: ''} */}
+                    </Col> : ''}
+                    {this.state.editPermanent ? <Col md={12} style={{ textAlign: 'center' }}><span style={{ fontWeight: '600' }}>Do you want to edit permanent address?</span><Input type="checkbox" onChange={this.editPermanentAddress} name="isChecked" id="isChecked" className="ml-3" /></Col> :
+                        <Col md={6} style={{ paddingTop: '44px' }}><span style={{ fontWeight: '600' }}>Do you want to edit permanent<br /> address?</span><Input type="checkbox" onChange={this.editPermanentAddress} name="isChecked" id="isChecked" className="ml-3" /></Col>}
+                </Row>
+            </FormGroup>
+
+             {this.state.userPermanent ? <div>
+                <h4 style={{textAlign:'center', fontWeight:'600', textDecoration: 'underline'}}>Edit Permanent Address</h4>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={3}>
+                            <Label>Country</Label>
+                            <Select placeholder={<DefaultSelect />} options={this.countryName(this.props.societyName)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                        </Col>
+                        <Col md={3}>
+                            <Label>State</Label>
+                            <Select placeholder={<DefaultSelect />} options={this.stateName(this.props.societyName)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                        </Col>
+                        <Col md={3}>
+                            <Label>City</Label>
+                            <Select placeholder={<DefaultSelect />} options={this.cityName(this.props.societyName)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
+                        </Col>
+                        <Col md={3}>
+                            <Label>Location</Label>
+                            <Select placeholder={<DefaultSelect />} options={this.locationName(this.props.societyName)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={4}>
+                            <Label>Pin/Zip Code</Label>
+                            <Input type="text" onChange={this.pinChange1}
+                                maxLength="6" minLength="5" onKeyPress={this.OnKeyPresshandlerPhone}
+                                name="pin1" placeholder="Pin/Zip Code" />
+                            <span className="error">{this.state.errors.pin1}</span>
+                        </Col>
+                        <Col md={8}>
+                            <Label>Address</Label>
+                            <Input id="currentAddress"
+                                disabled={!(this.state.countryId && this.state.stateId
+                                    && this.state.cityId)}
+                                type="textarea"
+                                placeholder="Permanent Address"
+                                name="permanentAddressDefault"
+                                onChange={this.permanentAddressChange}
+                                maxLength='250' />
+                            {<span className="error">{this.state.errors.permanentAddressDefault}</span>}
+                        </Col>
+                    </Row>
+                </FormGroup>
+            </div> : ''}
+         
+                                    {/* <FormGroup>
                                         <Label>Tower</Label>
                                         <Select options={this.getTower(this.props.towerList)}
                                             onChange={this.towerChangeHandler.bind(this, 'towerId')}
@@ -576,33 +793,33 @@ class FlatOwnerList extends Component {
                                     placeholder={PlaceHolder} 
                                   onChange={this.flatChangeHandler.bind(this,'flatDetailId')}
                                     />
-                            </FormGroup >
-                                    <h3>Bank Details</h3>
-                                    <FormGroup>
-                                        <Label>Bank Name</Label>
-                                        <Input placeholder="Bank Name" type="text" name="bankName" onChange={this.onChangeHandler} value={this.state.bankName} />
-                                        <span className="error">{this.state.errors.bankName}</span>
-                                    </FormGroup>
-                                    <FormGroup>
+                            </FormGroup > */}
+                                    {/* <h3>Bank Details</h3> */}
+                                    {/* <FormGroup>/ */}
+                                        {/* <Label>Bank Name</Label> */}
+                                        {/* <Input placeholder="Bank Name" type="text" name="bankName" onChange={this.onChangeHandler} value={this.state.bankName} /> */}
+                                        {/* <span className="error">{this.state.errors.bankName}</span> */}
+                                    {/* </FormGroup> */}
+                                    {/* <FormGroup>
                                         <Label>Account Holder Name</Label>
                                         <Input style={{ 'textTransform': 'capitalize' }} placeholder="Holder Name" type="text" name='accountHolderName' value={this.state.accountHolderName} onChange={this.onChangeHandler} />
                                         <span className="error">{this.state.errors.holderName}</span>
-                                    </FormGroup>
-                                    <FormGroup >
+                                    </FormGroup> */}
+                                    {/* <FormGroup >
                                         <Label>Account Number</Label>
                                         <Input placeholder="Account Number" type="text" maxLength={18} onKeyPress={this.OnKeyPresshandlerPhone} name='accountNumber' onChange={this.onChangeHandler} value={this.state.accountNumber} />
                                         <span className="error">{this.state.errors.accountNumber}</span>
-                                    </FormGroup>
-                                    <FormGroup>
+                                    </FormGroup> */}
+                                    {/* <FormGroup>
                                         <Label>PAN Card Number</Label>
                                         <Input placeholder="Pan Number" type='text' maxLength={10} name="panCardNumber" onChange={this.onChangeHandler} value={this.state.panNumber} value={this.state.panCardNumber} />
                                         <span className="error">{this.state.errors.panNumber}</span>
-                                    </FormGroup>
-                                    <FormGroup>
+                                    </FormGroup> */}
+                                    {/* <FormGroup>
                                         <Label>IFSC Code</Label>
                                         <Input placeholder="IFSC code" type='text' maxLength={11} name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode} />
                                         <span className="error">{this.state.errors.ifscCode}</span>
-                                    </FormGroup>
+                                    </FormGroup> */}
                                     <FormGroup>
                                         <Button color="primary mr-2" onClick={this.editFlatOwnerDetails}>Save</Button>
                                         <Button color="danger" onClick={this.toggles}>Cancel</Button>
@@ -632,7 +849,7 @@ function mapStateToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getOwnerList, multipleDelete, removeOwner, detailSociety, getFlatDetails, viewTower, updateFlatOwner, getOwnerMember,getAllFloor }, dispatch)
+    return bindActionCreators({ getOwnerList, multipleDelete, removeOwner, detailSociety, getFlatDetails, viewTower, updateFlatOwner, getOwnerMember,getAllFloor,getCountry,getState,getCity, getLocation }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerList);

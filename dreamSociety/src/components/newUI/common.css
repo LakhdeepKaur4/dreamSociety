@@ -340,3 +340,10 @@ ul ul a {
     position: relative;
     margin-left: 40px;
 }
+
+@media screen and (max-width: 768px) {
+    .modal-content{
+        width: 100%;
+        right: 0;
+    }
+}
