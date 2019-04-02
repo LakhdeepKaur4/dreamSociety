@@ -92,7 +92,10 @@ class EmployeeMaster extends Component{
             gender:'',
             pinCode:'',
             pinCode1:'',
-            defaultCurrentAddress:''
+            defaultCurrentAddress:'',
+            emailServerError:'',
+            userNameServerError:'',
+            contactServerError:'', 
 
     }
 
@@ -108,7 +111,19 @@ class EmployeeMaster extends Component{
     }
 }
 
- 
+onPicChange=(event)=>{
+    if(!!this.state.errors[event.target.name]){
+    
+        let errors =Object.assign({},this.state.errors)
+        delete  errors[event.target.name]
+        this.setState({[event.target.name]:event.target.files[0],errors});
+    }
+    else{
+  this.setState({ profilePicture : event.target.files[0]})
+   
+    }
+
+}   
     
 onFileChange=(event)=>{
        if(!!this.state.errors[event.target.name]){
@@ -188,9 +203,9 @@ FileChange=(event)=>{
          if(!this.state.documentTwo){
             errors.documentTwo ="please select an ID"
          }
-        //  if(!this.state.profilePicture){
-        //   errors.profilePicture =" Profile picture can't be empty."
-        //  }
+         if(!this.state.profilePicture){
+          errors.profilePicture =" Profile picture can't be empty."
+         }
          if(!this.state.firstName){
          errors.firstName ="First Name can't be empty. "
          }
@@ -238,10 +253,17 @@ FileChange=(event)=>{
         data.append('employeeDetailId',this.state.employeeDetailId)
         
           
-        this.props.AddEmployee(data).then(()=>this.props.history.push('/superDashboard/displayEmployee'));
-
-
+        this.props.AddEmployee(data).then(()=>this.props.history.push('/superDashboard/displayEmployee')).catch(err => {
+            err.response.data;
+            console.log(err.response.data)
+            this.setState({emailServerError: err.response.data.messageEmailErr, 
+                contactServerError: err.response.data.messageContactErr,loading: false})
+        });
+        
     }
+
+
+    
     }
  
  
@@ -488,6 +510,7 @@ defaultPermanentAddressChange = (e) =>{
 }
 
 onChange = (e) => {
+    this.setState({emailServerError:'',contactServerError:''  })
     if (!!this.state.errors[e.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[e.target.name];
@@ -702,8 +725,8 @@ let formData=
                         maxLength="70"
                         onChange={this.onChange}
                         onKeyPress={this.emailValid} />
-                        {/* {this.state.emailServerError ? <span className="error">{this.state.emailServerError}</span> : null}
-                        <span><br/></span> */}
+                        {this.state.emailServerError ? <span className="error">{this.state.emailServerError}</span> : null}
+                        <span><br/></span>
                         {<span className="error">{this.state.errors.email}</span>}
                         {<span className="error">{this.state.emailValidError}</span>}
                     </div>
