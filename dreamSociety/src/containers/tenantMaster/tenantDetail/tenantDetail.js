@@ -68,7 +68,8 @@ class TenantDetail extends Component {
             editAddress:'',
             accountHolderName:'',
             IFSCCode:'',
-            bankName:''
+            bankName:'',
+            pin:''
         }
     }
 
@@ -87,6 +88,7 @@ class TenantDetail extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/');
     }
+
 
     route = () => {
         this.props.history.push('/superDashBoard/addTenant');
@@ -210,11 +212,8 @@ class TenantDetail extends Component {
                             <td>{index + 1}</td>
                             <td style={{width:'4%'}}><img style={{ width: "100%", height: "20%" }} src={PicURN+item.picture} alt="Profile Pic" /></td>
                             <td>{item.firstName}{`  `}{item.lastName} </td>
-                            <td>{item.gender}</td>
                             <td>{item.email}</td>
                             <td>{item.contact}</td>
-                            <td>{item.dob}</td>
-                            <td>{item.permanentAddress}</td>
                             <td><Button color="success" onClick={this.viewMembers.bind(this, item.tenantId)}>
                                 View</Button></td>
                             <td>
@@ -428,7 +427,8 @@ class TenantDetail extends Component {
     }
 
     refreshDataAfterUpdate = () => {
-        this.props.getTenantDetail().then(() => this.setState({editTenant:false, modalLoading: false}))
+        this.props.getTenantDetail().then(() => this.setState({editTenant:false, modalLoading: false,permanentAddressVisible:true, editPermanent:false, permanentAddress:this.state.readOnly, countryId:'',
+        stateId:'', cityId:'', locationId:''}))
         .catch(() => this.setState({modalLoading:false}));
     }
 
@@ -437,7 +437,7 @@ class TenantDetail extends Component {
         
         let {firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
             accountHolderName ,accountNumber ,dob, permanentAddress, fileName, towerName, flatNo, towerId,
-        picture, flatDetailId, tenantId, floorId, countryId, stateId, cityId, locationId} = this.state;
+        picture, flatDetailId, tenantId, floorId, countryId, stateId, cityId, locationId, pin} = this.state;
         let errors = {};
         if(this.state.firstName === '') {
             console.log('tenant');
@@ -463,6 +463,10 @@ class TenantDetail extends Component {
             console.log('dob');
             errors.dob = `Date of birth can't be empty.`;
         }
+        if(!!document.getElementById('isChecked').checked){
+            if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
+            else if(pin.length < 5) errors.pin = `Pin/Zip code should be of 5 digits atleast.`
+        }
         if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
         else if(IFSCCode.length < 11) errors.IFSCCode = `IFSC code should be of 11 digits.`
         if(bankName === '') errors.bankName = `Bank name can't be empty.`
@@ -485,6 +489,10 @@ class TenantDetail extends Component {
         console.log(flatDetailId, picture, tenantId)
         if(isValid){
             console.log(this.state.floorId)
+            if(this.state.pin !== ''){
+                this.setState({permanentAddress: this.state.permanentAddress + ' , ' + 
+                'Pin Code: ' + this.state.pin})
+            }
             this.setState({modalLoading: true})
             this.props.updateTenantDetail(firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
                  accountNumber,accountHolderName, dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId,
@@ -692,19 +700,20 @@ class TenantDetail extends Component {
             locationId:selectOption.locationId,
             
         })
+        this.updatePermanentAddress1(selectOption.locationName)
     }
 
     permanentAddressChange = (e) => {
             if (!!this.state.errors[e.target.name]) {
                 let errors = Object.assign({}, this.state.errors);
                 delete errors[e.target.name];
-                this.setState({editAddress:e.target.value, permanentAddress: e.target.value + ' , ' + this.state.locationName + ' , ' +
-                this.state.cityName + ' , ' + this.state.stateName + ' , ' + this.state.countryName , errors })
+                this.setState({editAddress:e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+                this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin , errors })
                 console.log(this.state)
             }
             else {
-                this.setState({editAddress:e.target.value, permanentAddress: e.target.value + ' , ' + this.state.locationName + ' , ' +
-                this.state.cityName + ' , ' + this.state.stateName + ' , ' + this.state.countryName })
+                this.setState({editAddress:e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+                this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin })
                 console.log(this.state)
             }
     }
@@ -731,6 +740,35 @@ class TenantDetail extends Component {
         if (!pattern.test(inputChar)) {
             event.preventDefault();
         }
+    }
+
+    updatePermanentAddress = (pin) => {
+        console.log(pin)
+        this.setState({pin})
+        this.setState({permanentAddress: this.state.editAddress  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+        this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
+    }
+
+    updatePermanentAddress1 = (location) => {
+        console.log(location)
+        this.setState({location})
+        this.setState({permanentAddress: this.state.editAddress  + ', ' + location + ', ' +
+        this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
+    }
+
+    pinChange = (e) => {
+        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ pin: e.target.value, errors });
+        }
+        else {
+            this.setState({pin: e.target.value});
+        }
+        this.updatePermanentAddress(e.target.value)
     }
 
     render(){
@@ -836,11 +874,8 @@ class TenantDetail extends Component {
                                         this.setState((state)=>{return {sortVal:!state.sortVal,
                                         filterName:'firstName'}});
                                     }}>Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-                                    <th>Gender</th>
                                     <th>Email</th>
                                     <th>Contact No.</th>
-                                    <th>Date of Birth</th>
-                                    <th>Permanent Address</th>
                                     <th>Member details</th>
                                     <th>Tenant Detail</th>
                                     <th>Actions</th>
@@ -957,14 +992,23 @@ class TenantDetail extends Component {
                 </Row>
             </FormGroup>
             <FormGroup>
-                <span style={{fontWeight:'bold'}}>Do you want to edit your permanent address?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
+                <Row md={12}>
+                    {this.state.permanentAddressVisible ? <Col md={6}>
+                        <Label>Permanent Address</Label>
+                        <Input type="textarea" id="permanentaddr" disabled maxLength="500" value={this.state.permanentAddress} name="permanentAddress" onChange={this.onChange} />
+                    </Col> : ''}
+                    {this.state.permanentAddressVisible ? <Col md={6} style={{paddingTop:'38px'}}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your permanent address?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
+                    </Col> : 
+                    <Col md={12} style={{textAlign:'center'}}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your permanent address?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
+                    </Col>}
+                </Row>
             </FormGroup>
-            {this.state.permanentAddressVisible ? <FormGroup>
-                <Label>Permanent Address</Label>
-                <Input type="textarea" id="permanentaddr" disabled maxLength="500" value={this.state.permanentAddress} name="permanentAddress" onChange={this.onChange} />
-            </FormGroup> : ''}
+            
             {this.state.editPermanent ? <div>
-                <h4 style={{textAlign:'center', marginBottom:'20px', fontWeight:'600'}}>Permanent Address</h4>
+                <h4 style={{textAlign:'center', marginBottom:'20px', fontWeight:'600', textDecoration:'underline'}}>
+                Edit Permanent Address</h4>
                 <FormGroup>
                     <Row md={12}>
                         <Col md={6}>
@@ -988,6 +1032,13 @@ class TenantDetail extends Component {
                             <Select placeholder={<DefaultSelect/>} options={this.locationName(this.props.societyReducer)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
                         </Col>
                     </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Label>Pin/Zip Code</Label>
+                    <Input type="text" onChange={this.pinChange}
+                    maxLength="6" onKeyPress={this.numberValidation}
+                        name="pin" placeholder="Pin/Zip Code" />
+                        <span className="error">{this.state.errors.pin}</span>
                 </FormGroup>
                 <FormGroup>
                     <Label>Address</Label>

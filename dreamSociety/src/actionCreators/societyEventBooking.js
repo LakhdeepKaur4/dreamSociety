@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN,ADD_SOCIETY_EVENTS,GET_SOCIETY_EVENTS,UPDATE_SOCIETY_EVENTS} from '../actions/index';
+import {URN,ADD_SOCIETY_EVENTS,GET_SOCIETY_EVENTS,UPDATE_SOCIETY_EVENTS ,DELETE_SOCIETY_EVENT,DELETE_EVENTS_IDS} from '../actions/index';
 
 
 export function addSocietyEvents( values){
@@ -26,12 +26,34 @@ export function addSocietyEvents( values){
     }
 }
 
-export function updateSocietyEvents(societyEventBookId,eventId,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description ){
+export function updateSocietyEvents(societyEventBookId,eventId,eventName,organisedBy,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description ){
 
-  const request = axios.put(`${URN}/updateEventBookings/`+societyEventBookId,{eventId,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description },{headers:authHeader()})
+  const request = axios.put(`${URN}/updateEventBookings/`+societyEventBookId,{eventId,eventName,organisedBy,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description },{headers:authHeader()})
   .then()
   return{
       type:UPDATE_SOCIETY_EVENTS,
+      payload:request
+  }
+}
+
+export function deleteEvents(societyEventBookId,isActive){
+  console.log(societyEventBookId)
+    const request = axios.put(`${URN}/deleteEventBooking/`+societyEventBookId,{isActive}, {headers:authHeader()})
+     .then()     
+     return{
+ 
+         type:DELETE_SOCIETY_EVENT,
+         payload: request 
+     }
+}
+
+export function deleteSelectedEvent(ids){
+  const request= axios.put(`${URN}/deleteEventBooking/deleteSelected`,{ids},{headers:authHeader()})
+  .then((response) => response.data)
+  .then(() => this.getSocietyEvents());
+
+  return{
+      type:DELETE_EVENTS_IDS,
       payload:request
   }
 }

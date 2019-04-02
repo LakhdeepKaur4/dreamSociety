@@ -12,7 +12,6 @@ class SocietyEventBooking extends Component {
         super(props);
         this.state = {
            eventId:'', 
-           societyEventName : '',
            organisedBy:'',
            startDate:'',
            endDate:'',
@@ -30,6 +29,8 @@ class SocietyEventBooking extends Component {
            charges:'',
            description:'',
            loading:false,
+           errors:{},
+           message:'',
         }
     }
 
@@ -39,7 +40,15 @@ class SocietyEventBooking extends Component {
     }
 
     handleChange=(event)=> {
-       this.setState({ [event.target.name]: event.target.value})
+        this.setState({message:''})
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value.trim('') });
+        }
     }
 
     h=(event)=>{
@@ -93,15 +102,72 @@ class SocietyEventBooking extends Component {
           isChecked: !this.state.isChecked,
         });
       }
+
     onSubmit=(event)=>{
         event.preventDefault();
         const Events= this.state;
-    
-        this.setState({loading: true});
-        this.props.addSocietyEvents(Events)
-        console.log(Events)
+        let errors = {};
+        if(this.state.eventId===''){
+            errors.eventId="Event Name can't be empty"
+        }     
+        else if(this.state.organisedBy===''){
+            errors.organisedBy="Organiser Name can't be empty"
+        }           
+        else if(this.state.startDate===''){
+            errors.startDate="Start Date can't be empty"
+        }          
+        else if(this.state.endDate===''){
+            errors.endDate="End Date can't be empty"
+        }
+        else if(this.state.startTime===''){
+            errors.startTime="Start Time can't be empty"
+        }
+        else if(this.state.endTime===''){
+            errors.endTime="End Time can't be empty"
+        }   
+        else if(this.state.perPersonCharge===''){
+            errors.perPersonCharge="Person Charges can't be empty"
+        }
+        else if(this.state.childAbove===''){
+            errors.childAbove="Child Above can't be empty"
+        }   
+        else if(this.state.charges===''){
+            errors.charges="Charges can't be empty"
+        }  
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0
+        if (isValid) {
+            this.setState({loading: true});
+            this.props.addSocietyEvents(Events)
+            .then(()=>this.props.history.push('/superDashboard/DisplaySocietyEventBooking'))
+            .catch((err)=>{
+                this.setState({message: err.response.data.message,loading:false})})
+
+            this.setState({
+                eventId:'', 
+                organisedBy:'',
+                startDate:'',
+                endDate:'',
+                startTime:'',
+                endTime:'',         
+                breakfast:false,
+                lunch:false,
+                eveningSnacks:false,
+                dinner:false,
+                dJ:false,
+                drinks:false,
+                invitationCardPicture:'',
+                perPersonCharge:'',
+                childAbove:'',
+                charges:'',
+                description:''
+            });
     }
-    
+}
+    push=()=>{
+        this.props.history.push('/superDashBoard/displaySocietyeventbooking')
+    }    
+
     logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
@@ -127,20 +193,22 @@ class SocietyEventBooking extends Component {
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event Name</Label>
-                                <Input type="select" name="societyEventName" defaultValue='no-value' onChange={this.handleChange}>
+                                <Input type="select" name="eventId" defaultValue='no-value' onChange={this.handleChange}>
                                 <DefaultSelect/>
                                 {this.getEventName(this.props.EventDetails)}                  
                                 </Input>
+                                <span className="error">{this.state.errors.eventId}</span>
                             </FormGroup>
                             </Col>
 
                             <Col md={6}>
                             <FormGroup>
-                            <Label>Event Oragnised By</Label>
+                            <Label>Event Organised By</Label>
                             <Input type="select" name="organisedBy" defaultValue='no-value' onChange={this.handleChange}>
                             <DefaultSelect/>
                             {this.getEventOrganiser(this.props.EventDetails)}                  
                             </Input>
+                            <span className="error">{this.state.errors.organisedBy}</span>
                             </FormGroup>
                             </Col>
                         </Row>
@@ -150,12 +218,15 @@ class SocietyEventBooking extends Component {
                             <FormGroup>
                                 <Label>Event Start Date</Label>
                                 <Input type="date" name="startDate" value={this.state.startDate} onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.startDate}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event End Date</Label>
                                 <Input type="date" name="endDate" value={this.state.endDate} onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.endDate}</span>
+                                <span className="error">{this.state.message}</span>
                             </FormGroup>
                             </Col>
                         </Row>
@@ -165,12 +236,14 @@ class SocietyEventBooking extends Component {
                             <FormGroup>
                                 <Label>Event Start Time</Label>
                                 <Input type="time" name="startTime" value={this.state.startTime} onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.startTime}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event End Time</Label>
                                 <Input type="time" name="endTime" value={this.state.endTime} onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.endTime}</span>
                         </FormGroup>
                             </Col>
                         </Row>
@@ -223,6 +296,7 @@ class SocietyEventBooking extends Component {
                             <FormGroup>
                                 <Label>Per Person Charge</Label>                               
                                 <Input type="text" name ="perPersonCharge"  placeholder="Enter Price"  onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.perPersonCharge}</span>
                             </FormGroup>
                             </Col> 
                         </Row>
@@ -231,12 +305,14 @@ class SocietyEventBooking extends Component {
                             <FormGroup>                               
                                 <Label>Child Above </Label>                               
                                 <Input type="text" name ="childAbove"  placeholder="Example 12 years"  onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.childAbove}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Charges </Label>                               
                                 <Input type="text" name ="charges" placeholder="Enter Price"   onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.charges}</span>
                             </FormGroup>
                             </Col>
                         </Row>
@@ -245,7 +321,7 @@ class SocietyEventBooking extends Component {
                                 <Input type="text" name ="description" placeholder="Description"  maxLength={3000} onChange={this.handleChange}/>
                             </FormGroup>
                             <Button color="success" className="mr-2">Submit</Button>             
-                            <Button color="danger" >Cancel</Button>
+                            <Button color="danger" onClick={this.push} >Cancel</Button>
 
                     </Form>
                 </UI>

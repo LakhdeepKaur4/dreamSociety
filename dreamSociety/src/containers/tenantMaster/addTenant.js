@@ -3,6 +3,7 @@ import UI from '../../components/newUI/superAdminDashboard';
 import { Form, FormGroup, Input, Button, Label, Col, Row } from 'reactstrap';
 import { connect } from 'react-redux';
 import Select from 'react-select';
+import DefaultSelect from '../../constants/defaultSelect';
 import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
@@ -66,7 +67,9 @@ class AddTenant extends Component{
             societyState:'',
             societyCity:'',
             societyLocation:"",
-            defaultPermanentAddress:''
+            defaultPermanentAddress:'',
+            pin:'',
+            pinCode:''
         }
     }
 
@@ -321,11 +324,12 @@ class AddTenant extends Component{
 
     nextPrev = () => {
         let errors = {};
-        const {firstName, lastName, dob, gender, contact, email, correspondenceAddress, aadhaarNumber, permanentAddress} = this.state;
+        const {firstName, lastName, dob, gender,permanentAddressUser, contact, email, correspondenceAddress, aadhaarNumber, permanentAddress} = this.state;
         if(this.state.step === 1){
             if(firstName === '') errors.firstName = `First Name can't be empty.`;
             if(lastName === '') errors.lastName = `Last Name can't be empty.`;
             if(dob === '') errors.dob = `Date of Birth can't be empty.`;
+            
             if(gender === '') errors.gender = `Gender can't be empty`;
             if(contact === '') errors.contact= `Contact can't be empty.`;
             else if(contact.length !== 10) errors.contact= `Contact should be og 10 digit.`;
@@ -356,20 +360,20 @@ class AddTenant extends Component{
         if(this.state.step === 3){
             this.setState({ step: this.state.step + 1 })
         }
-        const { towerId, floorId, flatDetailId } = this.state;
+        const { towerId, floorId, flatDetailId, pin } = this.state;
         if(this.state.step === 4){
             if(towerId === '') errors.towerId = `Please select Tower.`;
             if(floorId === '') errors.floorId = `Please select a Floor.`;
+            if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
             if(flatDetailId === '') errors.flatDetailId = `Please select a Flat.`;
             if(correspondenceAddress === '') errors.correspondenceAddress = `Corresponding Address can't be empty.`;
-            if(permanentAddress === '') errors.permanentAddress = `Permanent Address can't be empty.`;
+            if(permanentAddressUser === '') errors.permanentAddressUser = `Permanent Address can't be empty.`;
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
                 this.setState({ step: this.state.step + 1 })
             }
         }
-
     }
 
     
@@ -514,7 +518,8 @@ class AddTenant extends Component{
             
                 this.setState({
                     countryName: selectOption.countryName,
-                    countryId:selectOption.countryId, 
+                    countryId:selectOption.countryId,
+                    
                 })
                 
                 this.props.getState(selectOption.countryId)
@@ -591,6 +596,15 @@ class AddTenant extends Component{
                     locationId:selectOption.locationId,
                     
                 })
+                this.updatePermanentAddress1(selectOption.locationName)
+            }
+
+            updatePermanentAddress1 = (location) => {
+                console.log(location)
+                this.setState({location})
+                this.setState({permanentAddress: this.state.permanentAddressUser  + ', ' + location + ', ' +
+                this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+                console.log('updatePermanentAddress', this.state.permanentAddress)
             }
 
     
@@ -606,12 +620,22 @@ class AddTenant extends Component{
                 }
             }
 
+            
+
             permanentAddressChange = (e) => {
-                this.setState({[e.target.name]: e.target.value, 
-                    permanentAddress: this.state.permanentAddressUser + ' , ' + this.state.locationName + ' , ' +
-                this.state.cityName + ' , ' + this.state.stateName + ' , ' + this.state.countryName })
+                if (!!this.state.errors[e.target.name]) {
+                    let errors = Object.assign({}, this.state.errors);
+                    delete errors[e.target.name];
+                    this.setState({permanentAddressUser:e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+                    this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin , errors })
                     console.log(this.state)
-            }
+                }
+                else {
+                    this.setState({permanentAddressUser:e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+                    this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin })
+                    console.log(this.state)
+                }
+        }
             
     defaultPermanentAddressChange = (e) =>{
         this.setState({defaultPermanentAddress: this.state.correspondenceAddress ,permanentAddress: e.target.value})
@@ -623,6 +647,27 @@ class AddTenant extends Component{
         if (!pattern.test(inputChar)) {
             event.preventDefault();
         }
+    }
+
+    pinChange = (e) => {
+        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ pin: e.target.value, errors });
+        }
+        else {
+            this.setState({pin: e.target.value});
+        }
+        this.updatePermanentAddress(e.target.value)
+    }
+
+    updatePermanentAddress = (pin) => {
+        console.log(pin)
+        this.setState({pin})
+        this.setState({permanentAddress: this.state.permanentAddressUser  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+        this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
     }
 
     render(){
@@ -831,9 +876,9 @@ class AddTenant extends Component{
                             <Label>Corresponding Address</Label>
                             <Input type="textarea" value={this.state.correspondenceAddress} onChange={this.correspondenceAddressChange} maxLength="250"
                              name="correspondenceAddress" placeholder="Corresponding Address" />
-                             {<span className="error">
+                             {!this.state.towerId ?<span className="error">
                                 {this.state.errors.correspondenceAddress}
-                            </span>}
+                            </span>:''}
                         </FormGroup >
                         
                         <FormGroup>
@@ -843,34 +888,49 @@ class AddTenant extends Component{
                         {this.state.defaultPermanent ? <FormGroup>
                             <Label>Permanent Address</Label>
                             <Input id="permanentaddr" readOnly type="textarea" onChange={this.defaultPermanentAddressChange}
-                            maxLength="250" value={this.state.defaultPermanentAddress}
+                            maxLength="250" value={this.state.defaultPermanentAddress} value={this.state.correspondenceAddress}
                              name="defaultPermanentAddress" placeholder="Permanent Address" />
                         </FormGroup> : ''}
                         {this.state.permanentAddrDefault ? <div>
-                            <FormGroup>
-                            <Label>Country</Label>
-                            <Select options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                        <FormGroup>
+                            <Row md={12}>
+                                <Col md={6}>
+                                    <Label>Country</Label>
+                                    <Select placeholder={<DefaultSelect/>} options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                                </Col>
+                                <Col md={6}>
+                                    <Label>State</Label>
+                                    <Select placeholder={<DefaultSelect/>} options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                                </Col>
+                            </Row>
                         </FormGroup>
                         <FormGroup>
-                            <Label>State</Label>
-                            <Select options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                            <Row md={12}>
+                                <Col md={6}>
+                                    <Label>City</Label>
+                                    <Select placeholder={<DefaultSelect/>} options={this.cityName(this.props.societyReducer)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
+                                </Col>
+                                <Col md={6}>
+                                    <Label>Location</Label>
+                                    <Select placeholder={<DefaultSelect/>} options={this.locationName(this.props.societyReducer)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
+                                </Col>
+                            </Row>
                         </FormGroup>
                         <FormGroup>
-                            <Label>City</Label>
-                            <Select options={this.cityName(this.props.societyReducer)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
+                            <Label>Pin/Zip Code</Label>
+                            <Input type="text" onChange={this.pinChange}
+                            maxLength="6" onKeyPress={this.numberValidation}
+                                name="pin" placeholder="Pin/Zip Code" />
+                                <span className="error">{this.state.errors.pin}</span>
                         </FormGroup>
                         <FormGroup>
-                            <Label>Location</Label>
-                            <Select options={this.locationName(this.props.societyReducer)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
-                        </FormGroup>
-                        <FormGroup>
-                            <Label>Permanent Address</Label>
-                            <Input type="textarea" onChange={this.permanentAddressChange}
-                            maxLength="250" disabled={!(this.state.countryId && this.state.stateId
-                                && this.state.cityId)}
-                             name="permanentAddressUser" placeholder="Permanent Address" />
-                             {<span className="error">
-                                {this.state.errors.permanentAddress}
+                            <Label>Address</Label>
+                            <Input type="textarea" disabled={!(this.state.countryId && this.state.stateId
+                            && this.state.cityId) ? true : false} onChange={this.permanentAddressChange}
+                            maxLength="250"
+                                name="permanentAddressUser" placeholder="Permanent Address" />
+                                {<span className="error">
+                                {this.state.errors.permanentAddressUser}
                             </span>}
                         </FormGroup>
                         </div> : ''}

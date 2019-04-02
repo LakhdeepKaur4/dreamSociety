@@ -1,8 +1,8 @@
-// export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 export  const DocURN = 'https://dreamsociety.herokuapp.com/';
 export  const UR = 'https://dreamsociety.herokuapp.com/';
-export  const URN = 'http://192.168.1.105:8082/api';
+// export  const URN = 'http://192.168.1.105:8082/api';
 
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
@@ -236,3 +236,18 @@ export const GET_ALL_FLOOR='GET_ALL_FLOOR';
 export const ADD_SOCIETY_EVENTS='add_society_events';
 export const GET_SOCIETY_EVENTS ='get_society_events'
 export const UPDATE_SOCIETY_EVENTS='update_society_events';
+export const DELETE_SOCIETY_EVENT='delete_society_events';
+export const DELETE_EVENTS_IDS='delete_selected_events';
+
+export const GET_ROLES1="GET_ROLES1";
+export const GET_ACTIVE_LIST="GET_ACTIVE_LIST";
+export const GET_DEACTIVE_LIST="GET_DEACTIVE_LIST";
+export const DEACTIVATE_MEMBER="DEACTIVATE_MEMBER";
+export const DEACTIVATE_MULTIPLE_MEMBER="DEACTIVATE_MULTIPLE_MEMBER";
+export const DELETE_MULTIPLE_MEMBER1="DELETE_MULTIPLE_MEMBER1";
+
+
+export const ASSIGN_ROLES='ASSIGN_ROLES';
+export const ASSIGN_OWNER='ASSIGN_OWNER';
+export const ASSIGN_CHANGES='ASSIGN_CHANGES';
+export const ASSIGN_POST='ASSIGN_POST';

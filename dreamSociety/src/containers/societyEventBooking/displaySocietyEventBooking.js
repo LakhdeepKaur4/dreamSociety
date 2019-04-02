@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {Form,Table, Row, Col,Button,  Modal, FormGroup, ModalBody, ModalHeader, Label, Input} from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
-import {getSocietyEvents,updateSocietyEvents} from '../../actionCreators/societyEventBooking';
+import {getSocietyEvents,updateSocietyEvents,deleteEvents,deleteSelectedEvent} from '../../actionCreators/societyEventBooking';
 import Spinner from '../../components/spinner/spinner';
 import {ViewEvent,GetEventOrganiser} from '../../actionCreators/eventMasterAction';
 import DefaultSelect from '../../constants/defaultSelect';
@@ -14,7 +14,6 @@ class DisplaySocietyEventBooking extends Component {
         super(props);
         this.state = {
            eventId:'', 
-           societyEventName : '',
            organisedBy:'',
            startDate:'',
            endDate:'',
@@ -34,6 +33,9 @@ class DisplaySocietyEventBooking extends Component {
            editEventModal:false,
            modalLoading:false,
            loading:true,
+           isDisabled:true,
+           ids:[],
+           errors:{}
         }
     }
 
@@ -48,7 +50,7 @@ class DisplaySocietyEventBooking extends Component {
     }   
 
     editEvent(societyEventBookId,eventId,eventName,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description){
-       console.log(societyEventBookId,eventId,eventName,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description,"priy")
+       console.log(eventId,'eventId',eventName,"eventName")
         this.setState({
             societyEventBookId,eventId,eventName,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description
             ,editEventModal: !this.state.editEventModal})
@@ -60,26 +62,62 @@ class DisplaySocietyEventBooking extends Component {
         });
     }
 
+    deleteEvents(societyEventBookId){console.log(societyEventBookId)
+        this.setState({loading:true})
+        let {isActive } =this.state;  
+        this.props.deleteEvents(societyEventBookId,isActive)
+            .then(() => this.refreshData())
+            this.setState({isActive:false})
+    }
+    
+    deleteSelected(ids){console.log(ids)
+        this.setState({loading:true,
+        isDisabled:true});
+        this.props.deleteSelectedEvent(ids)
+        .then(() => this.refreshData())
+      
+    }
+
+
     renderList({ societyEvents }) {
       console.log(societyEvents)
         if (societyEvents ) {
             return societyEvents.eventBookings.map((item)=>{
                 return(
                     <tr key={item.societyEventBookId}>
-                       <td><input type="checkbox" ></input></td>
+                       <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyEventBookId}
+                         onChange={(e) => {
+                            const {societyEventBookId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(societyEventBookId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1);
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
+                                }
+                            }
+                            else {
+                                this.setState({ids: [...this.state.ids, societyEventBookId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                                
+                             }}/></td>
                        <td>{item.event_master?item.event_master.eventName:''}</td>
                        <td>{item.user_master.firstName + " " + item.user_master.lastName}</td>
                        <td>{item.startDate}</td>
                        <td>{item.endDate}</td>
                        <td>{item.startTime}</td>
-                       <td>{item.endTime}</td>
+                       <td>{item.endTime}</td>                       
                        <td>{item.perPersonCharge}</td>
                        <td>{item.childAbove}</td>
                        <td>{item.charges}</td>
-                       <td>{item.description}</td>
                        <td>
                              <Button color="success" className="mr-2" onClick={this.editEvent.bind(this,item.societyEventBookId,item.event_master.eventId,item.event_master.eventName,item.user_master.firstName,item.startDate,item.endDate,item.startTime,item.endTime,item.perPersonCharge,item.childAbove,item.charges,item.description)}>Edit</Button>                 
-                             <Button color="danger" >Delete</Button>
+                             <Button color="danger"  onClick={this.deleteEvents.bind(this, item.societyEventBookId)}>Delete</Button>
                         </td>
                    
                     </tr>
@@ -91,8 +129,14 @@ class DisplaySocietyEventBooking extends Component {
 
 
  handleChange=(event)=> {
-      this.setState({ [event.target.name]: event.target.value})
-      console.log(event.target.value,"abc")
+    if (!!this.state.errors[event.target.name]) {
+        let errors = Object.assign({}, this.state.errors);
+        delete errors[event.target.name];
+        this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+    }
+    else {
+        this.setState({ [event.target.name]: event.target.value.trim('') });
+    }
  }
  
  getEventName({getEvent}){
@@ -120,11 +164,61 @@ getEventOrganiser({events}){
 }
 
 updateEvents(){
-    const {societyEventBookId,eventId,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description}= this.state; 
-console.log(societyEventBookId,eventId,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description)
-    this.props.updateSocietyEvents(societyEventBookId,eventId,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description)
-    .then(()=>this.refreshData())
-    this.setState({ modalLoading: true})
+    const {societyEventBookId,eventId,eventName,organisedBy,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description}= this.state; 
+    let errors = {};
+        if(this.state.perPersonCharge===''){
+            errors.perPersonCharge="Person Charges can't be empty"
+            }
+            else if(this.state.childAbove===''){
+                errors.childAbove="Child Above can't be empty"
+            }   
+            else if(this.state.charges===''){
+                errors.charges="Charges can't be empty"
+            }  
+            this.setState({ errors });
+            const isValid = Object.keys(errors).length === 0
+            if (isValid) {
+                this.setState({loading: true});
+                this.props.updateSocietyEvents(societyEventBookId,eventId,eventName,organisedBy,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description)
+                .then(()=>this.refreshData())
+                .catch(err=>{
+                    this.setState({modalLoading:false, loading: false})
+                    })
+                this.setState({ modalLoading: true})
+                
+}}
+
+
+selectAll = () => {
+    let selectMultiple = document.getElementsByClassName('SelectAll');
+    let ar =[];
+        for(var i = 0; i < selectMultiple.length; i++){
+                ar.push(parseInt(selectMultiple[i].value));
+                selectMultiple[i].checked = true;
+        }
+        this.setState({ids: ar});
+        if(ar.length > 0){
+            this.setState({isDisabled: false});
+        }
+}
+
+unSelectAll = () =>{
+    
+    let unSelectMultiple = document.getElementsByClassName('SelectAll');
+    let allIds = [];
+    for(var i = 0; i < unSelectMultiple.length; i++){
+            unSelectMultiple[i].checked = false
+    }
+    
+    this.setState({ids: [ ...allIds]});
+    if(allIds.length === 0){
+        this.setState({isDisabled: true});
+    }
+    
+}
+
+push=()=>{
+    this.props.history.push('/superDashBoard/societyeventbooking')
 }
 
 render() { 
@@ -138,11 +232,10 @@ render() {
                 <th>Event Start Date</th>
                 <th>Event End Date</th>
                 <th>Event Start Time</th>
-                <th>Event End Time</th>
-                <th>Per Person Charges</th>
+                <th>Event End Time</th>             
+                <th  style={{width:'6%'}}>Per Person Charges</th>
                 <th>Child Above</th>
-                <th>Charges</th>
-                <th>Description</th>        
+                <th  style={{width:'4%'}}>Charges</th>   
                 <th>Actions</th>                          
             </tr>
         
@@ -201,6 +294,7 @@ render() {
                             <FormGroup>
                                 <Label>Per Person Charge</Label>                               
                                 <Input type="text" name ="perPersonCharge"  value={this.state.perPersonCharge}  onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.perPersonCharge}</span>
                             </FormGroup>
 
                             <Row form>
@@ -208,12 +302,14 @@ render() {
                             <FormGroup>                               
                                 <Label>Child Above </Label>                               
                                 <Input type="text" name ="childAbove"  value={this.state.childAbove} onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.childAbove}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Charges </Label>                               
                                 <Input type="text" name ="charges" value={this.state.charges} onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.charges}</span>
                             </FormGroup>
                             </Col>
                             </Row>
@@ -228,7 +324,8 @@ render() {
                                 <Button color="danger">Cancel</Button>
                             </FormGroup>
 </div>
-   
+         let deleteSelectedButton = <Button color="danger" className="mb-2"
+         onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>
   return (
 
       <div>
@@ -241,13 +338,27 @@ render() {
                             </div> 
                             
                     <Modal isOpen={this.state.editEventModal} toggle={this.toggleEditEventModal.bind(this)} >
-                        <ModalHeader toggle={this.toggleEditEventModal.bind(this)}>Edit a Service</ModalHeader>
+                        <ModalHeader toggle={this.toggleEditEventModal.bind(this)}>Edit a Event</ModalHeader>
                         <ModalBody>
                            {!this.state.modalLoading?modalData:<Spinner/>}
                         </ModalBody>
                     </Modal>
-                    <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Service Details</h3>
-                    <Button color="primary" type="button" onClick={this.push}>Add Services</Button></div>
+                    <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Society Event Booking Details</h3>
+                    <Button color="primary" type="button" onClick={this.push}>Book Society Event</Button></div>
+                    
+                    
+                    {deleteSelectedButton}
+                    <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                        id="allSelect"
+                        type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        } }/>
+                    </Label>
                     {!this.state.loading ? tableData : <Spinner />}
                 </div>
                
@@ -269,7 +380,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({getSocietyEvents,ViewEvent,GetEventOrganiser,updateSocietyEvents}, dispatch);
+    return bindActionCreators({getSocietyEvents,ViewEvent,GetEventOrganiser,updateSocietyEvents,deleteEvents,deleteSelectedEvent}, dispatch);
 }
 
 

@@ -1,4 +1,4 @@
-import {ADD_SOCIETY_EVENTS,GET_SOCIETY_EVENTS,UPDATE_SOCIETY_EVENTS} from '../../actions/index';
+import {ADD_SOCIETY_EVENTS,GET_SOCIETY_EVENTS,UPDATE_SOCIETY_EVENTS,DELETE_SOCIETY_EVENT,DELETE_EVENTS_IDS} from '../../actions/index';
 
 
 export default function(state={}, action) {
@@ -12,6 +12,12 @@ export default function(state={}, action) {
             
         case UPDATE_SOCIETY_EVENTS:
              return {...state, updateSociety: action.payload}
+        
+        case DELETE_SOCIETY_EVENT:
+             return {...state, deleteSociety: action.payload}
+
+        case DELETE_EVENTS_IDS:
+             return {...state, deleteAllSociety: action.payload}
             default:
             return state;
     

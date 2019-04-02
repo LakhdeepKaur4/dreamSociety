@@ -36,12 +36,17 @@ button:disabled {
 }
 
 form{
-    width: 600px;
+    width: 800px;
     padding: 20px 20px;
     border-radius: 20px;
     margin: 0 auto;
     background: #f3f3f3;
     position: relative
+}
+
+.modal-content{
+    width: 700px;
+    right: 80px;
 }
 
 #sidebar {
@@ -334,4 +339,11 @@ ul ul a {
 #sortArrow{
     position: relative;
     margin-left: 40px;
+}
+
+@media screen and (max-width: 768px) {
+    .modal-content{
+        width: 100%;
+        right: 0;
+    }
 }
