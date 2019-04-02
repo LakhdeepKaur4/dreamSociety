@@ -178,6 +178,10 @@ console.log('lllllllll=======',this.state.floorId)
             console.log(selectOption.value)
         })
     }
+    maxDateMember = () => {
+        var d = new Date();
+        return d.toISOString().split('T')[0];
+    }
     maxDate = () => {
         var d = new Date();
         d.setFullYear(d.getFullYear()-18, d.getMonth());
@@ -593,7 +597,7 @@ OnKeyPresshandlerEmail=(event)=> {
                     </Col>
                     <Col md={3}>
                                 <Label>Date Of Birth</Label>
-                                <Input  type='date' max={this.maxDate()} name={`memberDOB${i}`} onChange={this.onChangeHandler} />
+                                <Input  type='date' max={this.maxDateMember()} name={`memberDOB${i}`} onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.DOB}</span>
                                 </Col>
                     <Col md={3}>

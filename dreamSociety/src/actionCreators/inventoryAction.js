@@ -29,12 +29,10 @@ export function getInventory() {
     }
 }
 
-export function updateInventory(assetId, inventoryId, assetType, ) {
-    console.log(assetId, inventoryId, assetType)
+export function updateInventory(inventoryId,dateOfPurchase,rate ) {
+    console.log(inventoryId,dateOfPurchase,rate )
     const data = {
-        assetId: assetId,
-        inventoryId: inventoryId,
-        assetTypeId: assetType,
+        inventoryId,dateOfPurchase,rate
     }
     const request = axios.put(`${URN}/inventory/${inventoryId}`, data, { headers: authHeader() })
         .then(response => response.data)
