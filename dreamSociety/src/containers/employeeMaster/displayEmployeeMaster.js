@@ -17,9 +17,9 @@ import './employeeMaster.css'
 import GoogleDocsViewer from 'react-google-docs-viewer';
 
 class DisplayEmployeeMaster extends Component {
-
-
-    state = {
+constructor(props){
+    super(props);
+    this.state = {
         editEmployeeData: {
             employeeId: '',
            
@@ -47,21 +47,41 @@ class DisplayEmployeeMaster extends Component {
         cityId: '',
         locationName: '',
         locationId: '',
+        countryId1:'',
+        countryName: '',
+        stateId1: '',
+        stateName:'',
+        cityId1: '',
+        cityName:'',
+        locationName:'',
+        locationId1:'',
+        countryId2:'',
+        countryName: '',
+        stateId2: '',
+        stateName:'',
+        cityId2: '',
+        cityName:'',
+        locationName:'',
+        locationId2:'',
         firstName: '',
         middleName: '',
         lastName: '',
         salary: '',
         address:'',
         serviceType:'',
+        employeeDetailId:'',
         ids: [],
         isDisabled: true,
         documentOne: '',
-            documentTwo:'',
-            errors:{},
-            filterName:"firstName",
-            modalLoading:false
+        documentTwo:'',
+        errors:{},
+        filterName:"firstName",
+        modalLoading:false
 
     }
+}
+
+    
     componentDidMount() {
         this.refreshData()
     }
@@ -85,10 +105,9 @@ class DisplayEmployeeMaster extends Component {
         this.props.getEmployee().then(()=>this.setState({loading:false}))
     }
 
-    onChange=(e)=> {
+    onChange= (e)=> {
 
-
-        if (!!this.state.errors[e.target.name]) {
+        if(!!this.state.errors[e.target.name]) {
           let errors = Object.assign({}, this.state.errors);
           delete errors[e.target.name];
           this.setState({ [e.target.name]: e.target.value, errors });
@@ -200,9 +219,9 @@ ImageChange =(event)=>{
      }
      
 
-    editEmployee(employeeId, picture, firstName, middleName, lastName, salary,address, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate,contact,email,serviceType) {
-
-        this.setState({ editEmployeeData: { employeeId,  startDate }, serviceType,contact,email,  documentOne, documentTwo, picture, firstName, middleName, lastName, salary, address,countryName, stateName, cityName, locationName, editEmployeeModal: !this.state.editEmployeeModal })
+    editEmployee(employeeId, picture, firstName, middleName, lastName, salary,currentAddress, countryName, stateName, cityName, locationName,permanentAddress, countryName1,stateName1,cityName1, documentOne, documentTwo, startDate,contact,email,employeeDetailId) {
+          console.log(employeeDetailId,"emp");
+        this.setState({ editEmployeeData: { employeeId,  startDate },contact,email,  documentOne, documentTwo, picture, firstName, middleName, lastName, salary, currentAddress,countryName, stateName, cityName, locationName,permanentAddress, countryName1,stateName1,cityName1,employeeDetailId, editEmployeeModal: !this.state.editEmployeeModal })
 
     }
 
@@ -213,8 +232,8 @@ ImageChange =(event)=>{
         
     
          
-         if(!this.state.firstName){
-         errors.firstName ="First Name can't be empty. "
+         if(this.state.firstName ===''){
+            errors.firstName ="First Name can't be empty. "
          }
        
          if(!this.state.lastName){
@@ -234,8 +253,7 @@ ImageChange =(event)=>{
 
   this.setState({ errors });
   const isValid = Object.keys(errors).length === 0
-  if (isValid) {        
-     
+  if (isValid) {    
         const data = new FormData()
         data.append('documentOne', this.state.documentOne)
         data.append('documentTwo', this.state.documentTwo)
@@ -252,7 +270,16 @@ ImageChange =(event)=>{
         data.append('email',this.state.email)
         data.append('contact',this.state.contact)
         data.append('serviceType',this.state.serviceType)
-        
+        data.append('permanentAddress',this.state.address)
+        data.append('currentAddress',this.state.address)
+        data.append('stateId1',this.state.stateId)
+        data.append('countryId1',this.state.countryId)
+        data.append('cityId1',this.state.cityId)
+        data.append('locationId1',this.state.locationId)
+        data.append('stateId2',this.state.stateId)
+        data.append('countryId2',this.state.countryId)
+        data.append('cityId2',this.state.cityId)
+        data.append('locationId2',this.state.locationId)
         data.append('profilePicture', this.state.profilePicture)
 
         this.props.updateEmployee(this.state.editEmployeeData.employeeId,data).then(() =>  this.refreshData())
@@ -288,18 +315,24 @@ ImageChange =(event)=>{
     }
     searchFilter(search) {
         return function (x) {
-            return x.firstName.toLowerCase().includes(search.toLowerCase()) || !search;
+            console.log(x.firstName)
+            return x.firstName.toLowerCase().indexOf(search) !== -1 || !search;
         }
     }
 
 
     getEmployee({ getEmployee }) {
         console.log(getEmployee, "1223");
-        if (getEmployee) {
+        console.log(getEmployee)
+        if (getEmployee &&  getEmployee.data.employee) {
             return (
                 getEmployee.data.employee.sort((item1,item2)=>{
-                    var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
-                    return this.state.sortVal ? cmprVal : -cmprVal;
+                    if(item1 && item2){
+                        console.log(item1)
+                        var cmprVal = (item1.firstName.localeCompare(item2.firstName))
+                        return this.state.sortVal ? cmprVal : -cmprVal;
+                    }
+                    
                 }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                     return (
@@ -333,21 +366,23 @@ ImageChange =(event)=>{
                             < td>{item.middleName}</td>
                             <td>{item.lastName}</td>
                             <td>{item.salary}</td>
-                            <td>{item.serviceType}</td>
+                            <td> {item.employee_detail_master.serviceType}-{item.employee_detail_master.employee_work_type_master.employeeWorkType}-
+                            {item.employee_detail_master.employee_type_master.employeeType}</td>
                             <td>{item.contact}</td>
                             <td> {item.email}</td>
-                            <td> {item.address},{item.location_master.locationName},{item.city_master.cityName},{item.state_master.stateName},{item.country_master.countryName}</td>
-
+                            <td> {item.currentAddress},{item.Location1.locationName},{item.City1.cityName},{item.State1.stateName},{item.Country1.countryName}</td>
+                            <td>  {item.permanentAddress}, {item.Location2.locationName},{item.City2.cityName},{item.State2.stateName},{item.Country2.countryName}</td>
                             <td>
                                 <button className="btn btn-light" onClick={this.openModal.bind(this, UR+item.documentOne)}>View Document</button>
                             </td>
+        
                             <td>  <button className="btn btn-light" onClick={this.Modal.bind(this, UR+item.documentTwo)}>View Document </button></td>
 
                             <td>{item.startDate}</td>
                             
 
                             <td>
-                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeId, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.address,item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, UR+item.documentOne, UR+item.documentTwo, item.startDate,item.contact,item.email,item.serviceType)} >Edit</button>
+                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeId, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.currentAddress,item.Country1.countryName, item.State1.stateName, item.City1.cityName,item.permanentAddress,item.Country2.countryName, item.State2.stateName, item.City2.cityName, item.Location1.locationName, UR+item.documentOne, UR+item.documentTwo, item.startDate,item.contact,item.email,item.employee_detail_master.employeeDetailId)} >Edit</button>
                                 <button className="btn btn-danger" onClick={this.deleteEmployee.bind(this, item.employeeId)}> Delete</button>
                             </td>
 
@@ -475,7 +510,7 @@ ImageChange =(event)=>{
             return( 
              countryResult.map((item) =>{
                     return(
-                        <option key={item.countryId} value={item.countryName}>
+                        <option key={item.countryId1} value={item.countryName}>
                          {item.countryName}
                         </option>
                     )
@@ -491,7 +526,7 @@ ImageChange =(event)=>{
             return( 
              stateResult.map((item) =>{ 
                     return(
-                        <option key={item.stateId} value={item.stateName}>
+                        <option key={item.stateId1} value={item.stateName}>
                          {item.stateName}
                         </option>
                     )
@@ -508,7 +543,7 @@ ImageChange =(event)=>{
             return( 
              cityResult.map((item) =>{ 
                     return(
-                        <option key={item.cityId} value={item.cityName}>
+                        <option key={item.cityId1} value={item.cityName}>
                          {item.cityName}
                         </option>
                     )
@@ -530,7 +565,72 @@ ImageChange =(event)=>{
             return( 
                 locationResult.map((item) =>{ 
                     return(
-                        <option key={item.locationId} value={item.locationName}>
+                        <option key={item.locationId1} value={item.locationName}>
+                         {item.locationName}
+                        </option>
+                    )
+                }
+                )
+            )
+             
+         }
+     }
+     country = ({countryResult}) => {
+        if(countryResult){
+          
+           return( 
+            countryResult.map((item) =>{
+                   return(
+                       <option key={item.countryId2} value={item.countryName}>
+                        {item.countryName}
+                       </option>
+                   )
+               })
+           )
+            
+        }
+    }
+   
+    state = ({stateResult}) => {
+        if(stateResult){
+          
+           return( 
+            stateResult.map((item) =>{ 
+                   return(
+                       <option key={item.stateId2} value={item.stateName}>
+                        {item.stateName}
+                       </option>
+                   )
+               })
+           )
+            
+        }
+    }
+   
+    city=({cityResult})=>{
+       
+        if(cityResult){
+            
+           return( 
+            cityResult.map((item) =>{ 
+                   return(
+                       <option key={item.cityId2} value={item.cityName}>
+                        {item.cityName}
+                       </option>
+                   )
+               }
+               )
+           )
+            
+        }
+    }
+    location=({locationResult})=>{
+        if(locationResult){
+             
+            return( 
+                locationResult.map((item) =>{ 
+                    return(
+                        <option key={item.locationId2} value={item.locationName}>
                          {item.locationName}
                         </option>
                     )
@@ -561,6 +661,10 @@ ImageChange =(event)=>{
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
+
+    changeFirst = (e) => {
+        this.setState({[e.target.name]:e.target.value})
+    }
     
 
     render() {
@@ -583,8 +687,9 @@ ImageChange =(event)=>{
                         <th> Service Type</th>
                          <th> Contact</th>
                         <th>Email Address </th>
-                     
-                        <th>Address</th>
+                        <th> Current Address</th>
+                        <th> Permanent Address</th>
+                        
                         <th>ID</th>
                         <th>ID2</th>
                         <th> Employment  Date</th>
@@ -623,13 +728,13 @@ ImageChange =(event)=>{
                               <FormGroup>
                                   <Label > First Name</Label>
                                   <Input  name="firstName" value={this.state.firstName}
-                                      onChange={this.onChange}
+                                      onChange={this.changeFirst}
               
                                       maxLength={25}
                                       onKeyPress={this.OnKeyPresshandler}
 
                                   />
-                                  <span className="error">{this.state.errors.firstName}</span>
+                                  {/* <span className="error">{this.state.errors.firstName}</span> */}
                               </FormGroup>
                               <FormGroup>
                                   <Label > Middle Name</Label>
@@ -640,7 +745,7 @@ ImageChange =(event)=>{
                                       onKeyPress={this.OnKeyPresshandler}
 
                                   />
-                                   <span  className="error">{this.state.errors.middleName}</span>
+                                   {/* <span  className="error">{this.state.errors.middleName}</span> */}
                               </FormGroup>
                               <FormGroup>
                                   <Label > Last Name</Label>
@@ -651,21 +756,21 @@ ImageChange =(event)=>{
                                       onKeyPress={this.OnKeyPresshandler}
 
                                   />
-                                   <span  className="error">{this.state.errors.lastName}</span>
+                                   {/* <span  className="error">{this.state.errors.lastName}</span> */}
                               </FormGroup>
                               <FormGroup>
                                   <Label > Salary(In terms of CTC)</Label>
                                   <Input name="salary" value={this.state.salary}
                                       onChange={this.onChange}
                                        maxLength={20}
-                                      onkeyPress={this.OnkeyPressNumber}
+                                      onKeyPress={this.OnkeyPressNumber}
                                              
                                   />
-                                   <span  className="error" >{this.state.errors.salary}</span>
+                                   {/* <span  className="error" >{this.state.errors.salary}</span> */}
                                    </FormGroup>
                                    <FormGroup>
                                   <Label > Service Type</Label>
-                                  <Input type="select" name="serviceType" value={this.state.serviceType}
+                                  <Input type="select" name="employeeDetailId" value={this.state.employeeDetailId}
                                       onChange={this.onChange}
                                        maxLength={20}
                                       
@@ -697,14 +802,14 @@ ImageChange =(event)=>{
                                    
                                    </FormGroup>
                                    <FormGroup>
-                                  <Label > Address</Label>
-                                  <Input name="address" value={this.state.address}
+                                  <Label > Current Address</Label>
+                                  <Input name="address" value={this.state.currentAddress}
                                       onChange={this.onChange}
 
                                     
 
                                   />
-                                   <span  className="error" >{this.state.errors.address}</span>
+                                   {/* <span  className="error" >{this.state.errors.address}</span> */}
                                    </FormGroup>
                                    <FormGroup>
                               <Label>Country Name</Label>
@@ -750,8 +855,62 @@ ImageChange =(event)=>{
                               </Input>
                            
                           </FormGroup> 
+                          <FormGroup>
+                                  <Label >  Permanent Address</Label>
+                                  <Input name="permanentAddress" value={this.state.permanentAddress}
+                                      onChange={this.onChange}
+
+                                    
+
+                                  />
+                                   {/* <span  className="error" >{this.state.errors.address}</span> */}
+                                   </FormGroup>
+                                   <FormGroup>
+                              <Label>Country Name</Label>
+                              <Input type="select" name="countryId"  onChange={this.onChangeCountry} 
+                              value={this.state.country1Name} required>
+                                  <DefaultSelect />
+                                  {this.country(this.props.societyReducer)}
+                              </Input>
+                         
+                          </FormGroup>
+
+                          <FormGroup>
+                              <Label>State Name</Label>
+                              <Input type="select" name="stateId"
+                                onChange={this.onChangeState}
+                                  required>
+                                {/* {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
+                                {this.state.stateName ? <DefaultSelect />: null}
+                                  {this.state.stateName ? null : this.state(this.props.societyReducer)} */}
+                              </Input>
+                          
+                          </FormGroup>
+
+                          <FormGroup>
+                              <Label>City Name</Label>
+                              <Input type="select" name="cityId"
+                               onChange={this.onChangeCity} required>
+                              {/* {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
+                              {this.state.cityName ? <DefaultSelect />: null}
+                              {this.state.cityName ? null : this.city(this.props.societyReducer)}   */}
+                              </Input>
+                    
+                          </FormGroup>
+
+                          <FormGroup>
+                              <Label>Location Name</Label>
+                              <Input type="select" name="locationId"
+                                onChange={this.onChangeLocation}
+                               required>
+                               {/* {this.state.locationName ? <option>{this.state.locationName}</option> : <option disabled>--Select--</option>}
+                               {this.state.locationName ? <DefaultSelect />: null}
+                               {this.state.locationName ? null : this.location(this.props.societyReducer)}   */}
+                              </Input>
+                           
+                          </FormGroup> 
                                  
-                                  
+                                
                               <FormGroup>
                                 
                                   <Label > Document One</Label>
@@ -786,7 +945,7 @@ ImageChange =(event)=>{
                                   </div>
                               </FormGroup>
 
-                              <FormGroup>
+                              {/* <FormGroup>
                                   <Label > Employment Date</Label>
                                   <Input type="date" value={this.state.editEmployeeData.startDate}
                                       onChange={(e) => {
@@ -803,7 +962,7 @@ ImageChange =(event)=>{
                                   />
                               </FormGroup>
                             
-      
+       */}
 
            </div>
 
