@@ -16,8 +16,9 @@ import GoogleDocsViewer from 'react-google-docs-viewer';
 
 class DisplayEmployeeMaster extends Component {
 
-
-    state = {
+constructor(props){
+    super(props);
+    this.state = {
         editEmployeeData: {
             employeeId: '',
            
@@ -91,6 +92,8 @@ class DisplayEmployeeMaster extends Component {
             userCurrent:false,
 
     }
+}
+    
     componentDidMount() {
         this.refreshData()
     }
@@ -111,6 +114,10 @@ class DisplayEmployeeMaster extends Component {
         this.props.getState().then(() => this.setState({ loading: false,modalLoading:false }))
         this.props.getCity().then(() => this.setState({ loading: false,modalLoading:false }))
         this.props.getLocation().then(() => this.setState({ loading: false,modalLoading:false }))
+        this.setState({userPermanent:false,editPermanent:false,
+            countryId:'',stateId:'', cityId:'', locationId:'',
+            editCurrent:false, userCurrent:false, currentCountryId:'', currentStateId:'',currentCityId:'',
+            currentLocationId:''})
     }
 
     onChange=(e)=> {
@@ -155,7 +162,10 @@ class DisplayEmployeeMaster extends Component {
 
     toggleEditEmployeeModal() {
         this.setState({
-            editEmployeeModal: !this.state.editEmployeeModal
+            editEmployeeModal: !this.state.editEmployeeModal,userPermanent:false,editPermanent:false,countryId:'',
+            stateId:'', cityId:'', locationId:'', permanentAddress: this.state.readOnlyPermanent,
+            editCurrent:false, userCurrent:false, currentCountryId:'', currentStateId:'',currentCityId:'',
+            currentLocationId:'', sameAsPermanent:false
         })
     }
     onPicChange=(event)=>{
@@ -228,9 +238,10 @@ ImageChange =(event)=>{
      }
      
 
-    editEmployee(employeeId, picture, firstName, middleName, lastName, salary,address, countryName, stateName, cityName, locationName, documentOne, documentTwo, startDate) {
+    editEmployee(employeeId, picture, firstName, middleName, lastName, salary, currentAddress, permanentAddress, documentOne, documentTwo, startDate) {
 
-        this.setState({ editEmployeeData: { employeeId,  startDate },   documentOne, documentTwo, picture, firstName, middleName, lastName, salary, address,countryName, stateName, cityName, locationName, editEmployeeModal: !this.state.editEmployeeModal })
+        this.setState({ editEmployeeData: { employeeId,  startDate },   documentOne, documentTwo, picture, firstName, middleName, lastName, salary,  currentAddress, permanentAddress,
+            readOnlyPermanent: permanentAddress, readOnlyCurrent: currentAddress, editEmployeeModal: !this.state.editEmployeeModal })
 
     }
 
@@ -247,9 +258,20 @@ ImageChange =(event)=>{
          if(!this.state.salary){
             errors.salary ="salary can't be empty."
               }
-              if(!this.state.address){
-                errors.address ="Address can't be empty."
-                  }
+              if(!!document.getElementById('isChecked').checked){
+                if(this.state.permanentAddressDefault === '') errors.permanentAddressDefault = `Permanent Address can't be empty.`;
+            }
+            if(!!document.getElementById('isCurrentChecked').checked){
+                if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
+            }
+            if(!!document.getElementById('isChecked').checked){
+                if(this.state.pin1 === '') errors.pin1 = `Pin/Zip code can't be empty.`
+                else if(this.state.pin1.length < 5) errors.pin1 = `Pin/Zip code should be of 5 digits atleast.`
+            }
+            if(!!document.getElementById('isCurrentChecked').checked){
+                if(this.state.pin === '') errors.pin = `Pin/Zip code can't be empty.`
+                else if(this.state.pin.length < 5) errors.pin = `Pin/Zip code should be of 5 digits atleast.`
+            }
          if(!this.state.editEmployeeData.startDate){
           errors.startDate =" Start Date can't be empty ."
          }
@@ -267,7 +289,8 @@ ImageChange =(event)=>{
         data.append('middleName', this.state.middleName)
         data.append('lastName', this.state.lastName)
         data.append('salary',this.state.salary)
-        data.append('address',this.state.address)
+        data.append('currentAddress',this.state.currentAddress)
+        data.append('permanentAddress',this.state.permanentAddress)
         data.append('countryId', this.state.countryId)
         data.append('stateId', this.state.stateId)
         data.append('cityId', this.state.cityId)
@@ -439,7 +462,8 @@ ImageChange =(event)=>{
                             <td>{item.lastName}</td>
                             <td>{item.salary}</td>
 
-                            <td> {item.address},{item.location_master.locationName},{item.city_master.cityName},{item.state_master.stateName},{item.country_master.countryName}</td>
+                            {/* <td> {item.address},{item.location_master.locationName},{item.city_master.cityName},{item.state_master.stateName},{item.country_master.countryName}</td> */}
+                            <td>{item.currentAddress}</td>
 
                             <td>
                                 <button className="btn btn-light" onClick={this.openModal.bind(this, UR+item.documentOne)}>View Document</button>
@@ -450,7 +474,7 @@ ImageChange =(event)=>{
                             
 
                             <td>
-                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeId, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.address,item.country_master.countryName, item.state_master.stateName, item.city_master.cityName, item.location_master.locationName, UR+item.documentOne, UR+item.documentTwo, item.startDate)} >Edit</button>
+                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeId, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.currentAddress,item.permanentAddress, UR+item.documentOne, UR+item.documentTwo, item.startDate)} >Edit</button>
                                 <button className="btn btn-danger" onClick={this.deleteEmployee.bind(this, item.employeeId)}> Delete</button>
                             </td>
 
@@ -509,133 +533,137 @@ ImageChange =(event)=>{
 
 
      
-    onChangeCountry= (event)=>{
-        console.log(this.state);
-         let selected= event.target.value
-     
-         var country = _.find(this.props.societyReducer.countryResult,function(obj){
-             return obj.countryName === selected
-             })
-         
-             this.setState({
-                 countryName: country.countryName,
-                 countryId:country.countryId,
-                 stateName: '',
-                 cityName: '',
-                 locationName: ''
-             })
-             
-             this.props.getState(country.countryId)
-           
-     }
+    onChangeCountry = (countryId, countryName, selectOption) => {
+        console.log(countryId, countryName, selectOption)
     
-     
-     onChangeState= (event)=>{
-        console.log(this.state);
-         let selected= event.target.value
-         
-         var data1 = _.find(this.props.societyReducer.stateResult,function(obj){
-             return obj.stateName === selected
-             })
-     
-             this.setState({
-                 stateName: data1.stateName,
-                 stateId:data1.stateId
-             })
-             this.props.getCity(data1.stateId);
-     }
-    
-     onChangeCity= (event)=>{
-         console.log(this.state);
-         let selected= event.target.value
-     
-         var data2 = _.find(this.props.societyReducer.cityResult,function(obj){
-             return obj.cityName === selected
-             })
-             this.setState({
-                 cityName:data2.cityName,
-                 cityId:data2.cityId
-             })
-             this.props.getLocation(data2.cityId)
-     }
-    
-     onChangeLocation = (event) => {
-        console.log(this.state);
-         let selected=event.target.value;
-    
-         var data3= _.find(this.props.societyReducer.locationResult, function(obj){
-             return obj.locationName === selected
-         });
-         this.setState({
-             locationName:data3.locationName,
-             locationId:data3.locationId
-         })
-     }
-     
-     countryName = ({countryResult}) => {
-         if(countryResult){
-           
-            return( 
-             countryResult.map((item) =>{
-                    return(
-                        <option key={item.countryId} value={item.countryName}>
-                         {item.countryName}
-                        </option>
-                    )
-                })
-            )
-             
-         }
-     }
-    
-     stateName = ({stateResult}) => {
-         if(stateResult){
-           
-            return( 
-             stateResult.map((item) =>{ 
-                    return(
-                        <option key={item.stateId} value={item.stateName}>
-                         {item.stateName}
-                        </option>
-                    )
-                })
-            )
-             
-         }
-     }
-    
-     cityName=({cityResult})=>{
+        this.setState({
+            countryName: selectOption.countryName,
+            countryId:selectOption.countryId, 
+        })
         
-         if(cityResult){
+        this.props.getState(selectOption.countryId)
+    }
+    
+     
+     onChangeState = (stateName, stateId, selectOption) => {
+        console.log(stateName, stateId, selectOption)
+        this.setState({
+            stateName: selectOption.stateName,
+            stateId:selectOption.stateId
+        })
+        this.props.getCity(selectOption.stateId);
+    }
+    
+     onChangeCity = (cityName, cityId, selectOption) => {
+        console.log(cityName, cityId, selectOption)
+        this.setState({
+            cityName: selectOption.cityName,
+            cityId:selectOption.cityId
+        })
+        this.props.getLocation(selectOption.cityId)
+    }
+    
+     onChangeLocation = (locationName, locationId, selectOption) => {
+        console.log(locationName, locationId, selectOption)
+        this.setState({
+            locationName: selectOption.locationName,
+            locationId:selectOption.locationId,
+            
+        })
+        this.updatePermanentAddress1(selectOption.locationName)
+    }
+
+    updatePermanentAddress1 = (location) => {
+        console.log(location)
+        this.setState({location})
+        this.setState({permanentAddress: this.state.permanentAddressDefault  + ', ' + location + ', ' +
+        this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
+    }
+
+     
+    //  countryName = ({countryResult}) => {
+    //      if(countryResult){
+           
+    //         return( 
+    //          countryResult.map((item) =>{
+    //                 return(
+    //                     <option key={item.countryId} value={item.countryName}>
+    //                      {item.countryName}
+    //                     </option>
+    //                 )
+    //             })
+    //         )
              
-            return( 
-             cityResult.map((item) =>{ 
-                    return(
-                        <option key={item.cityId} value={item.cityName}>
-                         {item.cityName}
-                        </option>
-                    )
-                }
-                )
-            )
-             
-         }
-     }
+    //      }
+    //  }
+    
+     
      logout=()=>{
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
         return this.props.history.replace('/') 
     }
     
-     locationName=({locationResult})=>{
+     changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+     }
+   
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+
+    countryName1 = ({countryResult}) => {
+        if(countryResult){
+          
+           return( 
+            countryResult.map((item) =>{
+                   return(
+                    { ...item, label: item.countryName, value: item.countryId }
+                   )
+               })
+           )
+            
+        }
+    }
+
+    stateName1 = ({stateResult}) => {
+        if(stateResult){
+          console.log(stateResult)
+           return( 
+            stateResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.stateName, value: item.stateId }
+                   )
+               })
+           )
+            
+        }
+    }
+
+    cityName1=({cityResult})=>{
+       
+        if(cityResult){
+            
+           return( 
+            cityResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.cityName, value: item.cityId }
+                   )
+               }
+               )
+           )
+            
+        }
+    }
+
+    locationName1=({locationResult})=>{
         if(locationResult){
              
             return( 
                 locationResult.map((item) =>{ 
                     return(
-                        <option key={item.locationId} value={item.locationName}>
-                         {item.locationName}
-                        </option>
+                     { ...item, label: item.locationName, value: item.locationId }
                     )
                 }
                 )
@@ -643,12 +671,118 @@ ImageChange =(event)=>{
              
          }
      }
-     changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
+
+     editPermanentAddress = () => {
+        if (!!document.getElementById('isChecked').checked) {
+            console.log('is checked')
+            //    this.setState({permanentAddress: this.state.currentAddress, permanentAddressVisible:true, editPermanent:false})
+            this.setState({ editPermanent: true, permanentAddress: '', userPermanent: true, countryId:'',stateId:'',
+        cityId:'', locationId:'' })
+        }
+        else {
+            // this.setState({permanentAddress: '' , permanentAddressVisible:false, editPermanent:true})
+            this.setState({ editPermanent: false, permanentAddress: this.state.readOnlyPermanent, userPermanent: false,
+            countryId:this.state.readOnlyCountryId, stateId:this.state.readOnlyStateId, cityId:this.state.readOnlyCityId,
+        locationId: this.state.readOnlyLocationId })
+        }
+    }
+
+    pinChange1 = (e) => {
+        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ pin1: e.target.value, errors });
+        }
+        else {
+            this.setState({pin1: e.target.value});
+        }
+        this.updatePermanentAddress(e.target.value)
+    }
+    
+    updatePermanentAddress = (pin1) => {
+        console.log(pin1)
+        this.setState({pin1})
+        this.setState({permanentAddress: this.state.permanentAddressDefault  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+        this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin1})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
+    }
+
+    countryName = ({countryResult}) => {
+        if(countryResult){
+          
+           return( 
+            countryResult.map((item) =>{
+                   return(
+                    { ...item, label: item.countryName, value: item.countryId }
+                   )
+               })
+           )
+            
+        }
+    }
+
+    stateName = ({stateResult}) => {
+        if(stateResult){
+          console.log(stateResult)
+           return( 
+            stateResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.stateName, value: item.stateId }
+                   )
+               })
+           )
+            
+        }
+    }
+
+    cityName=({cityResult})=>{
+       
+        if(cityResult){
+            
+           return( 
+            cityResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.cityName, value: item.cityId }
+                   )
+               }
+               )
+           )
+            
+        }
+    }
+
+    locationName=({locationResult})=>{
+        if(locationResult){
+             
+            return( 
+                locationResult.map((item) =>{ 
+                    return(
+                     { ...item, label: item.locationName, value: item.locationId }
+                    )
+                }
+                )
+            )
+             
+         }
      }
-   
-    close=()=>{
-        return this.props.history.replace('/superDashBoard')
+
+     permanentAddressChange = (e) => {
+        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ permanentAddressDefault: e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+            this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1 , errors });
+        }
+        else {
+            this.setState({permanentAddressDefault: e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+            this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
+        }
+        // if(!!document.getElementById('isChecked1').checked){
+        //     this.setState({currentAddress: e.target.value + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+        //     this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
+        // }
     }
     
 
