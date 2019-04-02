@@ -911,7 +911,7 @@ class DisplayVendorMaster extends Component {
                         <Input type="email" name="email" value={this.state.email}  maxLength={30} onChange={this.onHandleChange}>
                         </Input>
                         <span className="error">{this.state.errors.email}</span>
-                        <span className="error">{this.state.message}</span>
+            
                     </FormGroup>
                     <FormGroup>
                         <Label> Document One</Label>

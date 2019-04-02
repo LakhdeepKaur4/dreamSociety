@@ -365,7 +365,7 @@ keyPress = (event) => {
     if (!pattern.test(inputChar)) {
         event.preventDefault();
     }
-    // else{
+    // else{    
     //     document.getElementById('isChecked').checked = false;
     //     document.getElementById('currenttaddr').disabled = false;
     //     this.setState({permanentAddress: ''});

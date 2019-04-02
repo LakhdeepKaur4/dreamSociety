@@ -223,32 +223,26 @@ class InventoryList extends Component {
 
     editInventory = () => {
 
-        const {assetId,
+        const {
             inventoryId,
-        assetName,
-        assetTypeId,
-        serialNumber,
         dateOfPurchase,
         ratePerInventory, } = this.state
         console.log(this.state)
         let errors = {};
-        if (this.state.assetId === '') {
-            errors.assetId = "Assets can't be empty"
-        }
+        // if (this.state.assetId === '') {
+        //     errors.assetId = "Assets can't be empty"
+        // }
 
-        else if (this.state.assetTypeId === '') {
-            errors.assetTypeId = "Asset Type Name can't be empty"
-        }
+        // else if (this.state.assetTypeId === '') {
+        //     errors.assetTypeId = "Asset Type Name can't be empty"
+        // }
    
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
         if (isValid) {
             this.setState({ loading: true })
-            this.props.updateInventory(assetId,
+            this.props.updateInventory(
                 inventoryId,
-                assetName,
-                assetTypeId,
-                serialNumber,
                 dateOfPurchase,
                 ratePerInventory )
                 .then(() => this.props.getInventoryList(id).then(() => this.setState({ loading: false })));
@@ -286,18 +280,18 @@ class InventoryList extends Component {
         </Table>
         let modalData=<div>
             <FormGroup>
-                                    <Label>Asset Name</Label>
+                                    {/* <Label>Asset Name</Label>
                                     <Input  type="select" name="assetName" onChange={this.onChangeHandler} value={this.state.assetName}>
                                     <DefaultSelect/>
                                         {this.assetsName(this.props.AssetName)}
-                                    </Input>
-                                    <div className="error">{this.state.errors.assetId}</div>
+                                    </Input> */}
+                                    {/* <div className="error">{this.state.errors.assetId}</div>
                                     <Label>Asset Type</Label>
                                     <Input type="select"  name="assetTypeId" onChange={this.onChangeHandler} value={this.state.assetTypeId}>
                                     <DefaultSelect/>
                                         {this.assetsType(this.props.AssetType)}
                                     </Input>
-                                    <div className="error">{this.state.errors.assetTypeId}</div>
+                                    <div className="error">{this.state.errors.assetTypeId}</div> */}
                                     <div>
                                     <Label>Date Of Purchase</Label>
                                     <Input type="date" max={this.maxDate()} name="dateOfPurchase" onChange={this.onChangeHandler} value={this.state.dateOfPurchase}/>
@@ -305,9 +299,9 @@ class InventoryList extends Component {
                                     <div className="error">{this.state.errors.numberOfInventory}</div>
                                     <Label>Rate Per Inventory</Label>
                                     <Input maxLength={30} type="text" id="ratePerInventory" name="ratePerInventory" onChange={this.onChangeHandler} value={this.state.ratePerInventory} />
-                                    <Label>Serial Number</Label>
+                                    {/* <Label>Serial Number</Label>
                                     <Input maxLength={30} type="text" id="serialNumber" name="serialNumber" onChange={this.onChangeHandler} value={this.state.serialNumber} />
-                                    <div className="error">{this.state.errors.ratePerInventory}</div>
+                                    <div className="error">{this.state.errors.ratePerInventory}</div> */}
                                 </FormGroup>
                                 <FormGroup>
                                     <Button color="primary mr-2" onClick={this.editInventory}>Save</Button>
@@ -325,7 +319,7 @@ class InventoryList extends Component {
                         </div>
                         <div className="top-details">
                             <h3>Inventory List</h3>
-                            <Button color="primary" onClick={this.toggles1} id="addMember" >Add Inventory</Button>
+                            {/* <Button color="primary" onClick={this.toggles1} id="addMember" >Add Inventory</Button> */}
                         </div>
                         <div>
                         <SearchFilter type="text" value={this.state.search}

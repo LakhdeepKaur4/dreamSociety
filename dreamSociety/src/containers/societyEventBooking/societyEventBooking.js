@@ -174,6 +174,12 @@ class SocietyEventBooking extends Component {
         return this.props.history.replace('/')
     }
 
+    perHandleChange=(e)=>{
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+            this.setState({[e.target.name]:e.target.value});
+            
+        }}
+
     changePassword=()=>{ 
         return this.props.history.replace('/superDashboard/changePassword')
     }
@@ -226,7 +232,6 @@ class SocietyEventBooking extends Component {
                                 <Label>Event End Date</Label>
                                 <Input type="date" name="endDate" value={this.state.endDate} onChange={this.handleChange}/>
                                 <span className="error">{this.state.errors.endDate}</span>
-                                <span className="error">{this.state.message}</span>
                             </FormGroup>
                             </Col>
                         </Row>
@@ -237,6 +242,7 @@ class SocietyEventBooking extends Component {
                                 <Label>Event Start Time</Label>
                                 <Input type="time" name="startTime" value={this.state.startTime} onChange={this.handleChange}/>
                                 <span className="error">{this.state.errors.startTime}</span>
+                                <span className="error">{this.state.message}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
@@ -295,8 +301,8 @@ class SocietyEventBooking extends Component {
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Per Person Charge</Label>                               
-                                <Input type="text" name ="perPersonCharge"  placeholder="Enter Price"  onChange={this.handleChange}/>
-                                <span className="error">{this.state.errors.perPersonCharge}</span>
+                                <Input type="text" name ="perPersonCharge"  placeholder="Enter Price" value={this.state.perPersonCharge} maxLength={8} onChange={this.perHandleChange}/>
+                                <div>{!this.state.perPersonCharge ? <span className="error">{this.state.errors.perPersonCharge}</span>: null}</div>
                             </FormGroup>
                             </Col> 
                         </Row>
@@ -304,15 +310,15 @@ class SocietyEventBooking extends Component {
                             <Col md={6}>
                             <FormGroup>                               
                                 <Label>Child Above </Label>                               
-                                <Input type="text" name ="childAbove"  placeholder="Example 12 years"  onChange={this.handleChange}/>
+                                <Input type="text" name ="childAbove"  placeholder="Example 12 years"maxLength={15}   onChange={this.handleChange}/>
                                 <span className="error">{this.state.errors.childAbove}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Charges </Label>                               
-                                <Input type="text" name ="charges" placeholder="Enter Price"   onChange={this.handleChange}/>
-                                <span className="error">{this.state.errors.charges}</span>
+                                <Input type="text" name ="charges" placeholder="Enter Price" maxLength={6}  value={this.state.charges} onChange={this.perHandleChange}/>
+                                <div>{!this.state.charges ? <span className="error">{this.state.errors.charges}</span>: null}</div>
                             </FormGroup>
                             </Col>
                         </Row>

@@ -35,7 +35,8 @@ class DisplaySocietyEventBooking extends Component {
            loading:true,
            isDisabled:true,
            ids:[],
-           errors:{}
+           errors:{},
+           message:''
         }
     }
 
@@ -48,6 +49,12 @@ class DisplaySocietyEventBooking extends Component {
         this.props.ViewEvent();
         this.props.GetEventOrganiser();
     }   
+
+    perHandleChange=(e)=>{
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+            this.setState({[e.target.name]:e.target.value});
+            
+        }}
 
     editEvent(societyEventBookId,eventId,eventName,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description){
        console.log(eventId,'eventId',eventName,"eventName")
@@ -129,6 +136,7 @@ class DisplaySocietyEventBooking extends Component {
 
 
  handleChange=(event)=> {
+    this.setState({message:''})
     if (!!this.state.errors[event.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[event.target.name];
@@ -178,11 +186,11 @@ updateEvents(){
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0
             if (isValid) {
-                this.setState({loading: true});
+             
                 this.props.updateSocietyEvents(societyEventBookId,eventId,eventName,organisedBy,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description)
                 .then(()=>this.refreshData())
                 .catch(err=>{
-                    this.setState({modalLoading:false, loading: false})
+                    this.setState({message: err.response.data.message,modalLoading:false, loading: false})
                     })
                 this.setState({ modalLoading: true})
                 
@@ -238,6 +246,7 @@ render() {
                 <th  style={{width:'4%'}}>Charges</th>   
                 <th>Actions</th>                          
             </tr>
+            
         
         </thead>
 
@@ -282,6 +291,7 @@ render() {
                             <FormGroup>
                                 <Label>Event Start Time</Label>
                                 <Input type="time" name="startTime" value={this.state.startTime} onChange={this.handleChange}/>
+                                <span className="error">{this.state.message}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
@@ -293,23 +303,23 @@ render() {
                             </Row>
                             <FormGroup>
                                 <Label>Per Person Charge</Label>                               
-                                <Input type="text" name ="perPersonCharge"  value={this.state.perPersonCharge}  onChange={this.handleChange}/>
-                                <span className="error">{this.state.errors.perPersonCharge}</span>
+                                <Input type="text" name ="perPersonCharge"  value={this.state.perPersonCharge} maxLength={8}  onChange={this.perHandleChange}/>
+                                <div>{!this.state.perPersonCharge ? <span className="error">{this.state.errors.perPersonCharge}</span>: null}</div>
                             </FormGroup>
-
+                               
                             <Row form>
                             <Col md={6}>
                             <FormGroup>                               
                                 <Label>Child Above </Label>                               
-                                <Input type="text" name ="childAbove"  value={this.state.childAbove} onChange={this.handleChange}/>
+                                <Input type="text" name ="childAbove"  value={this.state.childAbove} maxLength={15}  onChange={this.handleChange}/>
                                 <span className="error">{this.state.errors.childAbove}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Charges </Label>                               
-                                <Input type="text" name ="charges" value={this.state.charges} onChange={this.handleChange}/>
-                                <span className="error">{this.state.errors.charges}</span>
+                                <Input type="text" name ="charges" value={this.state.charges} maxLength={6} onChange={this.perHandleChange}/>
+                                <div>{!this.state.charges ? <span className="error">{this.state.errors.charges}</span>: null}</div>
                             </FormGroup>
                             </Col>
                             </Row>

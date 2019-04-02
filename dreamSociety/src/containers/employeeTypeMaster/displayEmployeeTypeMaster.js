@@ -28,7 +28,8 @@ class DisplayEmployeeTypeMaster extends Component {
         isDisabled: true,
         errors:{},
         filterName:"serviceType",
-        modalLoading:false
+        modalLoading:false,
+        message: ''
     }
     componentDidMount() {
 
@@ -45,7 +46,7 @@ class DisplayEmployeeTypeMaster extends Component {
     }
     toggleEditEmployeeModal() {
         this.setState({
-            editEmployeeModal: !this.state.editEmployeeModal
+            editEmployeeModal: !this.state.editEmployeeModal,message:''
         })
     }
     OnKeyPresshandler(event) {
@@ -58,7 +59,7 @@ class DisplayEmployeeTypeMaster extends Component {
 
     onChange=(e)=> {
 
-
+        this.setState({ message: '' })
         if (!!this.state.errors[e.target.name]) {
           let errors = Object.assign({}, this.state.errors);
           delete errors[e.target.name];
@@ -91,15 +92,23 @@ class DisplayEmployeeTypeMaster extends Component {
         if (isValid) {
      
       
-        this.props.updateEmployee(employeeDetailId, employeeTypeId, employeeWorkTypeId, serviceType).then(() => { this.refreshData() })
+        this.props.updateEmployee(employeeDetailId, employeeTypeId, employeeWorkTypeId, serviceType).then(() => { this.refreshData() }).catch(err => this.setState({ modalLoading: false, message: err.response.data.message }))
 
 
 
 
-        this.setState({
-         modalLoading: true
-        })
+        if (this.state.message === '') {
+            this.setState({ editEmployeeModal: true })
     }
+    else {
+            this.setState({ editEmployeeModal: false })
+    }
+
+
+    this.setState({
+         modalLoading: true
+    })
+}
     }
 
 
@@ -283,7 +292,9 @@ searchFilter(search) {
 
                                     />
                                     <span className="error">{this.state.errors.serviceType}</span>
+                                    <span className="error">{this.state.message} </span>
                                 </FormGroup>
+
                                 <FormGroup>
                                     <Label for="eventType"> Employee Work Type</Label>
                                     <select id="serviceType"  className="form-control" value={this.state.editEmployeeData.employeeWorkTypeId}
@@ -383,4 +394,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ getEmployee, getEmployeeType, getEmployeeWorkType, updateEmployee, deleteEmployee, deleteMultipleEmployee }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DisplayEmployeeTypeMaster)
+export default connect(mapStateToProps, mapDispatchToProps)(DisplayEmployeeTypeMaster)      

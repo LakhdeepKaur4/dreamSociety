@@ -285,8 +285,8 @@ class vendorMaster extends Component {
                 errors.pin1="Pincode can't be empty"
             }
                   
-            else if(this.state.currentAddressDefault===''){
-                errors.currentAddressDefault="Current Address can't be empty"
+           else if(document.getElementById('isChecked').checked === false){
+                if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
             }
             
             else if(this.state.pin===''){

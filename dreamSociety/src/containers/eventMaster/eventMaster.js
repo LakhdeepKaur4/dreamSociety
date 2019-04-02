@@ -62,8 +62,7 @@ class EventMaster extends Component {
     const { eventType,
     eventName,
     eventOrganiser,
-    startDate,
-    endDate} = this.state
+    } = this.state
     
     if(!this.state.eventType){
         errors.eventType = "Event Type can't be empty. Please select."
@@ -74,12 +73,7 @@ class EventMaster extends Component {
   if(!this.state.eventOrganiser){
     errors.eventOrganiser = "event Organiser can't be empty. Please select."
 }
-if(!this.state.startDate){
-  errors.startDate = "Start Date can't be empty. Please select."
-}
-if(!this.state.endDate){
-  errors.endDate = "End  Date can't be empty. Please select."
-}
+
 
     this.setState({ errors });
     const isValid = Object.keys(errors).length === 0
@@ -87,7 +81,7 @@ if(!this.state.endDate){
     if (isValid) {
         this.setState({loading: true})
       
-            this.props.AddEvent(eventType,eventName, eventOrganiser,startDate,endDate).then(()=> this.props.history.push('/superDashboard/display-event')).catch((err)=>this.setState({message: err.response.data.message, loading: false}))
+            this.props.AddEvent(eventType,eventName, eventOrganiser).then(()=> this.props.history.push('/superDashboard/display-event')).catch((err)=>this.setState({message: err.response.data.message, loading: false}))
         
             
         
@@ -184,32 +178,6 @@ changePassword=()=>{
         
           </select>
           <span className="error">{this.state.errors.userId}</span>
-        </div>
-       
-         <div className="form-group">
-          <label>Event Start Date</label>
-          <input
-            type="date"
-            className="form-control"
-            name="startDate"
-            placeholder=" event start date"
-            onChange={this.onChange}
-  
-          />
-             <span className="error">{this.state.errors.startDate}</span>
-        </div>
-     
-        <div className="form-group">
-          <label> Event End Date</label>
-          <input
-            type="date"
-            className=" form-control"
-            name="endDate"
-            placeholder="event end date"
-            onChange={this.onChange}
-
-          />
-                <span className="error">{this.state.errors.endDate}</span>
         </div>
   
         

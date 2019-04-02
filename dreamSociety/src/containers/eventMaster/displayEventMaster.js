@@ -85,12 +85,7 @@ class DisplayEventMaster extends Component {
                 if (!this.state.eventOrganiser) {
                         errors.eventOrganiser = "Event Organiser cant be empty please Select"
                 }
-                if (!this.state.startDate) {
-                        errors.startDate = "Start  Date cant be empty please Select"
-                }
-                if (!this.state.endDate) {
-                        errors.endDate = "End Date cant be empty please Select"
-                }
+               
 
                 this.setState({ errors })
                 const isValid = Object.keys(errors).length === 0
@@ -196,8 +191,7 @@ class DisplayEventMaster extends Component {
                                                         <td>{item.eventType}</td>
                                                         <td>{item.eventName}</td>
                                                         <td>{item.organiser.userName}</td>
-                                                        <td>{item.startDate}</td>
-                                                        <td> {item.endDate}</td>
+                                                 
 
 
 
@@ -280,8 +274,7 @@ class DisplayEventMaster extends Component {
         <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
 
                                         <th>Event Organiser</th>
-                                        <th>Event Start Date</th>
-                                        <th>Event End Date</th>
+                                    
                                         <th> Actions  </th>
                                 </tr>
                         </thead>
@@ -326,19 +319,7 @@ let modalData=<div>
 </Input>
 <span className="error"> {this.state.errors.userName}</span>
 </FormGroup>
-<FormGroup>
-<Label> Event Start Date</Label>
-<Input type="date" id="startDate" value={this.state.startDate} onChange={this.onChange}
-/>
-<span className="error"> {this.state.errors.startDate}</span>
-</FormGroup>
-<FormGroup>
-<Label>Event End Date</Label>
-<Input type="date" id="endDate" value={this.state.endDate} onChange={this.onChange}
 
-/>
-<span className="error"> {this.state.errors.endDate}</span>
-</FormGroup>
 </div>
                 let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
                         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
