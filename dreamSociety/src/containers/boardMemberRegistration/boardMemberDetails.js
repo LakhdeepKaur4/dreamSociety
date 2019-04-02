@@ -121,13 +121,12 @@ class BoardMemberDetails extends Component {
 
     editMember(societyId, societyBoardMemberId, firstName, lastName, designationName, gender, currentAddress, permanentAddress,
         contactNumber, email, bankName,
-        accountNumber, panCardNumber, dob, IFSCCode, accountHolderName, designationId, countryId, stateId, cityId, locationId) {
+        accountNumber, panCardNumber, dob, IFSCCode, accountHolderName, designationId) {
         this.setState({
             societyId, societyBoardMemberId, firstName, lastName, designationName, gender, currentAddress, permanentAddress,
             contactNumber, email, bankName,
-            accountNumber, panCardNumber, dob, IFSCCode, accountHolderName, designationId, countryId, stateId, cityId, locationId, editSocietyMember: !this.state.editSocietyMember,
-            readOnlyPermanent: permanentAddress, readOnlyCurrent: currentAddress, readOnlyCountryId:countryId,
-            readOnlyStateId:stateId, readOnlyCityId:cityId,readOnlyLocationId:locationId
+            accountNumber, panCardNumber, dob, IFSCCode, accountHolderName, designationId, editSocietyMember: !this.state.editSocietyMember,
+            readOnlyPermanent: permanentAddress, readOnlyCurrent: currentAddress
         });
     }
 
@@ -158,7 +157,7 @@ class BoardMemberDetails extends Component {
                     return this.state.sortVal ? cmprVal : -cmprVal;
                 }
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
-                if (item && item.country_master && item.state_master && item.city_master && item.location_master) {
+                if (item) {
                     return (
                         <tr key={item.societyBoardMemberId}>
                             <td><input type="checkbox" name="ids" className="SelectAll" value={item.societyBoardMemberId}
@@ -207,9 +206,6 @@ class BoardMemberDetails extends Component {
                                     item.email, item.bankName, item.accountNumber, item.panCardNumber, item.dob,
                                     item.IFSCCode,item.accountHolderName,
                                     item.designation_master.designationId,
-                                    item.country_master.countryId, item.state_master.stateId,
-                                    item.city_master.cityId,
-                                    item.location_master.locationId
                                 )} >Edit</Button>
                                 <Button color="danger" onClick={this.deleteSocietyMember.bind(this, item.societyBoardMemberId)}>Delete</Button>
                             </td>

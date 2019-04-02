@@ -387,11 +387,16 @@ submit = (e) => {
         if(!this.state.designationId){
             errors.designationId = `Designation can't be empty.`
         }
-        if(this.state.pin === '') {
-            errors.pin = `Please enter Pin/Zip Code.`}
+        if(document.getElementById('isChecked').checked === false){
+            if(this.state.pin === '') {
+                errors.pin = `Please enter Pin/Zip Code.`}
+        }
+        
         if(this.state.pin1 === '') {
             errors.pin1 = `Please enter Pin/Zip Code.`}
-        if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
+        if(document.getElementById('isChecked').checked === false){
+            if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
+        }
         if(this.state.permanentAddressDefault === '') errors.permanentAddressDefault = `Permanent Address can't be empty.`;
         if(this.state.contactNumber === '') errors.contactNumber = `Contact can't be empty.`;
         else if(this.state.contactNumber.length !== 10) errors.contactNumber = "Contact length should be of 10."
