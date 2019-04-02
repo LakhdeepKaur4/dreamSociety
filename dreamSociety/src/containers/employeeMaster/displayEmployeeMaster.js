@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Table, Input, Modal, Button, FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Row,Col } from 'reactstrap';
-
+import Select from 'react-select';
 import { getCountry, getState, getCity, getLocation } from './../../actionCreators/societyMasterAction';
 import { ViewEmployee, updateEmployee, deleteEmployee,deleteMultipleEmployee} from '../../actionCreators/employeeMasterAction';
 import { bindActionCreators } from 'redux';
@@ -53,10 +53,42 @@ class DisplayEmployeeMaster extends Component {
         ids: [],
         isDisabled: true,
         documentOne: '',
+        countryName: '',
+        stateName: '',
+        cityName: '',
+        locationName: '',
+        currentAddress: '',
+        panCardNumber: '',
+        permanentAddress: '',
+        contactNumber: '',
             documentTwo:'',
             errors:{},
             filterName:"firstName",
-            modalLoading:false
+            modalLoading:false,
+            readOnlyPermanent: '',
+            readOnlyCurrent: '',
+            editPermanent: false,
+            editCurrent: false,
+            userPermanent: false,
+            permanentAddressDefault:'',
+            currentAddressDefault:'',
+            pin1:'',
+            pin:'',
+            currentState:'',
+            currentCountry:'',
+            currentCountryId:'',
+            currentStateId:'',
+            currentCity:'',
+            currentCityId:'',
+            currentState:'',
+            currentStateId:'',
+            currentLocation:'',
+            permanentLocationId:'',
+            readOnlyCountryId:'',
+            readOnlyStateId:'',
+            readOnlyCityId:'',
+            readOnlyLocationId:'',
+            userCurrent:false,
 
     }
     componentDidMount() {
@@ -204,10 +236,6 @@ ImageChange =(event)=>{
 
     updateEmployee = (employeeId) => {
         let errors ={};
-        // const { countryId,stateId,cityId,locationId,documentOne,documentTwo,profilePicture,firstName,middleName,lastName,startDate,endDate,CTC }= this.state   
-       
-        
-    
          
          if(!this.state.firstName){
          errors.firstName ="First Name can't be empty. "
@@ -278,6 +306,98 @@ ImageChange =(event)=>{
     }
 
 
+    countryChange = (currentCountryId, currentCountry, selectOption) => {
+        console.log(currentCountryId, currentCountry, selectOption)
+    
+        this.setState({
+            currentCountry: selectOption.countryName,
+            currentCountryId:selectOption.countryId, 
+        })
+        
+        this.props.getState(selectOption.countryId)
+    }
+    
+    
+    stateChange = (currentState, currentStateId, selectOption) => {
+        console.log(currentState, currentStateId, selectOption)
+        this.setState({
+            currentState: selectOption.stateName,
+            currentStateId:selectOption.stateId
+        })
+        this.props.getCity(selectOption.stateId);
+    }
+    
+    cityChange = (currentCity, currentCityId, selectOption) => {
+        console.log(currentCity, currentCityId, selectOption)
+        this.setState({
+            currentCity: selectOption.cityName,
+            currentCityId:selectOption.cityId
+        })
+        this.props.getLocation(selectOption.cityId)
+    }
+    
+    locationChange = (currentLocation, currentLocationId, selectOption) => {
+        console.log(currentLocation, currentLocationId, selectOption)
+        this.setState({
+            currentLocation: selectOption.locationName,
+            permanentLocationId:selectOption.locationId,
+            
+        })
+        this.updateCurrentAddress1(selectOption.locationName)
+    }
+    
+    updateCurrentAddress1 = (location) => {
+        console.log(location)
+        this.setState({location})
+        this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + location + ', ' +
+        this.state.currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+        console.log('currentAddress', this.state.currentAddress)
+    }
+    
+    pinChange = (e) => {
+        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors });
+        }
+        else {
+            this.setState({[e.target.name]: e.target.value});
+            console.log(this.state)
+        }
+        this.updateCurrentAddress(e.target.value)
+    }
+    
+    updateCurrentAddress = (pin) => {
+        console.log(pin)
+        this.setState({pin})
+        this.setState({currentAddress: this.state.currentAddressDefault  + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+        this.state.currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip Code: ' + pin})
+        console.log('currentAddress', this.state.currentAddress)
+    }
+    
+    currentAddressChange = (e) => {
+        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ currentAddressDefault: e.target.value, currentAddress: e.target.value  + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+            this.state.currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip code: ' + this.state.pin , errors });
+        }
+        else {
+            this.setState({currentAddressDefault: e.target.value, currentAddress: e.target.value  + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+            this.state.currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip code: ' + this.state.pin})
+        }
+    }
+    
+    currentAddressIsChecked = () => {
+        if(!!document.getElementById('isCurrentChecked').checked){
+            this.setState({editCurrent:true, currentAddress:'', userCurrent:true})
+        }
+        else{
+            this.setState({editCurrent:false, currentAddress: this.state.readOnlyCurrent, userCurrent:false})
+        }
+    }
     getEmployee({ getEmployee }) {
         console.log(getEmployee, "1223");
         if (getEmployee) {
@@ -628,61 +748,146 @@ ImageChange =(event)=>{
                                   />
                                    <span  className="error" >{this.state.errors.salary}</span>
                                    </FormGroup>
-                                   <FormGroup>
-                              <Label>Country Name</Label>
-                              <Input type="select" name="countryId"  onChange={this.onChangeCountry} 
-                              value={this.state.countryName} required>
-                                  <DefaultSelect />
-                                  {this.countryName(this.props.societyReducer)}
-                              </Input>
-                         
-                          </FormGroup>
+                                
 
-                          <FormGroup>
-                              <Label>State Name</Label>
-                              <Input type="select" name="stateId"
-                                onChange={this.onChangeState}
-                                  required>
-                                {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
-                                {this.state.stateName ? <DefaultSelect />: null}
-                                  {this.state.stateName ? null : this.stateName(this.props.societyReducer)}
-                              </Input>
-                          
-                          </FormGroup>
-
-                          <FormGroup>
-                              <Label>City Name</Label>
-                              <Input type="select" name="cityId"
-                               onChange={this.onChangeCity} required>
-                              {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
-                              {this.state.cityName ? <DefaultSelect />: null}
-                              {this.state.cityName ? null : this.cityName(this.props.societyReducer)}  
-                              </Input>
-                    
-                          </FormGroup>
-
-                          <FormGroup>
-                              <Label>Location Name</Label>
-                              <Input type="select" name="locationId"
-                                onChange={this.onChangeLocation}
-                               required>
-                               {this.state.locationName ? <option>{this.state.locationName}</option> : <option disabled>--Select--</option>}
-                               {this.state.locationName ? <DefaultSelect />: null}
-                               {this.state.locationName ? null : this.locationName(this.props.societyReducer)}  
-                              </Input>
-                           
-                          </FormGroup> 
+                      
                                  
-                                  <FormGroup>
-                                  <Label > Address</Label>
-                                  <Input name="address" value={this.state.address}
-                                      onChange={this.onChange}
+                                   <FormGroup>
+                <Row md={12}>
+                    {!this.state.editPermanent ? <Col md={6}>
+                        <Label>Permanent Address</Label>
+                        <Input type="textarea"
+                            value={this.state.readOnlyPermanent}
+                            placeholder="Permanent Address"
+                            name="readOnlyPermanent" disabled
+                            onChange={this.onChange}
+                            maxLength='250' />
+                        {/* {!this.state.permanentAddress ? <span className="error">{this.state.errors.permanentAddress}</span>: ''} */}
+                    </Col> : ''}
+                    {this.state.editPermanent ? <Col md={12} style={{ textAlign: 'center' }}><span style={{ fontWeight: '600' }}>Do you want to edit permanent address?</span><Input type="checkbox" onChange={this.editPermanentAddress} name="isChecked" id="isChecked" className="ml-3" /></Col> :
+                        <Col md={6} style={{ paddingTop: '44px' }}><span style={{ fontWeight: '600' }}>Do you want to edit permanent<br /> address?</span><Input type="checkbox" onChange={this.editPermanentAddress} name="isChecked" id="isChecked" className="ml-3" /></Col>}
+                </Row>
+            </FormGroup>
+            {this.state.userPermanent ? <div>
+                <h4 style={{textAlign:'center', fontWeight:'600', textDecoration: 'underline'}}>Edit Permanent Address</h4>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={3}>
+                            <Label>Country</Label>
+                            <Select placeholder={<DefaultSelect />} options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                        </Col>
+                        <Col md={3}>
+                            <Label>State</Label>
+                            <Select placeholder={<DefaultSelect />} options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                        </Col>
+                        <Col md={3}>
+                            <Label>City</Label>
+                            <Select placeholder={<DefaultSelect />} options={this.cityName(this.props.societyReducer)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
+                        </Col>
+                        <Col md={3}>
+                            <Label>Location</Label>
+                            <Select placeholder={<DefaultSelect />} options={this.locationName(this.props.societyReducer)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={4}>
+                            <Label>Pin/Zip Code</Label>
+                            <Input type="text" onChange={this.pinChange1}
+                                maxLength="6" minLength="5" onKeyPress={this.OnKeyPresshandlerPhone}
+                                name="pin1" placeholder="Pin/Zip Code" />
+                            <span className="error">{this.state.errors.pin1}</span>
+                        </Col>
+                        <Col md={8}>
+                            <Label>Address</Label>
+                            <Input id="currentAddress"
+                                disabled={!(this.state.countryId && this.state.stateId
+                                    && this.state.cityId)}
+                                type="textarea"
+                                placeholder="Permanent Address"
+                                name="permanentAddressDefault"
+                                onChange={this.permanentAddressChange}
+                                maxLength='250' />
+                            {<span className="error">{this.state.errors.permanentAddressDefault}</span>}
+                        </Col>
+                    </Row>
+                </FormGroup>
+            </div> : ''}
+            <FormGroup>
+                <Row md={12}>
+                    {!this.state.editCurrent ? <Col md={6}>
+                        <Label>Current Address</Label>
+                        <Input onKeyPress={this.keyPress}
+                            name="readOnlyCurrent"
+                            value={this.state.currentAddress}
+                            type="textarea" disabled
+                            placeholder="Current Address"
+                            name="readOnlyCurrent"
+                            onChange={this.onChange}
+                            maxLength='250' />
+                        {/* {!this.state.permanentAddress ? <span className="error">{this.state.errors.permanentAddress}</span>: ''} */}
+                    </Col>:''}
+                    {!this.state.editCurrent ? <Col md={6} style={{ paddingTop: '44px' }}>
+                        <span style={{ fontWeight: '600' }}>Do you want to edit current address?</span>
+                        <Input type="checkbox" name="isCurrentChecked" id="isCurrentChecked" onChange={this.currentAddressIsChecked} className="ml-3" />
+                    </Col>: 
+                        <Col md={12} style={{ textAlign:'center' }}>
+                            <span style={{ fontWeight: '600' }}>Do you want to edit current address?</span>
+                            <Input type="checkbox" name="isCurrentChecked" id="isCurrentChecked" onChange={this.currentAddressIsChecked} className="ml-3" />
+                        </Col>}
 
-                                    
-
-                                  />
-                                   <span  className="error" >{this.state.errors.address}</span>
-                                   </FormGroup>
+                    </Row>
+            </FormGroup>
+            
+            {this.state.userCurrent ? 
+                <div>
+                   <h4 style={{textAlign:'center', fontWeight:'600', textDecoration: 'underline'}}>Edit Current Address</h4>
+                    
+                    <FormGroup>
+                        <Row md={12}>
+                            <Col md={3}>
+                                <Label>Country</Label>
+                                <Select placeholder={<DefaultSelect/>} options={this.countryName1(this.props.societyReducer)} onChange={this.countryChange.bind(this, 'currentCountry', 'currentCountryId')} />
+                            </Col>
+                            <Col md={3}>
+                                <Label>State</Label>
+                                <Select placeholder={<DefaultSelect/>} options={this.stateName1(this.props.societyReducer)} onChange={this.stateChange.bind(this, 'currentState', 'currentStateId')} />
+                            </Col>
+                            <Col md={3}>
+                                <Label>City</Label>
+                                <Select placeholder={<DefaultSelect/>} options={this.cityName1(this.props.societyReducer)} onChange={this.cityChange.bind(this, 'currentCity', 'currentCityId')} />
+                            </Col>
+                            <Col md={3}>
+                                <Label>Location</Label>
+                                <Select placeholder={<DefaultSelect/>} options={this.locationName1(this.props.societyReducer)} onChange={this.locationChange.bind(this, 'currentLocation', 'currentLocationId')} />
+                            </Col>
+                        </Row>
+                    </FormGroup>
+                    
+                    <FormGroup>
+                        <Row md={12}>
+                            <Col md={4}>
+                                <Label>Pin/Zip Code</Label>
+                                <Input type="text" onChange={this.pinChange}
+                                maxLength="6" minLength="5" onKeyPress={this.OnKeyPresshandlerPhone}
+                                    name="pin" placeholder="Pin/Zip Code" />
+                                <span className="error">{this.state.errors.pin}</span>
+                            </Col>
+                            <Col md={8}>
+                                <Label>Address</Label>
+                                <Input id="currenttaddr"
+                                type="textarea"
+                                disabled={!(this.state.currentCountryId && this.state.currentStateId && this.state.currentCityId)} 
+                                placeholder="Current Address" 
+                                name="currentAddressDefault" 
+                                onChange={this.currentAddressChange}
+                                maxLength='250' />
+                                {<span className="error">{this.state.errors.currentAddressDefault}</span> }
+                            </Col>
+                        </Row>
+                    </FormGroup>
+                </div>:''}
                               <FormGroup>
                                 
                                   <Label > Document One</Label>
