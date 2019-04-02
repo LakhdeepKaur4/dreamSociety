@@ -18,6 +18,7 @@ import VendorDashboard from './components/newUI/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
 import EmployeeMaster from './containers/employeeMaster/employeeMaster';
 import DisplayEmployeeMaster from './containers/employeeMaster/displayEmployeeMaster';
+import DisplayEmployeeMaster2 from './containers/employeeMaster/displayEmployeeMaster2';
 import SocietyManagement from './containers/societyManagement/societyMangement';
 import TowerMaster from './containers/towerMaster/towerMaster';
 import DisplayTowerMaster from './containers/towerMaster/displayTowerMaster';
@@ -196,6 +197,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
+            <PrivateRoute path='/superDashboard/displayEmployee2' component={DisplayEmployeeMaster2} />
             <PrivateRoute path='/superDashboard/inventoryList' component={InventoryList} />
             <PrivateRoute path='/superDashboard/showList'exact component={ShowList} />
             <PrivateRoute path='/superDashboard/showList/showListDetails' component={ShowActiveListDetails} />
