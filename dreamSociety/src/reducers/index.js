@@ -44,6 +44,7 @@ import resetPasswordReducer from './resetpasswordReducer/resetPasswordReducer';
 import activeDeactive from './activeDeactive/activeDeactiveReducer';
 
 import AssignRolesReducer from './assignRolesReducer/assignRolesReducer';
+import IndividualVendorReducer from './individualVendorReducer/individualVendorReducer';
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -86,6 +87,7 @@ const rootReducer = combineReducers({
     ChangePassword,
     resetPasswordReducer,
     activeDeactive,
-    AssignRolesReducer
+    AssignRolesReducer,
+    IndividualVendorReducer
 })
 export default rootReducer;
