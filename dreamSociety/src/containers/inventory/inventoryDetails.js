@@ -29,9 +29,15 @@ class InventoryDetails extends Component {
             multiDelete: [],
             ids: [],
             isDisabled: true,
+            formModal: false,
+            TotalInventory:'',
+            TotalPrice:'',
 
         };
     }
+    // componentDidMount(){
+    //     // this.totalInventory(this.props.inventory);
+    // }
     onChangeHandler = (event) => {
         const { name, value } = event.target;
         this.setState({ [name]: value });
@@ -47,6 +53,7 @@ class InventoryDetails extends Component {
         this.setState({ modal: !this.state.modal })
     }
     componentWillMount() {
+        
         this.props.getAssets()
         this.props.fetchAssets();
         this.props.getInventory()
@@ -132,6 +139,24 @@ class InventoryDetails extends Component {
             .then(() => this.setState({ loading: false }))
          }
     }
+    totalInventory=({getInventory})=>{
+        let numInventory=[];
+        let sumInventory=[];
+        getInventory.inventory.map((item)=>{
+             numInventory.push(item.count);
+             sumInventory.push(item.sum)
+            return (
+                this.setState({
+                    TotalInventory:numInventory.reduce(function(total, amount){
+                        return total + amount
+                      }),
+                      TotalPrice:sumInventory.reduce(function(total, amount){
+                        return total + amount
+                      })
+                })
+            )
+        })
+    }
     renderList = ({ getInventory }) => {
         if (getInventory) {
             return getInventory.inventory.map((items, index) => {
@@ -166,6 +191,7 @@ class InventoryDetails extends Component {
                         <td style={{textAlign:"center"}}>{items.count}</td>
                         <td style={{textAlign:"center"}}>{items.sum}</td>
                         <td style={{textAlign:"center"}}>{items.avgRate.toFixed(2)}</td>
+                        {/* <td style={{textAlign:"center"}}>{items.dateOfPurchase}</td> */}
                         <td><button className="btn btn-success mr-2" onClick={this.viewInventoryDetails.bind(this, items.asset_master.assetId)}>Details</button></td>
                         {/* <td>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.inventoryId,items.asset_master.assetName , items.asset_type_master.assetType,items.asset_master.assetId,items.asset_type_master.assetTypeId )} >Edit</button>
@@ -220,6 +246,10 @@ class InventoryDetails extends Component {
         this.props.history.push('/superDashboard/inventoryList')
 
     }
+    toggles1 = () => {
+        this.totalInventory(this.props.inventory)
+        this.setState({ formModal: !this.state.formModal })
+    }
 
     render() {
         let tableData;
@@ -243,6 +273,7 @@ class InventoryDetails extends Component {
                     <th style={{width:"10%"}}>Number Of Inventory</th>
                     <th style={{width:"10%"}}>Total Price</th>
                     <th style={{width:"10%"}}>Average Price</th>
+                    {/* <th style={{width:"10%"}}>Date of Purchase</th> */}
                     <th style={{width:"10%"}}>Details</th>
                     {/* <th style={{width:"15%",textAlign:"center"}}>Actions</th> */}
                 </tr>
@@ -262,6 +293,7 @@ class InventoryDetails extends Component {
                         </div>
                         <div className="top-details">
                             <h3>Inventory Details</h3>
+                            <Button color="primary" onClick={this.toggles1} >Check Total</Button>
                             <Button color="primary" onClick={() => this.props.history.push('/superDashBoard/inventory')} id="addAssets" >Add Inventory</Button>
                         </div>
                         <div>
@@ -307,6 +339,24 @@ class InventoryDetails extends Component {
                                 </FormGroup>
                             </ModalBody>
                         </Modal>
+
+                        <Modal isOpen={this.state.formModal} toggle={this.toggles1}>
+                                <ModalHeader>Add Member</ModalHeader>
+                                <ModalBody>
+                                    <FormGroup>
+                                        <Label>Total Number Of Inventory</Label>
+                                        <Input readOnly type="text" name="TotalInventory" value={this.state.TotalInventory} />
+                                       
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label>Total Price Of All Inventory</Label>
+                                        <Input readOnly type='text' name="TotalPrice"  value={this.state.TotalPrice} />
+                                        
+                                    </FormGroup>
+                                   
+                                </ModalBody>
+                            </Modal>
+
                     </div>
                 </UI>
             </div>

@@ -28,6 +28,7 @@ class FlatMemberList extends Component {
             Male:'male',
             Female:'female',
             Other:'other',
+            relationName:''
         }
 
     }
@@ -176,10 +177,11 @@ class FlatMemberList extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-    relationHandler = (name, selectOption) => {
+    relationHandler = (relationName,relationId ,selectOption) => {
         this.setState(function (prevState, props) {
             return {
-                [name]: selectOption.value
+               relationName,
+               relationId
             }
         }, function () {
             console.log(selectOption.value)
@@ -270,8 +272,7 @@ class FlatMemberList extends Component {
                                     <FormGroup>
                                         <Label>Relation With Owner</Label>
                                         <Select options={this.getRelationList(this.props.relationList)}
-                                            onChange={this.relationHandler.bind(this, 'relationId')}
-                                            value={this.state.relationId}
+                                            onChange={this.relationHandler.bind(this, 'relationName','relationId')}
                                             name="relationId"
                                             placeholder={PlaceHolder}
                                         />

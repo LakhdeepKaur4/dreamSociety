@@ -585,7 +585,7 @@ class FlatOwnerList extends Component {
                             });
                         }}>Name <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th style={{ textAlign: "center" }}>Contact No.</th>
-                    <th style={{ textAlign: "center", width: "16%" }}>Corresponding Address</th>
+                    <th style={{ textAlign: "center", width: "16%" }}>Correspondance Address</th>
                     <th style={{ textAlign: "center", width: "16%" }}>Permanent Address</th>
                     <th style={{ textAlign: "center", width: "8%" }}>View Member</th>
                     <th style={{ textAlign: "center" }}>Actions</th>
