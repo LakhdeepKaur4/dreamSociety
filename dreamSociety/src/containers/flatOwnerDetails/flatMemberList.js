@@ -25,6 +25,10 @@ class FlatMemberList extends Component {
             formModal: false,
             ownerId: '',
             errors: {},
+            Male:'male',
+            Female:'female',
+            Other:'other',
+            relationName:''
         }
 
     }
@@ -41,9 +45,9 @@ class FlatMemberList extends Component {
         this.props.getOwnerMember(id)
             .then(() => this.setState({ loading: false }))
     }
-    deleteMember(id) {
-        this.props.deleteMember(id)
-            .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
+    deleteMember(memberid) {
+        this.props.deleteMember(memberid)
+        .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
             .catch(err => err.response.data.message);
     }
     selectAll = () => {
@@ -173,10 +177,11 @@ class FlatMemberList extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-    relationHandler = (name, selectOption) => {
+    relationHandler = (relationName,relationId ,selectOption) => {
         this.setState(function (prevState, props) {
             return {
-                [name]: selectOption.value
+               relationName,
+               relationId
             }
         }, function () {
             console.log(selectOption.value)
@@ -267,28 +272,28 @@ class FlatMemberList extends Component {
                                     <FormGroup>
                                         <Label>Relation With Owner</Label>
                                         <Select options={this.getRelationList(this.props.relationList)}
-                                            onChange={this.relationHandler.bind(this, 'relationId')}
+                                            onChange={this.relationHandler.bind(this, 'relationName','relationId')}
                                             name="relationId"
                                             placeholder={PlaceHolder}
                                         />
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Date Of Birth</Label>
-                                        <Input type='date' max={this.maxDate()} name="memberDob" onChange={this.onChangeHandler} />
+                                        <Input type='date' max={this.maxDate()} name="memberDob" onChange={this.onChangeHandler} value={this.state.memberDob}/>
                                     </FormGroup>
                                     <Label>Gender</Label>
                                     <div>
                                         <div>
                                             <Label style={{ paddingRight: ' 55px' }}>Male</Label>
-                                            <span><Input type="radio" name="gender" onChange={this.onChangeHandler} value="male" /></span>
+                                            <span><Input type="radio" name="gender" onChange={this.onChangeHandler} value={this.state.Male} checked={this.state.Male===this.state.gender ? true : false} /></span>
                                         </div>
                                         <div>
                                             <Label style={{ paddingRight: ' 35px' }}>Female</Label>
-                                            <span><Input type="radio" name="gender" onChange={this.onChangeHandler} value="female" /></span>
+                                            <span><Input type="radio" name="gender" onChange={this.onChangeHandler} value={this.state.Female} checked={this.state.Female===this.state.gender ? true : false}/></span>
                                         </div>
                                         <div>
                                             <Label style={{ paddingRight: ' 49px' }}>Other</Label>
-                                            <span><Input type="radio" name="gender" onChange={this.onChangeHandler} value="other" /></span>
+                                            <span><Input type="radio" name="gender" onChange={this.onChangeHandler} value={this.state.Other} checked={this.state.Other===this.state.gender ? true : false}/></span>
                                         </div>
                                     </div>
                                     <FormGroup>

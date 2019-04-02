@@ -16,7 +16,7 @@ import _ from 'underscore';
 import './employeeMaster.css'
 import GoogleDocsViewer from 'react-google-docs-viewer';
 
-class DisplayEmployeeMaster extends Component {
+class DisplayEmployeeMaster2 extends Component {
 
 constructor(props){
     super(props);
@@ -444,6 +444,8 @@ ImageChange =(event)=>{
             this.setState({editCurrent:false, currentAddress: this.state.readOnlyCurrent, userCurrent:false})
         }
     }
+
+
     emailValid(event) {
         const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
         let inputChar = String.fromCharCode(event.charCode);
@@ -477,7 +479,7 @@ ImageChange =(event)=>{
 
     pushEmployee=()=>{
       
-        this.props.history.push('/superDashBoard/displayEmployee2');
+        this.props.history.push('/superDashBoard/displayEmployee');
     }
     getEmployee({ getEmployee }) {
         console.log(getEmployee, "1223");
@@ -512,20 +514,23 @@ ImageChange =(event)=>{
                                 }
                         }
                              }}/></td>
-                            <td>{index + 1}</td>
-                            <td > <img  style={{maxWidth: "100%",height: "auto",width: "auto\9"}}  src={UR + item.picture} alt="desc">
-                            </img></td>
-                            <td >{item.firstName}</td>
-                            <td>{item.lastName}</td>
-                            <td>{item.employee_detail_master.serviceType}-
-                            {item.employee_detail_master.employee_work_type_master.employeeWorkType}
-                            -{item.employee_detail_master.employee_type_master.employeeType}</td>
-                            <td>{item.salary}</td>
-                            
-                    <td> <button   className="bg-info"  onClick={this.pushEmployee}>More details</button></td>
+                            <td>{index + 1}</td>  
+                            <td> <button className="bg-info" onClick={this.pushEmployee}>back</button> </td>                    
+                             <td>{item.contact}</td>
+                             <td> {item.email}</td>                   
+                            <td> {item.permanentAddress}</td>
+                            <td>{item.currentAddress}</td>
 
                             <td>
-                                <button className="btn btn-success mr-2" onClick={this.editEmployee.bind(this, item.employeeId, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary,item.contact, item.email, item.currentAddress,item.permanentAddress, UR+item.documentOne, UR+item.documentTwo, item.startDate,item.employee_detail_master.employeeDetailId )} >Edit</button>
+                                <button className="btn btn-light" onClick={this.openModal.bind(this, UR+item.documentOne)}>View Document</button>
+                            </td>
+                            <td>  <button className="btn btn-light" onClick={this.Modal.bind(this, UR+item.documentTwo)}>View Document </button></td>
+
+                            <td>{item.startDate}</td>
+
+
+                            <td>
+                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeId, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary,item.contact, item.email, item.currentAddress,item.permanentAddress, UR+item.documentOne, UR+item.documentTwo, item.startDate,item.employee_detail_master.employeeDetailId )} >Edit</button>
                                 <button className="btn btn-danger" onClick={this.deleteEmployee.bind(this, item.employeeId)}> Delete</button>
                             </td>
 
@@ -593,6 +598,13 @@ ImageChange =(event)=>{
     addEmployee =()=>{
 
         this.props.history.push('/superDashboard/employee')
+    }
+    OnKeyPressNumber(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
     }
 
 
@@ -750,13 +762,6 @@ ImageChange =(event)=>{
         locationId: this.state.readOnlyLocationId })
         }
     }
-    OnKeyPressNumber(event) {
-        const pattern = /^[0-9]$/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
-    }
 
     pinChange1 = (e) => {
         console.log(this.state)
@@ -866,16 +871,14 @@ ImageChange =(event)=>{
                     <tr>
                     <th style={{width:"4px"}}></th>
                         <th style={{width:"4px"}}>#</th>
-                        <th>Profile Picture</th>
-                        <th  onClick={()=>{
-                             this.setState((state)=>{return {sortVal:!state.sortVal,
-                                filterName:'firstName'}})
-                        }} >First Name      <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-                        <th> Last Name</th>
-                        <th>Service Type</th>
-                        <th> salary</th>
-                     
-                       <th> </th>
+                        <th> </th>
+                        <th>Contact Number</th>
+                        <th> Email</th>
+                        <th> Permanent Address</th>
+                        <th> Current Address</th>
+                        <th>ID</th>
+                        <th>ID2</th>
+                        <th> Employment  Date</th>
                           <th> Actions  </th>
                     </tr>
                 </thead>
@@ -919,7 +922,7 @@ ImageChange =(event)=>{
                                   />
                                   <span className="error">{this.state.errors.firstName}</span>
                               </FormGroup>
-                
+                             
                               <FormGroup>
                                   <Label > Last Name</Label>
                                   <Input name="lastName" value={this.state.lastName}
@@ -959,9 +962,9 @@ ImageChange =(event)=>{
                                   <Input name="contact" value={this.state.contact}
                                       onChange={this.onChange}
                                        maxLength={20}
-
                                        onKeyPress={this.OnKeyPressNumber}
                                     
+
                                   />
                                    {this.state.contactServerError ? <span  className='error'>{this.state.contactServerError}</span> : null}
                                    <span  className="error" >{this.state.errors.contact}</span>
@@ -1259,4 +1262,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ ViewEmployee, getCountry, getState, getCity, getLocation, updateEmployee, deleteEmployee,deleteMultipleEmployee,getEmployee }, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DisplayEmployeeMaster)
+export default connect(mapStateToProps, mapDispatchToProps)(DisplayEmployeeMaster2)

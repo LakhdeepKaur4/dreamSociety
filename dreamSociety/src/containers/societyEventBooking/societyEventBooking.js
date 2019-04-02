@@ -1,42 +1,59 @@
 import  React, {Component} from 'react';  
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {Form, Row, Col, FormGroup, Label, Input} from 'reactstrap';
+import {Form, Row, Col,Button, FormGroup, Label, Input} from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import DefaultSelect from '../../constants/defaultSelect';
-import { ViewEvent} from '../../actionCreators/eventMasterAction';
+import {ViewEvent,GetEventOrganiser} from '../../actionCreators/eventMasterAction';
+import {addSocietyEvents} from '../../actionCreators/societyEventBooking';
 
 class SocietyEventBooking extends Component {
     constructor(props) {
         super(props);
         this.state = {
            eventId:'', 
-           eventName : '',
            organisedBy:'',
            startDate:'',
            endDate:'',
            startTime:'',
            endTime:'',         
-           breakfast:'',
-           lunch:'',
-           eveningSnacks:'',
-           dinner:'',
-           dJ:'',
-           drinks:'',
-           invitationCard:'',
+           breakfast:false,
+           lunch:false,
+           eveningSnacks:false,
+           dinner:false,
+           dJ:false,
+           drinks:false,
+           invitationCardPicture:'',
            perPersonCharge:'',
            childAbove:'',
            charges:'',
-           description:''
+           description:'',
+           loading:false,
+           errors:{},
+           message:'',
         }
     }
 
     componentDidMount(){
         this.props.ViewEvent();
+        this.props.GetEventOrganiser();
     }
 
     handleChange=(event)=> {
-       this.setState({ [event.target.name]: event.target.value})
+        this.setState({message:''})
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value.trim('') });
+        }
+    }
+
+    h=(event)=>{
+        this.setState({ [event.target.name]: event.target.checked})
+
     }
 
     FileChange=(event)=>{
@@ -49,7 +66,7 @@ class SocietyEventBooking extends Component {
           reader.readAsDataURL(file);
           reader.onload =  () =>{
               this.setState({
-                invitationCard :
+                invitationCardPicture :
                   reader.result,
                   fileName
               })          
@@ -68,18 +85,106 @@ class SocietyEventBooking extends Component {
             })
         }
     }
+
+    getEventOrganiser({events}){
+        if(events){
+            return events.event.map((item) => {
+                return (
+                    <option key={item.userId} value={item.userId}>
+                        {item.firstName}</option>
+                )
+            })
+        }
+    }
     
+    toggleChange = () => {
+        this.setState({
+          isChecked: !this.state.isChecked,
+        });
+      }
+
+    onSubmit=(event)=>{
+        event.preventDefault();
+        const Events= this.state;
+        let errors = {};
+        if(this.state.eventId===''){
+            errors.eventId="Event Name can't be empty"
+        }     
+        else if(this.state.organisedBy===''){
+            errors.organisedBy="Organiser Name can't be empty"
+        }           
+        else if(this.state.startDate===''){
+            errors.startDate="Start Date can't be empty"
+        }          
+        else if(this.state.endDate===''){
+            errors.endDate="End Date can't be empty"
+        }
+        else if(this.state.startTime===''){
+            errors.startTime="Start Time can't be empty"
+        }
+        else if(this.state.endTime===''){
+            errors.endTime="End Time can't be empty"
+        }   
+        else if(this.state.perPersonCharge===''){
+            errors.perPersonCharge="Person Charges can't be empty"
+        }
+        else if(this.state.childAbove===''){
+            errors.childAbove="Child Above can't be empty"
+        }   
+        else if(this.state.charges===''){
+            errors.charges="Charges can't be empty"
+        }  
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0
+        if (isValid) {
+            this.setState({loading: true});
+            this.props.addSocietyEvents(Events)
+            .then(()=>this.props.history.push('/superDashboard/DisplaySocietyEventBooking'))
+            .catch((err)=>{
+                this.setState({message: err.response.data.message,loading:false})})
+
+            this.setState({
+                eventId:'', 
+                organisedBy:'',
+                startDate:'',
+                endDate:'',
+                startTime:'',
+                endTime:'',         
+                breakfast:false,
+                lunch:false,
+                eveningSnacks:false,
+                dinner:false,
+                dJ:false,
+                drinks:false,
+                invitationCardPicture:'',
+                perPersonCharge:'',
+                childAbove:'',
+                charges:'',
+                description:''
+            });
+    }
+}
+    push=()=>{
+        this.props.history.push('/superDashBoard/displaySocietyeventbooking')
+    }    
+
     logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
         return this.props.history.replace('/')
     }
 
+    perHandleChange=(e)=>{
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+            this.setState({[e.target.name]:e.target.value});
+            
+        }}
+
     changePassword=()=>{ 
         return this.props.history.replace('/superDashboard/changePassword')
     }
     
-    render(){
+    render(){console.log(this.state)
         return(
             <div>
                 <UI onClick={this.logout} change={this.changePassword}>
@@ -94,20 +199,22 @@ class SocietyEventBooking extends Component {
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event Name</Label>
-                                <Input type="select" name="eventName" placeholder="Event Name" defaultValue='no-value' onChange={this.handleChange}>
+                                <Input type="select" name="eventId" defaultValue='no-value' onChange={this.handleChange}>
                                 <DefaultSelect/>
                                 {this.getEventName(this.props.EventDetails)}                  
                                 </Input>
+                                <span className="error">{this.state.errors.eventId}</span>
                             </FormGroup>
                             </Col>
 
                             <Col md={6}>
                             <FormGroup>
-                            <Label>Event Oragnised By</Label>
+                            <Label>Event Organised By</Label>
                             <Input type="select" name="organisedBy" defaultValue='no-value' onChange={this.handleChange}>
                             <DefaultSelect/>
-                            {this.getEventName(this.props.EventDetails)}                  
+                            {this.getEventOrganiser(this.props.EventDetails)}                  
                             </Input>
+                            <span className="error">{this.state.errors.organisedBy}</span>
                             </FormGroup>
                             </Col>
                         </Row>
@@ -117,12 +224,14 @@ class SocietyEventBooking extends Component {
                             <FormGroup>
                                 <Label>Event Start Date</Label>
                                 <Input type="date" name="startDate" value={this.state.startDate} onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.startDate}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event End Date</Label>
                                 <Input type="date" name="endDate" value={this.state.endDate} onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.endDate}</span>
                             </FormGroup>
                             </Col>
                         </Row>
@@ -132,12 +241,15 @@ class SocietyEventBooking extends Component {
                             <FormGroup>
                                 <Label>Event Start Time</Label>
                                 <Input type="time" name="startTime" value={this.state.startTime} onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.startTime}</span>
+                                <span className="error">{this.state.message}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event End Time</Label>
                                 <Input type="time" name="endTime" value={this.state.endTime} onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.endTime}</span>
                         </FormGroup>
                             </Col>
                         </Row>
@@ -150,27 +262,32 @@ class SocietyEventBooking extends Component {
                             
                             <FormGroup check>
                                 <Label check>   
-                                <Input type="checkbox" name="breakfast" value={this.state.breakfast} onChange={this.handleChange} />Breakfast
+                                <Input type="checkbox" name="breakfast" onChange={this.h} />Breakfast
                                 </Label>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>   
-                                <Input type="checkbox" name="lunch" value={this.state.lunch} onChange={this.handleChange} />Lunch
+                                <Input type="checkbox" name="lunch" onChange={this.h} />Lunch
                                 </Label>
                             </FormGroup>
                             <FormGroup check>                                                                                                                                                                                                                            
                                 <Label check>   
-                                <Input type="checkbox" name="eveningSnacks" value={this.state.eveningSnacks} onChange={this.handleChange}/>Evening Snacks
+                                <Input type="checkbox" name="eveningSnacks"  onChange={this.h}/>Evening Snacks
                                 </Label>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>   
-                                <Input type="checkbox" name="dinner" value={this.state.dinner} onChange={this.handleChange}/>Dinner
+                                <Input type="checkbox" name="dinner" onChange={this.h}/>Dinner
                                 </Label>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>   
-                                <Input type="checkbox" name="dJ" value={this.state.dJ} onChange={this.handleChange}/>DJ
+                                <Input type="checkbox" name="drinks" onChange={this.h}/>Drinks
+                                </Label>
+                            </FormGroup>
+                            <FormGroup check>
+                                <Label check>   
+                                <Input type="checkbox" name="dJ" onChange={this.h}/>DJ
                                 </Label>
                             </FormGroup><br/>
 
@@ -178,27 +295,30 @@ class SocietyEventBooking extends Component {
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Upload Your Invitation Card</Label>                               
-                                <Input accept='image/*' style={{display:'inline-block'}}type="file" name ="invitationCard" onChange={this.FileChange} />
+                                <Input accept='image/*' style={{display:'inline-block'}}type="file" name ="invitationCardPicture" onChange={this.FileChange} />
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Per Person Charge</Label>                               
-                                <Input type="text" name ="perPersonCharge"  placeholder="Enter Price"  onChange={this.handleChange}/>
+                                <Input type="text" name ="perPersonCharge"  placeholder="Enter Price" value={this.state.perPersonCharge} maxLength={8} onChange={this.perHandleChange}/>
+                                <div>{!this.state.perPersonCharge ? <span className="error">{this.state.errors.perPersonCharge}</span>: null}</div>
                             </FormGroup>
-                            </Col>
+                            </Col> 
                         </Row>
-                        <Row>
+                        <Row form>
                             <Col md={6}>
                             <FormGroup>                               
                                 <Label>Child Above </Label>                               
-                                <Input type="text" name ="childAbove"  placeholder="Example 12 years"  onChange={this.handleChange}/>
+                                <Input type="text" name ="childAbove"  placeholder="Example 12 years"maxLength={15}   onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.childAbove}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Charges </Label>                               
-                                <Input type="text" name ="charges" placeholder="Enter Price"   onChange={this.handleChange}/>
+                                <Input type="text" name ="charges" placeholder="Enter Price" maxLength={6}  value={this.state.charges} onChange={this.perHandleChange}/>
+                                <div>{!this.state.charges ? <span className="error">{this.state.errors.charges}</span>: null}</div>
                             </FormGroup>
                             </Col>
                         </Row>
@@ -206,6 +326,8 @@ class SocietyEventBooking extends Component {
                                 <Label>Description</Label>                               
                                 <Input type="text" name ="description" placeholder="Description"  maxLength={3000} onChange={this.handleChange}/>
                             </FormGroup>
+                            <Button color="success" className="mr-2">Submit</Button>             
+                            <Button color="danger" onClick={this.push} >Cancel</Button>
 
                     </Form>
                 </UI>
@@ -217,13 +339,14 @@ class SocietyEventBooking extends Component {
 
 function mapStateToProps(state) {
     return {
-        EventDetails: state.EventDetails
+        EventDetails: state.EventDetails,
+        societyEventBookingReducer: state.societyEventBookingReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ViewEvent}, dispatch);
+    return bindActionCreators({ViewEvent,GetEventOrganiser,addSocietyEvents}, dispatch);
 }
 
 

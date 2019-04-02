@@ -41,6 +41,7 @@ import FloorDetail from './floorReducer/floorReducer'
 
 import ChangePassword from './changePasswordReducer.js/changePasswordReducer';
 import resetPasswordReducer from './resetpasswordReducer/resetPasswordReducer';
+import societyEventBookingReducer from './societyEventBooking/societyEventBookingReducer';
 import activeDeactive from './activeDeactive/activeDeactiveReducer';
 
 import AssignRolesReducer from './assignRolesReducer/assignRolesReducer';
@@ -83,7 +84,7 @@ const rootReducer = combineReducers({
     forgetPasswordReducer,
     FloorReducer,
     FloorDetail,
-
+    societyEventBookingReducer,
     ChangePassword,
     resetPasswordReducer,
     activeDeactive,

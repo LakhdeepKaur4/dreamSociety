@@ -1,14 +1,14 @@
 import axios from 'axios'
-import { URN, ADD_INVENTORY, GET_INVENTORY, UPDATE_INVENTORY, REMOVE_INVENTORY, DELETE_MULTIPLE_INVENTORY } from '../actions/index';
+import { URN, ADD_INVENTORY, GET_INVENTORY, UPDATE_INVENTORY, REMOVE_INVENTORY, DELETE_MULTIPLE_INVENTORY,GET_INVENTORY_LIST } from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
-export function addInventory(assetId, assetTypeId, number, rate, serialNumber,dateOfPurchase) {
+export function addInventory(assetId, assetTypeId, number, rate, serialNumber,dateOfPurchase,autoGenerate) {
     const data = {
         assetId,
         assetTypeId,
         number,
         rate,
-        serialNumber,dateOfPurchase
+        serialNumber,dateOfPurchase,autoGenerate
     }
     const request = axios.post(`${URN}/inventory/`, data, { headers: authHeader() })
         .then(response => response.data)
@@ -29,14 +29,10 @@ export function getInventory() {
     }
 }
 
-export function updateInventory(assetId, inventoryId, serial, ratePerInventory, assetType, numberOfInventory) {
+export function updateInventory(inventoryId,dateOfPurchase,rate ) {
+    console.log(inventoryId,dateOfPurchase,rate )
     const data = {
-        assetId: assetId,
-        inventoryId: inventoryId,
-        serialNumber: serial,
-        rate: ratePerInventory,
-        assetTypeId: assetType,
-        number: numberOfInventory
+        inventoryId,dateOfPurchase,rate
     }
     const request = axios.put(`${URN}/inventory/${inventoryId}`, data, { headers: authHeader() })
         .then(response => response.data)
@@ -67,5 +63,16 @@ export function multipleDelete(ids) {
     return {
         type: DELETE_MULTIPLE_INVENTORY,
         payload: request
+    }
+}
+
+export function getInventoryList (id){
+    console.log('mmmmmmmmmmmmm',id)
+    const request = axios.get(`${URN}/inventory/${id}`, { headers: authHeader() })
+    .then(response=>response.data)
+    .catch(error=>error)
+    return {
+        type:GET_INVENTORY_LIST,
+        payload:request
     }
 }

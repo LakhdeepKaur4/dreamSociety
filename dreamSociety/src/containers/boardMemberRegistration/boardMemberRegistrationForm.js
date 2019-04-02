@@ -69,13 +69,13 @@ class BoardMemberRegistrationForm extends Component {
     }
 
     componentDidMount=()=>{
-        this.props.getCountry().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
-        this.props.getState().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
-        this.props.getCity().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
-        this.props.getMemberDetails().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
-        this.props.getMemberDesignation().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
-        this.props.getSocietyId().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
-        this.props.getLocation().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;  
+        this.props.getCountry().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
+        this.props.getState().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
+        this.props.getCity().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
+        this.props.getMemberDetails().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
+        this.props.getMemberDesignation().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
+        this.props.getSocietyId().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
+        this.props.getLocation().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));  
         let societyId = localStorage.getItem('societyId')
         console.log(societyId);
         this.setState({societyId})
@@ -365,7 +365,7 @@ keyPress = (event) => {
     if (!pattern.test(inputChar)) {
         event.preventDefault();
     }
-    // else{
+    // else{    
     //     document.getElementById('isChecked').checked = false;
     //     document.getElementById('currenttaddr').disabled = false;
     //     this.setState({permanentAddress: ''});
@@ -387,11 +387,16 @@ submit = (e) => {
         if(!this.state.designationId){
             errors.designationId = `Designation can't be empty.`
         }
-        if(this.state.pin === '') {
-            errors.pin = `Please enter Pin/Zip Code.`}
+        if(document.getElementById('isChecked').checked === false){
+            if(this.state.pin === '') {
+                errors.pin = `Please enter Pin/Zip Code.`}
+        }
+        
         if(this.state.pin1 === '') {
             errors.pin1 = `Please enter Pin/Zip Code.`}
-        if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
+        if(document.getElementById('isChecked').checked === false){
+            if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
+        }
         if(this.state.permanentAddressDefault === '') errors.permanentAddressDefault = `Permanent Address can't be empty.`;
         if(this.state.contactNumber === '') errors.contactNumber = `Contact can't be empty.`;
         else if(this.state.contactNumber.length !== 10) errors.contactNumber = "Contact length should be of 10."

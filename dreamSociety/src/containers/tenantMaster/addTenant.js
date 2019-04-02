@@ -364,10 +364,14 @@ class AddTenant extends Component{
         if(this.state.step === 4){
             if(towerId === '') errors.towerId = `Please select Tower.`;
             if(floorId === '') errors.floorId = `Please select a Floor.`;
-            if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
+            if(document.getElementById('isChecked').checked === false){
+                if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
+                if(permanentAddressUser === '') errors.permanentAddressUser = `Permanent Address can't be empty.`;
+            }
+            
             if(flatDetailId === '') errors.flatDetailId = `Please select a Flat.`;
             if(correspondenceAddress === '') errors.correspondenceAddress = `Corresponding Address can't be empty.`;
-            if(permanentAddressUser === '') errors.permanentAddressUser = `Permanent Address can't be empty.`;
+           
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -853,13 +857,14 @@ class AddTenant extends Component{
                         <h3>Flat Details</h3>
                         <FormGroup>
                             <Label>Tower</Label>
-                            <Select onChange={this.towerChangeHandler.bind(this, 'towerId', 'towerName')} placeholder="Tower" name="towerId"
+                            <Select onChange={this.towerChangeHandler.bind(this, 'towerId', 'towerName')} placeholder={<DefaultSelect/>} name="towerId"
                             options={this.getTower(this.props.towerList)} />
                             {!this.state.towerId ? <span className="error">{this.state.errors.towerId}</span> : ''}
                         </FormGroup >
                         <FormGroup>
                             <Label>Floor</Label>
                             <Select options={this.getFloor(this.props.towerFloor)}
+                            placeholder={<DefaultSelect/>}
                             name="floorId"
                             onChange={this.floorChangeHandler.bind(this,'floorName','floorId')}
                             />
@@ -869,6 +874,7 @@ class AddTenant extends Component{
                             <Label>Flat Number</Label>
                             <Select options={this.getFlats(this.props.towerFloor)} name="flatDetailId"
                                 onChange={this.flatChangeHandler.bind(this, 'flatNo' , 'flatDetailId')}
+                                placeholder={<DefaultSelect/>}
                                 />
                             {!this.state.flatDetailId ? <span className="error">{this.state.errors.flatDetailId}</span> : ''}
                         </FormGroup >
