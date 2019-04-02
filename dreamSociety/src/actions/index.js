@@ -239,6 +239,7 @@ export const UPDATE_SOCIETY_EVENTS='update_society_events';
 export const DELETE_SOCIETY_EVENT='delete_society_events';
 export const DELETE_EVENTS_IDS='delete_selected_events';
 
+export const GET_INVENTORY_LIST="GET_INVENTORY_LIST"
 export const GET_ROLES1="GET_ROLES1";
 export const GET_ACTIVE_LIST="GET_ACTIVE_LIST";
 export const GET_DEACTIVE_LIST="GET_DEACTIVE_LIST";
@@ -251,3 +252,4 @@ export const ASSIGN_ROLES='ASSIGN_ROLES';
 export const ASSIGN_OWNER='ASSIGN_OWNER';
 export const ASSIGN_CHANGES='ASSIGN_CHANGES';
 export const ASSIGN_POST='ASSIGN_POST';
+export const ASSIGN_DISPLAY='ASSIGN_DISPLAY'

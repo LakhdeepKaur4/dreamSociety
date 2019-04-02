@@ -792,13 +792,17 @@ class TenantDetail extends Component {
                </Row>
            </FormGroup>
            <FormGroup>
-                <Label>Date of Birth</Label>
-                <Input value={this.state.dob} type="date"  disabled onChange={this.onChange} />
-            </FormGroup>
-            <FormGroup>
-                <Label>Gender:</Label>
-                <Input value={this.state.gender} disabled />
-            </FormGroup>
+                <Row md={12}>
+                    <Col md={6}>
+                        <Label>Date of Birth</Label>
+                        <Input value={this.state.dob} type="date"  disabled onChange={this.onChange} />
+                    </Col>
+                    <Col md={6}>
+                        <Label>Gender:</Label>
+                        <Input value={this.state.gender} disabled />
+                    </Col>
+                </Row>
+           </FormGroup>
             <FormGroup>
                 <Row md={12}>
                     <Col md={6}>
@@ -824,12 +828,16 @@ class TenantDetail extends Component {
                 </Row>
             </FormGroup>
             <FormGroup>
-                <Label>Permanent Address</Label>
-                <Input type="textarea" value={this.state.permanentAddress} disabled onChange={this.onChange} />
-            </FormGroup>
-            <FormGroup>
-                <Label>Correspondence Address</Label>
-                <Input type="textarea" value={this.state.correspondenceAddress} disabled onChange={this.onChange} />
+                <Row md={12}>
+                    <Col md={6}>
+                        <Label>Permanent Address</Label>
+                        <Input type="textarea" value={this.state.permanentAddress} disabled onChange={this.onChange} />
+                    </Col>
+                    <Col md={6}>
+                        <Label>Correspondence Address</Label>
+                        <Input type="textarea" value={this.state.correspondenceAddress} disabled onChange={this.onChange} />
+                    </Col>
+                </Row>
             </FormGroup>
             <FormGroup>
                 <h4 style={{textAlign:'center', marginBottom:'20px', fontWeight:'600'}}>Bank Details</h4>
@@ -1034,21 +1042,25 @@ class TenantDetail extends Component {
                     </Row>
                 </FormGroup>
                 <FormGroup>
-                    <Label>Pin/Zip Code</Label>
-                    <Input type="text" onChange={this.pinChange}
-                    maxLength="6" onKeyPress={this.numberValidation}
-                        name="pin" placeholder="Pin/Zip Code" />
-                        <span className="error">{this.state.errors.pin}</span>
-                </FormGroup>
-                <FormGroup>
-                    <Label>Address</Label>
-                    <Input type="textarea" disabled={!(this.state.countryId && this.state.stateId
-                    && this.state.cityId) ? true : false} onChange={this.permanentAddressChange}
-                    maxLength="250"
-                        name="editAddress" placeholder="Permanent Address" />
-                        {<span className="error">
-                        {this.state.errors.editAddress}
-                    </span>}
+                    <Row md={12}>
+                        <Col md={6}>
+                            <Label>Pin/Zip Code</Label>
+                            <Input type="text" onChange={this.pinChange}
+                            maxLength="6" onKeyPress={this.numberValidation}
+                                name="pin" placeholder="Pin/Zip Code" />
+                                <span className="error">{this.state.errors.pin}</span>
+                        </Col>
+                        <Col md={6}>
+                            <Label>Address</Label>
+                            <Input type="textarea" disabled={!(this.state.countryId && this.state.stateId
+                            && this.state.cityId) ? true : false} onChange={this.permanentAddressChange}
+                            maxLength="250"
+                                name="editAddress" placeholder="Permanent Address" />
+                                {<span className="error">
+                                {this.state.errors.editAddress}
+                            </span>}
+                        </Col>
+                    </Row>
                 </FormGroup>
             </div> : ''}
             <FormGroup>

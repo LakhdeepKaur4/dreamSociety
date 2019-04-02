@@ -387,13 +387,16 @@ submit = (e) => {
         if(!this.state.designationId){
             errors.designationId = `Designation can't be empty.`
         }
-        if(this.state.pin === '') errors.pin = `Please enter Pin/Zip Code.`
-        if(this.state.pin1 === '') errors.pin1 = `Please enter Pin/Zip Code.`
-        if(!this.state.countryId) errors.countryId = `Country can't be empty.`;
-        if(!this.state.stateId) errors.stateId = `State can't be empty.`;
-        if(!this.state.cityId) errors.cityId = `City can't be empty.`;
-        if(!this.state.locationId) errors.locationId = `Location can't be empty.`;
-        if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
+        if(document.getElementById('isChecked').checked === false){
+            if(this.state.pin === '') {
+                errors.pin = `Please enter Pin/Zip Code.`}
+        }
+        
+        if(this.state.pin1 === '') {
+            errors.pin1 = `Please enter Pin/Zip Code.`}
+        if(document.getElementById('isChecked').checked === false){
+            if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
+        }
         if(this.state.permanentAddressDefault === '') errors.permanentAddressDefault = `Permanent Address can't be empty.`;
         if(this.state.contactNumber === '') errors.contactNumber = `Contact can't be empty.`;
         else if(this.state.contactNumber.length !== 10) errors.contactNumber = "Contact length should be of 10."
@@ -565,17 +568,22 @@ currentAddressChange = (e) => {
 }
 
 pinChange = (e) => {
+    
     console.log(this.state)
     if (!!this.state.errors[e.target.name]) {
+        
         let errors = Object.assign({}, this.state.errors);
         delete errors[e.target.name];
         this.setState({ [e.target.name]: e.target.value, errors });
     }
     else {
+        
         this.setState({[e.target.name]: e.target.value});
         console.log(this.state)
+        
     }
     this.updateCurrentAddress(e.target.value)
+    
 }
 
 updateCurrentAddress = (pin) => {
@@ -588,22 +596,27 @@ updateCurrentAddress = (pin) => {
 
 pinChange1 = (e) => {
     console.log(this.state)
+    
     if (!!this.state.errors[e.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[e.target.name];
-        this.setState({ pin1: e.target.value, errors });
+        this.setState({ [e.target.name]: e.target.value, errors });
+        
     }
     else {
-        this.setState({pin1: e.target.value});
+        
+        this.setState({[e.target.name]: e.target.value});
+        
     }
     this.updatePermanentAddress(e.target.value)
+    
 }
 
-updatePermanentAddress = (pin) => {
-    console.log(pin)
-    this.setState({pin})
+updatePermanentAddress = (pin1) => {
+    console.log(pin1)
+    this.setState({pin1})
     this.setState({permanentAddress: this.state.permanentAddressDefault  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
-    this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin})
+    this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin1})
     console.log('updatePermanentAddress', this.state.permanentAddress)
 }
 
@@ -817,7 +830,7 @@ updatePermanentAddress = (pin) => {
                                         <Input type="text" onChange={this.pinChange}
                                         maxLength="6" minLength="5" onKeyPress={this.OnKeyPresshandlerPhone}
                                             name="pin" placeholder="Pin/Zip Code" />
-                                        <span className="error">{this.state.errors.pin}</span>
+                                        {<span className="error">{this.state.errors.pin}</span>}
                                     </Col>
                                     <Col md={8}>
                                         <Label>Address</Label>

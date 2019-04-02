@@ -91,7 +91,8 @@ import GetFloorDetail from './containers/floorMaster/getFloorDetail';
 import submitOTP from './containers/login/submitOtp';
 import token from './containers/token';
 import TokenVerification from './components/tokenVerification/tokenVerification';
-import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant'
+import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant';
+import InventoryList from './containers/inventory/inventoryList'
 import ShowList from './containers/activeDeactiveList/activeDeactiveList';
 import ShowActiveListDetails from  './containers/activeDeactiveList/activeDeactiveListDetails';
 import SWhowDeactiveListDetails from './containers/activeDeactiveList/deactivateActiveListDeatils';
@@ -103,6 +104,7 @@ import SocietyEventBooking from './containers/societyEventBooking/societyEventBo
 import DisplaySocietyEventBooking from './containers/societyEventBooking/displaySocietyEventBooking';
 
 import ViewTenantDetail from './containers/tenantMaster/tenantDetail/viewTenantDetail';
+import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
 class App extends Component {
   render() {
     return (
@@ -195,6 +197,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
+            <PrivateRoute path='/superDashboard/inventoryList' component={InventoryList} />
             <PrivateRoute path='/superDashboard/showList'exact component={ShowList} />
             <PrivateRoute path='/superDashboard/showList/showListDetails' component={ShowActiveListDetails} />
             <PrivateRoute path='/superDashboard/showList/showListDetails2' component={SWhowDeactiveListDetails} />
@@ -205,6 +208,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/DisplaySocietyEventBooking' component={DisplaySocietyEventBooking}/>
        
             <PrivateRoute path='/superDashBoard/viewTenantDetail' component={ViewTenantDetail} />
+            <PrivateRoute path='/superDashboard/assignRolesDetail' component={AssignRolesDetail} />
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
           </Switch>
