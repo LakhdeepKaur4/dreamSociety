@@ -32,10 +32,10 @@ module.exports = (sequelize, Sequelize) => {
         salary:{
             type: Sequelize.STRING,
         },
-        address: {
+        permanentAddress: {
             type: Sequelize.STRING,
         },
-        serviceType:{
+        currentAddress: {
             type: Sequelize.STRING,
         },
         startDate:{
@@ -60,5 +60,4 @@ module.exports = (sequelize, Sequelize) => {
 
 	return Employee;
 }
-
 

@@ -211,7 +211,8 @@ exports.createEncrypted = async (req, res, next) => {
 
         if ((messageErr.messageEmailErr === '') && (messageErr.messageContactErr === '')) {
             const create = {
-                societyBoardMemberName: encrypt(member.societyBoardMemberName),
+                firstName: encrypt(member.firstName),
+                lastName: encrypt(member.lastName),
                 currentAddress: encrypt(member.currentAddress),
                 permanentAddress: encrypt(member.permanentAddress),
                 contactNumber: encrypt(member.contactNumber),
@@ -220,6 +221,7 @@ exports.createEncrypted = async (req, res, next) => {
                 accountHolderName: encrypt(member.accountHolderName),
                 accountNumber: encrypt(member.accountNumber),
                 email: encrypt(member.email),
+                gender: encrypt(member.gender),
                 optionalMail: encrypt(member.optionalMail),
                 optionalContactNumber: encrypt(member.optionalContactNumber),
                 IFSCCode: encrypt(member.IFSCCode),
@@ -227,10 +229,10 @@ exports.createEncrypted = async (req, res, next) => {
                 userId: member.userId,
                 societyId: member.societyId,
                 designationId: member.designationId,
-                countryId: member.countryId,
-                stateId: member.stateId,
-                cityId: member.cityId,
-                locationId: member.locationId,
+                // countryId: member.countryId,
+                // stateId: member.stateId,
+                // cityId: member.cityId,
+                // locationId: member.locationId,
             }
             SocietyBoardMember.findOrCreate({
                 where: {
@@ -242,7 +244,8 @@ exports.createEncrypted = async (req, res, next) => {
             })
                 .spread((societyBoardMember, created) => {
                     if (created) {
-                        societyBoardMember.societyBoardMemberName = decrypt(societyBoardMember.societyBoardMemberName);
+                        societyBoardMember.firstName = decrypt(societyBoardMember.firstName);
+                        societyBoardMember.lastName = decrypt(societyBoardMember.lastName);
                         societyBoardMember.currentAddress = decrypt(societyBoardMember.currentAddress);
                         societyBoardMember.permanentAddress = decrypt(societyBoardMember.permanentAddress);
                         societyBoardMember.contactNumber = decrypt(societyBoardMember.contactNumber);
@@ -251,6 +254,7 @@ exports.createEncrypted = async (req, res, next) => {
                         societyBoardMember.accountHolderName = decrypt(societyBoardMember.accountHolderName);
                         societyBoardMember.accountNumber = decrypt(societyBoardMember.accountNumber);
                         societyBoardMember.email = decrypt(societyBoardMember.email);
+                        societyBoardMember.gender = decrypt(societyBoardMember.gender);
                         societyBoardMember.optionalMail = decrypt(societyBoardMember.optionalMail);
                         societyBoardMember.optionalContactNumber = decrypt(societyBoardMember.optionalContactNumber);
                         societyBoardMember.IFSCCode = decrypt(societyBoardMember.IFSCCode);
@@ -260,8 +264,8 @@ exports.createEncrypted = async (req, res, next) => {
                         });
                     } else {
                         console.log('Duplicate Email or Contact, member not created');
-                        societyBoardMember.societyBoardMemberName = decrypt(societyBoardMember.societyBoardMemberName);
-                        societyBoardMember.currentAddress = decrypt(societyBoardMember.currentAddress);
+                        societyBoardMember.firstName = decrypt(societyBoardMember.firstName);
+                        societyBoardMember.lastName = decrypt(societyBoardMember.lastName);                        societyBoardMember.currentAddress = decrypt(societyBoardMember.currentAddress);
                         societyBoardMember.permanentAddress = decrypt(societyBoardMember.permanentAddress);
                         societyBoardMember.contactNumber = decrypt(societyBoardMember.contactNumber);
                         societyBoardMember.panCardNumber = decrypt(societyBoardMember.panCardNumber);
@@ -269,6 +273,7 @@ exports.createEncrypted = async (req, res, next) => {
                         societyBoardMember.accountHolderName = decrypt(societyBoardMember.accountHolderName);
                         societyBoardMember.accountNumber = decrypt(societyBoardMember.accountNumber);
                         societyBoardMember.email = decrypt(societyBoardMember.email);
+                        societyBoardMember.gender = decrypt(societyBoardMember.gender);
                         societyBoardMember.optionalMail = decrypt(societyBoardMember.optionalMail);
                         societyBoardMember.optionalContactNumber = decrypt(societyBoardMember.optionalContactNumber);
                         societyBoardMember.IFSCCode = decrypt(societyBoardMember.IFSCCode);
@@ -295,17 +300,13 @@ exports.getDecrypted =async (req, res, next) => {
             order: [['createdAt', 'DESC']],
             include: [
                 { model: Designation, attributes: ['designationId', 'designationName'] },
-                { model: Country, attributes: ['countryId', 'countryName'] },
-                { model: City, attributes: ['cityId', 'cityName'] },
-                { model: State, attributes: ['stateId', 'stateName'] },
-                { model: Location, attributes: ['locationId', 'locationName'] },
                 { model: Society, attributes: ['societyId', 'societyName'] }
             ]
         })
             .then(societyBoardMember => {
                 societyBoardMember.map(item => {
-                    item.societyBoardMemberName = decrypt(item.societyBoardMemberName);
-                    item.currentAddress = decrypt(item.currentAddress);
+                    item.firstName = decrypt(item.firstName);
+                    item.lastName = decrypt(item.lastName);                    item.currentAddress = decrypt(item.currentAddress);
                     item.permanentAddress = decrypt(item.permanentAddress);
                     item.contactNumber = decrypt(item.contactNumber);
                     item.panCardNumber = decrypt(item.panCardNumber);
@@ -313,6 +314,7 @@ exports.getDecrypted =async (req, res, next) => {
                     item.accountHolderName = decrypt(item.accountHolderName);
                     item.accountNumber = decrypt(item.accountNumber);
                     item.email = decrypt(item.email);
+                    item.gender = decrypt(item.gender);
                     item.optionalMail = decrypt(item.optionalMail);
                     item.optionalContactNumber = decrypt(item.optionalContactNumber);
                     item.IFSCCode = decrypt(item.IFSCCode);
@@ -378,7 +380,8 @@ exports.updateEncrypted = async (req, res, next) => {
         }
 
         if ((messageErr.messageEmailErr === '') && (messageErr.messageContactErr === '')) {
-            societyBoardMemberNameCheck = constraintCheck('societyBoardMemberName', update);
+            firstNameCheck = constraintCheck('firstName', update);
+            lastNameCheck = constraintCheck('lastName', update);
             currentAddressCheck = constraintCheck('currentAddress', update);
             permanentAddressCheck = constraintCheck('permanentAddress', update);
             contactNumberCheck = constraintCheck('contactNumber', update);
@@ -387,18 +390,20 @@ exports.updateEncrypted = async (req, res, next) => {
             accountHolderNameCheck = constraintCheck('accountHolderName', update);
             accountNumberCheck = constraintCheck('accountNumber', update);
             emailCheck = constraintCheck('email', update);
+            genderCheck = constraintCheck('gender', update);
             optionalMailCheck = constraintCheck('optionalMail', update);
             optionalContactNumberCheck = constraintCheck('optionalContactNumber', update);
             IFSCCodeCheck = constraintCheck('IFSCCode', update);
             dobCheck = constraintCheck('dob', update);
             societyIdCheck = constraintCheck('societyId', update);
             designationIdCheck = constraintCheck('designationId', update);
-            countryIdCheck = constraintCheck('countryId', update);
-            stateIdCheck = constraintCheck('stateId', update);
-            cityIdCheck = constraintCheck('cityId', update);
-            locationIdCheck = constraintCheck('locationId', update);
+            // countryIdCheck = constraintCheck('countryId', update);
+            // stateIdCheck = constraintCheck('stateId', update);
+            // cityIdCheck = constraintCheck('cityId', update);
+            // locationIdCheck = constraintCheck('locationId', update);
 
-            societyBoardMemberName = constraintReturn(societyBoardMemberNameCheck, update, 'societyBoardMemberName', societyBoardMember);
+            firstName = constraintReturn(firstNameCheck, update, 'firstName', societyBoardMember);
+            lastName = constraintReturn(lastNameCheck, update, 'lastName', societyBoardMember);
             currentAddress = constraintReturn(currentAddressCheck, update, 'currentAddress', societyBoardMember);
             permanentAddress = constraintReturn(permanentAddressCheck, update, 'permanentAddress', societyBoardMember);
             contactNumber = constraintReturn(contactNumberCheck, update, 'contactNumber', societyBoardMember);
@@ -407,19 +412,21 @@ exports.updateEncrypted = async (req, res, next) => {
             accountHolderName = constraintReturn(accountHolderNameCheck, update, 'accountHolderName', societyBoardMember);
             accountNumber = constraintReturn(accountNumberCheck, update, 'accountNumber', societyBoardMember);
             email = constraintReturn(emailCheck, update, 'email', societyBoardMember);
+            gender = constraintReturn(genderCheck, update, 'gender', societyBoardMember);
             optionalMail = constraintReturn(optionalMailCheck, update, 'optionalMail', societyBoardMember);
             optionalContactNumber = constraintReturn(optionalContactNumberCheck, update, 'optionalContactNumber', societyBoardMember);
             IFSCCode = constraintReturn(IFSCCodeCheck, update, 'IFSCCode', societyBoardMember);
             dob = referenceConstraintReturn(dobCheck, update, 'dob', societyBoardMember);
             societyId = referenceConstraintReturn(societyIdCheck, update, 'societyId', societyBoardMember);
             designationId = referenceConstraintReturn(designationIdCheck, update, 'designationId', societyBoardMember);
-            countryId = referenceConstraintReturn(countryIdCheck, update, 'countryId', societyBoardMember);
-            stateId = referenceConstraintReturn(stateIdCheck, update, 'stateId', societyBoardMember);
-            cityId = referenceConstraintReturn(cityIdCheck, update, 'cityId', societyBoardMember);
-            locationId = referenceConstraintReturn(locationIdCheck, update, 'locationId', societyBoardMember);
+            // countryId = referenceConstraintReturn(countryIdCheck, update, 'countryId', societyBoardMember);
+            // stateId = referenceConstraintReturn(stateIdCheck, update, 'stateId', societyBoardMember);
+            // cityId = referenceConstraintReturn(cityIdCheck, update, 'cityId', societyBoardMember);
+            // locationId = referenceConstraintReturn(locationIdCheck, update, 'locationId', societyBoardMember);
 
             const updates = {
-                societyBoardMemberName: societyBoardMemberName,
+                firstName: firstName,
+                lastName: lastName,
                 currentAddress: currentAddress,
                 permanentAddress: permanentAddress,
                 contactNumber: contactNumber,
@@ -428,6 +435,7 @@ exports.updateEncrypted = async (req, res, next) => {
                 accountHolderName: accountHolderName,
                 accountNumber: accountNumber,
                 email: email,
+                gender: gender,
                 optionalMail: optionalMail,
                 optionalContactNumber: optionalContactNumber,
                 IFSCCode: IFSCCode,
@@ -435,10 +443,10 @@ exports.updateEncrypted = async (req, res, next) => {
                 userId: req.userId,
                 societyId: societyId,
                 designationId: designationId,
-                countryId: countryId,
-                stateId: stateId,
-                cityId: cityId,
-                locationId: locationId
+                // countryId: countryId,
+                // stateId: stateId,
+                // cityId: cityId,
+                // locationId: locationId
             }
 
             SocietyBoardMember.find({
@@ -448,7 +456,8 @@ exports.updateEncrypted = async (req, res, next) => {
                     return societyBoardMember.updateAttributes(updates);
                 })
                 .then(societyBoardMember => {
-                    societyBoardMember.societyBoardMemberName = decrypt(societyBoardMember.societyBoardMemberName);
+                    societyBoardMember.firstName = decrypt(societyBoardMember.firstName);
+                    societyBoardMember.lastName = decrypt(societyBoardMember.lastName);
                     societyBoardMember.currentAddress = decrypt(societyBoardMember.currentAddress);
                     societyBoardMember.permanentAddress = decrypt(societyBoardMember.permanentAddress);
                     societyBoardMember.contactNumber = decrypt(societyBoardMember.contactNumber);
@@ -457,6 +466,7 @@ exports.updateEncrypted = async (req, res, next) => {
                     societyBoardMember.accountHolderName = decrypt(societyBoardMember.accountHolderName);
                     societyBoardMember.accountNumber = decrypt(societyBoardMember.accountNumber);
                     societyBoardMember.email = decrypt(societyBoardMember.email);
+                    societyBoardMember.gender = decrypt(societyBoardMember.gender);
                     societyBoardMember.optionalMail = decrypt(societyBoardMember.optionalMail);
                     societyBoardMember.optionalContactNumber = decrypt(societyBoardMember.optionalContactNumber);
                     societyBoardMember.IFSCCode = decrypt(societyBoardMember.IFSCCode);

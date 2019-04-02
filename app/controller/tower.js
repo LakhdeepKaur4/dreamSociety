@@ -3,6 +3,7 @@ const config = require('../config/config.js');
 const httpStatus = require('http-status');
 
 const Tower = db.tower;
+const Tenant = db.tenant;
 const Floor = db.floor;
 const Owner = db.owner;
 const TowerFloor = db.towerFloor;
@@ -143,7 +144,6 @@ exports.getFloorByTowerId = async (req, res) => {
             ]
             , order: [['createdAt', 'DESC']]
         });
-
         const flatDetail = await FlatDetail.findAll({ where: { towerId: towerId, floorId: { [Op.in]: floorIds } } })
         if (tower && flatDetail) {
             res.status(httpStatus.OK).json({ message: 'Tower Floor Page', tower: tower, flatDetail: flatDetail })
@@ -188,8 +188,10 @@ exports.getFloorByTowerIdForTenant = async (req, res) => {
         owner.map(flat => {
             flatDetailId = flat.flatDetailId;
         })
+        const flatExists = await Tenant.findAll({where:{isActive:true,flatDetail:{[Op.in]:flatIds}}});
+
         const flat = await FlatDetail.findAll({ where: { isActive: true, flatDetailId: flatDetailId } })
-        if (tower && flatDetail && flat) {
+        if (tower && flatDetail && flat && !flatExists) {
             return res.status(httpStatus.OK).json({ message: 'Tower Floor Page', tower: tower, flatDetail: flat })
         } else {
             return res.status(httpStatus.OK).json({ message: 'No Flats Found' })

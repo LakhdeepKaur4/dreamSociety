@@ -65,14 +65,15 @@ db.otp = require('../model/otp.model')(sequelize, Sequelize);
 db.otpUserVerify = require('../model/otpUserModel')(sequelize, Sequelize);
 db.tokenVerify = require('../model/tokenModel')(sequelize, Sequelize);
 db.userRole = require('../model/userRoles.model')(sequelize, Sequelize);
+db.eventBooking = require('../model/eventBooking.model')(sequelize, Sequelize);
 
 
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
 db.otp.belongsTo(db.tenant, { foreignKey: 'tenantId' });
 db.otp.belongsTo(db.employee, { foreignKey: 'employeeId' });
 db.otp.belongsTo(db.vendor, { foreignKey: 'vendorId' });
-db.role.belongsToMany(db.user, { through: 'user_roles', foreignKey: 'roleId', otherKey: 'userId' });
-db.user.belongsToMany(db.role, { through: 'user_roles', foreignKey: 'userId', otherKey: 'roleId' });
+// db.role.belongsToMany(db.user, { through: 'user_roles', foreignKey: 'roleId', otherKey: 'userId' });
+// db.user.belongsToMany(db.role, { through: 'user_roles', foreignKey: 'userId', otherKey: 'roleId' });
 db.society.belongsTo(db.city, { foreignKey: 'cityId' });
 db.society.belongsTo(db.country, { foreignKey: 'countryId' });
 db.society.belongsTo(db.location, { foreignKey: 'locationId' });
@@ -123,18 +124,11 @@ db.inventory.belongsTo(db.assetsType, { foreignKey: 'assetTypeId' });
 db.inventory.belongsTo(db.user, { foreignKey: 'userId' });
 db.employee.belongsTo(db.user, { foreignKey: 'userId' });
 db.employee.belongsTo(db.user, { foreignKey: 'userId' });
-db.employee.belongsTo(db.country, { foreignKey: 'countryId' });
-db.employee.belongsTo(db.state, { foreignKey: 'stateId' });
-db.employee.belongsTo(db.city, { foreignKey: 'cityId' });
-db.employee.belongsTo(db.location, { foreignKey: 'locationId' });
+
 db.designation.belongsTo(db.user, { foreignKey: 'userId' });
 db.societyBoardMember.belongsTo(db.user, { foreignKey: 'userId' });
 db.societyBoardMember.belongsTo(db.society, { foreignKey: 'societyId' });
 db.societyBoardMember.belongsTo(db.designation, { foreignKey: 'designationId' });
-db.societyBoardMember.belongsTo(db.country, { foreignKey: 'countryId' });
-db.societyBoardMember.belongsTo(db.state, { foreignKey: 'stateId' });
-db.societyBoardMember.belongsTo(db.city, { foreignKey: 'cityId' });
-db.societyBoardMember.belongsTo(db.location, { foreignKey: 'locationId' });
 db.relation.belongsTo(db.user, { foreignKey: 'userId' });
 db.societyMemberEvent.belongsTo(db.user, { foreignKey: 'userId' });
 db.inventory.belongsTo(db.assets, { foreignKey: 'assetId' });
@@ -175,7 +169,13 @@ db.tower.belongsTo(db.user, { foreignKey: 'userId', constraints: false, allowNul
 db.tower.belongsToMany(db.floor, { as: 'Floors', through: 'tower_floor_master', foreignKey: 'towerId', otherKey: 'floorId' });
 db.floor.belongsToMany(db.tower, { as: 'Towers', through: 'tower_floor_master', foreignKey: 'floorId', otherKey: 'towerId' });
 
-db.user.belongsToMany(db.role, { as: 'Roles', through: 'user_role_master', foreignKey: 'roleId', otherKey: 'userId' });
-db.role.belongsToMany(db.user, { as: 'User', through: 'user_role_master', foreignKey: 'userId', otherKey: 'roleId' });
+db.role.belongsToMany(db.user, { through: 'user_role_master', foreignKey: 'roleId' ,otherKey:'userId',unique:false});
+db.user.belongsToMany(db.role, { through: 'user_role_master', foreignKey: 'userId' ,otherKey:'roleId',unique:false});
+
+db.employee.belongsTo(db.employeeDetail,{foreignKey:'employeeDetailId'});
+db.eventBooking.belongsTo(db.user, { foreignKey: 'eventOrganiser'});
+db.eventBooking.belongsTo(db.event, { foreignKey: 'eventId' });
+db.eventBooking.belongsTo(db.user, { foreignKey: 'eventOrganiser' });
+
 
 module.exports = db;
