@@ -24,7 +24,7 @@ class AssignRolesDetail extends Component {
 
             },
             message:'',
-            filterName:"userName",
+            filterName:"firstName",
             menuVisible: false,
             search: '',
             modal: false,
@@ -55,9 +55,10 @@ class AssignRolesDetail extends Component {
     }
 
     searchFilter = (search) => {
+      
         return function (x) {
             console.log(x)
-            // return x.roleId.toLowerCase().includes(search.toLowerCase())   ||!search;
+            return x.firstName.toLowerCase().includes(search.toLowerCase())  ||!search;
         }
     }
 
@@ -68,18 +69,18 @@ class AssignRolesDetail extends Component {
         
         if (assignDisplay) {
            
-       return assignDisplay.sort((item1,item2)=>{ 
+       return assignDisplay.sort((item1,item2)=>{ console.log(item1, item2)
         var cmprVal = (item1.userId && item2.userId ) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
         return this.state.sortVal ? cmprVal : -cmprVal;
-        }).map((item, index) => { console.log(item)
+        }).filter(this.searchFilter(this.state.search)).map((item, index) => { console.log(item)
            
                 return (
                     <tr key={item.userId}>
                         <td>{index + 1}</td>
                         <td>{item.firstName} {" "} {item.lastName}</td>
-                        <td>{item.roles.map((item)=>{console.log(item)
-                              return item.roleName
-                        })}</td>
+                        <td>{item.roles.map((item, index)=>{
+                                    return item.roleName
+                        }).join(' , ')}</td>
                     </tr>
 
                 )
@@ -126,7 +127,7 @@ class AssignRolesDetail extends Component {
 
                         <th  onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
-                                filterName:'userId'}});
+                                filterName:'firstName'}});
                         }} >Role Name <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
 
                         <th>Roles</th>
@@ -146,7 +147,7 @@ class AssignRolesDetail extends Component {
                         </div>
                         <div className="top-details">
                             <h3>Role Details</h3>
-                            <Button onClick={this.routeToChangeRoles} color="primary">Change Roles</Button>
+                            <Button onClick={this.routeToChangeRoles} color="primary">Add Roles</Button>
                         </div>
                      
                         <SearchFilter type="text" value={this.state.search}

@@ -237,6 +237,13 @@ export const GET_FLOOR_DATA='GET_FLOOR_DATA';
 export const RESET_PASSWORD="RESET_PASSWORD";
 export const GET_TOKEN="GET_TOKEN";
 export const GET_ALL_FLOOR='GET_ALL_FLOOR';
+
+export const ADD_SOCIETY_EVENTS='add_society_events';
+export const GET_SOCIETY_EVENTS ='get_society_events'
+export const UPDATE_SOCIETY_EVENTS='update_society_events';
+export const DELETE_SOCIETY_EVENT='delete_society_events';
+export const DELETE_EVENTS_IDS='delete_selected_events';
+
 export const GET_INVENTORY_LIST="GET_INVENTORY_LIST"
 export const GET_ROLES1="GET_ROLES1";
 export const GET_ACTIVE_LIST="GET_ACTIVE_LIST";
@@ -245,8 +252,11 @@ export const DEACTIVATE_MEMBER="DEACTIVATE_MEMBER";
 export const DEACTIVATE_MULTIPLE_MEMBER="DEACTIVATE_MULTIPLE_MEMBER";
 export const DELETE_MULTIPLE_MEMBER1="DELETE_MULTIPLE_MEMBER1";
 
+
 export const ASSIGN_ROLES='ASSIGN_ROLES';
 export const ASSIGN_OWNER='ASSIGN_OWNER';
 export const ASSIGN_CHANGES='ASSIGN_CHANGES';
 export const ASSIGN_POST='ASSIGN_POST';
-export const ASSIGN_DISPLAY='ASSIGN_DISPLAY'
+export const ASSIGN_DISPLAY='ASSIGN_DISPLAY';
+
+export const ADD_VENDOR='ADD_VENDOR';

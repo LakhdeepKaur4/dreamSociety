@@ -101,8 +101,8 @@ export function updateVendor(vendorId,formData){
          }
     }
     
-    export function updateVendorServices(vendorServiceId,serviceId,rateId,rate){
-            const request = axios.put(`${URN}/vendorService/`+vendorServiceId,{serviceId,rateId,rate}, {headers:authHeader()})
+    export function updateVendorServices(vendorServiceId,vendorId,serviceId,rateId,rate){
+            const request = axios.put(`${URN}/vendorService/`+vendorServiceId,{vendorId,serviceId,rateId,rate}, {headers:authHeader()})
              .then(this.getVendorMaster());
          
              

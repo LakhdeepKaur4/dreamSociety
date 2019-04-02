@@ -113,7 +113,6 @@ class EmployeeMaster extends Component{
 
 onPicChange=(event)=>{
     if(!!this.state.errors[event.target.name]){
-
         let errors =Object.assign({},this.state.errors)
         delete  errors[event.target.name]
         this.setState({[event.target.name]:event.target.files[0],errors});
@@ -216,7 +215,6 @@ FileChange=(event)=>{
          if(!this.state.salary){
             errors.salary ="salary can't be empty."
               }
-
          if(!this.state.startDate){
           errors.startDate =" Start Date can't be empty ."
          }
@@ -261,7 +259,6 @@ FileChange=(event)=>{
         data.append('contact',this.state.contact)
         data.append('employeeDetailId',this.state.employeeDetailId)
 
-
          this.props.AddEmployee(data).then(()=>this.props.history.push('/superDashboard/displayEmployee')).catch(err =>  {
             err.response.data;
             console.log(err.response.data)
@@ -275,6 +272,35 @@ FileChange=(event)=>{
 
     }
 
+    emailValid(event) {
+        const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    
+    emailChange = (e) => {
+        console.log(this.state.email)
+        this.setState({errors:{email: ''}})
+        this.setState({email:e.target.value, emailServerError:''})
+        if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
+            this.setState({[e.target.name]:e.target.value.trim()});
+            console.log(this.state.email)
+            this.setState({emailValidError: ''})
+        }
+        else{ this.setState({emailValidError: 'Invalid Email.'})}
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            console.log(this.state.email)
+            this.setState({ [e.target.name]: e.target.value.trim(), errors });
+        }
+        else {
+            this.setState({email:e.target.value});
+        }
+        
+    }
 
     getService=({getEmployee})=>{
  console.log("abc",getEmployee)
@@ -300,7 +326,6 @@ FileChange=(event)=>{
                )
            })
        )
-
     }
 }
 countryName1 = ({countryResult}) => {
@@ -393,7 +418,6 @@ cityName1=({cityResult})=>{
            }
            )
        )
-
     }
 }
 
@@ -682,7 +706,7 @@ let formData=
     </div>
 
     <div className="row">
-    <div className="form-group col-md-4 ">
+    <div className="form-group col-md-6 ">
     <label>First Name</label>
     <input  className="form-control" name="firstName" type="text"   onChange ={this.onChange}  onKeyPress={this.OnKeyPresshandler}  maxLength={30}/>
 
@@ -690,14 +714,10 @@ let formData=
     </div>
 
 
-    <div className="form-group  col-md-4">
-    <label> Middle Name</label>
-    <input  className="form-control" type="text" name ="middleName"   onKeyPress={this.OnKeyPresshandler}  onChange ={this.onChange}  maxLength={30}/>
-    <span className="error">{this.state.errors.middleName}</span>
-    </div>
+   
 
 
-    <div className="form-group col-md-4">
+    <div className="form-group col-md-6">
     <label> Last Name</label>
     <input  className="form-control" type="text"  name="lastName"   onKeyPress={this.OnKeyPresshandler} onChange ={this.onChange}  maxLength={30}/>
     <span className="error">{this.state.errors.lastName}</span>
@@ -732,7 +752,7 @@ let formData=
                         type="email"
                         name="email"
                         maxLength="70"
-                        onChange={this.onChange}
+                        onChange={this.emailChange}
                         onKeyPress={this.emailValid} />
                         {this.state.emailServerError ? <span  className="error">{this.state.emailServerError}</span> : null}
                         <span><br/></span>
@@ -742,7 +762,7 @@ let formData=
 
     <div className="form-group">
 
-        <label> Salary(In Terms of CTC)</label>
+        <label> Salary(perAnnum)</label>
 
         <input type="text"  className="form-control" name ="salary"  onChange ={this.onChange} onKeyPress={ this.OnKeyPressNumber}  maxLength={20}/>
         <span className="error">{this.state.errors.salary}</span>
@@ -965,7 +985,6 @@ let formData=
                             </FormGroup>
                         </div> : ''}
                     </FormGroup>
-
 
 
         <div className="form-group">
