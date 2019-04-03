@@ -65,6 +65,7 @@ class vendorMaster extends Component {
             editCurrent:true,
             pin:'',
             pin1:'',
+            emailError:false
             
         }
         this.handleChange = this.handleChange.bind(this);
@@ -664,6 +665,20 @@ class vendorMaster extends Component {
         console.log('updatePermanentAddress', this.state.permanentAddress)
     }
 
+    OnKeyPresshandlerEmail=(event)=> {
+        const pattern = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
+        let inputChar = event.target.value;
+        if (!pattern.test(inputChar)) {
+            this.setState({
+                emailError:true
+            })
+        }
+        else{
+            this.setState({
+                emailError:false
+            })
+        }
+    }
 
     render() {console.log(this.state)
     
@@ -798,14 +813,15 @@ class vendorMaster extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label>Email</Label>
-                            <Input type="email" placeholder="Email" name="email" maxLength={80}  value={this.state.email} onChange={this.handleChange} />
+                            <Input type="email" placeholder="Email" name="email" maxLength={80}  value={this.state.email} onKeyPress={this.OnKeyPresshandlerEmail} onBlur={this.OnKeyPresshandlerEmail} onChange={this.handleChange}/>
                             <span className="error">{this.state.errors.email}</span>
+                            <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
                         </FormGroup>
                         <Row form>
                             <Col md={6}>
                                 <FormGroup>
                                     <Label> Service Type 1</Label>
-                                    <Input type="select" name="serviceId1" defaultValue='no-value'  onChange={this.onServiceChange1} >
+                                    <Input type="select" name="serviceId1" defaultValue='no-value' onChange={this.onServiceChange1}>
                                         <DefaultSelect/>
                                         {this.getDropDown(this.props.displayServiceMasterReducer)}                                    
                                     </Input>
