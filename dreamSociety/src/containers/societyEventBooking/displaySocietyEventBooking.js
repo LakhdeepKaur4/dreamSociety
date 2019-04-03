@@ -101,7 +101,7 @@ class DisplaySocietyEventBooking extends Component {
 
 
     renderList({ societyEvents }) {
-        if (societyEvents ) {
+        if (societyEvents && societyEvents.eventBookings) {
             return  societyEvents.eventBookings.sort((item1,item2)=>{console.log(item1,item2)
                 var cmprVal =  (item1.event_master[this.state.filterName].localeCompare(item2.event_master[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
