@@ -181,7 +181,7 @@ class FlatMemberList extends Component {
         this.setState(function (prevState, props) {
             return {
                relationName,
-               relationId
+               relationId:selectOption.value
             }
         }, function () {
             console.log(selectOption.value)
