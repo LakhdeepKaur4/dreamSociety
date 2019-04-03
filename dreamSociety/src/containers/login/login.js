@@ -66,6 +66,8 @@ class Login extends Component {
                                 return this.props.history.push('/tenantDashboard');
                             case 'VENDOR':
                                 return this.props.history.push('/vendorDashboard');
+                            case 'EMPLOYEE':
+                                return this.props.history.push('/employeeDashboard')
                             default:
                                 return null;
                         }

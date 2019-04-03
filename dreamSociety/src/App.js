@@ -14,6 +14,7 @@ import AdminDashboard from './components/newUI/adminDashboard';
 import OwnerDashboard from './components/newUI/ownerDashboard';
 import SuperDashboard from './containers/superDashboard/superDashboard';
 import TenantDashboard from './components/newUI/tenantDashboard';
+import EmployeeDashboard from './components/newUI/employeeDashboard';
 import VendorDashboard from './components/newUI/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
 import EmployeeMaster from './containers/employeeMaster/employeeMaster';
@@ -123,6 +124,7 @@ class App extends Component {
             <PrivateRoute path='/ownerDashboard' component={OwnerDashboard} />
             <PrivateRoute path='/tenantDashboard' component={TenantDashboard} />
             <PrivateRoute path='/vendorDashboard' component={VendorDashboard} />
+            <PrivateRoute path='/employeeDashboard' component={EmployeeDashboard} />
             <PrivateRoute path='/superDashboard/registration' component={Registration} />
             <PrivateRoute path='/superDashboard/user_details' component={UserDetails} />
             <PrivateRoute path='/superDashboard/parking_master' component={ParkingMaster} />

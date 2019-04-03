@@ -691,7 +691,7 @@ let form;
 <Spinner/>
 
 let formData=
-<form onSubmit={this.submit}>
+<div>
 <div style={{ cursor: 'pointer' }} className="close"  aria-label="Close" onClick={this.close}>
 <span aria-hidden="true">&times;</span>
 </div>
@@ -905,7 +905,7 @@ let formData=
   <button className="btn btn-danger"  onClick  ={this.displayEmployee}>Cancel</button>
   </div>
   </div>
-  </form>
+  </div>
 
 
 
@@ -918,9 +918,9 @@ let formData=
             <UI   onClick ={this.logout } change={this.changePassword}>
 
 
-
-  {!this.state.loading ? formData: <Spinner />}
-
+            <form onSubmit={this.submit}>
+                {!this.state.loading ? formData: <Spinner />}
+            </form>
         </UI>
         </div>
 
