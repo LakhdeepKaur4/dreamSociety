@@ -128,7 +128,10 @@ toggle = (locationId, countryId,stateId,cityId, countryName, stateName, cityName
 
 searchFilter(search) {
     return function (x) {
-        return x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) || !search;
+        return x.country_master.countryName.toLowerCase().includes(search.toLowerCase()) ||
+         x.state_master.stateName.toLowerCase().includes(search.toLowerCase()) ||
+         x.city_master.cityName.toLowerCase().includes(search.toLowerCase()) ||
+         x.locationName.toLowerCase().includes(search.toLowerCase()) || !search;
     }
 }
 

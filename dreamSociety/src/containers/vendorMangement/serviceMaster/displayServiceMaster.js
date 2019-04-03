@@ -72,7 +72,8 @@ class DisplayServices extends Component {
   
     searchFilter(search) {
         return function (x) {
-            return x.serviceName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.serviceName.toLowerCase().includes(search.toLowerCase()) ||
+            x.service_detail_master.service_detail.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
 
