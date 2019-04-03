@@ -67,6 +67,7 @@ class DisplayVendorMaster extends Component {
             readOnlyCityId:'',
             readOnlyLocationId:'',
             userCurrent:false,
+            emailError:false
         }
 
     componentDidMount() {
@@ -687,6 +688,22 @@ class DisplayVendorMaster extends Component {
         this.updateCurrentAddress(e.target.value)
     }
     
+    
+    OnKeyPresshandlerEmail=(event)=> {
+        const pattern = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
+        let inputChar = event.target.value;
+        if (!pattern.test(inputChar)) {
+            this.setState({
+                emailError:true
+            })
+        }
+        else{
+            this.setState({
+                emailError:false
+            })
+        }
+    }
+
     updateCurrentAddress = (pin) => {
         console.log(pin)
         this.setState({pin})
@@ -837,8 +854,7 @@ class DisplayVendorMaster extends Component {
                             name="readOnlyCurrent"
                             onChange={this.onChange}
                             maxLength='250' />
-                        {/* {!this.state.permanentAddress ? <span className="error">{this.state.errors.permanentAddress}</span>: ''} */}
-                    </Col>:''}
+                       </Col>:''}
                     {!this.state.editCurrent ? <Col md={6} style={{ paddingTop: '44px' }}>
                         <span style={{ fontWeight: '600' }}>Do you want to edit current address?</span>
                         <Input type="checkbox" name="isCurrentChecked" id="isCurrentChecked" onChange={this.currentAddressIsChecked} className="ml-3" />
@@ -908,9 +924,10 @@ class DisplayVendorMaster extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label>Email</Label>
-                        <Input type="email" name="email" value={this.state.email}  maxLength={30} onChange={this.onHandleChange}>
+                        <Input type="email" name="email" value={this.state.email}  maxLength={80} onKeyPress={this.OnKeyPresshandlerEmail} onBlur={this.OnKeyPresshandlerEmail} onChange={this.onHandleChange}>
                         </Input>
                         <span className="error">{this.state.errors.email}</span>
+                        <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
             
                     </FormGroup>
                     <FormGroup>
@@ -925,7 +942,7 @@ class DisplayVendorMaster extends Component {
                             <Input type="file" name="documentOne"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage} required/>
                         </FormGroup>
                      
-                    <FormGroup>
+                    <FormGroup>    
                     <Label> Document Two</Label>
                         <GoogleDocsViewer
                              width="400px"
