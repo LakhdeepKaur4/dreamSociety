@@ -35,9 +35,7 @@ class InventoryDetails extends Component {
 
         };
     }
-    // componentDidMount(){
-    //     // this.totalInventory(this.props.inventory);
-    // }
+
     onChangeHandler = (event) => {
         const { name, value } = event.target;
         this.setState({ [name]: value });
@@ -62,7 +60,6 @@ class InventoryDetails extends Component {
     editAssets = () => {
 
         const { assetId, inventoryId,assetTypeId, } = this.state
-        console.log(this.state)
         let errors = {};
         if (this.state.assetId === '') {
             errors.assetId = "Assets can't be empty"
@@ -99,13 +96,6 @@ class InventoryDetails extends Component {
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
     }
-    // searchFilter(search) {
-    //     return function (x) {
-    //         return x.assetName.toLowerCase().includes(search.toLowerCase()) ||
-    //             // x.serialNumber.toLowerCase().includes(search.toLowerCase()) ||
-    //             x.assetType.toLowerCase().includes(search.toLowerCase()) || !search;
-    //     }
-    // }
     assetsName = ({ AssetsList }) => {
         if (AssetsList) {
             return AssetsList.assets.map((item) => {
@@ -157,9 +147,14 @@ class InventoryDetails extends Component {
             )
         })
     }
+    searchFilter(search) {
+        return function (x) {
+            return x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) || !search;
+        }
+    }
     renderList = ({ getInventory }) => {
         if (getInventory) {
-            return getInventory.inventory.map((items, index) => {
+            return getInventory.inventory.filter(this.searchFilter(this.state.search)).map((items, index) => {
                 return (
                     <tr key={items.inventoryId}>
                         <td><input type="checkbox" name="ids" value={items.inventoryId} className="SelectAll"
@@ -191,12 +186,8 @@ class InventoryDetails extends Component {
                         <td style={{textAlign:"center"}}>{items.count}</td>
                         <td style={{textAlign:"center"}}>{items.sum}</td>
                         <td style={{textAlign:"center"}}>{items.avgRate.toFixed(2)}</td>
-                        {/* <td style={{textAlign:"center"}}>{items.dateOfPurchase}</td> */}
                         <td><button className="btn btn-success mr-2" onClick={this.viewInventoryDetails.bind(this, items.asset_master.assetId)}>Details</button></td>
-                        {/* <td>
-                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.inventoryId,items.asset_master.assetName , items.asset_type_master.assetType,items.asset_master.assetId,items.asset_type_master.assetTypeId )} >Edit</button>
-                            <button className="btn btn-danger" onClick={this.delete.bind(this, items.inventoryId)} >Delete</button>
-                        </td> */}
+      
                     </tr>
                 )
             })
@@ -213,7 +204,6 @@ class InventoryDetails extends Component {
     }
     selectAll = () => {
         let selectMultiple = document.getElementsByClassName('SelectAll');
-        console.log('selectMultiple', selectMultiple)
         let ar = [];
         for (var i = 0; i < selectMultiple.length; i++) {
             ar.push(parseInt(selectMultiple[i].value));
@@ -241,7 +231,6 @@ class InventoryDetails extends Component {
         return this.props.history.replace('/superDashboard/changePassword')
       }
       viewInventoryDetails(id) {
-          console.log('pppppppppppp',id)
         localStorage.setItem('assetId', id)
         this.props.history.push('/superDashboard/inventoryList')
 
@@ -256,16 +245,6 @@ class InventoryDetails extends Component {
         tableData = <Table className="table table-bordered">
             <thead>
                 <tr>
-                {/* <th style={{alignContent:'baseline'}}>Select All<input
-                type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                            if (e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if (!e.target.checked) {
-                                this.unSelectAll();
-                            }
-                        }
-                        } /></th> */}
                     <th style={{width:"4%"}}></th>
                     <th style={{textAlign:"center",width:"4%"}}>#</th>
                     <th style={{textAlign:"center"}}>Asset Type</th>
@@ -273,9 +252,7 @@ class InventoryDetails extends Component {
                     <th style={{width:"10%"}}>Number Of Inventory</th>
                     <th style={{width:"10%"}}>Total Price</th>
                     <th style={{width:"10%"}}>Average Price</th>
-                    {/* <th style={{width:"10%"}}>Date of Purchase</th> */}
                     <th style={{width:"10%"}}>Details</th>
-                    {/* <th style={{width:"15%",textAlign:"center"}}>Actions</th> */}
                 </tr>
             </thead>
             <tbody>
@@ -292,8 +269,8 @@ class InventoryDetails extends Component {
                             <span aria-hidden="true">&times;</span>
                         </div>
                         <div className="top-details">
-                            <h3>Inventory Details</h3>
-                            <Button color="primary" onClick={this.toggles1} >Check Total</Button>
+                            <h3 style={{marginRight:'50%'}}>Inventory Details</h3>
+                            <Button color="primary" onClick={this.toggles1} style={{float:'right'}} >Check Total</Button>
                             <Button color="primary" onClick={() => this.props.history.push('/superDashBoard/inventory')} id="addAssets" >Add Inventory</Button>
                         </div>
                         <div>
@@ -326,12 +303,6 @@ class InventoryDetails extends Component {
                                         {this.assetsType(this.props.AssetType)}
                                     </Input>
                                     <div className="error">{this.state.errors.assetTypeId}</div>
-                                    {/* <Label>Number Of Inventory</Label>
-                                    <Input maxLength={30} type="text" id="numberOfInventory" name="numberOfInventory" onChange={this.onChangeHandler} value={this.state.numberOfInventory} />
-                                    <div className="error">{this.state.errors.numberOfInventory}</div>
-                                    <Label>Rate Per Inventory</Label>
-                                    <Input maxLength={30} type="text" id="ratePerInventory" name="ratePerInventory" onChange={this.onChangeHandler} value={this.state.ratePerInventory} />
-                                    <div className="error">{this.state.errors.ratePerInventory}</div> */}
                                 </FormGroup>
                                 <FormGroup>
                                     <Button color="primary mr-2" onClick={this.editAssets}>Save</Button>

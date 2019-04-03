@@ -81,9 +81,7 @@ class Inventory extends Component {
 
     onSubmit = (e) => {assetSubTypeId
         e.preventDefault();
-        console.log("state", this.state);
         const {assetId,assetSubTypeId,numberOfInventory,ratePerInventory,serialNo,dateOfPurchase,autoGenerate, serialNumbers } = this.state
-        console.log(assetId,assetSubTypeId,numberOfInventory,ratePerInventory,serialNo,dateOfPurchase,autoGenerate, serialNumbers)
         let errors = {};
         if(assetId===''){
             errors.assetId="Assets Name can't be empty"
@@ -97,9 +95,7 @@ class Inventory extends Component {
         else if(ratePerInventory===''){
             errors.ratePerInventory="Rate Per Inventory can't be empty"
         }
-        // else if(serialNo===''){
-        //     errors.serialNo="Serial Number can't be empty"
-        // }
+
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
         if (isValid) {
@@ -136,7 +132,6 @@ onAssetsTypeChange=(name,selectOption)=>{
             [name]:selectOption.value
         }
     },function (){
-        console.log(name)
     });
     
 }   
