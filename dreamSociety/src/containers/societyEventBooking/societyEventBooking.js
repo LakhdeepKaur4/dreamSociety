@@ -184,6 +184,7 @@ class SocietyEventBooking extends Component {
         return this.props.history.replace('/superDashboard/changePassword')
     }
     
+    
     render(){console.log(this.state)
         return(
             <div>

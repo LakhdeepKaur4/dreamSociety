@@ -747,7 +747,7 @@ let formData=
                         </div>
                          <div>
                         <label>Email</label>
-                        <input  className ="form-control"
+                        <input  className ="form-control"  
 
                         type="email"
                         name="email"
