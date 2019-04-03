@@ -352,7 +352,7 @@ render() {
 
                             <FormGroup>
                                 <Button color="primary" className="mr-2"  onClick={this.updateEvents.bind(this)} >Save </Button>
-                                <Button color="danger">Cancel</Button>
+                                <Button color="danger" onClick={this.toggleEditEventModal.bind(this)}>Cancel</Button>
                             </FormGroup>
 </div>
          let deleteSelectedButton = <Button color="danger" className="mb-2"
