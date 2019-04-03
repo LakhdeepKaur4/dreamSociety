@@ -4,7 +4,7 @@ module.exports = {
   api_secret: 'eTNNejUT2sCPjlor',
   number: '918076125903',
   secret: 'grokonez-super-secret-key',
-  ROLEs: ['SUPER_ADMIN', 'ADMIN','SOCIETY_MEMBER_OWNER','SOCIETY_MEMBER_TENANT','VENDOR'],
+  ROLEs: ['SUPER ADMIN', 'ADMIN','SOCIETY MEMBER OWNER','SOCIETY MEMBER TENANT','VENDOR'],
   url:'https://www.smsgateway.center/SMSApi/rest/send',
   userId:'jitkuk',
   password:'jit@4567',
