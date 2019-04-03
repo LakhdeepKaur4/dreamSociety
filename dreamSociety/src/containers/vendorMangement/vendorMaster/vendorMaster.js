@@ -342,11 +342,11 @@ class vendorMaster extends Component {
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)     
         this.props.addVendorMaster(formData).then(()=>this.push()) 
-        .catch(err=>{
-            this.setState({message: err.response.data.message, loading: true})
+        .catch((err)=>{
+            this.setState({message: err.response.data.message, loading: false})
         
         }) 
-        this.refreshData();
+       
         }
     }
 

@@ -165,7 +165,10 @@ class DisplayVendorMaster extends Component {
     
     searchFilter(search) {
         return function (x) {
-            return x.firstName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.firstName.toLowerCase().includes(search.toLowerCase()) ||
+                   x.lastName.toLowerCase().includes(search.toLowerCase()) ||  
+                   x.contact.toLowerCase().includes(search.toLowerCase()) ||
+                   x.email.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
   
