@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-// import {} from '../../actionCreators/assignRolesAction';
+import {addVendor} from './../../actionCreators/individualVendorAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form, Button,  FormGroup,  Input, Label, Row, Col } from 'reactstrap';
 
@@ -314,19 +314,74 @@ class IndividualVendor extends Component{
                 </Row>
 
                 <Row form>
-                <Col md={6}>
+                <Col md={2}>
+                <FormGroup>
+                    <Label>Slot 1</Label>
+                </FormGroup>
+                </Col>
+                <Col md={5}>
                 <FormGroup>
                     <Label>From</Label>
-                    <Input type="date"  name="from" >
+                    <Input type="time"  name="from" >
                     </Input>
                     <span className='error'>{this.state.errors.from}</span>
                 </FormGroup>
                 </Col>
                 
-                <Col md={6}>
+                <Col md={5}>
                 <FormGroup>
                     <Label>To</Label>
-                    <Input type="date" name="to" >
+                    <Input type="time" name="to" >
+                    </Input>
+                    <span className='error'>{this.state.errors.to}</span>
+                </FormGroup>
+                </Col>
+                </Row>
+
+                <Row form>
+                <Col md={2}>
+                <FormGroup>
+                    <Label>Slot 2</Label>
+                </FormGroup>
+                </Col>
+                <Col md={5}>
+                <FormGroup>
+                    <Label>From</Label>
+                    <Input type="time"  name="from" >
+                    </Input>
+                    <span className='error'>{this.state.errors.from}</span>
+                </FormGroup>
+                </Col>
+                
+                <Col md={5}>
+                <FormGroup>
+                    <Label>To</Label>
+                    <Input type="time" name="to" >
+                    </Input>
+                    <span className='error'>{this.state.errors.to}</span>
+                </FormGroup>
+                </Col>
+                </Row>
+
+                <Row form>
+                <Col md={2}>
+                <FormGroup>
+                    <Label>Slot 3</Label>
+                </FormGroup>
+                </Col>
+                <Col md={5}>
+                <FormGroup>
+                    <Label>From</Label>
+                    <Input type="time"  name="from" >
+                    </Input>
+                    <span className='error'>{this.state.errors.from}</span>
+                </FormGroup>
+                </Col>
+                
+                <Col md={5}>
+                <FormGroup>
+                    <Label>To</Label>
+                    <Input type="time" name="to" >
                     </Input>
                     <span className='error'>{this.state.errors.to}</span>
                 </FormGroup>
@@ -376,13 +431,13 @@ class IndividualVendor extends Component{
 function mapStateToProps(state) {
    
  return {
-    // AssignRolesReducer: state.AssignRolesReducer
+    IndividualReducer: state.AssignRolesReducer
  }
 
 }
 
 function mapDispatchToProps(dispatch) {
- return bindActionCreators({ }, dispatch);
+ return bindActionCreators({addVendor }, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(IndividualVendor));

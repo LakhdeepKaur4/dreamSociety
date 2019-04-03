@@ -13,7 +13,8 @@ class EmployeeTypeMaster extends Component{
         employeeWorkTypeId:'',
         employeeWorkType:'',
         loading:true,
-        errors:{}
+        errors:{},
+        message:''
     }
 
          
@@ -65,6 +66,7 @@ if(employeeWorkType){
 }
 
 onChange = (e) => {
+    this.setState({message:'' })
     if(!!this.state.errors[e.target.name]){
         let errors =Object.assign({},this.state.errors)
         delete  errors[e.target.name]
@@ -98,7 +100,8 @@ this.setState({ errors });
 const isValid = Object.keys(errors).length === 0
 if (isValid) {
     this.setState({loading:true})
-      this.props.AddEmployee(serviceType,employeeTypeId,employeeWorkTypeId).then(()=>this.props.history.push('/superDashboard/displayEmployeeType'))
+      this.props.AddEmployee(serviceType,employeeTypeId,employeeWorkTypeId).then(()=>this.props.history.push('/superDashboard/displayEmployeeType')).catch((err)=>this.setState({message: err.response.data.message, loading: false}))
+   
       
     console.log(this.state.serviceType,this.state.employeeTypeId,this.state.employeeWorkTypeId)
   }
@@ -141,6 +144,7 @@ render(){
     <label>Employee Service Type</label>
     <input type ="text" className="form-control" name="serviceType" placeholder="Service Type"  onKeyPress ={this.OnKeyPresshandler} maxLength="20" onChange={this.onChange} onKeyPress={this.OnKeyPresshandler}/>
     <span className="error">{this.state.errors.serviceType}</span>
+    <span className="error">{this.state.message}</span>   
     </div>
     <button className="btn btn-success">Submit</button>
     <button className="btn btn-danger" onClick={this.displayEmployee}>Cancel</button>

@@ -113,7 +113,6 @@ class EmployeeMaster extends Component{
 
 onPicChange=(event)=>{
     if(!!this.state.errors[event.target.name]){
-
         let errors =Object.assign({},this.state.errors)
         delete  errors[event.target.name]
         this.setState({[event.target.name]:event.target.files[0],errors});
@@ -216,7 +215,6 @@ FileChange=(event)=>{
          if(!this.state.salary){
             errors.salary ="salary can't be empty."
               }
-
          if(!this.state.startDate){
           errors.startDate =" Start Date can't be empty ."
          }
@@ -261,7 +259,6 @@ FileChange=(event)=>{
         data.append('contact',this.state.contact)
         data.append('employeeDetailId',this.state.employeeDetailId)
 
-
          this.props.AddEmployee(data).then(()=>this.props.history.push('/superDashboard/displayEmployee')).catch(err =>  {
             err.response.data;
             console.log(err.response.data)
@@ -275,6 +272,35 @@ FileChange=(event)=>{
 
     }
 
+    emailValid(event) {
+        const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+    
+    emailChange = (e) => {
+        console.log(this.state.email)
+        this.setState({errors:{email: ''}})
+        this.setState({email:e.target.value, emailServerError:''})
+        if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
+            this.setState({[e.target.name]:e.target.value.trim()});
+            console.log(this.state.email)
+            this.setState({emailValidError: ''})
+        }
+        else{ this.setState({emailValidError: 'Invalid Email.'})}
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            console.log(this.state.email)
+            this.setState({ [e.target.name]: e.target.value.trim(), errors });
+        }
+        else {
+            this.setState({email:e.target.value});
+        }
+        
+    }
 
     getService=({getEmployee})=>{
  console.log("abc",getEmployee)
@@ -300,7 +326,6 @@ FileChange=(event)=>{
                )
            })
        )
-
     }
 }
 countryName1 = ({countryResult}) => {
@@ -393,7 +418,6 @@ cityName1=({cityResult})=>{
            }
            )
        )
-
     }
 }
 
@@ -667,7 +691,7 @@ let form;
 <Spinner/>
 
 let formData=
-<form onSubmit={this.submit}>
+<div>
 <div style={{ cursor: 'pointer' }} className="close"  aria-label="Close" onClick={this.close}>
 <span aria-hidden="true">&times;</span>
 </div>
@@ -682,7 +706,7 @@ let formData=
     </div>
 
     <div className="row">
-    <div className="form-group col-md-4 ">
+    <div className="form-group col-md-6 ">
     <label>First Name</label>
     <input  className="form-control" name="firstName" type="text"   onChange ={this.onChange}  onKeyPress={this.OnKeyPresshandler}  maxLength={30}/>
 
@@ -690,14 +714,10 @@ let formData=
     </div>
 
 
-    <div className="form-group  col-md-4">
-    <label> Middle Name</label>
-    <input  className="form-control" type="text" name ="middleName"   onKeyPress={this.OnKeyPresshandler}  onChange ={this.onChange}  maxLength={30}/>
-    <span className="error">{this.state.errors.middleName}</span>
-    </div>
+   
 
 
-    <div className="form-group col-md-4">
+    <div className="form-group col-md-6">
     <label> Last Name</label>
     <input  className="form-control" type="text"  name="lastName"   onKeyPress={this.OnKeyPresshandler} onChange ={this.onChange}  maxLength={30}/>
     <span className="error">{this.state.errors.lastName}</span>
@@ -727,12 +747,12 @@ let formData=
                         </div>
                          <div>
                         <label>Email</label>
-                        <input  className ="form-control"
+                        <input  className ="form-control"  
 
                         type="email"
                         name="email"
                         maxLength="70"
-                        onChange={this.onChange}
+                        onChange={this.emailChange}
                         onKeyPress={this.emailValid} />
                         {this.state.emailServerError ? <span  className="error">{this.state.emailServerError}</span> : null}
                         <span><br/></span>
@@ -742,127 +762,12 @@ let formData=
 
     <div className="form-group">
 
-        <label> Salary(In Terms of CTC)</label>
+        <label> Salary(perAnnum)</label>
 
         <input type="text"  className="form-control" name ="salary"  onChange ={this.onChange} onKeyPress={ this.OnKeyPressNumber}  maxLength={20}/>
         <span className="error">{this.state.errors.salary}</span>
     </div>
 
-     {/* <div className="form-group">
-                <label>  current Address</label>
-                <input type="text" className="form-control" name  ="currentAddress"   onChange ={this.onChange} maxLength={30}/>
-                <span  className="error">{this.state.errors.currentAddress}</span>
-                  </div>
-
-    <div  className="row">
-
-
-                    <div className="col-md-6">
-                            <label>Country Name</label>
-                           <select   className ="form-control"  name="countryName"  defaultValue='no-value'  onChange={this.onChangeCountry} >
-                        <DefaultSelect/>
-                             {this.getDropdown1(this.props.locationMasterReducer)}
-                        </select>
-                           {!this.state.countryId1?<span  className="error">{this.state.errors.countryId1}</span>:''}
-                    </div>
-
-
-
-                    <div className="col-md-6">
-                        <label>State Name</label>
-                        <select  className ="form-control"   defaultValue='no-value'  name="stateName" onChange={this.onChangeState}>
-                               <DefaultSelect/>
-                             {this.getDropdown2(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.stateId1?<span  className="error">{this.state.errors.stateId1}</span>:''}
-                    </div>
-                          </div>
-
-                          <div className="row">
-                      <div  className="col-md-6">
-                        <label>City Name</label>
-                        <select  className ="form-control"  defaultValue='no-value'  name="cityName" onChange={this.onChangeCity} >
-                            <DefaultSelect/>
-                             {this.getDropdown3(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.cityId1?<span  className="error">{this.state.errors.cityId1}</span>:''}
-                     </div>
-                     <div  className="col-md-6" >
-                        <label>location</label>
-                        <select  className ="form-control"  name="locationName" defaultValue='no-value'  onChange={this.onLocationChange} >
-                             <DefaultSelect/>
-                             {this.getDropdown4(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.locationId1?<span  className="error">{this.state.errors.locationId1}</span>:''}
-                      </div>
-                     </div>
-                     <div>
-                            Is Your permanent address same as current  address?<input type="checkbox" onChange={this.sameAddress}  name="isChecked" id="isChecked" className="ml-3" />
-                        </div>
-                        <h3 style={{textAlign:'center'}}>Permanent  Address</h3>
-
-
-                          {this.state.defaultPermanent ? <div>
-                            <label>Permanent Address</label>
-                            <input   type="textarea"  className="form-control" id="permanentaddr" disabled   onChange={this.onChange}
-                            maxLength="250"  value={this.state.permanentAddress}
-                             name="permanentAddress"  placeholder="Permanent Address" />
-                             {<span className="error">
-                                {this.state.errors.permanentAddress}
-                            </span>}
-                        </div> : ''}
-                        {this.state.permanentAddrDefault ? <div>
-
-                     <div className="form-group">
-                <label>  Permanent  Address</label>
-                <input type="text" className="form-control" name  ="permanentAddress"    onChange ={this.onChange} maxLength={30}/>
-                <span className="error">{this.state.errors.address}</span>
-                  </div>
-
-                          <div  className="row">
-
-
-
-                    <div className="col-md-6">
-                            <label>Country Name</label>
-                           <select   className ="form-control"  name="countryId"         defaultValue='no-value'  onChange={this.onChangeCountry} >
-                        <    DefaultSelect/>
-                            {this.getDrop1(this.props.locationMasterReducer)}
-                        </select>
-                           {!this.state.countryId?<span  className="error">{this.state.errors.countryId}</span>:''}
-                    </div>
-
-
-
-                    <div className="col-md-6">
-                        <label>State Name</label>
-                        <select  className ="form-control"   defaultValue='no-value'  name="stateId" onChange={this.onChangeState}>
-                               <DefaultSelect/>
-                            {this.getDrop2(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.stateId?<span  className="error">{this.state.errors.stateId}</span>:''}
-                    </div>
-                          </div>
-
-                          <div className="row">
-                      <div  className="col-md-6">
-                        <label>City Name</label>
-                        <select  className ="form-control"  defaultValue='no-value'  name="cityId" onChange={this.onChangeCity} >
-                            <DefaultSelect/>
-                            {this.getDrop3(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.cityId?<span  className="error">{this.state.errors.cityId}</span>:''}
-                     </div>
-                     <div  className="col-md-6" >
-                        <label>location</label>
-                        <select  className ="form-control"  name="locationId" defaultValue='no-value'  onChange={this.onLocationChange} >
-                             <DefaultSelect/>
-                            {this.getDrop4(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.locationId?<span  className="error">{this.state.errors.locationId}</span>:''}
-                      </div>
-                     </div>
-</div>:''} */}
 <FormGroup style={{paddingTop:'20px'}}>
                         <h4 style={{textAlign:'center',  fontWeight:'600', marginBottom:'20px'}}>Permanent Address</h4>
                         <FormGroup>
@@ -967,7 +872,6 @@ let formData=
                     </FormGroup>
 
 
-
         <div className="form-group">
           <label> Employment  Date</label>
           <input
@@ -1001,7 +905,7 @@ let formData=
   <button className="btn btn-danger"  onClick  ={this.displayEmployee}>Cancel</button>
   </div>
   </div>
-  </form>
+  </div>
 
 
 
@@ -1014,9 +918,9 @@ let formData=
             <UI   onClick ={this.logout } change={this.changePassword}>
 
 
-
-  {!this.state.loading ? formData: <Spinner />}
-
+            <form onSubmit={this.submit}>
+                {!this.state.loading ? formData: <Spinner />}
+            </form>
         </UI>
         </div>
 

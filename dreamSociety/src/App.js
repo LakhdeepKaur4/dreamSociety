@@ -14,10 +14,12 @@ import AdminDashboard from './components/newUI/adminDashboard';
 import OwnerDashboard from './components/newUI/ownerDashboard';
 import SuperDashboard from './containers/superDashboard/superDashboard';
 import TenantDashboard from './components/newUI/tenantDashboard';
+import EmployeeDashboard from './components/newUI/employeeDashboard';
 import VendorDashboard from './components/newUI/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
 import EmployeeMaster from './containers/employeeMaster/employeeMaster';
 import DisplayEmployeeMaster from './containers/employeeMaster/displayEmployeeMaster';
+import DisplayEmployeeMaster2 from './containers/employeeMaster/displayEmployeeMaster2';
 import SocietyManagement from './containers/societyManagement/societyMangement';
 import TowerMaster from './containers/towerMaster/towerMaster';
 import DisplayTowerMaster from './containers/towerMaster/displayTowerMaster';
@@ -101,6 +103,7 @@ import AssignRoles from './components/assignRoles/assignRoles';
 import IndividualVendor from './containers/individualVendor/individualVendor';
 // import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant';
 import SocietyEventBooking from './containers/societyEventBooking/societyEventBooking';
+import DisplaySocietyEventBooking from './containers/societyEventBooking/displaySocietyEventBooking';
 
 import ViewTenantDetail from './containers/tenantMaster/tenantDetail/viewTenantDetail';
 import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
@@ -121,6 +124,7 @@ class App extends Component {
             <PrivateRoute path='/ownerDashboard' component={OwnerDashboard} />
             <PrivateRoute path='/tenantDashboard' component={TenantDashboard} />
             <PrivateRoute path='/vendorDashboard' component={VendorDashboard} />
+            <PrivateRoute path='/employeeDashboard' component={EmployeeDashboard} />
             <PrivateRoute path='/superDashboard/registration' component={Registration} />
             <PrivateRoute path='/superDashboard/user_details' component={UserDetails} />
             <PrivateRoute path='/superDashboard/parking_master' component={ParkingMaster} />
@@ -196,6 +200,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
+            <PrivateRoute path='/superDashboard/displayEmployee2' component={DisplayEmployeeMaster2} />
             <PrivateRoute path='/superDashboard/inventoryList' component={InventoryList} />
             <PrivateRoute path='/superDashboard/showList'exact component={ShowList} />
             <PrivateRoute path='/superDashboard/showList/showListDetails' component={ShowActiveListDetails} />
@@ -204,6 +209,8 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/individualVendor' component={IndividualVendor} />
            
             <PrivateRoute path='/superDashboard/SocietyEventBooking' component={SocietyEventBooking}/>
+            <PrivateRoute path='/superDashboard/DisplaySocietyEventBooking' component={DisplaySocietyEventBooking}/>
+       
             <PrivateRoute path='/superDashBoard/viewTenantDetail' component={ViewTenantDetail} />
             <PrivateRoute path='/superDashboard/assignRolesDetail' component={AssignRolesDetail} />
             <Route path='/submitotp' component= {submitOTP}/>

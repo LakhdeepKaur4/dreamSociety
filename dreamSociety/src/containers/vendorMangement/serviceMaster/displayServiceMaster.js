@@ -268,8 +268,8 @@ class DisplayServices extends Component {
     </Table>
 
 
-let modalData =<div>
-      <FormGroup>
+        let modalData =<div>
+                             <FormGroup>
                                 <Label for="serviceName">Service Type</Label>
                                 <Input type="text" value={this.state.serviceName} name="serviceName" onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}  />
                                 <span className="error">{this.state.errors.serviceName}</span>

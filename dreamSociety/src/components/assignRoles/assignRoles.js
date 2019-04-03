@@ -77,10 +77,14 @@ class AssignRoles extends Component{
 
         console.log("submitted-----------------", this.state);
         const isValid=Object.keys(errors).length === 0
+
         if(isValid){
-          
+            this.setState({loading:true})
           this.props.assignPost(this.state)
-            .then(()=>this.props.history.push('/superDashboard'))
+          .then(()=> this.props.history.push('/superDashboard/assignRolesDetail'))
+          .catch(err=>{
+            this.setState({message: err.response.data.message, loading: false})
+        })
         }
     }
 
@@ -169,7 +173,7 @@ class AssignRoles extends Component{
                 <span className="error">{this.state.errors.id}</span>          
             </FormGroup>
 
-            <Button color="success" className="mr-2">Display Role</Button>
+            <Button color="success" className="mr-2">Submit Role</Button>
             <Button color="danger" onClick={this.dashbordPage}>Cancel</Button>
             </div>
         return(

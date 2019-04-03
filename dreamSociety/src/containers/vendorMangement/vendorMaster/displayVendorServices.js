@@ -10,7 +10,6 @@ import DefaultSelect from '../../../constants/defaultSelect';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/vendorDashboardInside';
 import Spinner from '../../../components/spinner/spinner';
-import spinner from '../../../components/spinner/spinner';
 
 
 
@@ -36,7 +35,8 @@ class DisplayVendorServices extends Component {
             ids:[],
             isDisabled:true,    
             errors:{},
-            modalLoading:false
+            modalLoading:false,
+            message:''
         }
 
     componentDidMount() {
@@ -44,6 +44,7 @@ class DisplayVendorServices extends Component {
     }
 
     onHandleChange=(e)=>{
+        this.setState({message:''})
         if(!!this.state.errors[e.target.name]){
             let errors =Object.assign({},this.state.errors)
             delete  errors[e.target.name]
@@ -116,16 +117,16 @@ class DisplayVendorServices extends Component {
 
    
 
-editUser(vendorServiceId,serviceId,rateId,serviceName,rateType,rate){
+editUser(vendorServiceId,vendorId,serviceId,rateId,serviceName,rateType,rate){
     this.setState({
-        vendorServiceId,serviceId,rateId,serviceName,rateType,rate
+        vendorServiceId,vendorId,serviceId,rateId,serviceName,rateType,rate
             ,editVendorModal: !this.state.editServiceModal})
             
     }
 
 toggleEditVendorModal() {
         this.setState({
-            editVendorModal: !this.state.editVendorModal
+            editVendorModal: !this.state.editVendorModal,message:''
         });
     }
 
@@ -134,7 +135,7 @@ toggle() {
     }
 
 updateServices = () => { 
-    const {vendorServiceId,serviceId,rateId,rate} = this.state
+    const {vendorServiceId,vendorId,serviceId,rateId,rate} = this.state
     let errors = {};
             if(this.state.rate===''){
                 errors.rate="Rate can't be empty"
@@ -142,18 +143,21 @@ updateServices = () => {
             this.setState({ errors });
             
             const isValid =Object.keys(errors).length===0;
-            if(isValid){           
-                this.props.updateVendorServices(vendorServiceId,serviceId,rateId,rate)
+            if(isValid && this.state.message === ''){           
+                this.props.updateVendorServices(vendorServiceId,vendorId,serviceId,rateId,rate)
                     .then(() => this.refreshData())
                     .catch(err=>{
-                        this.setState({message: err.response.data.message, loading: true})
-                    
-                    }) 
-                this.setState({
-                    vendorServiceId,serviceId,rateId,rate,
-                    
-                    modalLoading:true
-                })
+                        this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                        })
+                        if(this.state.message === ''){
+                            this.setState({editVendorModal: true})
+                        }
+                        else {
+                            this.setState({editVendorModal: false})
+                        }       
+                    this.setState({ modalLoading: true
+               })
+               console.log(serviceId,rateId)
     }   
 }
 
@@ -194,7 +198,7 @@ updateServices = () => {
                         <td>{item.rate_master?item.rate_master.rateType:''}</td>
                         <td>{item.rate}</td> 
                         <td>
-                                <Button color="success" className="mr-2" onClick={this.editUser.bind(this,item.vendorServiceId,item.service_master.serviceId,item.rate_master.rateId,item.service_master?item.service_master.serviceName:'',item.rate_master?item.rate_master.rateType:'',item.rate)}>Edit</Button> 
+                                <Button color="success" className="mr-2" onClick={this.editUser.bind(this,item.vendorId,item.vendorServiceId,item.service_master.serviceId,item.rate_master.rateId,item.service_master?item.service_master.serviceName:'',item.rate_master?item.rate_master.rateType:'',item.rate)}>Edit</Button> 
                                 <Button color="danger" onClick={this.delete.bind(this,item.vendorServiceId)}>Delete</Button>
                         </td>
 
@@ -320,6 +324,7 @@ updateServices = () => {
                         <DefaultSelect/>
                         {this.getDropDown(this.props.displayServiceMasterReducer)}
                         </Input>
+                        <span className="error">{this.state.message}</span>
                     </FormGroup>
                     <FormGroup>
                         <Label>Rate Types</Label>
