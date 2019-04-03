@@ -1,4 +1,4 @@
-import {ADD_INVENTORY,GET_INVENTORY,UPDATE_INVENTORY,REMOVE_INVENTORY} from '../../actions/index';
+import {ADD_INVENTORY,GET_INVENTORY,UPDATE_INVENTORY,REMOVE_INVENTORY,GET_INVENTORY_LIST} from '../../actions/index';
 
 export default function(state={},action){
     switch(action.type){
@@ -10,6 +10,8 @@ export default function(state={},action){
         return {...state,update:action.payload}
         case REMOVE_INVENTORY :
         return {...state,delete:action.payload}
+        case GET_INVENTORY_LIST:
+        return {...state,inventoryList:action.payload}
         default :
         return state;
     }

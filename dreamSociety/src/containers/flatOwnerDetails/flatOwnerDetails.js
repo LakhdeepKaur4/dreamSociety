@@ -11,6 +11,7 @@ import { getRelation } from './../../actionCreators/relationMasterAction';
 import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
 import {addFlatOwner,getAllFloor} from '../../actionCreators/flatOwnerAction';
 import {Link} from 'react-router-dom';
+import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
 
 class FlatOwnerDetails extends Component {
     constructor(props) {
@@ -29,20 +30,17 @@ class FlatOwnerDetails extends Component {
             locationName: '',
             locationId:'',
             number: '',
-            ownerName: '',
+            firstName: '',
+            lastName:'',
             DOB: '',
             email: '',
             tower: '',
             errors: {},
             societyName: '',
-            bankName: '',
-            holderName: '',
-            accountNumber: '',
-            panNumber: '',
-            ifscCode: '',
             flatNO:'',
             flatDetailId:'',
             profilePicture:'',
+            currentAddress:'',
             permanentAddress:'',
             familyMember:'',
             member:[],
@@ -53,6 +51,15 @@ class FlatOwnerDetails extends Component {
             loading: true,
             Aadhaar:'',
             floorId:'',
+            society:'',
+            towerName:'',
+            floorName:'',
+            defaultPermanent: false,
+            permanentAddrDefault:true,
+            permanentAddressUser:'',
+            pinCode:'',
+            flat:'flatNo.',
+            permanentPinCode:''
         }
     }
     toggles = () => {
@@ -63,6 +70,10 @@ class FlatOwnerDetails extends Component {
         this.props.viewTower();
         this.props.getRelation();
         this.props.getFlatDetails();
+        this.props.getCountry()
+        this.props.getState()
+        this.props.getCity()
+        this.props.getLocation()
     }
     logout = () => {
         localStorage.removeItem('token');
@@ -122,7 +133,9 @@ class FlatOwnerDetails extends Component {
                 locationId,
                 cityId,
                 stateId,
-                countryId
+                countryId,
+                society:selectOption.label,
+                currentAddress:selectOption.label+','+locationName+','+cityName+','+stateName+' '+','+countryName
             }
         }, function () {
         });
@@ -130,7 +143,8 @@ class FlatOwnerDetails extends Component {
     towerChangeHandler = (name, selectOption) => {
         this.setState(function (prevState, props) {
             return {
-                [name]: selectOption.value
+                [name]: selectOption.value,
+                towerName:selectOption.label
             }
         }, function () {
             console.log(selectOption.towerId)
@@ -138,15 +152,18 @@ class FlatOwnerDetails extends Component {
         this.props.getAllFloor(selectOption.towerId);
     }
     flatChangeHandler=(name,selectOption)=>{
+        let flatName=selectOption.label
         this.setState({
-            [name]: selectOption.value
+            [name]: selectOption.value,
+            currentAddress:this.state.flat+flatName+','+this.state.floorName+','+this.state.towerName+','+this.state.currentAddress+' '+this.state.pinCode
         })
-        this.props.getAllFloor(selectOption.towerId);
+        // this.props.getAllFloor(selectOption.towerId);
     }
     floorChangeHandler=(name,selectOption)=>{
         console.log('=======selectOption=======',selectOption.value);
         this.setState({
-            [name]: selectOption.value
+            [name]: selectOption.value,
+            floorName:selectOption.label
         })
 console.log('lllllllll=======',this.state.floorId)
     // this.getFlats(this.props.towerFloor);
@@ -161,8 +178,13 @@ console.log('lllllllll=======',this.state.floorId)
             console.log(selectOption.value)
         })
     }
+    maxDateMember = () => {
+        var d = new Date();
+        return d.toISOString().split('T')[0];
+    }
     maxDate = () => {
         var d = new Date();
+        d.setFullYear(d.getFullYear()-18, d.getMonth());
         return d.toISOString().split('T')[0];
     }
     nextPrev = () => {
@@ -199,32 +221,37 @@ console.log('lllllllll=======',this.state.floorId)
                 this.setState({ step: this.state.step + 1 })
             }
         }
-        const { bankName, holderName, accountNumber, panNumber, ifscCode } = this.state
+        // const { bankName, holderName, accountNumber, panNumber, ifscCode } = this.state
 
-        if (this.state.step === 2) {
-            if (bankName === '') {
-                errors.bankName = "Bank Name can't be empty"
-            }
-            else if (holderName === '') {
-                errors.holderName = "Holder Name can't be empty"
-            }
-            else if (accountNumber === '') {
-                errors.accountNumber = "Account Number enter 10 digit number"
-            }
-            else if (ifscCode === '') {
-                errors.ifscCode = "IFSC Code can't be empty"
-            }
-            else if (panNumber === '') {
-                errors.panNumber = "Pan number can't be empty"
-            }
-            const isValid = Object.keys(errors).length === 0
+        // if (this.state.step === 2) {
+        //     if (bankName === '') {
+        //         errors.bankName = "Bank Name can't be empty"
+        //     }
+        //     else if (holderName === '') {
+        //         errors.holderName = "Holder Name can't be empty"
+        //     }
+        //     else if (accountNumber === '') {
+        //         errors.accountNumber = "Account Number enter 10 digit number"
+        //     }
+        //     else if (ifscCode === '') {
+        //         errors.ifscCode = "IFSC Code can't be empty"
+        //     }
+        //     else if (panNumber === '') {
+        //         errors.panNumber = "Pan number can't be empty"
+        //     }
+        //     // const isValid = Object.keys(errors).length === 0
+        //     // this.setState({ errors });
+        //     // if (isValid) {
+        //     //     console.log('isValid')
+        //     //     this.setState({ step: this.state.step + 1 })
+        //     // }
+        // }
+        const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
                 console.log('isValid')
                 this.setState({ step: this.state.step + 1 })
             }
-        }
-
 
     }
     onChangeHandler = (event) => {
@@ -284,15 +311,16 @@ OnKeyPresshandlerEmail=(event)=> {
         e.preventDefault();
         const {          
             number,
-            ownerName,
+            firstName,
+            lastName,
             DOB,
             email,
             towerId,
-            bankName,
-            holderName,
-            accountNumber,
-            panNumber,
-            ifscCode,
+            // bankName,
+            // holderName,
+            // accountNumber,
+            // panNumber,
+            // ifscCode,
             flatDetailId,
             familyMember,
             profilePicture,
@@ -325,15 +353,11 @@ OnKeyPresshandlerEmail=(event)=> {
             console.log(this.state)
             const FlatOwnerData={
                 number,
-                ownerName,
+                firstName,
+                lastName,
                 DOB,
                 email,
                 towerId,
-                bankName,
-                holderName,
-                accountNumber,
-                panNumber,
-                ifscCode,
                 flatDetailId,
                 familyMember,
                 profilePicture,
@@ -354,7 +378,7 @@ OnKeyPresshandlerEmail=(event)=> {
             }
            
             this.setState({loading: true})
-            this.props.addFlatOwner(FlatOwnerData,d)
+            this.props.addFlatOwner(this.state)
             .then(() => this.props.history.push('/superDashBoard/flatOwnerList'))
             .catch(err=>{
                 console.log(err.response.data.message)
@@ -431,6 +455,128 @@ OnKeyPresshandlerEmail=(event)=> {
           
         return this.props.history.replace('/superDashboard/changePassword')
       }
+      onCurrentAddressChangeHandler=(event)=>{
+          const {countryName,stateName,cityName,locationName,society,pinCode}=this.state
+          console.log('9999999999',pinCode)
+        this.setState({
+            currentAddress:event.target.value+', '+society+', '+' '+locationName+', '+cityName+','+stateName+','+countryName+' '+pinCode
+        },function(){
+            console.log(this.state.currentAddress)
+        })
+
+      }
+      sameAddress = (e) => {
+        if(!!document.getElementById('isChecked').checked){
+            console.log('is checked')
+           this.setState({permanentAddress: this.state.currentAddress.trim(), defaultPermanent:true,
+        permanentAddrDefault:false})
+           
+        }
+       else{
+            this.setState({permanentAddress: '', defaultPermanent:false, permanentAddrDefault:true})
+        }
+    }
+    countryName = ({countryResult}) => {
+        console.log(countryResult)
+        if(countryResult){
+          
+           return( 
+            countryResult.map((item) =>{
+                   return(
+                    { ...item, label: item.countryName, value: item.countryId }
+                   )
+               })
+           )
+            
+        }
+    }
+
+    onChangeCountry = (countryId, countryName, selectOption) => {
+        console.log(countryId, countryName, selectOption)
+    
+        this.setState({
+            countryName: selectOption.countryName,
+            countryId:selectOption.countryId, 
+        })
+        
+        this.props.getState(selectOption.countryId)
+    }
+    stateName = ({stateResult}) => {
+        if(stateResult){
+          console.log(stateResult)
+           return( 
+            stateResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.stateName, value: item.stateId }
+                   )
+               })
+           )
+            
+        }
+    }
+
+    onChangeState = (stateName, stateId, selectOption) => {
+        console.log(stateName, stateId, selectOption)
+        this.setState({
+            stateName: selectOption.stateName,
+            stateId:selectOption.stateId
+        })
+        this.props.getCity(selectOption.stateId);
+    }
+    cityName=({cityResult})=>{
+               
+        if(cityResult){
+            
+           return( 
+            cityResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.cityName, value: item.cityId }
+                   )
+               }
+               )
+           )
+            
+        }
+    }
+
+    onChangeCity = (cityName, cityId, selectOption) => {
+        console.log(cityName, cityId, selectOption)
+        this.setState({
+            cityName: selectOption.cityName,
+            cityId:selectOption.cityId
+        })
+        this.props.getLocation(selectOption.cityId)
+    }
+    locationName=({locationResult})=>{
+        if(locationResult){
+             
+            return( 
+                locationResult.map((item) =>{ 
+                    return(
+                     { ...item, label: item.locationName, value: item.locationId }
+                    )
+                }
+                )
+            )
+             
+         }
+     }
+
+     onChangeLocation = (locationName, locationId, selectOption) => {
+         console.log(locationName, locationId, selectOption)
+         this.setState({
+             locationName: selectOption.locationName,
+             locationId:selectOption.locationId,
+            
+         })
+     }
+     permanentAddressChange = (e) => {
+        this.setState({[e.target.name]: e.target.value, 
+            permanentAddress: this.state.permanentAddressUser + ',' + this.state.locationName + ',' +
+        this.state.cityName + ' , ' + this.state.stateName + ',' + this.state.countryName+' '+this.state.permanentPinCode })
+            console.log(this.state)
+    }
+      
     render() {
             
         let userDatas = [];
@@ -451,7 +597,7 @@ OnKeyPresshandlerEmail=(event)=> {
                     </Col>
                     <Col md={3}>
                                 <Label>Date Of Birth</Label>
-                                <Input  type='date' max={this.maxDate()} name={`memberDOB${i}`} onChange={this.onChangeHandler} />
+                                <Input  type='date' max={this.maxDateMember()} name={`memberDOB${i}`} onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.DOB}</span>
                                 </Col>
                     <Col md={3}>
@@ -485,8 +631,13 @@ OnKeyPresshandlerEmail=(event)=> {
                         <div style={{ 'display': this.state.step == 1 ? 'block' : 'none' }}>
                             <h3>Flat Owner Details</h3>
                             <FormGroup>
-                                <Label>Owner Name</Label>
-                                <Input  style={{'textTransform': 'capitalize' }} placeholder="Full Name" maxLength={50} name='ownerName' onChange={this.onChangeHandler} />
+                                <Label>First Name</Label>
+                                <Input  style={{'textTransform': 'capitalize' }} placeholder="First Name" maxLength={50} name='firstName' onChange={this.onChangeHandler} />
+                                <span className="error">{this.state.errors.ownerName}</span>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Last Name</Label>
+                                <Input  style={{'textTransform': 'capitalize' }} placeholder="Last Name" maxLength={50} name='lastName' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.ownerName}</span>
                             </FormGroup>
                             <FormGroup>
@@ -551,9 +702,9 @@ OnKeyPresshandlerEmail=(event)=> {
                                 <Input readOnly type="text" placeholder="Location Name" value={this.state.locationName} />
                             </FormGroup>
                             <FormGroup>
-                                <Label>Permanent Address</Label>
-                                <Input type="text" style={{ 'textTransform': 'capitalize' }} maxLength={100} placeholder="Permanent Address" name="permanentAddress" onChange={this.onChangeHandler} />
-                            </FormGroup >
+                                <Label>Pin Code</Label>
+                                <Input type="text" placeholder="Enter Pin Code " name="pinCode" onChange={this.onChangeHandler} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={6}/>
+                            </FormGroup>
                             <FormGroup>
                                 <Label>Tower</Label>
                                 <Select options={this.getTower(this.props.towerList)}
@@ -575,36 +726,56 @@ OnKeyPresshandlerEmail=(event)=> {
                                   onChange={this.flatChangeHandler.bind(this,'flatDetailId')}
                                     />
                             </FormGroup >
+                            <FormGroup>
+                                <Label>Current Address</Label>
+                                <Input readOnly type="text" style={{ 'textTransform': 'capitalize' }} maxLength={100} placeholder="Current Address" name="currentAddress" value={this.state.currentAddress}/>
+                            </FormGroup >
+                            <FormGroup>
+                            Is Your permanent address same as current address?<Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
+                        </FormGroup>
+                        <h3 style={{textAlign:'center'}}>Permanent Address</h3>
+                        {this.state.defaultPermanent ? <FormGroup>
+                            <Label>Permanent Address</Label>
+                            <Input id="permanentaddr" disabled type="textarea" onChange={this.onChange}
+                            maxLength="250" value={this.state.permanentAddress}
+                             name="permanentAddress" placeholder="Permanent Address" />
+                             {<span className="error">
+                                {this.state.errors.permanentAddress}
+                            </span>}
+                        </FormGroup> : ''}
+                        {this.state.permanentAddrDefault ? <div>
+                            <FormGroup>
+                            <Label>Country</Label>
+                            <Select  options={this.countryName(this.props.societyName)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>State</Label>
+                            <Select options={this.stateName(this.props.societyName)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>City</Label>
+                            <Select  options={this.cityName(this.props.societyName)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label>Location</Label>
+                            <Select options={this.locationName(this.props.societyName)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
+                        </FormGroup>
+                        <FormGroup>
+                                <Label>Pin Code</Label>
+                                <Input type="text" placeholder="Enter Pin Code " name="permanentPinCode" onChange={this.onChangeHandler} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={6}/>
+                            </FormGroup>
+                        <FormGroup>
+                            <Label>Permanent Address</Label>
+                            <Input type="textarea" onChange={this.permanentAddressChange} value={this.state.permanentAddressUser}
+                            maxLength={50}
+                             name="permanentAddressUser" placeholder="Permanent Address"/>
+                             {<span className="error">
+                                {this.state.errors.permanentAddress}
+                            </span>}
+                        </FormGroup>
+                        </div> : ''}
                         </div>
                         <div style={{ 'display': this.state.step === 2 ? 'block' : 'none' }}>
-                            <h3>Bank Details</h3>
-                            <FormGroup>
-                                <Label>Bank Name</Label>
-                                <Input placeholder="Bank Name" type="text" name="bankName" onChange={this.onChangeHandler} />
-                                <span className="error">{this.state.errors.bankName}</span>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>Account Holder Name</Label>
-                                <Input style={{'textTransform': 'capitalize' }} maxLength={50} placeholder="Holder Name" type="text" name='holderName' onChange={this.onChangeHandler} />
-                                <span className="error">{this.state.errors.holderName}</span>
-                            </FormGroup>
-                            <FormGroup >
-                                <Label>Account Number</Label>
-                                <Input placeholder="Account Number" type="text" maxLength={18} onKeyPress={this.OnKeyPresshandlerPhone} name='accountNumber' onChange={this.onChangeHandler} />
-                                <span className="error">{this.state.errors.accountNumber}</span>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>PAN Card Number</Label>
-                                <Input placeholder="Pan Number" type='text'maxLength={10} name="panNumber" onChange={this.onChangeHandler} />
-                                <span className="error">{this.state.errors.panNumber}</span>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>IFSC Code</Label>
-                                <Input placeholder="IFSC code" type='text' maxLength={11} name="ifscCode" onChange={this.onChangeHandler} />
-                                <span className="error">{this.state.errors.ifscCode}</span>
-                            </FormGroup>
-                        </div>
-                        <div style={{ 'display': this.state.step === 3 ? 'block' : 'none' }}>
                             <h3>Owner Member Details</h3>
                             <FormGroup>
                                 <Label>Number of Member</Label>
@@ -623,8 +794,8 @@ OnKeyPresshandlerEmail=(event)=> {
                 <Button color="danger" className="mr-2" style={{ display: this.state.step == 1 ? 'inline-block' : 'none', marginLeft: '20px'}} >Cancel</Button>
                               </Link>
                             <Button className="mr-2" color="danger" type="button" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
-                            <Button type="button" color="primary" id="nextBtn" style={{ display: this.state.step == 3 ? 'none' : 'inline-block' }} disabled={this.state.step == 3} onClick={this.nextPrev}>Next</Button>
-                            <Button type="submit" color="success" style={{ display: this.state.step == 3 ? 'inline-block' : 'none' }}>Submit</Button>
+                            <Button type="button" color="primary" id="nextBtn" style={{ display: this.state.step == 2 ? 'none' : 'inline-block' }} disabled={this.state.step == 3} onClick={this.nextPrev}>Next</Button>
+                            <Button type="submit" color="success" style={{ display: this.state.step == 2 ? 'inline-block' : 'none' }}>Submit</Button>
 
                         </div>
                     </Form>
@@ -651,7 +822,7 @@ function mapStateToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner,getAllFloor}, dispatch)
+    return bindActionCreators({detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner,getAllFloor,getCountry,getState,getCity, getLocation}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerDetails);
 

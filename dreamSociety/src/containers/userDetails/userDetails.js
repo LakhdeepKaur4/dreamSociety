@@ -243,7 +243,7 @@ class userDetails extends Component {
                             <td>{currentTower}</td>
                             <td>{item.contact}</td>
                             <td>
-                                <div className="w3-row">
+                                <div>
                                 <Button color="success" className="mr-2" onClick={this.editUser.bind(this, item.userId, currentRole, item.firstName, item.lastName, item.userName, item.email,
                                     currentTowerId, item.contact, currentTower)}>Edit</Button>
                                 <Button color="danger" onClick={this.deleteUser.bind(this, item.userId)} >Delete</Button>
