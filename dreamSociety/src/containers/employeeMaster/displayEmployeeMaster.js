@@ -99,7 +99,12 @@ constructor(props){
             emailServerError: '',
           
             contactServerError: '',
-
+            displayEmployee:false,
+            serviceType:'',
+            employeeWorkType:'',
+            employeeType:'',
+            doc1:'',
+            doc2:''
     }
 }
     
@@ -475,10 +480,7 @@ ImageChange =(event)=>{
     }
 
 
-    pushEmployee=()=>{
-      
-        this.props.history.push('/superDashBoard/displayEmployee2');
-    }
+   
     getEmployee({ getEmployee }) {
         console.log(getEmployee, "1223");
         if (getEmployee) {
@@ -522,7 +524,7 @@ ImageChange =(event)=>{
                             -{item.employee_detail_master.employee_type_master.employeeType}</td>
                             <td>{item.salary}</td>
                             
-                    <td> <button   className="bg-info"  onClick={this.pushEmployee}>More details</button></td>
+                    <td> <button className="btn btn-success"  onClick={this.viewData.bind(this, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary,item.contact, item.email, item.currentAddress,item.permanentAddress, UR+item.documentOne, UR+item.documentTwo, item.startDate, item.employee_detail_master.serviceType,item.employee_detail_master.employee_work_type_master.employeeWorkType,item.employee_detail_master.employee_type_master.employeeType)}>View</button></td>
 
                             <td>
                                 <button className="btn btn-success mr-2" onClick={this.editEmployee.bind(this, item.employeeId, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary,item.contact, item.email, item.currentAddress,item.permanentAddress, UR+item.documentOne, UR+item.documentTwo, item.startDate,item.employee_detail_master.employeeDetailId )} >Edit</button>
@@ -536,6 +538,15 @@ ImageChange =(event)=>{
             )
         }
     }
+
+    viewData(picture,firstName,middleName,lastName,salary,contact,email,currentAddress, permanentAddress, doc1,doc2, startDate,serviceType,employeeWorkType,
+    employeeType){
+        console.log(picture,firstName,middleName,lastName,salary,contact,email,currentAddress, permanentAddress, doc1,doc2, startDate,serviceType,employeeWorkType,
+            employeeType)
+        this.setState({picture,firstName,middleName,lastName,salary,contact,email,currentAddress, permanentAddress, doc1,doc2, startDate,serviceType,employeeWorkType,
+            employeeType, displayEmployee: true})
+    }
+
     close = () => {
         return this.props.history.replace('/superDashBoard/displayemployee');
     }
@@ -856,12 +867,99 @@ ImageChange =(event)=>{
         // }
     }
 
+    toggleEmployeeModal = () => {
+        this.setState({displayEmployee: !this.state.displayEmployee})
+    }
+
 
     render() {
+        console.log(this.state.doc1)
+        let employeeData= <div>
+            <FormGroup>
+                <div style={{border: '1px solid black', textAlign:'center', width:'100px', height:'100px', margin:'0 auto'}}>
+                            <img src={this.state.picture} height='100px' width='100px' />
+                </div>
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={6}>
+                        <Label>First Name</Label>
+                        <Input value={this.state.firstName} onChange={this.onChange} readOnly />
+                    </Col>
+                    <Col md={6}>
+                        <Label>Last Name</Label>
+                        <Input value={this.state.lastName} onChange={this.onChange} readOnly />
+                    </Col>
+                </Row>
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={6}>
+                        <Label>Email</Label>
+                        <Input value={this.state.email} onChange={this.onChange} readOnly />
+                    </Col>
+                    <Col md={6}>
+                        <Label>Contact</Label>
+                        <Input value={this.state.contact} onChange={this.onChange} readOnly />
+                    </Col>
+                </Row>
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={6}>
+                        <Label>Salary</Label>
+                        <Input value={this.state.salary} onChange={this.onChange} readOnly />
+                    </Col>
+                    <Col md={6}>
+                        <Label>Service Type</Label>
+                        <Input value={this.state.serviceType + ' - ' +this.state.employeeWorkType +' - ' +this.state.employeeType} onChange={this.onChange} readOnly />
+                    </Col>
+                </Row>
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={6}>
+                        <Label>Permanent Address</Label>
+                        <Input type="textarea" value={this.state.permanentAddress} onChange={this.onChange} readOnly />
+                    </Col>
+                    <Col md={6}>
+                        <Label>Current Address</Label>
+                        <Input type="textarea" value={this.state.currentAddress} onChange={this.onChange} readOnly />
+                    </Col>
+                </Row>
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={6}>
+                        <Label>Start Date</Label>
+                        <Input readOnly value={this.state.startDate} onChange={this.onChange} />
+                    </Col>
+                    <Col md={6}></Col>
+                </Row>
+            </FormGroup>
+            <FormGroup style={{textAlign:'center'}}>
+                <h4>Document One</h4>
+                <GoogleDocsViewer
+                    width="400px"
+                    height="600px"
+                    fileUrl={this.state.doc1}
+                />
+            </FormGroup>
+
+            <FormGroup style={{textAlign:'center'}}>
+                <h4>Document Two</h4>
+                <GoogleDocsViewer
+                    width="400px"
+                    height="600px"
+                    fileUrl={this.state.doc2}
+                />
+            </FormGroup>
+        </div>
+
         let tableData;
 
         tableData =
-            <Table >
+            <Table bordered>
                 <thead>
                     <tr>
                     <th style={{width:"4px"}}></th>
@@ -874,8 +972,8 @@ ImageChange =(event)=>{
                         <th> Last Name</th>
                         <th>Service Type</th>
                         <th> salary</th>
-                     
-                       <th> </th>
+                        
+                       <th>Employee Detail </th>
                           <th> Actions  </th>
                     </tr>
                 </thead>
@@ -1192,10 +1290,17 @@ ImageChange =(event)=>{
 
                             </ModalBody>
                         </Modal>
+                        <Modal isOpen={this.state.displayEmployee} toggle={this.toggleEmployeeModal.bind(this)}>
+                            <ModalHeader toggle={this.toggleEmployeeModal.bind(this)}>Employee Details</ModalHeader>
+                            <ModalBody>
+                                {employeeData}
+                                <Button color="primary" onClick={this.toggleEmployeeModal.bind(this)}>Cancel</Button>
+                            </ModalBody>
+                        </Modal>
                         <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
 
                         {deleteSelectedButton}
-                        <label><b> Select All</b><input
+                        <label className="ml-2"><b> Select All</b><input
                          type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
                             if(e.target.checked) {
                                 this.selectAll();
