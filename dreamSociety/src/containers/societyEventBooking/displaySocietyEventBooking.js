@@ -101,7 +101,7 @@ class DisplaySocietyEventBooking extends Component {
 
 
     renderList({ societyEvents }) {
-        if (societyEvents && societyEvents.eventBookings) {
+        if (societyEvents && societyEvents.eventBookings ) {
             return  societyEvents.eventBookings.sort((item1,item2)=>{console.log(item1,item2)
                 var cmprVal =  (item1.event_master[this.state.filterName].localeCompare(item2.event_master[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
@@ -131,7 +131,7 @@ class DisplaySocietyEventBooking extends Component {
                              }}/></td>
                        <td>{index+1}</td>
                        <td>{item.event_master?item.event_master.eventName:''}</td>
-                       <td>{item.user_master.firstName + " " + item.user_master.lastName}</td>
+                       <td>{item.user_master?item.user_master.firstName + " " + item.user_master.lastName:''}</td>
                        <td>{item.startDate}</td>
                        <td>{item.endDate}</td>
                        <td>{item.startTime}</td>
@@ -140,7 +140,7 @@ class DisplaySocietyEventBooking extends Component {
                        <td>{item.childAbove}</td>
                        <td>{item.charges}</td>
                        <td>
-                             <Button color="success" className="mr-2" onClick={this.editEvent.bind(this,item.societyEventBookId,item.event_master.eventId,item.event_master?item.event_master.eventName:'',item.user_master.firstName,item.startDate,item.endDate,item.startTime,item.endTime,item.perPersonCharge,item.childAbove,item.charges,item.description)}>Edit</Button>                 
+                             <Button color="success" className="mr-2" onClick={this.editEvent.bind(this,item.societyEventBookId,item.event_master.eventId,item.event_master?item.event_master.eventName:'',item.user_master?item.user_master.firstName:'',item.startDate,item.endDate,item.startTime,item.endTime,item.perPersonCharge,item.childAbove,item.charges,item.description)}>Edit</Button>                 
                              <Button color="danger"  onClick={this.deleteEvents.bind(this, item.societyEventBookId)}>Delete</Button>
                         </td>
                    
@@ -352,7 +352,7 @@ render() {
 
                             <FormGroup>
                                 <Button color="primary" className="mr-2"  onClick={this.updateEvents.bind(this)} >Save </Button>
-                                <Button color="danger">Cancel</Button>
+                                <Button color="danger" onClick={this.toggleEditEventModal.bind(this)}>Cancel</Button>
                             </FormGroup>
 </div>
          let deleteSelectedButton = <Button color="danger" className="mb-2"
