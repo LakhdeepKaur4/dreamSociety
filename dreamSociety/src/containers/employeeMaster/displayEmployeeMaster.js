@@ -976,7 +976,7 @@ ImageChange =(event)=>{
                         <th  onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'firstName'}})
-                        }} >First Name      <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                        }} >First Name      <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                         <th> Last Name</th>
                         <th>Service Type</th>
                         <th> salary</th>

@@ -853,10 +853,10 @@ class DisplayVendorMaster extends Component {
                             name="readOnlyCurrent"
                             value={this.state.currentAddress}
                             type="textarea" disabled
-                            placeholder="Current Address"
+                            placeholder="Current Address"  
                             name="readOnlyCurrent"
                             onChange={this.onChange}
-                            maxLength='250' />
+                            maxLength='250' /> 
                        </Col>:''}
                     {!this.state.editCurrent ? <Col md={6} style={{ paddingTop: '44px' }}>
                         <span style={{ fontWeight: '600' }}>Do you want to edit current address?</span>
