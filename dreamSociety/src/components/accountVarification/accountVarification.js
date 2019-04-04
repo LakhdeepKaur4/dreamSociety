@@ -34,6 +34,9 @@ export default class AccountVarification extends Component {
      sendLogin=()=>{
       return this.props.history.push('/')
      }
+     resend=()=>{
+      axios.post(`${URN}/checkToken?${window.location.href.split('?')[1]}`)
+     }
   
   render() {
     return (
@@ -50,7 +53,7 @@ export default class AccountVarification extends Component {
           separator={<span>-</span>}
         />
         <span><button style={{marginTop:'10px'}} onClick={this.submit}>Submit</button></span>
-        <span><button style={{marginTop:'10px', marginLeft:'4px'}}>Resend</button></span>
+        <span><button style={{marginTop:'10px', marginLeft:'4px'}} onClick={this.resend}>Resend</button></span>
         <span><button style={{marginTop:'10px', marginLeft:'4px',display:this.state.otpVerified?'block':'none'}} onClick={this.sendLogin}>login</button></span>
         </div>
         </UI>
