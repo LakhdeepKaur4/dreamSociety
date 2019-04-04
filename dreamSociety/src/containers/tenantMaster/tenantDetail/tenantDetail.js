@@ -131,11 +131,9 @@ class TenantDetail extends Component {
         })
     }
 
-    edit = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
-        accountHolderName, accountNumber , dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) =>{
+    edit = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) =>{
         console.log(floorName, floorId)
-        this.setState({picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
-            accountHolderName, accountNumber , dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId, readOnly:permanentAddress,
+        this.setState({picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId, readOnly:permanentAddress,
               editTenant: true})
     }
 
@@ -160,13 +158,11 @@ class TenantDetail extends Component {
         this.props.history.push('/superDashBoard/tenantMemberDetail');
     }
 
-    viewTenantDetail = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
-        accountHolderName, accountNumber , dob, permanentAddress, correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) => {
-        console.log(picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
-            accountHolderName, accountNumber , dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId)
+    viewTenantDetail = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber , dob, permanentAddress, correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) => {
+        console.log(picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId)
 
-        this.setState({picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode, viewData: !this.state.viewData ,
-            accountHolderName, accountNumber , dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId})
+        this.setState({picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, viewData: !this.state.viewData ,
+             dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId})
         
         
 
@@ -210,7 +206,7 @@ class TenantDetail extends Component {
                             } 
                                  }}/></td>
                             <td>{index + 1}</td>
-                            <td style={{width:'4%'}}><img style={{ width: "100%", height: "20%" }} src={PicURN+item.picture} alt="Profile Pic" /></td>
+                            <td style={{width:'4%'}}><img style={{ width: "100px", height: "100px" }} src={PicURN+item.picture} alt="Profile Pic" /></td>
                             <td>{item.firstName}{`  `}{item.lastName} </td>
                             <td>{item.email}</td>
                             <td>{item.contact}</td>
@@ -219,8 +215,7 @@ class TenantDetail extends Component {
                             <td>
                                 <Button color="success" onClick={this.viewTenantDetail.bind(this,PicURN+item.picture.replace('../../',''),
                                      item.firstName, item.lastName, item.gender, item.email,
-                                    item.contact, item.aadhaarNumber,item.panCardNumber,item.bankName, item.IFSCCode,  item.accountHolderName,
-                                    item.accountNumber, item.dob, item.permanentAddress, item.correspondenceAddress,
+                                    item.contact, item.aadhaarNumber,item.panCardNumber, item.dob, item.permanentAddress, item.correspondenceAddress,
                                     item.tower_master ? item.tower_master.towerName:'',
                                     item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master.flatNo,
                                     item.tower_master ? item.tower_master.towerId: '',
@@ -230,8 +225,7 @@ class TenantDetail extends Component {
                             <td>
                                 <Button color="success" onClick={this.edit.bind(this,PicURN+item.picture.replace('../../',''),
                                      item.firstName, item.lastName, item.gender, item.email,
-                                    item.contact, item.aadhaarNumber,item.panCardNumber,item.bankName, item.IFSCCode,  item.accountHolderName,
-                                    item.accountNumber, item.dob, item.permanentAddress,
+                                    item.contact, item.aadhaarNumber,item.panCardNumber, item.dob, item.permanentAddress,
                                     item.tower_master ? item.tower_master.towerName:'',
                                     item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master.flatNo,
                                     item.tower_master ? item.tower_master.towerId: '',
@@ -458,7 +452,6 @@ class TenantDetail extends Component {
             errors.aadhaarNumber = `Aadhaar Number should be of 12 digit.`}
         if(panCardNumber === '') errors.panCardNumber = `Pan number can't be empty.`;
         else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan card should be of 10 digit.`
-        if(accountNumber === '') errors.accountNumber = `Bank account number can't be empty.`;
         if(this.state.dob === '') {
             console.log('dob');
             errors.dob = `Date of birth can't be empty.`;
@@ -467,10 +460,6 @@ class TenantDetail extends Component {
             if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
             else if(pin.length < 5) errors.pin = `Pin/Zip code should be of 5 digits atleast.`
         }
-        if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
-        else if(IFSCCode.length < 11) errors.IFSCCode = `IFSC code should be of 11 digits.`
-        if(bankName === '') errors.bankName = `Bank name can't be empty.`
-        if(accountHolderName === '') errors.accountHolderName = `Acoount Holder Name can't be empty.`
         if(this.state.editAddress === '' && !!this.state.editPermanent) errors.editAddress = `Permanent Address can't be empty.`;
         // if(!this.state.towerId) {
         //     console.log('1');
@@ -775,8 +764,8 @@ class TenantDetail extends Component {
 
         let viewTenantData = <div>
             <FormGroup>
-                    <div style={{border: '1px solid black', textAlign:'center'}}>
-                        <img src={this.state.picture} height='100px' width='100px' />
+                    <div style={{border: '1px solid black', textAlign:'center', width:'200px', height:'200px', margin:'0 auto'}}>
+                        <img src={this.state.picture} height='200px' width='200px' />
                     </div>
             </FormGroup>
            <FormGroup>
@@ -840,34 +829,7 @@ class TenantDetail extends Component {
                 </Row>
             </FormGroup>
             <FormGroup>
-                <h4 style={{textAlign:'center', marginBottom:'20px', fontWeight:'600'}}>Bank Details</h4>
-                <FormGroup>
-                    <Row md={12}>
-                        <Col md={6}>
-                            <Label>Bank Name</Label>
-                            <Input disabled onChange={this.onChange} value={this.state.bankName} />
-                        </Col>
-                        <Col md={6}>
-                            <Label>IFSC Code</Label>
-                            <Input disabled onChange={this.onChange} value={this.state.IFSCCode} />
-                        </Col>
-                    </Row>
-                </FormGroup>
-                <FormGroup>
-                    <Row md={12}>
-                        <Col md={6}>
-                            <Label>Account Holder Name</Label>
-                            <Input disabled onChange={this.onChange} value={this.state.accountHolderName} />
-                        </Col>
-                        <Col md={6}>
-                            <Label>Bank Account Number</Label>
-                            <Input disabled value={this.state.accountNumber} onChange={this.onChange} />
-                        </Col>
-                    </Row>
-                </FormGroup>
-                <FormGroup>
-                    <Button color="primary" onClick={this.toggleData.bind(this)}>Cancel</Button>
-                </FormGroup>
+                <Button color="primary" onClick={this.toggleData.bind(this)}>Cancel</Button>
             </FormGroup>
             
         </div>
@@ -1063,44 +1025,6 @@ class TenantDetail extends Component {
                     </Row>
                 </FormGroup>
             </div> : ''}
-            <FormGroup>
-                <h4 style={{textAlign:'center', marginBottom:'20px', fontWeight:'600'}}>Bank Details</h4>
-                <FormGroup>
-                    <Row md={12}>
-                        <Col md={6}>
-                            <Label>Bank Name</Label>
-                            <Input name="bankName" maxLength="100" onChange={this.onChange} onKeyPress={this.OnKeyPressUserhandler} value={this.state.bankName} />
-                            {<span className='error'>{this.state.errors.bankName}</span>}
-                        </Col>
-                        <Col md={6}>
-                            <Label>IFSC Code</Label>
-                            <Input name="IFSCCode" onChange={this.ifscChange} value={this.state.IFSCCode} onKeyPress={(e) => {
-                                        const pattern = /^[a-zA-Z0-9]+$/;
-                                        let inputChar = String.fromCharCode(e.charCode);
-                                        if (!pattern.test(inputChar)) {
-                                            e.preventDefault();
-                                        }}} maxLength='11' />
-                            {<span className='error'>{this.state.errors.IFSCCode}</span>}
-                        </Col>
-                    </Row>
-                </FormGroup>
-                <FormGroup>
-                    <Row md={12}>
-                        <Col md={6}>
-                            <Label>Account Holder Name</Label>
-                            <Input name="accountHolderName" maxLength="70" onChange={this.onChange}  onKeyPress={this.OnKeyPressUserhandler}
-                             value={this.state.accountHolderName} />
-                              {<span className='error'>{this.state.errors.accountHolderName}</span>}
-                        </Col>
-                        <Col md={6}>
-                            <Label>Bank Account Number</Label>
-                            <Input value={this.state.accountNumber} maxLength="18" 
-                            onKeyPress={this.numberValidation} name="accountNumber" onChange={this.onChange} />
-                            {<span className='error'>{this.state.errors.accountNumber}</span>}
-                        </Col>
-                    </Row>
-                </FormGroup>
-            </FormGroup>
             
             
             
