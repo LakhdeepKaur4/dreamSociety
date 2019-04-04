@@ -280,17 +280,17 @@ class SocietyEventBooking extends Component {
                                 <Label check>   
                                 <Input type="checkbox" name="dinner" onChange={this.h}/>Dinner
                                 </Label>
+                            </FormGroup>                      
+                            <FormGroup check>
+                                <Label check>   
+                                <Input type="checkbox" name="dJ" onChange={this.h}/>DJ
+                                </Label>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>   
                                 <Input type="checkbox" name="drinks" onChange={this.h}/>Drinks
                                 </Label>
                             </FormGroup>
-                            <FormGroup check>
-                                <Label check>   
-                                <Input type="checkbox" name="dJ" onChange={this.h}/>DJ
-                                </Label>
-                            </FormGroup><br/>
 
                         <Row form>
                             <Col md={6}>
