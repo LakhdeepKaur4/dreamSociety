@@ -245,7 +245,7 @@ class FlatOwnerList extends Component {
                                 }
                             }} /></td>
                         <td style={{ textAlign: "center" }}>{index + 1}</td>
-                        <td style={{ width: "8%", height: "8%" }}> <img style={{ width: "100%", height: "15%" }} src={PicURN + items.picture} alt="Profile Pic">
+                        <td style={{ width: "8%", height: "8%" }}> <img style={{ width: "100%", height: "4%" }} src={PicURN + items.picture} alt="Profile Pic">
                         </img></td>
                         <td style={{ textAlign: "center", width: '10px',textTransform: 'capitalize'  }}  >{items.firstName+' '+items.lastName}</td>
                         <td style={{ textAlign: "center" }}>{items.contact}</td>
@@ -588,6 +588,9 @@ class FlatOwnerList extends Component {
                                 <FormGroup>
                             <Label>Upload Profile Pic</Label>                               
                                 <Input accept='image/*' style={{display:'inline-block'}}type="file" name ="profilePic" onChange={this.FileChange} />
+                                <div>
+                                 <img src={this.state.profilePicture} height='100px' width='100px' />
+                                 </div>
                             </FormGroup>
                                 <FormGroup>
                                 <Label>First Name</Label>

@@ -228,8 +228,24 @@ class InventoryList extends Component {
             assetTypeId, } = this.state
             console.log('assetName',assetId,"assetTypeId",assetTypeId )
         let errors = {};
+        if(this.state.assetId===''){
+            errors.assetId="Asset Id can't be empty"
+        }
+        else if(this.state.assetTypeId===''){
+            errors.assetTypeId="Asset Id can't be empty"
+        }
+        else if(this.state.dateOfPurchase===''){
+            errors.dateOfPurchase="date can't be empty" 
+        }
+        else if(this.state.ratePerInventory===''){
+            errors.ratePerInventory="rate can't be empty" 
+        }
+        else if(this.state.serialNumber===''){
+            errors.serialNumber="serial no. can't be empty" 
+        }
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
+        
         if (isValid) {
             this.setState({ loading: true })
             this.props.updateInventory(
@@ -291,8 +307,10 @@ class InventoryList extends Component {
                                     <div className="error">{this.state.errors.numberOfInventory}</div>
                                     <Label>Rate</Label>
                                     <Input maxLength={30} type="text" id="ratePerInventory" name="ratePerInventory" onChange={this.onChangeHandler} value={this.state.ratePerInventory} />
+                                    <div className="error">{this.state.errors.ratePerInventory}</div>
                                     <Label>Serial Number</Label>
                                     <Input maxLength={30} type="text" id="serialNumber" name="serialNumber" onChange={this.onChangeHandler} value={this.state.serialNumber} />
+                                    <div className="error">{this.state.errors.serialNumber}</div>
                                 </FormGroup>
                                 <FormGroup>
                                     <Button color="primary mr-2" onClick={this.editInventory}>Save</Button>
