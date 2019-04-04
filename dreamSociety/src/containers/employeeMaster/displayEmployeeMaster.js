@@ -871,6 +871,14 @@ ImageChange =(event)=>{
         this.setState({displayEmployee: !this.state.displayEmployee})
     }
 
+    fNameKeyPress(event){
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
 
     render() {
         console.log(this.state.doc1)
@@ -968,7 +976,7 @@ ImageChange =(event)=>{
                         <th  onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'firstName'}})
-                        }} >First Name      <i class="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                        }} >First Name      <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                         <th> Last Name</th>
                         <th>Service Type</th>
                         <th> salary</th>
@@ -1012,7 +1020,7 @@ ImageChange =(event)=>{
                                       onChange={this.onChange}
 
                                       maxLength={25}
-                                      onKeyPress={this.OnKeyPresshandler}
+                                      onKeyPress={this.fNameKeyPress}
 
                                   />
                                   <span className="error">{this.state.errors.firstName}</span>
@@ -1024,7 +1032,7 @@ ImageChange =(event)=>{
                                       onChange={this.onChange}
 
                                       maxLength={25}
-                                      onKeyPress={this.OnKeyPresshandler}
+                                      onKeyPress={this.fNameKeyPress}
 
                                   />
                                    <span  className="error">{this.state.errors.lastName}</span>

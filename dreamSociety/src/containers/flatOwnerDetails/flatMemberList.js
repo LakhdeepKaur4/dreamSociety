@@ -162,10 +162,28 @@ class FlatMemberList extends Component {
     }
     editMember = () => {
         const { memberId, memberName, gender, memberDob, relationId } = this.state
-        this.setState({ loading: true })
-        this.setState({ modal: !this.state.modal })
-        this.props.memberUpdate(memberName, gender, memberDob, relationId, memberId)
+        let errors = {};
+        if (this.state.memberName === '') {
+            errors.memberName = "Member Name can't be empty"
+        }
+        else if (this.state.memberDob === '') {
+            errors.memberDob = "Date Of Birth can't be empty"
+        }
+        else if (this.state.gender === '') {
+            errors.gender = "Gender can't be empty"
+        }
+        else if (this.state.relationId === '') {
+            errors.relationId = "Relation can't be empty"
+        }
+        this.setState({errors});
+        const isValid = Object.keys(errors).length === 0
+        if(isValid){
+            this.setState({ loading: true })
+            this.props.memberUpdate(memberName, gender, memberDob, relationId, memberId)
             .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
+            this.setState({ modal: !this.state.modal })
+        }        
+       
     }
     onChangeHandler = (event) => {
         if (!!this.state.errors[event.target.name]) {
@@ -268,6 +286,7 @@ class FlatMemberList extends Component {
                                     <FormGroup>
                                         <Label>Name</Label>
                                         <Input placeholder="Name Of Member" name="memberName" onChange={this.onChangeHandler} value={this.state.memberName} />
+                                        <span className="error">{this.state.errors.memberName}</span>
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Relation With Owner</Label>

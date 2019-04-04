@@ -686,6 +686,14 @@ updatePermanentAddress = (pin) => {
     return this.props.history.replace('/superDashboard/changePassword')
  }
 
+ fNameKeyPress(event){
+    const pattern = /^[a-zA-Z]+$/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
+    }
+}
+
 render(){
 let form;
 <Spinner/>
@@ -706,7 +714,7 @@ let formData=
     <div className="row">
     <div className="form-group col-md-6 ">
     <label>First Name</label>
-    <input  className="form-control" placeholder="First Name" name="firstName" type="text"   onChange ={this.onChange}  onKeyPress={this.OnKeyPresshandler}  maxLength={30}/>
+    <input  className="form-control" placeholder="First Name" name="firstName" type="text"   onChange ={this.onChange}  onKeyPress={this.fNameKeyPress}  maxLength={30}/>
 
     <span className="error">{this.state.errors.firstName}</span>
     </div>
@@ -717,7 +725,7 @@ let formData=
 
     <div className="form-group col-md-6">
     <label> Last Name</label>
-    <input placeholder="Last Name"  className="form-control" type="text"  name="lastName"   onKeyPress={this.OnKeyPresshandler} onChange ={this.onChange}  maxLength={30}/>
+    <input placeholder="Last Name"  className="form-control" type="text"  name="lastName"   onKeyPress={this.fNameKeyPress} onChange ={this.onChange}  maxLength={30}/>
     <span className="error">{this.state.errors.lastName}</span>
     </div>
     </div>

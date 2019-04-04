@@ -324,7 +324,7 @@ class AddTenant extends Component{
 
     nextPrev = () => {
         let errors = {};
-        const {firstName, lastName, dob, gender,permanentAddressUser, contact, email, correspondenceAddress, aadhaarNumber, permanentAddress} = this.state;
+        const {firstName, lastName, dob, gender,permanentAddressUser, panCardNumber, contact, email, correspondenceAddress, aadhaarNumber, permanentAddress} = this.state;
         if(this.state.step === 1){
             if(firstName === '') errors.firstName = `First Name can't be empty.`;
             if(lastName === '') errors.lastName = `Last Name can't be empty.`;
@@ -336,32 +336,33 @@ class AddTenant extends Component{
             if(email === '') errors.email = `Email can't be empty.`;
             if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
             else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of 12 digit.`
-            const isValid = Object.keys(errors).length === 0
-            this.setState({ errors });
-            if (isValid) {
-                this.setState({ step: this.state.step + 1 })
-            }
-        }
-        const { bankName, accountHolderName, accountNumber, panCardNumber, IFSCCode } = this.state;
-        if(this.state.step === 2){
-            if(bankName === '') errors.bankName = `Bank name can't be empty.`;
-            if(accountHolderName === '') errors.accountHolderName = `Account Holder name can't be empty.`;
-            if(accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
             if(panCardNumber === '') errors.panCardNumber = `Pan Card number can't be empty.`;
             else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
-            if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
-            else if(IFSCCode.length !== 11) errors.IFSCCode = `IFSC code should be of 11 digit.`;
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
                 this.setState({ step: this.state.step + 1 })
             }
         }
-        if(this.state.step === 3){
+        // const { bankName, accountHolderName, accountNumber, panCardNumber, IFSCCode } = this.state;
+        // if(this.state.step === 2){
+        //     if(bankName === '') errors.bankName = `Bank name can't be empty.`;
+        //     if(accountHolderName === '') errors.accountHolderName = `Account Holder name can't be empty.`;
+        //     if(accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
+           
+        //     if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
+        //     else if(IFSCCode.length !== 11) errors.IFSCCode = `IFSC code should be of 11 digit.`;
+        //     const isValid = Object.keys(errors).length === 0
+        //     this.setState({ errors });
+        //     if (isValid) {
+        //         this.setState({ step: this.state.step + 1 })
+        //     }
+        // }
+        if(this.state.step === 2){
             this.setState({ step: this.state.step + 1 })
         }
         const { towerId, floorId, flatDetailId, pin } = this.state;
-        if(this.state.step === 4){
+        if(this.state.step === 3){
             if(towerId === '') errors.towerId = `Please select Tower.`;
             if(floorId === '') errors.floorId = `Please select a Floor.`;
             if(document.getElementById('isChecked').checked === false){
@@ -786,9 +787,22 @@ class AddTenant extends Component{
                                 {this.state.errors.aadhaarNumber}
                             </span>}
                         </FormGroup>
-                        
+                        <FormGroup>
+                            <Label>PAN Card Number</Label>
+                            <Input placeholder="Pan Number" onChange={this.panChange}
+                            value={this.state.panCardNumber.toUpperCase()}
+                             type='text' name="panCardNumber"
+                             maxLength='10' onKeyPress={(e) => {
+                                const pattern = /^[a-zA-Z0-9]+$/;
+                                let inputChar = String.fromCharCode(e.charCode);
+                                if (!pattern.test(inputChar)) {
+                                    e.preventDefault();
+                                }
+                            }}  />
+                             {<span className="error">{this.state.errors.panCardNumber}</span>}
+                        </FormGroup>
                     </div>
-                    <div style={{ 'display': this.state.step == 2 ? 'block' : 'none' }}>
+                    {/* <div style={{ 'display': this.state.step == 2 ? 'block' : 'none' }}>
                         <h3>Bank Details</h3>
                         <FormGroup>
                                 <Label>Bank Name</Label>
@@ -812,20 +826,7 @@ class AddTenant extends Component{
                              type="text" className="quantity" name='accountNumber' maxLength='18'/>
                              {<span className="error">{this.state.errors.accountNumber}</span>}
                         </FormGroup>
-                        <FormGroup>
-                            <Label>PAN Card Number</Label>
-                            <Input placeholder="Pan Number" onChange={this.panChange}
-                            value={this.state.panCardNumber.toUpperCase()}
-                             type='text' name="panCardNumber"
-                             maxLength='10' onKeyPress={(e) => {
-                                const pattern = /^[a-zA-Z0-9]+$/;
-                                let inputChar = String.fromCharCode(e.charCode);
-                                if (!pattern.test(inputChar)) {
-                                    e.preventDefault();
-                                }
-                            }}  />
-                             {<span className="error">{this.state.errors.panCardNumber}</span>}
-                        </FormGroup>
+                        
                         <FormGroup>
                             <Label>IFSC Code</Label>
                             <Input placeholder="IFSC code" onChange={this.ifscChange}
@@ -841,8 +842,8 @@ class AddTenant extends Component{
                              type='text' name="IFSCCode" />
                              {<span className="error">{this.state.errors.IFSCCode}</span>}
                         </FormGroup>
-                    </div>
-                    <div style={{ 'display': this.state.step == 3 ? 'block' : 'none' }}>
+                    </div> */}
+                    <div style={{ 'display': this.state.step == 2 ? 'block' : 'none' }}>
                         <h3>Tenant Member Details</h3>
                         <FormGroup>
                             <Label>Number of Member</Label>
@@ -853,7 +854,7 @@ class AddTenant extends Component{
                         
                         {userDatas}
                     </div>
-                    <div style={{ 'display': this.state.step == 4 ? 'block' : 'none' }}>
+                    <div style={{ 'display': this.state.step == 3 ? 'block' : 'none' }}>
                         <h3>Flat Details</h3>
                         <FormGroup>
                             <Label>Tower</Label>
@@ -960,7 +961,7 @@ class AddTenant extends Component{
                             {!this.state.flatDetailId ? <span className="error">{this.state.errors.flatDetailId}</span> : ''}
                         </FormGroup> */}
                     </div>
-                    <div style={{ 'display': this.state.step == 5 ? 'block' : 'none' }}>
+                    <div style={{ 'display': this.state.step == 4 ? 'block' : 'none' }}>
                         <h3>Upload Your Image</h3>
                         <FormGroup>
                             <Label>Image</Label>
@@ -975,8 +976,8 @@ class AddTenant extends Component{
                     </div>
                     <div>
                         <Button color="primary" className="mr-2" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
-                        <Button color="primary"className="mr-2" id="nextBtn" style={{ display: this.state.step == 5 ? 'none' : 'inline-block' }} disabled={this.state.step == 5} onClick={this.nextPrev}>Next</Button>
-                        <Button color="success" className="mr-2" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
+                        <Button color="primary"className="mr-2" id="nextBtn" style={{ display: this.state.step == 4 ? 'none' : 'inline-block' }} disabled={this.state.step == 4} onClick={this.nextPrev}>Next</Button>
+                        <Button color="success" className="mr-2" style={{ display: this.state.step == 4 ? 'inline-block' : 'none' }}>Submit</Button>
                         <Button color="danger" onClick={this.routeToDetail}>Cancel</Button>
                     </div>
         </div>
