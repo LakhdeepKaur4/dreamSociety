@@ -45,7 +45,7 @@ export default class AccountVarification extends Component {
           <UI>
             <div style={{margin:"15% 0 0 30%"}}>
              <h2>Submit OTP</h2> 
-             <h2 style={{color:'red'}}>{this.state.message}</h2>
+             <h2 style={{color:'#28a745'}}>{this.state.message}</h2>
         <OtpInput
         inputStyle={{width: '20px'}}
           onChange={otp => this.setState({otp})}
