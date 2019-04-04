@@ -871,6 +871,14 @@ ImageChange =(event)=>{
         this.setState({displayEmployee: !this.state.displayEmployee})
     }
 
+    fNameKeyPress(event){
+        const pattern = /^[a-zA-Z]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
 
     render() {
         console.log(this.state.doc1)
@@ -1012,7 +1020,7 @@ ImageChange =(event)=>{
                                       onChange={this.onChange}
 
                                       maxLength={25}
-                                      onKeyPress={this.OnKeyPresshandler}
+                                      onKeyPress={this.fNameKeyPress}
 
                                   />
                                   <span className="error">{this.state.errors.firstName}</span>
@@ -1024,7 +1032,7 @@ ImageChange =(event)=>{
                                       onChange={this.onChange}
 
                                       maxLength={25}
-                                      onKeyPress={this.OnKeyPresshandler}
+                                      onKeyPress={this.fNameKeyPress}
 
                                   />
                                    <span  className="error">{this.state.errors.lastName}</span>

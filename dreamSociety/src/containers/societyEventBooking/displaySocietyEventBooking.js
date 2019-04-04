@@ -202,16 +202,23 @@ updateEvents(){
             }  
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0
-            if (isValid) {
+            if (isValid  &&  this.state.message === '') {
              
                 this.props.updateSocietyEvents(societyEventBookId,eventId,eventName,organisedBy,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description)
                 .then(()=>this.refreshData())
                 .catch(err=>{
-                    this.setState({message: err.response.data.message,modalLoading:false, loading: false})
-                    })
-                this.setState({ modalLoading: true})
-                
-}}
+                    this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                })
+                if(this.state.message === ''){
+                    this.setState({editEventModal: true})
+                }
+                else {
+                    this.setState({editEventModal: false})
+                }       
+            this.setState({ modalLoading: true})
+}
+
+}
 
 
 selectAll = () => {

@@ -236,7 +236,7 @@ class userDetails extends Component {
                                     currentRole = i.roleName
                                     return currentRole
                                 }
-                            })}</td>
+                            }).join(' , ')}</td>
                             <td>{item.firstName}{`  `}{item.lastName} </td>
                             <td>{item.userName}</td>
                             <td>{item.email}</td>
@@ -383,12 +383,12 @@ class userDetails extends Component {
 
         let modalData = <EditUserModal isOpen={this.state.editUserModal}
                                 toggle={this.toggleEditUserModal.bind(this)}
-                                roleNameValue = {this.state.roleName}
-                                roleInputName = "roleName"
-                                roleNameChange = {this.onChange}
-                                selectedRoleNameValue = {this.state.roleName}
-                                selectedRoleName = {this.state.roleName}
-                                fetchRoles = {this.fetchRoles(this.props.userDetail)}
+                                // roleNameValue = {this.state.roleName}
+                                // roleInputName = "roleName"
+                                // roleNameChange = {this.onChange}
+                                // selectedRoleNameValue = {this.state.roleName}
+                                // selectedRoleName = {this.state.roleName}
+                                // fetchRoles = {this.fetchRoles(this.props.userDetail)}
                                 firstNameInputName="firstName"
                                 firstNameValue = {this.state.firstName}
                                 firstNameValueChange = {this.onChange}
