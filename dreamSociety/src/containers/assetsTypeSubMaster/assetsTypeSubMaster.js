@@ -88,7 +88,7 @@ class AssetsTypeSubMaster extends Component {
                 <div>
                     <FormGroup>
                     <Label>Assets Type</Label>
-                    <Input type="select" defaultValue='no-value' onChange={this.onChangeHandler} name="assetId">
+                    <Input type="select" defaultValue='no-value' onChange={this.onChangeHandler} name="assetId" style={{ 'textTransform': 'capitalize' }}>
                     <DefaultSelect/>
                         {this.getAssetsName(this.props.assetsName)}
                     </Input>
