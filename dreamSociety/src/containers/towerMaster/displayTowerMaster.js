@@ -80,17 +80,9 @@ class DisplayTowerMaster extends Component {
   }
   else {
       this.setState({ [e.target.name]: e.target.value });
-  }
-   
+  } 
   } 
   
-
- 
-   
-  
-
-
-
   toggleEditTowerModal() {
     this.setState({
       editTowerModal: !this.state.editTowerModal, message:''
