@@ -44,7 +44,8 @@ export function addServiceType(serviceName,serviceDetailId){
 export function deleteSelectedService(ids){
     const request= axios.put(`${URN}/service/delete/deleteSelected`,{ids},{headers:authHeader()})
     .then((response) => response.data)
-    .then(() => this.getServiceType());
+    .then(() => this.getServiceType())
+    ;
 
     return{
         type:DELETE_SERVICE_IDS,
@@ -54,9 +55,9 @@ export function deleteSelectedService(ids){
 
 
 export const deleteService=(serviceId,isActive)=>{
- 
+ console.log(serviceId)
 
-    const request = axios.put(`${URN}/service/${serviceId}`,{isActive}, {headers:authHeader()})
+    const request = axios.put(`${URN}/service/delete/${serviceId}`,{isActive}, {headers:authHeader()})
      .then(response => response.data)
  
      // .then(getDetails())
