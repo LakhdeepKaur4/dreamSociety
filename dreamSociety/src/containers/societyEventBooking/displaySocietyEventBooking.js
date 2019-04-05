@@ -97,6 +97,16 @@ class DisplaySocietyEventBooking extends Component {
         .then(() => this.refreshData())
       
     }
+   
+    logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/')
+    }
+
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
 
 
     renderList({ societyEvents }) {console.log(societyEvents)

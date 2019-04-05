@@ -357,6 +357,7 @@ class vendorMaster extends Component {
         localStorage.removeItem('user-type');
         return this.props.history.replace('/')
     }
+    
     close = () => {
         return this.props.history.replace('/superDashBoard')
     }
