@@ -275,7 +275,7 @@ class DisplayVendorMaster extends Component {
 
     renderList = ({ vendors }) => {
  
-        if (vendors ) {
+        if (vendors && vendors.vendor ) {
             return vendors.vendor.sort((item1,item2)=>{
                 var cmprVal =  (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
@@ -853,10 +853,10 @@ class DisplayVendorMaster extends Component {
                             name="readOnlyCurrent"
                             value={this.state.currentAddress}
                             type="textarea" disabled
-                            placeholder="Current Address"
+                            placeholder="Current Address"  
                             name="readOnlyCurrent"
                             onChange={this.onChange}
-                            maxLength='250' />
+                            maxLength='250' /> 
                        </Col>:''}
                     {!this.state.editCurrent ? <Col md={6} style={{ paddingTop: '44px' }}>
                         <span style={{ fontWeight: '600' }}>Do you want to edit current address?</span>
