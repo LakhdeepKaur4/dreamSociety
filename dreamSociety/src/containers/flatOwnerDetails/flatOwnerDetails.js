@@ -415,8 +415,7 @@ OnKeyPresshandlerEmail=(event)=> {
               })
            
           };
-        }
-       
+        }  
   }
   changePassword=()=>{ 
     return this.props.history.replace('/superDashboard/changePassword')

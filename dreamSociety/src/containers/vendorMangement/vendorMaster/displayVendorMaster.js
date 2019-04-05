@@ -270,7 +270,7 @@ class DisplayVendorMaster extends Component {
 
 
     renderList = ({ vendors }) => {
- 
+    console.log("vendor",vendors);
         if (vendors ) {
             return vendors.vendor.sort((item1,item2)=>{
                 var cmprVal =  (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
@@ -995,6 +995,7 @@ class DisplayVendorMaster extends Component {
                                         width="400px"
                                         height="700px"
                                         fileUrl={DocURN+this.state.documentOne}/>
+
                                 </ModalBody>
                                 </Modal>
 

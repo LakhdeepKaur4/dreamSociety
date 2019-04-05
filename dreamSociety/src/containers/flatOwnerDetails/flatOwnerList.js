@@ -509,7 +509,6 @@ class FlatOwnerList extends Component {
         }
 
         FileChange=(event)=>{
-
             const files = event.target.files;
             const file = files[0];
             const fileName=file.name
