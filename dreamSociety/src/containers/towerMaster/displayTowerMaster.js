@@ -110,9 +110,10 @@ class DisplayTowerMaster extends Component {
      this.setState({errors})
      const isValid = Object.keys(errors).length===0
     if(isValid  &&  this.state.message === ''){
-   this.props.updateTower(towerId,towerName,floors).then(()=>this.props.fetchFloor().then(()=>this.setState({loading:false}))).catch(err=>{ console.log(err.response.data.message)
-    this.setState({modalLoading:false,message: err.response.data.message, loading: false})
-    })
+   this.props.updateTower(towerId,towerName,floors).then(()=>{this.refreshData()}).catch(err=>this.setState({ modalLoading:false,message:err.response.data.message,loading:false}))
+
+
+    
     if(this.state.message === ''){
       this.setState({editTowerModal: true})
   }
