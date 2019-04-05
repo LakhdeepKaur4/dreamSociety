@@ -138,6 +138,7 @@ class DisplaySocietyEventBooking extends Component {
                        <td>{item.perPersonCharge}</td>
                        <td>{item.childAbove}</td>
                        <td>{item.charges}</td>
+                       <td style={{width:"4%"}}>{item.breakfast?"breakFast,":'' }{item.lunch?"lunch,":''}{item.eveningSnacks?"eveningSnacks,":''}{item.dinner?"dinner,":''}{item.dJ?"DJ,":''}{item.drinks?"drinks":''}</td>
                        <td>
                              <Button color="success" className="mr-2" onClick={this.editEvent.bind(this,item.societyEventBookId,item.event_master.eventId,item.event_master?item.event_master.eventName:'',item.user_master?item.user_master.firstName:'',item.startDate,item.endDate,item.startTime,item.endTime,item.perPersonCharge,item.childAbove,item.charges,item.description,item.breakfast,item.lunch,item.eveningSnacks,item.dinner,item.dj,item.drinks)}>Edit</Button>                 
                              <Button color="danger"  onClick={this.deleteEvents.bind(this, item.societyEventBookId)}>Delete</Button>
@@ -274,9 +275,10 @@ render() {
                 <th>Event End Date</th>
                 <th>Event Start Time</th>
                 <th>Event End Time</th>             
-                <th  style={{width:'6%'}}>Per Person Charges</th>
+                <th>Per Person Charges</th>
                 <th>Child Above</th>
-                <th  style={{width:'4%'}}>Charges</th>   
+                <th>Charges</th>   
+                <th style={{width:"4%"}}>Options</th>
                 <th>Actions</th>                          
             </tr>
             
