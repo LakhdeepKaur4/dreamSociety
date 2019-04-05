@@ -275,7 +275,7 @@ class DisplayVendorMaster extends Component {
 
     renderList = ({ vendors }) => {
  
-        if (vendors ) {
+        if (vendors && vendors.vendor ) {
             return vendors.vendor.sort((item1,item2)=>{
                 var cmprVal =  (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
