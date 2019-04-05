@@ -433,10 +433,10 @@ class AddTenant extends Component{
         }
     }
 
-    getFloor=({floor})=>{
-        console.log("floor",floor)
-        if(floor && floor.tower.Floors){
-            return floor.tower.Floors.map((item)=>{
+    getFloor=({getFlatDetail})=>{
+        console.log("floor",getFlatDetail)
+        if(getFlatDetail && getFlatDetail.tower){
+            return getFlatDetail.tower.Floors.map((item)=>{
                       
                 return {...item ,label: item.floorName, value: item.floorId }
             })
@@ -448,10 +448,10 @@ class AddTenant extends Component{
             return []
         }}
 
-        getFlats=({floor})=>{
-            console.log('7777777jjjjjj',floor)
-            if(floor){
-              return  floor.flatDetail.filter((flatRecord)=>{
+        getFlats=({getFlatDetail})=>{
+            console.log('7777777jjjjjj',getFlatDetail)
+            if(getFlatDetail){
+              return  getFlatDetail.flatDetail.filter((flatRecord)=>{
                     return flatRecord.floorId===this.state.floorId
                 }).map((selectFlat)=>{
                     console.log('bbbbbbbbbbbbbbbbb',selectFlat)
@@ -476,7 +476,7 @@ class AddTenant extends Component{
             }, function () {
                 console.log(selectOption.towerId)
             });
-            this.props.getAllFloor(selectOption.towerId);
+            this.props.getFlatDetailViaTowerId(selectOption.towerId);
         }
     
         floorChangeHandler=(floorName, floorId,selectOption)=>{
@@ -501,7 +501,7 @@ class AddTenant extends Component{
                     ' , ' +this.state.societyName + ' , ' +this.state.societyLocation + ' , ' + this.state.societyCity +
                     ' , ' + this.state.societyState + ' , ' + this.state.societyCountry
                 })
-                this.props.getAllFloor(selectOption.towerId);
+                this.props.getFlatDetailViaTowerId(selectOption.towerId);
             }
 
             countryName = ({countryResult}) => {
@@ -864,7 +864,7 @@ class AddTenant extends Component{
                         </FormGroup >
                         <FormGroup>
                             <Label>Floor</Label>
-                            <Select options={this.getFloor(this.props.towerFloor)}
+                            <Select options={this.getFloor(this.props.tenantReducer)}
                             placeholder={<DefaultSelect/>}
                             name="floorId"
                             onChange={this.floorChangeHandler.bind(this,'floorName','floorId')}
@@ -873,7 +873,7 @@ class AddTenant extends Component{
                         </FormGroup>
                         <FormGroup>
                             <Label>Flat Number</Label>
-                            <Select options={this.getFlats(this.props.towerFloor)} name="flatDetailId"
+                            <Select options={this.getFlats(this.props.tenantReducer)} name="flatDetailId"
                                 onChange={this.flatChangeHandler.bind(this, 'flatNo' , 'flatDetailId')}
                                 placeholder={<DefaultSelect/>}
                                 />
@@ -1008,5 +1008,5 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {detailSociety, viewTower, getRelation,getAllFloor,
+export default connect(mapStateToProps, {detailSociety, viewTower, getRelation,getFlatDetailViaTowerId,
     getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail, getCountry,getState,getCity, getLocation})(AddTenant);
