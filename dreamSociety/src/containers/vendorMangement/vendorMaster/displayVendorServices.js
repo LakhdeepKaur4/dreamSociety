@@ -117,9 +117,10 @@ class DisplayVendorServices extends Component {
 
    
 
-editUser(vendorServiceId,vendorId,serviceId,rateId,serviceName,rateType,rate){
+editUser(vendorId,vendorServiceId,serviceId,rateId,serviceName,rateType,rate){
+    console.log(vendorId,"vendorId",vendorServiceId,"vendorServiceId-----edit---")
     this.setState({
-        vendorServiceId,vendorId,serviceId,rateId,serviceName,rateType,rate
+        vendorId,vendorServiceId,serviceId,rateId,serviceName,rateType,rate
             ,editVendorModal: !this.state.editServiceModal})
             
     }
@@ -135,7 +136,7 @@ toggle() {
     }
 
 updateServices = () => { 
-    const {vendorServiceId,vendorId,serviceId,rateId,rate} = this.state
+    const {vendorId,vendorServiceId,serviceId,rateId,rate} = this.state
     let errors = {};
             if(this.state.rate===''){
                 errors.rate="Rate can't be empty"
@@ -144,7 +145,7 @@ updateServices = () => {
             
             const isValid =Object.keys(errors).length===0;
             if(isValid && this.state.message === ''){           
-                this.props.updateVendorServices(vendorServiceId,vendorId,serviceId,rateId,rate)
+                this.props.updateVendorServices(vendorId,vendorServiceId,serviceId,rateId,rate)
                     .then(() => this.refreshData())
                     .catch(err=>{
                         this.setState({modalLoading:false,message: err.response.data.message, loading: false})
@@ -157,7 +158,7 @@ updateServices = () => {
                         }       
                     this.setState({ modalLoading: true
                })
-               console.log(serviceId,rateId)
+               console.log(vendorId,"vendorId",vendorServiceId,"vendorServiceId--update--")
     }   
 }
 
