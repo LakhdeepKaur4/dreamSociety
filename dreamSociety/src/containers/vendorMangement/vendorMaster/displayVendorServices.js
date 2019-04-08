@@ -118,7 +118,7 @@ class DisplayVendorServices extends Component {
    
 
 editUser(vendorId,vendorServiceId,serviceId,rateId,serviceName,rateType,rate){
-    console.log(vendorId,"vendorId",vendorServiceId,"vendorServiceId-----edit---")
+    console.log(vendorId,"vendorId",vendorServiceId,"vendorServiceId-----edit---",rate,"rate")
     this.setState({
         vendorId,vendorServiceId,serviceId,rateId,serviceName,rateType,rate
             ,editVendorModal: !this.state.editServiceModal})
@@ -158,7 +158,7 @@ updateServices = () => {
                         }       
                     this.setState({ modalLoading: true
                })
-               console.log(vendorId,"vendorId",vendorServiceId,"vendorServiceId--update--")
+               console.log(vendorId,"vendorId",vendorServiceId,rate,"rate")
     }   
 }
 
