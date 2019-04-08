@@ -150,7 +150,7 @@ class MaintenanceSubMasterForm extends Component{
             <FormGroup>
                 <FormGroup>
                     <Input name="rate" onChange={this.rateChange}
-                    value={this.state.rate} placeholder="Enter Price"/>
+                    value={this.state.rate} placeholder="Enter Price" maxLength="16"/>
                     <div>{!this.state.rate ? <span className="error">{this.state.errors.rate}</span>: null}</div>
                 </FormGroup>
             </FormGroup>
