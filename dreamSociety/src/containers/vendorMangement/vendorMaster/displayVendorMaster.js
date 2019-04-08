@@ -1018,6 +1018,7 @@ class DisplayVendorMaster extends Component {
                                         width="400px"
                                         height="700px"
                                         fileUrl={DocURN+this.state.documentOne}/>
+
                                 </ModalBody>
                                 </Modal>
 

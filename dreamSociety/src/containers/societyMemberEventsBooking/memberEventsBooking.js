@@ -134,6 +134,12 @@ class MemberEventsBooking extends Component {
         else if(this.state.endDate === ''){
             errors.endDate = "cant be empty";
         }
+
+        else if(this.state.startDate > this.state.endDate){
+            errors.startDate = "Start Date should be less than end date ";
+        }
+
+        
         
 
         else if(this.state.numberOfGuestExpected === ''){

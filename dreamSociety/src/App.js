@@ -101,12 +101,16 @@ import SWhowDeactiveListDetails from './containers/activeDeactiveList/deactivate
 
 import AssignRoles from './components/assignRoles/assignRoles';
 import IndividualVendor from './containers/individualVendor/individualVendor';
+import IndividualVendorDetail from './containers/individualVendor/individualVendorDetail';
+import VendorServiceDetail from './containers/individualVendor/vendorServiceDetail';
 // import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant';
 import SocietyEventBooking from './containers/societyEventBooking/societyEventBooking';
 import DisplaySocietyEventBooking from './containers/societyEventBooking/displaySocietyEventBooking';
 
 import ViewTenantDetail from './containers/tenantMaster/tenantDetail/viewTenantDetail';
 import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
+
+
 class App extends Component {
   render() {
     return (
@@ -207,6 +211,8 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/showList/showListDetails2' component={SWhowDeactiveListDetails} />
             <PrivateRoute path='/superDashboard/assignRoles' component={AssignRoles} />
             <PrivateRoute path='/superDashboard/individualVendor' component={IndividualVendor} />
+            <PrivateRoute path='/superDashboard/individualVendorDetail' component={IndividualVendorDetail} />
+            <PrivateRoute path='/superDashboard/vendorServiceDetail' component={VendorServiceDetail} />
            
             <PrivateRoute path='/superDashboard/SocietyEventBooking' component={SocietyEventBooking}/>
             <PrivateRoute path='/superDashboard/DisplaySocietyEventBooking' component={DisplaySocietyEventBooking}/>

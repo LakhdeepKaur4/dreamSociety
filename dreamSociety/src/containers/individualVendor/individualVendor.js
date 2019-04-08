@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {addVendor} from './../../actionCreators/individualVendorAction';
+import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
+import {getServiceType} from './../../actionCreators/serviceMasterAction';
+import {getRateType} from './../../actionCreators/vendorMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form, Button,  FormGroup,  Input, Label, Row, Col } from 'reactstrap';
-
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from './../../constants/defaultSelect';
+import _ from 'underscore';
+import Select from 'react-select';
+
 
 class IndividualVendor extends Component{
 
@@ -20,37 +25,70 @@ class IndividualVendor extends Component{
             stateName:'',
             cityName:'',
             locationName:'',
+            countryId:'',
+            stateId:'',
+            cityId:'',
+            locationId:'',
             currentAddress:'',
+            currentAddressInfo:'',
             permanentAddress:'',
+            permanentPinCode:'',
             email:'',
-            contactNumber:'',
-            serviceType:'',
-            rateType:'',
+            contact:'',
+            serviceId:'',
+            rateId:'',
             rate:'',
-            form:'',
-            to:'',
+            startTime:'',
+            endTime:'',
+            startTime1:'',
+            endTime1:'',
+            startTime2:'',
+            endTime2:'',
             profilePicture:'',
             documentOne:'',
             documentTwo:'',
-            errors:{}
+            fileName1:'',
+            fileName2:'',
+            fileName3:'',
+            errors:{},
+            emailValidError:'',
+            defaultCurrentAddress:'',
+            currentAddressDefault:'',
+            currentState:'',
+            currentStateId:'',
+            currentCity:'',
+            currentCityId:'',
+            currentState:'',
+            currentStateId:'',
+            currentLocation:'',
+            permanentLocationId:'',
+            currentAddressVisible:false,
+            readOnly:'',
+            permanentAddressDefault:'',
+            editCurrent:true,
+            pin:'',
+            pin1:'',
            
         }
     }
 
-    sameAddress = (e) => {
-        if(!!document.getElementById('isChecked').checked){
-            console.log('is checked')
-           this.setState({permanentAddress: this.state.currentAddress.trim()})
-           document.getElementById('permanentaddr').disabled = true;
-        }
-       else{
-            this.setState({permanentAddress: ''})
-            document.getElementById('permanentaddr').disabled = false;
-        }
+
+    componentDidMount=()=>{
+        this.refreshData()     
     }
 
+    refreshData=()=>{
+         this.props.getCountry().then(() => this.setState({loading: false}));
+         this.props.getState().then(() => this.setState({loading: false}));
+         this.props.getCity().then(() => this.setState({loading: false}));
+         this.props.getLocation().then(() => this.setState({loading: false}));
+         this.props.getServiceType().then(() => this.setState({loading: false}));
+         this.props.getRateType().then(() => this.setState({loading: false}));
+    }
+
+
     keyPress = (event) => {
-        const pattern = /^[a-zA-Z0-9_, ]+$/;
+        const pattern = /^[a-zA-Z0-9_, -]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
@@ -63,6 +101,7 @@ class IndividualVendor extends Component{
         
     }
 
+    
     OnKeyPressUserhandler(event) {
         const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
@@ -79,65 +118,485 @@ class IndividualVendor extends Component{
         }
     }
 
+    emailValid(event) {
+        const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    
     emailChange = (e) => {
-        console.log(this.state.email)
-        this.setState({errors:{email: ''}})
-        this.setState({email:e.target.value, emailServerError:''})
+   
+        this.setState({email:e.target.value})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
-            this.setState({[e.target.name]:e.target.value.trim()});
-            console.log(this.state.email)
+            this.setState({[e.target.name]:e.target.value});
+            
             this.setState({emailValidError: ''})
         }
         else{ this.setState({emailValidError: 'Invalid Email.'})}
-        if (!!this.state.errors[e.target.name]) {
-            let errors = Object.assign({}, this.state.errors);
-            delete errors[e.target.name];
-            console.log(this.state.email)
-            this.setState({ [e.target.name]: e.target.value.trim(), errors });
-        }
-        else {
-            this.setState({email:e.target.value});
-        }
         
     }
 
-    onChange = (e) => {
+
+    
+
+    FileChange=(event)=>{
+
+        const files = event.target.files;
+        const file = files[0];
+        const fileName1=file.name
+        if (files && file) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload =  () =>{
+              this.setState({
+                profilePicture :
+                  reader.result,
+                  fileName1
+              })
+           
+          };
+        }  
+    }
+
+    FileChange1=(event)=>{
+
+        const files = event.target.files;
+        const file = files[0];
+        const fileName2=file.name
+        if (files && file) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload =  () =>{
+              this.setState({
+                documentOne :
+                  reader.result,
+                  fileName2
+              })
+           
+          };
+        }  
+    }
+
+    
+    FileChange2=(event)=>{
+        // this.setState({ documentTwo : event.target.files[0]})
+        const files = event.target.files;
+        const file = files[0];
+        const fileName3=file.name
+        if (files && file) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload =  () =>{
+              this.setState({
+                documentTwo :
+                  reader.result,
+                  fileName3
+              })
+           
+          };
+        }  
+    }
+
+      onChange=(e) =>{
+        this.setState({message:'' })
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value.trim(), errors });
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
         }
         else {
-            this.setState({ [e.target.name]: e.target.value.trim() });
+            this.setState({ [e.target.name]: e.target.value.trim('') });
         }
-        
     }
+
+  
+
+    countryName = ({countryResult}) => {
+        if(countryResult){
+          
+           return( 
+            countryResult.map((item) =>{
+                   return(
+                    { ...item, label: item.countryName, value: item.countryId }
+                   )
+               })
+           )
+            
+        }
+    }
+    countryName1 = ({countryResult}) => {
+        if(countryResult){
+          
+           return( 
+            countryResult.map((item) =>{
+                   return(
+                    { ...item, label: item.countryName, value: item.countryId }
+                   )
+               })
+           )
+            
+        }
+    }
+    
+    onChangeCountry = (countryId, countryName, selectOption) => {
+        console.log(countryId, countryName, selectOption)
+    
+        this.setState({
+            countryName: selectOption.countryName,
+            countryId:selectOption.countryId, 
+        })
+        
+        this.props.getState(selectOption.countryId)
+    }
+    
+    stateName = ({stateResult}) => {
+        if(stateResult){
+          console.log(stateResult)
+           return( 
+            stateResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.stateName, value: item.stateId }
+                   )
+               })
+           )
+            
+        }
+    }
+    
+    stateName1 = ({stateResult}) => {
+        if(stateResult){
+          console.log(stateResult)
+           return( 
+            stateResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.stateName, value: item.stateId }
+                   )
+               })
+           )
+            
+        }
+    }
+    
+    onChangeState = (stateName, stateId, selectOption) => {
+        console.log(stateName, stateId, selectOption)
+        this.setState({
+            stateName: selectOption.stateName,
+            stateId:selectOption.stateId
+        })
+        this.props.getCity(selectOption.stateId);
+    }
+    
+    cityName=({cityResult})=>{
+       
+        if(cityResult){
+            
+           return( 
+            cityResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.cityName, value: item.cityId }
+                   )
+               }
+               )
+           )
+            
+        }
+    }
+    
+    cityName1=({cityResult})=>{
+       
+        if(cityResult){
+            
+           return( 
+            cityResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.cityName, value: item.cityId }
+                   )
+               }
+               )
+           )
+            
+        }
+    }
+    
+    onChangeCity = (cityName, cityId, selectOption) => {
+        console.log(cityName, cityId, selectOption)
+        this.setState({
+            cityName: selectOption.cityName,
+            cityId:selectOption.cityId
+        })
+        this.props.getLocation(selectOption.cityId)
+    }
+    
+    
+    locationName=({locationResult})=>{
+       if(locationResult){
+            
+           return( 
+               locationResult.map((item) =>{ 
+                   return(
+                    { ...item, label: item.locationName, value: item.locationId }
+                   )
+               }
+               )
+           )
+            
+        }
+    }
+    
+    locationName1=({locationResult})=>{
+        if(locationResult){
+             
+            return( 
+                locationResult.map((item) =>{ 
+                    return(
+                     { ...item, label: item.locationName, value: item.locationId }
+                    )
+                }
+                )
+            )
+             
+         }
+     }
+    
+    onChangeLocation = (locationName, locationId, selectOption) => {
+        console.log(locationName, locationId, selectOption)
+        this.setState({
+            locationName: selectOption.locationName,
+            locationId:selectOption.locationId,
+            
+        })
+        this.updatePermanentAddress1(selectOption.locationName)
+    }
+    
+    updatePermanentAddress1 = (location) => {
+        console.log(location)
+        this.setState({location})
+        this.setState({permanentAddress: this.state.permanentAddressDefault  + ', ' + location + ', ' +
+        this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
+    }
+    
+    
+    countryChange = (currentCountryId, currentCountry, selectOption) => {
+        console.log(currentCountryId, currentCountry, selectOption)
+    
+        this.setState({
+            currentCountry: selectOption.countryName,
+            currentCountryId:selectOption.countryId, 
+        })
+        
+        this.props.getState(selectOption.countryId)
+    }
+    
+    
+    stateChange = (currentState, currentStateId, selectOption) => {
+        console.log(currentState, currentStateId, selectOption)
+        this.setState({
+            currentState: selectOption.stateName,
+            currentStateId:selectOption.stateId
+        })
+        this.props.getCity(selectOption.stateId);
+    }
+    
+    cityChange = (currentCity, currentCityId, selectOption) => {
+        console.log(currentCity, currentCityId, selectOption)
+        this.setState({
+            currentCity: selectOption.cityName,
+            currentCityId:selectOption.cityId
+        })
+        this.props.getLocation(selectOption.cityId)
+    }
+    
+    locationChange = (currentLocation, currentLocationId, selectOption) => {
+        console.log(currentLocation, currentLocationId, selectOption)
+        this.setState({
+            currentLocation: selectOption.locationName,
+            currentLocationId:selectOption.locationId,
+            
+        })
+        this.updateCurrentAddress1(selectOption.locationName)
+    }
+    
+    updateCurrentAddress1 = (location) => {
+        console.log(location)
+        this.setState({location})
+        this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + location + ', ' +
+        this.state.currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+        console.log('currentAddress', this.state.currentAddress)
+    }
+
+    defaultPermanentAddressChange = (e) =>{
+        this.setState({defaultCurrentAddress: this.state.correspondenceAddress ,permanentAddress: e.target.value})
+    }
+
+    sameAddress = () => {
+        console.log(this.state)
+        if(!!document.getElementById('isChecked').checked){
+            console.log('is checked')
+           this.setState({currentAddress: this.state.permanentAddress, currentAddressVisible:true, editCurrent:false})
+        }
+       else{
+            this.setState({currentAddress: '' , currentAddressVisible:false, editCurrent:true})
+        }
+    }
+
+    permanentAddressChange = (e) => {
+        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ permanentAddressDefault: e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+            this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1 , errors });
+        }
+        else {
+            this.setState({permanentAddressDefault: e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+            this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
+        }
+        if(!!document.getElementById('isChecked').checked){
+            this.setState({currentAddress: e.target.value + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+            this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
+        }
+    }
+    
+    currentAddressChange = (e) => {
+        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ currentAddressDefault: e.target.value, currentAddress: e.target.value  + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+            this.state.currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip code: ' + this.state.pin , errors });
+        }
+        else {
+            this.setState({currentAddressDefault: e.target.value, currentAddress: e.target.value  + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+            this.state.currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip code: ' + this.state.pin})
+        }
+    }
+    
+    pinChange = (e) => {
+        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ pin: e.target.value, errors });
+        }
+        else {
+            this.setState({pin: e.target.value});
+        }
+        this.updatePermanentAddress(e.target.value)
+    }
+    
+    
+    updateCurrentAddress = (pin) => {
+        console.log(pin)
+        this.setState({pin})
+        this.setState({currentAddress: this.state.currentAddressDefault  + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+        this.state.currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip Code: ' + pin})
+        console.log('currentAddress', this.state.currentAddress)
+    }
+    
+    pinChange1 = (e) => {
+        console.log(this.state)
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ pin1: e.target.value, errors });
+        }
+        else {
+            this.setState({pin1: e.target.value});
+        }
+        this.updatePermanentAddress(e.target.value)
+    }
+    
+    updatePermanentAddress = (pin) => {
+        console.log(pin)
+        this.setState({pin})
+        this.setState({permanentAddress: this.state.permanentAddressDefault  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+        this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
+    }
+
+
+    service({item}){
+        if(item){
+           return( 
+            item.map((item) =>{ 
+                   return(
+                       <option key={item.serviceId} value={item.serviceId}>
+                        {item.serviceName}
+                       </option>
+                   )
+               })
+           )
+            
+        }
+    }
+
+    rateTypeDetail({rate}){
+        if(rate){
+            console.log(rate)
+          
+           return( 
+            rate.rate.map((item) =>{ 
+                   return(
+                       <option key={item.rateId} value={item.rateId}>
+                        {item.rateType}
+                       </option>
+                   )
+               })
+           )
+            
+        }
+    }
+
 
     handleSubmit=(e)=>{
         e.preventDefault();
         let errors={};
-        if(this.state.firstName==='') {
+        if(!this.state.firstName) {
             errors.firstName= "cant be empty"
         }
         else if(this.state.lastName ==='') {
           errors.lastName= "cant be empty"
         }
 
-        else if(this.state.countryName ==='') {
-            errors.countryName = "cant be empty"
+        else if(this.state.permanentAddressDefault===''){
+            errors.permanentAddressDefault="Permanent Address can't be empty"
         }
-        else if(this.state.stateName ==='') {
-            errors.stateName = "cant be empty"
+        else if(this.state.pin1===''){
+            errors.pin1="Pincode can't be empty"
         }
-        else if(this.state.cityName ==='') {
-            errors.cityName= "cant be empty"
+              
+       else if(document.getElementById('isChecked').checked === false){
+            if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
         }
-        else if(this.state.locationName ==='') {
-            errors.locationName = "cant be empty"
-        }
-        else if(this.state.currentAddress ==='') {
-            errors.currentAddress = "cant be empty"
-        }
+        
+        else if(this.state.pin===''){
+            errors.pin="Pincode can't be empty"
+        } 
+
+
+        // else if(this.state.countryName ==='') {
+        //     errors.countryName = "cant be empty"
+        // }
+        // else if(this.state.stateName ==='') {
+        //     errors.stateName = "cant be empty"
+        // }
+        // else if(this.state.cityName ==='') {
+        //     errors.cityName= "cant be empty"
+        // }
+        // else if(this.state.locationName ==='') {
+        //     errors.locationName = "cant be empty"
+        // }
+
+        // else if(this.state.permanentPinCode.length !== 6) {
+        //     errors.permanentPinCode = "Pin Code must be 6 digits"
+        // }
+        // else if(this.state.currentAddressInfo ==='') {
+        //     errors.currentAddressInfo = "cant be empty"
+        // }
         else if(this.state.permanentAddress ==='') {
             errors.permanentAddress = "cant be empty"
         }
@@ -145,28 +604,28 @@ class IndividualVendor extends Component{
             errors.email = "cant be empty"
         }
 
-        else if(this.state.contactNumber ==='') {
-            errors.contactNumber = "cant be empty"
+        else if(this.state.contact.length !== 10){
+            errors.contact="Contact No. must be 10 digits"
         }
 
-        else if(this.state.serviceType ==='') {
-            errors.serviceType = "cant be empty"
+        else if(this.state.serviceId ==='') {
+            errors.serviceId = "cant be empty"
         }
 
-        else if(this.state.rateType ==='') {
-            errors.rateType = "cant be empty"
+        else if(this.state.rateId ==='') {
+            errors.rateId = "cant be empty"
         }
 
         else if(this.state.rate ==='') {
             errors.rate = "cant be empty"
         }
 
-        else if(this.state.from ==='') {
-            errors.from = "cant be empty"
+        else if(this.state.startTime ==='') {
+            errors.startTime = "cant be empty"
         }
 
-        else if(this.state.to ==='') {
-            errors.to= "cant be empty"
+        else if(this.state.endTime ==='') {
+            errors.endTime= "cant be empty"
         }
 
         else if(this.state.profilePicture ==='') {
@@ -183,94 +642,147 @@ class IndividualVendor extends Component{
 
        
         this.setState({errors})
+        
+        const isValid= Object.keys(errors).length === 0;
 
-        console.log("submitted-----------------");
+        console.log("submitted-----------------", this.state);
+             if(isValid){
+                
+                this.props.addVendor(this.state).then(()=>this.props.history.push('/superDashboard/individualVendorDetail'))
+             }
     }
 
      
     dashbordPage=()=>{
-        this.props.history.push('/superDashboard');
+        this.props.history.push('/superDashboard/individualVendorDetail');
     }
 
     render(){
           let formData=<div>
             <FormGroup>
                 <Label>First Name</Label>
-                <Input  type="text" name="firstName" placeholder="firstname"></Input>  
+                <Input  type="text" name="firstName" placeholder="firstname" onChange={this.onChange} onKeyPress={this.OnKeyPressUserhandler} maxLength={50}></Input>
+                <span className='error'>{this.state.errors.firstName}</span>  
             </FormGroup>
-             <span className='error'>{this.state.errors.firstName}</span>
+           
             <FormGroup>
                 <Label>Last Name</Label>
-                <Input  type="text" name="lastName" placeholder="lastname"></Input>  
+                <Input  type="text" name="lastName" placeholder="lastname" onChange={this.onChange} onKeyPress={this.OnKeyPressUserhandler} maxLength={50}></Input> 
+                <span className='error'>{this.state.errors.lastName}</span> 
             </FormGroup>
-            <span className='error'>{this.state.errors.lastName}</span>
-            <Row form>
-            <Col md={6}>
-            <FormGroup>
-            <Label>Country Name</Label>
-            <Input type="select" defaultValue='no-value' name="countryName" >
-                <DefaultSelect/>
-                {/* {this.countryName(this.props.societyReducer)} */}
-            </Input>
-            <span className='error'>{this.state.errors.countryName}</span>
-            </FormGroup>
-            </Col>
-            
-                <Col md={6}>
-            <FormGroup>
-                <Label>State Name</Label>
-                <Input type="select" defaultValue='no-value' name="stateName"  >
-            <DefaultSelect/>
-                    {/* {this.stateName(this.props.societyReducer)} */}
-                </Input>
-                <span className='error'>{this.state.errors.stateName}</span>
-            </FormGroup>
-            </Col>
-            </Row>
-            
-            <Row form>
-                <Col md={6}>
-            <FormGroup>
-                <Label>City Name</Label>
-                <Input type="select" defaultValue='no-value' name="cityName" >
-            <DefaultSelect/>
-                    {/* {this.cityName(this.props.societyReducer)}   */}
-                </Input>
-                <span className='error'>{this.state.errors.cityName}</span>
-            </FormGroup>
-            </Col>
-            
-            <Col md={6}>
-            <FormGroup>
-                <Label>Location Name</Label>
-                <Input type="select" defaultValue='no-value' name="locationName"  >
-                <DefaultSelect/>
-                    {/* {this.locationName(this.props.societyReducer)} */}
-                </Input>
-                <span className='error'>{this.state.errors.locationName}</span>
-            </FormGroup>
-            </Col>
-            </Row>
-            <FormGroup>
-                <Label>Current Address</Label>
-                <Input  type="textarea" name="currentAddress" id="currentAddress"  placeholder="Current Address"  onKeyPress={this.keyPress}  onChange={this.onChange} ></Input>  
-            </FormGroup>
-            <span className='error'>{this.state.errors.currentAddress}</span>
-            <FormGroup>
-                    Is Your permanent address same as above?<Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
-            </FormGroup>
-            <FormGroup>
-                <Label>Permanent Address</Label>
-                <Input id="permanentaddr"  type="textarea" name="permanentAddress" placeholder="Permanent Address"  onChange={this.onChange}></Input>  
-            </FormGroup>
-            <span className='error'>{this.state.errors.permanentAddress}</span>
+          
+
+                      <FormGroup style={{paddingTop:'20px'}}>
+                            <h4 style={{textAlign:'center', fontWeight:'600', marginBottom:'20px'}}>Permanent Address</h4>
+                            <FormGroup>
+                                <Row md={12}>
+                                    <Col md={3}>
+                                        <Label>Country</Label>
+                                        <Select placeholder={<DefaultSelect/>} options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                                    
+                                    </Col>
+                                    <Col md={3}>
+                                        <Label>State</Label>
+                                        <Select placeholder={<DefaultSelect/>} options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                                    </Col>
+                                    <Col md={3}>
+                                        <Label>City</Label>
+                                        <Select placeholder={<DefaultSelect/>} options={this.cityName(this.props.societyReducer)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
+                                    </Col>
+                                    <Col md={3}>
+                                        <Label>Location</Label>
+                                        <Select placeholder={<DefaultSelect/>} options={this.locationName(this.props.societyReducer)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
+                                    </Col>
+                                </Row>
+                        </FormGroup>
+                        <FormGroup>
+                            <Row md={12}>
+                                <Col md={4}>
+                                    <Label>Pin/Zip Code</Label>
+                                    <Input type="text"   name="pin1" onChange={this.pinChange1}
+                                    maxLength="6" minLength="5" onKeyPress={this.OnKeyPresshandlerPhone}
+                                       placeholder="Pin/Zip Code" />
+                                        <span className="error">{this.state.errors.pin1}</span>
+                                </Col>                        
+                                <Col md={8}>
+                                    <Label>Address</Label>
+                                    <Input id="currentAddress" 
+                                    disabled={!(this.state.countryId && this.state.stateId
+                                        && this.state.cityId)}
+                                    type="textarea" 
+                                    placeholder="Permanent Address" 
+                                    name="permanentAddressDefault" 
+                                    onChange={this.permanentAddressChange}
+                                    maxLength='250' />
+                                    { <span className="error">{this.state.errors.permanentAddressDefault}</span> }
+                                </Col>
+                            </Row>
+                    </FormGroup>
+                    <FormGroup style={{paddingTop:'20px'}}>
+                        <h4 style={{textAlign:'center', fontWeight:'600', marginBottom:'20px'}}>Current Address</h4>
+                        <FormGroup>
+                            <span style={{fontWeight:'600'}}>Is Your Current address same as above?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
+                        </FormGroup>
+                        {this.state.currentAddressVisible ? <FormGroup>
+                            <Label>Current Address</Label>
+                            <Input type="textarea" id="currenttaddr" disabled maxLength="500" value={this.state.permanentAddress} name="defaultCurrentAddress" onChange={this.defaultCurrentAddress} />
+                        </FormGroup> : ''}
+                        {this.state.editCurrent ? <div>
+                            <FormGroup>
+                                <Row md={12}>
+                                    <Col md={3}>
+                                        <Label>Country</Label>
+                                        <Select placeholder={<DefaultSelect/>} options={this.countryName1(this.props.societyReducer)} onChange={this.countryChange.bind(this, 'currentCountry', 'currentCountryId')} />
+                                    </Col>
+                                    <Col md={3}>
+                                        <Label>State</Label>
+                                        <Select placeholder={<DefaultSelect/>} options={this.stateName1(this.props.societyReducer)} onChange={this.stateChange.bind(this, 'currentState', 'currentStateId')} />
+                                    </Col>
+                                    <Col md={3}>
+                                        <Label>City</Label>
+                                        <Select placeholder={<DefaultSelect/>} options={this.cityName1(this.props.societyReducer)} onChange={this.cityChange.bind(this, 'currentCity', 'currentCityId')} />
+                                    </Col>
+                                    <Col md={3}>
+                                        <Label>Location</Label>
+                                        <Select placeholder={<DefaultSelect/>} options={this.locationName1(this.props.societyReducer)} onChange={this.locationChange.bind(this, 'currentLocation', 'currentLocationId')} />
+                                    </Col>
+                                </Row>
+                            </FormGroup>
+                            
+                            <FormGroup>
+                                <Row md={12}>
+                                    <Col md={4}>
+                                        <Label>Pin/Zip Code</Label>
+                                        <Input type="text" name="pin" onChange={this.pinChange}
+                                        maxLength="6" minLength="5" onKeyPress={this.OnKeyPresshandlerPhone}
+                                         placeholder="Pin/Zip Code" />
+                                        <span className="error">{this.state.errors.pin}</span>
+                                    </Col>
+                                    <Col md={8}>
+                                        <Label>Address</Label>
+                                        <Input id="currenttaddr"
+                                        type="textarea"
+                                        disabled={!(this.state.currentCountryId && this.state.currentStateId && this.state.currentCityId)} 
+                                        placeholder="Current Address" 
+                                        name="currentAddressDefault" 
+                                        onChange={this.currentAddressChange}
+                                        maxLength='250' />
+                                        {<span className="error">{this.state.errors.currentAddressDefault}</span> }
+                                    </Col>
+                                </Row>
+                            </FormGroup>
+                        </div> : ''}
+                    </FormGroup>
+                    </FormGroup>
+           
             <Row form>
             <Col md={6}>
             <FormGroup>
                 <Label>Email Id</Label>
                 <Input placeholder="Email Id" type="email" name="email" maxLength={200} onChange={this.emailChange}
                         onKeyPress={this.emailValid}/>
-                <span className='error'>{this.state.errors.email}</span>
+                     {!this.state.email ? <span className="error">{this.state.errors.email}</span> : ''}
+                            <span className="error">{this.state.emailValidError}</span>
             </FormGroup>
             </Col>
 
@@ -278,9 +790,9 @@ class IndividualVendor extends Component{
             <Col md={6}>
             <FormGroup>
                 <Label>Contact No.</Label>
-                {/* <Input placeholder="Contact No." type="text" name="contactNumber" value={this.state.contactNumber} onChange={this.onChange} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10}/> */}
-                <Input placeholder="Contact No." type="text" name="contactNumber"  onKeyPress={this.OnKeyPresshandlerPhone}  maxLength={10}/>
-                <span className='error'>{this.state.errors.contactNumber}</span>
+                {/* <Input placeholder="Contact No." type="text" name="contact" value={this.state.contact} onChange={this.onChange} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10}/> */}
+                <Input placeholder="Contact No." type="text" name="contact"  onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.onChange} maxLength={10}/>
+                <span className='error'>{this.state.errors.contact}</span>
                 </FormGroup>
                 </Col>
                 </Row>
@@ -288,26 +800,28 @@ class IndividualVendor extends Component{
                 <Col md={5}>
                 <FormGroup>
                 <Label>Service Type</Label>
-                <Input type="select" defaultValue='no-value' name="serviceType" >
+                <Input type="select" defaultValue='no-value' name="serviceId" onChange={this.onChange}>
                     <DefaultSelect/>
-                    {/* {this.countryName(this.props.societyReducer)} */}
+                    {this.service(this.props.displayServiceMasterReducer)}
                 </Input>
-                <span className='error'>{this.state.errors.serviceType}</span>
+                <span className='error'>{this.state.errors.serviceId}</span>
                 </FormGroup>
                 </Col>
                 
                 <Col md={4}>
                 <FormGroup>
                     <Label>Rate Type</Label>
-                    <Input type="select" defaultValue='no-value' name="rateType">
-                    <DefaultSelect/></Input>
-                    <span className='error'>{this.state.errors.rateType}</span>
+                    <Input type="select" defaultValue='no-value' name="rateId" onChange={this.onChange}>
+                    <DefaultSelect/>
+                    {this.rateTypeDetail(this.props.vendorMasterReducer)}
+                    </Input>
+                    <span className='error'>{this.state.errors.rateId}</span>
                 </FormGroup>
                 </Col>
                 <Col md={3}>
                 <FormGroup>
                     <Label>Rate</Label>
-                    <Input type="text" name="rate" placeholder="Service Rate"></Input>
+                    <Input type="text" name="rate" placeholder="Service Rate" onChange={this.onChange}></Input>
                     <span className='error'>{this.state.errors.rate}</span>
                 </FormGroup>
                 </Col>
@@ -322,18 +836,20 @@ class IndividualVendor extends Component{
                 <Col md={5}>
                 <FormGroup>
                     <Label>From</Label>
-                    <Input type="time"  name="from" >
+                    <Input type="time"  name="startTime" onChange={this.onChange} >
+                    <span className='error'>{this.state.errors.startTime}</span>
                     </Input>
-                    <span className='error'>{this.state.errors.from}</span>
+                   
                 </FormGroup>
                 </Col>
                 
                 <Col md={5}>
                 <FormGroup>
                     <Label>To</Label>
-                    <Input type="time" name="to" >
+                    <Input type="time" name="endTime" onChange={this.onChange}>
+                    <span className='error'>{this.state.errors.endTime}</span>
                     </Input>
-                    <span className='error'>{this.state.errors.to}</span>
+                    
                 </FormGroup>
                 </Col>
                 </Row>
@@ -347,18 +863,18 @@ class IndividualVendor extends Component{
                 <Col md={5}>
                 <FormGroup>
                     <Label>From</Label>
-                    <Input type="time"  name="from" >
+                    <Input type="time"  name="startTime1" onChange={this.onChange}>
                     </Input>
-                    <span className='error'>{this.state.errors.from}</span>
+                    
                 </FormGroup>
                 </Col>
                 
                 <Col md={5}>
                 <FormGroup>
                     <Label>To</Label>
-                    <Input type="time" name="to" >
+                    <Input type="time" name="endTime1" onChange={this.onChange}>
                     </Input>
-                    <span className='error'>{this.state.errors.to}</span>
+                   
                 </FormGroup>
                 </Col>
                 </Row>
@@ -372,37 +888,37 @@ class IndividualVendor extends Component{
                 <Col md={5}>
                 <FormGroup>
                     <Label>From</Label>
-                    <Input type="time"  name="from" >
+                    <Input type="time"  name="startTime2" onChange={this.onChange} >
                     </Input>
-                    <span className='error'>{this.state.errors.from}</span>
+                   
                 </FormGroup>
                 </Col>
                 
                 <Col md={5}>
                 <FormGroup>
                     <Label>To</Label>
-                    <Input type="time" name="to" >
+                    <Input type="time" name="endTime2" onChange={this.onChange} >
                     </Input>
-                    <span className='error'>{this.state.errors.to}</span>
+                    
                 </FormGroup>
                 </Col>
                 </Row>
 
                 <FormGroup>
                 <Label>Upload Your Picture</Label>
-                    <Input type="file" name="profilePicture" accept="image/*"  />
+                    <Input type="file" name="profilePicture" accept="image/*" onChange={this.FileChange} />
                     <span className="error">{this.state.errors.profilePicture}</span>     
                 </FormGroup>
 
                 <FormGroup>
-                <Label>Upload Your Id</Label>
-                    <Input type="file" name="documentOne" accept="image/*"  />
+                <Label>Document 1</Label>
+                    <Input type="file" name="documentOne" accept="image/*" onChange={this.FileChange1} />
                     <span className="error">{this.state.errors.documentOne}</span>     
                 </FormGroup>
 
                 <FormGroup>
-                <Label>Upload Another Id</Label>
-                    <Input type="file" name="documentTwo" accept="image/*"  />
+                <Label>Document 2</Label>
+                    <Input type="file" name="documentTwo" accept="image/*" onChange={this.FileChange2} />
                     <span className="error">{this.state.errors.documentTwo}</span>     
                 </FormGroup>
 
@@ -429,15 +945,18 @@ class IndividualVendor extends Component{
 }
 
 function mapStateToProps(state) {
-   
+ 
  return {
-    IndividualReducer: state.AssignRolesReducer
+    IndividualVendorReducer: state.IndividualVendorReducer,
+    societyReducer : state.societyReducer,
+    displayServiceMasterReducer :state.displayServiceMasterReducer,
+    vendorMasterReducer : state.vendorMasterReducer
  }
 
 }
 
 function mapDispatchToProps(dispatch) {
- return bindActionCreators({addVendor }, dispatch);
+ return bindActionCreators({addVendor, getCountry,getState,getCity, getLocation, getServiceType, getRateType }, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(IndividualVendor));

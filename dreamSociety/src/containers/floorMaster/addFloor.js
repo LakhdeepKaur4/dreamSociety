@@ -73,7 +73,7 @@ class AddFloor extends Component {
         let formData = <div>
             <FormGroup>
                 <Label>Add Floor</Label>
-                <Input type="text" name="floorName" onChange={this.floorChangeHandler} placeholder="Add Floor" />
+                <Input type="text" name="floorName" onChange={this.floorChangeHandler} placeholder="Add Floor" maxLength={50} />
                 {this.state.message ? <span className='error'>{this.state.message}</span>:''}
                 <span className="error">{this.state.errors.floorName}</span>  
             </FormGroup>
