@@ -686,17 +686,23 @@ updatePermanentAddress = (pin) => {
     return this.props.history.replace('/superDashboard/changePassword')
  }
 
+ fNameKeyPress(event){
+    const pattern = /^[a-zA-Z]+$/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
+    }
+}
+
 render(){
 let form;
 <Spinner/>
 
 let formData=
-<form onSubmit={this.submit}>
-<div style={{ cursor: 'pointer' }} className="close"  aria-label="Close" onClick={this.close}>
-<span aria-hidden="true">&times;</span>
-</div>
 <div>
-<h3 align="center">Employee Master </h3>
+
+<div>
+
 
   <div className="input-container">
         <label >Select Your Image</label>
@@ -708,7 +714,7 @@ let formData=
     <div className="row">
     <div className="form-group col-md-6 ">
     <label>First Name</label>
-    <input  className="form-control" name="firstName" type="text"   onChange ={this.onChange}  onKeyPress={this.OnKeyPresshandler}  maxLength={30}/>
+    <input  className="form-control" placeholder="First Name" name="firstName" type="text"   onChange ={this.onChange}  onKeyPress={this.fNameKeyPress}  maxLength={30}/>
 
     <span className="error">{this.state.errors.firstName}</span>
     </div>
@@ -719,7 +725,7 @@ let formData=
 
     <div className="form-group col-md-6">
     <label> Last Name</label>
-    <input  className="form-control" type="text"  name="lastName"   onKeyPress={this.OnKeyPresshandler} onChange ={this.onChange}  maxLength={30}/>
+    <input placeholder="Last Name"  className="form-control" type="text"  name="lastName"   onKeyPress={this.fNameKeyPress} onChange ={this.onChange}  maxLength={30}/>
     <span className="error">{this.state.errors.lastName}</span>
     </div>
     </div>
@@ -738,6 +744,7 @@ let formData=
                         <input className ="form-control"
                          type="text"
                           name="contact"
+                          placeholder="Contact"
                           onChange={this.onChange}
                           onKeyPress={this.OnKeyPressNumber}
                           maxLength='10'
@@ -747,7 +754,7 @@ let formData=
                         </div>
                          <div>
                         <label>Email</label>
-                        <input  className ="form-control"
+                        <input  placeholder="Email" className ="form-control"
 
                         type="email"
                         name="email"
@@ -764,125 +771,10 @@ let formData=
 
         <label> Salary(perAnnum)</label>
 
-        <input type="text"  className="form-control" name ="salary"  onChange ={this.onChange} onKeyPress={ this.OnKeyPressNumber}  maxLength={20}/>
+        <input placeholder="Salary" type="text"  className="form-control" name ="salary"  onChange ={this.onChange} onKeyPress={ this.OnKeyPressNumber}  maxLength={20}/>
         <span className="error">{this.state.errors.salary}</span>
     </div>
 
-     {/* <div className="form-group">
-                <label>  current Address</label>
-                <input type="text" className="form-control" name  ="currentAddress"   onChange ={this.onChange} maxLength={30}/>
-                <span  className="error">{this.state.errors.currentAddress}</span>
-                  </div>
-
-    <div  className="row">
-
-
-                    <div className="col-md-6">
-                            <label>Country Name</label>
-                           <select   className ="form-control"  name="countryName"  defaultValue='no-value'  onChange={this.onChangeCountry} >
-                        <DefaultSelect/>
-                             {this.getDropdown1(this.props.locationMasterReducer)}
-                        </select>
-                           {!this.state.countryId1?<span  className="error">{this.state.errors.countryId1}</span>:''}
-                    </div>
-
-
-
-                    <div className="col-md-6">
-                        <label>State Name</label>
-                        <select  className ="form-control"   defaultValue='no-value'  name="stateName" onChange={this.onChangeState}>
-                               <DefaultSelect/>
-                             {this.getDropdown2(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.stateId1?<span  className="error">{this.state.errors.stateId1}</span>:''}
-                    </div>
-                          </div>
-
-                          <div className="row">
-                      <div  className="col-md-6">
-                        <label>City Name</label>
-                        <select  className ="form-control"  defaultValue='no-value'  name="cityName" onChange={this.onChangeCity} >
-                            <DefaultSelect/>
-                             {this.getDropdown3(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.cityId1?<span  className="error">{this.state.errors.cityId1}</span>:''}
-                     </div>
-                     <div  className="col-md-6" >
-                        <label>location</label>
-                        <select  className ="form-control"  name="locationName" defaultValue='no-value'  onChange={this.onLocationChange} >
-                             <DefaultSelect/>
-                             {this.getDropdown4(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.locationId1?<span  className="error">{this.state.errors.locationId1}</span>:''}
-                      </div>
-                     </div>
-                     <div>
-                            Is Your permanent address same as current  address?<input type="checkbox" onChange={this.sameAddress}  name="isChecked" id="isChecked" className="ml-3" />
-                        </div>
-                        <h3 style={{textAlign:'center'}}>Permanent  Address</h3>
-
-
-                          {this.state.defaultPermanent ? <div>
-                            <label>Permanent Address</label>
-                            <input   type="textarea"  className="form-control" id="permanentaddr" disabled   onChange={this.onChange}
-                            maxLength="250"  value={this.state.permanentAddress}
-                             name="permanentAddress"  placeholder="Permanent Address" />
-                             {<span className="error">
-                                {this.state.errors.permanentAddress}
-                            </span>}
-                        </div> : ''}
-                        {this.state.permanentAddrDefault ? <div>
-
-                     <div className="form-group">
-                <label>  Permanent  Address</label>
-                <input type="text" className="form-control" name  ="permanentAddress"    onChange ={this.onChange} maxLength={30}/>
-                <span className="error">{this.state.errors.address}</span>
-                  </div>
-
-                          <div  className="row">
-
-
-
-                    <div className="col-md-6">
-                            <label>Country Name</label>
-                           <select   className ="form-control"  name="countryId"         defaultValue='no-value'  onChange={this.onChangeCountry} >
-                        <    DefaultSelect/>
-                            {this.getDrop1(this.props.locationMasterReducer)}
-                        </select>
-                           {!this.state.countryId?<span  className="error">{this.state.errors.countryId}</span>:''}
-                    </div>
-
-
-
-                    <div className="col-md-6">
-                        <label>State Name</label>
-                        <select  className ="form-control"   defaultValue='no-value'  name="stateId" onChange={this.onChangeState}>
-                               <DefaultSelect/>
-                            {this.getDrop2(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.stateId?<span  className="error">{this.state.errors.stateId}</span>:''}
-                    </div>
-                          </div>
-
-                          <div className="row">
-                      <div  className="col-md-6">
-                        <label>City Name</label>
-                        <select  className ="form-control"  defaultValue='no-value'  name="cityId" onChange={this.onChangeCity} >
-                            <DefaultSelect/>
-                            {this.getDrop3(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.cityId?<span  className="error">{this.state.errors.cityId}</span>:''}
-                     </div>
-                     <div  className="col-md-6" >
-                        <label>location</label>
-                        <select  className ="form-control"  name="locationId" defaultValue='no-value'  onChange={this.onLocationChange} >
-                             <DefaultSelect/>
-                            {this.getDrop4(this.props.locationMasterReducer)}
-                        </select>
-                        {!this.state.locationId?<span  className="error">{this.state.errors.locationId}</span>:''}
-                      </div>
-                     </div>
-</div>:''} */}
 <FormGroup style={{paddingTop:'20px'}}>
                         <h4 style={{textAlign:'center',  fontWeight:'600', marginBottom:'20px'}}>Permanent Address</h4>
                         <FormGroup>
@@ -910,7 +802,7 @@ let formData=
                             <Col md={4}>
                                 <Label>Pin/Zip Code</Label>
                                 <Input type="text" onChange={this.pinChange1}
-                                maxLength="6" minLength="5"  onKeyPress={this.OnKeyPresshandlerPhone}
+                                maxLength="6" minLength="5"  onKeyPress={this.OnKeyPressNumber}
                                     name="pin1" placeholder="Pin/Zip Code" />
                                     <span  className="error">{this.state.errors.pin1}</span>
                             </Col>
@@ -966,7 +858,7 @@ let formData=
                                     <Col md={4}>
                                         <Label>Pin/Zip Code</Label>
                                         <Input type="text"  onChange={this.pinChange}
-                                        maxLength="6" minLength="5"  onKeyPress={this.OnKeyPresshandlerPhone}
+                                        maxLength="6" minLength="5"  onKeyPress={this.OnKeyPressNumber}
                                             name="pin"  placeholder="Pin/Zip Code" />
                                         <span  className="error">{this.state.errors.pin}</span>
                                     </Col>
@@ -1020,7 +912,7 @@ let formData=
   <button className="btn btn-danger"  onClick  ={this.displayEmployee}>Cancel</button>
   </div>
   </div>
-  </form>
+  </div>
 
 
 
@@ -1032,10 +924,14 @@ let formData=
         <div  >
             <UI   onClick ={this.logout } change={this.changePassword}>
 
-
-
-  {!this.state.loading ? formData: <Spinner />}
-
+            
+            <form onSubmit={this.submit}>
+                <div style={{ cursor: 'pointer' }} className="close"  aria-label="Close" onClick={this.close}>
+                    <span aria-hidden="true">&times;</span>
+                </div>
+                <h3 align="center">Employee Master </h3>
+                {!this.state.loading ? formData: <Spinner />}
+            </form>
         </UI>
         </div>
 

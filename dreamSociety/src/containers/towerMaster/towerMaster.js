@@ -3,7 +3,7 @@ import AddTower from '../../actionCreators/towerMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormGroup, Form, Label, Input, Button } from 'reactstrap';
-
+import { PlaceHolder } from '../../actions/index';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner'
 import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes'; 
@@ -153,9 +153,9 @@ changePassword=()=>{
             <FormGroup>
                 <Label>No. Of Floors</Label>
                 <ReactMultiSelectCheckboxes
-                name="floorId"
                  options={this.getFloor(this.props.floor)}
                  name="floorId"
+                 placeholderButtonLabel={PlaceHolder}
                  onChange={this.floorChangeHandler.bind(this,'floorId')}/>
                 {/* <Input type="text" className="form-control" placeholder="No. Of Floor" name="noOfFloor"  maxLength ={20} onKeyPress={this.OnKeyPresshandler} onChange={this.onChange}  /> */}
                  <span className="error">{this.state.errors.floorId}</span>

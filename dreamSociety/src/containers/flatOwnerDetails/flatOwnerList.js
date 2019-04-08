@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import UI from '../../components/newUI/superAdminDashboard';
 import { PicURN } from '../../actions/index'
-import { PlaceHolder } from '../../actions/index';
 import DefaultSelect from '../../constants/defaultSelect';
 import Select from 'react-select';
 import Spinner from '../../components/spinner/spinner';
@@ -95,7 +94,6 @@ class FlatOwnerList extends Component {
         }
     }
     toggle = (ownerId, firstName,lastName, dob, gender, contact, email,Aadhaar,permanentAddress) => {
-        console.log("======================="+ownerId, firstName,lastName, dob, gender, contact, email,Aadhaar,permanentAddress);
         this.setState({
             ownerId,
             firstName,
@@ -177,7 +175,6 @@ class FlatOwnerList extends Component {
     }
     getSociety = ({ detail_Society }) => {
         if (detail_Society) {
-            console.log('society details are ',detail_Society)
             return detail_Society.map((item) => {
                 return (
                     { ...item, label: item.societyName, value: item.societyId }
@@ -219,7 +216,6 @@ class FlatOwnerList extends Component {
     }
     renderList = ({ owners }) => {
         if (owners) {
-            console.log('owner',owners)
             return owners.getOwners.sort((item1,item2)=>{
                 let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal?cmpValue: -cmpValue;}).filter(this.searchFilter(this.state.search)).map((items, index) => {
@@ -249,7 +245,7 @@ class FlatOwnerList extends Component {
                                 }
                             }} /></td>
                         <td style={{ textAlign: "center" }}>{index + 1}</td>
-                        <td style={{ width: "8%", height: "8%" }}> <img style={{ width: "100%", height: "15%" }} src={PicURN + items.picture} alt="Profile Pic">
+                        <td style={{ width: "8%", height: "8%" }}> <img style={{ width: "100%", height: "4%" }} src={PicURN + items.picture} alt="Profile Pic">
                         </img></td>
                         <td style={{ textAlign: "center", width: '10px',textTransform: 'capitalize'  }}  >{items.firstName+' '+items.lastName}</td>
                         <td style={{ textAlign: "center" }}>{items.contact}</td>
@@ -275,7 +271,6 @@ class FlatOwnerList extends Component {
                 [name]: selectOption.value
             }
         }, function () {
-            console.log(selectOption.towerId)
         });
         this.props.getAllFloor(selectOption.towerId);
     }
@@ -301,9 +296,7 @@ class FlatOwnerList extends Component {
         }
     }
     countryName = ({countryResult}) => {
-        console.log(countryResult)
         if(countryResult){
-          
            return( 
             countryResult.map((item) =>{
                    return(
@@ -314,9 +307,7 @@ class FlatOwnerList extends Component {
             
         }
     }
-    onChangeCountry = (countryId, countryName, selectOption) => {
-        console.log(countryId, countryName, selectOption)
-    
+    onChangeCountry = (selectOption) => {    
         this.setState({
             countryName: selectOption.countryName,
             countryId:selectOption.countryId, 
@@ -326,7 +317,6 @@ class FlatOwnerList extends Component {
     }
     stateName = ({stateResult}) => {
         if(stateResult){
-          console.log(stateResult)
            return( 
             stateResult.map((item) =>{ 
                    return(
@@ -338,8 +328,7 @@ class FlatOwnerList extends Component {
         }
     }
 
-    onChangeState = (stateName, stateId, selectOption) => {
-        console.log(stateName, stateId, selectOption)
+    onChangeState = (selectOption) => {
         this.setState({
             stateName: selectOption.stateName,
             stateId:selectOption.stateId
@@ -362,8 +351,7 @@ class FlatOwnerList extends Component {
         }
     }
 
-    onChangeCity = (cityName, cityId, selectOption) => {
-        console.log(cityName, cityId, selectOption)
+    onChangeCity = (selectOption) => {
         this.setState({
             cityName: selectOption.cityName,
             cityId:selectOption.cityId
@@ -385,8 +373,7 @@ class FlatOwnerList extends Component {
          }
      }
 
-     onChangeLocation = (locationName, locationId, selectOption) => {
-         console.log(locationName, locationId, selectOption)
+     onChangeLocation = (selectOption) => {
          this.setState({
              locationName: selectOption.locationName,
              locationId:selectOption.locationId,
@@ -422,9 +409,6 @@ class FlatOwnerList extends Component {
         if (firstName === '') {
             errors.firstName = "Owern Name can't be empty"
         }
-    //    else if (lastName === '') {
-    //         errors.firstName = "Owern Name can't be empty"
-    //     }
         else if (dob === '') {
             errors.DOB = "Date of birth can't be empty"
         }
@@ -434,22 +418,12 @@ class FlatOwnerList extends Component {
         else if (email === '') {
             errors.email = "email can't be empty"
         }
-        // else if (flatDetailId === '') {
-        //     errors.flatNO = "flat number can't be empty"
-        // }
-        // else if (towerId === '') {
-        //     errors.tower = "tower can't be empty"
-        // }
-        // else if (societyName === '') {
-        //     errors.societyName = "society name can't be empty"
-        // }
 
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
         if (isValid) {
             this.setState({ loading: true })
             this.setState({ modal: !this.state.modal })
-          console.log(  this.state.accountNumber)
             this.props.updateFlatOwner(
                 ownerId,
                 firstName,
@@ -471,35 +445,27 @@ class FlatOwnerList extends Component {
         }
     }
     getFloor=({floor})=>{
-        console.log("floor",floor)
         if(floor){
             return floor.tower.Floors.map((item)=>{
                       
                 return {...item ,label: item.floorName, value: item.floorId }
             })
-          //   this.setState({
-          //     floorId:item.floorId
-          //   })
+    
         }
         else {
             return []
         }}
         floorChangeHandler=(name,selectOption)=>{
-            console.log('=======selectOption=======',selectOption.value);
             this.setState({
                 [name]: selectOption.value
             })
-    console.log('lllllllll=======',this.state.floorId)
-        // this.getFlats(this.props.towerFloor);
     
         }
         getFlats=({floor})=>{
-            console.log('7777777jjjjjj',floor)
             if(floor){
               return  floor.flatDetail.filter((flatRecord)=>{
                     return flatRecord.floorId===this.state.floorId
                 }).map((selectFlat)=>{
-                    console.log('bbbbbbbbbbbbbbbbb',selectFlat)
                     return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
                 });
             }
@@ -529,13 +495,10 @@ class FlatOwnerList extends Component {
 
         editPermanentAddress = () => {
             if (!!document.getElementById('isChecked').checked) {
-                console.log('is checked')
-                //    this.setState({permanentAddress: this.state.currentAddress, permanentAddressVisible:true, editPermanent:false})
                 this.setState({ editPermanent: true, permanentAddress: '', userPermanent: true, countryId:'',stateId:'',
             cityId:'', locationId:'' })
             }
             else {
-                // this.setState({permanentAddress: '' , permanentAddressVisible:false, editPermanent:true})
                 this.setState({ editPermanent: false, permanentAddress: this.state.readOnlyPermanent, userPermanent: false,
                 countryId:this.state.readOnlyCountryId, stateId:this.state.readOnlyStateId, cityId:this.state.readOnlyCityId,
             locationId: this.state.readOnlyLocationId })
@@ -543,7 +506,6 @@ class FlatOwnerList extends Component {
         }
     
         permanentAddressChange = (e) => {
-            console.log(this.state)
             if (!!this.state.errors[e.target.name]) {
                 let errors = Object.assign({}, this.state.errors);
                 delete errors[e.target.name];
@@ -554,10 +516,6 @@ class FlatOwnerList extends Component {
                 this.setState({permanentAddressDefault: e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
                 this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
             }
-            // if(!!document.getElementById('isChecked1').checked){
-            //     this.setState({currentAddress: e.target.value + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
-            //     this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
-            // }
         }
 
     close = () => {
@@ -629,6 +587,9 @@ class FlatOwnerList extends Component {
                                 <FormGroup>
                             <Label>Upload Profile Pic</Label>                               
                                 <Input accept='image/*' style={{display:'inline-block'}}type="file" name ="profilePic" onChange={this.FileChange} />
+                                <div>
+                                 <img src={this.state.profilePicture} height='100px' width='100px' />
+                                 </div>
                             </FormGroup>
                                 <FormGroup>
                                 <Label>First Name</Label>
@@ -678,35 +639,6 @@ class FlatOwnerList extends Component {
                                 <Input placeholder='Aadhaar Number' onChange={this.onChangeHandler} name='Aadhaar' onKeyPress={this.OnKeyPresshandlerPhone} type="text" value={this.state.Aadhaar} maxLength={12}/>
                                 <span className="error">{this.state.errors.Aadhaar}</span>
                             </FormGroup>
-
-                                        {/* <Label>Society Name</Label>
-                                        <Select options={this.getSociety(this.props.societyName)}
-                                            onChange={this.societyChangeHandler.bind(this)}
-                                            value={this.state.currentSociety}
-                                            placeholder={PlaceHolder} />
-                                        <span className="error">{this.state.errors.societyName}</span>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>Country</Label>
-                                        <Input readOnly placeholder="Country" type='text' value={this.state.countryName} />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>State</Label>
-                                        <Input readOnly type="text" placeholder="State Name" value={this.state.stateName} />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>City</Label>
-                                        <Input readOnly type="text" placeholder="City Name" value={this.state.cityName} />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Label>Location</Label>
-                                        <Input readOnly type="text" placeholder="Location Name" value={this.state.locationName} />
-                                    </FormGroup> */}
-                                    {/* <FormGroup>
-                                        <Label>Permanent Address</Label>
-                                        <Input type="textarea" style={{ 'textTransform': 'capitalize' }} maxLength={100} placeholder="Permanent Address" name="permanentAddress" onChange={this.onChangeHandler} value={this.state.permanentAddress} />
-                                    </FormGroup >
-                                    <FormGroup> */}
                                     <FormGroup>
                 <Row md={12}>
                     {!this.state.editPermanent ? <Col md={6}>
@@ -717,7 +649,6 @@ class FlatOwnerList extends Component {
                             name="readOnlyPermanent" disabled
                             onChange={this.onChange}
                             maxLength='250' />
-                        {/* {!this.state.permanentAddress ? <span className="error">{this.state.errors.permanentAddress}</span>: ''} */}
                     </Col> : ''}
                     {this.state.editPermanent ? <Col md={12} style={{ textAlign: 'center' }}><span style={{ fontWeight: '600' }}>Do you want to edit permanent address?</span><Input type="checkbox" onChange={this.editPermanentAddress} name="isChecked" id="isChecked" className="ml-3" /></Col> :
                         <Col md={6} style={{ paddingTop: '44px' }}><span style={{ fontWeight: '600' }}>Do you want to edit permanent<br /> address?</span><Input type="checkbox" onChange={this.editPermanentAddress} name="isChecked" id="isChecked" className="ml-3" /></Col>}
@@ -770,55 +701,6 @@ class FlatOwnerList extends Component {
                     </Row>
                 </FormGroup>
             </div> : ''}
-         
-                                    {/* <FormGroup>
-                                        <Label>Tower</Label>
-                                        <Select options={this.getTower(this.props.towerList)}
-                                            onChange={this.towerChangeHandler.bind(this, 'towerId')}
-                                            value={this.state.societyName}
-                                            placeholder={PlaceHolder} />
-                                        <span className="error">{this.state.errors.tower}</span>
-                                    </FormGroup >
-                                    <FormGroup>
-                                <Label>Floor</Label>
-                                <Select options={this.getFloor(this.props.towerFloor)} 
-                                placeholder={PlaceHolder}
-                                onChange={this.floorChangeHandler.bind(this,'floorId')}
-                                />
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>Flat Number</Label>
-                                <Select options={this.getFlats(this.props.towerFloor)}
-                                    placeholder={PlaceHolder} 
-                                  onChange={this.flatChangeHandler.bind(this,'flatDetailId')}
-                                    />
-                            </FormGroup > */}
-                                    {/* <h3>Bank Details</h3> */}
-                                    {/* <FormGroup>/ */}
-                                        {/* <Label>Bank Name</Label> */}
-                                        {/* <Input placeholder="Bank Name" type="text" name="bankName" onChange={this.onChangeHandler} value={this.state.bankName} /> */}
-                                        {/* <span className="error">{this.state.errors.bankName}</span> */}
-                                    {/* </FormGroup> */}
-                                    {/* <FormGroup>
-                                        <Label>Account Holder Name</Label>
-                                        <Input style={{ 'textTransform': 'capitalize' }} placeholder="Holder Name" type="text" name='accountHolderName' value={this.state.accountHolderName} onChange={this.onChangeHandler} />
-                                        <span className="error">{this.state.errors.holderName}</span>
-                                    </FormGroup> */}
-                                    {/* <FormGroup >
-                                        <Label>Account Number</Label>
-                                        <Input placeholder="Account Number" type="text" maxLength={18} onKeyPress={this.OnKeyPresshandlerPhone} name='accountNumber' onChange={this.onChangeHandler} value={this.state.accountNumber} />
-                                        <span className="error">{this.state.errors.accountNumber}</span>
-                                    </FormGroup> */}
-                                    {/* <FormGroup>
-                                        <Label>PAN Card Number</Label>
-                                        <Input placeholder="Pan Number" type='text' maxLength={10} name="panCardNumber" onChange={this.onChangeHandler} value={this.state.panNumber} value={this.state.panCardNumber} />
-                                        <span className="error">{this.state.errors.panNumber}</span>
-                                    </FormGroup> */}
-                                    {/* <FormGroup>
-                                        <Label>IFSC Code</Label>
-                                        <Input placeholder="IFSC code" type='text' maxLength={11} name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode} />
-                                        <span className="error">{this.state.errors.ifscCode}</span>
-                                    </FormGroup> */}
                                     <FormGroup>
                                         <Button color="primary mr-2" onClick={this.editFlatOwnerDetails}>Save</Button>
                                         <Button color="danger" onClick={this.toggles}>Cancel</Button>
@@ -843,7 +725,6 @@ function mapStateToProps(state) {
         societyName: state.societyReducer,
         Owner: state.FlatOwnerReducer,
         towerList: state.TowerDetails,
-        // flatList: state.flatDetailMasterReducer,
         towerFloor:state.FlatOwnerReducer,
     }
 }

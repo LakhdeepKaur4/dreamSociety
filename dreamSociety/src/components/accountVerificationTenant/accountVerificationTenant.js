@@ -19,7 +19,8 @@ export default class AccountVerificationTenant extends Component {
    axios.post(`${URN}/tenantActivation?${window.location.href.split('?')[1]}`,data)
    .then((response)=>{
      this.setState({
-       message:response.data.message
+       message:response.data.message,
+       otpVerified:response.data.otpVerified
      })
      if(response.data.otpVerified){
        return this.props.history.push('/')
@@ -39,6 +40,10 @@ export default class AccountVerificationTenant extends Component {
 
   changePassword=()=>{ 
       return this.props.history.replace('/superDashboard/changePassword')
+   }
+
+   sendLogin=()=>{
+    return this.props.history.push('/')
    }
   
   render() {

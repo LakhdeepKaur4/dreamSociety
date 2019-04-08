@@ -156,8 +156,8 @@ class DisplayEventMaster extends Component {
         }
 
         displayEvent({ getEvent }) {
-                console.log(getEvent);
-                if (getEvent) {
+                console.log(getEvent );
+                if (getEvent && getEvent.event) {
                         return (
                                 getEvent.event.sort((item1, item2) => {
                                         var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
@@ -190,14 +190,14 @@ class DisplayEventMaster extends Component {
                                                         <td> {index + 1}</td>
                                                         <td>{item.eventType}</td>
                                                         <td>{item.eventName}</td>
-                                                        <td>{item.organiser.userName}</td>
+                                                        <td>{item.organiser?item.organiser.userName:''}</td>
                                                  
 
 
 
                                                         <td>
 
-                                                                <button className="btn btn-success mr-2" onClick={this.editEvent.bind(this, item.eventId, item.eventType, item.eventName, item.eventOrganiser, item.startDate, item.endDate, item.organiser.userId, item.organiser.userName)}> Edit</button>
+                                                                <button className="btn btn-success mr-2" onClick={this.editEvent.bind(this, item.eventId, item.eventType, item.eventName, item.eventOrganiser, item.startDate, item.endDate, item.organiser.userId,item.organiser?item.organiser.userName:'')}> Edit</button>
 
                                                                 <button className="btn btn-danger" onClick={this.deleteEvent.bind(this, item.eventId)}>Delete</button>
                                                         </td>

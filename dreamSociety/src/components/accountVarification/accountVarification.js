@@ -34,6 +34,9 @@ export default class AccountVarification extends Component {
      sendLogin=()=>{
       return this.props.history.push('/')
      }
+     resend=()=>{
+      axios.post(`${URN}/checkToken?${window.location.href.split('?')[1]}`)
+     }
   
   render() {
     return (
@@ -42,7 +45,7 @@ export default class AccountVarification extends Component {
           <UI>
             <div style={{margin:"15% 0 0 30%"}}>
              <h2>Submit OTP</h2> 
-             <h2 style={{color:'red'}}>{this.state.message}</h2>
+             <h2 style={{color:'#28a745'}}>{this.state.message}</h2>
         <OtpInput
         inputStyle={{width: '20px'}}
           onChange={otp => this.setState({otp})}
@@ -50,7 +53,7 @@ export default class AccountVarification extends Component {
           separator={<span>-</span>}
         />
         <span><button style={{marginTop:'10px'}} onClick={this.submit}>Submit</button></span>
-        <span><button style={{marginTop:'10px', marginLeft:'4px'}}>Resend</button></span>
+        <span><button style={{marginTop:'10px', marginLeft:'4px'}} onClick={this.resend}>Resend</button></span>
         <span><button style={{marginTop:'10px', marginLeft:'4px',display:this.state.otpVerified?'block':'none'}} onClick={this.sendLogin}>login</button></span>
         </div>
         </UI>
