@@ -6,6 +6,7 @@ import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, In
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
 import './tower.css'
+import { PlaceHolder } from '../../actions/index';
 import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
 import Spinner from '../../components/spinner/spinner';
 import {fetchFloor} from '../../actionCreators/floorAction';
@@ -122,6 +123,9 @@ class DisplayTowerMaster extends Component {
 
   editTower(id, towerId, towerName,floor) {
     console.log('efews', id, towerId, towerName,floor);
+    this.setState({
+      floors:floor
+    })
 const selectedFloor=floor.map(item=>item.floorId)
     this.setState({
       id, towerId, towerName,selectedFloor, editTowerModal: !this.state.editTowerModal
@@ -318,10 +322,9 @@ selectAll = () => {
                      <span className="error">{this.state.message}</span>
                  </FormGroup>
                  <FormGroup>
-                   <Label for="towerName">Floors</Label>
+                   <Label>Floors</Label>
                    <ReactMultiSelectCheckboxes
-                   checked={this.state.selectedFloor}
-                   // value={this.state.selectedFloor}
+                   placeholderButtonLabel={PlaceHolder}
                   options={this.getFloor(this.props.floor)}
                   onChange={this.floorChangeHandler.bind(this,'floorId')}/>
                     <span className="error">{this.state.errors.floor} </span>
