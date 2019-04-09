@@ -199,9 +199,9 @@ updateServices = () => {
                         <td>{item.service_master ? item.service_master.serviceName : ''}</td>
                         <td>{item.rate_master.rateType}</td>
                         <td>{item.rate}</td>
-                        <td>{item.startTime} to {item.endTime}</td> 
-                        <td>{item.startTime1} to {item.endTime1}</td> 
-                        <td>{item.startTime2} to {item.endTime2}</td> 
+                        <td>{item.startTime} - {item.endTime}</td> 
+                        <td>{item.startTime1} - {item.endTime1}</td> 
+                        <td>{item.startTime2} - {item.endTime2}</td> 
                         {/* <td>
                                 <Button color="success" className="mr-2" onClick={this.editUser.bind(this,item.vendorId,item.individualVendorId,item.service_master.serviceId,item.rate_master.rateId,item.service_master?item.service_master.serviceName:'',item.rate_master?item.rate_master.rateType:'',item.rate)}>Edit</Button> 
                                 <Button color="danger" onClick={this.delete.bind(this,item.individualVendorId)}>Delete</Button>
@@ -315,9 +315,9 @@ updateServices = () => {
         
                 <th>Rate Types </th>
                 <th>Rates</th> 
-                <th>Slot 1 </th> 
-                <th>Slot 2</th> 
-                <th>Slot 3</th>                        
+                <th>Slot Time 1 </th> 
+                <th>Slot Time 2</th> 
+                <th>Slot Time 3</th>                        
                 {/* <th>Actions</th> */}
               
             </tr>
