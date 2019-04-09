@@ -225,12 +225,18 @@ class DisplayVendorMaster extends Component {
             else if(this.state.lastName===''){
                 errors.lastName="Last Name can't be empty"
             }
-           else if(this.state.currentAddress===''){
+           else if(this.state.currentAddress===''){    
                 errors.currentAddress="Current Address can't be empty"
             }
             else if(this.state.permanentAddress===''){
                 errors.permanentAddress="Permanent Address can't be empty"
             }
+            // else if(this.state.pin1===''){
+            //     errors.pin1="Pincode can't be empty"
+            // }
+            //  if(this.state.pin===''){
+            //     errors.pin="Pincode can't be empty"
+            // } 
             else if(this.state.contact===''){
                 errors.contact="Contact can't be empty"                
             }
@@ -578,12 +584,12 @@ class DisplayVendorMaster extends Component {
         editPermanentAddress = () => {
             if (!!document.getElementById('isChecked').checked) {
                 console.log('is checked')
-                //    this.setState({permanentAddress: this.state.currentAddress, permanentAddressVisible:true, editPermanent:false})
+               
                 this.setState({ editPermanent: true, permanentAddress: '', userPermanent: true, countryId:'',stateId:'',
             cityId:'', locationId:'' })
             }
             else {
-                // this.setState({permanentAddress: '' , permanentAddressVisible:false, editPermanent:true})
+            
                 this.setState({ editPermanent: false, permanentAddress: this.state.readOnlyPermanent, userPermanent: false,
                 countryId:this.state.readOnlyCountryId, stateId:this.state.readOnlyStateId, cityId:this.state.readOnlyCityId,
             locationId: this.state.readOnlyLocationId })
@@ -602,10 +608,7 @@ class DisplayVendorMaster extends Component {
             this.setState({permanentAddressDefault: e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
             this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
         }
-        // if(!!document.getElementById('isChecked1').checked){
-        //     this.setState({currentAddress: e.target.value + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
-        //     this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
-        // }
+      
     }
     
     pinChange1 = (e) => {
@@ -1015,6 +1018,7 @@ class DisplayVendorMaster extends Component {
                                         width="400px"
                                         height="700px"
                                         fileUrl={DocURN+this.state.documentOne}/>
+
                                 </ModalBody>
                                 </Modal>
 

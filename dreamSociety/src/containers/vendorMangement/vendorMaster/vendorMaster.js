@@ -213,8 +213,6 @@ class vendorMaster extends Component {
     }
     }
 
-  
-
     componentDidMount() {
         this.refreshData();
     }
@@ -252,8 +250,6 @@ class vendorMaster extends Component {
 
     }
 
-
-
     getRate = ({ rate }) => {
         if (rate) {
             return rate.rate.map((item) => {
@@ -265,10 +261,7 @@ class vendorMaster extends Component {
             })
         }
 
-    }
-
-    
-   
+    } 
 
     onSubmit = (event) => {
         event.preventDefault();
@@ -285,14 +278,15 @@ class vendorMaster extends Component {
             else if(this.state.pin1===''){
                 errors.pin1="Pincode can't be empty"
             }
-                  
-           else if(document.getElementById('isChecked').checked === false){
+
+            if(this.state.pin===''){
+                errors.pin="Pincode can't be empty"
+            }    
+            else if(document.getElementById('isChecked').checked === false){
                 if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
             }
             
-            else if(this.state.pin===''){
-                errors.pin="Pincode can't be empty"
-            }    
+          
             else if(this.state.contact===''){
                 errors.contact="Contact can't be empty"                
             }
@@ -350,13 +344,12 @@ class vendorMaster extends Component {
         }
     }
 
-
-
     logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
         return this.props.history.replace('/')
     }
+    
     close = () => {
         return this.props.history.replace('/superDashBoard')
     }

@@ -61,6 +61,7 @@ class FlatOwnerDetails extends Component {
             flat:'flatNo.',
             permanentPinCode:'',
             pin:'',
+            documentOne:''
         }
     }
     toggles = () => {
@@ -312,9 +313,10 @@ OnKeyPresshandlerEmail=(event)=> {
             fileName,
             ownerGender,Aadhaar,floorId} = this.state
             const d = new FormData()
-            d.append('profilePicture',this.state.profilePicture)        
+            d.append('profilePicture',this.state.profilePicture)
+            let data;        
             for(let i = 0; i < this.state.familyMember; i++){
-                const data={
+                 data={
                     memberName: this.state['memberName'+i],
                     memberDob: this.state['memberDOB'+i],
                     relationId: this.state['relationName'+i],
@@ -360,9 +362,27 @@ OnKeyPresshandlerEmail=(event)=> {
               })
            
           };
-        }
-       
+        }  
   }
+ onFileChange=(event)=>{
+
+    const files = event.target.files;
+    const file = files[0];
+    const fileNamedoc=file.name
+    if (files && file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload =  () =>{
+          this.setState({
+            documentOne :
+              reader.result,
+              fileNamedoc
+          })
+       
+      };
+    }
+   
+}
   changePassword=()=>{ 
     return this.props.history.replace('/superDashboard/changePassword')
  }
@@ -448,6 +468,13 @@ OnKeyPresshandlerEmail=(event)=> {
             
         }
     }
+    onKeyPressHandler = (event) => {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     onChangeState = ( stateName,stateId,selectOption) => {
         this.setState({
@@ -516,7 +543,7 @@ OnKeyPresshandlerEmail=(event)=> {
                 <Row form>
                     <Col md={3}>
                         <Label>Name</Label>
-                        <Input placeholder="Name Of Member" name={`memberName${i}`} onChange={this.onChangeHandler}/>
+                        <Input placeholder="Name Of Member" name={`memberName${i}`} onChange={this.onChangeHandler} onKeyPress={this.onKeyPressHandler}/>
                     </Col>
                     <Col md={3}>
                         <Label>Relation With Owner</Label>
@@ -561,12 +588,12 @@ OnKeyPresshandlerEmail=(event)=> {
                             <h3>Flat Owner Details</h3>
                             <FormGroup>
                                 <Label>First Name</Label>
-                                <Input  style={{'textTransform': 'capitalize' }} placeholder="First Name" maxLength={50} name='firstName' onChange={this.onChangeHandler} />
+                                <Input  style={{'textTransform': 'capitalize' }} placeholder="First Name" onKeyPress={this.onKeyPressHandler} maxLength={50} name='firstName' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.firstName}</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Last Name</Label>
-                                <Input  style={{'textTransform': 'capitalize' }} placeholder="Last Name" maxLength={50} name='lastName' onChange={this.onChangeHandler} />
+                                <Input  style={{'textTransform': 'capitalize' }} placeholder="Last Name" onKeyPress={this.onKeyPressHandler} maxLength={50} name='lastName' onChange={this.onChangeHandler} />
                                 <span className="error">{this.state.errors.lastName}</span>
                             </FormGroup>
                             <FormGroup>
@@ -722,6 +749,8 @@ OnKeyPresshandlerEmail=(event)=> {
                                  <img src={this.state.profilePicture} height='100px' width='100px' />
                                  </div>
                             </FormGroup>
+                            {/* <Label>upload your ID</Label> 
+         <input  accept='.docx ,.doc,application/pdf' type="file"   name ="documentOne" onChange={this.onFileChange}/> */}
                         </div>
                         <div>
                         <Link to='/superDashBoard/flatOwnerList'>

@@ -175,7 +175,7 @@ searchFilter(search) {
 
     getEmployee({ getEmployee }) {
         console.log(getEmployee)
-        if (getEmployee) {
+        if (getEmployee && getEmployee.employeeDetail) {
             return (
                 getEmployee.employeeDetail.sort((item1,item2) =>{
                     var cmprVal=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
@@ -207,8 +207,8 @@ searchFilter(search) {
                                 }} /></td>
                             <td>{index + 1}</td>
                             <td>{item.serviceType} </td>
-                            <td>{item.employee_work_type_master.employeeWorkType}</td>
-                            <td>{item.employee_type_master.employeeType}</td>
+                            <td>{item.employee_work_type_master?item.employee_work_type_master.employeeWorkType:''}</td>
+                            <td>{item.employee_type_master?item.employee_type_master.employeeType:''}</td>
                             <td>
                                 <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeDetailId, item.employeeTypeId, item.employeeWorkTypeId, item.serviceType)}  >Edit</button>
                                 <button className="btn btn-danger" onClick={this.deleteEmployee.bind(this, item.employeeDetailId)}>Delete</button>

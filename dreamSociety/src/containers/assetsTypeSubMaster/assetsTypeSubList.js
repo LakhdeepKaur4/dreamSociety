@@ -148,8 +148,8 @@ class AssetsTypeSubList extends Component {
                         } 
                              }}/></td>
                             <td style={{textAlign:"center"}}>{index+1}</td>
-                            <td style={{textAlign:"center"}}>{item.asset_master.assetName}</td>
-                            <td style={{textAlign:"center"}}>{item.assetType}</td>
+                            <td style={{textAlign:"center",textTransform: 'capitalize'}}>{item.asset_master.assetName}</td>
+                            <td style={{textAlign:"center",textTransform: 'capitalize'}}>{item.assetType}</td>
                             <td style={{textAlign:"center"}}>{item.description}</td>
                             <td style={{textAlign:"center"}}>
                              <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, item.assetTypeId, item.asset_master.assetId,item.asset_master.assetName, item.assetType, item.description)} >Edit</button>

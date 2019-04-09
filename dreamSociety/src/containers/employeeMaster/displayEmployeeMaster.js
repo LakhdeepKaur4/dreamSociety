@@ -483,7 +483,7 @@ ImageChange =(event)=>{
    
     getEmployee({ getEmployee }) {
         console.log(getEmployee, "1223");
-        if (getEmployee) {
+        if (getEmployee &&  getEmployee.data.employee) {
             return (
                 getEmployee.data.employee.sort((item1,item2)=>{
                     var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
@@ -519,9 +519,9 @@ ImageChange =(event)=>{
                             </img></td>
                             <td >{item.firstName}</td>
                             <td>{item.lastName}</td>
-                            <td>{item.employee_detail_master.serviceType}-
-                            {item.employee_detail_master.employee_work_type_master.employeeWorkType}
-                            -{item.employee_detail_master.employee_type_master.employeeType}</td>
+                            <td>{item.employee_detail_master?item.employee_detail_master.serviceType:''}-
+                            {item.employee_detail_master?item.employee_detail_master.employee_work_type_master.employeeWorkType:''}
+                            -{item.employee_detail_master?item.employee_detail_master.employee_type_master.employeeType:''}</td>
                             <td>{item.salary}</td>
                             
                     <td> <button className="btn btn-success"  onClick={this.viewData.bind(this, UR+item.picture, item.firstName, item.middleName, item.lastName, item.salary,item.contact, item.email, item.currentAddress,item.permanentAddress, UR+item.documentOne, UR+item.documentTwo, item.startDate, item.employee_detail_master.serviceType,item.employee_detail_master.employee_work_type_master.employeeWorkType,item.employee_detail_master.employee_type_master.employeeType)}>View</button></td>

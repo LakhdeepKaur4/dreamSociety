@@ -153,7 +153,7 @@ export function addNewMember(memberName,memberDob,gender,relationId,id){
     }
 }
 
-export function getAllFloor (id){
+export function getAllFloor(id){
     const request =axios.get(`${URN}/towerFloor/${id}`,{headers:authHeader()})
     .then(response=>response.data)
     return {

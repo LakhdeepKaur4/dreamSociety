@@ -39,6 +39,17 @@ class SocietyEventBooking extends Component {
         this.props.GetEventOrganiser();
     }
 
+    logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/')
+    }
+
+    
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+    
     handleChange=(event)=> {
         this.setState({message:''})
         if (!!this.state.errors[event.target.name]) {
@@ -168,18 +179,19 @@ class SocietyEventBooking extends Component {
         this.props.history.push('/superDashBoard/displaySocietyeventbooking')
     }    
 
-    logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user-type');
-        return this.props.history.replace('/')
-    }
-
+  
     perHandleChange=(e)=>{
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
             this.setState({[e.target.name]:e.target.value});
             
         }}
 
+    logout = () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user-type');
+            return this.props.history.replace('/')
+        }
+    
     changePassword=()=>{ 
         return this.props.history.replace('/superDashboard/changePassword')
     }
