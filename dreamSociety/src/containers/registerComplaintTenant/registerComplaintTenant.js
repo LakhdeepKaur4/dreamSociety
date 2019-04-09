@@ -113,13 +113,17 @@ class RegisterComplaint extends Component{
         }
     }
 
+    
+    
+
+
 
     render(){
         let formData=<div>
              
              <FormGroup>
                 <Label>Flat no</Label>
-                <Input type="select" defaultValue='no-value' name="flatno"  onChange={this.onChange}>
+                <Input type="select" defaultValue='no-value' name="flatno"  onChange={this.onChange} >
                     <DefaultSelect />
                     {/* {this.service(this.props.displayServiceMasterReducer)} */}
                 </Input >
