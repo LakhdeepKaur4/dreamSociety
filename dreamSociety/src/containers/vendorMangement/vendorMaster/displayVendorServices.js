@@ -15,8 +15,6 @@ import Spinner from '../../../components/spinner/spinner';
 
 class DisplayVendorServices extends Component {
 
-
-
     state = {
             filterName:"serviceName",
             vendorServiceId:'',         

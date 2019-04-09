@@ -225,18 +225,18 @@ class DisplayVendorMaster extends Component {
             else if(this.state.lastName===''){
                 errors.lastName="Last Name can't be empty"
             }
-           else if(this.state.currentAddress===''){
+           else if(this.state.currentAddress===''){    
                 errors.currentAddress="Current Address can't be empty"
             }
-            else if(this.state.permanentAddressDefault===''){
-                errors.permanentAddressDefault="Permanent Address can't be empty"
+            else if(this.state.permanentAddress===''){
+                errors.permanentAddress="Permanent Address can't be empty"
             }
-            else if(this.state.pin1===''){
-                errors.pin1="Pincode can't be empty"
-            }
-             if(this.state.pin===''){
-                errors.pin="Pincode can't be empty"
-            } 
+            // else if(this.state.pin1===''){
+            //     errors.pin1="Pincode can't be empty"
+            // }
+            //  if(this.state.pin===''){
+            //     errors.pin="Pincode can't be empty"
+            // } 
             else if(this.state.contact===''){
                 errors.contact="Contact can't be empty"                
             }
