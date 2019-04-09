@@ -218,7 +218,7 @@ class RegisterComplaint extends Component{
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
                         </div>
-                        <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Register Complain</h3>
+                        <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Register Complaint</h3>
                         {!this.state.loading ? formData : <Spinner />}
 
                     </Form>
