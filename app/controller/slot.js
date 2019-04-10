@@ -31,12 +31,14 @@ exports.create = async (req, res, next) => {
     }
 }
 
+
 exports.get = async (req, res, next) => {
     try {
         console.log("req",req.params);
         console.log("slots is running");
         let flat = await Flat.findOne({where:{flatId:req.params.flatId}});
         let flatInteger = parseInt(flat.flatType.slice(0,1)) - 1;
+
         // const slot = await Slots.findAll({
         //     attributes: ['slots', [sequelize.fn('count', sequelize.col('slots')), 'count']],
         //     include: [{ model: Parking, attributes: ['parkingName'] }],

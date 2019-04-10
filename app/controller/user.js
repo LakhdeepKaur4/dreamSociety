@@ -1470,7 +1470,6 @@ exports.signinDecrypted = async (req, res, next) => {
 				message: "Invalid Password!"
 			});
 		}
-
 		var token = jwt.sign({
 			id: user.userId
 		}, config.secret, {
@@ -1515,8 +1514,7 @@ exports.getUserDecrypted = (req, res, next) => {
 			},
 			{
 				model: Tower
-			}
-			]
+			}]
 		})
 			.then(users => {
 				users.map(item => {

@@ -18,17 +18,17 @@ exports.create = async (req, res, next) => {
         const flat = await FlatDetail.findOne({
             where: {
                 [Op.and]: [{
-                    flatNo: body.flatNo
-                },
-                {
-                    towerId: body.towerId
-                },
-                {
-                    floorId: body.floorId
-                },
-                {
-                    isActive: true
-                }
+                        flatNo: body.flatNo
+                    },
+                    {
+                        towerId: body.towerId
+                    },
+                    {
+                        floorId: body.floorId
+                    },
+                    {
+                        isActive: true
+                    }
                 ]
             }
         })
@@ -62,13 +62,17 @@ exports.get = async (req, res, next) => {
             order: [
                 ['createdAt', 'DESC']
             ],
-            include: [
-                { model: FlatDetail },
-                { model: Slot },
-                { model: Parking }
+            include: [{
+                    model: FlatDetail
+                },
+                {
+                    model: Slot
+                }, {
+                    model: Parking
+                }
 
             ]
-            // ,   group: ['flat_parking_master.flatDetailId'],
+            ,   group: ['flat_parking_master.flatDetailId'],
         });
         // if (flatDetail.length > 0) {
         //     flatDetail
@@ -109,18 +113,18 @@ exports.update = async (req, res, next) => {
         const flatNo = await FlatDetail.findOne({
             where: {
                 [Op.and]: [{
-                    flatNo: req.body.flatNo
-                },
-                // { flatId: req.body.flatId },
-                {
-                    towerId: req.body.towerId
-                },
-                {
-                    floorId: req.body.floorId
-                },
-                {
-                    isActive: true
-                }
+                        flatNo: req.body.flatNo
+                    },
+                    // { flatId: req.body.flatId },
+                    {
+                        towerId: req.body.towerId
+                    },
+                    {
+                        floorId: req.body.floorId
+                    },
+                    {
+                        isActive: true
+                    }
                 ]
             }
         })
