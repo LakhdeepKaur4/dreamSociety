@@ -9,6 +9,7 @@ const Owner = db.owner;
 const TowerFloor = db.towerFloor;
 const FlatDetail = db.flatDetail;
 const Op = db.Sequelize.Op;
+const OwnerFlatDetail = db.ownerFlatDetail;
 
 exports.create = async (req, res) => {
     console.log("creating tower");
@@ -190,14 +191,15 @@ exports.getFloorByTowerIdForTenant = async (req, res) => {
         flatDetail.map(flats => {
             flatIds.push(flats.flatDetailId);
         })
-        const owner = await Owner.findAll({ where: { isActive: true, flatDetailId: { [Op.in]: flatIds } } })
-        console.log(owner)
+        console.log(flatIds);
+        const owner = await OwnerFlatDetail.findAll({ where: { isActive: true, flatDetailId: { [Op.in]: flatIds } } })
+        // console.log(owner)
         owner.map(flat => {
             flatDetailId = flat.flatDetailId;
         })
         // const flatExists = await Tenant.findAll({where:{isActive:true,flatDetailId:{[Op.in]:flatIds}}});
 
-        const flat = await FlatDetail.findAll({ where: { isActive: true, flatDetailId: flatDetailId } })
+        const flat = await FlatDetail.findAll({ where: { isActive: true, flatDetailId: { [Op.in]: flatDetailId } } })
         if (tower && flatDetail && flat) {
             return res.status(httpStatus.OK).json({ message: 'Tower Floor Page', tower: tower, flatDetail: flat })
         } else {
