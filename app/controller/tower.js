@@ -253,7 +253,7 @@ exports.getFloorByTowerIdForTenant = async (req, res, next) => {
     })
         .then(owners => {
             if (owners.length !== 0) {
-                ownerIdArr.splice(0, ownerIdArr.length);
+                ownerIdArr.splice(0,ownerIdArr.length);
                 owners.map(item => {
                     ownerIdArr.push(item.ownerId);
                 })
@@ -290,14 +290,14 @@ exports.getFloorByTowerIdForTenant = async (req, res, next) => {
             }
         })
 
-    FlatDetail.findAll({
-        where: {
-            isActive: true,
-            flatDetailId: {
-                [Op.in]: flatDetailIdArr
+        FlatDetail.findAll({
+            where: {
+                isActive: true,
+                flatDetailId: {
+                    [Op.in]: flatDetailIdArr
+                }
             }
-        }
-    })
+        })
         .then(flats => {
             if (flats.length !== 0) {
                 res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
