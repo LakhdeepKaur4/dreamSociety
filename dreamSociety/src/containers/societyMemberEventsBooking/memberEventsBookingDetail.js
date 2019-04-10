@@ -115,6 +115,9 @@ class MemberEventsBookingDetail extends Component {
             errors.startDate="End Date can't be empty"
         }
        
+        else if(this.state.startDate > this.state.endDate){
+            errors.startDate = "Start Date should be less than end date ";
+        }
 
         else if(this.state.numberOfGuestExpected===''){
             errors.numberOfGuestExpected="Number of Guest can't be empty"

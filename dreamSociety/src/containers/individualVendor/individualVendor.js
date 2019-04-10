@@ -117,6 +117,21 @@ class IndividualVendor extends Component{
             event.preventDefault();
         }
     }
+    OnKeyPresshandlerPhone1(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    
+    onRateChange=(e)=>{
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+            this.setState({[e.target.name]:e.target.value});
+            
+        }}
+
 
     emailValid(event) {
         const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
@@ -199,6 +214,14 @@ class IndividualVendor extends Component{
           };
         }  
     }
+
+    onRateChange=(e)=>{
+    //    console.log("=====================", e.target.value)
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+            console.log("=====================", e.target.value)
+            this.setState({[e.target.name]:e.target.value});
+            
+        }}
 
       onChange=(e) =>{
         this.setState({message:'' })
@@ -821,7 +844,7 @@ class IndividualVendor extends Component{
                 <Col md={3}>
                 <FormGroup>
                     <Label>Rate</Label>
-                    <Input type="text" name="rate" placeholder="Service Rate" onChange={this.onChange}></Input>
+                    <Input type="text" name="rate" placeholder="Service Rate"  onChange={this.onRateChange} value={this.state.rate}  maxLength={8}></Input>
                     <span className='error'>{this.state.errors.rate}</span>
                 </FormGroup>
                 </Col>

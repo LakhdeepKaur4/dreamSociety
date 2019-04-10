@@ -109,6 +109,8 @@ import DisplaySocietyEventBooking from './containers/societyEventBooking/display
 
 import ViewTenantDetail from './containers/tenantMaster/tenantDetail/viewTenantDetail';
 import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
+import RegisterComplaint from './containers/registerComplaint/registerComplaint';
+
 
 
 class App extends Component {
@@ -126,7 +128,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
             <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
             <PrivateRoute path='/ownerDashboard' component={OwnerDashboard} />
-            <PrivateRoute path='/tenantDashboard' component={TenantDashboard} />
+            <PrivateRoute path='/tenantDashboard' exact component={TenantDashboard} />
             <PrivateRoute path='/vendorDashboard' component={VendorDashboard} />
             <PrivateRoute path='/employeeDashboard' component={EmployeeDashboard} />
             <PrivateRoute path='/superDashboard/registration' component={Registration} />
@@ -206,7 +208,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
             <PrivateRoute path='/superDashboard/displayEmployee2' component={DisplayEmployeeMaster2} />
             <PrivateRoute path='/superDashboard/inventoryList' component={InventoryList} />
-            <PrivateRoute path='/superDashboard/showList'exact component={ShowList} />
+             <PrivateRoute path='/superDashboard/showList'exact component={ShowList} />
             <PrivateRoute path='/superDashboard/showList/showListDetails' component={ShowActiveListDetails} />
             <PrivateRoute path='/superDashboard/showList/showListDetails2' component={SWhowDeactiveListDetails} />
             <PrivateRoute path='/superDashboard/assignRoles' component={AssignRoles} />
@@ -219,6 +221,7 @@ class App extends Component {
        
             <PrivateRoute path='/superDashBoard/viewTenantDetail' component={ViewTenantDetail} />
             <PrivateRoute path='/superDashboard/assignRolesDetail' component={AssignRolesDetail} />
+            <PrivateRoute path='/tenantDashboard/registerComplaint' component={RegisterComplaint} />
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
           </Switch>
