@@ -16,6 +16,7 @@ const jwt = require('jsonwebtoken');
 const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921aa', '68afe5aeee2b5f9bbabf2489f2e8ade2');
 const bcrypt = require('bcryptjs');
 
+
 const Owner = db.owner;
 
 const OwnerMembersDetail = db.ownerMembersDetail;
@@ -27,28 +28,11 @@ const Relation = db.relation;
 const Otp = db.otp;
 const Role = db.role;
 const UserRoles = db.userRole;
-
-
-// setInterval(async function(){
-//   let ndate = new Date();
-//   let otps = await Otp.findAll();
-//   if(otps){
-//     otps.map( async otp => {
-//       let timeStr = otp.createdAt.toString();
-//       let diff =  Math.abs(ndate - new Date(timeStr.replace(/-/g,'/')));
-//       console.log(diff);
-//       if(Math.abs(Math.floor((diff / (1000 * 60)) % 60)>=50)){
-//         // await Owner.destroy({where:{[Op.and]:[{ownerId:otp.ownerId},{isActive:false}]}});
-//         await otp.destroy();
-//         console.log("otp destroyed");
-//       }
-//     })
-//   }
-// },10000000);
-
+const Parking = db.parking;
+const Slot = db.slot;
 
 function encrypt(key, data) {
-  var cipher = crypto.createCipher("aes-256-cbc", key);
+  var cipher = crypto.createCipher("aes-128-cbc", key);
   var crypted = cipher.update(data, "utf-8", "hex");
   crypted += cipher.final("hex");
 
@@ -63,7 +47,7 @@ function encrypt1(key, data) {
   return crypted;
 }
 function decrypt(key, data) {
-  var decipher = crypto.createDecipher("aes-256-cbc", key);
+  var decipher = crypto.createDecipher("aes-128-cbc", key);
   var decrypted = decipher.update(data, "hex", "utf-8");
   decrypted += decipher.final("utf-8");
 
@@ -165,17 +149,6 @@ exports.create = async (req, res, next) => {
       const updatedMember = await OwnerMembersDetail.update(bodyToUpdate, {
         where: { memberId: { [Op.in]: memberId } }
       });
-      // const ownerMemberUpdate = await OwnerMembersDetail.find({ where: { memberId: ownerMember.memberId } }).then(ownerMember => {
-      //     return ownerMember.updateAttributes(bodyToUpdate);
-      // })
-      // }
-      // let encryptedMemberBody = {
-      //     memberName: encrypt(key, ownerBody.contact),
-      //     memberDob: encrypt(key, ownerBody.picture),
-      //     userId: req.userId,
-      // }
-      // const ownerMember = await OwnerMembersDetail.create(memberBody);
-      //    }
     }
     return res.status(httpStatus.CREATED).json({
       message: "Owner successfully created",
@@ -241,15 +214,21 @@ exports.create1 = async (req, res, next) => {
     console.log("creating owner");
     console.log(req.body);
     let existingOwner = await Owner.find({
-      where: { email: encrypt(key, req.body.email) }
+      where: {isActive:true, email: encrypt(key, req.body.email) }
     });
-    if (existingOwner) {
+    let existingUser = await User.find({
+      where:{isActive:true,email:encrypt(key,req.body.email)}
+    })
+    if (existingOwner || existingUser ) {
       return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "email already exist" });
     }
     let existingOwner1 = await Owner.find({
-      where: { contact: encrypt(key, req.body.contact) }
+      where: { isActive:true,contact: encrypt(key, req.body.contact) }
     });
-    if (existingOwner1) {
+    let existingContact = await User.find({
+      where:{isActive:true,contact:encrypt(key,req.body.contact)}
+    })
+    if (existingOwner1 || existingContact) {
       return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "contact already exist" });
     }
     let ownerBody = req.body;
@@ -262,7 +241,7 @@ exports.create1 = async (req, res, next) => {
      userName = userName.replace(/ /g,'').toLowerCase();
      console.log("my name is",userName);
     let existingOwner2 = await Owner.find({
-      where: { userName: encrypt(key, userName) }
+      where: { isActive:true,userName: encrypt(key, userName) }
     });
     if (existingOwner2) {
       return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "The specific owner already exist" });
@@ -347,18 +326,7 @@ exports.create1 = async (req, res, next) => {
       const updatedMember = await OwnerMembersDetail.update(bodyToUpdate, {
         where: { memberId: { [Op.in]: ids } }
       });
-      // const ownerMemberUpdate = await OwnerMembersDetail.find({ where: { memberId: ownerMember.memberId } }).then(ownerMember => {
-      //     return ownerMember.updateAttributes(bodyToUpdate);
-      // })
-
-      // }
-      // let encryptedMemberBody = {
-      //     memberName: encrypt(key, ownerBody.contact),
-      //     memberDob: encrypt(key, ownerBody.picture),
-      //     userId: req.userId,
-      // }
-      // const ownerMember = await OwnerMembersDetail.create(memberBody);
-      //    }
+      
     }
     if(owner.firstName && owner.lastName!==''){
       firstName = decrypt(key,owner.firstName);
@@ -439,7 +407,7 @@ exports.get1 = async (req, res, next) => {
         {
           model: OwnerMembersDetail
         },
-        { model: FlatDetail },
+        { model: FlatDetail,include:[{model:Parking},{model:Slot}]},
         { model: Society },
         { model: Tower }
       ]
@@ -457,7 +425,7 @@ exports.get1 = async (req, res, next) => {
       owner.permanentAddress = decrypt(key, owner.permanentAddress);
       owner.correspondenceAddress = decrypt(key, owner.correspondenceAddress);
       owner.picture = decrypt(key, owner.picture);
-      // owner.picture = owner.picture.replace('../', '');
+      // owner.picture = owner.picture.replace('../../', '');
       // owner.picture = owner.picture.replace('../', '');
       if(owner.bankName){
         owner.bankName = decrypt(key, owner.bankName);
@@ -569,23 +537,7 @@ exports.get2 = async (req, res, next) => {
   }
 };
 
-// exports.testUpload = async(req,res,next) =>{
-//     try{
-//         res.send('hello');
-//         const file = req.files.file;
 
-//         // if (!req.files.file) return res.status(400).send("No files were uploaded.");
-
-//         file.mv(`./public/profilePictures/${req.files.file.name}`, err => {
-//             if (err) {
-//                 console.log(err);
-//             }
-//         });
-//     } catch (error) {
-//         console.log("error==>", error)
-//         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-//     }
-// }
 
 exports.getFlatNo = async (req, res, next) => {
   try {
@@ -990,6 +942,9 @@ exports.delete = async (req, res, next) => {
     const updatedOwner = await Owner.find({ where: { ownerId: id } }).then(owner => {
       return owner.updateAttributes(update)
     })
+    const updatedUser = await User.find({ where: { email: updatedOwner.email }}).then(user => {
+      return user.updateAttributes(update);
+    })
 
     // const updatedVendorService = await VendorService.find({ where: { vendorId: id } }).then(vendorService => {
     //     return vendorService.updateAttributes(update)
@@ -1016,8 +971,15 @@ exports.deleteSelected = async (req, res, next) => {
       return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
     }
     const updatedOwners = await Owner.update(update, { where: { ownerId: { [Op.in]: deleteSelected } } })
-
+    // const updatedUsers = await User.findAll()
+    if(updatedOwners.length > 0){
+      updatedOwners.forEach( async (updatedOwner) => {
+         let user = await User.findOne({where: {email:updatedOwner.email}});
+         return user.updateAttributes(update);
+      })
+    }
     const updatedOwnersMembers = await OwnerMembersDetail.update(update, { where: { ownerId: { [Op.in]: deleteSelected } } });
+
     if (updatedOwners && updatedOwnersMembers) {
       return res.status(httpStatus.OK).json({
         message: "Owners deleted successfully",

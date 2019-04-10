@@ -14,12 +14,13 @@ const Owner = db.owner;
 const Tenant = db.tenant;
 const Vendor = db.vendor;
 const Employee = db.employee;
+const IndividualVendor = db.individualVendor;
 
 const Otp = db.otp;
 
 
 function decrypt(key, data) {
-    var decipher = crypto.createDecipher("aes-256-cbc", key);
+    var decipher = crypto.createDecipher("aes-128-cbc", key);
     var decrypted = decipher.update(data, "hex", "utf-8");
     decrypted += decipher.final("utf-8");
 
@@ -36,10 +37,10 @@ function decrypt1(key, data) {
 
 
 let testSms = (contact) => {
-    const apikey = 'mJUH4QVvP+E-coDtRnQr7wvdVc8ClAWDcKjPew8Gxl';
+    const apikey = '07hlECj1sy4-ynODCNlExLsx91Pv29Zdrh0bxc1pLc';
     const number = contact;
     const OTP = Math.floor(100000 + Math.random() * 900000);
-    const message = 'OTP-' + OTP;
+    const message = 'Your one time password is ' + OTP + ".Please enter this otp to verify,it will valid for 5 minutes. Don't share with anyone ";
 
     http.get(`http://api.textlocal.in/send/?apiKey=${apikey}&numbers=${number}&message=${message}`, function (err, data) {
         console.log('messageSend');
@@ -64,7 +65,6 @@ exports.checkToken = async (req, res, next) => {
         }
     }
 
-
     if (req.query.employeeId) {
         let employeeId = decrypt1(key, req.query.employeeId);
         let employee = await Employee.findOne({ where: { employeeId: employeeId, isActive: true } });
@@ -73,7 +73,7 @@ exports.checkToken = async (req, res, next) => {
                 {
                     alreadyActivated: true,
                     tokenVerified: false,
-                    message: 'you are already activated. check your email for userName and password.'
+                    message: 'You are already activated.Check your email for userName and password.'
                 });
         }
     }
@@ -86,7 +86,7 @@ exports.checkToken = async (req, res, next) => {
                 {
                     alreadyActivated: true,
                     tokenVerified: false,
-                    message: 'you are already activated. check your email for userName and password.'
+                    message: 'You are already activated. Check your email for userName and password.'
                 });
         }
     }
@@ -99,7 +99,20 @@ exports.checkToken = async (req, res, next) => {
                 {
                     alreadyActivated: true,
                     tokenVerified: false,
-                    message: 'you are already activated. check your email for userName and password.'
+                    message: 'You are already activated. Check your email for userName and password.'
+                });
+        }
+    }
+
+    if (req.query.individualVendorId) {
+        let individualVendorId = decrypt1(key, req.query.individualVendorId);
+        let individualVendor = await IndividualVendor.findOne({ where: { individualVendorId: individualVendorId, isActive: true } });
+        if (individualVendor) {
+            return res.status(200).json(
+                {
+                    alreadyActivated: true,
+                    tokenVerified: false,
+                    message: 'You are already activated.Check your email for userName and password.'
                 });
         }
     }
@@ -160,10 +173,22 @@ exports.checkToken = async (req, res, next) => {
                 })
 
             }
+
+            if (req.query.individualVendorId) {
+                let individualVendorId = decrypt1(key, req.query.individualVendorId);
+                let individualVendor = await IndividualVendor.findOne({ where: { individualVendorId: individualVendorId } });
+                let contact = decrypt1(key, individualVendor.contact);
+                let otp = testSms(contact);
+                let dbotp = await Otp.create({
+                    otpvalue: otp,
+                    individualVendorId: individualVendor.individualVendorId
+                })
+
+            }
             return res.status(200).json(
                 {
                     tokenVerified: true,
-                    message: 'your OTP has been delievered'
+                    message: 'Your OTP has been sent to your mobile number.'
                 });
         }
 

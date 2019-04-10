@@ -5,6 +5,7 @@ const sequelize = require('sequelize');
 const Slots = db.slot;
 const Parking = db.parking;
 const Op = db.Sequelize.Op;
+const Flat = db.flat;
 
 exports.create = async (req, res, next) => {
     try {
@@ -16,7 +17,7 @@ exports.create = async (req, res, next) => {
         const parkingId = body.parkingId;
         for (let slots = 1; slots <= start; slots++) {
             slot = await Slots.create({
-                slots: slots,
+                slots: 'Slot ' + slots,
                 parkingId: parkingId
             });
         }
@@ -30,9 +31,12 @@ exports.create = async (req, res, next) => {
     }
 }
 
-
-exports.get = async (req, res, next) => {
+exports.getSlots = async (req, res, next) => {
     try {
+        console.log("req",req.params);
+        console.log("slots is running");
+        // let flat = await Flat.findOne({where:{flatId:req.params.flatId}});
+        // let flatInteger = parseInt(flat.flatType.slice(0,1)) - 1;
         const slot = await Slots.findAll({
             attributes: ['slots', [sequelize.fn('count', sequelize.col('slots')), 'count']],
             include: [{ model: Parking, attributes: ['parkingName'] }],
@@ -40,11 +44,17 @@ exports.get = async (req, res, next) => {
             order: [['createdAt', 'DESC']],
             raw: false,
             order: sequelize.literal('count DESC')
+        // const slots = await Slots.findAll({
+        //     where: {
+        //         isActive: true,
+        //         isAllocated: false,
+        //         parkingId: req.params.parkingId
+        //     }
         });
+        // console.log("atin");
         if (slot) {
             return res.status(httpStatus.OK).json({
-                message: "Slot Content Page",
-                slot: slot
+                slot: slot,
             });
         }
     } catch (error) {

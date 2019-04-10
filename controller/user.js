@@ -307,7 +307,6 @@ exports.signin = async (req, res) => {
 				isActive: true
 			}
 			]
-
 		},
 		include: [{
 			model: Role,
@@ -1100,6 +1099,7 @@ exports.updateEncrypted = async (req, res, next) => {
 	let userUserNameErr;
 	let userEmailErr;
 	let userContactErr;
+	let flats;
 	console.log("ID ===>", id);
 	if (!id) {
 		return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
@@ -1330,6 +1330,7 @@ exports.updateEncrypted = async (req, res, next) => {
 
 exports.signinDecrypted = async (req, res, next) => {
 	console.log("Sign-In 12121", req.body);
+	let flats;
 	let society = await Society.findOne({
 		where: {
 			isActive: true
@@ -1374,6 +1375,7 @@ exports.signinDecrypted = async (req, res, next) => {
 	}
 	console.log("1");
 	User.findOne({
+		nested: true,
 		where: {
 			[Op.and]: [{
 				userName: encrypt(req.body.userName)
@@ -1382,23 +1384,52 @@ exports.signinDecrypted = async (req, res, next) => {
 				isActive: true
 			}
 			]
-
 		},
-		// include: [{
-		// 	model: Role,
-		// 	attributes: ['id', 'roleName'],
-		// }]
 		include: [{
 			model: Role,
 			attributes: ['id', 'roleName'],
-			// through: {
-			// 	attributes: ['roleId', 'roleName'],
-			// }
 		}
 		]
 	}).then(user => {
+		let roleId;
 		console.log("2");
 		console.log("user==>", user)
+		user.roles.map(function (roles) { roleId = roles.id });
+		if (roleId == 3) {
+			Owner.findOne({
+				where: {
+					isActive: true,
+					userName: user.userName
+				}
+			})
+				.then(owner => {
+					FlatDetail.findAll({
+						where: { isActive: true, flatDetailId: owner.flatDetailId }
+					})
+						.then(flats => {
+							flats = flats;
+						})
+				})
+		}
+		if (roleId == 4) {
+			Tenant.findOne({
+				where: {
+					isActive: true,
+					userName: user.userName
+				},
+				include: [
+					{where:{isActive:true}, model: FlatDetail },
+				]
+			})
+				// .then(tenant => {
+				// 	FlatDetail.findAll({
+				// 		where: { isActive: true, flatDetailId: tenant.flatDetailId }
+				// 	})
+						.then(flats => {
+							flats = flats.flat_detail_master;
+						})
+				// })
+		}
 		if (!user) {
 			console.log("------user-------");
 			return res.status(httpStatus.OK).send({
@@ -1427,7 +1458,6 @@ exports.signinDecrypted = async (req, res, next) => {
 			// user.parking = decrypt(user.parking);
 			// user.floor = decrypt(user.floor);
 		}
-
 		var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
 		// const password = User.findOne({where:{password:decrypt(req.body.password),isActive:true}});
 
@@ -1453,7 +1483,8 @@ exports.signinDecrypted = async (req, res, next) => {
 			accessToken: token,
 			user: user,
 			society: society,
-			message: "Successfully Logged In"
+			message: "Successfully Logged In",
+			flats: flats
 		});
 
 	}).catch(err => {
@@ -1753,10 +1784,9 @@ exports.resetPassword = (req, res, next) => {
 				res.status(httpStatus.CREATED).json({
 					message: 'Password reset successful'
 				});
-			} else 
-			{
+			} else {
 				res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-				messageErr: 'Password reset error'
+					messageErr: 'Password reset error'
 				});
 			}
 		})
@@ -1860,7 +1890,7 @@ exports.assignRoles = async (req, res, next) => {
 				const employee = await Employee.findOne({ where: { isActive: true, employeeId: req.body.userId } });
 				// let employeeEmail = decrypt(employee.email);
 				// console.log(employeeEmail);
-				const user = await User.findOne({ where: { isActive: true, email:employee.email }, attributes: ['userId', 'firstName', 'lastName', 'userName','email'], include: [{ model: Role, attributes: ['id', 'roleName'] }] });
+				const user = await User.findOne({ where: { isActive: true, email: employee.email }, attributes: ['userId', 'firstName', 'lastName', 'userName', 'email'], include: [{ model: Role, attributes: ['id', 'roleName'] }] });
 				user.firstName = decrypt(user.firstName);
 				user.lastName = decrypt(user.lastName);
 				user.userName = decrypt(user.userName);
@@ -1887,7 +1917,7 @@ exports.assignRoles = async (req, res, next) => {
 
 exports.getRolesForActivation = async (req, res, next) => {
 	try {
-		const role = await Role.findAll({ where: { id: { [Op.notIn]: [1, 2] } } });
+		const role = await Role.findAll({ where: { id: { [Op.notIn]: [1, 2, 5, 6] } } });
 		console.log(role);
 		return res.status(httpStatus.OK).json({ role: role });
 	} catch (error) {
@@ -1909,8 +1939,8 @@ exports.activeUsersByRole = async (req, res, next) => {
 			case "3":
 				const owners = await Owner.findAll({ where: { isActive: true }, attributes: ['ownerId', 'firstName', 'lastName'] });
 				owners.map(owner => {
-					let firstName = decrypt1(key,owner.firstName);
-					let lastName = decrypt1(key,owner.lastName);
+					let firstName = decrypt(owner.firstName);
+					let lastName = decrypt(owner.lastName);
 					let fullName = firstName + " " + lastName;
 					console.log(fullName)
 					ownersArr['fullName'] = fullName;
@@ -1920,22 +1950,22 @@ exports.activeUsersByRole = async (req, res, next) => {
 				res.status(httpStatus.OK).json({ users: ownersArr });
 				break;
 			case "4":
-				const tenants = await Tenant.findAll({ where: { isActive: true }, attributes: ['tenantId', 'firstName', 'lastName','email'] });
+				const tenants = await Tenant.findAll({ where: { isActive: true }, attributes: ['tenantId', 'firstName', 'lastName', 'email'] });
 				// console.log(tenants)
 				tenants.map(tenant => {
 					let firstName = decrypt(tenant.firstName);
 					let lastName = decrypt(tenant.lastName);
 					let fullName = firstName + " " + lastName;
 					tenantsArr['fullName'] = fullName;
-						tenantsArr.push({ fullName: fullName, userId: tenant.tenantId, type: 'ActiveTenant' });
+					tenantsArr.push({ fullName: fullName, userId: tenant.tenantId, type: 'ActiveTenant' });
 				})
 				res.status(httpStatus.OK).json({ users: tenantsArr });
 				break;
 			case "5":
-				const vendors = await Vendor.findAll({ where: { isActive: true }, attributes: ['vendorId', 'firstName', 'lastName','email'] });
+				const vendors = await Vendor.findAll({ where: { isActive: true }, attributes: ['vendorId', 'firstName', 'lastName', 'email'] });
 				vendors.map(vendor => {
-					let firstName = decrypt1(key, vendor.firstName);
-					let lastName = decrypt1(key, vendor.lastName);
+					let firstName = decrypt(vendor.firstName);
+					let lastName = decrypt(vendor.lastName);
 					let fullName = firstName + " " + lastName;
 					vendorsArr['fullName'] = fullName;
 					vendorsArr.push({ fullName: fullName, userId: vendor.vendorId, type: 'ActiveVendor' });
@@ -1943,7 +1973,7 @@ exports.activeUsersByRole = async (req, res, next) => {
 				res.status(httpStatus.OK).json({ users: vendorsArr });
 				break;
 			case "6":
-				const employees = await Employee.findAll({ where: { isActive: true }, attributes: ['employeeId', 'firstName', 'middleName', 'lastName','email'] });
+				const employees = await Employee.findAll({ where: { isActive: true }, attributes: ['employeeId', 'firstName', 'middleName', 'lastName', 'email'] });
 				employees.map(employee => {
 
 					let firstName = decrypt(employee.firstName);
@@ -1991,16 +2021,16 @@ exports.deactiveUsersByRole = async (req, res, next) => {
 			case "3":
 				const owners = await Owner.findAll({ where: { isActive: false }, attributes: ['ownerId', 'firstName', 'lastName'] });
 				owners.map(owner => {
-					let firstName = decrypt1(key,owner.firstName);
-					let lastName = decrypt1(key,owner.lastName);
+					let firstName = decrypt1(key, owner.firstName);
+					let lastName = decrypt1(key, owner.lastName);
 					let fullName = firstName + " " + lastName;
 					ownersArr['fullName'] = fullName;
-						ownersArr.push({ fullName: fullName, userId: owner.ownerId, type: 'DeactiveOwner' });
+					ownersArr.push({ fullName: fullName, userId: owner.ownerId, type: 'DeactiveOwner' });
 				})
 				res.status(httpStatus.OK).json({ users: ownersArr });
 				break;
 			case "4":
-				const tenants = await Tenant.findAll({ where: { isActive: false }, attributes: ['tenantId', 'firstName','lastName'] });
+				const tenants = await Tenant.findAll({ where: { isActive: false }, attributes: ['tenantId', 'firstName', 'lastName'] });
 				// console.log(tenants)
 				tenants.map(tenant => {
 					let firstName = decrypt(tenant.firstName);
@@ -2250,3 +2280,50 @@ exports.multipleActivateUsers = async (req, res, next) => {
 		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Sequelize Error' })
 	}
 }
+
+exports.flatByUserId = (req, res, next) => {
+	userId = 35;
+	// User.findOne({where:{isActive:true,userId:userId},include:[{model:Role}]})
+	User.findOne({
+		where: {
+			[Op.and]: [{
+				userId: userId
+			},
+			{
+				isActive: true
+			}]
+		},
+		include: [{
+			model: Role,
+		}]
+	}).then(user => {
+		if (user !== null) {
+			console.log("user==>", user)
+			Tenant.findOne({
+				where: {
+					isActive: true,
+					userName: user.userName
+				}
+			})
+				.then(tenant => {
+					FlatDetail.findAll({
+						where: { isActive: true, flatDetailId: tenant.flatDetailId }
+					})
+						.then(flats => {
+							res.status(httpStatus.OK).json({
+								flats: flats
+							})
+						})
+				})
+		} else {
+			res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+				message: 'User Not Found'
+			})
+		}
+	})
+		.catch(err => {
+			console.log(err);
+			res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+		})
+}
+

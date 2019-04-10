@@ -49,7 +49,7 @@ setInterval(async function () {
 }, 1000);
 
 function encrypt(key, data) {
-    var cipher = crypto.createCipher('aes-256-cbc', key);
+    var cipher = crypto.createCipher('aes-128-cbc', key);
     var crypted = cipher.update(data, 'utf-8', 'hex');
     crypted += cipher.final('hex');
 
@@ -73,7 +73,7 @@ function decrypt1(key, data) {
 }
 
 function decrypt(key, data) {
-    var decipher = crypto.createDecipher('aes-256-cbc', key);
+    var decipher = crypto.createDecipher('aes-128-cbc', key);
     var decrypted = decipher.update(data, 'hex', 'utf-8');
     decrypted += decipher.final('utf-8');
 
@@ -292,8 +292,8 @@ exports.deleteSelected = async (req, res, next) => {
 
 
 let mailToUser = (email, vendorId) => {
-    console.log("email=>",email);
-    console.log("vendor=>",vendorId);
+    console.log("email=>", email);
+    console.log("vendor=>", vendorId);
     const token = jwt.sign(
         { data: 'foo' },
         'secret', { expiresIn: '1h' });
@@ -332,13 +332,28 @@ exports.create1 = async (req, res, next) => {
     try {
         let body = req.body;
         console.log("body===>", req.body);
+        let existingEmail = await Vendor.findOne({
+            where: {
+                isActive: true,
+                email: encrypt(key, req.body.email)
+            }
+        })
+        let existingUserEmail = await User.find({
+            where: { isActive: true, email: encrypt(key, req.body.email) }
+        })
+        if (existingEmail || existingUserEmail) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: 'Email already exists' });
+        }
         let existingContact = await Vendor.findOne({
             where: {
                 isActive: true,
                 contact: encrypt(key, req.body.contact)
             }
         })
-        if (existingContact) {
+        let existingUserContact = await User.find({
+            where: { isActive: true, contact: encrypt(key, req.body.contact) }
+        })
+        if (existingContact || existingUserContact) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: 'Contact already exists' })
         }
         let customVendorName = body.firstName + body.lastName;
@@ -454,9 +469,9 @@ exports.create1 = async (req, res, next) => {
         });
 
         // user.setRoles(roles);
-        UserRoles.create({userId:user.userId,roleId:roles.id});
-        console.log("in api email",email);
-        console.log("in api vendor id-->",vendorId)
+        UserRoles.create({ userId: user.userId, roleId: roles.id });
+        console.log("in api email", email);
+        console.log("in api vendor id-->", vendorId)
         const message = mailToUser(req.body.email, vendorId);
         return res.status(httpStatus.CREATED).json({
             message: "Vendor successfully created. please activate your account. click on the link delievered to your given email"
@@ -558,6 +573,19 @@ exports.update1 = async (req, res, next) => {
     let attrArr = ['userName', 'firstName', 'lastName', 'permanentAddress', 'currentAddress', 'contact', 'email'];
     let attrFiles = ['profilePicture', 'documentOne', 'documentTwo'];
     try {
+        let existingContact = await Vendor.findOne({
+            where: {
+                isActive: true,
+                [Op.or]: {
+                    contact: encrypt(key, req.body.contact),
+                    email: encrypt(key, req.body.email)
+                },
+                vendorId: { [Op.ne]: req.params.id }
+            }
+        })
+        if (existingContact) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: 'Email or Contact already exists' })
+        }
         console.log("updating vendor");
         console.log(":::::req.body==>", req.body)
         const id = req.params.id;
@@ -717,13 +745,25 @@ exports.updateVendorService = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        if (req.body.rateId && req.body.serviceId) {
-            let ups = await VendorService.findOne({ where: { serviceId: req.body.serviceId, rateId: req.body.rateId, vendorId: req.body.vendorId } });
-            if (ups) {
-                console.log(ups);
-                return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "this service already exist" });
+        let ups = await VendorService.findOne({
+            where: {
+                [Op.and]: [
+                    { isActive: true },
+                    { serviceId: req.body.serviceId },
+                    { rateId: req.body.rateId },
+                    { vendorId: { [Op.eq]: req.body.vendorId } },
+                    { vendorServiceId: { [Op.ne]: id } },
+                    { rate: { [Op.ne]: req.body.rate } }
+                ]
             }
         }
+        );
+        if (ups) {
+            console.log("inside ups");
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "This service already exist" });
+        }
+
+        // let test = VendorService.findAll({where:{vendorId:req.body.vendorId}});
         const updatedVendorService = await VendorService.find({ where: { vendorServiceId: id } }).then(vendorService => {
 
             attrArr.forEach(attr => {
@@ -741,5 +781,4 @@ exports.updateVendorService = async (req, res, next) => {
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
-
 

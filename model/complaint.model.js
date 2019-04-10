@@ -1,17 +1,20 @@
 module.exports = (sequelize, Sequelize) => {
-	const Slots = sequelize.define('slot_master', {
-	slotId:{
+	const Complaint = sequelize.define('complaint_master', {
+        complaintId:{
 			type: Sequelize.INTEGER,
 			autoIncrement:true,
 			primaryKey:true
 		},
-	  slots: {
-		  type: Sequelize.STRING
-	   },
 		isActive:{
 			type:Sequelize.BOOLEAN,
 			defaultValue: true
-		}, 
+        }, 
+        complaintTime:{
+          type:Sequelize.TIME
+        },
+        isAccepted:{
+            type:Sequelize.BOOLEAN
+        },
 		createdAt: {
             allowNull: false,
             type: Sequelize.DATE
@@ -19,14 +22,10 @@ module.exports = (sequelize, Sequelize) => {
         updatedAt: {
             defaultValue: null,
             type: Sequelize.DATE
-		},
-		isAllocated: {
-			type:Sequelize.BOOLEAN,
-			defaultValue: false
-		}
+        }
 	},{
     freezeTableName: true
 });
 	
-	return Slots;
+	return Complaint;
 }

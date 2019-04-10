@@ -125,6 +125,7 @@ exports.getTowerAndFloor = async (req, res) => {
 exports.getFloorByTowerId = async (req, res) => {
     try {
         const towerId = req.params.id;
+        const flatIds = [];
         const floorIds = [];
         const floors = await TowerFloor.findAll({ where: { isActive: true, towerId: towerId } });
         console.log(floors.map(floor => {
@@ -144,7 +145,11 @@ exports.getFloorByTowerId = async (req, res) => {
             ]
             , order: [['createdAt', 'DESC']]
         });
-        const flatDetail = await FlatDetail.findAll({ where: { towerId: towerId, floorId: { [Op.in]: floorIds } } })
+        const owners = await Owner.findAll({ where: { isActive: true }});
+        owners.map(owner => {
+            return flatIds.push(owner.flatDetailId);
+        })
+        const flatDetail = await FlatDetail.findAll({ where: { towerId: towerId, floorId: { [Op.in]: floorIds },flatDetailId:{ [Op.notIn]:flatIds} } })
         if (tower && flatDetail) {
             res.status(httpStatus.OK).json({ message: 'Tower Floor Page', tower: tower, flatDetail: flatDetail })
         }
@@ -180,18 +185,20 @@ exports.getFloorByTowerIdForTenant = async (req, res) => {
             , order: [['createdAt', 'DESC']]
         });
 
-        const flatDetail = await FlatDetail.findAll({ where: { isActive: true, towerId: towerId, floorId: { [Op.in]: floorIds } } })
+        const flatDetail = await FlatDetail.findAll({ where: { isActive: true, towerId: towerId, floorId: { [Op.in]: floorIds } } });
+        // console.log(flatDetail);
         flatDetail.map(flats => {
             flatIds.push(flats.flatDetailId);
         })
         const owner = await Owner.findAll({ where: { isActive: true, flatDetailId: { [Op.in]: flatIds } } })
+        console.log(owner)
         owner.map(flat => {
             flatDetailId = flat.flatDetailId;
         })
-        const flatExists = await Tenant.findAll({where:{isActive:true,flatDetail:{[Op.in]:flatIds}}});
+        // const flatExists = await Tenant.findAll({where:{isActive:true,flatDetailId:{[Op.in]:flatIds}}});
 
         const flat = await FlatDetail.findAll({ where: { isActive: true, flatDetailId: flatDetailId } })
-        if (tower && flatDetail && flat && !flatExists) {
+        if (tower && flatDetail && flat) {
             return res.status(httpStatus.OK).json({ message: 'Tower Floor Page', tower: tower, flatDetail: flat })
         } else {
             return res.status(httpStatus.OK).json({ message: 'No Flats Found' })
