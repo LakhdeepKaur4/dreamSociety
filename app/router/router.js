@@ -43,6 +43,7 @@ module.exports = function (app) {
 	const otpChecker = require('../controller/otpchecker');
 	const checkToken = require('../controller/checktoken');
 	const eventBooking = require('../controller/eventBooking');
+	const individualVendorController = require('../controller/individualVendor');
 
 
 	app.get('/', userController.start);
@@ -217,7 +218,7 @@ module.exports = function (app) {
 
 	app.put('/api/service/delete/deleteSelected', [authJwt.verifyToken], serviceController.deleteSelected);
 
-	app.put('/api/service/:id', [authJwt.verifyToken], serviceController.delete);
+	app.put('/api/service/delete/:id', [authJwt.verifyToken], serviceController.delete);
 
 	app.post('/api/size', [authJwt.verifyToken], sizeController.create);
 
@@ -255,7 +256,7 @@ module.exports = function (app) {
 
 	app.post('/api/slot', [authJwt.verifyToken], slotController.create);
 
-	app.get('/api/slot', slotController.get);
+	app.get('/api/slot/:parkingId/:flatId', slotController.get);
 
 	// app.get('/api/getSlot',slotController.getslots);
 
@@ -522,5 +523,19 @@ module.exports = function (app) {
 	app.put('/api/deleteEventBooking/deleteSelected', [authJwt.verifyToken], eventBooking.deleteSelected);
 
 	app.put('/api/deleteEventBooking/:id', [authJwt.verifyToken], eventBooking.delete);
+
+	app.post('/api/individualVendor', [authJwt.verifyToken], individualVendorController.create);
+
+	app.get('/api/individualVendor', [authJwt.verifyToken], individualVendorController.get);
+
+	app.get('/api/individualVendor/:id', [authJwt.verifyToken], individualVendorController.getById);
+
+	app.put('/api/individualVendor/:id', [authJwt.verifyToken], individualVendorController.update);
+
+	app.put('/api/individualVendor/delete/deleteSelected', [authJwt.verifyToken], individualVendorController.deleteSelected);
+
+	app.put('/api/individualVendor/delete/:id', [authJwt.verifyToken], individualVendorController.delete);
+
+	app.get('/api/flatbyid',userController.flatByUserId);
 
 }

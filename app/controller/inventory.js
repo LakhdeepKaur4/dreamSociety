@@ -10,6 +10,10 @@ const shortId = require('short-id');
 
 exports.create = async (req, res, next) => {
     try {
+            const serialNumberExists = await Inventory.findAll({where:{isActive:true,serialNumber:req.body.serialNumber}});
+        if(serialNumberExists > 0){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:'Serial Number already exists'});
+        }
         console.log("creating inventory");
         console.log("userId==>", req.userId);
         let body = req.body;
@@ -56,11 +60,11 @@ exports.get = async (req, res, next) => {
         const assetTypesId = [];
         const inventory = await Inventory.findAll({
             where: { isActive: true },
-            attributes: ['inventoryId', 'dateOfPurchase', [sequelize.fn('count', sequelize.col('serialNumber')), 'count'], [sequelize.fn('AVG', sequelize.col('rate')), 'avgRate'], [sequelize.fn('SUM', sequelize.col('rate')), 'sum']],
+            attributes: ['inventoryId', 'rate','dateOfPurchase', [sequelize.fn('count', sequelize.col('serialNumber')), 'count'], [sequelize.fn('AVG', sequelize.col('rate')), 'avgRate'], [sequelize.fn('SUM', sequelize.col('rate')), 'sum']],
             include: [{ model: Assets, attributes: ['assetId', 'assetName'] },
             { model: AssetsType, attributes: ['assetTypeId', 'assetType'] },
             ],
-            group: ['inventory_master.dateOfPurchase','inventory_master.assetId'],
+            group: ['inventory_master.assetId'],
             order: [['createdAt', 'DESC']],
             raw: false,
             // order: sequelize.literal('count DESC')
@@ -80,7 +84,7 @@ exports.get = async (req, res, next) => {
 exports.getInventoryByAssetId = async (req, res, next) => {
     try {
         const assetId = req.params.id;
-        const inventories = await Inventory.findAll({ where: { isActive: true, assetId: assetId }, include: [Assets, AssetsType] })
+        const inventories = await Inventory.findAll({ where: { isActive: true, assetId: assetId }, include: [Assets, AssetsType]})
         if (inventories) {
             return res.status(httpStatus.OK).json({
                 message: "Inventory Content Page",
@@ -95,6 +99,10 @@ exports.getInventoryByAssetId = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     try {
+        const serialNumberExists = await Inventory.findAll({where:{isActive:true,serialNumber:req.body.serialNumber}});
+        if(serialNumberExists > 0){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({message:'Serial Number already exists'});
+        }
         const id = req.params.id;
         console.log("id==>", id)
         if (!id) {
