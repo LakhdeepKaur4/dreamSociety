@@ -438,7 +438,7 @@ module.exports = function (app) {
 
 	app.put('/api/societyMemberEvent/:id', [authJwt.verifyToken], societyMemberEvent.update);
 
-	app.post('/api/owner',  owner.create1);
+	app.post('/api/owner', owner.create1);
 
 	app.post('/api/owner/ownerMember/:id', [authJwt.verifyToken], owner.addMember);
 
@@ -540,6 +540,6 @@ module.exports = function (app) {
 
 	app.put('/api/individualVendor/delete/:id', [authJwt.verifyToken], individualVendorController.delete);
 
-	app.get('/api/flatbyid',userController.flatByUserId);
+	app.get('/api/flatbyid', userController.flatByUserId);
 
 }
