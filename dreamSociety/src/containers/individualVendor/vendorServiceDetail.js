@@ -1,19 +1,24 @@
 import React, { Component } from 'react';
-import {getVendorMaster, getRateType,deleteSelectedVendorServices,deleteVendorServices,updateVendorServices} from '../../../actionCreators/vendorMasterAction'
-
-import { getServiceType } from '../../../actionCreators/serviceMasterAction';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader,Table, Input, Label } from 'reactstrap';
+import { bindActionCreators } from 'redux';
+import UI from '../../components/newUI/superAdminDashboard';
 
-import DefaultSelect from '../../../constants/defaultSelect';
-import SearchFilter from '../../../components/searchFilter/searchFilter';
-import UI from '../../../components/newUI/vendorDashboardInside';
-import Spinner from '../../../components/spinner/spinner';
+import DefaultSelect from '../../constants/defaultSelect';
+import Spinner from '../../components/spinner/spinner';
+import SearchFilter from '../../components/searchFilter/searchFilter';
+import { getIndividualVendor, getServiceVendor } from './../../actionCreators/individualVendorAction';
+
+import { getServiceType } from './../../actionCreators/serviceMasterAction';
+import { getRateType } from './../../actionCreators/vendorMasterAction';
+import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label,} from 'reactstrap';
+import _ from 'underscore';
+
+let individualVendorId;
 
 
+class VendorServiceDetail extends Component {
 
-class DisplayVendorServices extends Component {
+
 
     state = {
             filterName:"serviceName",
@@ -38,7 +43,8 @@ class DisplayVendorServices extends Component {
         }
 
     componentDidMount() {
-       this.refreshData();
+        individualVendorId=localStorage.getItem("individualVendorId")
+       this.refreshData(individualVendorId);
     }
 
     onHandleChange=(e)=>{
@@ -63,8 +69,8 @@ class DisplayVendorServices extends Component {
         this.setState({ search: e.target.value })
     }
 
-    refreshData() {
-        this.props.getVendorMaster().then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false}));
+    refreshData(individualVendorId) {
+        this.props.getServiceVendor(individualVendorId).then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false}));
         this.props.getServiceType().then(()=> this.setState({loading:false, modalLoading: false}));
         this.props.getRateType().then(()=> this.setState({loading:false, modalLoading: false}));
     }
@@ -115,10 +121,9 @@ class DisplayVendorServices extends Component {
 
    
 
-editUser(vendorId,vendorServiceId,serviceId,rateId,serviceName,rateType,rate){
-    console.log(vendorId,"vendorId",vendorServiceId,"vendorServiceId-----edit---",rate,"rate")
+editUser(vendorServiceId,vendorId,serviceId,rateId,serviceName,rateType,rate){
     this.setState({
-        vendorId,vendorServiceId,serviceId,rateId,serviceName,rateType,rate
+        vendorServiceId,vendorId,serviceId,rateId,serviceName,rateType,rate
             ,editVendorModal: !this.state.editServiceModal})
             
     }
@@ -134,7 +139,7 @@ toggle() {
     }
 
 updateServices = () => { 
-    const {vendorId,vendorServiceId,serviceId,rateId,rate} = this.state
+    const {vendorServiceId,vendorId,serviceId,rateId,rate} = this.state
     let errors = {};
             if(this.state.rate===''){
                 errors.rate="Rate can't be empty"
@@ -143,7 +148,7 @@ updateServices = () => {
             
             const isValid =Object.keys(errors).length===0;
             if(isValid && this.state.message === ''){           
-                this.props.updateVendorServices(vendorId,vendorServiceId,serviceId,rateId,rate)
+                this.props.updateVendorServices(vendorServiceId,vendorId,serviceId,rateId,rate)
                     .then(() => this.refreshData())
                     .catch(err=>{
                         this.setState({modalLoading:false,message: err.response.data.message, loading: false})
@@ -156,27 +161,25 @@ updateServices = () => {
                         }       
                     this.setState({ modalLoading: true
                })
-               console.log(vendorId,"vendorId",vendorServiceId,rate,"rate")
+               console.log(serviceId,rateId)
     }   
 }
 
-    renderList = ({ vendors }) => {  
+    renderList = ({ getServiceVendor }) => {  
 
-        if (vendors && vendors.vendor[0]) {
-            console.log(vendors.vendor[0])
-            return   vendors.vendor[0].vendor_services.sort((item1,item2)=>{
-                var cmprVal = (item1.service_master[this.state.filterName].localeCompare(item2.service_master[this.state.filterName]))
-                return this.state.sortVal ? cmprVal : -cmprVal;
-                }).filter(this.searchFilter(this.state.search)).map((item,index) => {
-                return (
+        if (getServiceVendor ) {
+            console.log(getServiceVendor)
+            let item=getServiceVendor.vendor
+             
+                   return (
 
-                    <tr key={item.vendorServiceId}>
-                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.vendorServiceId}
+                    <tr key={item.individualVendorId}>
+                        {/* <td><input type="checkbox" name="ids" className="SelectAll" value={item.individualVendorId}
                             onChange={(e) => {
-                                const {vendorServiceId} = item;
+                                const {individualVendorId} = item;
                                 if(!e.target.checked){
                                     document.getElementById('allSelect').checked=false;
-                                    let indexOfId = this.state.ids.indexOf(vendorServiceId);
+                                    let indexOfId = this.state.ids.indexOf(individualVendorId);
                                     if(indexOfId > -1){
                                         this.state.ids.splice(indexOfId, 1);
                                     }
@@ -185,26 +188,29 @@ updateServices = () => {
                                     }
                                 }
                                 else {
-                                    this.setState({ids: [...this.state.ids, vendorServiceId]});
+                                    this.setState({ids: [...this.state.ids, individualVendorId]});
                                     if(this.state.ids.length >= 0){
                                         this.setState({isDisabled: false})
                                     }
                                 }
                                 
-                                 }}/></td>
-                        <td>{index+1}</td>
-                        <td>{item.service_master?item.service_master.serviceName:''}</td>
-                        <td>{item.rate_master?item.rate_master.rateType:''}</td>
-                        <td>{item.rate}</td> 
-                        <td>
-                                <Button color="success" className="mr-2" onClick={this.editUser.bind(this,item.vendorId,item.vendorServiceId,item.service_master.serviceId,item.rate_master.rateId,item.service_master?item.service_master.serviceName:'',item.rate_master?item.rate_master.rateType:'',item.rate)}>Edit</Button> 
-                                <Button color="danger" onClick={this.delete.bind(this,item.vendorServiceId)}>Delete</Button>
-                        </td>
+                                 }}/></td> */}
+                        <td>{"1"}</td>
+                        <td>{item.service_master ? item.service_master.serviceName : ''}</td>
+                        <td>{item.rate_master.rateType}</td>
+                        <td>{item.rate}</td>
+                        <td>{item.startTime} - {item.endTime}</td> 
+                        <td>{item.startTime1} - {item.endTime1}</td> 
+                        <td>{item.startTime2} - {item.endTime2}</td> 
+                        {/* <td>
+                                <Button color="success" className="mr-2" onClick={this.editUser.bind(this,item.vendorId,item.individualVendorId,item.service_master.serviceId,item.rate_master.rateId,item.service_master?item.service_master.serviceName:'',item.rate_master?item.rate_master.rateType:'',item.rate)}>Edit</Button> 
+                                <Button color="danger" onClick={this.delete.bind(this,item.individualVendorId)}>Delete</Button>
+                        </td> */}
 
                     </tr>
 
                 )
-            })
+           
         }
         }
 
@@ -286,7 +292,11 @@ updateServices = () => {
         }}
     
     push=()=>{
-            this.props.history.push('/superDashboard/vendorMaster')
+            this.props.history.push('/superDashboard/individualVendor')
+        }
+    
+    push1=()=>{
+            this.props.history.push('/superDashboard/individualVendorDetail')
         }
            
 
@@ -296,23 +306,26 @@ updateServices = () => {
             <Table className="table table-bordered">
         <thead>
             <tr>
-                <th  style={{width:'4%'}}></th>
+                {/* <th  style={{width:'4%'}}></th> */}
                 <th  style={{width:'4%'}}>#</th>
                 <th onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:"serviceName"}});
                         }}>Services  <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
         
-                <th>Rate Types </th>           
-                <th>Rates</th>             
-                <th>Actions</th>
+                <th>Rate Types </th>
+                <th>Rates</th> 
+                <th>Slot Time 1 </th> 
+                <th>Slot Time 2</th> 
+                <th>Slot Time 3</th>                        
+                {/* <th>Actions</th> */}
               
             </tr>
          
         </thead>
 
         <tbody>
-            {this.renderList(this.props.vendorMasterReducer)}
+            {this.renderList(this.props.IndividualVendorReducer)}
         </tbody>
     </Table>
     let modalData=<div>
@@ -345,8 +358,8 @@ updateServices = () => {
                             <Button color="danger" onClick={this.toggleEditVendorModal.bind(this)}>Cancel</Button>
                         </FormGroup> 
     </div>
-        let deleteSelectedButton = <Button color="danger" className="mb-2"
-        onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
+        // let deleteSelectedButton = <Button color="danger" className="mb-2"
+        // onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
             return(
             <div>
                  <UI onClick={this.logout} change={this.changePassword}>
@@ -362,13 +375,18 @@ updateServices = () => {
                     {!this.state.modalLoading?modalData:<Spinner/>}
                 </ModalBody>
             </Modal>
-            <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Vendor Services</h3>
-            <Button color="primary" type="button" onClick={this.push}>Add Vendor</Button></div>
-            <SearchFilter type="text" value={this.state.search}
-                        onChange={this.searchOnChange} />
+            <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Vendor Services Detail</h3>
+            <div>
+            <Button className="mr-2" color="primary" type="button" onClick={this.push1}>Vendor Details</Button>
+            <Button color="primary" type="button" onClick={this.push}>Add Vendor</Button>
+            </div>
+            </div>
+          
+            {/* <SearchFilter type="text" value={this.state.search}
+                        onChange={this.searchOnChange} /> */}
 
-                     {deleteSelectedButton}
-                     <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                     {/* {deleteSelectedButton} */}
+                     {/* <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
                         id="allSelect"
                         type="checkbox" onChange={(e) => {
                             if(e.target.checked) {
@@ -378,7 +396,7 @@ updateServices = () => {
                                 this.unSelectAll();
                             } 
                         } }/>
-                    </Label>
+                    </Label> */}
                          {!this.state.loading ? tableData : <Spinner />}
             </div>
 
@@ -395,14 +413,15 @@ updateServices = () => {
 function mapStateToProps(state) {
 
     return {
-        vendorMasterReducer: state.vendorMasterReducer,
-        displayServiceMasterReducer: state.displayServiceMasterReducer
+        IndividualVendorReducer: state.IndividualVendorReducer,
+        displayServiceMasterReducer: state.displayServiceMasterReducer,
+        vendorMasterReducer: state.vendorMasterReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getVendorMaster, getServiceType,getRateType,deleteSelectedVendorServices,deleteVendorServices,updateVendorServices}, dispatch);
+    return bindActionCreators({ getIndividualVendor, getServiceType, getRateType, getServiceVendor}, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DisplayVendorServices);
+export default connect(mapStateToProps, mapDispatchToProps)(VendorServiceDetail);
     
