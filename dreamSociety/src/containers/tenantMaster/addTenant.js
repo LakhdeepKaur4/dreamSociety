@@ -69,11 +69,7 @@ class AddTenant extends Component{
             societyLocation:"",
             defaultPermanentAddress:'',
             pin:'',
-            pinCode:'',
-            noOfFlats:'',
-            flatDetailIds:[],
-            optionalFloorId:'',
-            memberError:''
+            pinCode:''
         }
     }
 
@@ -343,42 +339,25 @@ class AddTenant extends Component{
 
     nextPrev = (e) => {
         let errors = {};
-        // const {firstName, lastName, dob, gender,permanentAddressUser, panCardNumber, contact, email, correspondenceAddress, aadhaarNumber, permanentAddress} = this.state;
-        // if(this.state.step === 1){
-        //     if(firstName === '') errors.firstName = `First Name can't be empty.`;
-        //     if(lastName === '') errors.lastName = `Last Name can't be empty.`;
-        //     if(dob === '') errors.dob = `Date of Birth can't be empty.`;
-            
-        //     if(gender === '') errors.gender = `Gender can't be empty`;
-        //     if(contact === '') errors.contact= `Contact can't be empty.`;
-        //     else if(contact.length !== 10) errors.contact= `Contact should be of 10 digit.`;
-        //     if(email === '') errors.email = `Email can't be empty.`;
-        //     if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
-        //     else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of 12 digit.`
-        //     if(panCardNumber === '') errors.panCardNumber = `Pan Card number can't be empty.`;
-        //     else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
-        //     const isValid = Object.keys(errors).length === 0
-        //     this.setState({ errors });
-        //     if (isValid) {
-        //         this.setState({ step: this.state.step + 1 })
-        //     }
-        // }
-        // // const { bankName, accountHolderName, accountNumber, panCardNumber, IFSCCode } = this.state;
-        // // if(this.state.step === 2){
-        // //     if(bankName === '') errors.bankName = `Bank name can't be empty.`;
-        // //     if(accountHolderName === '') errors.accountHolderName = `Account Holder name can't be empty.`;
-        // //     if(accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
-           
-        // //     if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
-        // //     else if(IFSCCode.length !== 11) errors.IFSCCode = `IFSC code should be of 11 digit.`;
-        // //     const isValid = Object.keys(errors).length === 0
-        // //     this.setState({ errors });
-        // //     if (isValid) {
-        // //         this.setState({ step: this.state.step + 1 })
-        // //     }
-        // // }
+        const {firstName, lastName, dob, gender,permanentAddressUser, panCardNumber, contact, email, correspondenceAddress, aadhaarNumber, permanentAddress} = this.state;
         if(this.state.step === 1){
-            this.setState({ step: this.state.step + 1 })
+            if(firstName === '') errors.firstName = `First Name can't be empty.`;
+            if(lastName === '') errors.lastName = `Last Name can't be empty.`;
+            if(dob === '') errors.dob = `Date of Birth can't be empty.`;
+            
+            if(gender === '') errors.gender = `Gender can't be empty`;
+            if(contact === '') errors.contact= `Contact can't be empty.`;
+            else if(contact.length !== 10) errors.contact= `Contact should be of 10 digit.`;
+            if(email === '') errors.email = `Email can't be empty.`;
+            if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
+            else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of 12 digit.`
+            if(panCardNumber === '') errors.panCardNumber = `Pan Card number can't be empty.`;
+            else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
+            const isValid = Object.keys(errors).length === 0
+            this.setState({ errors });
+            if (isValid) {
+                this.setState({ step: this.state.step + 1 })
+            }
         }
         if(this.state.step === 2){
             let data = {};
@@ -404,49 +383,25 @@ class AddTenant extends Component{
                 this.setState({ step: this.state.step + 1 })
             }
         }
+        
+        const { towerId, floorId, flatDetailId, pin } = this.state;
         if(this.state.step === 3){
-            
-            this.setState({ step: this.state.step + 1 })
-        }
-        // const { towerId, floorId, flatDetailId, pin } = this.state;
-        // if(this.state.step === 3){
-        //     if(towerId === '') errors.towerId = `Please select Tower.`;
-        //     if(floorId === '') errors.floorId = `Please select a Floor.`;
-        //     if(document.getElementById('isChecked').checked === false){
-        //         if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
-        //         if(permanentAddressUser === '') errors.permanentAddressUser = `Permanent Address can't be empty.`;
-        //     }
-            
-        //     if(flatDetailId === '') errors.flatDetailId = `Please select a Flat.`;
-        //     if(correspondenceAddress === '') errors.correspondenceAddress = `Corresponding Address can't be empty.`;
-           
-        //     const isValid = Object.keys(errors).length === 0
-        //     this.setState({ errors });
-        //     if (isValid) {
-        //         this.setState({ step: this.state.step + 1 })
-        //     }
-        // }
-        if(this.state.step === 4){
-            this.state.flatDetailIds.splice(0, this.state.flatDetailIds.length)
-            let data;
-            for(let i = 0; i < 4; i++){
-                
-                // console.log(this.state.member)
-                // data = {
-                //     memberName: this.state['memberName'+i],
-                //     memberDob: this.state['memberDob'+i],
-                //     relationId: this.state['relationId'+i],
-                //     gender:this.state['gender'+i]
-                // }
-                data = this.state['flatDetailId'+i]
-                    
+            if(towerId === '') errors.towerId = `Please select Tower.`;
+            if(floorId === '') errors.floorId = `Please select a Floor.`;
+            if(document.getElementById('isChecked').checked === false){
+                if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
+                if(permanentAddressUser === '') errors.permanentAddressUser = `Permanent Address can't be empty.`;
             }
-            this.state.flatDetailIds.push(this.state.flatDetailId,data )
-            this.setState({ step: this.state.step + 1 })
-            console.log(this.state)
+            
+            if(flatDetailId === '') errors.flatDetailId = `Please select a Flat.`;
+            if(correspondenceAddress === '') errors.correspondenceAddress = `Corresponding Address can't be empty.`;
+           
+            const isValid = Object.keys(errors).length === 0
+            this.setState({ errors });
+            if (isValid) {
+                this.setState({ step: this.state.step + 1 })
+            }
         }
-        
-        
     }
 
     
@@ -797,37 +752,37 @@ class AddTenant extends Component{
         
         let userDatas = [];
 
-        let flatData = [];
+        // let flatData = [];
 
-        for (let i = 0; i < 4; i++) {
+        // for (let i = 0; i < 4; i++) {
             
-            flatData.push(<FormGroup key={i}>
-                <Row form md={12}>
-                    <Col md={4}>
-                        <Label>Tower</Label>
-                        <Select onChange={this.towerChangeHandler1.bind(this, 'towerId' + i )} placeholder={<DefaultSelect/>} name="towerId"
-                        options={this.getTower(this.props.towerList)} />
-                    </Col >
-                    <Col md={4}>
-                        <Label>Floor</Label>
-                        <Select options={this.getFloor(this.props.tenantReducer)}
-                            placeholder={<DefaultSelect/>}
-                            name="floorId"
-                            onChange={this.floorChangeHandler1.bind(this,'optionalFloorId')}
-                            />
-                    </Col>
-                    <Col md={4}>
-                        <Label>Flat Number</Label>
-                        <Select options={this.getFlats1(this.props.tenantReducer)} name="flatDetailId"
-                            onChange={this.flatChangeHandler1.bind(this, 'flatDetailId' + i)}
-                            placeholder={<DefaultSelect/>}
-                            />
-                    </Col >
-                </Row>
-            </FormGroup>
+        //     flatData.push(<FormGroup key={i}>
+        //         <Row form md={12}>
+        //             <Col md={4}>
+        //                 <Label>Tower</Label>
+        //                 <Select onChange={this.towerChangeHandler1.bind(this, 'towerId' + i )} placeholder={<DefaultSelect/>} name="towerId"
+        //                 options={this.getTower(this.props.towerList)} />
+        //             </Col >
+        //             <Col md={4}>
+        //                 <Label>Floor</Label>
+        //                 <Select options={this.getFloor(this.props.tenantReducer)}
+        //                     placeholder={<DefaultSelect/>}
+        //                     name="floorId"
+        //                     onChange={this.floorChangeHandler1.bind(this,'optionalFloorId')}
+        //                     />
+        //             </Col>
+        //             <Col md={4}>
+        //                 <Label>Flat Number</Label>
+        //                 <Select options={this.getFlats1(this.props.tenantReducer)} name="flatDetailId"
+        //                     onChange={this.flatChangeHandler1.bind(this, 'flatDetailId' + i)}
+        //                     placeholder={<DefaultSelect/>}
+        //                     />
+        //             </Col >
+        //         </Row>
+        //     </FormGroup>
 
-            );
-        }
+        //     );
+        // }
         
         for (let i = 0; i < this.state.noOfMembers; i++) {
             
@@ -1116,11 +1071,6 @@ class AddTenant extends Component{
                         </FormGroup> */}
                     </div>
                     <div style={{ 'display': this.state.step == 4 ? 'block' : 'none' }}>
-                        <h3>Other Flat Details</h3>
-                        
-                        {flatData}
-                    </div>
-                    <div style={{ 'display': this.state.step == 5 ? 'block' : 'none' }}>
                         <h3>Upload Your Image</h3>
                         <FormGroup>
                             <Label>Image</Label>
@@ -1135,8 +1085,8 @@ class AddTenant extends Component{
                     </div>
                     <div>
                         <Button color="primary" className="mr-2" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
-                        <Button color="primary"className="mr-2" id="nextBtn" style={{ display: this.state.step == 5 ? 'none' : 'inline-block' }} disabled={this.state.step == 5} onClick={this.nextPrev}>Next</Button>
-                        <Button color="success" className="mr-2" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
+                        <Button color="primary"className="mr-2" id="nextBtn" style={{ display: this.state.step == 4 ? 'none' : 'inline-block' }} disabled={this.state.step == 4} onClick={this.nextPrev}>Next</Button>
+                        <Button color="success" className="mr-2" style={{ display: this.state.step == 4 ? 'inline-block' : 'none' }}>Submit</Button>
                         <Button color="danger" onClick={this.routeToDetail}>Cancel</Button>
                     </div>
         </div>
