@@ -254,7 +254,9 @@ ImageChange =(event)=>{
 
     editEmployee(employeeId, picture, firstName, middleName, lastName, salary,contact,email, currentAddress, permanentAddress, documentOne, documentTwo, startDate,employeeDetailId) {
 
-        this.setState({ editEmployeeData: { employeeId,  startDate },   documentOne, documentTwo, picture, firstName, middleName, lastName, salary, contact,email,  currentAddress, permanentAddress,employeeDetailId,
+        this.setState({ editEmployeeData: { employeeId,  startDate },  
+             documentOne, documentTwo, picture, firstName, middleName, lastName, salary, contact,email, 
+              currentAddress, permanentAddress,employeeDetailId,
             readOnlyPermanent: permanentAddress, readOnlyCurrent: currentAddress, editEmployeeModal: !this.state.editEmployeeModal })
 
     }
