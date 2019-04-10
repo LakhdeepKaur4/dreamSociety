@@ -256,7 +256,9 @@ module.exports = function (app) {
 
 	app.post('/api/slot', [authJwt.verifyToken], slotController.create);
 
-	app.get('/api/slot/:parkingId/:flatId', slotController.get);
+	app.get('/api/slot/:parkingId/:flatId',[authJwt.verifyToken], slotController.get);
+
+	app.get('/api/slot',[authJwt.verifyToken],slotController.getSlot);
 
 	// app.get('/api/getSlot',slotController.getslots);
 
@@ -313,6 +315,8 @@ module.exports = function (app) {
 	app.post('/api/auth/signupCopy', [verifySignUp.checkRolesExisted], userController.signupCopy);
 
 	app.post('/api/flatDetail', [authJwt.verifyToken], flatDetailController.create);
+
+	app.get('/api/flatDetail/:id', [authJwt.verifyToken], flatDetailController.getSlot);
 
 	app.get('/api/flatDetail', [authJwt.verifyToken], flatDetailController.get);
 
