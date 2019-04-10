@@ -212,7 +212,7 @@ exports.getFloorByTowerIdForTenant = async (req, res, next) => {
                     flatDetailIdArr.push(item.flatDetailId);
                 })
             } else {
-                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                res.status(httpStatus.OK).json({
                     message: 'No Flat Found',
                     tower: towerSend,
                     flatDetail: flats
@@ -235,7 +235,7 @@ exports.getFloorByTowerIdForTenant = async (req, res, next) => {
                 })
             }
             else {
-                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                res.status(httpStatus.OK).json({
                     message: 'No Flat Found',
                     tower: towerSend,
                     flatDetail: []
@@ -258,7 +258,7 @@ exports.getFloorByTowerIdForTenant = async (req, res, next) => {
                     ownerIdArr.push(item.ownerId);
                 })
             } else {
-                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                res.status(httpStatus.OK).json({
                     message: 'No Flat Found',
                     tower: towerSend,
                     flatDetail: []
@@ -282,7 +282,7 @@ exports.getFloorByTowerIdForTenant = async (req, res, next) => {
                 })
             }
             else {
-                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                res.status(httpStatus.OK).json({
                     message: 'No Flat Found',
                     tower: towerSend,
                     flatDetail: []
@@ -300,13 +300,13 @@ exports.getFloorByTowerIdForTenant = async (req, res, next) => {
         })
         .then(flats => {
             if (flats.length !== 0) {
-                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                res.status(httpStatus.OK).json({
                     message: 'Flats Found',
                     tower: towerSend,
                     flatDetail: flats
                 })
             } else {
-                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                res.status(httpStatus.OK).json({
                     message: 'No Flat Found',
                     tower: towerSend,
                     flatDetail: flats
