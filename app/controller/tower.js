@@ -75,9 +75,9 @@ exports.get = async (req, res) => {
             }
         })
         // console.log("flats==>",flats)
-        console.log("count",flats.count);
+        console.log("count", flats.count);
         // console.log("rows",flats.rows);
-// 
+        // 
         //                 Project
         //   .findAndCountAll({
         //      where: {
@@ -122,7 +122,6 @@ exports.getTowerAndFloor = async (req, res) => {
     }
 }
 
-
 exports.getFloorByTowerId = async (req, res) => {
     try {
         const towerId = req.params.id;
@@ -146,11 +145,14 @@ exports.getFloorByTowerId = async (req, res) => {
             ]
             , order: [['createdAt', 'DESC']]
         });
-        const owners = await Owner.findAll({ where: { isActive: true }});
-        owners.map(owner => {
-            return flatIds.push(owner.flatDetailId);
+
+        let ownerFlatDetails = await OwnerFlatDetail.findAll({ where: { isActive: true } });
+        ownerFlatDetails.map(ownerFlat => {
+            return flatIds.push(ownerFlat.flatDetailId);
         })
-        const flatDetail = await FlatDetail.findAll({ where: { towerId: towerId, floorId: { [Op.in]: floorIds },flatDetailId:{ [Op.notIn]:flatIds} } })
+
+        const flatDetail = await FlatDetail.findAll({ where: { towerId: towerId, floorId: { [Op.in]: floorIds }, flatDetailId: { [Op.notIn]: flatIds } } })
+
         if (tower && flatDetail) {
             res.status(httpStatus.OK).json({ message: 'Tower Floor Page', tower: tower, flatDetail: flatDetail })
         }
