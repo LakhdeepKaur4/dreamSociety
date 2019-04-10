@@ -122,7 +122,6 @@ exports.getTowerAndFloor = async (req, res) => {
     }
 }
 
-
 exports.getFloorByTowerId = async (req, res) => {
     try {
         const towerId = req.params.id;
@@ -146,13 +145,17 @@ exports.getFloorByTowerId = async (req, res) => {
             ]
             , order: [['createdAt', 'DESC']]
         });
+        // const owners = await Owner.findAll({ where: { isActive: true }});
+        // owners.map(owner => {
+        //     return flatIds.push(owner.flatDetailId);
+        // })
         let ownerFlatDetails = await OwnerFlatDetail.findAll({ where: { isActive: true }});
         ownerFlatDetails.map(ownerFlat => {
                 return flatIds.push(ownerFlat.flatDetailId);
             })
+    
         const flatDetail = await FlatDetail.findAll({ where: { towerId: towerId, floorId: { [Op.in]: floorIds },flatDetailId:{ [Op.notIn]:flatIds} } })
-        // console.log("flatDetailIds",flatDetail);
-        // const flatDetail = await FlatDetail.findAll({ where: { towerId: towerId, floorId: { [Op.in]: floorIds }, flatDetailId: { [Op.notIn]: flatIds } } })
+
         if (tower && flatDetail) {
             res.status(httpStatus.OK).json({ message: 'Tower Floor Page', tower: tower, flatDetail: flatDetail })
         }
@@ -162,56 +165,6 @@ exports.getFloorByTowerId = async (req, res) => {
     }
 }
 
-// exports.getFloorByTowerIdForTenant = async (req, res) => {
-//     try {
-//         console.log("in here")
-//         const towerId = req.params.id;
-//         const floorIds = [];
-//         const flatIds = [];
-//         let flatDetailId;
-//         const floors = await TowerFloor.findAll({ where: { isActive: true, towerId: towerId } });
-//         floors.map(floor => {
-//             floorIds.push(floor.floorId);
-//         })
-//         console.log("floorIds===>", floorIds);
-//         const tower = await Tower.findOne({
-//             where: { isActive: true, towerId: towerId },
-//             include: [{
-//                 model: Floor,
-//                 as: 'Floors',
-//                 attributes: ['floorId', 'floorName'],
-//                 through: {
-//                     attributes: ['floorId', 'floorName'],
-//                 }
-//             }
-//             ]
-//             , order: [['createdAt', 'DESC']]
-//         });
-
-//         const flatDetail = await FlatDetail.findAll({ where: { isActive: true, towerId: towerId, floorId: { [Op.in]: floorIds } } });
-//         // console.log(flatDetail);
-//         flatDetail.map(flats => {
-//             flatIds.push(flats.flatDetailId);
-//         })
-//         console.log(flatIds);
-//         const owner = await OwnerFlatDetail.findAll({ where: { isActive: true, flatDetailId: { [Op.in]: flatIds } } })
-//         // console.log(owner)
-//         owner.map(flat => {
-//             flatDetailId = flat.flatDetailId;
-//         })
-//         // const flatExists = await Tenant.findAll({where:{isActive:true,flatDetailId:{[Op.in]:flatIds}}});
-
-//         const flat = await FlatDetail.findAll({ where: { isActive: true, flatDetailId: { [Op.in]: flatDetailId } } })
-//         if (tower && flatDetail && flat) {
-//             return res.status(httpStatus.OK).json({ message: 'Tower Floor Page', tower: tower, flatDetail: flat })
-//         } else {
-//             return res.status(httpStatus.OK).json({ message: 'No Flats Found' })
-//         }
-//     } catch (error) {
-//         console.log(error)
-//         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message })
-//     }
-// }
 
 exports.getFloorByTowerIdForTenant = async (req, res, next) => {
     const towerId = req.params.id;
