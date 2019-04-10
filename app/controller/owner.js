@@ -30,6 +30,7 @@ const Role = db.role;
 const UserRoles = db.userRole;
 const Parking = db.parking;
 const Slot = db.slot;
+const OwnerFlatDetail = db.ownerFlatDetail;
 
 function encrypt(key, data) {
   var cipher = crypto.createCipher("aes-128-cbc", key);
@@ -269,10 +270,47 @@ exports.create1 = async (req, res, next) => {
       userId: req.userId,
       societyId: ownerBody.societyId,
       towerId: ownerBody.towerId,
-      flatDetailId: ownerBody.flatDetailId,
+      // flatDetailId: ownerBody.flatDetailId,
       floorId:ownerBody.floorId
     });
+
     const ownerId = owner.ownerId;
+    if(ownerBody.flatDetailIds[0] !== null && ownerBody.flatDetailIds[0] !== undefined && ownerBody.flatDetailIds[0] !== '')
+    {
+      OwnerFlatDetail.create({
+        flatDetailId: ownerBody.flatDetailIds[0],
+        ownerId: ownerId
+    })
+    }
+    if(ownerBody.flatDetailIds[1] !== null && ownerBody.flatDetailIds[1] !== undefined && ownerBody.flatDetailIds[1] !== '')
+    {
+      OwnerFlatDetail.create({
+        flatDetailId: ownerBody.flatDetailIds[1],
+        ownerId: ownerId
+    })
+    }
+
+    if(ownerBody.flatDetailIds[2] !== null && ownerBody.flatDetailIds[2] !== undefined && ownerBody.flatDetailIds[2] !== ''){
+      OwnerFlatDetail.create({
+        flatDetailId: ownerBody.flatDetailIds[2],
+        ownerId: ownerId
+    })
+    }
+
+    if(ownerBody.flatDetailIds[3] !== null && ownerBody.flatDetailIds[3] !== undefined && ownerBody.flatDetailIds[3] !== ''){
+      OwnerFlatDetail.create({
+        flatDetailId: ownerBody.flatDetailIds[3],
+        ownerId: ownerId
+    })
+    }
+
+    if(ownerBody.flatDetailIds[4] !== null && ownerBody.flatDetailIds[4] !== undefined && ownerBody.flatDetailIds[4] !== ''){
+      OwnerFlatDetail.create({
+        flatDetailId: ownerBody.flatDetailIds[4],
+        ownerId: ownerId
+    })
+    }
+
     if (req.body.profilePicture) {
       ownerBody.profilePicture = ownerBody.profilePicture.split(",")[1]
       let fileName = ownerBody.fileName.split(".")[0];
@@ -294,7 +332,7 @@ exports.create1 = async (req, res, next) => {
         }
       );
     }
-    if (ownerBody.noOfMembers) {
+    if (ownerBody.noOfMembers > 0) {
       let ids = [];
       let memberNewArray = [];
       memberBody.userId = req.userId;
@@ -407,7 +445,8 @@ exports.get1 = async (req, res, next) => {
         {
           model: OwnerMembersDetail
         },
-        { model: FlatDetail,include:[{model:Parking},{model:Slot}]},
+        { model: FlatDetail},
+        // include:[{model:Parking},{model:Slot}]
         { model: Society },
         { model: Tower }
       ]
@@ -487,7 +526,9 @@ exports.get2 = async (req, res, next) => {
         {
           model: OwnerMembersDetail
         },
-        { model: FlatDetail },
+        { model: FlatDetail,
+         
+        },
         { model: Society },
         { model: Tower }
       ]
