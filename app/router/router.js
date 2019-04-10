@@ -434,7 +434,7 @@ module.exports = function (app) {
 
 	app.put('/api/societyMemberEvent/:id', [authJwt.verifyToken], societyMemberEvent.update);
 
-	app.post('/api/owner', [authJwt.verifyToken], owner.create1);
+	app.post('/api/owner',  owner.create1);
 
 	app.post('/api/owner/ownerMember/:id', [authJwt.verifyToken], owner.addMember);
 
