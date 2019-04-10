@@ -63,8 +63,10 @@ class SocietyEventBooking extends Component {
     }
 
     h=(event)=>{
-        this.setState({ [event.target.name]: event.target.checked})
-
+        this.setState({ [event.target.name]: event.target.checked},function(){
+            console.log(this.state.breakfast)
+        })
+      
     }
 
     FileChange=(event)=>{

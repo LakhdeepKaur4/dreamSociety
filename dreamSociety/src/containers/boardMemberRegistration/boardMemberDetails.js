@@ -668,16 +668,12 @@ pinChange1 = (e) => {
 }
 
 updatePermanentAddress = (pin1) => {
-    console.log(pin1)
     this.setState({pin1})
     this.setState({permanentAddress: this.state.permanentAddressDefault  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
     this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin1})
-    console.log('updatePermanentAddress', this.state.permanentAddress)
 }
 
 countryChange = (currentCountryId, currentCountry, selectOption) => {
-    console.log(currentCountryId, currentCountry, selectOption)
-
     this.setState({
         currentCountry: selectOption.countryName,
         currentCountryId:selectOption.countryId, 

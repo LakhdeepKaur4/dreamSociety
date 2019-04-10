@@ -102,21 +102,27 @@ class DisplayVendorMaster extends Component {
         this.props.getState().then(() => {}).catch(() => this.setState({ loading: false }));
         this.props.getCity().then(() => {}).catch(() => this.setState({ loading: false }));
         this.props.getLocation().then(() => {}).catch(() => this.setState({ loading: false }));
+        this.setState({userPermanent:false,editPermanent:false,
+            countryId:'',stateId:'', cityId:'', locationId:'',
+            editCurrent:false, userCurrent:false, currentCountryId:'', currentStateId:'',currentCityId:'',
+            currentLocationId:''})
     }
 
     editUser(vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,documentOne,documentTwo,picture){
-        let { countryId, stateId, cityId, locationId, readOnlyCountryId,readOnlyStateId,readOnlyCityId,readOnlyLocationId} = this.state
+        // let { countryId, stateId, cityId, locationId, readOnlyCountryId,readOnlyStateId,readOnlyCityId,readOnlyLocationId} = this.state
     this.setState({
             vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,documentOne,documentTwo,picture
-            ,editVendorModal: !this.state.editVendorModal,countryId, stateId, cityId, locationId,
-            readOnlyPermanent: permanentAddress, readOnlyCurrent: currentAddress, readOnlyCountryId:countryId,
-            readOnlyStateId:stateId, readOnlyCityId:cityId,readOnlyLocationId:locationId})
+            ,editVendorModal: !this.state.editVendorModal,
+            readOnlyPermanent: permanentAddress, readOnlyCurrent: currentAddress})
             
     }
 
     toggleEditVendorModal() {
         this.setState({
-            editVendorModal: !this.state.editVendorModal, message:''
+            editVendorModal: !this.state.editVendorModal, message:'',userPermanent:false,editPermanent:false,countryId:'',
+            stateId:'', cityId:'', locationId:'', permanentAddress: this.state.readOnlyPermanent,
+            editCurrent:false, userCurrent:false, currentCountryId:'', currentStateId:'',currentCityId:'',
+            currentLocationId:'', sameAsPermanent:false
         });
     }
     toggleModal() {
@@ -225,18 +231,24 @@ class DisplayVendorMaster extends Component {
             else if(this.state.lastName===''){
                 errors.lastName="Last Name can't be empty"
             }
-           else if(this.state.currentAddress===''){    
-                errors.currentAddress="Current Address can't be empty"
+            if(!!document.getElementById('isChecked').checked){
+                if(this.state.permanentAddressDefault === '') errors.permanentAddressDefault = `Permanent Address can't be empty.`;
             }
-            else if(this.state.permanentAddress===''){
-                errors.permanentAddress="Permanent Address can't be empty"
+            if(!!document.getElementById('isCurrentChecked').checked){
+                if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
             }
-            // else if(this.state.pin1===''){
-            //     errors.pin1="Pincode can't be empty"
+            if(!!document.getElementById('isChecked').checked){
+                if(this.state.pin1 === '') errors.pin1 = `Pin/Zip code can't be empty.`
+                else if(this.state.pin1.length < 5) errors.pin1 = `Pin/Zip code should be of 5 digits atleast.`
+            }
+            if(!!document.getElementById('isCurrentChecked').checked){
+                if(this.state.pin === '') errors.pin = `Pin/Zip code can't be empty.`
+                else if(this.state.pin.length < 5) errors.pin = `Pin/Zip code should be of 5 digits atleast.`
+            }
+            // if (this.state.currentAddress === '') { errors.currentAddress = `Current Address can't be empty.`
+            //  }
+            // if (this.state.permanentAddress === '') { errors.permanentAddress = `Permanent Address can't be empty.` 
             // }
-            //  if(this.state.pin===''){
-            //     errors.pin="Pincode can't be empty"
-            // } 
             else if(this.state.contact===''){
                 errors.contact="Contact can't be empty"                
             }
@@ -583,8 +595,6 @@ class DisplayVendorMaster extends Component {
 
         editPermanentAddress = () => {
             if (!!document.getElementById('isChecked').checked) {
-                console.log('is checked')
-               
                 this.setState({ editPermanent: true, permanentAddress: '', userPermanent: true, countryId:'',stateId:'',
             cityId:'', locationId:'' })
             }
@@ -597,7 +607,6 @@ class DisplayVendorMaster extends Component {
         }
     
         permanentAddressChange = (e) => {
-        console.log(this.state)
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -624,12 +633,10 @@ class DisplayVendorMaster extends Component {
         this.updatePermanentAddress(e.target.value)
     }
     
-    updatePermanentAddress = (pin) => {
-        console.log(pin)
-        this.setState({pin})
+    updatePermanentAddress = (pin1) => {
+        this.setState({pin1})
         this.setState({permanentAddress: this.state.permanentAddressDefault  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
-        this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin})
-        console.log('updatePermanentAddress', this.state.permanentAddress)
+        this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin1})
     }
     
     countryChange = (currentCountryId, currentCountry, selectOption) => {
@@ -731,7 +738,6 @@ class DisplayVendorMaster extends Component {
             this.state.currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip code: ' + this.state.pin})
         }
     }
-    
     currentAddressIsChecked = () => {
         if(!!document.getElementById('isCurrentChecked').checked){
             this.setState({editCurrent:true, currentAddress:'', userCurrent:true})
@@ -740,7 +746,6 @@ class DisplayVendorMaster extends Component {
             this.setState({editCurrent:false, currentAddress: this.state.readOnlyCurrent, userCurrent:false})
         }
     }
-
 
     render() { 
             let tableData;
@@ -849,18 +854,19 @@ class DisplayVendorMaster extends Component {
                 </FormGroup>
             </div> : ''}
             <FormGroup>
-                <Row md={12}>
+            <Row md={12}>
                     {!this.state.editCurrent ? <Col md={6}>
                         <Label>Current Address</Label>
                         <Input onKeyPress={this.keyPress}
                             name="readOnlyCurrent"
                             value={this.state.currentAddress}
                             type="textarea" disabled
-                            placeholder="Current Address"  
+                            placeholder="Current Address"
                             name="readOnlyCurrent"
                             onChange={this.onChange}
-                            maxLength='250' /> 
-                       </Col>:''}
+                            maxLength='250' />
+                        {/* {!this.state.permanentAddress ? <span className="error">{this.state.errors.permanentAddress}</span>: ''} */}
+                    </Col>:''}
                     {!this.state.editCurrent ? <Col md={6} style={{ paddingTop: '44px' }}>
                         <span style={{ fontWeight: '600' }}>Do you want to edit current address?</span>
                         <Input type="checkbox" name="isCurrentChecked" id="isCurrentChecked" onChange={this.currentAddressIsChecked} className="ml-3" />
@@ -899,7 +905,7 @@ class DisplayVendorMaster extends Component {
                     </FormGroup>
                     
                     <FormGroup>
-                        <Row md={12}>
+                    <Row md={12}>
                             <Col md={4}>
                                 <Label>Pin/Zip Code</Label>
                                 <Input type="text" onChange={this.pinChange}
