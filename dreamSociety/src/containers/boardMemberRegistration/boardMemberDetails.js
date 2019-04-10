@@ -400,9 +400,11 @@ class BoardMemberDetails extends Component {
             
            return( 
             cityResult.map((item) =>{ 
-                   return(
-                    { ...item, label: item.cityName, value: item.cityId }
-                   )
+                   if(item){
+                    return(
+                        { ...item, label: item.cityName, value: item.cityId }
+                       )
+                   }
                }
                )
            )
