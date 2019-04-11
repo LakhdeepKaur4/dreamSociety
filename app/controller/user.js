@@ -12,6 +12,7 @@ const User = db.user;
 const Role = db.role;
 const Test = db.test;
 const Tower = db.tower;
+const Floor = db.floor;
 const Society = db.society;
 const City = db.city;
 const Country = db.country;
@@ -40,8 +41,12 @@ exports.start = (req, res) => {
 }
 
 
+exports.test = (req, res) => {
+	res.send('Test');
+}
+
 function decrypt1(key, data) {
-	var decipher = crypto.createDecipher("aes-256-cbc", key);
+	var decipher = crypto.createDecipher("aes-128-cbc", key);
 	var decrypted = decipher.update(data, "hex", "utf-8");
 	decrypted += decipher.final("utf-8");
 
@@ -1421,17 +1426,17 @@ exports.signinDecrypted = async (req, res, next) => {
 					userName: user.userName
 				},
 				include: [
-					{where:{isActive:true}, model: FlatDetail },
+					{ where: { isActive: true }, model: FlatDetail },
 				]
 			})
 				// .then(tenant => {
 				// 	FlatDetail.findAll({
 				// 		where: { isActive: true, flatDetailId: tenant.flatDetailId }
 				// 	})
-						.then(flats => {
-							flats = flats.flat_detail_master;
-						})
-				// })
+				.then(flats => {
+					flats = flats.flat_detail_master;
+				})
+			// })
 		}
 		if (!user) {
 			console.log("------user-------");
@@ -1569,7 +1574,7 @@ exports.getUserRoleDecrypted = (req, res, next) => {
 				model: Role,
 				where: {
 					id: {
-						[Op.in]: [3, 4]
+						[Op.in]: [1,2,3,4]
 					},
 				},
 				// through: {
@@ -1892,8 +1897,10 @@ exports.assignRoles = async (req, res, next) => {
 		switch (roleId) {
 			case "3": {
 				const owner = await Owner.findOne({ where: { isActive: true, ownerId: req.body.userId } });
+				console.log("owner==>",owner.email)
 				// let ownerEmail = owner.email;
-				const user = await User.findOne({ where: { isActive: true, email: owner.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] })
+				const user = await User.findOne({ where: { isActive: true, email: owner.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] });
+				console.log("user==>",user);
 				user.firstName = decrypt(user.firstName);
 				user.lastName = decrypt(user.lastName);
 				user.userName = decrypt(user.userName);
@@ -1911,8 +1918,10 @@ exports.assignRoles = async (req, res, next) => {
 			}
 			case "4": {
 				const tenant = await Tenant.findOne({ where: { isActive: true, tenantId: req.body.userId } });
+				console.log(tenant)
 				// let tenantEmail = tenant.email;
-				const user = await User.findOne({ where: { isActive: true, email: tenant.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] })
+				const user = await User.findOne({ where: { isActive: true, email: tenant.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] });
+				console.log(user)
 				user.firstName = decrypt(user.firstName);
 				user.lastName = decrypt(user.lastName);
 				user.userName = decrypt(user.userName);
@@ -1928,46 +1937,46 @@ exports.assignRoles = async (req, res, next) => {
 				}
 				break;
 			}
-			case "5": {
-				const vendor = await Vendor.findOne({ where: { isActive: true, vendorId: req.body.userId } });
-				// let vendorEmail = vendor.email;
-				const user = await User.findOne({ where: { isActive: true, email: vendor.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] })
-				user.firstName = decrypt(user.firstName);
-				user.lastName = decrypt(user.lastName);
-				user.userName = decrypt(user.userName);
-				userArr.push(user);
-				if (user) {
-					const userRoles = await UserRoles.create({
-						userId: user.userId,
-						roleId: req.body.id
-					});
-					if (userRoles && user) {
-						res.json({ userArr });
-					}
-				}
-				break;
-			}
-			case "6": {
-				console.log("in here");
-				const employee = await Employee.findOne({ where: { isActive: true, employeeId: req.body.userId } });
-				// let employeeEmail = decrypt(employee.email);
-				// console.log(employeeEmail);
-				const user = await User.findOne({ where: { isActive: true, email: employee.email }, attributes: ['userId', 'firstName', 'lastName', 'userName', 'email'], include: [{ model: Role, attributes: ['id', 'roleName'] }] });
-				user.firstName = decrypt(user.firstName);
-				user.lastName = decrypt(user.lastName);
-				user.userName = decrypt(user.userName);
-				userArr.push(user);
-				if (user) {
-					const userRoles = await UserRoles.create({
-						userId: user.userId,
-						roleId: req.body.id
-					});
-					if (userRoles && user) {
-						res.json({ userArr });
-					}
-				}
-				break;
-			}
+			// case "5": {
+			// 	const vendor = await Vendor.findOne({ where: { isActive: true, vendorId: req.body.userId } });
+			// 	// let vendorEmail = vendor.email;
+			// 	const user = await User.findOne({ where: { isActive: true, email: vendor.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] })
+			// 	user.firstName = decrypt(user.firstName);
+			// 	user.lastName = decrypt(user.lastName);
+			// 	user.userName = decrypt(user.userName);
+			// 	userArr.push(user);
+			// 	if (user) {
+			// 		const userRoles = await UserRoles.create({
+			// 			userId: user.userId,
+			// 			roleId: req.body.id
+			// 		});
+			// 		if (userRoles && user) {
+			// 			res.json({ userArr });
+			// 		}
+			// 	}
+			// 	break;
+			// }
+			// case "6": {
+			// 	console.log("in here");
+			// 	const employee = await Employee.findOne({ where: { isActive: true, employeeId: req.body.userId } });
+			// 	// let employeeEmail = decrypt(employee.email);
+			// 	// console.log(employeeEmail);
+			// 	const user = await User.findOne({ where: { isActive: true, email: employee.email }, attributes: ['userId', 'firstName', 'lastName', 'userName', 'email'], include: [{ model: Role, attributes: ['id', 'roleName'] }] });
+			// 	user.firstName = decrypt(user.firstName);
+			// 	user.lastName = decrypt(user.lastName);
+			// 	user.userName = decrypt(user.userName);
+			// 	userArr.push(user);
+			// 	if (user) {
+			// 		const userRoles = await UserRoles.create({
+			// 			userId: user.userId,
+			// 			roleId: req.body.id
+			// 		});
+			// 		if (userRoles && user) {
+			// 			res.json({ userArr });
+			// 		}
+			// 	}
+			// 	break;
+			// }
 			default:
 				res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No Role Found with this Id" })
 		}
@@ -2372,6 +2381,7 @@ exports.flatByUserId = (req, res, next) => {
 		}]
 	}).then(user => {
 		if (user !== null) {
+			// console.log(bcrypt.compareSync('dbEgbGGuqc', user.password));
 			// console.log("user==>", user)
 			// res.json(user);
 			if (user.roles[0].id === 4) {
@@ -2381,34 +2391,45 @@ exports.flatByUserId = (req, res, next) => {
 						userName: user.userName
 					}
 				})
-				.then(tenant => {
-					if (tenant !== null) {
-						TenantFlatDetail.findAll({
-							where: {
-								isActive: true,
-								tenantId: tenant.tenantId
-							}
-						})
-						.then(flats => {
-							if (flats.length !== 0) {
-								flatIds.splice(0, flatIds.length);
-								flats.map(item => {
-									flatIds.push(item.flatDetailId);
-								})
-								FlatDetail.findAll({
-									where: {
-										isActive: true,
-										flatDetailId: {
-											[Op.in]: flatIds
-										}
-									}
-								})
+					.then(tenant => {
+						if (tenant !== null) {
+							TenantFlatDetail.findAll({
+								where: {
+									isActive: true,
+									tenantId: tenant.tenantId
+								}
+							})
 								.then(flats => {
 									if (flats.length !== 0) {
-										res.status(httpStatus.OK).json({
-											message: 'Flats Found',
-											flats: flats
+										flatIds.splice(0, flatIds.length);
+										flats.map(item => {
+											flatIds.push(item.flatDetailId);
 										})
+										FlatDetail.findAll({
+											where: {
+												isActive: true,
+												flatDetailId: {
+													[Op.in]: flatIds
+												}
+											},
+											include: [
+												{ model: Tower, where: { isActive: true }, attributes: ['towerId', 'towerName'] },
+												{ model: Floor, where: { isActive: true }, attributes: ['floorId', 'floorName'] }
+											]
+										})
+											.then(flats => {
+												if (flats.length !== 0) {
+													res.status(httpStatus.OK).json({
+														message: 'Flats Found',
+														flats: flats
+													})
+												} else {
+													res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+														message: 'No Flats Found',
+														flats: flats
+													})
+												}
+											})
 									} else {
 										res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
 											message: 'No Flats Found',
@@ -2416,20 +2437,13 @@ exports.flatByUserId = (req, res, next) => {
 										})
 									}
 								})
-							} else {
-								res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-									message: 'No Flats Found',
-									flats: flats
-								})
-							}
-						})
-					} else {
-						res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-							message: 'No Flats Found',
-							flats: []
-						})
-					}
-				})
+						} else {
+							res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+								message: 'No Flats Found',
+								flats: []
+							})
+						}
+					})
 			} else {
 				Owner.findOne({
 					where: {
@@ -2447,7 +2461,7 @@ exports.flatByUserId = (req, res, next) => {
 							})
 								.then(flats => {
 									if (flats.length !== 0) {
-										flatIds.splice(0,flatIds.length);
+										flatIds.splice(0, flatIds.length);
 										flats.map(item => {
 											flatIds.push(item.flatDetailId);
 										})
@@ -2457,7 +2471,11 @@ exports.flatByUserId = (req, res, next) => {
 												flatDetailId: {
 													[Op.in]: flatIds
 												}
-											}
+											},
+											include: [
+												{ model: Tower, where: { isActive: true }, attributes: ['towerId', 'towerName'] },
+												{ model: Floor, where: { isActive: true }, attributes: ['floorId', 'floorName'] }
+											]
 										})
 											.then(flats => {
 												if (flats.length !== 0) {
@@ -2487,7 +2505,7 @@ exports.flatByUserId = (req, res, next) => {
 						}
 					})
 			}
-			
+
 		} else {
 			res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
 				message: 'User Not Found'

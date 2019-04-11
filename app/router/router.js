@@ -46,7 +46,9 @@ module.exports = function (app) {
 	const individualVendorController = require('../controller/individualVendor');
 
 
-	app.get('/', userController.start);
+	app.get('/',userController.start);
+
+	app.get('/test',[authJwt.isAdmin],userController.test);
 
 	app.post('/api/auth/signup', [verifySignUp.checkRolesExisted], userController.signupEncrypted);
 
@@ -54,7 +56,7 @@ module.exports = function (app) {
 
 	app.get('/api/user', [authJwt.verifyToken], userController.getUserDecrypted);
 
-	app.get('/api/rolesAssigned',[authJwt.verifyToken],userController.getUserRoleDecrypted);
+	app.get('/api/rolesAssigned', [authJwt.verifyToken], userController.getUserRoleDecrypted);
 
 	app.post('/api/assignRoles', [authJwt.verifyToken], userController.assignRoles);
 
@@ -394,7 +396,7 @@ module.exports = function (app) {
 
 	app.put('/api/employee/delete/deleteSelected', [authJwt.verifyToken], employeeController.deleteSelected);
 
-	app.get('/api/employee', employeeController.getDecrypt);
+	app.get('/api/employee', [authJwt.verifyToken], employeeController.getDecrypt);
 
 	// app.put('/api/employee/:id',[authJwt.verifyToken],employeeController.update);
 
@@ -442,7 +444,7 @@ module.exports = function (app) {
 
 	app.put('/api/societyMemberEvent/:id', [authJwt.verifyToken], societyMemberEvent.update);
 
-	app.post('/api/owner', owner.create1);
+	app.post('/api/owner', [authJwt.verifyToken], owner.create1);
 
 	app.post('/api/owner/ownerMember/:id', [authJwt.verifyToken], owner.addMember);
 
@@ -545,5 +547,4 @@ module.exports = function (app) {
 	app.put('/api/individualVendor/delete/:id', [authJwt.verifyToken], individualVendorController.delete);
 
 	app.get('/api/flatbyid', [authJwt.verifyToken], userController.flatByUserId);
-
 }

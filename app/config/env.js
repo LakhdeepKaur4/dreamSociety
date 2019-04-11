@@ -5,11 +5,10 @@ const env = {
   host: 'greatwits.com.md-in-73.bigrockservers.com',
   dialect: 'mysql',
   pool: {
-	  max: 5,
+	  max: 25,
 	  min: 0,
 	  idle: 10000
   }
 };
- 
  
 module.exports = env;
