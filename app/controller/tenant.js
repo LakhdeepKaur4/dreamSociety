@@ -1044,31 +1044,71 @@ exports.deleteSelectedTenantMembers = (req, res, next) => {
         })
 }
 
-exports.addFlats = (req,res,next) => {
+exports.addFlats = (req, res, next) => {
     const body = req.body;
 
-    console.log('Body ===>',body);
+    console.log('Body ===>', body);
 
     if (body !== null) {
         TenantFlatDetail.create(body)
-        .then(flat => {
-            if (flat !== null) {
-                res.status(httpStatus.CREATED).json({
-                    message: 'Flat added successfully'
-                })
-            } else {
-                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                    message: 'Flat not added'
-                })
-            }
-        })
-        .catch(err => {
-            console.log('Error ===>',err);
-            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-        })
+            .then(flat => {
+                if (flat !== null) {
+                    res.status(httpStatus.CREATED).json({
+                        message: 'Flat added successfully'
+                    })
+                } else {
+                    res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                        message: 'Flat not added'
+                    })
+                }
+            })
+            .catch(err => {
+                console.log('Error ===>', err);
+                res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+            })
     } else {
         res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
             message: 'Please provide required data'
         })
     }
+}
+
+exports.getFlats = (req,res,next) => {
+    const tenantId = req.params.id;
+
+    console.log('Tenant ID ===>',tenantId);
+
+    Tenant.findOne({
+        where: {
+            tenantId: tenantId,
+            isActive: true
+        },
+        include: [
+            {
+                model: FlatDetail,
+                where:{
+                    isActive: true
+                },
+                include: [
+                    { model: Tower, where: { isActive: true }, attributes: ['towerId', 'towerName'] },
+                    { model: Floor, where: { isActive: true }, attributes: ['floorId', 'floorName'] }
+                ]
+            }
+        ]
+    })
+    .then(tenant => {
+        if (tenant !== null) {
+            res.status(httpStatus.OK).json({
+                flats: tenant.flat_detail_master
+            })
+        } else {
+            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                message: 'No tenant found'
+            })
+        }
+    })
+    .catch(err => {
+        console.log('Error ===>',err);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+    })
 }

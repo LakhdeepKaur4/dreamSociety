@@ -475,6 +475,8 @@ module.exports = function (app) {
 
 	app.post('/api/tenant/addFlat', [authJwt.verifyToken], tenant.addFlats);
 
+	app.get('/api/tenant/getFlats/:id', [authJwt.verifyToken], tenant.getFlats);
+
 	app.get('/api/tenant', [authJwt.verifyToken], tenant.getDecrypted);
 
 	app.put('/api/tenant/delete/deleteSelected', [authJwt.verifyToken], tenant.deleteSelected);
