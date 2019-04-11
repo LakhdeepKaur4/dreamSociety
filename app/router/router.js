@@ -315,10 +315,12 @@ module.exports = function (app) {
 	app.post('/api/auth/signupCopy', [verifySignUp.checkRolesExisted], userController.signupCopy);
 
 	app.post('/api/flatDetail', [authJwt.verifyToken], flatDetailController.create);
+	
+	app.get('/api/flatDetail', [authJwt.verifyToken], flatDetailController.get);
 
 	app.get('/api/flatDetail/:id', [authJwt.verifyToken], flatDetailController.getSlot);
 
-	app.get('/api/flatDetail', [authJwt.verifyToken], flatDetailController.get);
+	
 
 	app.put('/api/flatDetail/:id', [authJwt.verifyToken], flatDetailController.update);
 

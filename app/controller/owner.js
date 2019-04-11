@@ -275,42 +275,13 @@ exports.create1 = async (req, res, next) => {
     });
 
     const ownerId = owner.ownerId;
-    if(ownerBody.flatDetailIds[0] !== null && ownerBody.flatDetailIds[0] !== undefined && ownerBody.flatDetailIds[0] !== '')
+    if(ownerBody.flatDetailIds !== null && ownerBody.flatDetailIds !== undefined && ownerBody.flatDetailIds !== '')
     {
       OwnerFlatDetail.create({
-        flatDetailId: ownerBody.flatDetailIds[0],
+        flatDetailId: ownerBody.flatDetailIds,
         ownerId: ownerId
     })
     }
-    if(ownerBody.flatDetailIds[1] !== null && ownerBody.flatDetailIds[1] !== undefined && ownerBody.flatDetailIds[1] !== '')
-    {
-      OwnerFlatDetail.create({
-        flatDetailId: ownerBody.flatDetailIds[1],
-        ownerId: ownerId
-    })
-    }
-
-    if(ownerBody.flatDetailIds[2] !== null && ownerBody.flatDetailIds[2] !== undefined && ownerBody.flatDetailIds[2] !== ''){
-      OwnerFlatDetail.create({
-        flatDetailId: ownerBody.flatDetailIds[2],
-        ownerId: ownerId
-    })
-    }
-
-    if(ownerBody.flatDetailIds[3] !== null && ownerBody.flatDetailIds[3] !== undefined && ownerBody.flatDetailIds[3] !== ''){
-      OwnerFlatDetail.create({
-        flatDetailId: ownerBody.flatDetailIds[3],
-        ownerId: ownerId
-    })
-    }
-
-    if(ownerBody.flatDetailIds[4] !== null && ownerBody.flatDetailIds[4] !== undefined && ownerBody.flatDetailIds[4] !== ''){
-      OwnerFlatDetail.create({
-        flatDetailId: ownerBody.flatDetailIds[4],
-        ownerId: ownerId
-    })
-    }
-
     if (req.body.profilePicture) {
       ownerBody.profilePicture = ownerBody.profilePicture.split(",")[1]
       let fileName = ownerBody.fileName.split(".")[0];
@@ -985,13 +956,19 @@ exports.delete = async (req, res, next) => {
     })
     const updatedUser = await User.find({ where: { email: updatedOwner.email }}).then(user => {
       return user.updateAttributes(update);
+    });
+
+    const flatDetails = await OwnerFlatDetail.findAll({where: {ownerId : updatedOwner.ownerId}}).then(entries => {
+      entries.forEach(function(entry){
+        return entry.updateAttributes(update);
+      })
     })
 
     // const updatedVendorService = await VendorService.find({ where: { vendorId: id } }).then(vendorService => {
     //     return vendorService.updateAttributes(update)
     // })
     const updatedOwnerMembersDetail = await OwnerMembersDetail.update(update, { where: { ownerId: id } })
-    if (updatedOwner && updatedOwnerMembersDetail) {
+    if (updatedOwner && updatedOwnerMembersDetail && flatDetails) {
       return res.status(httpStatus.OK).json({
         message: "Owner deleted successfully",
       });
@@ -1021,7 +998,8 @@ exports.deleteSelected = async (req, res, next) => {
     }
     const updatedOwnersMembers = await OwnerMembersDetail.update(update, { where: { ownerId: { [Op.in]: deleteSelected } } });
 
-    if (updatedOwners && updatedOwnersMembers) {
+    let flatDetails = await OwnerFlatDetail.update(update , {where: {ownerId:{ [Op.in]: deleteSelected} }});
+    if (updatedOwners && updatedOwnersMembers && flatDetails) {
       return res.status(httpStatus.OK).json({
         message: "Owners deleted successfully",
       });
@@ -1186,6 +1164,32 @@ exports.addMember = (req,res,next) => {
     owner: newOwner
   }))
   } catch(error){
+    console.log(error);
+    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  }
+}
+
+exports.addMoreFlats = async (req,res,next) => {
+  try{
+    let ownerId = req.body.ownerId;
+    let flatDetailId = req.body.flatDetailId;
+    if(ownerId === undefined || flatDetailsId === undefined){
+      return res
+        .status(httpStatus.UNPROCESSABLE_ENTITY)
+        .json({ message: "Id is missing" });
+    }
+    let result = await OwnerFlatDetail.create({
+      flatDetailId : flatDetailId,
+      ownerId : ownerId
+    }) 
+    if(result){
+      res.status(httpStatus.OK).json({
+        message: "Flat Edit Sucessfully to respective Owner",
+        result : result
+      })
+    }
+    
+  }catch(error){
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
   }

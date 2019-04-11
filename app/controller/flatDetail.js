@@ -100,8 +100,9 @@ exports.get = async (req, res, next) => {
 exports.getSlot = async(req,res,next) =>{
     try{
         const flatDetailId = req.params.id;
-        const slots = await FlatParking.findAll({where:{isActive:true,flatDetailId:flatDetailId},       include: [{
+        const slots = await FlatParking.findAndCountAll({where:{isActive:true,flatDetailId:flatDetailId},       include: [{
             where: { isActive: true },
+            // attributes: [[sequelize.fn('count', sequelize.col('flatParkingId')), 'count']],
             model: FlatDetail,
             include:[
                 {model:Tower,attributes:['towerId','towerName']},
@@ -118,6 +119,7 @@ exports.getSlot = async(req,res,next) =>{
             model: Slot
         }
         ]});
+        slots.parkingName = slots.rows[0].parking_master.parkingName;
         res.status(httpStatus.OK).json({slots:slots});
     }catch(error){
         console.log(error)
