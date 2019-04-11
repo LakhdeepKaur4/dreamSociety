@@ -16,6 +16,7 @@ const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921a
 const Tenant = db.tenant;
 const TenantMembersDetail = db.tenantMembersDetail;
 const Owner = db.owner;
+const OwnerFlatDetail = db.ownerFlatDetail;
 const FlatDetail = db.flatDetail;
 const Tower = db.tower;
 const Society = db.society;
@@ -420,36 +421,13 @@ exports.createEncrypted = async (req, res, next) => {
                         console.log('Body ==>', entry);
                         tenantCreated = entry;
 
-                        if (tenant.flatDetailIds[0] !== null && tenant.flatDetailIds[0] !== undefined && tenant.flatDetailIds[0] !== '') {
+                        if (tenant.flatDetailId !== null && tenant.flatDetailId !== undefined && tenant.flatDetailId !== '') {
                             TenantFlatDetail.create({
-                                flatDetailId: tenant.flatDetailIds[0],
+                                flatDetailId: tenant.flatDetailId,
                                 tenantId: entry.tenantId
                             })
                         }
-                        if (tenant.flatDetailIds[1] !== null && tenant.flatDetailIds[1] !== undefined && tenant.flatDetailIds[1] !== '') {
-                            TenantFlatDetail.create({
-                                flatDetailId: tenant.flatDetailIds[1],
-                                tenantId: entry.tenantId
-                            })
-                        }
-                        if (tenant.flatDetailIds[2] !== null && tenant.flatDetailIds[2] !== undefined && tenant.flatDetailIds[2] !== '') {
-                            TenantFlatDetail.create({
-                                flatDetailId: tenant.flatDetailIds[2],
-                                tenantId: entry.tenantId
-                            })
-                        }
-                        if (tenant.flatDetailIds[3] !== null && tenant.flatDetailIds[3] !== undefined && tenant.flatDetailIds[3] !== '') {
-                            TenantFlatDetail.create({
-                                flatDetailId: tenant.flatDetailIds[3],
-                                tenantId: entry.tenantId
-                            })
-                        }
-                        if (tenant.flatDetailIds[4] !== null && tenant.flatDetailIds[4] !== undefined && tenant.flatDetailIds[4] !== '') {
-                            TenantFlatDetail.create({
-                                flatDetailId: tenant.flatDetailIds[4],
-                                tenantId: entry.tenantId
-                            })
-                        }
+
 
                         const roles = await Role.findOne({
                             where: {
@@ -564,12 +542,10 @@ exports.createEncrypted = async (req, res, next) => {
                                 // tenantSend.panCardNumber = decrypt(tenantSend.panCardNumber);
                                 // tenantSend.IFSCCode = decrypt(tenantSend.IFSCCode);
 
-                                const owners = await Owner.findAll({
+                                const owners = await OwnerFlatDetail.findAll({
                                     where: {
                                         isActive: true,
-                                        flatDetailId: {
-                                            [Op.in]: tenant.flatDetailIds
-                                        }
+                                        flatDetailId: tenant.flatDetailId
                                     },
                                     attributes: ['ownerId']
                                 })
@@ -615,9 +591,14 @@ exports.getDecrypted = async (req, res, next) => {
             order: [['createdAt', 'DESC']],
             include: [
                 { model: Society },
-                { model: Tower },
-                { model: FlatDetail },
-                { model: Floor },
+                // { model: Tower },
+                {
+                    model: FlatDetail, include: [
+                        { model: Tower, where: { isActive: true }, attributes: ['towerId', 'towerName'] },
+                        { model: Floor, where: { isActive: true }, attributes: ['floorId', 'floorName'] }
+                    ]
+                },
+                // { model: Floor },
                 // { model: Owner, as: 'Owner1' },
                 // { model: Owner, as: 'Owner2' },
                 // { model: Owner, as: 'Owner3' }

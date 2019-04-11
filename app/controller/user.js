@@ -12,6 +12,7 @@ const User = db.user;
 const Role = db.role;
 const Test = db.test;
 const Tower = db.tower;
+const Floor = db.floor;
 const Society = db.society;
 const City = db.city;
 const Country = db.country;
@@ -1421,17 +1422,17 @@ exports.signinDecrypted = async (req, res, next) => {
 					userName: user.userName
 				},
 				include: [
-					{where:{isActive:true}, model: FlatDetail },
+					{ where: { isActive: true }, model: FlatDetail },
 				]
 			})
 				// .then(tenant => {
 				// 	FlatDetail.findAll({
 				// 		where: { isActive: true, flatDetailId: tenant.flatDetailId }
 				// 	})
-						.then(flats => {
-							flats = flats.flat_detail_master;
-						})
-				// })
+				.then(flats => {
+					flats = flats.flat_detail_master;
+				})
+			// })
 		}
 		if (!user) {
 			console.log("------user-------");
@@ -2372,6 +2373,7 @@ exports.flatByUserId = (req, res, next) => {
 		}]
 	}).then(user => {
 		if (user !== null) {
+			// console.log(bcrypt.compareSync('dbEgbGGuqc', user.password));
 			// console.log("user==>", user)
 			// res.json(user);
 			if (user.roles[0].id === 4) {
@@ -2381,34 +2383,45 @@ exports.flatByUserId = (req, res, next) => {
 						userName: user.userName
 					}
 				})
-				.then(tenant => {
-					if (tenant !== null) {
-						TenantFlatDetail.findAll({
-							where: {
-								isActive: true,
-								tenantId: tenant.tenantId
-							}
-						})
-						.then(flats => {
-							if (flats.length !== 0) {
-								flatIds.splice(0, flatIds.length);
-								flats.map(item => {
-									flatIds.push(item.flatDetailId);
-								})
-								FlatDetail.findAll({
-									where: {
-										isActive: true,
-										flatDetailId: {
-											[Op.in]: flatIds
-										}
-									}
-								})
+					.then(tenant => {
+						if (tenant !== null) {
+							TenantFlatDetail.findAll({
+								where: {
+									isActive: true,
+									tenantId: tenant.tenantId
+								}
+							})
 								.then(flats => {
 									if (flats.length !== 0) {
-										res.status(httpStatus.OK).json({
-											message: 'Flats Found',
-											flats: flats
+										flatIds.splice(0, flatIds.length);
+										flats.map(item => {
+											flatIds.push(item.flatDetailId);
 										})
+										FlatDetail.findAll({
+											where: {
+												isActive: true,
+												flatDetailId: {
+													[Op.in]: flatIds
+												}
+											},
+											include: [
+												{ model: Tower, where: { isActive: true }, attributes: ['towerId', 'towerName'] },
+												{ model: Floor, where: { isActive: true }, attributes: ['floorId', 'floorName'] }
+											]
+										})
+											.then(flats => {
+												if (flats.length !== 0) {
+													res.status(httpStatus.OK).json({
+														message: 'Flats Found',
+														flats: flats
+													})
+												} else {
+													res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+														message: 'No Flats Found',
+														flats: flats
+													})
+												}
+											})
 									} else {
 										res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
 											message: 'No Flats Found',
@@ -2416,20 +2429,13 @@ exports.flatByUserId = (req, res, next) => {
 										})
 									}
 								})
-							} else {
-								res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-									message: 'No Flats Found',
-									flats: flats
-								})
-							}
-						})
-					} else {
-						res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-							message: 'No Flats Found',
-							flats: []
-						})
-					}
-				})
+						} else {
+							res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+								message: 'No Flats Found',
+								flats: []
+							})
+						}
+					})
 			} else {
 				Owner.findOne({
 					where: {
@@ -2447,7 +2453,7 @@ exports.flatByUserId = (req, res, next) => {
 							})
 								.then(flats => {
 									if (flats.length !== 0) {
-										flatIds.splice(0,flatIds.length);
+										flatIds.splice(0, flatIds.length);
 										flats.map(item => {
 											flatIds.push(item.flatDetailId);
 										})
@@ -2457,7 +2463,11 @@ exports.flatByUserId = (req, res, next) => {
 												flatDetailId: {
 													[Op.in]: flatIds
 												}
-											}
+											},
+											include: [
+												{ model: Tower, where: { isActive: true }, attributes: ['towerId', 'towerName'] },
+												{ model: Floor, where: { isActive: true }, attributes: ['floorId', 'floorName'] }
+											]
 										})
 											.then(flats => {
 												if (flats.length !== 0) {
@@ -2487,7 +2497,7 @@ exports.flatByUserId = (req, res, next) => {
 						}
 					})
 			}
-			
+
 		} else {
 			res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
 				message: 'User Not Found'
