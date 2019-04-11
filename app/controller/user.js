@@ -38,7 +38,7 @@ exports.start = (req, res) => {
 
 
 function decrypt1(key, data) {
-	var decipher = crypto.createDecipher("aes-256-cbc", key);
+	var decipher = crypto.createDecipher("aes-128-cbc", key);
 	var decrypted = decipher.update(data, "hex", "utf-8");
 	decrypted += decipher.final("utf-8");
 
@@ -1889,8 +1889,10 @@ exports.assignRoles = async (req, res, next) => {
 		switch (roleId) {
 			case "3": {
 				const owner = await Owner.findOne({ where: { isActive: true, ownerId: req.body.userId } });
+				console.log("owner==>",owner.email)
 				// let ownerEmail = owner.email;
-				const user = await User.findOne({ where: { isActive: true, email: owner.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] })
+				const user = await User.findOne({ where: { isActive: true, email: owner.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] });
+				console.log("user==>",user);
 				user.firstName = decrypt(user.firstName);
 				user.lastName = decrypt(user.lastName);
 				user.userName = decrypt(user.userName);
@@ -1925,46 +1927,46 @@ exports.assignRoles = async (req, res, next) => {
 				}
 				break;
 			}
-			case "5": {
-				const vendor = await Vendor.findOne({ where: { isActive: true, vendorId: req.body.userId } });
-				// let vendorEmail = vendor.email;
-				const user = await User.findOne({ where: { isActive: true, email: vendor.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] })
-				user.firstName = decrypt(user.firstName);
-				user.lastName = decrypt(user.lastName);
-				user.userName = decrypt(user.userName);
-				userArr.push(user);
-				if (user) {
-					const userRoles = await UserRoles.create({
-						userId: user.userId,
-						roleId: req.body.id
-					});
-					if (userRoles && user) {
-						res.json({ userArr });
-					}
-				}
-				break;
-			}
-			case "6": {
-				console.log("in here");
-				const employee = await Employee.findOne({ where: { isActive: true, employeeId: req.body.userId } });
-				// let employeeEmail = decrypt(employee.email);
-				// console.log(employeeEmail);
-				const user = await User.findOne({ where: { isActive: true, email: employee.email }, attributes: ['userId', 'firstName', 'lastName', 'userName', 'email'], include: [{ model: Role, attributes: ['id', 'roleName'] }] });
-				user.firstName = decrypt(user.firstName);
-				user.lastName = decrypt(user.lastName);
-				user.userName = decrypt(user.userName);
-				userArr.push(user);
-				if (user) {
-					const userRoles = await UserRoles.create({
-						userId: user.userId,
-						roleId: req.body.id
-					});
-					if (userRoles && user) {
-						res.json({ userArr });
-					}
-				}
-				break;
-			}
+			// case "5": {
+			// 	const vendor = await Vendor.findOne({ where: { isActive: true, vendorId: req.body.userId } });
+			// 	// let vendorEmail = vendor.email;
+			// 	const user = await User.findOne({ where: { isActive: true, email: vendor.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] })
+			// 	user.firstName = decrypt(user.firstName);
+			// 	user.lastName = decrypt(user.lastName);
+			// 	user.userName = decrypt(user.userName);
+			// 	userArr.push(user);
+			// 	if (user) {
+			// 		const userRoles = await UserRoles.create({
+			// 			userId: user.userId,
+			// 			roleId: req.body.id
+			// 		});
+			// 		if (userRoles && user) {
+			// 			res.json({ userArr });
+			// 		}
+			// 	}
+			// 	break;
+			// }
+			// case "6": {
+			// 	console.log("in here");
+			// 	const employee = await Employee.findOne({ where: { isActive: true, employeeId: req.body.userId } });
+			// 	// let employeeEmail = decrypt(employee.email);
+			// 	// console.log(employeeEmail);
+			// 	const user = await User.findOne({ where: { isActive: true, email: employee.email }, attributes: ['userId', 'firstName', 'lastName', 'userName', 'email'], include: [{ model: Role, attributes: ['id', 'roleName'] }] });
+			// 	user.firstName = decrypt(user.firstName);
+			// 	user.lastName = decrypt(user.lastName);
+			// 	user.userName = decrypt(user.userName);
+			// 	userArr.push(user);
+			// 	if (user) {
+			// 		const userRoles = await UserRoles.create({
+			// 			userId: user.userId,
+			// 			roleId: req.body.id
+			// 		});
+			// 		if (userRoles && user) {
+			// 			res.json({ userArr });
+			// 		}
+			// 	}
+			// 	break;
+			// }
 			default:
 				res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No Role Found with this Id" })
 		}

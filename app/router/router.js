@@ -46,7 +46,7 @@ module.exports = function (app) {
 	const individualVendorController = require('../controller/individualVendor');
 
 
-	app.get('/', userController.start);
+	app.get('/', [authJwt.isAdminRole],userController.start);
 
 	app.post('/api/auth/signup', [verifySignUp.checkRolesExisted], userController.signupEncrypted);
 
