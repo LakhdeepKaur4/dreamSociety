@@ -19,6 +19,9 @@ const State = db.state;
 const Location = db.location;
 const Owner = db.owner;
 const Tenant = db.tenant;
+const TenantFlatDetail = db.tenantFlatDetail;
+// const Owner = db.owner;
+const OwnerFlatDetail = db.ownerFlatDetail;
 const Vendor = db.vendor;
 const Employee = db.employee;
 const FlatDetail = db.flatDetail;
@@ -1552,6 +1555,67 @@ exports.getUserDecrypted = (req, res, next) => {
 	}
 }
 
+exports.getUserRoleDecrypted = (req, res, next) => {
+	try {
+		const usersArr = [];
+		User.findAll({
+			where: {
+				isActive: true
+			},
+			order: [
+				['createdAt', 'DESC']
+			],
+			include: [{
+				model: Role,
+				where: {
+					id: {
+						[Op.in]: [3, 4]
+					},
+				},
+				// through: {
+				//     attributes: ['roleId', 'roleName'],
+				// }
+			},
+			{
+				model: Tower
+			}]
+		})
+			.then(users => {
+				users.map(item => {
+					if ((item['firstName'] !== null) && (item['lastName'] !== null) && (item['contact'] !== null)) {
+						item.firstName = decrypt(item.firstName);
+						item.lastName = decrypt(item.lastName);
+						item.userName = decrypt(item.userName);
+						item.email = decrypt(item.email);
+						item.contact = decrypt(item.contact);
+						// item.familyMember = decrypt(item.familyMember);
+						// item.parking = decrypt(item.parking);
+						// item.floor = decrypt(item.floor);
+						usersArr.push(item);
+					} else {
+						// item.firstName = decrypt(item.firstName);
+						// item.lastName = decrypt(item.lastName);
+						item.userName = decrypt(item.userName);
+						item.email = decrypt(item.email);
+						// item.contact = decrypt(item.contact);
+						// item.familyMember = decrypt(item.familyMember);
+						// item.parking = decrypt(item.parking);
+						// user.floor = decrypt(user.floor);
+					}
+				})
+				return usersArr;
+			})
+			.then(user => {
+				res.status(httpStatus.OK).json(user);
+			});
+	} catch (error) {
+		console.log("error--->", error)
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+			"message": error
+		})
+	}
+}
+
 exports.getPersonDecrypted = (req, res, next) => {
 	try {
 		const usersArr = [];
@@ -1913,9 +1977,20 @@ exports.assignRoles = async (req, res, next) => {
 	}
 }
 
-exports.getRolesForActivation = async (req, res, next) => {
+exports.getRolesToAssign = async (req, res, next) => {
 	try {
 		const role = await Role.findAll({ where: { id: { [Op.notIn]: [1, 2, 5, 6] } } });
+		console.log(role);
+		return res.status(httpStatus.OK).json({ role: role });
+	} catch (error) {
+		console.log(error);
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Sequelize Error' })
+	}
+}
+
+exports.getRolesForActivation = async (req, res, next) => {
+	try {
+		const role = await Role.findAll({ where: { id: { [Op.notIn]: [1, 2] } } });
 		console.log(role);
 		return res.status(httpStatus.OK).json({ role: role });
 	} catch (error) {
@@ -2280,7 +2355,8 @@ exports.multipleActivateUsers = async (req, res, next) => {
 }
 
 exports.flatByUserId = (req, res, next) => {
-	userId = 35;
+	userId = req.userId;
+	const flatIds = [];
 	// User.findOne({where:{isActive:true,userId:userId},include:[{model:Role}]})
 	User.findOne({
 		where: {
@@ -2296,23 +2372,122 @@ exports.flatByUserId = (req, res, next) => {
 		}]
 	}).then(user => {
 		if (user !== null) {
-			console.log("user==>", user)
-			Tenant.findOne({
-				where: {
-					isActive: true,
-					userName: user.userName
-				}
-			})
-				.then(tenant => {
-					FlatDetail.findAll({
-						where: { isActive: true, flatDetailId: tenant.flatDetailId }
-					})
-						.then(flats => {
-							res.status(httpStatus.OK).json({
-								flats: flats
-							})
-						})
+			// console.log("user==>", user)
+			// res.json(user);
+			if (user.roles[0].id === 4) {
+				Tenant.findOne({
+					where: {
+						isActive: true,
+						userName: user.userName
+					}
 				})
+				.then(tenant => {
+					if (tenant !== null) {
+						TenantFlatDetail.findAll({
+							where: {
+								isActive: true,
+								tenantId: tenant.tenantId
+							}
+						})
+						.then(flats => {
+							if (flats.length !== 0) {
+								flatIds.splice(0, flatIds.length);
+								flats.map(item => {
+									flatIds.push(item.flatDetailId);
+								})
+								FlatDetail.findAll({
+									where: {
+										isActive: true,
+										flatDetailId: {
+											[Op.in]: flatIds
+										}
+									}
+								})
+								.then(flats => {
+									if (flats.length !== 0) {
+										res.status(httpStatus.OK).json({
+											message: 'Flats Found',
+											flats: flats
+										})
+									} else {
+										res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+											message: 'No Flats Found',
+											flats: flats
+										})
+									}
+								})
+							} else {
+								res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+									message: 'No Flats Found',
+									flats: flats
+								})
+							}
+						})
+					} else {
+						res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+							message: 'No Flats Found',
+							flats: []
+						})
+					}
+				})
+			} else {
+				Owner.findOne({
+					where: {
+						isActive: true,
+						userName: user.userName
+					}
+				})
+					.then(owner => {
+						if (owner !== null) {
+							OwnerFlatDetail.findAll({
+								where: {
+									isActive: true,
+									owner: owner.ownerId
+								}
+							})
+								.then(flats => {
+									if (flats.length !== 0) {
+										flatIds.splice(0,flatIds.length);
+										flats.map(item => {
+											flatIds.push(item.flatDetailId);
+										})
+										FlatDetail.findAll({
+											where: {
+												isActive: true,
+												flatDetailId: {
+													[Op.in]: flatIds
+												}
+											}
+										})
+											.then(flats => {
+												if (flats.length !== 0) {
+													res.status(httpStatus.OK).json({
+														message: 'Flats Found',
+														flats: flats
+													})
+												} else {
+													res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+														message: 'No Flats Found',
+														flats: flats
+													})
+												}
+											})
+									} else {
+										res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+											message: 'No Flats Found',
+											flats: flats
+										})
+									}
+								})
+						} else {
+							res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+								message: 'No Flats Found',
+								flats: []
+							})
+						}
+					})
+			}
+			
 		} else {
 			res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
 				message: 'User Not Found'

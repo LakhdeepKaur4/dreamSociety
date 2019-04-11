@@ -54,6 +54,8 @@ module.exports = function (app) {
 
 	app.get('/api/user', [authJwt.verifyToken], userController.getUserDecrypted);
 
+	app.get('/api/rolesAssigned', [authJwt.verifyToken], userController.getUserRoleDecrypted);
+
 	app.post('/api/assignRoles', [authJwt.verifyToken], userController.assignRoles);
 
 	app.get('/api/person', [authJwt.verifyToken], userController.getPersonDecrypted);
@@ -77,6 +79,8 @@ module.exports = function (app) {
 	app.put('/api/user/multiple/deactivate', [authJwt.verifyToken], userController.multipleDeactivateUsers);
 
 	app.put('/api/user/multiple/activate', [authJwt.verifyToken], userController.multipleActivateUsers);
+
+	app.get('/api/role/assign', [authJwt.verifyToken], userController.getRolesToAssign);
 
 	app.get('/api/user/role/activate', [authJwt.verifyToken], userController.getRolesForActivation);
 
@@ -315,12 +319,10 @@ module.exports = function (app) {
 	app.post('/api/auth/signupCopy', [verifySignUp.checkRolesExisted], userController.signupCopy);
 
 	app.post('/api/flatDetail', [authJwt.verifyToken], flatDetailController.create);
-	
-	app.get('/api/flatDetail', [authJwt.verifyToken], flatDetailController.get);
 
 	app.get('/api/flatDetail/:id', [authJwt.verifyToken], flatDetailController.getSlot);
 
-	
+	app.get('/api/flatDetail', [authJwt.verifyToken], flatDetailController.get);
 
 	app.put('/api/flatDetail/:id', [authJwt.verifyToken], flatDetailController.update);
 
@@ -542,6 +544,6 @@ module.exports = function (app) {
 
 	app.put('/api/individualVendor/delete/:id', [authJwt.verifyToken], individualVendorController.delete);
 
-	app.get('/api/flatbyid', userController.flatByUserId);
+	app.get('/api/flatbyid', [authJwt.verifyToken], userController.flatByUserId);
 
 }
