@@ -48,7 +48,7 @@ module.exports = function (app) {
 
 	app.get('/',userController.start);
 
-	app.get('/test',[authJwt.isAdmin],userController.test);
+	app.get('/test',[authJwt.isAdminRole],userController.test);
 
 	app.post('/api/auth/signup', [verifySignUp.checkRolesExisted], userController.signupEncrypted);
 
