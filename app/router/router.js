@@ -54,7 +54,7 @@ module.exports = function (app) {
 
 	app.get('/api/user', [authJwt.verifyToken], userController.getUserDecrypted);
 
-	app.get('/api/rolesAssigned',[authJwt.verifyToken],userController.getUserRoleDecrypted);
+	app.get('/api/rolesAssigned', [authJwt.verifyToken], userController.getUserRoleDecrypted);
 
 	app.post('/api/assignRoles', [authJwt.verifyToken], userController.assignRoles);
 
@@ -544,6 +544,6 @@ module.exports = function (app) {
 
 	app.put('/api/individualVendor/delete/:id', [authJwt.verifyToken], individualVendorController.delete);
 
-	app.get('/api/flatbyid', userController.flatByUserId);
+	app.get('/api/flatbyid', [authJwt.verifyToken], userController.flatByUserId);
 
 }
