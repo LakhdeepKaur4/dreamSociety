@@ -3,24 +3,25 @@ const config = require('../config/config.js');
 const db = require('../config/db.config.js');
 const Role = db.role;
 const User = db.user;
+const UserRole = db.userRole;
 const Op = db.Sequelize.Op;
 
 verifyToken = (req, res, next) => {
 	let token = req.headers['x-access-token'];
-	
-	if (!token){
-		return res.status(403).json({ 
+
+	if (!token) {
+		return res.status(403).json({
 			auth: false,
-			message: 'No token provided.' 
+			message: 'No token provided.'
 		});
 	}
 
 	jwt.verify(token, config.secret, (err, decoded) => {
-		if (err){
-			return res.status(500).json({ 
-					auth: false, 
-					message: 'Fail to Authentication. Error -> ' + err 
-				});
+		if (err) {
+			return res.status(500).json({
+				auth: false,
+				message: 'Fail to Authentication. Error -> ' + err
+			});
 		}
 		req.userId = decoded.id;
 		next();
@@ -29,75 +30,126 @@ verifyToken = (req, res, next) => {
 
 isAdmin = (req, res, next) => {
 	let token = req.headers['x-access-token'];
-	
+
 	User.findById(req.userId)
 		.then(user => {
 			user.getRoles().then(roles => {
-				for(let i=0; i<roles.length; i++){
+				for (let i = 0; i < roles.length; i++) {
 					console.log(roles[i].name);
-					if(roles[i].name.toUpperCase() === "ADMIN"){
+					if (roles[i].name.toUpperCase() === "ADMIN") {
 						next();
 						return;
 					}
 				}
-				
+
 				res.status(403).send("Require Admin Role!");
 				return;
 			})
 		})
 }
 
-isAdminRole = (req,res,next) =>{
+isAdminRole = async (req, res, next) => {
 	let token = req.headers['x-access-token'];
-	
-	User.findOne({where:{isActive:true,userId:req.userId},include: [{
-		model: Role,
-		where: {
-			id: {
-				[Op.in]: [2]
-			}
+	jwt.verify(token, config.secret, (err, decoded) => {
+		if (err) {
+			return res.status(500).json({
+				auth: false,
+				message: 'Fail to Authentication. Error -> ' + err
+			});
 		}
-	}]
-		// through: {
-		//     attributes: ['roleId', 'roleName'],
-		// }
-	})
-		.then(user => {
-			console.log(user);
-			// user.getRoles().then(roles => {
-			// 	for(let i=0; i<roles.length; i++){
-			// 		console.log(roles[i].name);
-			// 		if(roles[i].name.toUpperCase() === "ADMIN"){
-			// 			next();
-			// 			return;
-			// 		}
-			// 	}
-				
-			
-			// })
-			res.status(403).send("Require Admin Role!");
-			return;
-		})
+		req.userId = decoded.id;
+	});
+
+	const user = await User.findOne({ where: { isActive: true, userId: req.userId } });
+	if (user) {
+		const role = await UserRole.findOne({
+			where: {
+				isActive: true, userId: req.userId, roleId: {
+					[Op.in]: [1, 2]
+				}
+			}
+		});
+		if (role) {
+			next();
+			return
+		}
+		res.status(403).send("Require Admin or SuperAdmin Role!");
+		return;
+	}
+}
+
+isSuperAdminRole = async (req, res, next) => {
+	let token = req.headers['x-access-token'];
+	jwt.verify(token, config.secret, (err, decoded) => {
+		if (err) {
+			return res.status(500).json({
+				auth: false,
+				message: 'Fail to Authentication. Error -> ' + err
+			});
+		}
+		req.userId = decoded.id;
+	});
+
+	const user = await User.findOne({ where: { isActive: true, userId: req.userId } });
+	if (user) {
+		const role = await UserRole.findOne({ where: { isActive: true, userId: req.userId, roleId: 1 } });
+		if (role) {
+			next();
+			return
+		}
+		res.status(403).send("Require Super Admin Role!");
+		return;
+	}
+}
+
+isOwnerOrTenantRole = async (req, res, next) => {
+	let token = req.headers['x-access-token'];
+	jwt.verify(token, config.secret, (err, decoded) => {
+		if (err) {
+			return res.status(500).json({
+				auth: false,
+				message: 'Fail to Authentication. Error -> ' + err
+			});
+		}
+		req.userId = decoded.id;
+	});
+
+	const user = await User.findOne({ where: { isActive: true, userId: req.userId } });
+	if (user) {
+		const role = await UserRole.findOne({
+			where: {
+				isActive: true, userId: req.userId, roleId: {
+					[Op.in]: [3, 4]
+				}
+			}
+		});
+		if (role) {
+			next();
+			return
+		}
+		res.status(403).send("Require Owner or Tenant Roles!");
+		return;
+	}
 }
 
 isOwnerOrTenant = (req, res, next) => {
 	let token = req.headers['x-access-token'];
-	
+
 	User.findById(req.userId)
 		.then(user => {
 			user.getRoles().then(roles => {
-				for(let i=0; i<roles.length; i++){					
-					if(roles[i].name.toUpperCase() === "SOCIETY_MEMBER_OWNER"){
+				for (let i = 0; i < roles.length; i++) {
+					if (roles[i].name.toUpperCase() === "SOCIETY_MEMBER_OWNER") {
 						next();
 						return;
 					}
-					
-					if(roles[i].name.toUpperCase() === "SOCIETY_MEMBER_TENANT"){
+
+					if (roles[i].name.toUpperCase() === "SOCIETY_MEMBER_TENANT") {
 						next();
 						return;
 					}
 				}
-				
+
 				res.status(403).send("Require Owner or Tenant Roles!");
 			})
 		})
@@ -107,6 +159,8 @@ const authJwt = {};
 authJwt.verifyToken = verifyToken;
 authJwt.isAdmin = isAdmin;
 authJwt.isAdminRole = isAdminRole;
+authJwt.isSuperAdminRole = isSuperAdminRole;
 authJwt.isOwnerOrTenant = isOwnerOrTenant;
+authJwt.isOwnerOrTenantRole = isOwnerOrTenantRole;
 
 module.exports = authJwt;
