@@ -149,12 +149,12 @@ exports.getFloorByTowerId = async (req, res) => {
         // owners.map(owner => {
         //     return flatIds.push(owner.flatDetailId);
         // })
-        let ownerFlatDetails = await OwnerFlatDetail.findAll({ where: { isActive: true }});
+        let ownerFlatDetails = await OwnerFlatDetail.findAll({ where: { isActive: true } });
         ownerFlatDetails.map(ownerFlat => {
-                return flatIds.push(ownerFlat.flatDetailId);
-            })
-    
-        const flatDetail = await FlatDetail.findAll({ where: { towerId: towerId, floorId: { [Op.in]: floorIds },flatDetailId:{ [Op.notIn]:flatIds} } })
+            return flatIds.push(ownerFlat.flatDetailId);
+        })
+
+        const flatDetail = await FlatDetail.findAll({ where: { towerId: towerId, floorId: { [Op.in]: floorIds }, flatDetailId: { [Op.notIn]: flatIds } } })
 
         if (tower && flatDetail) {
             res.status(httpStatus.OK).json({ message: 'Tower Floor Page', tower: tower, flatDetail: flatDetail })
@@ -172,6 +172,8 @@ exports.getFloorByTowerIdForTenant = async (req, res, next) => {
     const flatDetailIdArr = [];
     const ownerIdArr = [];
     let towerSend;
+    let flat;
+    let owner;
 
     await Tower.findOne({
         where: {
@@ -197,122 +199,147 @@ exports.getFloorByTowerIdForTenant = async (req, res, next) => {
         })
     console.log(floorArr);
 
-    await FlatDetail.findAll({
-        where: {
-            isActive: true,
-            towerId: towerId,
-            floorId: {
-                [Op.in]: floorArr
-            }
-        }
-    })
-        .then(flats => {
-            if (flats.length !== 0) {
-                flats.map(item => {
-                    flatDetailIdArr.push(item.flatDetailId);
-                })
-            } else {
-                res.status(httpStatus.OK).json({
-                    message: 'No Flat Found',
-                    tower: towerSend,
-                    flatDetail: flats
-                })
-            }
-        })
-
-    await OwnerFlatDetail.findAll({
-        where: {
-            isActive: true,
-            flatDetailId: {
-                [Op.in]: flatDetailIdArr
-            }
-        }
-    })
-        .then(owners => {
-            if (owners.length !== 0) {
-                owners.map(item => {
-                    ownerIdArr.push(item.ownerId);
-                })
-            }
-            else {
-                res.status(httpStatus.OK).json({
-                    message: 'No Flat Found',
-                    tower: towerSend,
-                    flatDetail: []
-                })
-            }
-        })
-
-    await Owner.findAll({
-        where: {
-            isActive: true,
-            ownerId: {
-                [Op.in]: ownerIdArr
-            }
-        }
-    })
-        .then(owners => {
-            if (owners.length !== 0) {
-                ownerIdArr.splice(0,ownerIdArr.length);
-                owners.map(item => {
-                    ownerIdArr.push(item.ownerId);
-                })
-            } else {
-                res.status(httpStatus.OK).json({
-                    message: 'No Flat Found',
-                    tower: towerSend,
-                    flatDetail: []
-                })
-            }
-        })
-
-    await OwnerFlatDetail.findAll({
-        where: {
-            isActive: true,
-            ownerId: {
-                [Op.in]: ownerIdArr
-            }
-        }
-    })
-        .then(owners => {
-            if (owners.length !== 0) {
-                flatDetailIdArr.splice(0, flatDetailIdArr.length);
-                owners.map(item => {
-                    flatDetailIdArr.push(item.flatDetailId);
-                })
-            }
-            else {
-                res.status(httpStatus.OK).json({
-                    message: 'No Flat Found',
-                    tower: towerSend,
-                    flatDetail: []
-                })
-            }
-        })
-
-        FlatDetail.findAll({
+    if (towerSend !== null) {
+        await FlatDetail.findAll({
             where: {
                 isActive: true,
-                flatDetailId: {
-                    [Op.in]: flatDetailIdArr
+                towerId: towerId,
+                floorId: {
+                    [Op.in]: floorArr
                 }
             }
         })
-        .then(flats => {
-            if (flats.length !== 0) {
-                res.status(httpStatus.OK).json({
-                    message: 'Flats Found',
-                    tower: towerSend,
-                    flatDetail: flats
+            .then(flats => {
+                if (flats.length !== 0) {
+                    flat = flats
+                    flats.map(item => {
+                        flatDetailIdArr.push(item.flatDetailId);
+                    })
+                } else {
+                    res.status(httpStatus.OK).json({
+                        message: 'No Flat Found',
+                        tower: towerSend,
+                        flatDetail: flats
+                    })
+                }
+            })
+        if (flat.length !== 0) {
+            await OwnerFlatDetail.findAll({
+                where: {
+                    isActive: true,
+                    flatDetailId: {
+                        [Op.in]: flatDetailIdArr
+                    }
+                }
+            })
+                .then(owners => {
+                    owner = owners;
+                    if (owners.length !== 0) {
+                        owners.map(item => {
+                            ownerIdArr.push(item.ownerId);
+                        })
+                    }
+                    else {
+                        res.status(httpStatus.OK).json({
+                            message: 'No Flat Found',
+                            tower: towerSend,
+                            flatDetail: []
+                        })
+                    }
                 })
-            } else {
-                res.status(httpStatus.OK).json({
-                    message: 'No Flat Found',
-                    tower: towerSend,
-                    flatDetail: flats
+
+            if (owner.length !== 0) {
+                await Owner.findAll({
+                    where: {
+                        isActive: true,
+                        ownerId: {
+                            [Op.in]: ownerIdArr
+                        }
+                    }
                 })
+                    .then(owners => {
+                        owner = owners;
+                        if (owners.length !== 0) {
+                            ownerIdArr.splice(0, ownerIdArr.length);
+                            owners.map(item => {
+                                ownerIdArr.push(item.ownerId);
+                            })
+                        } else {
+                            res.status(httpStatus.OK).json({
+                                message: 'No Flat Found',
+                                tower: towerSend,
+                                flatDetail: []
+                            })
+                        }
+                    })
+
+                if (owner.length !== 0) {
+                    await OwnerFlatDetail.findAll({
+                        where: {
+                            isActive: true,
+                            ownerId: {
+                                [Op.in]: ownerIdArr
+                            }
+                        }
+                    })
+                        .then(owners => {
+                            owner = owners;
+                            if (owners.length !== 0) {
+                                flatDetailIdArr.splice(0, flatDetailIdArr.length);
+                                owners.map(item => {
+                                    flatDetailIdArr.push(item.flatDetailId);
+                                })
+                            }
+                            else {
+                                res.status(httpStatus.OK).json({
+                                    message: 'No Flat Found',
+                                    tower: towerSend,
+                                    flatDetail: []
+                                })
+                            }
+                        })
+
+                    if (owner.length !== 0) {
+                        FlatDetail.findAll({
+                            where: {
+                                isActive: true,
+                                flatDetailId: {
+                                    [Op.in]: flatDetailIdArr
+                                },
+                                towerId: towerId,
+                                floorId: {
+                                    [Op.in]: floorArr
+                                }
+                            }
+                        })
+                            .then(flats => {
+                                console.log(towerId,floorArr)
+                                if (flats.length !== 0) {
+                                    res.status(httpStatus.OK).json({
+                                        message: 'Flats Found',
+                                        tower: towerSend,
+                                        flatDetail: flats
+                                    })
+                                } else {
+                                    res.status(httpStatus.OK).json({
+                                        message: 'No Flat Found',
+                                        tower: towerSend,
+                                        flatDetail: flats
+                                    })
+                                }
+                            })
+                    }
+
+
+                }
+
+
             }
-        })
+
+
+        }
+
+    }
 }
 
 exports.getById = (req, res) => {
