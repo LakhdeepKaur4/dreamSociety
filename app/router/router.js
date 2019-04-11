@@ -44,6 +44,7 @@ module.exports = function (app) {
 	const checkToken = require('../controller/checktoken');
 	const eventBooking = require('../controller/eventBooking');
 	const individualVendorController = require('../controller/individualVendor');
+	const complaint = require('../controller/complaint');
 
 
 	app.get('/',userController.start);
@@ -547,4 +548,8 @@ module.exports = function (app) {
 	app.put('/api/individualVendor/delete/:id', [authJwt.verifyToken], individualVendorController.delete);
 
 	app.get('/api/flatbyid', [authJwt.verifyToken], userController.flatByUserId);
+
+	app.post('/api/complaintRegister', [authJwt.verifyToken], complaint.create);
+
+	app.get('/api/complaintRegister', [authJwt.verifyToken], complaint.get);
 }

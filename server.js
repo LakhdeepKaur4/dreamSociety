@@ -24,6 +24,8 @@ app.use('/public',express.static(path.resolve(__dirname, 'public')));
 
 require('./app/router/router.js')(app);
 
+// const complaint = require('./app/controller/complaintStatusCreate');
+
 const db = require('./app/config/db.config.js');
 
 const Role = db.role;
@@ -35,6 +37,7 @@ db.sequelize.sync({
 }).then(() => {
 	console.log('Drop and Resync with { force: false }');
 	//   initial();
+	// complaint();
 });
 
 
