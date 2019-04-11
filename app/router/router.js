@@ -544,6 +544,6 @@ module.exports = function (app) {
 
 	app.put('/api/individualVendor/delete/:id', [authJwt.verifyToken], individualVendorController.delete);
 
-	app.get('/api/flatbyid', userController.flatByUserId);
+	app.get('/api/flatbyid', [authJwt.verifyToken], userController.flatByUserId);
 
 }
