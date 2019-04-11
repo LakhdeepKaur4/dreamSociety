@@ -820,7 +820,7 @@ exports.updateEncrypted = async (req, res, next) => {
             userId: req.userId,
             societyId: societyId,
             towerId: towerId,
-            flatDetailId: flatDetailId
+            // flatDetailId: flatDetailId
         };
 
         Tenant.find({
