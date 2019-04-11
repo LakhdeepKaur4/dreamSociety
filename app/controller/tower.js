@@ -305,10 +305,15 @@ exports.getFloorByTowerIdForTenant = async (req, res, next) => {
                                 isActive: true,
                                 flatDetailId: {
                                     [Op.in]: flatDetailIdArr
+                                },
+                                towerId: towerId,
+                                floorId: {
+                                    [Op.in]: floorArr
                                 }
                             }
                         })
                             .then(flats => {
+                                console.log(towerId,floorArr)
                                 if (flats.length !== 0) {
                                     res.status(httpStatus.OK).json({
                                         message: 'Flats Found',
