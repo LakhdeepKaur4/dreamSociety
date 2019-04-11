@@ -279,11 +279,20 @@ exports.deleteSelected = async (req, res, next) => {
         const deleteSelected = req.body.ids.split(',');
         console.log("delete selected==>", deleteSelected);
         const update = { isActive: false };
+        const userNames = [];
         if (!deleteSelected) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
         }
-        const updatedTenant = await Tenant.update(update, { where: { tenantId: { [Op.in]: deleteSelected } } })
+        const updatedTenant = await Tenant.update(update, { where: { tenantId: { [Op.in]: deleteSelected } } });
+        const users = await Tenant.findAll({ where: { tenantId: { [Op.in]: deleteSelected } }, attributes: ['userName'] });
+        users.map(item => {
+            userNames.push(item.userName);
+        })
+        const userIds = await User.findAll({ where: { userName: { [Op.in]: userNames } } });
         if (updatedTenant) {
+            User.update({ isActive: false }, { where: { userName: { [Op.in]: userNames } } });
+            UserRoles.update({ isActive: false }, { where: { userId: { [Op.in]: userIds }, roleId: 4 } });
+            TenantFlatDetail.update({ isActive: false }, { where: { tenantId: { [Op.in]: deleteSelected } } });
             TenantMembersDetail.update(update, { where: { tenantId: { [Op.in]: deleteSelected } } });
             return res.status(httpStatus.OK).json({
                 message: "Tenant deleted successfully",
@@ -310,6 +319,14 @@ exports.delete = async (req, res, next) => {
             return tenant.updateAttributes(update)
         })
         if (updatedTenant) {
+            User.update({ isActive: false }, { where: { userName: tenant.userName } })
+                .then(user => {
+                    User.find({ where: { userName: tenant.userName } })
+                        .then(user => {
+                            UserRoles.update({ isActive: false }, { where: { userId: user.userId, roleId: 4 } });
+                        })
+                })
+            TenantFlatDetail.update({ isActive: false }, { where: { tenantId: id } });
             TenantMembersDetail.update({ isActive: false }, { where: { tenantId: id } });
             return res.status(httpStatus.OK).json({
                 message: "Tenant deleted successfully",
@@ -670,6 +687,9 @@ exports.updateEncrypted = async (req, res, next) => {
 
     const tenant = await Tenant.find({ where: { tenantId: id } });
 
+    user1 = await User.findOne({ where: { [Op.and]: [{ email: encrypt(update.email) }, { isActive: true }, { userName: { [Op.ne]: tenant.userName } }] } });
+    user2 = await User.findOne({ where: { [Op.and]: [{ contact: encrypt(update.contact) }, { isActive: true }, { userName: { [Op.ne]: tenant.userName } }] } });
+
     if (update['email'] !== undefined) {
         tenantEmailErr = await Tenant.findOne({ where: { email: encrypt(update.email), tenantId: { [Op.ne]: id } } });
     } else {
@@ -699,160 +719,167 @@ exports.updateEncrypted = async (req, res, next) => {
         messageContactErr: messageContactErr
     };
 
-    if ((messageErr.messageEmailErr === '') && (messageErr.messageContactErr === '')) {
-        firstNameCheck = constraintCheck('firstName', update);
-        lastNameCheck = constraintCheck('lastName', update);
-        dobCheck = constraintCheck('dob', update);
-        emailCheck = constraintCheck('email', update);
-        contactCheck = constraintCheck('contact', update);
-        aadhaarNumberCheck = constraintCheck('aadhaarNumber', update);
-        permanentAddressCheck = constraintCheck('permanentAddress', update);
-        correspondenceAddressCheck = constraintCheck('correspondenceAddress', update);
-        bankNameCheck = constraintCheck('bankName', update);
-        accountHolderNameCheck = constraintCheck('accountHolderName', update);
-        accountNumberCheck = constraintCheck('accountNumber', update);
-        genderCheck = constraintCheck('gender', update);
-        panCardNumberCheck = constraintCheck('panCardNumber', update);
-        IFSCCodeCheck = constraintCheck('IFSCCode', update);
-        societyIdCheck = constraintCheck('societyId', update);
-        towerIdCheck = constraintCheck('towerId', update);
-        // flatDetailIdCheck = constraintCheck('flatDetailId', update);
-        floorIdCheck = constraintCheck('floorId', update);
+    if (user1 === null && user2 === null) {
+        if ((messageErr.messageEmailErr === '') && (messageErr.messageContactErr === '')) {
+            firstNameCheck = constraintCheck('firstName', update);
+            lastNameCheck = constraintCheck('lastName', update);
+            dobCheck = constraintCheck('dob', update);
+            emailCheck = constraintCheck('email', update);
+            contactCheck = constraintCheck('contact', update);
+            aadhaarNumberCheck = constraintCheck('aadhaarNumber', update);
+            permanentAddressCheck = constraintCheck('permanentAddress', update);
+            correspondenceAddressCheck = constraintCheck('correspondenceAddress', update);
+            bankNameCheck = constraintCheck('bankName', update);
+            accountHolderNameCheck = constraintCheck('accountHolderName', update);
+            accountNumberCheck = constraintCheck('accountNumber', update);
+            genderCheck = constraintCheck('gender', update);
+            panCardNumberCheck = constraintCheck('panCardNumber', update);
+            IFSCCodeCheck = constraintCheck('IFSCCode', update);
+            societyIdCheck = constraintCheck('societyId', update);
+            towerIdCheck = constraintCheck('towerId', update);
+            // flatDetailIdCheck = constraintCheck('flatDetailId', update);
+            floorIdCheck = constraintCheck('floorId', update);
 
 
-        firstName = constraintReturn(firstNameCheck, update, 'firstName', tenant);
-        lastName = constraintReturn(lastNameCheck, update, 'lastName', tenant);
-        dob = referenceConstraintReturn(dobCheck, update, 'dob', tenant);
-        email = constraintReturn(emailCheck, update, 'email', tenant);
-        contact = constraintReturn(contactCheck, update, 'contact', tenant);
-        aadhaarNumber = constraintReturn(aadhaarNumberCheck, update, 'aadhaarNumber', tenant);
-        permanentAddress = constraintReturn(permanentAddressCheck, update, 'permanentAddress', tenant);
-        correspondenceAddress = constraintReturn(correspondenceAddressCheck, update, 'correspondenceAddress', tenant);
-        bankName = constraintReturn(bankNameCheck, update, 'bankName', tenant);
-        accountHolderName = constraintReturn(accountHolderNameCheck, update, 'accountHolderName', tenant);
-        accountNumber = constraintReturn(accountNumberCheck, update, 'accountNumber', tenant);
-        gender = constraintReturn(genderCheck, update, 'gender', tenant);
-        panCardNumber = constraintReturn(panCardNumberCheck, update, 'panCardNumber', tenant);
-        IFSCCode = constraintReturn(IFSCCodeCheck, update, 'IFSCCode', tenant);
-        societyId = referenceConstraintReturn(societyIdCheck, update, 'societyId', tenant);
-        towerId = referenceConstraintReturn(towerIdCheck, update, 'towerId', tenant);
-        // flatDetailId = referenceConstraintReturn(flatDetailIdCheck, update, 'flatDetailId', tenant);
-        floorId = referenceConstraintReturn(floorIdCheck, update, 'floorId', tenant);
+            firstName = constraintReturn(firstNameCheck, update, 'firstName', tenant);
+            lastName = constraintReturn(lastNameCheck, update, 'lastName', tenant);
+            dob = referenceConstraintReturn(dobCheck, update, 'dob', tenant);
+            email = constraintReturn(emailCheck, update, 'email', tenant);
+            contact = constraintReturn(contactCheck, update, 'contact', tenant);
+            aadhaarNumber = constraintReturn(aadhaarNumberCheck, update, 'aadhaarNumber', tenant);
+            permanentAddress = constraintReturn(permanentAddressCheck, update, 'permanentAddress', tenant);
+            correspondenceAddress = constraintReturn(correspondenceAddressCheck, update, 'correspondenceAddress', tenant);
+            bankName = constraintReturn(bankNameCheck, update, 'bankName', tenant);
+            accountHolderName = constraintReturn(accountHolderNameCheck, update, 'accountHolderName', tenant);
+            accountNumber = constraintReturn(accountNumberCheck, update, 'accountNumber', tenant);
+            gender = constraintReturn(genderCheck, update, 'gender', tenant);
+            panCardNumber = constraintReturn(panCardNumberCheck, update, 'panCardNumber', tenant);
+            IFSCCode = constraintReturn(IFSCCodeCheck, update, 'IFSCCode', tenant);
+            societyId = referenceConstraintReturn(societyIdCheck, update, 'societyId', tenant);
+            towerId = referenceConstraintReturn(towerIdCheck, update, 'towerId', tenant);
+            // flatDetailId = referenceConstraintReturn(flatDetailIdCheck, update, 'flatDetailId', tenant);
+            floorId = referenceConstraintReturn(floorIdCheck, update, 'floorId', tenant);
 
 
-        // await Owner.findAll({
-        //     attributes: ['ownerId'],
-        //     where: {
-        //         flatDetailId: flatDetailId
-        //     }
-        // })
-        //     .then(owners => {
-        //         owners.map(item => {
-        //             ownersArr.push(item.ownerId);
-        //         })
-        //         return ownersArr;
-        //     })
-        //     .then(owners => {
-        //         if (ownersArr.length !== 0) {
-        //             if (ownersArr[0]) {
-        //                 ownerId1 = ownersArr[0];
-        //             }
-        //             else {
-        //                 ownerId1 = null;
-        //             }
-        //             if (ownersArr[1]) {
-        //                 ownerId2 = ownersArr[1];
-        //             }
-        //             else {
-        //                 ownerId2 = null;
-        //             }
-        //             if (ownersArr[2]) {
-        //                 ownerId3 = ownersArr[2];
-        //             }
-        //             else {
-        //                 ownerId3 = null;
-        //             }
-        //             const ownersIds = {
-        //                 ownerId1: ownerId1,
-        //                 ownerId2: ownerId2,
-        //                 ownerId3: ownerId3
-        //             };
-        //             Tenant.update(ownersIds, { where: { tenantId: id } });
-        //         }
-        //     })
-        if ((update.picture !== '') && (update.picture !== null) && (update.picture !== undefined)) {
-            tenantImage = await Tenant.find({ where: { tenantId: id }, attributes: ['picture'] });
-            fs.unlink((decrypt(tenantImage.picture)).replace('../../', ''), err => {
-                if (err) {
-                    console.log("File Missing ===>", err);
-                }
-                console.log('File Deleted Successfully');
-            })
-            await saveToDisc(update.fileName, update.fileExt, update.picture, (err, res) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log(res);
-                    const updatedImage = {
-                        picture: encrypt(res)
-                    };
-                    Tenant.update(updatedImage, { where: { tenantId: id } });
-                }
-            })
-        }
-
-        const updates = {
-            firstName: firstName,
-            lastName: lastName,
-            dob: dob,
-            email: email,
-            contact: contact,
-            aadhaarNumber: aadhaarNumber,
-            permanentAddress: permanentAddress,
-            correspondenceAddress: correspondenceAddress,
-            bankName: bankName,
-            accountHolderName: accountHolderName,
-            accountNumber: accountNumber,
-            gender: gender,
-            panCardNumber: panCardNumber,
-            IFSCCode: IFSCCode,
-            floorId: floorId,
-            userId: req.userId,
-            societyId: societyId,
-            towerId: towerId,
-            // flatDetailId: flatDetailId
-        };
-
-        Tenant.find({
-            where: {
-                tenantId: id
+            // await Owner.findAll({
+            //     attributes: ['ownerId'],
+            //     where: {
+            //         flatDetailId: flatDetailId
+            //     }
+            // })
+            //     .then(owners => {
+            //         owners.map(item => {
+            //             ownersArr.push(item.ownerId);
+            //         })
+            //         return ownersArr;
+            //     })
+            //     .then(owners => {
+            //         if (ownersArr.length !== 0) {
+            //             if (ownersArr[0]) {
+            //                 ownerId1 = ownersArr[0];
+            //             }
+            //             else {
+            //                 ownerId1 = null;
+            //             }
+            //             if (ownersArr[1]) {
+            //                 ownerId2 = ownersArr[1];
+            //             }
+            //             else {
+            //                 ownerId2 = null;
+            //             }
+            //             if (ownersArr[2]) {
+            //                 ownerId3 = ownersArr[2];
+            //             }
+            //             else {
+            //                 ownerId3 = null;
+            //             }
+            //             const ownersIds = {
+            //                 ownerId1: ownerId1,
+            //                 ownerId2: ownerId2,
+            //                 ownerId3: ownerId3
+            //             };
+            //             Tenant.update(ownersIds, { where: { tenantId: id } });
+            //         }
+            //     })
+            if ((update.picture !== '') && (update.picture !== null) && (update.picture !== undefined)) {
+                tenantImage = await Tenant.find({ where: { tenantId: id }, attributes: ['picture'] });
+                fs.unlink((decrypt(tenantImage.picture)).replace('../../', ''), err => {
+                    if (err) {
+                        console.log("File Missing ===>", err);
+                    }
+                    console.log('File Deleted Successfully');
+                })
+                await saveToDisc(update.fileName, update.fileExt, update.picture, (err, res) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log(res);
+                        const updatedImage = {
+                            picture: encrypt(res)
+                        };
+                        Tenant.update(updatedImage, { where: { tenantId: id } });
+                    }
+                })
             }
-        })
-            .then(tenant => {
-                return tenant.updateAttributes(updates);
+
+            const updates = {
+                firstName: firstName,
+                lastName: lastName,
+                dob: dob,
+                email: email,
+                contact: contact,
+                aadhaarNumber: aadhaarNumber,
+                permanentAddress: permanentAddress,
+                correspondenceAddress: correspondenceAddress,
+                bankName: bankName,
+                accountHolderName: accountHolderName,
+                accountNumber: accountNumber,
+                gender: gender,
+                panCardNumber: panCardNumber,
+                IFSCCode: IFSCCode,
+                floorId: floorId,
+                userId: req.userId,
+                societyId: societyId,
+                towerId: towerId,
+                // flatDetailId: flatDetailId
+            };
+
+            Tenant.find({
+                where: {
+                    tenantId: id
+                }
             })
-            .then(tenant => {
-                // tenant.tenantName = decrypt(tenant.tenantName);
-                // tenant.userName = decrypt(tenant.userName);
-                // tenant.email = decrypt(tenant.email);
-                // tenant.contact = decrypt(tenant.contact);
-                // tenant.aadhaarNumber = decrypt(tenant.aadhaarNumber);
-                // tenant.picture = decrypt(tenant.picture);
-                // tenant.permanentAddress = decrypt(tenant.permanentAddress);
-                // tenant.bankName = decrypt(tenant.bankName);
-                // tenant.accountHolderName = decrypt(tenant.accountHolderName);
-                // tenant.accountNumber = decrypt(tenant.accountNumber);
-                // tenant.gender = decrypt(tenant.gender);
-                // tenant.panCardNumber = decrypt(tenant.panCardNumber);
-                // tenant.IFSCCode = decrypt(tenant.IFSCCode);
-                return res.status(httpStatus.CREATED).json({
-                    message: "Tenant successfully updated",
-                    // tenant: tenant
-                });
-            })
-            .catch(err => console.log(err))
+                .then(tenant => {
+                    User.update(updates, { where: { userName: tenant.userName } });
+                    return tenant.updateAttributes(updates);
+                })
+                .then(tenant => {
+                    // tenant.tenantName = decrypt(tenant.tenantName);
+                    // tenant.userName = decrypt(tenant.userName);
+                    // tenant.email = decrypt(tenant.email);
+                    // tenant.contact = decrypt(tenant.contact);
+                    // tenant.aadhaarNumber = decrypt(tenant.aadhaarNumber);
+                    // tenant.picture = decrypt(tenant.picture);
+                    // tenant.permanentAddress = decrypt(tenant.permanentAddress);
+                    // tenant.bankName = decrypt(tenant.bankName);
+                    // tenant.accountHolderName = decrypt(tenant.accountHolderName);
+                    // tenant.accountNumber = decrypt(tenant.accountNumber);
+                    // tenant.gender = decrypt(tenant.gender);
+                    // tenant.panCardNumber = decrypt(tenant.panCardNumber);
+                    // tenant.IFSCCode = decrypt(tenant.IFSCCode);
+                    return res.status(httpStatus.CREATED).json({
+                        message: "Tenant successfully updated",
+                        // tenant: tenant
+                    });
+                })
+                .catch(err => console.log(err))
+        } else {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json(messageErr);
+        }
     } else {
-        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json(messageErr);
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+            message: 'User already exist for same email and contact'
+        });
     }
 }
 
