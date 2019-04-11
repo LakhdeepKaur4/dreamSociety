@@ -115,7 +115,7 @@ exports.getSlot = async(req,res,next) =>{
             model: Parking
         },
         {
-            where: { isActive: true },
+            where: { isActive: true, },
             model: Slot
         }
         ]});
