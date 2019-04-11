@@ -446,7 +446,7 @@ module.exports = function (app) {
 
 	app.post('/api/owner/ownerMember/:id', [authJwt.verifyToken], owner.addMember);
 
-	app.get('/api/owner', [authJwt.verifyToken], owner.get2);
+	app.get('/api/owner', owner.get2);
 
 	app.put('/api/owner/:id', [authJwt.verifyToken], owner.update2);
 
@@ -462,7 +462,7 @@ module.exports = function (app) {
 
 	app.put('/api/owner/ownerMember/update/:id', [authJwt.verifyToken], owner.updateMember);
 
-	app.put('/api/owner/delete/:id', [authJwt.verifyToken], owner.delete);
+	app.put('/api/owner/delete/:id', owner.delete);
 
 	//app.put('/api/ownerMember/deleteSelected',[authJwt.verifyToken],owner.delete);
 

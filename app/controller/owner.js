@@ -516,7 +516,10 @@ exports.get2 = async (req, res, next) => {
       owner.gender = decrypt(key, owner.gender);
       owner.permanentAddress = decrypt(key, owner.permanentAddress);
       owner.correspondenceAddress = decrypt(key, owner.correspondenceAddress);
-      owner.picture = decrypt(key, owner.picture);
+      if(owner.picture!==null){
+        owner.picture = decrypt(key, owner.picture);
+
+      }
       // owner.picture = owner.picture.replace('../', '');
       // owner.picture = owner.picture.replace('../', '');
       owner.adhaarCardNo = decrypt(key,owner.adhaarCardNo);
@@ -628,7 +631,7 @@ let deletePhoto = async function (owner) {
 exports.update1 = async (req, res, next) => {
   if (req.body.email !== undefined && req.body.contact !== null) {
     let existingOwner = await Owner.find({
-      where: { [Op.and]: [{ email: encrypt(key, req.body.email) }, { ownerId: { [Op.ne]: req.params.id } }] }
+      where: { isActive: true ,[Op.and]: [{ email: encrypt(key, req.body.email) }, { ownerId: { [Op.ne]: req.params.id } }] }
     });
     if (existingOwner) {
       return res
@@ -639,7 +642,7 @@ exports.update1 = async (req, res, next) => {
 
   if (req.body.contact !== undefined && req.body.contact !== null) {
     let existingOwner1 = await Owner.find({
-      where: { [Op.and]: [{ contact: encrypt(key, req.body.contact) }, { ownerId: { [Op.ne]: req.params.id } }] }
+      where: { isActive:true , [Op.and]: [{ contact: encrypt(key, req.body.contact) }, { ownerId: { [Op.ne]: req.params.id } }] }
     });
     if (existingOwner1) {
       return res
@@ -665,6 +668,13 @@ exports.update1 = async (req, res, next) => {
     "contact",
     "adhaarCardNo"
   ];
+
+  let userAttrs = [
+    "firstName",
+    "lastName",
+    "email",
+    "contact"
+  ]
   let ids = ["flatDetailId", "societyId", "towerId","floorId"];
   let others = ["dob", "noOfMembers"];
   try {
@@ -784,7 +794,7 @@ exports.update2 = async (req, res, next) => {
   console.log(req.body);
   if (req.body.email !== undefined && req.body.contact !== null) {
     let existingOwner = await Owner.find({
-      where: { [Op.and]: [{ email: encrypt(key, req.body.email) }, { ownerId: { [Op.ne]: req.params.id } }] }
+      where: { isActive:true,[Op.and]: [{ email: encrypt(key, req.body.email) }, { ownerId: { [Op.ne]: req.params.id } }] }
     });
     if (existingOwner) {
       return res
@@ -795,7 +805,7 @@ exports.update2 = async (req, res, next) => {
 
   if (req.body.contact !== undefined && req.body.contact !== null) {
     let existingOwner1 = await Owner.find({
-      where: { [Op.and]: [{ contact: encrypt(key, req.body.contact) }, { ownerId: { [Op.ne]: req.params.id } }] }
+      where: { isActive:true,[Op.and]: [{ contact: encrypt(key, req.body.contact) }, { ownerId: { [Op.ne]: req.params.id } }] }
     });
     if (existingOwner1) {
       return res
@@ -817,6 +827,15 @@ exports.update2 = async (req, res, next) => {
     "contact",
     "adhaarCardNo"
   ];
+
+  let userAttrs = [
+    "firstName",
+    "lastName",
+    "email",
+    "contact"
+  ];
+
+  let updUserAttr = {};
   let ids = ["flatDetailId", "societyId", "towerId","floorId"];
   let others = ["dob", "noOfMembers"];
   try {
@@ -838,6 +857,9 @@ exports.update2 = async (req, res, next) => {
     const updatedOwner = await Owner.find({
       where: { ownerId: id, isActive: true }
     });
+    const user = await User.findOne({
+      where: {email:updatedOwner.email, isActive:true}
+    })
     attrArr.forEach(attr => {
       if (
         attr in req.body &&
@@ -848,6 +870,16 @@ exports.update2 = async (req, res, next) => {
         updAttr[attr] = encrypt(key, req.body[attr]);
       }
     });
+    userAttrs.forEach(attr => {
+      if(
+        attr in req.body &&
+        req.body[attr] !== undefined &&
+        req.body[attr] !== null && 
+        req.body[attr] !== ""
+      ){
+        updUserAttr[attr] = encrypt(key, req.body[attr]);
+      }
+    })
     others.forEach(attr => {
       if (
         attr in req.body &&
@@ -897,6 +929,7 @@ exports.update2 = async (req, res, next) => {
     }
     console.log("updated attributes,", updAttr);
     let updatedOwner1 = await updatedOwner.updateAttributes(updAttr);
+    let updatedUser = await user.updateAttributes(updUserAttr);
 
     if (updatedOwner1) {
       // updatedOwner1.userName = decrypt(key, updatedOwner1.userName);
@@ -943,6 +976,7 @@ exports.update2 = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
   try {
+    console.log("deleting");
     const id = req.params.id;
     if (!id) {
       return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
@@ -951,24 +985,33 @@ exports.delete = async (req, res, next) => {
     if (!update) {
       return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
     }
-    const updatedOwner = await Owner.find({ where: { ownerId: id } }).then(owner => {
-      return owner.updateAttributes(update)
+    const updatedOwner = await Owner.find({ where: { ownerId: id } });
+    if(updatedOwner){
+      updatedOwner.updateAttributes(update);
+    }
+    const updatedUser = await User.findOne({ where: { email: updatedOwner.email }});
+    console.log("show yourself",updatedUser);
+    if(updatedUser){
+      updatedUser.updateAttributes({isActive:false});
+       let updatedUserRoles = await UserRoles.find({ where: {userId: updatedUser.userId}}).then(userRole => {
+        userRole.updateAttributes(update);
     })
-    const updatedUser = await User.find({ where: { email: updatedOwner.email }}).then(user => {
-      return user.updateAttributes(update);
-    });
+    }
+   
 
-    const flatDetails = await OwnerFlatDetail.findAll({where: {ownerId : updatedOwner.ownerId}}).then(entries => {
-      entries.forEach(function(entry){
+    const flatDetails = await OwnerFlatDetail.findAll({where: {ownerId : id}}).then(entries => {
+      return entries.forEach(function(entry){
         return entry.updateAttributes(update);
       })
-    })
+    });
+
+    console.log("flats",flatDetails);
 
     // const updatedVendorService = await VendorService.find({ where: { vendorId: id } }).then(vendorService => {
     //     return vendorService.updateAttributes(update)
     // })
     const updatedOwnerMembersDetail = await OwnerMembersDetail.update(update, { where: { ownerId: id } })
-    if (updatedOwner && updatedOwnerMembersDetail && flatDetails) {
+    if (updatedOwner && updatedOwnerMembersDetail ) {
       return res.status(httpStatus.OK).json({
         message: "Owner deleted successfully",
       });
@@ -981,6 +1024,7 @@ exports.delete = async (req, res, next) => {
 
 exports.deleteSelected = async (req, res, next) => {
   try {
+    let userEmails = [];
     const deleteSelected = req.body.ids;
     console.log("delete selected==>", deleteSelected);
 
@@ -992,10 +1036,18 @@ exports.deleteSelected = async (req, res, next) => {
     // const updatedUsers = await User.findAll()
     if(updatedOwners.length > 0){
       updatedOwners.forEach( async (updatedOwner) => {
-         let user = await User.findOne({where: {email:updatedOwner.email}});
+         let user = await User.findOne({where: {email:updatedOwner.email}}).then(async user => {
+          let role = await UserRoles.findOne({where:{userId:user.userId}});
+          role.updateAttributes(update);
+         });
          return user.updateAttributes(update);
       })
     }
+
+    // const updatedUsers = updatedOwners.forEach(async (owner) => {
+    //   await User.update(update,{where:{email:owner.email}})
+    // })
+
     const updatedOwnersMembers = await OwnerMembersDetail.update(update, { where: { ownerId: { [Op.in]: deleteSelected } } });
 
     let flatDetails = await OwnerFlatDetail.update(update , {where: {ownerId:{ [Op.in]: deleteSelected} }});
