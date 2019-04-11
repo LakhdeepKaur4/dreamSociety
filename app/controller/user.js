@@ -1570,7 +1570,7 @@ exports.getUserRoleDecrypted = (req, res, next) => {
 				model: Role,
 				where: {
 					id: {
-						[Op.in]: [3, 4]
+						[Op.in]: [1,2,3, 4]
 					},
 				},
 				// through: {
@@ -1914,8 +1914,10 @@ exports.assignRoles = async (req, res, next) => {
 			}
 			case "4": {
 				const tenant = await Tenant.findOne({ where: { isActive: true, tenantId: req.body.userId } });
+				console.log(tenant)
 				// let tenantEmail = tenant.email;
-				const user = await User.findOne({ where: { isActive: true, email: tenant.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] })
+				const user = await User.findOne({ where: { isActive: true, email: tenant.email }, attributes: ['userId', 'firstName', 'lastName', 'userName'], include: [{ model: Role, attributes: ['id', 'roleName'] }] });
+				console.log(user)
 				user.firstName = decrypt(user.firstName);
 				user.lastName = decrypt(user.lastName);
 				user.userName = decrypt(user.userName);

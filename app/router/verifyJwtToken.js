@@ -50,7 +50,7 @@ isAdmin = (req, res, next) => {
 isAdminRole = (req,res,next) =>{
 	let token = req.headers['x-access-token'];
 	
-	User.findById({where:{isActive:true,userId:req.userId},include: [{
+	User.findOne({where:{isActive:true,userId:req.userId},include: [{
 		model: Role,
 		where: {
 			id: {
