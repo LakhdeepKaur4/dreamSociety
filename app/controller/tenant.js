@@ -1043,3 +1043,32 @@ exports.deleteSelectedTenantMembers = (req, res, next) => {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
+
+exports.addFlats = (req,res,next) => {
+    const body = req.body;
+
+    console.log('Body ===>',body);
+
+    if (body !== null) {
+        TenantFlatDetail.create(body)
+        .then(flat => {
+            if (flat !== null) {
+                res.status(httpStatus.CREATED).json({
+                    message: 'Flat added successfully'
+                })
+            } else {
+                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                    message: 'Flat not added'
+                })
+            }
+        })
+        .catch(err => {
+            console.log('Error ===>',err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+    } else {
+        res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+            message: 'Please provide required data'
+        })
+    }
+}

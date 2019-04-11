@@ -473,6 +473,8 @@ module.exports = function (app) {
 
 	app.post('/api/tenant', [authJwt.verifyToken], tenant.createEncrypted);
 
+	app.post('/api/tenant/addFlat', [authJwt.verifyToken], tenant.addFlats);
+
 	app.get('/api/tenant', [authJwt.verifyToken], tenant.getDecrypted);
 
 	app.put('/api/tenant/delete/deleteSelected', [authJwt.verifyToken], tenant.deleteSelected);
