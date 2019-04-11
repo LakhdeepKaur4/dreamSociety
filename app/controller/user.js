@@ -1913,9 +1913,20 @@ exports.assignRoles = async (req, res, next) => {
 	}
 }
 
-exports.getRolesForActivation = async (req, res, next) => {
+exports.getRolesToAssign = async (req, res, next) => {
 	try {
 		const role = await Role.findAll({ where: { id: { [Op.notIn]: [1, 2, 5, 6] } } });
+		console.log(role);
+		return res.status(httpStatus.OK).json({ role: role });
+	} catch (error) {
+		console.log(error);
+		return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Sequelize Error' })
+	}
+}
+
+exports.getRolesForActivation = async (req, res, next) => {
+	try {
+		const role = await Role.findAll({ where: { id: { [Op.notIn]: [1, 2] } } });
 		console.log(role);
 		return res.status(httpStatus.OK).json({ role: role });
 	} catch (error) {

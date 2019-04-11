@@ -78,6 +78,8 @@ module.exports = function (app) {
 
 	app.put('/api/user/multiple/activate', [authJwt.verifyToken], userController.multipleActivateUsers);
 
+	app.get('/api/role/assign', [authJwt.verifyToken], userController.getRolesToAssign);
+
 	app.get('/api/user/role/activate', [authJwt.verifyToken], userController.getRolesForActivation);
 
 	app.get('/api/user/active/:id', [authJwt.verifyToken], userController.activeUsersByRole);
