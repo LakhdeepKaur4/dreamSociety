@@ -54,6 +54,8 @@ module.exports = function (app) {
 
 	app.get('/api/user', [authJwt.verifyToken], userController.getUserDecrypted);
 
+	app.get('/api/rolesAssigned',[authJwt.verifyToken],userController.getUserRoleDecrypted);
+
 	app.post('/api/assignRoles', [authJwt.verifyToken], userController.assignRoles);
 
 	app.get('/api/person', [authJwt.verifyToken], userController.getPersonDecrypted);

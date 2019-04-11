@@ -1552,6 +1552,67 @@ exports.getUserDecrypted = (req, res, next) => {
 	}
 }
 
+exports.getUserRoleDecrypted = (req, res, next) => {
+	try {
+		const usersArr = [];
+		User.findAll({
+			where: {
+				isActive: true
+			},
+			order: [
+				['createdAt', 'DESC']
+			],
+			include: [{
+				model: Role,
+				where: {
+					id: {
+						[Op.in]: [3, 4]
+					},
+				},
+				// through: {
+				//     attributes: ['roleId', 'roleName'],
+				// }
+			},
+			{
+				model: Tower
+			}]
+		})
+			.then(users => {
+				users.map(item => {
+					if ((item['firstName'] !== null) && (item['lastName'] !== null) && (item['contact'] !== null)) {
+						item.firstName = decrypt(item.firstName);
+						item.lastName = decrypt(item.lastName);
+						item.userName = decrypt(item.userName);
+						item.email = decrypt(item.email);
+						item.contact = decrypt(item.contact);
+						// item.familyMember = decrypt(item.familyMember);
+						// item.parking = decrypt(item.parking);
+						// item.floor = decrypt(item.floor);
+						usersArr.push(item);
+					} else {
+						// item.firstName = decrypt(item.firstName);
+						// item.lastName = decrypt(item.lastName);
+						item.userName = decrypt(item.userName);
+						item.email = decrypt(item.email);
+						// item.contact = decrypt(item.contact);
+						// item.familyMember = decrypt(item.familyMember);
+						// item.parking = decrypt(item.parking);
+						// user.floor = decrypt(user.floor);
+					}
+				})
+				return usersArr;
+			})
+			.then(user => {
+				res.status(httpStatus.OK).json(user);
+			});
+	} catch (error) {
+		console.log("error--->", error)
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+			"message": error
+		})
+	}
+}
+
 exports.getPersonDecrypted = (req, res, next) => {
 	try {
 		const usersArr = [];
