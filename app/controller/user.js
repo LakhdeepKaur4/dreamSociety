@@ -41,6 +41,10 @@ exports.start = (req, res) => {
 }
 
 
+exports.test = (req, res) => {
+	res.send('Test');
+}
+
 function decrypt1(key, data) {
 	var decipher = crypto.createDecipher("aes-128-cbc", key);
 	var decrypted = decipher.update(data, "hex", "utf-8");
@@ -1570,7 +1574,7 @@ exports.getUserRoleDecrypted = (req, res, next) => {
 				model: Role,
 				where: {
 					id: {
-						[Op.in]: [1,2,3, 4]
+						[Op.in]: [1,2,3,4]
 					},
 				},
 				// through: {
