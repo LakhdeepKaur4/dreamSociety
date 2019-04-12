@@ -1098,8 +1098,9 @@ exports.getFlats = (req,res,next) => {
     })
     .then(tenant => {
         if (tenant !== null) {
+            // console.log(tenant);
             res.status(httpStatus.OK).json({
-                flats: tenant.flat_detail_master
+                flats: tenant.flat_detail_masters
             })
         } else {
             res.status(httpStatus.UNPROCESSABLE_ENTITY).json({

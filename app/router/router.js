@@ -47,9 +47,9 @@ module.exports = function (app) {
 	const complaint = require('../controller/complaint');
 
 
-	app.get('/',userController.start);
+	app.get('/', userController.start);
 
-	app.get('/test',[authJwt.isAdminRole],userController.test);
+	app.get('/test', [authJwt.isAdminRole], userController.test);
 
 	app.post('/api/auth/signup', [verifySignUp.checkRolesExisted], userController.signupEncrypted);
 
