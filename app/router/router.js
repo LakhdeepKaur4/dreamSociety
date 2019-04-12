@@ -553,10 +553,9 @@ module.exports = function (app) {
 
 	app.put('/api/individualVendor/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], individualVendorController.delete);
 
-	app.get('/api/flatbyid', [authJwt.verifyToken, authJwt.isAdminRole], userController.flatByUserId);
+	app.get('/api/flatbyid', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], userController.flatByUserId);
 
-	app.post('/api/complaintRegister', [authJwt.verifyToken,authJwt.isAdminRole], complaint.create);
+	app.post('/api/complaintRegister', [authJwt.verifyToken,authJwt.isOwnerOrTenantRole], complaint.create);
 
-	app.get('/api/complaintRegister', [authJwt.verifyToken,authJwt.isAdminRole], complaint.get);
+	app.get('/api/complaintRegister', [authJwt.verifyToken,authJwt.isOwnerOrTenantRole], complaint.get);
 }
-	, authJwt.isAdminRole
