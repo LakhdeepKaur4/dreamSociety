@@ -1072,6 +1072,7 @@ ImageChange =(event)=>{
                                   <Input name="contact" value={this.state.contact}
                                       onChange={this.onChange}
                                        maxLength={10}
+                                       minLength={10}
 
                                        onKeyPress={this.OnKeyPressNumber}
                                     />

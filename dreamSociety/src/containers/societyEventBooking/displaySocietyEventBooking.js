@@ -48,7 +48,7 @@ class DisplaySocietyEventBooking extends Component {
 
     searchFilter(search) {
         return function (x) {
-            return x.event_master.eventName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.event_master? x.event_master.eventName.toLowerCase().includes(search.toLowerCase()):'' || !search;
         }
     }
 
@@ -109,7 +109,7 @@ class DisplaySocietyEventBooking extends Component {
     }
 
 
-    renderList({ societyEvents }) {console.log(societyEvents)
+    renderList({ societyEvents }) {
         if (societyEvents && societyEvents.eventBookings ) {
             return  societyEvents.eventBookings.sort((item1,item2)=>{
                 var cmprVal =  (item1.event_master[this.state.filterName].localeCompare(item2.event_master[this.state.filterName]))
