@@ -105,16 +105,12 @@ changePassword=()=>{
 
     
     render() {
-        let form;
-        if(!this.state.loading){
-        form=
+        let 
+        form1=
         <div>
         <Form onSubmit={this.submit}>
-        <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
-
-        <h3 align="center">  Add Size </h3>
+  
+      
             <FormGroup>
                 <Label> Size Type</Label>
                 <Input type="text" className="form-control" placeholder="sizeType" value={this.state.size_type} name="sizeType" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={30} />
@@ -122,22 +118,27 @@ changePassword=()=>{
                 <span className="error">{this.state.message}</span>    
             </FormGroup>
             <FormGroup>
-                <Button type="submit" color="success">Submit</Button>
+                <Button type="submit" color="success mr-2">Submit</Button>
                 <button className=" btn btn-danger" onClick ={this.size}>Cancel</button>
             </FormGroup>
         </Form>
     </div>  
-        }
-        else if(this.submit){
-            form=<Spinner/>
-        }
+       
         return (
                      
             
             <div>
                 <UI onClick={this.logout} change ={this.changePassword}>
-                        
-       {form}
+          
+    <div className="w3-container w3-margin-top w3-responsive">
+                        <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                            <span aria-hidden="true">&times;</span>
+                        </div>
+            
+                        <h3 align="center"> Add Size</h3>
+
+{!this.state.loading ?form1:<Spinner/>}
+              </div>
            
                 </UI>
             </div>

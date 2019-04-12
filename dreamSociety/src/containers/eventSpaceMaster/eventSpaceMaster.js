@@ -18,6 +18,9 @@ class EventSpaceMaster extends Component {
             spaceName: '',
             capacity: '',
             sizeId: '',
+            price:'',
+            from:'',
+            to:'',
             // open:'',
             // close:'',
             area:'',
@@ -38,6 +41,7 @@ class EventSpaceMaster extends Component {
 
     submit = (e) => {
         e.preventDefault();
+        console.log(this.state)
         let errors = {};
        
         if (this.state.spaceName === '') errors.spaceName = "Cant be empty";
@@ -47,9 +51,13 @@ class EventSpaceMaster extends Component {
         if (!this.state.sizeId) {
             errors.sizeId = "Size Type cannot be empty";
         }
-       
-
+      
         if (this.state.area === '') errors.area = "Cant be empty";
+
+         
+        // if (this.state.price === '') errors.price = "Cant be empty";
+        // if (this.state.from === '') errors.from = "Please enter date";
+        // if (this.state.to === '') errors.to = "Please enter date";
 
         if (this.state.description  === '') errors.description = "Cant be empty";
         
@@ -145,6 +153,14 @@ class EventSpaceMaster extends Component {
             event.preventDefault();
         }
     }
+    OnKeyPressPrice=(event)=>{
+        const pattern = /^[0-9+]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+
+    }
     
     close=()=>{
         return this.props.history.replace('/superDashBoard')
@@ -184,7 +200,7 @@ class EventSpaceMaster extends Component {
                     placeholder="enter capacity"  
                     // value={this.state.capacity}
                     onKeyPress = {this.OnKeyPresshandlerPhone}
-                    maxLength='3'
+                    maxLength='4'
                     onChange={this.onChange} />
                 <span className='error'>{this.state.errors.capacity}</span>
             </FormGroup>
@@ -245,6 +261,48 @@ class EventSpaceMaster extends Component {
                     
                 <span className='error'>{this.state.errors.area}</span>
             </FormGroup>
+
+             {/* <FormGroup>
+                <Label>From</Label>
+                <Input
+                    type="date"
+                    name="from"
+                    // placeholder="enter price"
+                    // maxLength='8'
+                    // onKeyPress = {this.OnKeyPressPrice}
+                    // value={this.state.area}
+                    onChange={this.onChange} />
+                    
+                <span className='error'>{this.state.errors.from}</span>
+            </FormGroup>
+
+            <FormGroup>
+                <Label>To</Label>
+                <Input
+                    type="date"
+                    name="to"
+                    // placeholder="enter price"
+                    // maxLength='8'
+                    // onKeyPress = {this.OnKeyPressPrice}
+                    // value={this.state.area}
+                    onChange={this.onChange} />
+                    
+                <span className='error'>{this.state.errors.to}</span>
+            </FormGroup> 
+
+         <FormGroup>
+                <Label>Price</Label>
+                <Input
+                    type="text"
+                    name="price"
+                    placeholder="enter price"
+                    maxLength='8'
+                    onKeyPress = {this.OnKeyPressPrice}
+                    // value={this.state.area}
+                    onChange={this.onChange} />
+                    
+                <span className='error'>{this.state.errors.price}</span>
+            </FormGroup>  */}
 
             <FormGroup>
                 <Label>Description</Label>

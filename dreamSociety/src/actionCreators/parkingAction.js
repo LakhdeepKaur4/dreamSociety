@@ -19,8 +19,8 @@ export function createParking(props){
     } 
 }
 
-export function fetchParking(props){
-    const request = axios.get(`${URN}/slot`, props, {headers:authHeader()});
+export function fetchParking(){
+    const request = axios.get(`${URN}/slot`, {headers:authHeader()});
     return {
         type: FETCH_PARKING,
         payload: request

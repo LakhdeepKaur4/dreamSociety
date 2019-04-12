@@ -124,6 +124,10 @@ class DisplayEmployeeTypeMaster extends Component {
     addEmployee = () => {
         this.props.history.push('/superDashboard/employeeType')
     }
+    close=()=>{
+        return this.props.history.replace('/superDashBoard')
+    }
+  
 
 
     getEmpType({ employeeType }) {
@@ -210,7 +214,7 @@ searchFilter(search) {
                             <td>{item.employee_work_type_master?item.employee_work_type_master.employeeWorkType:''}</td>
                             <td>{item.employee_type_master?item.employee_type_master.employeeType:''}</td>
                             <td>
-                                <button className="btn btn-success" onClick={this.editEmployee.bind(this, item.employeeDetailId, item.employeeTypeId, item.employeeWorkTypeId, item.serviceType)}  >Edit</button>
+                                <button className="btn btn-success mr-2" onClick={this.editEmployee.bind(this, item.employeeDetailId, item.employeeTypeId, item.employeeWorkTypeId, item.serviceType)}  >Edit</button>
                                 <button className="btn btn-danger" onClick={this.deleteEmployee.bind(this, item.employeeDetailId)}>Delete</button>
                             </td>
                         </tr>

@@ -123,8 +123,7 @@ changePassword=()=>{
   
   render() {
 
-    let form1 ;
-    if(!this.state.loading  &&this.props.EventDetails.events){
+    let 
     form1=
     <div >
      
@@ -132,7 +131,7 @@ changePassword=()=>{
       <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
         <span aria-hidden="true">&times;</span>
    </div>
-      <h3 align="center">Add Event</h3>
+     
         <div className="form-group">
           <label >Event Type</label>
           <input
@@ -183,20 +182,25 @@ changePassword=()=>{
         
   
         <button
-          className="btn btn-success"
+          className="btn btn-success mr-2"
         > Submit</button>
     <button  onClick={this.event}  className="btn btn-danger">  Cancel</button>
       </form>
     </div>
-    }
-    else if(this.submit){
-      form1 =<Spinner/>
-  }
+ 
     return (
       <div>
     <UI onClick={this.logout} change={this.changePassword}>
   
-             {form1}   
+    <div className="w3-container w3-margin-top w3-responsive">
+                        <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                            <span aria-hidden="true">&times;</span>
+                        </div>
+            
+                        <h3 align="center"> Add Event </h3>
+
+{!this.state.loading ?form1:<Spinner/>}
+              </div>
         
        </UI>
              

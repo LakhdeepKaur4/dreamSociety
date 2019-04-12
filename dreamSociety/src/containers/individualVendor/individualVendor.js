@@ -68,6 +68,7 @@ class IndividualVendor extends Component{
             editCurrent:true,
             pin:'',
             pin1:'',
+            dailyRoutine:false
            
         }
     }
@@ -541,6 +542,14 @@ class IndividualVendor extends Component{
         console.log('updatePermanentAddress', this.state.permanentAddress)
     }
 
+    changeVendor=(event)=>{
+       
+        this.setState({ [event.target.name]: event.target.checked}, function(){
+            console.log(this.state.dailyRoutine)
+        })
+        
+    }
+
 
     service({item}){
         if(item){
@@ -746,6 +755,7 @@ class IndividualVendor extends Component{
                         <FormGroup>
                             <span style={{fontWeight:'600'}}>Is Your Current address same as above?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
                         </FormGroup>
+                        
                         {this.state.currentAddressVisible ? <FormGroup>
                             <Label>Current Address</Label>
                             <Input type="textarea" id="currenttaddr" disabled maxLength="500" value={this.state.permanentAddress} name="defaultCurrentAddress" onChange={this.defaultCurrentAddress} />
@@ -819,6 +829,13 @@ class IndividualVendor extends Component{
                 </FormGroup>
                 </Col>
                 </Row>
+
+                <FormGroup check> <span style={{fontWeight:'600'}}>Is Your Vendor providing daily routine services?</span><Input type="checkbox" onChange={this.changeVendor} name="dailyRoutine"  className="ml-3" /></FormGroup>
+                {/* <FormGroup check>
+                    <Label check>   
+                        <Input type="checkbox" name="daiilyRoutine" onChange={this.changeVendor} />Is your vendor providing daily routine services?
+                    </Label>
+                </FormGroup> */}
                 <Row form>
                 <Col md={5}>
                 <FormGroup>

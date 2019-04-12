@@ -197,7 +197,7 @@ form1 = <form onSubmit={this.submit}>
           
         
          
-          <button className="btn btn-success"> Submit</button>
+          <button className="btn btn-success mr-2"> Submit</button>
           <button className="btn btn-danger" onClick={this.person}>Cancel</button>
       </form>  
      
