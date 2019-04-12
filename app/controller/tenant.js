@@ -1050,34 +1050,41 @@ exports.addFlats = async (req, res, next) => {
     console.log('Body ===>', body);
 
     const flat = await TenantFlatDetail.findOne({ where: { isActive: true, tenantId: body.tenantId, flatDetailId: body.flatDetailId } });
+    const flatCount = await TenantFlatDetail.findAll({ where: { isActive: true, tenantId: body.tenantId } });
 
-    if (flat !== null) {
+    if (flatCount.length === 5) {
         res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-            message: 'Flat already exist for this tenant'
+            message: 'Maximum flats for this tenant'
         })
     } else {
-        if (body !== null) {
-            TenantFlatDetail.create(body)
-                .then(flat => {
-                    if (flat !== null) {
-                        res.status(httpStatus.CREATED).json({
-                            message: 'Flat added successfully'
-                        })
-                    } else {
-                        res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                            message: 'Flat not added'
-                        })
-                    }
-                })
-                .catch(err => {
-                    console.log('Error ===>', err);
-                    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-                })
-        } else {
+        if (flat !== null) {
             res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                message: 'Please provide required data'
+                message: 'Flat already exist for this tenant'
             })
-        } 
+        } else {
+            if (body !== null) {
+                TenantFlatDetail.create(body)
+                    .then(flat => {
+                        if (flat !== null) {
+                            res.status(httpStatus.CREATED).json({
+                                message: 'Flat added successfully'
+                            })
+                        } else {
+                            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                                message: 'Flat not added'
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        console.log('Error ===>', err);
+                        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+                    })
+            } else {
+                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                    message: 'Please provide required data'
+                })
+            }
+        }
     }
 }
 
