@@ -74,7 +74,8 @@ class TenantDetail extends Component {
             addFlat: false,
             addFlatLoading:false,
             viewFlatDetail:false,
-            viewFlatLoading:false
+            viewFlatLoading:false,
+            flatError:''
         }
     }
 
@@ -374,7 +375,7 @@ class TenantDetail extends Component {
     towerChangeHandler = (towerId, towerName, selectOption) => {
         document.getElementById('floor').value === null
         console.log(towerId, towerName, selectOption)
-        this.setState({correspondenceAddress:''})
+        this.setState({correspondenceAddress:'',memberError:''})
         this.setState(function (prevState, props) {
             return {
                 towerId: selectOption.towerId,
@@ -392,6 +393,7 @@ class TenantDetail extends Component {
         this.setState({
             floorName: selectOption.floorName,
             floorId: selectOption.floorId,
+            memberError:''
         })
         console.log('lllllllll=======',this.state.floorId)
         // this.getFlats(this.props.towerFloor);
@@ -404,6 +406,7 @@ class TenantDetail extends Component {
             this.setState({
                 flatNo: selectOption.flatNo,
                 flatDetailId: selectOption.flatDetailId,
+                memberError:''
             })
             this.props.getFlatDetailViaTowerId(selectOption.towerId);
         }
@@ -818,7 +821,7 @@ class TenantDetail extends Component {
     }
 
     toggleFlat(){
-        this.setState({addFlat: !this.state.addFlat})
+        this.setState({addFlat: !this.state.addFlat,flatError:''})
     }
     addNewFlat(tenantId, flatDetailId){
         this.setState({addFlatLoading: true})
@@ -828,7 +831,9 @@ class TenantDetail extends Component {
         }
         this.props.addNewFlatForTenant(data)
         .then(() => this.refresFlatData())
-        .catch(err => this.setState({addFlatLoading: false}))
+        .catch(err => {err
+            console.log(err)
+            this.setState({addFlatLoading: false, flatError:err.response.data.message})})
     }
 
     refresFlatData = () => {
@@ -879,6 +884,7 @@ class TenantDetail extends Component {
         </div>
 
         let flatModal = <div>
+            <div><span className="error">{this.state.flatError}</span></div>
             <FormGroup>
                 <Label>Tower</Label>
                 <Select onChange={this.towerChangeHandler.bind(this, 'towerId', 'towerName')} placeholder={<DefaultSelect/>} name="towerId"

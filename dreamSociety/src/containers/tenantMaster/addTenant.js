@@ -235,7 +235,7 @@ class AddTenant extends Component{
         if (e.target.value != '') {
             this.setState({
                 noOfMembers: e.target.value,
-                
+                memberError:''
             });
         }
     }
