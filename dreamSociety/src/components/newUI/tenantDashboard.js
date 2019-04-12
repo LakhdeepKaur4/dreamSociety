@@ -30,11 +30,16 @@ class Demo extends Component {
 
         });
     }
-    logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user-type');
-        return this.props.history.replace('/')
-    }
+    // logout = () => {
+    //     localStorage.removeItem('token');
+    //     localStorage.removeItem('user-type');
+    //     return this.props.history.replace('/')
+    // }
+
+    // changePassword=()=>{ 
+    //     console.log("password")
+    //     return this.props.history.replace('/tenantDashboard/changePasswordTenant')
+    // }
 
     render() {
         return (
@@ -54,7 +59,7 @@ class Demo extends Component {
 
                         </div>
                     </div>
-                    <Link className="navbar-brand" to="/superDashboard"><i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa mr-1">&#xf1ad;</i>DRE@M SOCIETY</Link>
+                    <Link className="navbar-brand" to="/tenantDashboard"><i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa mr-1">&#xf1ad;</i>DRE@M SOCIETY</Link>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
@@ -62,7 +67,7 @@ class Demo extends Component {
                     <div className="collapse navbar-collapse" id="navbarsExample05">
                         <ul className="navbar-nav mr-auto mx-auto">
                             <li className="nav-item mx-3 active">
-                                <Link className="nav-link" to="/superDashboard">Home<span className="sr-only">(current)</span></Link>
+                                <Link className="nav-link" to="/tenantDashboard">Home<span className="sr-only">(current)</span></Link>
                             </li>
                             <li className="nav-item mx-3">
                                 <Link className="nav-link" to="#">Gallery</Link>
@@ -86,8 +91,9 @@ class Demo extends Component {
                                 <div className="form-inline ml-lg-3 ml-md-2 ml-sm-2 mt-2 mt-md-0">
                                 <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal"  type="button"
                                         onClick={this.props.change}>Change Password</button>
+
                                     <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
-                                        onClick={this.logout} >Logout</button>
+                                        onClick={this.props.onClick} >Logout</button>
                                 </div>
                             </div>
                         </div>
@@ -102,7 +108,7 @@ class Demo extends Component {
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/">Invite Guest</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/">Vendor Authorization</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/">Book Personal Events</Link></div></Menu.Item>
-                            <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/tenantDashboard/registerComplaint">Register Complain</Link></div></Menu.Item>
+                            <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/tenantDashboard/registerComplaint">Register Complaint</Link></div></Menu.Item>
                             <div style={{ height: '10%' }}></div>
                         </div>
                     </nav>

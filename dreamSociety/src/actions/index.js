@@ -1,17 +1,17 @@
-export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
-export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+// export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
+// export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+// export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+// export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
 // export  const URN = 'https://mydreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://mydreamsociety.herokuapp.com/';
 
-// export  const URN = 'https://dreamsociety.herokuapp.com/api';
-// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
-// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-// export  const UR = 'https://dreamsociety.herokuapp.com/';
+export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+export  const UR = 'https://dreamsociety.herokuapp.com/';
 
 
 export const USER_LOGIN='user_login';
@@ -272,6 +272,8 @@ export const UPDATE_INDIVIDUAL_VENDOR='UPDATE_INDIVIDUAL_VENDOR';
 export const GET_INDIVIDUAL_SERVICEID='GET_INDIVIDUAL_SERVICEID';
 
 export const REGISTER_COMPLAINT='REGISTER_COMPLAINT';
+export const USER_FLAT_DETAILS='USER_FLAT_DETAILS';
+export const POST_REGISTER_COMPLAINT='POST_REGISTER_COMPLAINT'; 
 
 
 

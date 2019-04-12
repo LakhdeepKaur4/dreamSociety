@@ -31,6 +31,7 @@ class CityMasterDetail extends Component {
             search: '',
             modal: false,
             loading: true,
+            modalLoading:false,
             errors: {},
             ids: [],
 
@@ -93,7 +94,7 @@ class CityMasterDetail extends Component {
     }
 
     refreshData() {
-        this.props.detailCity().then(() => this.setState({ loading: false }))
+        this.props.detailCity().then(() => this.setState({ loading: false,modalLoading: false, modal: false }))
         this.props.getCountry().then(() => this.setState({ loading: false }))
         this.props.getState().then(() => this.setState({ loading: false }))
         this.props.getCity().then(() => this.setState({ loading: false }))
@@ -114,19 +115,23 @@ class CityMasterDetail extends Component {
         const isValid = Object.keys(errors).length === 0
 
         if (isValid) {
-            this.setState({
-                loading: true
-            })
+           
 
             this.props.updateCity(cityId, countryId, stateId, cityName)
                 .then(() => this.refreshData())
-                // .catch(err=>{ console.log(err.response.data.message)
-                //     this.setState({message: err.response.data.message, loading: false})
-                //     })
-            this.setState({
-                editCityData: { cityId, countryId, stateId, cityName },
-                modal: !this.state.modal
-            })
+                .catch(err=>{ console.log(err.response.data.message)
+                    this.setState({modalLoading: false,message: err.response.data.message, loading: false})
+                    })
+                    if (this.state.message === '') {
+                        this.setState({ modal: true })
+                    }
+                    else {
+                        this.setState({ modal: false })
+                    }
+        
+                    this.setState({
+                        modalLoading: true
+                    })
 
         }
     }
@@ -258,15 +263,15 @@ class CityMasterDetail extends Component {
             return obj.countryName === selected
             })
 
-        
-            this.props.getState(country.countryId)
-
             this.setState({
                 countryName: country.countryName,
                 countryId:country.countryId,
                 stateName: '',
+                cityName: ''
                 
             })
+
+            this.props.getState(country.countryId)
                 
 
     }
@@ -281,12 +286,14 @@ class CityMasterDetail extends Component {
             return obj.stateName === selected
             })
 
-            this.props.getCity(data1.stateId);
-
             this.setState({
                 stateId: data1.stateId,
                 stateName:data1.stateName
             })
+
+            this.props.getCity(data1.stateId);
+
+            
         }
 
     fetchCountry({ countryResult }) {
@@ -312,7 +319,7 @@ class CityMasterDetail extends Component {
                 stateResult.map((item, index) => {
 
                     return (
-                        <option value={item.stateName} key={item.stateId} selected={index==0}>
+                        <option value={item.stateName} key={item.stateId}>
                             {item.stateName}
                         </option>
                     )
@@ -389,10 +396,10 @@ class CityMasterDetail extends Component {
                                 <FormGroup>
                                     <Label>State Name</Label>
 
-                                     <Input type="select" value={this.state.stateName}  name="stateName" onChange={this.onChangeState} >
+                                     <Input type="select"  id="stateId"  name="stateName" onChange={this.onChangeState} >
                                      {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
-                                  {this.state.stateName ? <DefaultSelect />: null}
-                                    {this.state.stateName ? null : this.fetchState(this.props.societyReducer)}
+                                      {this.state.stateName ? <DefaultSelect />: null}
+                                       {this.state.stateName ? null : this.fetchState(this.props.societyReducer)}
                                     </Input>
                                     {!this.state.stateName ? <span className="error">{this.state.errors.stateName}</span>: ''}
                                 </FormGroup>

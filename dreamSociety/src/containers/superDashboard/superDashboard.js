@@ -35,6 +35,9 @@ import UI from '../../components/newUI/superAdminDashboard';
       editUserModal: !this.state.editUserModal
     });
   }
+  changeDashboard=()=>{
+    return this.props.history.replace('/ownerDashboard')
+  }
 
   render() {
     return (<div>
@@ -65,7 +68,7 @@ import UI from '../../components/newUI/superAdminDashboard';
           </form>
         </div>
       </nav> */}
-      <UI onClick={this.logout} change={this.changePassword} >
+      <UI onClick={this.logout} change={this.changePassword} changeDashboard={this.changeDashboard}>
         
       </UI>
       {/* <div style={{ margin: '48px auto' }}>
