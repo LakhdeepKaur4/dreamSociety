@@ -117,8 +117,8 @@ class Demo extends Component {
                             </button>
                             <div className="dropdown-menu dropdown-menu-lg-right bg-dark" aria-labelledby="dropdownMenuButton">
                                 <div className="form-inline ml-lg-3 ml-md-2 ml-sm-2 mt-2 mt-md-0">
-                                <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="ownerDashboard" type="button"
-                                         onClick={this.props.changeDashboard}>Switch Dashboard</button>
+                                {/* <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="ownerDashboard" type="button"
+                                         onClick={this.props.changeDashboard}>Switch Dashboard</button> */}
                                 <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal"  type="button"
                                         onClick={this.props.change}>Change Password</button>
                                         
