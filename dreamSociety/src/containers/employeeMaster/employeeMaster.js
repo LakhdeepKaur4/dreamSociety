@@ -830,7 +830,7 @@ let formData=
                                 name="permanentAddressDefault"
                                 onChange={this.permanentAddressChange}
                                 maxLength='250' />
-                                { <span  className="error">{this.state.errors.permanentAddress}</span> }
+                                { <span  className="error">{this.state.errors.permanentAddressDefault}</span> }
                             </Col>
                         </Row>
                 </FormGroup>
@@ -885,7 +885,7 @@ let formData=
                                         name="currentAddressDefault"
                                         onChange={this.currentAddressChange}
                                         maxLength='250' />
-                                        {<span  className="error">{this.state.errors.currentAddress}</span> }
+                                        {<span  className="error">{this.state.errors.currentAddressDefault}</span> }
                                     </Col>
                                 </Row>
                             </FormGroup>
@@ -897,7 +897,7 @@ let formData=
           <label> Employment  Date</label>
           <input
             type="date"
-            min={this.minDate()}
+            
             className="form-control"
             name="startDate"
             onChange={this.onChange}
