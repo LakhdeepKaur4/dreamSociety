@@ -26,21 +26,21 @@ exports.create = async (req, res, next) => {
             }
         })
 
-        if (alreadyExist !== null){
+        if (alreadyExist !== null) {
             if (alreadyExist.rate === parseFloat(body.rate)) {
                 res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
                     message: 'Maintenance Type already exist'
                 })
             }
-            } else {
-                const maintenanceType = await MaintenanceType.create(body);
-                if (maintenanceType) {
-                    return res.status(httpStatus.CREATED).json({
-                        message: "Maintenance Type successfully created",
-                        maintenanceType
-                    });
-                }
+        } else {
+            const maintenanceType = await MaintenanceType.create(body);
+            if (maintenanceType) {
+                return res.status(httpStatus.CREATED).json({
+                    message: "Maintenance Type successfully created",
+                    maintenanceType
+                });
             }
+        }
     } catch (error) {
         console.log("error==>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -82,12 +82,14 @@ exports.update = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: update.maintenanceId, rate: update.rate, sizeId: update.sizeId, maintenanceTypeId: { [Op.ne]: id } } });
+        const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: update.maintenanceId, sizeId: update.sizeId, maintenanceTypeId: { [Op.ne]: id } } });
 
         if (alreadyExist !== null) {
-            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                message: 'Maintenance Type already exist'
-            })
+            if (alreadyExist.rate === parseFloat(update.rate)) {
+                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                    message: 'Maintenance Type already exist'
+                })
+            }
         } else {
             const updatedMaintenanceType = await MaintenanceType.find({ where: { maintenanceTypeId: id } }).then(maintenanceType => {
                 return maintenanceType.updateAttributes(update)
