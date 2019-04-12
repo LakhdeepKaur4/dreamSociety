@@ -70,6 +70,8 @@ db.individualVendor=require('../model/individualVendor.model')(sequelize,Sequeli
 db.flatParking = require('../model/flatParking.model')(sequelize,Sequelize);
 db.tenantFlatDetail = require('../model/tenantFlatDetail.model')(sequelize, Sequelize);
 db.ownerFlatDetail = require('../model/ownerFlatDetail.model')(sequelize, Sequelize);
+db.complaint = require('../model/complaint.model')(sequelize, Sequelize);
+db.complaintStatus = require('../model/complaintStatus.model')(sequelize, Sequelize);
 
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
 db.otp.belongsTo(db.tenant, { foreignKey: 'tenantId' });
@@ -189,6 +191,9 @@ db.individualVendor.belongsTo(db.city,{foreignKey:'cityId'});
 db.individualVendor.belongsTo(db.location,{foreignKey:'locationId'});
 db.individualVendor.belongsTo(db.service,{foreignKey:'serviceId'});
 db.individualVendor.belongsTo(db.rate,{foreignKey:'rateId'});
+db.complaint.belongsTo(db.service,{foreignKey:'serviceId'});
+db.complaint.belongsTo(db.vendor, { foreignKey: 'vendorId' });
+db.complaint.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
+db.complaint.belongsTo(db.complaintStatus, { foreignKey: 'complaintStatusId' });
 
-
-module.exports = db;
+module.exports = db;''
