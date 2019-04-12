@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {getServiceType} from '../../actionCreators/serviceMasterAction';
-import {userflatDetails,postRegister} from '../../actionCreators/registerComplainAction';
-import UI from '../../components/newUI/tenantDashboard';
+import {userflatDetails} from '../../actionCreators/registerComplainAction';
 import {Form, Button,  FormGroup,  Input, Label,Row, Col } from 'reactstrap';
-import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
 
 
@@ -23,6 +21,8 @@ class Register extends Component{
             description:'',
             errors: {},
             message:'',
+           
+
             menuVisible: false,
          }
     }
@@ -95,10 +95,6 @@ class Register extends Component{
             errors.priority = "cant be empty";
         }
 
-        else if(this.state.date ==='') {
-            errors.date = "cant be empty";
-        }
-
         else if(this.state.slotTime1 ==='') {
             errors.slotTime1 = "cant be empty";
         }
@@ -109,31 +105,9 @@ class Register extends Component{
    
         this.setState({ errors });
         console.log("submited===========================", this.state);
-        //postRegister
-        const isValid = Object.keys(errors).length === 0;
-
-        if(isValid){
-                    this.setState({loading:true})
-                    this.props.postRegister(this.state)
-                    .then(()=>{this.setState({loading: false})})
-                    .catch(err=>{
-                        this.setState({message: err.response.data.message, loading: false})
-                    })
-                    
-                 
-                    }
     }
 
-    logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user-type');
-        return this.props.history.replace('/')
-    }
-
-    changePassword=()=>{ 
-        console.log("password")
-        return this.props.history.replace('/tenantDashboard/changePasswordTenant')
-    }
+    
 
     close = () => {
         return this.props.history.replace('/tenantDashboard')
@@ -195,6 +169,8 @@ class Register extends Component{
             <FormGroup>
                 <Label>Date</Label>
                 <Input type="date" min={this.minDate()} name="date"  onChange={this.onChange}>
+                    <DefaultSelect />
+                    {/* {this.service(this.props.displayServiceMasterReducer)} */}
                 </Input >
                 <span className='error'>{this.state.errors.date}</span>
             </FormGroup>
@@ -250,7 +226,7 @@ class Register extends Component{
         </div>
         return(
             <div>
-               <UI onClick={this.logout} change={this.changePassword}>
+            
                     <Form onSubmit={this.handleSubmit}>
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
@@ -259,7 +235,7 @@ class Register extends Component{
                         {!this.state.loading ? formData : <Spinner />}
 
                     </Form>
-                </UI>
+               
             </div>
         )
     }
@@ -276,7 +252,7 @@ function mapStateToProps(state) {
 
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getServiceType,userflatDetails,postRegister }, dispatch);
+    return bindActionCreators({ getServiceType,userflatDetails }, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(Register));

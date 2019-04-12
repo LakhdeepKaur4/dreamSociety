@@ -142,6 +142,18 @@ class AssignRoles extends Component{
         }
     }
 
+    logout=()=>{
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/') 
+    }
+
+        
+    changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+    }
+
+
     render(){
        
         let formData=<div>
@@ -178,7 +190,7 @@ class AssignRoles extends Component{
             </div>
         return(
                   <div>
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                 <Form onSubmit={this.handleSubmit}>
                 <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                   <span aria-hidden="true">&times;</span>
