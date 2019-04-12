@@ -50,9 +50,9 @@ isAdmin = (req, res, next) => {
 }
 
 isAdminRole = async (req, res, next) => {
-	console.log("admin access required");
+	
 	let token = req.headers['x-access-token'];
-
+    console.log(req.userId)
 	const user = await User.findOne({ where: { isActive: true, userId: req.userId } });
 	if (user) {
 		const role = await UserRole.findOne({
