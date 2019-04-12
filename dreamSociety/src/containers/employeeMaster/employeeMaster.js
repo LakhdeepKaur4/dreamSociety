@@ -830,7 +830,7 @@ let formData=
                                 name="permanentAddressDefault"
                                 onChange={this.permanentAddressChange}
                                 maxLength='250' />
-                                { <span  className="error">{this.state.errors.permanentAddressDefault}</span> }
+                                { <span  className="error">{this.state.errors.permanentAddress}</span> }
                             </Col>
                         </Row>
                 </FormGroup>
