@@ -8,7 +8,7 @@ import Select from 'react-select';
 import UI from '../../../components/newUI/vendorDashboardInside';
 import {getCountry,getState,getCity, getLocation} from '../../../actionCreators/societyMasterAction';
 import DefaultSelect from '../../../constants/defaultSelect';
-
+import Spinner from '../../../components/spinner/spinner';
 
 
 class vendorMaster extends Component {
@@ -42,10 +42,13 @@ class vendorMaster extends Component {
             rate1: '',
             rate2: '',
             rate3: '',
+            dailyServices1:false,
+            dailyServices2:false,
+            dailyServices3:false,
             documentOne: '',
-            documentTwo:'',
+            documentTwo:'', 
             profilePicture: '',
-            loading:false,
+            loading:true,
             menuVisible: false,
             errors:{},
             message:'',
@@ -86,12 +89,12 @@ class vendorMaster extends Component {
         if (!pattern.test(inputChar)) {
             event.preventDefault();
         }
-    }
+    }    
 
 
     handleChange(e) {
         this.setState({message:''})
-        if(!!this.state.errors[e.target.name]){
+        if(!!this.state.errors[e.target.name]){ 
             let errors =Object.assign({},this.state.errors)
             delete  errors[e.target.name]
             this.setState({[e.target.name]:e.target.value,errors});
@@ -101,11 +104,17 @@ class vendorMaster extends Component {
             }
     }
 
+    dailyServicesOnChange=(event)=>{
+        this.setState({ [event.target.name]: event.target.checked},function(){
+            console.log(this.state.dailyServices1)}
+        )
+    }
+
     onRateChange=(e)=>{
-    if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
-        this.setState({[e.target.name]:e.target.value});
-        
-    }}
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+            this.setState({[e.target.name]:e.target.value});    
+        }
+    } 
 
     onServiceChange1 =(e)=>{
         if(!!this.state.errors[e.target.name]){
@@ -213,8 +222,6 @@ class vendorMaster extends Component {
     }
     }
 
-  
-
     componentDidMount() {
         this.refreshData();
     }
@@ -252,8 +259,6 @@ class vendorMaster extends Component {
 
     }
 
-
-
     getRate = ({ rate }) => {
         if (rate) {
             return rate.rate.map((item) => {
@@ -265,10 +270,7 @@ class vendorMaster extends Component {
             })
         }
 
-    }
-
-    
-   
+    } 
 
     onSubmit = (event) => {
         event.preventDefault();
@@ -285,14 +287,15 @@ class vendorMaster extends Component {
             else if(this.state.pin1===''){
                 errors.pin1="Pincode can't be empty"
             }
-                  
-           else if(document.getElementById('isChecked').checked === false){
+
+            if(this.state.pin===''){
+                errors.pin="Pincode can't be empty"
+            }    
+            else if(document.getElementById('isChecked').checked === false){
                 if(this.state.currentAddressDefault === '') errors.currentAddressDefault = `Current Address can't be empty.`;
             }
             
-            else if(this.state.pin===''){
-                errors.pin="Pincode can't be empty"
-            }    
+          
             else if(this.state.contact===''){
                 errors.contact="Contact can't be empty"                
             }
@@ -338,25 +341,27 @@ class vendorMaster extends Component {
         formData.append('rate1',this.state.rate1)
         formData.append('rate2',this.state.rate2)
         formData.append('rate3',this.state.rate3)
+        formData.append('dailyServices1',this.state.dailyServices1)
+        formData.append('dailyServices2',this.state.dailyServices2)
+        formData.append('dailyServices3',this.state.dailyServices3)
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)     
         this.props.addVendorMaster(formData).then(()=>this.push()) 
-        .catch(err=>{
-            this.setState({message: err.response.data.message, loading: true})
+        .catch((err)=>{
+            this.setState({message: err.response.data.message, loading: false})
         
         }) 
-        this.refreshData();
+       
         }
     }
-
-
 
     logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
         return this.props.history.replace('/')
     }
+    
     close = () => {
         return this.props.history.replace('/superDashBoard')
     }
@@ -681,6 +686,273 @@ class vendorMaster extends Component {
     }
 
     render() {console.log(this.state)
+      let  formData =<div>
+        <FormGroup>
+            <Label>First Name</Label>
+            <Input type="text" placeholder="First Name" name="firstName" maxLength={20} value={this.state.firstName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  />
+            <span className="error">{this.state.errors.firstName}</span>
+        </FormGroup>
+        <FormGroup>
+            <Label>Last Name</Label>
+            <Input type="text" placeholder="Last Name" name="lastName" maxLength={20} value={this.state.lastName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  />
+            <span className="error">{this.state.errors.lastName}</span>
+        </FormGroup>
+        <FormGroup style={{paddingTop:'20px'}}>
+            <h4 style={{textAlign:'center', fontWeight:'600', marginBottom:'20px'}}>Permanent Address</h4>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={3}>
+                        <Label>Country</Label>
+                        <Select placeholder={<DefaultSelect/>} options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                    
+                    </Col>
+                    <Col md={3}>
+                        <Label>State</Label>
+                        <Select placeholder={<DefaultSelect/>} options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                    </Col>
+                    <Col md={3}>
+                        <Label>City</Label>
+                        <Select placeholder={<DefaultSelect/>} options={this.cityName(this.props.societyReducer)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
+                    </Col>
+                    <Col md={3}>
+                        <Label>Location</Label>
+                        <Select placeholder={<DefaultSelect/>} options={this.locationName(this.props.societyReducer)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
+                    </Col>
+                </Row>
+        </FormGroup>
+        <FormGroup>
+            <Row md={12}>
+                <Col md={4}>
+                    <Label>Pin/Zip Code</Label>
+                    <Input type="text"   name="pin1" onChange={this.pinChange1}
+                    maxLength="6" minLength="5" onKeyPress={this.OnKeyPresshandlerPhone}
+                       placeholder="Pin/Zip Code" />
+                        <span className="error">{this.state.errors.pin1}</span>
+                </Col>                        
+                <Col md={8}>
+                    <Label>Address</Label>
+                    <Input id="currentAddress" 
+                    disabled={!(this.state.countryId && this.state.stateId
+                        && this.state.cityId)}
+                    type="textarea" 
+                    placeholder="Permanent Address" 
+                    name="permanentAddressDefault" 
+                    onChange={this.permanentAddressChange}
+                    maxLength='250' />
+                    { <span className="error">{this.state.errors.permanentAddressDefault}</span> }
+                </Col>
+            </Row>
+    </FormGroup>
+    <FormGroup style={{paddingTop:'20px'}}>
+        <h4 style={{textAlign:'center', fontWeight:'600', marginBottom:'20px'}}>Current Address</h4>
+        <FormGroup>
+            <span style={{fontWeight:'600'}}>Is Your Current address same as above?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
+        </FormGroup>
+        {this.state.currentAddressVisible ? <FormGroup>
+            <Label>Current Address</Label>
+            <Input type="textarea" id="currenttaddr" disabled maxLength="500" value={this.state.permanentAddress} name="defaultCurrentAddress" onChange={this.defaultCurrentAddress} />
+        </FormGroup> : ''}
+        {this.state.editCurrent ? <div>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={3}>
+                        <Label>Country</Label>
+                        <Select placeholder={<DefaultSelect/>} options={this.countryName1(this.props.societyReducer)} onChange={this.countryChange.bind(this, 'currentCountry', 'currentCountryId')} />
+                    </Col>
+                    <Col md={3}>
+                        <Label>State</Label>
+                        <Select placeholder={<DefaultSelect/>} options={this.stateName1(this.props.societyReducer)} onChange={this.stateChange.bind(this, 'currentState', 'currentStateId')} />
+                    </Col>
+                    <Col md={3}>
+                        <Label>City</Label>
+                        <Select placeholder={<DefaultSelect/>} options={this.cityName1(this.props.societyReducer)} onChange={this.cityChange.bind(this, 'currentCity', 'currentCityId')} />
+                    </Col>
+                    <Col md={3}>
+                        <Label>Location</Label>
+                        <Select placeholder={<DefaultSelect/>} options={this.locationName1(this.props.societyReducer)} onChange={this.locationChange.bind(this, 'currentLocation', 'currentLocationId')} />
+                    </Col>
+                </Row>
+            </FormGroup>
+            
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={4}>
+                        <Label>Pin/Zip Code</Label>
+                        <Input type="text" name="pin" onChange={this.pinChange}
+                        maxLength="6" minLength="5" onKeyPress={this.OnKeyPresshandlerPhone}
+                         placeholder="Pin/Zip Code" />
+                        <span className="error">{this.state.errors.pin}</span>
+                    </Col>
+                    <Col md={8}>
+                        <Label>Address</Label>
+                        <Input id="currenttaddr"
+                        type="textarea"
+                        disabled={!(this.state.currentCountryId && this.state.currentStateId && this.state.currentCityId)} 
+                        placeholder="Current Address" 
+                        name="currentAddressDefault" 
+                        onChange={this.currentAddressChange}
+                        maxLength='250' />
+                        {<span className="error">{this.state.errors.currentAddressDefault}</span> }
+                    </Col>
+                </Row>
+            </FormGroup>
+        </div> : ''}
+    </FormGroup>
+    </FormGroup>
+        <Row form>
+            <Col md={6}>
+            <FormGroup>
+                <Label>Contact Number</Label>
+                <Input type="text" placeholder="Contact Number" name="contact" maxLength={10} onKeyPress={this.OnKeyPresshandlerPhone} value={this.state.contact} onChange={this.handleChange} />
+                <span className="error">{this.state.errors.contact}</span>
+                <span className="error">{this.state.message}</span>
+            </FormGroup>
+            </Col>
+            <Col md={6}>
+            <FormGroup>
+                <Label>Email</Label>
+                <Input type="email" placeholder="Email" name="email" maxLength={80}  value={this.state.email} onKeyPress={this.OnKeyPresshandlerEmail} onBlur={this.OnKeyPresshandlerEmail} onChange={this.handleChange}/>
+                <span className="error">{this.state.errors.email}</span>
+                <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
+            </FormGroup>
+            </Col>
+        </Row>
+        <Row form>
+            <Col md={6}>
+                <FormGroup>
+                    <Label> Service Type 1</Label>
+                    <Input type="select" name="serviceId1" defaultValue='no-value' onChange={this.onServiceChange1}>
+                        <DefaultSelect/>
+                        {this.getDropDown(this.props.displayServiceMasterReducer)}                                    
+                    </Input>
+                    <span className="error">{this.state.errors.serviceId1}</span>
+                </FormGroup>
+            </Col>
+            <Col md={4}>
+                <FormGroup>
+                    <Label> Rate Type 1</Label>
+                    <Input type="select" name="rateId1" defaultValue='no-value' onChange={this.onRateChange1}>                                     
+                         <DefaultSelect/>
+                        {this.getRate(this.props.vendorMasterReducer)}
+                    </Input>
+                    <span className="error">{this.state.errors.rateId1}</span>
+                </FormGroup>
+            </Col>
+            <Col md={2}>
+                <FormGroup>
+                    <Label> Rate 1</Label>
+                    <Input type="text" placeholder="Rate" name="rate1" maxLength={6}  value={this.state.rate1} onChange={this.onRateChange}/>
+                    <div>{!this.state.rate1 ? <span className="error">{this.state.errors.rate1}</span>: null}</div>
+                </FormGroup>
+            </Col>
+        </Row>
+                <FormGroup>
+                    <Label style={{fontWeight:"600"}}>
+                        Is Vendor providing services on daily basis ? 
+                    </Label>                            
+                <FormGroup check>
+                    <Label check>   
+                    <Input  type="checkbox" name="dailyServices1" onChange={this.dailyServicesOnChange} />Daily Routine
+                    </Label>
+                </FormGroup>
+                </FormGroup>
+        <Row form>
+            <Col md={6}>
+                <FormGroup>
+                    <Label> Service Type 2</Label>
+                    <Input type="select" name="serviceId2" defaultValue='no-value'onChange={this.onServiceChange2} >
+                        <DefaultSelect/>
+                        {this.getDropDown(this.props.displayServiceMasterReducer)}
+                    </Input>                                  
+                </FormGroup>
+            </Col>
+
+            <Col md={4}>
+                <FormGroup>
+                    <Label> Rate Type 2</Label>
+                    <Input type="select" name="rateId2" defaultValue='no-value'  onChange={this.onRateChange2}>
+                         <DefaultSelect/>
+                        {this.getRate(this.props.vendorMasterReducer)}
+                    </Input>                             
+                </FormGroup>
+            </Col>
+            <Col md={2}>
+                <FormGroup>
+                    <Label> Rate 2</Label>
+                    <Input type="text" placeholder="Rate" name="rate2" maxLength={6} value={this.state.rate2}onChange={this.onRateChange}/>              
+                </FormGroup>
+            </Col>
+        </Row>
+                <FormGroup>
+                    <Label style={{fontWeight:"600"}}>
+                        Is Vendor providing services on daily basis ? 
+                    </Label>                            
+                <FormGroup check>
+                    <Label check>   
+                    <Input  type="checkbox" name="dailyServices2" onChange={this.dailyServicesOnChange} />Daily Routine
+                    </Label>
+                </FormGroup>
+                </FormGroup>
+        <Row form>
+            <Col md={6}>
+                <FormGroup>
+                    <Label> Service Type 3</Label>
+                    <Input type="select" name="serviceId3" defaultValue='no-value' onChange={this.onServiceChange3} >
+                        <DefaultSelect/>
+                        {this.getDropDown(this.props.displayServiceMasterReducer)}
+                    </Input>             
+                </FormGroup>
+            </Col>
+            <Col md={4}>
+                <FormGroup>
+                    <Label> Rate Type 3</Label>
+                    <Input type="select" name="rateId3" defaultValue='no-value' onChange={this.onRateChange3}>
+                         <DefaultSelect/>
+                        {this.getRate(this.props.vendorMasterReducer)}
+                    </Input>                              
+                </FormGroup>
+            </Col>
+            <Col md={2}>
+                <FormGroup>
+                    <Label> Rate 3</Label>
+                    <Input type="text" placeholder="Rate" name="rate3"  maxLength={6} value={this.state.rate3} onChange={this.onRateChange}/>                  
+                </FormGroup>
+            </Col>
+        </Row>
+                <FormGroup>
+                    <Label style={{fontWeight:"600"}}>
+                        Is Vendor providing services on daily basis ? 
+                    </Label>                            
+                <FormGroup check>
+                    <Label check>   
+                    <Input  type="checkbox" name="dailyServices3" onChange={this.dailyServicesOnChange} />Daily Routine
+                    </Label>
+                </FormGroup>
+                </FormGroup>
+        <Row>
+            <Col md={4}>
+                <FormGroup>
+                    <Label>Upload Your Id</Label>
+                    <Input type="file" name="documentOne"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage}/>
+                    <span className="error">{this.state.errors.documentOne}</span>
+                </FormGroup>
+            </Col>
+            <Col md={4}>
+                <FormGroup>
+                    <Label>Upload Another Id</Label>
+                    <Input type="file" name="documentTwo"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage2}/>
+                    <span className="error">{this.state.errors.documentTwo}</span>
+                </FormGroup>
+            </Col>
+            <Col md={4}>
+                <FormGroup>
+                    <Label>Upload Your Picture</Label>
+                    <Input type="file" name="profilePicture" accept="image/*" onChange={this.selectImages} />
+                    <span className="error">{this.state.errors.profilePicture}</span>
+                </FormGroup>
+            </Col>
+        </Row>
+    </div>
     
         return (
             <div>
@@ -692,234 +964,7 @@ class vendorMaster extends Component {
                             <span aria-hidden="true">&times;</span>
                         </div>
                         <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Add Vendor</h3></div>
-
-                        <FormGroup>
-                            <Label>First Name</Label>
-                            <Input type="text" placeholder="First Name" name="firstName" maxLength={20} value={this.state.firstName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  />
-                            <span className="error">{this.state.errors.firstName}</span>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label>Last Name</Label>
-                            <Input type="text" placeholder="Last Name" name="lastName" maxLength={20} value={this.state.lastName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  />
-                            <span className="error">{this.state.errors.lastName}</span>
-                        </FormGroup>
-                        <FormGroup style={{paddingTop:'20px'}}>
-                            <h4 style={{textAlign:'center', fontWeight:'600', marginBottom:'20px'}}>Permanent Address</h4>
-                            <FormGroup>
-                                <Row md={12}>
-                                    <Col md={3}>
-                                        <Label>Country</Label>
-                                        <Select placeholder={<DefaultSelect/>} options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
-                                    
-                                    </Col>
-                                    <Col md={3}>
-                                        <Label>State</Label>
-                                        <Select placeholder={<DefaultSelect/>} options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
-                                    </Col>
-                                    <Col md={3}>
-                                        <Label>City</Label>
-                                        <Select placeholder={<DefaultSelect/>} options={this.cityName(this.props.societyReducer)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
-                                    </Col>
-                                    <Col md={3}>
-                                        <Label>Location</Label>
-                                        <Select placeholder={<DefaultSelect/>} options={this.locationName(this.props.societyReducer)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
-                                    </Col>
-                                </Row>
-                        </FormGroup>
-                        <FormGroup>
-                            <Row md={12}>
-                                <Col md={4}>
-                                    <Label>Pin/Zip Code</Label>
-                                    <Input type="text"   name="pin1" onChange={this.pinChange1}
-                                    maxLength="6" minLength="5" onKeyPress={this.OnKeyPresshandlerPhone}
-                                       placeholder="Pin/Zip Code" />
-                                        <span className="error">{this.state.errors.pin1}</span>
-                                </Col>                        
-                                <Col md={8}>
-                                    <Label>Address</Label>
-                                    <Input id="currentAddress" 
-                                    disabled={!(this.state.countryId && this.state.stateId
-                                        && this.state.cityId)}
-                                    type="textarea" 
-                                    placeholder="Permanent Address" 
-                                    name="permanentAddressDefault" 
-                                    onChange={this.permanentAddressChange}
-                                    maxLength='250' />
-                                    { <span className="error">{this.state.errors.permanentAddressDefault}</span> }
-                                </Col>
-                            </Row>
-                    </FormGroup>
-                    <FormGroup style={{paddingTop:'20px'}}>
-                        <h4 style={{textAlign:'center', fontWeight:'600', marginBottom:'20px'}}>Current Address</h4>
-                        <FormGroup>
-                            <span style={{fontWeight:'600'}}>Is Your Current address same as above?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
-                        </FormGroup>
-                        {this.state.currentAddressVisible ? <FormGroup>
-                            <Label>Current Address</Label>
-                            <Input type="textarea" id="currenttaddr" disabled maxLength="500" value={this.state.permanentAddress} name="defaultCurrentAddress" onChange={this.defaultCurrentAddress} />
-                        </FormGroup> : ''}
-                        {this.state.editCurrent ? <div>
-                            <FormGroup>
-                                <Row md={12}>
-                                    <Col md={3}>
-                                        <Label>Country</Label>
-                                        <Select placeholder={<DefaultSelect/>} options={this.countryName1(this.props.societyReducer)} onChange={this.countryChange.bind(this, 'currentCountry', 'currentCountryId')} />
-                                    </Col>
-                                    <Col md={3}>
-                                        <Label>State</Label>
-                                        <Select placeholder={<DefaultSelect/>} options={this.stateName1(this.props.societyReducer)} onChange={this.stateChange.bind(this, 'currentState', 'currentStateId')} />
-                                    </Col>
-                                    <Col md={3}>
-                                        <Label>City</Label>
-                                        <Select placeholder={<DefaultSelect/>} options={this.cityName1(this.props.societyReducer)} onChange={this.cityChange.bind(this, 'currentCity', 'currentCityId')} />
-                                    </Col>
-                                    <Col md={3}>
-                                        <Label>Location</Label>
-                                        <Select placeholder={<DefaultSelect/>} options={this.locationName1(this.props.societyReducer)} onChange={this.locationChange.bind(this, 'currentLocation', 'currentLocationId')} />
-                                    </Col>
-                                </Row>
-                            </FormGroup>
-                            
-                            <FormGroup>
-                                <Row md={12}>
-                                    <Col md={4}>
-                                        <Label>Pin/Zip Code</Label>
-                                        <Input type="text" name="pin" onChange={this.pinChange}
-                                        maxLength="6" minLength="5" onKeyPress={this.OnKeyPresshandlerPhone}
-                                         placeholder="Pin/Zip Code" />
-                                        <span className="error">{this.state.errors.pin}</span>
-                                    </Col>
-                                    <Col md={8}>
-                                        <Label>Address</Label>
-                                        <Input id="currenttaddr"
-                                        type="textarea"
-                                        disabled={!(this.state.currentCountryId && this.state.currentStateId && this.state.currentCityId)} 
-                                        placeholder="Current Address" 
-                                        name="currentAddressDefault" 
-                                        onChange={this.currentAddressChange}
-                                        maxLength='250' />
-                                        {<span className="error">{this.state.errors.currentAddressDefault}</span> }
-                                    </Col>
-                                </Row>
-                            </FormGroup>
-                        </div> : ''}
-                    </FormGroup>
-                    </FormGroup>
-                        <FormGroup>
-                            <Label>Contact Number</Label>
-                            <Input type="text" placeholder="Contact Number" name="contact" maxLength={10} onKeyPress={this.OnKeyPresshandlerPhone} value={this.state.contact} onChange={this.handleChange} />
-                            <span className="error">{this.state.errors.contact}</span>
-                            <span className="error">{this.state.message}</span>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label>Email</Label>
-                            <Input type="email" placeholder="Email" name="email" maxLength={80}  value={this.state.email} onKeyPress={this.OnKeyPresshandlerEmail} onBlur={this.OnKeyPresshandlerEmail} onChange={this.handleChange}/>
-                            <span className="error">{this.state.errors.email}</span>
-                            <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
-                        </FormGroup>
-                        <Row form>
-                            <Col md={6}>
-                                <FormGroup>
-                                    <Label> Service Type 1</Label>
-                                    <Input type="select" name="serviceId1" defaultValue='no-value' onChange={this.onServiceChange1}>
-                                        <DefaultSelect/>
-                                        {this.getDropDown(this.props.displayServiceMasterReducer)}                                    
-                                    </Input>
-                                    <span className="error">{this.state.errors.serviceId1}</span>
-                                </FormGroup>
-                            </Col>
-                            <Col md={4}>
-                                <FormGroup>
-                                    <Label> Rate Type 1</Label>
-                                    <Input type="select" name="rateId1" defaultValue='no-value' onChange={this.onRateChange1}>                                     
-                                         <DefaultSelect/>
-                                        {this.getRate(this.props.vendorMasterReducer)}
-                                    </Input>
-                                    <span className="error">{this.state.errors.rateId1}</span>
-                                </FormGroup>
-                            </Col>
-                            <Col md={2}>
-                                <FormGroup>
-                                    <Label> Rate 1</Label>
-                                    <Input type="text" placeholder="Rate" name="rate1" maxLength={6}  value={this.state.rate1} onChange={this.onRateChange}/>
-                                    <div>{!this.state.rate1 ? <span className="error">{this.state.errors.rate1}</span>: null}</div>
-                                </FormGroup>
-                            </Col>
-                        </Row>
-                        <Row form>
-                            <Col md={6}>
-                                <FormGroup>
-                                    <Label> Service Type 2</Label>
-                                    <Input type="select" name="serviceId2" defaultValue='no-value'onChange={this.onServiceChange2} >
-                                        <DefaultSelect/>
-                                        {this.getDropDown(this.props.displayServiceMasterReducer)}
-                                    </Input>                                  
-                                </FormGroup>
-                            </Col>
-
-                            <Col md={4}>
-                                <FormGroup>
-                                    <Label> Rate Type 2</Label>
-                                    <Input type="select" name="rateId2" defaultValue='no-value'  onChange={this.onRateChange2}>
-                                         <DefaultSelect/>
-                                        {this.getRate(this.props.vendorMasterReducer)}
-                                    </Input>                             
-                                </FormGroup>
-                            </Col>
-                            <Col md={2}>
-                                <FormGroup>
-                                    <Label> Rate 2</Label>
-                                    <Input type="text" placeholder="Rate" name="rate2" maxLength={6} value={this.state.rate2}onChange={this.onRateChange}/>
-                                  
-                                </FormGroup>
-                            </Col>
-                     </Row>
-                        <Row form>
-                            <Col md={6}>
-                                <FormGroup>
-                                    <Label> Service Type 3</Label>
-                                    <Input type="select" name="serviceId3" defaultValue='no-value' onChange={this.onServiceChange3} >
-                                        <DefaultSelect/>
-                                        {this.getDropDown(this.props.displayServiceMasterReducer)}
-                                    </Input>
-                                 
-                                </FormGroup>
-                            </Col>
-                            <Col md={4}>
-                                <FormGroup>
-                                    <Label> Rate Type 3</Label>
-                                    <Input type="select" name="rateId3" defaultValue='no-value' onChange={this.onRateChange3}>
-                                         <DefaultSelect/>
-                                        {this.getRate(this.props.vendorMasterReducer)}
-                                    </Input>                              
-                                </FormGroup>
-                            </Col>
-                            <Col md={2}>
-                                <FormGroup>
-                                    <Label> Rate 3</Label>
-                                    <Input type="text" placeholder="Rate" name="rate3"  maxLength={6} value={this.state.rate3} onChange={this.onRateChange}/>
-                                    
-                                </FormGroup>
-                            </Col>
-                        </Row>
-                        <FormGroup>
-                            <Label>Upload Your Id</Label>
-                            <Input type="file" name="documentOne"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage}/>
-                            <span className="error">{this.state.errors.documentOne}</span>
-                        </FormGroup>
-
-                        <FormGroup>
-                            <Label>Upload Another Id</Label>
-                            <Input type="file" name="documentTwo"  accept='.docx ,.doc,application/pdf' onChange={this.selectImage2}/>
-                            <span className="error">{this.state.errors.documentTwo}</span>
-                        </FormGroup>
-
-                        <FormGroup>
-                            <Label>Upload Your Picture</Label>
-                            <Input type="file" name="profilePicture" accept="image/*" onChange={this.selectImages} />
-                            <span className="error">{this.state.errors.profilePicture}</span>
-                        </FormGroup>
-                    
+                        {!this.state.loading ? formData : <Spinner />}
                             <Button color="success" className="mr-2">Submit</Button>             
                             <Button color="danger" onClick={this.push}>Cancel</Button>
 

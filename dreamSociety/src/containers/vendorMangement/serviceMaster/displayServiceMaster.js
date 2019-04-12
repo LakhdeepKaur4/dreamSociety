@@ -53,7 +53,7 @@ class DisplayServices extends Component {
         this.props.getServiceDetail().then(()=> this.setState({loading:false}));
     }   
 
-    deleteService(serviceId){
+    deleteService(serviceId){console.log(serviceId)
         this.setState({loading:true})
         let {isActive } =this.state;  
         this.props.deleteService(serviceId,isActive)
@@ -72,7 +72,8 @@ class DisplayServices extends Component {
   
     searchFilter(search) {
         return function (x) {
-            return x.serviceName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.serviceName.toLowerCase().includes(search.toLowerCase()) ||
+            x.service_detail_master.service_detail.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
 

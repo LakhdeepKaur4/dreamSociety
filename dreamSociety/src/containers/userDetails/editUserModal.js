@@ -5,14 +5,14 @@ import Spinner from '../../components/spinner/spinner';
 
 const editUserModal = (props) => {
     let modalData = <div>
-        <FormGroup>
+        {/* <FormGroup>
                 <Label>Role</Label>
                 <Input type="select" name={props.roleInputName}  id="roleName" value={props.roleNameValue} onChange={props.roleNameChange} >
                     <DefaultSelect />
                     {props.fetchRoles}
                 </Input>
                 <span className="error">{props.roleNameError}</span>
-            </FormGroup>
+            </FormGroup> */}
 
             <FormGroup>
                 <Label for="firstName">First Name</Label>

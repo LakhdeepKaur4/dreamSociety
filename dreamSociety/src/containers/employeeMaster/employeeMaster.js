@@ -686,17 +686,23 @@ updatePermanentAddress = (pin) => {
     return this.props.history.replace('/superDashboard/changePassword')
  }
 
+ fNameKeyPress(event){
+    const pattern = /^[a-zA-Z]+$/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
+    }
+}
+
 render(){
 let form;
 <Spinner/>
 
 let formData=
 <div>
-<div style={{ cursor: 'pointer' }} className="close"  aria-label="Close" onClick={this.close}>
-<span aria-hidden="true">&times;</span>
-</div>
+
 <div>
-<h3 align="center">Employee Master </h3>
+
 
   <div className="input-container">
         <label >Select Your Image</label>
@@ -708,7 +714,7 @@ let formData=
     <div className="row">
     <div className="form-group col-md-6 ">
     <label>First Name</label>
-    <input  className="form-control" name="firstName" type="text"   onChange ={this.onChange}  onKeyPress={this.OnKeyPresshandler}  maxLength={30}/>
+    <input  className="form-control" placeholder="First Name" name="firstName" type="text"   onChange ={this.onChange}  onKeyPress={this.fNameKeyPress}  maxLength={30}/>
 
     <span className="error">{this.state.errors.firstName}</span>
     </div>
@@ -719,7 +725,7 @@ let formData=
 
     <div className="form-group col-md-6">
     <label> Last Name</label>
-    <input  className="form-control" type="text"  name="lastName"   onKeyPress={this.OnKeyPresshandler} onChange ={this.onChange}  maxLength={30}/>
+    <input placeholder="Last Name"  className="form-control" type="text"  name="lastName"   onKeyPress={this.fNameKeyPress} onChange ={this.onChange}  maxLength={30}/>
     <span className="error">{this.state.errors.lastName}</span>
     </div>
     </div>
@@ -738,6 +744,7 @@ let formData=
                         <input className ="form-control"
                          type="text"
                           name="contact"
+                          placeholder="Contact"
                           onChange={this.onChange}
                           onKeyPress={this.OnKeyPressNumber}
                           maxLength='10'
@@ -747,7 +754,7 @@ let formData=
                         </div>
                          <div>
                         <label>Email</label>
-                        <input  className ="form-control"  
+                        <input  placeholder="Email" className ="form-control"
 
                         type="email"
                         name="email"
@@ -764,7 +771,7 @@ let formData=
 
         <label> Salary(perAnnum)</label>
 
-        <input type="text"  className="form-control" name ="salary"  onChange ={this.onChange} onKeyPress={ this.OnKeyPressNumber}  maxLength={20}/>
+        <input placeholder="Salary" type="text"  className="form-control" name ="salary"  onChange ={this.onChange} onKeyPress={ this.OnKeyPressNumber}  maxLength={20}/>
         <span className="error">{this.state.errors.salary}</span>
     </div>
 
@@ -795,7 +802,7 @@ let formData=
                             <Col md={4}>
                                 <Label>Pin/Zip Code</Label>
                                 <Input type="text" onChange={this.pinChange1}
-                                maxLength="6" minLength="5"  onKeyPress={this.OnKeyPresshandlerPhone}
+                                maxLength="6" minLength="5"  onKeyPress={this.OnKeyPressNumber}
                                     name="pin1" placeholder="Pin/Zip Code" />
                                     <span  className="error">{this.state.errors.pin1}</span>
                             </Col>
@@ -851,7 +858,7 @@ let formData=
                                     <Col md={4}>
                                         <Label>Pin/Zip Code</Label>
                                         <Input type="text"  onChange={this.pinChange}
-                                        maxLength="6" minLength="5"  onKeyPress={this.OnKeyPresshandlerPhone}
+                                        maxLength="6" minLength="5"  onKeyPress={this.OnKeyPressNumber}
                                             name="pin"  placeholder="Pin/Zip Code" />
                                         <span  className="error">{this.state.errors.pin}</span>
                                     </Col>
@@ -917,8 +924,12 @@ let formData=
         <div  >
             <UI   onClick ={this.logout } change={this.changePassword}>
 
-
+            
             <form onSubmit={this.submit}>
+                <div style={{ cursor: 'pointer' }} className="close"  aria-label="Close" onClick={this.close}>
+                    <span aria-hidden="true">&times;</span>
+                </div>
+                <h3 align="center">Employee Master </h3>
                 {!this.state.loading ? formData: <Spinner />}
             </form>
         </UI>

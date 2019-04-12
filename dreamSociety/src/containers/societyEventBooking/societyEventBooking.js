@@ -39,6 +39,17 @@ class SocietyEventBooking extends Component {
         this.props.GetEventOrganiser();
     }
 
+    logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/')
+    }
+
+    
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+    
     handleChange=(event)=> {
         this.setState({message:''})
         if (!!this.state.errors[event.target.name]) {
@@ -52,8 +63,10 @@ class SocietyEventBooking extends Component {
     }
 
     h=(event)=>{
-        this.setState({ [event.target.name]: event.target.checked})
-
+        this.setState({ [event.target.name]: event.target.checked},function(){
+            console.log(this.state.breakfast)
+        })
+      
     }
 
     FileChange=(event)=>{
@@ -168,18 +181,19 @@ class SocietyEventBooking extends Component {
         this.props.history.push('/superDashBoard/displaySocietyeventbooking')
     }    
 
-    logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user-type');
-        return this.props.history.replace('/')
-    }
-
+  
     perHandleChange=(e)=>{
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
             this.setState({[e.target.name]:e.target.value});
             
         }}
 
+    logout = () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user-type');
+            return this.props.history.replace('/')
+        }
+    
     changePassword=()=>{ 
         return this.props.history.replace('/superDashboard/changePassword')
     }
@@ -280,17 +294,17 @@ class SocietyEventBooking extends Component {
                                 <Label check>   
                                 <Input type="checkbox" name="dinner" onChange={this.h}/>Dinner
                                 </Label>
+                            </FormGroup>                      
+                            <FormGroup check>
+                                <Label check>   
+                                <Input type="checkbox" name="dJ" onChange={this.h}/>DJ
+                                </Label>
                             </FormGroup>
                             <FormGroup check>
                                 <Label check>   
                                 <Input type="checkbox" name="drinks" onChange={this.h}/>Drinks
                                 </Label>
                             </FormGroup>
-                            <FormGroup check>
-                                <Label check>   
-                                <Input type="checkbox" name="dJ" onChange={this.h}/>DJ
-                                </Label>
-                            </FormGroup><br/>
 
                         <Row form>
                             <Col md={6}>

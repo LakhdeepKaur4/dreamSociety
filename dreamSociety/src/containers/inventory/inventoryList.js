@@ -7,7 +7,6 @@ import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label }
 import { getInventoryList,removeInventory,multipleDelete,updateInventory } from '../../actionCreators/inventoryAction';
 import { getAssets } from '../../actionCreators/assetsAction';
 import { fetchAssets } from '../../actionCreators/assetsSubAction'
-import DefaultSelect from './../../constants/defaultSelect';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 var id;
 class InventoryList extends Component {
@@ -28,6 +27,7 @@ class InventoryList extends Component {
             dateOfPurchase:'',
             ratePerInventory:'',
             search: '',
+            asset:''
         }
     }
     close = () => {
@@ -40,12 +40,15 @@ class InventoryList extends Component {
         this.setState({ search: e.target.value })
     }
     searchFilter(search) {
+    
         return function (x) {
-            console.log(x)
+      console.log(x)
             return (
-                x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||!search)
-                // x.dateOfPurchase.includes(search) ||!search)
-                // x.description.toLowerCase().includes(search.toLowerCase()) || !search);
+                
+                 x.asset_master.assetName.toLowerCase().includes(search.toLowerCase()) ||
+                 x.rate.toString().includes(search.toLowerCase())||
+                 x.asset_type_master.assetType.toLowerCase().includes(search.toLowerCase()) ||!search
+            )
         }
     }
     componentWillMount(){
@@ -102,7 +105,7 @@ class InventoryList extends Component {
         }
     }
     toggle = (inventoryId, assetName, assetType,dateOfPurchase,ratePerInventory, serialNumber,assetId,assetTypeId) => {
-        console.log(inventoryId, assetName, assetTypeId,dateOfPurchase, serialNumber,assetId)
+        console.log(assetId)
         this.setState({
             inventoryId,
             assetName,
@@ -114,17 +117,14 @@ class InventoryList extends Component {
             assetTypeId,
             modal: !this.state.modal
         },function(){
-            console.log(this.state)
         })
     }
     renderList=({inventoryList})=>{
         if (inventoryList) {
             return inventoryList.inventory.sort((item1,item2)=>{
-                console.log(item1,item2)
                 let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal?cmpValue: -cmpValue;
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
-                console.log(item)
                 return (
                     <tr key={item.inventoryId}>
                         <td><input type="checkbox" name="ids" value={item.inventoryId} className="SelectAll"
@@ -184,7 +184,7 @@ class InventoryList extends Component {
         if (AssetsList) {
             return AssetsList.assets.map((item) => {
                 return (
-                    <option key={item.assetId} value={item.assetName}>{item.assetName}</option>
+                    <option key={item.assetId} value={item.assetId}>{item.assetName}</option>
                 )
             })
         }
@@ -204,12 +204,8 @@ class InventoryList extends Component {
         var d = new Date();
         return d.toISOString().split('T')[0];
     }
-    // onChangeHandler = (event) => {
-    //     const { name, value } = event.target;
-    //     this.setState({ [name]: value });
-    // }
     onChangeHandler = (event) => {
-       
+       console.log(event.target.value)
         this.setState({message: ''})
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
@@ -225,34 +221,46 @@ class InventoryList extends Component {
 
         const {
             inventoryId,
-        dateOfPurchase,
-        ratePerInventory, } = this.state
-        console.log(this.state)
+            dateOfPurchase,
+            serialNumber,
+            ratePerInventory,
+            assetId,
+            assetTypeId, } = this.state
+            console.log('assetName',assetId,"assetTypeId",assetTypeId )
         let errors = {};
-        // if (this.state.assetId === '') {
-        //     errors.assetId = "Assets can't be empty"
-        // }
-
-        // else if (this.state.assetTypeId === '') {
-        //     errors.assetTypeId = "Asset Type Name can't be empty"
-        // }
-   
+        if(this.state.assetId===''){
+            errors.assetId="Asset Id can't be empty"
+        }
+        else if(this.state.assetTypeId===''){
+            errors.assetTypeId="Asset Id can't be empty"
+        }
+        else if(this.state.dateOfPurchase===''){
+            errors.dateOfPurchase="date can't be empty" 
+        }
+        else if(this.state.ratePerInventory===''){
+            errors.ratePerInventory="rate can't be empty" 
+        }
+        else if(this.state.serialNumber===''){
+            errors.serialNumber="serial no. can't be empty" 
+        }
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0
+        
         if (isValid) {
             this.setState({ loading: true })
             this.props.updateInventory(
                 inventoryId,
                 dateOfPurchase,
-                ratePerInventory )
+                serialNumber,
+                ratePerInventory,
+                assetId,
+                assetTypeId, )
                 .then(() => this.props.getInventoryList(id).then(() => this.setState({ loading: false })));
             this.setState({ modal: !this.state.modal })
         }
     }
    
     render() {
-
-        console.log(this.state.assetId,"sudfegsiuifuwahfdisgui=======================")
         let tableData;
         tableData = <Table className="table table-bordered">
             <thead>
@@ -279,29 +287,30 @@ class InventoryList extends Component {
             </tbody>
         </Table>
         let modalData=<div>
-            <FormGroup>
-                                    {/* <Label>Asset Name</Label>
-                                    <Input  type="select" name="assetName" onChange={this.onChangeHandler} value={this.state.assetName}>
-                                    <DefaultSelect/>
-                                        {this.assetsName(this.props.AssetName)}
-                                    </Input> */}
-                                    {/* <div className="error">{this.state.errors.assetId}</div>
+            <FormGroup>                                <FormGroup>
                                     <Label>Asset Type</Label>
-                                    <Input type="select"  name="assetTypeId" onChange={this.onChangeHandler} value={this.state.assetTypeId}>
-                                    <DefaultSelect/>
+                                    <Input  type="select" id="assetId" name="assetId" onChange={this.onChangeHandler} value={this.state.assetId}>
+                                        {this.assetsName(this.props.AssetName)}
+                                    </Input>
+                                    <div className="error">{this.state.errors.assetId}</div>
+                                    <Label>Asset Sub Type</Label>
+                                    <Input type="select" id="assetTypeId" name="assetTypeId" onChange={this.onChangeHandler} value={this.state.assetTypeId}>
                                         {this.assetsType(this.props.AssetType)}
                                     </Input>
-                                    <div className="error">{this.state.errors.assetTypeId}</div> */}
+                                    <div className="error">{this.state.errors.assetTypeId}</div>
+                                </FormGroup>
+
                                     <div>
-                                    <Label>Date Of Purchase</Label>
+                                    <Label>Purchase Date</Label>
                                     <Input type="date" max={this.maxDate()} name="dateOfPurchase" onChange={this.onChangeHandler} value={this.state.dateOfPurchase}/>
                                      </div> 
                                     <div className="error">{this.state.errors.numberOfInventory}</div>
-                                    <Label>Rate Per Inventory</Label>
+                                    <Label>Rate</Label>
                                     <Input maxLength={30} type="text" id="ratePerInventory" name="ratePerInventory" onChange={this.onChangeHandler} value={this.state.ratePerInventory} />
-                                    {/* <Label>Serial Number</Label>
+                                    <div className="error">{this.state.errors.ratePerInventory}</div>
+                                    <Label>Serial Number</Label>
                                     <Input maxLength={30} type="text" id="serialNumber" name="serialNumber" onChange={this.onChangeHandler} value={this.state.serialNumber} />
-                                    <div className="error">{this.state.errors.ratePerInventory}</div> */}
+                                    <div className="error">{this.state.errors.serialNumber}</div>
                                 </FormGroup>
                                 <FormGroup>
                                     <Button color="primary mr-2" onClick={this.editInventory}>Save</Button>
@@ -319,7 +328,6 @@ class InventoryList extends Component {
                         </div>
                         <div className="top-details">
                             <h3>Inventory List</h3>
-                            {/* <Button color="primary" onClick={this.toggles1} id="addMember" >Add Inventory</Button> */}
                         </div>
                         <div>
                         <SearchFilter type="text" value={this.state.search}
@@ -351,7 +359,6 @@ class InventoryList extends Component {
 }
 
 function mapStateToProps(state){
-    console.log(state.Inventory)
     return{
         inventory: state.Inventory,
         AssetName: state.AssetsReducer,

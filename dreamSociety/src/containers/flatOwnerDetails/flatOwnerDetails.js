@@ -59,7 +59,9 @@ class FlatOwnerDetails extends Component {
             permanentAddressUser:'',
             pinCode:'',
             flat:'flatNo.',
-            permanentPinCode:''
+            permanentPinCode:'',
+            pin:'',
+            documentOne:''
         }
     }
     toggles = () => {
@@ -147,7 +149,6 @@ class FlatOwnerDetails extends Component {
                 towerName:selectOption.label
             }
         }, function () {
-            console.log(selectOption.towerId)
         });
         this.props.getAllFloor(selectOption.towerId);
     }
@@ -157,16 +158,12 @@ class FlatOwnerDetails extends Component {
             [name]: selectOption.value,
             currentAddress:this.state.flat+flatName+','+this.state.floorName+','+this.state.towerName+','+this.state.currentAddress+' '+this.state.pinCode
         })
-        // this.props.getAllFloor(selectOption.towerId);
     }
     floorChangeHandler=(name,selectOption)=>{
-        console.log('=======selectOption=======',selectOption.value);
         this.setState({
             [name]: selectOption.value,
             floorName:selectOption.label
         })
-console.log('lllllllll=======',this.state.floorId)
-    // this.getFlats(this.props.towerFloor);
 
     }
     relationHandler = (name,selectOption) => {
@@ -189,10 +186,16 @@ console.log('lllllllll=======',this.state.floorId)
     }
     nextPrev = () => {
         let errors = {};
-        const { societyName, number, ownerName, DOB, email, towerId, flatDetailId,Aadhaar  } = this.state
+        const { societyName,pin, number, firstName,lastName, ownerGender,permanentAddressUser, DOB, email, towerId, flatDetailId,Aadhaar  } = this.state
         if (this.state.step === 1) {
-            if (ownerName === '') {
-                errors.ownerName = "Owern Name can't be empty"
+            if (firstName === '') {
+                errors.firstName = "First Name can't be empty"
+            }
+           else if (lastName === '') {
+                errors.lastName = "Last Name can't be empty"
+            }
+            else if (ownerGender === '') {
+                errors.ownerGender = "Gender can't be empty"
             }
             else if (DOB === '') {
                 errors.DOB = "Date of birth can't be empty"
@@ -207,13 +210,16 @@ console.log('lllllllll=======',this.state.floorId)
                 errors.flatNO = "flat number can't be empty"
             }
             else if (towerId === '') {
-                errors.tower = "tower can't be empty"
+                errors.towerId = "tower can't be empty"
             }
             else if (societyName === '') {
                 errors.societyName = "society name can't be empty"
             }
-            else if(Aadhaar.length<12){
-                errors.Aadhaar='Please enter 12 digit number'
+            if(Aadhaar === '') errors.Aadhaar=`Aadhaar Number can't be empty.`
+            else if(Aadhaar.length !== 12) errors.Aadhaar=`Aadhaar Number should be of 12 digit.`
+            if(document.getElementById('isChecked').checked === false){
+                if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
+                if(permanentAddressUser === '') errors.permanentAddressUser = `Permanent Address can't be empty.`;
             }
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
@@ -221,31 +227,6 @@ console.log('lllllllll=======',this.state.floorId)
                 this.setState({ step: this.state.step + 1 })
             }
         }
-        // const { bankName, holderName, accountNumber, panNumber, ifscCode } = this.state
-
-        // if (this.state.step === 2) {
-        //     if (bankName === '') {
-        //         errors.bankName = "Bank Name can't be empty"
-        //     }
-        //     else if (holderName === '') {
-        //         errors.holderName = "Holder Name can't be empty"
-        //     }
-        //     else if (accountNumber === '') {
-        //         errors.accountNumber = "Account Number enter 10 digit number"
-        //     }
-        //     else if (ifscCode === '') {
-        //         errors.ifscCode = "IFSC Code can't be empty"
-        //     }
-        //     else if (panNumber === '') {
-        //         errors.panNumber = "Pan number can't be empty"
-        //     }
-        //     // const isValid = Object.keys(errors).length === 0
-        //     // this.setState({ errors });
-        //     // if (isValid) {
-        //     //     console.log('isValid')
-        //     //     this.setState({ step: this.state.step + 1 })
-        //     // }
-        // }
         const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
@@ -255,7 +236,6 @@ console.log('lllllllll=======',this.state.floorId)
 
     }
     onChangeHandler = (event) => {
-        console.log(this.state)
         this.setState({message:''})
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
@@ -316,11 +296,6 @@ OnKeyPresshandlerEmail=(event)=> {
             DOB,
             email,
             towerId,
-            // bankName,
-            // holderName,
-            // accountNumber,
-            // panNumber,
-            // ifscCode,
             flatDetailId,
             familyMember,
             profilePicture,
@@ -338,10 +313,10 @@ OnKeyPresshandlerEmail=(event)=> {
             fileName,
             ownerGender,Aadhaar,floorId} = this.state
             const d = new FormData()
-            console.log(this.state.profilePicture)
-            d.append('profilePicture',this.state.profilePicture)        
+            d.append('profilePicture',this.state.profilePicture)
+            let data;        
             for(let i = 0; i < this.state.familyMember; i++){
-                const data={
+                 data={
                     memberName: this.state['memberName'+i],
                     memberDob: this.state['memberDOB'+i],
                     relationId: this.state['relationName'+i],
@@ -349,39 +324,11 @@ OnKeyPresshandlerEmail=(event)=> {
                 }
                 this.state.member.push(data)
             }
-
-            console.log(this.state)
-            const FlatOwnerData={
-                number,
-                firstName,
-                lastName,
-                DOB,
-                email,
-                towerId,
-                flatDetailId,
-                familyMember,
-                profilePicture,
-                societyName,
-                permanentAddress,
-                member,
-                countryName,
-                stateName,
-                cityName,
-                countryId,
-                stateId,
-                cityId,
-                locationId,
-                locationName,
-                ownerGender,
-                fileName,
-                Aadhaar,floorId
-            }
            
             this.setState({loading: true})
             this.props.addFlatOwner(this.state)
             .then(() => this.props.history.push('/superDashBoard/flatOwnerList'))
             .catch(err=>{
-                console.log(err.response.data.message)
                 this.setState({message:err.response.data.message})
                 this.toggle()
                 
@@ -415,35 +362,47 @@ OnKeyPresshandlerEmail=(event)=> {
               })
            
           };
-        }
-       
+        }  
   }
+ onFileChange=(event)=>{
+
+    const files = event.target.files;
+    const file = files[0];
+    const fileNamedoc=file.name
+    if (files && file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload =  () =>{
+          this.setState({
+            documentOne :
+              reader.result,
+              fileNamedoc
+          })
+       
+      };
+    }
+   
+}
   changePassword=()=>{ 
     return this.props.history.replace('/superDashboard/changePassword')
  }
 
  getFloor=({floor})=>{
-    console.log("floor",floor)
     if(floor){
         return floor.tower.Floors.map((item)=>{
                   
             return {...item ,label: item.floorName, value: item.floorId }
         })
-      //   this.setState({
-      //     floorId:item.floorId
-      //   })
     }
     else {
         return []
     }}
 
     getFlats=({floor})=>{
-        console.log('7777777jjjjjj',floor)
         if(floor){
           return  floor.flatDetail.filter((flatRecord)=>{
                 return flatRecord.floorId===this.state.floorId
             }).map((selectFlat)=>{
-                console.log('bbbbbbbbbbbbbbbbb',selectFlat)
                 return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
             });
         }
@@ -457,17 +416,14 @@ OnKeyPresshandlerEmail=(event)=> {
       }
       onCurrentAddressChangeHandler=(event)=>{
           const {countryName,stateName,cityName,locationName,society,pinCode}=this.state
-          console.log('9999999999',pinCode)
         this.setState({
             currentAddress:event.target.value+', '+society+', '+' '+locationName+', '+cityName+','+stateName+','+countryName+' '+pinCode
         },function(){
-            console.log(this.state.currentAddress)
         })
 
       }
       sameAddress = (e) => {
         if(!!document.getElementById('isChecked').checked){
-            console.log('is checked')
            this.setState({permanentAddress: this.state.currentAddress.trim(), defaultPermanent:true,
         permanentAddrDefault:false})
            
@@ -477,7 +433,7 @@ OnKeyPresshandlerEmail=(event)=> {
         }
     }
     countryName = ({countryResult}) => {
-        console.log(countryResult)
+        
         if(countryResult){
           
            return( 
@@ -491,19 +447,17 @@ OnKeyPresshandlerEmail=(event)=> {
         }
     }
 
-    onChangeCountry = (countryId, countryName, selectOption) => {
-        console.log(countryId, countryName, selectOption)
-    
+    onChangeCountry = (countryName,countryId,selectOption) => {    
+        console.log(selectOption)
         this.setState({
             countryName: selectOption.countryName,
             countryId:selectOption.countryId, 
         })
-        
         this.props.getState(selectOption.countryId)
     }
     stateName = ({stateResult}) => {
+        console.log(stateResult)
         if(stateResult){
-          console.log(stateResult)
            return( 
             stateResult.map((item) =>{ 
                    return(
@@ -514,9 +468,15 @@ OnKeyPresshandlerEmail=(event)=> {
             
         }
     }
+    onKeyPressHandler = (event) => {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
-    onChangeState = (stateName, stateId, selectOption) => {
-        console.log(stateName, stateId, selectOption)
+    onChangeState = ( stateName,stateId,selectOption) => {
         this.setState({
             stateName: selectOption.stateName,
             stateId:selectOption.stateId
@@ -539,8 +499,7 @@ OnKeyPresshandlerEmail=(event)=> {
         }
     }
 
-    onChangeCity = (cityName, cityId, selectOption) => {
-        console.log(cityName, cityId, selectOption)
+    onChangeCity = (cityName,cityId,selectOption) => {
         this.setState({
             cityName: selectOption.cityName,
             cityId:selectOption.cityId
@@ -563,7 +522,6 @@ OnKeyPresshandlerEmail=(event)=> {
      }
 
      onChangeLocation = (locationName, locationId, selectOption) => {
-         console.log(locationName, locationId, selectOption)
          this.setState({
              locationName: selectOption.locationName,
              locationId:selectOption.locationId,
@@ -573,8 +531,7 @@ OnKeyPresshandlerEmail=(event)=> {
      permanentAddressChange = (e) => {
         this.setState({[e.target.name]: e.target.value, 
             permanentAddress: this.state.permanentAddressUser + ',' + this.state.locationName + ',' +
-        this.state.cityName + ' , ' + this.state.stateName + ',' + this.state.countryName+' '+this.state.permanentPinCode })
-            console.log(this.state)
+        this.state.cityName + ' , ' + this.state.stateName + ',' + this.state.countryName+' '+this.state.pin })
     }
       
     render() {
@@ -586,7 +543,7 @@ OnKeyPresshandlerEmail=(event)=> {
                 <Row form>
                     <Col md={3}>
                         <Label>Name</Label>
-                        <Input placeholder="Name Of Member" name={`memberName${i}`} onChange={this.onChangeHandler}/>
+                        <Input placeholder="Name Of Member" name={`memberName${i}`} onChange={this.onChangeHandler} onKeyPress={this.onKeyPressHandler}/>
                     </Col>
                     <Col md={3}>
                         <Label>Relation With Owner</Label>
@@ -619,7 +576,6 @@ OnKeyPresshandlerEmail=(event)=> {
                                 </Col>
                 </Row>
             </FormGroup>);
-          
         }
         return (
             <div>
@@ -632,13 +588,13 @@ OnKeyPresshandlerEmail=(event)=> {
                             <h3>Flat Owner Details</h3>
                             <FormGroup>
                                 <Label>First Name</Label>
-                                <Input  style={{'textTransform': 'capitalize' }} placeholder="First Name" maxLength={50} name='firstName' onChange={this.onChangeHandler} />
-                                <span className="error">{this.state.errors.ownerName}</span>
+                                <Input  style={{'textTransform': 'capitalize' }} placeholder="First Name" onKeyPress={this.onKeyPressHandler} maxLength={50} name='firstName' onChange={this.onChangeHandler} />
+                                <span className="error">{this.state.errors.firstName}</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Last Name</Label>
-                                <Input  style={{'textTransform': 'capitalize' }} placeholder="Last Name" maxLength={50} name='lastName' onChange={this.onChangeHandler} />
-                                <span className="error">{this.state.errors.ownerName}</span>
+                                <Input  style={{'textTransform': 'capitalize' }} placeholder="Last Name" onKeyPress={this.onKeyPressHandler} maxLength={50} name='lastName' onChange={this.onChangeHandler} />
+                                <span className="error">{this.state.errors.lastName}</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Date Of Birth</Label>
@@ -657,6 +613,7 @@ OnKeyPresshandlerEmail=(event)=> {
                                
                                 <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
                                 <span><Input type="radio" id="Gender3" name="ownerGender" onChange={this.onChangeHandler} value="other"/></span>
+                                <span className="error">{this.state.errors.ownerGender}</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Contact Number</Label>
@@ -683,7 +640,8 @@ OnKeyPresshandlerEmail=(event)=> {
                                 <Select options={this.getSociety(this.props.societyName)}
                                     onChange={this.societyChangeHandler.bind(this)}
                                     placeholder={PlaceHolder} />
-                                <span className="error">{this.state.errors.societyName}</span>
+                                    {!this.state.societyName ? <span className="error">{this.state.errors.societyName}</span> : ''}
+                                {/* <span className="error">{this.state.errors.societyName}</span> */}
                             </FormGroup>
                             <FormGroup>
                                 <Label>Country</Label>
@@ -710,7 +668,7 @@ OnKeyPresshandlerEmail=(event)=> {
                                 <Select options={this.getTower(this.props.towerList)}
                                     onChange={this.towerChangeHandler.bind(this, 'towerId')}
                                     placeholder={PlaceHolder} />
-                                <span className="error">{this.state.errors.tower}</span>
+                                <span className="error">{this.state.errors.towerId}</span>
                             </FormGroup >
                             <FormGroup>
                                 <Label>Floor</Label>
@@ -746,23 +704,23 @@ OnKeyPresshandlerEmail=(event)=> {
                         {this.state.permanentAddrDefault ? <div>
                             <FormGroup>
                             <Label>Country</Label>
-                            <Select  options={this.countryName(this.props.societyName)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                            <Select placeholder={PlaceHolder}  options={this.countryName(this.props.societyName)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
                         </FormGroup>
                         <FormGroup>
                             <Label>State</Label>
-                            <Select options={this.stateName(this.props.societyName)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                            <Select placeholder={PlaceHolder} options={this.stateName(this.props.societyName)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
                         </FormGroup>
                         <FormGroup>
                             <Label>City</Label>
-                            <Select  options={this.cityName(this.props.societyName)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
+                            <Select  placeholder={PlaceHolder} options={this.cityName(this.props.societyName)} onChange={this.onChangeCity.bind(this, 'cityName', 'cityId')} />
                         </FormGroup>
                         <FormGroup>
                             <Label>Location</Label>
-                            <Select options={this.locationName(this.props.societyName)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
+                            <Select placeholder={PlaceHolder} options={this.locationName(this.props.societyName)} onChange={this.onChangeLocation.bind(this, 'locationName', 'locationId')} />
                         </FormGroup>
                         <FormGroup>
                                 <Label>Pin Code</Label>
-                                <Input type="text" placeholder="Enter Pin Code " name="permanentPinCode" onChange={this.onChangeHandler} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={6}/>
+                                <Input type="text" placeholder="Enter Pin Code " name="pin" onChange={this.onChangeHandler} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={6}/>
                             </FormGroup>
                         <FormGroup>
                             <Label>Permanent Address</Label>
@@ -787,7 +745,12 @@ OnKeyPresshandlerEmail=(event)=> {
                             <FormGroup>
                             <Label>Upload Profile Pic</Label>                               
                                 <Input accept='image/*' style={{display:'inline-block'}}type="file" name ="profilePic" onChange={this.FileChange} />
+                                <div>
+                                 <img src={this.state.profilePicture} height='100px' width='100px' />
+                                 </div>
                             </FormGroup>
+                            {/* <Label>upload your ID</Label> 
+         <input  accept='.docx ,.doc,application/pdf' type="file"   name ="documentOne" onChange={this.onFileChange}/> */}
                         </div>
                         <div>
                         <Link to='/superDashBoard/flatOwnerList'>
@@ -817,7 +780,6 @@ function mapStateToProps(state) {
         societyName: state.societyReducer,
         towerList: state.TowerDetails,
         relationList: state.RelationMasterReducer,
-        // flatList:state.flatDetailMasterReducer,
         towerFloor:state.FlatOwnerReducer,
     }
 }

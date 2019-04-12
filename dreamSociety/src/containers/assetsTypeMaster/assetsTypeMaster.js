@@ -50,6 +50,13 @@ class AssetsTypeMaster extends Component {
             .then(()=>this.props.history.push('/superDashBoard/assetsMaster'))
         }
     }
+    onKeyPressHandler = (event) => {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     logout=()=>{
         localStorage.removeItem('token');
@@ -70,7 +77,7 @@ class AssetsTypeMaster extends Component {
         <div>
             <div className="assetsName">
                 <Label>Assets Name</Label>
-                <Input type="text" style={{ 'textTransform': 'capitalize' }} maxLength={30} placeholder="Enter Assets Name" name="assets" onChange={this.onChangeHandler} />
+                <Input type="text" style={{ 'textTransform': 'capitalize' }} onKeyPress={this.onKeyPressHandler} maxLength={30} placeholder="Enter Assets Name" name="assets" onChange={this.onChangeHandler} />
                 <span className="error">{this.state.errors.assets}</span>
             </div>
             <div>

@@ -49,7 +49,6 @@ class DisplaySocietyEventBooking extends Component {
     searchFilter(search) {
         return function (x) {
             return x.event_master.eventName.toLowerCase().includes(search.toLowerCase()) || !search;
-            console.log(x)
         }
     }
 
@@ -70,10 +69,10 @@ class DisplaySocietyEventBooking extends Component {
             
         }}
 
-    editEvent(societyEventBookId,eventId,eventName,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description){
-       console.log(eventId,'eventId',eventName,"eventName")
+    editEvent(societyEventBookId,eventId,eventName,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description,breakfast,lunch,eveningSnacks,dinner,dJ,drinks){
+       console.log("breakfast,lunch,eveningSnacks,dinner,dJ,drinks",breakfast,lunch,eveningSnacks,dinner,dJ,drinks)
         this.setState({
-            societyEventBookId,eventId,eventName,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description
+            societyEventBookId,eventId,eventName,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description,breakfast,lunch,eveningSnacks,dinner,dJ,drinks
             ,editEventModal: !this.state.editEventModal})
     }
 
@@ -83,7 +82,7 @@ class DisplaySocietyEventBooking extends Component {
         });
     }
 
-    deleteEvents(societyEventBookId){console.log(societyEventBookId)
+    deleteEvents(societyEventBookId){
         this.setState({loading:true})
         let {isActive } =this.state;  
         this.props.deleteEvents(societyEventBookId,isActive)
@@ -91,18 +90,28 @@ class DisplaySocietyEventBooking extends Component {
             this.setState({isActive:false})
     }
     
-    deleteSelected(ids){console.log(ids)
+    deleteSelected(ids){
         this.setState({loading:true,
         isDisabled:true});
         this.props.deleteSelectedEvent(ids)
         .then(() => this.refreshData())
       
     }
+   
+    logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/')
+    }
+
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
 
 
-    renderList({ societyEvents }) {
-        if (societyEvents ) {
-            return  societyEvents.eventBookings.sort((item1,item2)=>{console.log(item1,item2)
+    renderList({ societyEvents }) {console.log(societyEvents)
+        if (societyEvents && societyEvents.eventBookings ) {
+            return  societyEvents.eventBookings.sort((item1,item2)=>{
                 var cmprVal =  (item1.event_master[this.state.filterName].localeCompare(item2.event_master[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).map((item,index)=>{
@@ -131,7 +140,7 @@ class DisplaySocietyEventBooking extends Component {
                              }}/></td>
                        <td>{index+1}</td>
                        <td>{item.event_master?item.event_master.eventName:''}</td>
-                       <td>{item.user_master.firstName + " " + item.user_master.lastName}</td>
+                       <td>{item.user_master?item.user_master.firstName + " " + item.user_master.lastName:''}</td>
                        <td>{item.startDate}</td>
                        <td>{item.endDate}</td>
                        <td>{item.startTime}</td>
@@ -139,8 +148,9 @@ class DisplaySocietyEventBooking extends Component {
                        <td>{item.perPersonCharge}</td>
                        <td>{item.childAbove}</td>
                        <td>{item.charges}</td>
+                       <td style={{width:'12%'}}>{item.breakfast?"BreakFast":'' }<br/>{item.lunch?"Lunch":''}<br/>{item.eveningSnacks?" Evening Snacks":''}<br/>{item.dinner?"Dinner":''}<br/>{item.dj? " DJ":''}<br/>{item.drinks?" Drinks":''}</td>
                        <td>
-                             <Button color="success" className="mr-2" onClick={this.editEvent.bind(this,item.societyEventBookId,item.event_master.eventId,item.event_master?item.event_master.eventName:'',item.user_master.firstName,item.startDate,item.endDate,item.startTime,item.endTime,item.perPersonCharge,item.childAbove,item.charges,item.description)}>Edit</Button>                 
+                             <Button color="success" className="mr-2" onClick={this.editEvent.bind(this,item.societyEventBookId,item.event_master.eventId,item.event_master?item.event_master.eventName:'',item.user_master?item.user_master.firstName:'',item.startDate,item.endDate,item.startTime,item.endTime,item.perPersonCharge,item.childAbove,item.charges,item.description,item.breakfast,item.lunch,item.eveningSnacks,item.dinner,item.dj,item.drinks)}>Edit</Button>                 
                              <Button color="danger"  onClick={this.deleteEvents.bind(this, item.societyEventBookId)}>Delete</Button>
                         </td>
                    
@@ -189,7 +199,7 @@ getEventOrganiser({events}){
 }
 
 updateEvents(){
-    const {societyEventBookId,eventId,eventName,organisedBy,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description}= this.state; 
+    const {societyEventBookId,eventId,eventName,organisedBy,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description,breakfast,lunch,eveningSnacks,dinner,dJ,drinks}= this.state; 
     let errors = {};
         if(this.state.perPersonCharge===''){
             errors.perPersonCharge="Person Charges can't be empty"
@@ -202,16 +212,24 @@ updateEvents(){
             }  
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0
-            if (isValid) {
+            if (isValid  &&  this.state.message === '') {
              
-                this.props.updateSocietyEvents(societyEventBookId,eventId,eventName,organisedBy,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description)
+                this.props.updateSocietyEvents(societyEventBookId,eventId,eventName,organisedBy,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description,breakfast,lunch,eveningSnacks,dinner,dJ,drinks)
                 .then(()=>this.refreshData())
                 .catch(err=>{
-                    this.setState({message: err.response.data.message,modalLoading:false, loading: false})
-                    })
-                this.setState({ modalLoading: true})
-                
-}}
+                    this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                })
+                if(this.state.message === ''){
+                    this.setState({editEventModal: true})
+                }
+                else {
+                    this.setState({editEventModal: false})
+                }       
+            this.setState({ modalLoading: true})
+}
+console.log("breakfast",breakfast,"lunch",lunch,"eveningSnacks",eveningSnacks,"dinner",dinner,"dJ",dJ,"drinks",drinks)
+
+}
 
 
 selectAll = () => {
@@ -246,6 +264,11 @@ push=()=>{
     this.props.history.push('/superDashBoard/societyeventbooking')
 }
 
+h=(event)=>{
+    this.setState({ [event.target.name]: event.target.checked},function(){console.log(this.state.dJ,this.state.breakfast)})
+
+}
+
 render() { 
     
            let tableData= <Table className="table table-bordered">
@@ -262,10 +285,11 @@ render() {
                 <th>Event End Date</th>
                 <th>Event Start Time</th>
                 <th>Event End Time</th>             
-                <th  style={{width:'6%'}}>Per Person Charges</th>
+                <th>Per Person Charges</th>
                 <th>Child Above</th>
-                <th  style={{width:'4%'}}>Charges</th>   
-                <th>Actions</th>                          
+                <th>Charges</th>   
+                <th style={{width:'4%'}}>Selected Options</th>
+                <th style={{width:'14%'}}>Actions</th>                          
             </tr>
             
         
@@ -279,14 +303,14 @@ render() {
             let modalData =<div>
                             <FormGroup>
                                 <Label >Event Name</Label>
-                                <Input type="select" name="eventId" value={this.state.eventId} defaultValue='no-value'  onChange={this.handleChange}>
+                                <Input type="select" name="eventId" value={this.state.eventId}  onChange={this.handleChange}>
                                 <DefaultSelect/>
                                 {this.getEventName(this.props.EventDetails)}                  
                                 </Input>
                             </FormGroup>
                             <FormGroup>
                                 <Label >Oragnised By</Label>
-                                <Input type="select" name="organisedBy" value={this.state.organisedBy} defaultValue='no-value'  onChange={this.handleChange}>
+                                <Input type="select" name="organisedBy" value={this.state.organisedBy}  onChange={this.handleChange}>
                                 <DefaultSelect/>
                                 {this.getEventOrganiser(this.props.EventDetails)}    
                                 </Input>                           
@@ -323,6 +347,49 @@ render() {
                             </Col>
                             </Row>
                             <FormGroup>
+                                <Label>
+                            Select your options  
+                                </Label>
+                            </FormGroup>
+                            
+                            <FormGroup check>
+                                <Label check>   
+                                <Input type="checkbox" name="breakfast" onChange={this.h} 
+                                checked={this.state.breakfast=== true ? true : false} />Breakfast
+                                </Label>
+                            </FormGroup>
+                            <FormGroup check>
+                                <Label check>   
+                                <Input type="checkbox" name="lunch" onChange={this.h} 
+                                  checked={this.state.lunch=== true ? true : false} />Lunch
+                                </Label>
+                            </FormGroup>
+                            <FormGroup check>                                                                                                                                                                                                                            
+                                <Label check>   
+                                <Input type="checkbox" name="eveningSnacks"  onChange={this.h}
+                                  checked={this.state.eveningSnacks=== true ? true : false} />Evening Snacks
+                                </Label>
+                            </FormGroup>
+                            <FormGroup check>
+                                <Label check>   
+                                <Input type="checkbox" name="dinner" onChange={this.h} 
+                                checked={this.state.dinner=== true ? true : false} />Dinner
+                                </Label>
+                            </FormGroup>
+                            <FormGroup check>
+                                <Label check>   
+                                <Input type="checkbox" name="dJ" onChange={this.h}
+                                  checked={this.state.dJ=== true ? true : false} />DJ
+                                </Label>
+                            </FormGroup>
+                            <FormGroup check>
+                                <Label check>   
+                                <Input type="checkbox" name="drinks" onChange={this.h}
+                                   checked={this.state.drinks=== true ? true : false}/>Drinks
+                                </Label>
+                            </FormGroup><br/>
+
+                            <FormGroup>
                                 <Label>Per Person Charge</Label>                               
                                 <Input type="text" name ="perPersonCharge"  value={this.state.perPersonCharge} maxLength={8}  onChange={this.perHandleChange}/>
                                 <div>{!this.state.perPersonCharge ? <span className="error">{this.state.errors.perPersonCharge}</span>: null}</div>
@@ -352,7 +419,7 @@ render() {
 
                             <FormGroup>
                                 <Button color="primary" className="mr-2"  onClick={this.updateEvents.bind(this)} >Save </Button>
-                                <Button color="danger">Cancel</Button>
+                                <Button color="danger" onClick={this.toggleEditEventModal.bind(this)}>Cancel</Button>
                             </FormGroup>
 </div>
          let deleteSelectedButton = <Button color="danger" className="mb-2"

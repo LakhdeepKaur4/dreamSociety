@@ -282,7 +282,7 @@ class MaintenanceSubMasterDetails extends Component{
                     <FormGroup>
                         <Label>Price</Label>
                         <Input name="rate" type="text" value={this.state.rate}
-                        onChange={this.rateChange} />
+                        onChange={this.rateChange} maxLength="16" />
                         {!this.state.rate ? <span className="error">{this.state.errors.rate}</span>: null}
                     </FormGroup>
                     <FormGroup>

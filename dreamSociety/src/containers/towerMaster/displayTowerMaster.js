@@ -6,6 +6,7 @@ import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, In
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
 import './tower.css'
+import { PlaceHolder } from '../../actions/index';
 import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
 import Spinner from '../../components/spinner/spinner';
 import {fetchFloor} from '../../actionCreators/floorAction';
@@ -18,7 +19,7 @@ class DisplayTowerMaster extends Component {
 
       towerId: [],
      
-      isActive:false,
+     
       isChecked: false
     },
     filterName:"towerName",
@@ -31,7 +32,8 @@ class DisplayTowerMaster extends Component {
     towerName: [],
     errors:{},
     message:'',
-    modalLoading:false
+    modalLoading:false,
+    isActive:false,
   }
 
   componentDidMount() {
@@ -43,6 +45,7 @@ class DisplayTowerMaster extends Component {
 
   refreshData=()=>{
     this.props.viewTower().then(() =>this.setState({loading:false, modalLoading: false,editTowerModal:false}));
+   this.props.fetchFloor().then(() =>this.setState({loading:false}));
   }
 
   OnKeyPresshandler(event) {
@@ -54,10 +57,13 @@ class DisplayTowerMaster extends Component {
     }
   }
   deleteTower(towerId) {
-  let {isActive} =this.state.editTowerData;
-  this.setState({loading:true});
-     this.props.deleteTower(towerId,isActive).then(()=>this.props.fetchFloor().then(()=>this.setState({loading:false})))
-        // this.setState({editTowerData:{isActive:false}});
+
+    this.setState({loading:true});
+  let {isActive} =this.state;
+  console.log("isActive",isActive);
+
+     this.props.deleteTower(towerId,isActive).then(()=>this.refreshData())
+        this.setState({isActive:false})
 
 
   }
@@ -75,17 +81,9 @@ class DisplayTowerMaster extends Component {
   }
   else {
       this.setState({ [e.target.name]: e.target.value });
-  }
-   
+  } 
   } 
   
-
- 
-   
-  
-
-
-
   toggleEditTowerModal() {
     this.setState({
       editTowerModal: !this.state.editTowerModal, message:''
@@ -105,9 +103,10 @@ class DisplayTowerMaster extends Component {
      this.setState({errors})
      const isValid = Object.keys(errors).length===0
     if(isValid  &&  this.state.message === ''){
-   this.props.updateTower(towerId,towerName,floors).then(()=>this.props.fetchFloor().then(()=>this.setState({loading:false}))).catch(err=>{ console.log(err.response.data.message)
-    this.setState({modalLoading:false,message: err.response.data.message, loading: false})
-    })
+   this.props.updateTower(towerId,towerName,floors).then(()=>{this.refreshData()}).catch(err=>this.setState({ modalLoading:false,message:err.response.data.message,loading:false}))
+
+
+    
     if(this.state.message === ''){
       this.setState({editTowerModal: true})
   }
@@ -124,6 +123,9 @@ class DisplayTowerMaster extends Component {
 
   editTower(id, towerId, towerName,floor) {
     console.log('efews', id, towerId, towerName,floor);
+    this.setState({
+      floors:floor
+    })
 const selectedFloor=floor.map(item=>item.floorId)
     this.setState({
       id, towerId, towerName,selectedFloor, editTowerModal: !this.state.editTowerModal
@@ -308,6 +310,29 @@ selectAll = () => {
               </tbody>
               
             </table>
+            let modalData=<div>
+            
+                   <FormGroup>
+                   <Label for="towerName">  Tower Name</Label>
+                   <Input  id="towerName"  name ="towerName" value={this.state.towerName} onChange={this.onChange}
+                     onKeyPress={this.OnKeyPresshandler}
+                      maxLength={20}
+                     />
+                     <span className="error">{this.state.errors.towerName} </span>
+                     <span className="error">{this.state.message}</span>
+                 </FormGroup>
+                 <FormGroup>
+                   <Label>Floors</Label>
+                   <ReactMultiSelectCheckboxes
+                   placeholderButtonLabel={PlaceHolder}
+                  options={this.getFloor(this.props.floor)}
+                  onChange={this.floorChangeHandler.bind(this,'floorId')}/>
+                    <span className="error">{this.state.errors.floor} </span>
+                 </FormGroup>
+               </div>
+              
+
+
              let deleteSelectedButton = <Button color="danger" className="mb-2"  disabled={this.state.isDisabled} 
              onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
             if(!this.props.TowerDetails.tower){
@@ -333,24 +358,8 @@ selectAll = () => {
 
 
 
-                <FormGroup>
-                  <Label for="towerName">  Tower Name</Label>
-                  <Input  id="towerName"  name ="towerName" value={this.state.towerName} onChange={this.onChange}
-                    onKeyPress={this.OnKeyPresshandler}
-                     maxLength={20}
-                    />
-                    <span className="error">{this.state.errors.towerName} </span>
-                    <span className="error">{this.state.message}</span>
-                </FormGroup>
-                <FormGroup>
-                  <Label for="towerName">Floors</Label>
-                  <ReactMultiSelectCheckboxes
-                  checked={this.state.selectedFloor}
-                  // value={this.state.selectedFloor}
-                 options={this.getFloor(this.props.floor)}
-                 onChange={this.floorChangeHandler.bind(this,'floorId')}/>
-                   <span className="error">{this.state.errors.floor} </span>
-                </FormGroup>
+          
+              {!this.state.modalLoading ? modalData : <Spinner />}
 
 
               
@@ -373,7 +382,7 @@ selectAll = () => {
                             } 
                         }  
                     }/></label>
-            {!this.state.modalLoading ?tableData:<Spinner/>}
+            {!this.state.loading ?tableData:<Spinner/>}
           </div>
         </UI>
       </div>
