@@ -1044,39 +1044,54 @@ exports.deleteSelectedTenantMembers = (req, res, next) => {
         })
 }
 
-exports.addFlats = (req, res, next) => {
+exports.addFlats = async (req, res, next) => {
     const body = req.body;
 
     console.log('Body ===>', body);
 
-    if (body !== null) {
-        TenantFlatDetail.create(body)
-            .then(flat => {
-                if (flat !== null) {
-                    res.status(httpStatus.CREATED).json({
-                        message: 'Flat added successfully'
-                    })
-                } else {
-                    res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                        message: 'Flat not added'
-                    })
-                }
-            })
-            .catch(err => {
-                console.log('Error ===>', err);
-                res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-            })
-    } else {
+    const flat = await TenantFlatDetail.findOne({ where: { isActive: true, tenantId: body.tenantId, flatDetailId: body.flatDetailId } });
+    const flatCount = await TenantFlatDetail.findAll({ where: { isActive: true, tenantId: body.tenantId } });
+
+    if (flatCount.length === 5) {
         res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-            message: 'Please provide required data'
+            message: 'Maximum flats for this tenant'
         })
+    } else {
+        if (flat !== null) {
+            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                message: 'Flat already exist for this tenant'
+            })
+        } else {
+            if (body !== null) {
+                TenantFlatDetail.create(body)
+                    .then(flat => {
+                        if (flat !== null) {
+                            res.status(httpStatus.CREATED).json({
+                                message: 'Flat added successfully'
+                            })
+                        } else {
+                            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                                message: 'Flat not added'
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        console.log('Error ===>', err);
+                        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+                    })
+            } else {
+                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                    message: 'Please provide required data'
+                })
+            }
+        }
     }
 }
 
-exports.getFlats = (req,res,next) => {
+exports.getFlats = (req, res, next) => {
     const tenantId = req.params.id;
 
-    console.log('Tenant ID ===>',tenantId);
+    console.log('Tenant ID ===>', tenantId);
 
     Tenant.findOne({
         where: {
@@ -1086,7 +1101,7 @@ exports.getFlats = (req,res,next) => {
         include: [
             {
                 model: FlatDetail,
-                where:{
+                where: {
                     isActive: true
                 },
                 include: [
@@ -1096,20 +1111,20 @@ exports.getFlats = (req,res,next) => {
             }
         ]
     })
-    .then(tenant => {
-        if (tenant !== null) {
-            // console.log(tenant);
-            res.status(httpStatus.OK).json({
-                flats: tenant.flat_detail_masters
-            })
-        } else {
-            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                message: 'No tenant found'
-            })
-        }
-    })
-    .catch(err => {
-        console.log('Error ===>',err);
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-    })
+        .then(tenant => {
+            if (tenant !== null) {
+                // console.log(tenant);
+                res.status(httpStatus.OK).json({
+                    flats: tenant.flat_detail_masters
+                })
+            } else {
+                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                    message: 'No tenant found'
+                })
+            }
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
 }

@@ -47,6 +47,7 @@ exports.get = async (req, res, next) => {
 exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
+   
         console.log("id==>", id)
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
@@ -58,8 +59,10 @@ exports.update = async (req, res, next) => {
         const relation = await Relation.findOne({
             where: {
                 isActive: true,
+                relationId:id
             }
         })
+        console.log(relation);
         if (relation.relationName === update.relationName) {
             const updatedRelation = await Relation.find({ where: { relationId: id } }).then(relation => {
                 return relation.updateAttributes(update)
