@@ -885,7 +885,7 @@ let formData=
                                         name="currentAddressDefault"
                                         onChange={this.currentAddressChange}
                                         maxLength='250' />
-                                        {<span  className="error">{this.state.errors.currentAddressDefault}</span> }
+                                        {<span  className="error">{this.state.errors.currentAddress}</span> }
                                     </Col>
                                 </Row>
                             </FormGroup>
