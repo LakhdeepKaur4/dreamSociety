@@ -151,7 +151,7 @@ db.owner.belongsTo(db.tower, { foreignKey: 'towerId' });
 // db.owner.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.owner.belongsTo(db.floor, { foreignKey: 'floorId' });
 db.owner.belongsToMany(db.flatDetail, { through: 'owner_flatDetail_master', foreignKey: 'ownerId' });
-db.flatDetail.belongsToMany(db.owner, { as: 'OwnerFlat', through: 'owner_flatDetail_master', foreignKey: 'flatDetailId' });
+db.flatDetail.belongsToMany(db.owner, { through: 'owner_flatDetail_master', foreignKey: 'flatDetailId' });
 db.tenant.hasMany(db.tenantMembersDetail, { foreignKey: 'tenantId' });
 db.tenantMembersDetail.belongsTo(db.tenant, { foreignKey: 'tenantId' });
 // db.tenant.belongsTo(db.owner, { as: 'Owner1', foreignKey: 'ownerId1' });

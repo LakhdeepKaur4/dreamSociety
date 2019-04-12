@@ -443,7 +443,7 @@ module.exports = function (app) {
 
 	app.post('/api/owner/ownerMember/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.addMember);
 
-	app.get('/api/owner', owner.get2);
+	app.get('/api/owner',[authJwt.verifyToken], owner.get2);
 
 	app.put('/api/owner/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.update2);
 
@@ -459,7 +459,15 @@ module.exports = function (app) {
 
 	app.put('/api/owner/ownerMember/update/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.updateMember);
 
-	app.put('/api/owner/delete/:id', owner.delete);
+	app.put('/api/owner/delete/:id', [authJwt.verifyToken], owner.delete);
+
+	app.get('/api/owner/getFlats/:id',[authJwt.verifyToken], owner.getflats);
+
+	app.post('/api/owner/addMoreFlats',[authJwt.verifyToken], owner.addMoreFlats);
+
+	app.put('/api/owner/deleteFlat/:id',[authJwt.verifyToken], owner.deleteFlat);
+
+	app.put('/api/owner/editFlat/:id',[authJwt.verifyToken], owner.editFlat);
 
 	//app.put('/api/ownerMember/deleteSelected',[authJwt.verifyToken],owner.delete);
 
