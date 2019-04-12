@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN, GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT_DETAIL_IDS,UPDATE_FLAT_DETAILS,GET_FLOOR_DATA,GET_FLAT_PARKING,GET_PARKING_SLOT,GET_SLOTS} from '../actions/index';
+import {URN, GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT_DETAIL_IDS,UPDATE_FLAT_DETAILS,GET_FLOOR_DATA} from '../actions/index';
 
 
 
@@ -84,32 +84,3 @@ export  function getfloors(towerId){
           payload: request
         } 
     }
-
-export function fetchParking (){
-    const request = axios.get(`${URN}/parking`,{headers:authHeader()})
-    .then(response=>response.data)
-    return {
-        type:GET_FLAT_PARKING,
-        payload:request
-    }
-}
-
-export function getSlotId (parkingId,flatId){
-    console.log(parkingId)
-    const request = axios.get(`${URN}/slot/${parkingId}/${flatId}`,{headers:authHeader()})
-    .then(response=>response.data)
-    return {
-        type:GET_PARKING_SLOT,
-        payload:request
-    }
-}
-
-export function getSlots (id){
-    console.log(id)
-    const request = axios.get(`${URN}/flatDetail/${id}`,{headers:authHeader()})
-    .then(response=>response.data)
-    return {
-        type:GET_SLOTS,
-        payload:request
-    }
-}

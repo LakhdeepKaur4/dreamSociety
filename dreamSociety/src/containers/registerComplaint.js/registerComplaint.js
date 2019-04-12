@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {getServiceType} from '../../actionCreators/serviceMasterAction';
-import {userflatDetails,postRegister} from '../../actionCreators/registerComplainAction';
+
+import {userflatDetails,postRegister,serviceDetails} from '../../actionCreators/registerComplainAction';
 import UI from '../../components/newUI/tenantDashboard';
 import {Form, Button,  FormGroup,  Input, Label,Row, Col } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
 
 
-class Register extends Component{
+class RegisterComplaint extends Component{
     
     constructor(props) {
         super(props);
@@ -33,13 +33,15 @@ class Register extends Component{
     }
 
     refreshData=()=>{
-         this.props.getServiceType().then(() => this.setState({loading: false}));
+         
          this.props.userflatDetails().then(() => this.setState({loading: false}));
+         this.props.serviceDetails().then(() => this.setState({loading: false}));
         
     }
 
     service({item}){
         if(item){
+            console.log(item)
            return( 
             item.map((item) =>{ 
                    return(
@@ -54,7 +56,7 @@ class Register extends Component{
     }
 
     userflatDetails({userFlat}){
-        if(userFlat){
+        if(userFlat &&  userFlat.flats){
             console.log(userFlat)
             return( 
                 userFlat.flats.map((item) =>{ 
@@ -174,7 +176,7 @@ class Register extends Component{
                 <Label>Service Type</Label>
                 <Input type="select" defaultValue='no-value' name="serviceId"  onChange={this.onChange}>
                     <DefaultSelect />
-                    {this.service(this.props.displayServiceMasterReducer)}
+                    {this.service(this.props.registerComplaintReducer)}
                 </Input >
                 <span className='error'>{this.state.errors.serviceId}</span>
             </FormGroup>
@@ -268,7 +270,7 @@ class Register extends Component{
 function mapStateToProps(state) {
 
     return {
-        displayServiceMasterReducer :state.displayServiceMasterReducer,
+       
         registerComplaintReducer : state.registerComplaintReducer
     }
 
@@ -276,7 +278,7 @@ function mapStateToProps(state) {
 
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getServiceType,userflatDetails,postRegister }, dispatch);
+    return bindActionCreators({ userflatDetails,postRegister,serviceDetails }, dispatch);
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(Register));
+export default (connect(mapStateToProps, mapDispatchToProps)(RegisterComplaint));
