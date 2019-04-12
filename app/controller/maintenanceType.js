@@ -13,7 +13,7 @@ exports.create = async (req, res, next) => {
         let body = req.body;
         body.userId = req.userId;
 
-        const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: body.maintenanceId } });
+        const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: body.maintenanceId, rate: body.rate, sizeId: body.sizeId } });
 
         if (alreadyExist !== null) {
             res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
@@ -69,7 +69,7 @@ exports.update = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: update.maintenanceId, maintenanceTypeId: { [Op.ne]: id } } });
+        const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: update.maintenanceId, rate: update.rate, sizeId: update.sizeId, maintenanceTypeId: { [Op.ne]: id } } });
 
         if (alreadyExist !== null) {
             res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
