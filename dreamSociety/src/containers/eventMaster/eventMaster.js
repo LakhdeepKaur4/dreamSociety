@@ -91,11 +91,12 @@ class EventMaster extends Component {
 
   getEvent({ events }) {
     if (events) {
+      console.log(events)
       return (
         events.event.map((item) => {
           return (
             <option key={item.userId} value={item.userId}>
-              {item.userName}
+              {item.firstName+" "+item.lastName}
             </option>
           )
         })
@@ -128,9 +129,7 @@ changePassword=()=>{
     <div >
      
       <form onSubmit={this.submit}>
-      <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
-        <span aria-hidden="true">&times;</span>
-   </div>
+    
      
         <div className="form-group">
           <label >Event Type</label>
@@ -169,7 +168,6 @@ changePassword=()=>{
             className="form-control"  
             name="eventOrganiser"
             onChange={this.onChange}
-          
             defaultValue='no-value'>
           <DefaultSelect/>
            {this.getEvent(this.props.EventDetails)}

@@ -392,7 +392,7 @@ render(){
                </FormGroup>
                <FormGroup>
                    <Label>Location Name</Label>
-                   <Input type="text" id="locationId" name="locationName" maxLength={20} onChange={this.onChangeHandler} value={this.state.locationName} />
+                   <Input type="text" id="locationId" name="locationName" maxLength={80} onChange={this.onChangeHandler} value={this.state.locationName} />
                    <span className="error">{this.state.errors.locationName}</span>
                    <span className="error">{this.state.message}</span>
                </FormGroup> 

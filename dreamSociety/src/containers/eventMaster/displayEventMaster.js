@@ -143,7 +143,8 @@ class DisplayEventMaster extends Component {
                                 events.event.map((item) => {
                                         return (
                                                 <option key={item.userId} value={item.userId}>
-                                                        {item.userName}
+              {item.firstName+" "+item.lastName}
+                                                   
                                                 </option>
                                         )
                                 })
@@ -190,7 +191,8 @@ class DisplayEventMaster extends Component {
                                                         <td> {index + 1}</td>
                                                         <td>{item.eventType}</td>
                                                         <td>{item.eventName}</td>
-                                                        <td>{item.organiser?item.organiser.userName:''}</td>
+                                           <td>{item.organiser.firstName+" "+item.organiser.lastName}
+          </td>
                                                  
 
 
