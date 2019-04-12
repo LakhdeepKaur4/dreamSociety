@@ -559,4 +559,3 @@ module.exports = function (app) {
 
 	app.get('/api/complaintRegister', [authJwt.verifyToken,authJwt.isOwnerOrTenantRole], complaint.get);
 }
-	, authJwt.isAdminRole
