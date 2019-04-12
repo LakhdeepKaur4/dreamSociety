@@ -1381,7 +1381,6 @@ exports.signinDecrypted = async (req, res, next) => {
 			message: "Password cannot be empty"
 		})
 	}
-	console.log("1");
 	User.findOne({
 		nested: true,
 		where: {
@@ -1400,8 +1399,6 @@ exports.signinDecrypted = async (req, res, next) => {
 		]
 	}).then(user => {
 		let roleId;
-		console.log("2");
-		console.log("user==>", user)
 		user.roles.map(function (roles) { roleId = roles.id });
 		if (roleId == 3) {
 			Owner.findOne({
@@ -1495,13 +1492,10 @@ exports.signinDecrypted = async (req, res, next) => {
 		});
 
 	}).catch(err => {
-		console.log('123', err)
 		res.status(500).json({
 			"message": err
 		});
 	});
-
-	console.log("4");
 }
 
 exports.getUserDecrypted = (req, res, next) => {

@@ -5,12 +5,13 @@ const Role = db.role;
 const User = db.user;
 const UserRole = db.userRole;
 const Op = db.Sequelize.Op;
+const httpStatus = require('http-status');
 
 verifyToken = (req, res, next) => {
 	let token = req.headers['x-access-token'];
 
 	if (!token) {
-		return res.status(403).json({
+		return res.status(httpStatus.FORBIDDEN).json({
 			auth: false,
 			message: 'No token provided.'
 		});
@@ -18,7 +19,7 @@ verifyToken = (req, res, next) => {
 
 	jwt.verify(token, config.secret, (err, decoded) => {
 		if (err) {
-			return res.status(500).json({
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
 				auth: false,
 				message: 'Fail to Authentication. Error -> ' + err
 			});
@@ -49,16 +50,8 @@ isAdmin = (req, res, next) => {
 }
 
 isAdminRole = async (req, res, next) => {
+	console.log("admin access required");
 	let token = req.headers['x-access-token'];
-	jwt.verify(token, config.secret, (err, decoded) => {
-		if (err) {
-			return res.status(500).json({
-				auth: false,
-				message: 'Fail to Authentication. Error -> ' + err
-			});
-		}
-		req.userId = decoded.id;
-	});
 
 	const user = await User.findOne({ where: { isActive: true, userId: req.userId } });
 	if (user) {
@@ -73,22 +66,13 @@ isAdminRole = async (req, res, next) => {
 			next();
 			return
 		}
-		res.status(403).send("Require Admin or SuperAdmin Role!");
+		res.status(httpStatus.FORBIDDEN).json("Require Admin or SuperAdmin Role!");
 		return;
 	}
 }
 
 isSuperAdminRole = async (req, res, next) => {
 	let token = req.headers['x-access-token'];
-	jwt.verify(token, config.secret, (err, decoded) => {
-		if (err) {
-			return res.status(500).json({
-				auth: false,
-				message: 'Fail to Authentication. Error -> ' + err
-			});
-		}
-		req.userId = decoded.id;
-	});
 
 	const user = await User.findOne({ where: { isActive: true, userId: req.userId } });
 	if (user) {
@@ -97,22 +81,13 @@ isSuperAdminRole = async (req, res, next) => {
 			next();
 			return
 		}
-		res.status(403).send("Require Super Admin Role!");
+		res.status(httpStatus.FORBIDDEN).send("Require Super Admin Role!");
 		return;
 	}
 }
 
 isOwnerOrTenantRole = async (req, res, next) => {
 	let token = req.headers['x-access-token'];
-	jwt.verify(token, config.secret, (err, decoded) => {
-		if (err) {
-			return res.status(500).json({
-				auth: false,
-				message: 'Fail to Authentication. Error -> ' + err
-			});
-		}
-		req.userId = decoded.id;
-	});
 
 	const user = await User.findOne({ where: { isActive: true, userId: req.userId } });
 	if (user) {
@@ -125,9 +100,9 @@ isOwnerOrTenantRole = async (req, res, next) => {
 		});
 		if (role) {
 			next();
-			return
+			return;
 		}
-		res.status(403).send("Require Owner or Tenant Roles!");
+		res.status(httpStatus.FORBIDDEN).send("Require Owner or Tenant Roles!");
 		return;
 	}
 }
