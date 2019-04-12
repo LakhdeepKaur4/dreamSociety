@@ -107,6 +107,9 @@ import DisplaySocietyEventBooking from './containers/societyEventBooking/display
 
 import ViewTenantDetail from './containers/tenantMaster/tenantDetail/viewTenantDetail';
 import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
+import ParkingSlotList from './containers/flatDetailMaster/slotList';
+import ViewOwnerFlats from './containers/flatOwnerDetails/viewFlats';
+import AddOwnerFlat from './containers/flatOwnerDetails/addFlats'
 class App extends Component {
   render() {
     return (
@@ -156,7 +159,8 @@ class App extends Component {
             <PrivateRoute path='/superDashBoard/assetsTypeSubMaster' exact component={AssetsTypeSubList} />
             <PrivateRoute path='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubMaster} />
             <PrivateRoute path='/superdashboard/flatDetailMaster' component={flatDetailMaster} />
-            <PrivateRoute path='/superdashboard/flatDetails' component={flatDetails} />   
+            <PrivateRoute path='/superdashboard/flatDetails' component={flatDetails} /> 
+            <PrivateRoute path='/superDashboard/parkingSlotList' component={ParkingSlotList}/>  
             <PrivateRoute path='/superDashboard/cityMaster' component={CityMaster} />
             <PrivateRoute path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
             <PrivateRoute path='/superDashboard/locationMaster' component={locationMaster}/>
@@ -215,6 +219,8 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/assignRolesDetail' component={AssignRolesDetail} />
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
+            <PrivateRoute path='/superDashboard/viewOwnerFlats' component={ViewOwnerFlats} />
+            <PrivateRoute path="/superDashboard/addOwnerFlat" component={AddOwnerFlat}/>
           </Switch>
         </div>
         

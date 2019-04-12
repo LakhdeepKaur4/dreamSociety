@@ -1,14 +1,14 @@
-export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
-export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+// export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
+// export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+// export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+// export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
-// export  const URN = 'https://mydreamsociety.herokuapp.com/api';
-// export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const UR = 'https://mydreamsociety.herokuapp.com/';
+export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+export  const UR = 'https://dreamsociety.herokuapp.com/';
 
-// export  const URN = 'https://dreamsociety.herokuapp.com/api';
+// export  const URN = 'http://192.168.1.105:8083/api';
 // export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://dreamsociety.herokuapp.com/';
 // export  const UR = 'https://dreamsociety.herokuapp.com/';
@@ -265,3 +265,9 @@ export const ASSIGN_POST='ASSIGN_POST';
 export const ASSIGN_DISPLAY='ASSIGN_DISPLAY';
 
 export const ADD_VENDOR='ADD_VENDOR';
+export const GET_FLAT_PARKING='GET_FLAT_PARKING';
+export const GET_PARKING_SLOT='GET_PARKING_SLOT';
+export const GET_SLOTS='GET_PARKING_SLOTS';
+export const GET_OWNER_FLAT='GET_OWNER_FLAT';
+export const DELETE_OWNER_FLAT='DELETE_OWNER_FLAT';
+export const ADD_MORE_FLATS="ADD_MORE_FLATS";
