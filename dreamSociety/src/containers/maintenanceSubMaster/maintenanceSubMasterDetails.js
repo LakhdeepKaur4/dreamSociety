@@ -30,6 +30,7 @@ class MaintenanceSubMasterDetails extends Component{
             errors:{},
             editSubMaintenanceModal: false,
             modalLoading: false,
+            subMaintenanceErr:''
         }
         this.delete = this.delete.bind(this);
         this.edit = this.edit.bind(this)
@@ -47,7 +48,7 @@ class MaintenanceSubMasterDetails extends Component{
     
 
     toggleEditSubMaintenanceModal(){
-        this.setState({editSubMaintenanceModal: !this.state.editSubMaintenanceModal})
+        this.setState({editSubMaintenanceModal: !this.state.editSubMaintenanceModal, subMaintenanceErr:''})
     }
 
 
@@ -87,7 +88,7 @@ class MaintenanceSubMasterDetails extends Component{
             this.props.updateMaintenanceSubMasterDetail(maintenanceTypeId, category, sizeType, rate, maintenanceId, sizeId)
             .then(() => this.modalRefresh())
             .catch(err => { err
-                this.setState({modalLoading:false})
+                this.setState({modalLoading:false, subMaintenanceErr: err.response.data.message})
             });
         }
     }
@@ -158,10 +159,10 @@ class MaintenanceSubMasterDetails extends Component{
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value, errors });
+            this.setState({ [e.target.name]: e.target.value, errors, subMaintenanceErr:'' });
         }
         else {
-            this.setState({ [e.target.name]: e.target.value });
+            this.setState({ [e.target.name]: e.target.value, subMaintenanceErr:'' });
         }
     }
 
@@ -177,7 +178,7 @@ class MaintenanceSubMasterDetails extends Component{
 
     rateChange = (e) => {
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
-            this.setState({[e.target.name]:e.target.value});
+            this.setState({[e.target.name]:e.target.value, subMaintenanceErr:''});
         }
     }
 
@@ -263,6 +264,7 @@ class MaintenanceSubMasterDetails extends Component{
      onClick={this.deleteSelectedSubMaintenance.bind(this, this.state.ids)}>Delete Selected</Button>
 
      let modalData = <div>
+                        <div><span className="error">{this.state.subMaintenanceErr}</span></div>
                         <FormGroup>
                         <Label>Maintenance Category</Label>
                         <Input name="maintenanceId"  type="select" value={this.state.maintenanceId}
