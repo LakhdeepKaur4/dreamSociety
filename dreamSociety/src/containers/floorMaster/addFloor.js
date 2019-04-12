@@ -30,18 +30,27 @@ class AddFloor extends Component {
         return this.props.history.replace('/superDashBoard');
     }
 
-    floorChangeHandler = (event) => {
+    floorChangeHandler = (e) => {
         this.setState({message:'' })
        
-        if (!!this.state.errors[event.target.name]) {
+        if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
-            delete errors[event.target.name];
-            this.setState({ [event.target.name]: event.target.value, errors });
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
         }
         else {
-            this.setState({ [event.target.name]: event.target.value });
-        };
+            this.setState({ [e.target.name]: e.target.value.trim('') });
+        }
     }
+
+    onKeyPressHandler = (event) => {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
 
     addFloor = (event) => {
         event.preventDefault();
@@ -68,12 +77,20 @@ class AddFloor extends Component {
     }
     }
 
+    OnKeyPressUserhandler(event) {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
     render() {
 
         let formData = <div>
             <FormGroup>
                 <Label>Add Floor</Label>
-                <Input type="text" name="floorName" onChange={this.floorChangeHandler} placeholder="Add Floor" maxLength={50} />
+                <Input type="text" name="floorName" onChange={this.floorChangeHandler} onKeyPress={this.OnKeyPressUserhandler} placeholder="Add Floor" maxLength={50} />
                 {this.state.message ? <span className='error'>{this.state.message}</span>:''}
                 <span className="error">{this.state.errors.floorName}</span>  
             </FormGroup>

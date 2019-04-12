@@ -109,7 +109,7 @@ import DisplaySocietyEventBooking from './containers/societyEventBooking/display
 
 import ViewTenantDetail from './containers/tenantMaster/tenantDetail/viewTenantDetail';
 import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
-import RegisterComplaint from './containers/registerComplaintTenant/registerComplaintTenant';
+import RegisterComplaint from './containers/registerComplaint/registerComplaint';
 
 
 
@@ -221,7 +221,7 @@ class App extends Component {
        
             <PrivateRoute path='/superDashBoard/viewTenantDetail' component={ViewTenantDetail} />
             <PrivateRoute path='/superDashboard/assignRolesDetail' component={AssignRolesDetail} />
-            <PrivateRoute path='/tenantDashboard/registerComplaintMaster' component={RegisterComplaint} />
+            <PrivateRoute path='/tenantDashboard/registerComplaint' component={RegisterComplaint} />
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
           </Switch>

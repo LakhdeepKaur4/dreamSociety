@@ -68,6 +68,7 @@ class IndividualVendor extends Component{
             editCurrent:true,
             pin:'',
             pin1:'',
+            dailyRoutine:false
            
         }
     }
@@ -117,6 +118,21 @@ class IndividualVendor extends Component{
             event.preventDefault();
         }
     }
+    OnKeyPresshandlerPhone1(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
+
+    
+    onRateChange=(e)=>{
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+            this.setState({[e.target.name]:e.target.value});
+            
+        }}
+
 
     emailValid(event) {
         const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
@@ -199,6 +215,14 @@ class IndividualVendor extends Component{
           };
         }  
     }
+
+    onRateChange=(e)=>{
+    //    console.log("=====================", e.target.value)
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+            console.log("=====================", e.target.value)
+            this.setState({[e.target.name]:e.target.value});
+            
+        }}
 
       onChange=(e) =>{
         this.setState({message:'' })
@@ -518,6 +542,14 @@ class IndividualVendor extends Component{
         console.log('updatePermanentAddress', this.state.permanentAddress)
     }
 
+    changeVendor=(event)=>{
+       
+        this.setState({ [event.target.name]: event.target.checked}, function(){
+            console.log(this.state.dailyRoutine)
+        })
+        
+    }
+
 
     service({item}){
         if(item){
@@ -723,6 +755,7 @@ class IndividualVendor extends Component{
                         <FormGroup>
                             <span style={{fontWeight:'600'}}>Is Your Current address same as above?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
                         </FormGroup>
+                        
                         {this.state.currentAddressVisible ? <FormGroup>
                             <Label>Current Address</Label>
                             <Input type="textarea" id="currenttaddr" disabled maxLength="500" value={this.state.permanentAddress} name="defaultCurrentAddress" onChange={this.defaultCurrentAddress} />
@@ -796,6 +829,13 @@ class IndividualVendor extends Component{
                 </FormGroup>
                 </Col>
                 </Row>
+
+                <FormGroup check> <span style={{fontWeight:'600'}}>Is Your Vendor providing daily routine services?</span><Input type="checkbox" onChange={this.changeVendor} name="dailyRoutine"  className="ml-3" /></FormGroup>
+                {/* <FormGroup check>
+                    <Label check>   
+                        <Input type="checkbox" name="daiilyRoutine" onChange={this.changeVendor} />Is your vendor providing daily routine services?
+                    </Label>
+                </FormGroup> */}
                 <Row form>
                 <Col md={5}>
                 <FormGroup>
@@ -821,7 +861,7 @@ class IndividualVendor extends Component{
                 <Col md={3}>
                 <FormGroup>
                     <Label>Rate</Label>
-                    <Input type="text" name="rate" placeholder="Service Rate" onChange={this.onChange}></Input>
+                    <Input type="text" name="rate" placeholder="Service Rate"  onChange={this.onRateChange} value={this.state.rate}  maxLength={8}></Input>
                     <span className='error'>{this.state.errors.rate}</span>
                 </FormGroup>
                 </Col>

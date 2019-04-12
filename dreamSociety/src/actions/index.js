@@ -8,16 +8,10 @@
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://mydreamsociety.herokuapp.com/';
 
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
-export  const PicURN = 'https://dreamsociety.herokuapp.com/';
-export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-export  const UR = 'https://dreamsociety.herokuapp.com/';
-// export  const URN = 'https://mydreamsociety.herokuapp.com/api';
-// // export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
-// export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const UR = 'https://mydreamsociety.herokuapp.com/';
-// export  const URN = 'http://192.168.1.110:8083/api';
+// export  const URN = 'https://dreamsociety.herokuapp.com/api';
+// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com/';
 
 
 export const USER_LOGIN='user_login';
@@ -276,6 +270,8 @@ export const DELETE_INDIVIDUAL_VENDOR='DELETE_INDIVIDUAL_VENDOR';
 export const DELETE_SELECT_INDIVIDUAL_VENDOR='DELETE_SELECT_INDIVIDUAL_VENDOR';
 export const UPDATE_INDIVIDUAL_VENDOR='UPDATE_INDIVIDUAL_VENDOR';
 export const GET_INDIVIDUAL_SERVICEID='GET_INDIVIDUAL_SERVICEID';
+
+export const REGISTER_COMPLAINT='REGISTER_COMPLAINT';
 
 
 

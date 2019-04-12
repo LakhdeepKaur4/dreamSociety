@@ -1064,7 +1064,7 @@ class IndividualVendorDetail extends Component {
 
             <FormGroup>
                 <Label>Rate</Label>
-                <Input  placeholder="rate" maxLength={5} name='rate' onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.onHandleChange} value={this.state.rate} />
+                <Input  placeholder="rate" maxLength={5} name='rate' onKeyPress={this.onRateChange} onChange={this.onHandleChange} value={this.state.rate} />
                 <span className="error">{this.state.errors.rate}</span>
             </FormGroup>
 

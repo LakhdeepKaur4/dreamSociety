@@ -139,7 +139,6 @@ class TenantDetail extends Component {
 
     searchFilter(search){
         return function(x){
-            console.log(x.flat_detail_master.flatNo)
             if(x){
                 return (x.firstName + ' ' + x.lastName).toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.lastName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
@@ -217,20 +216,20 @@ class TenantDetail extends Component {
                                      item.firstName, item.lastName, item.gender, item.email,
                                     item.contact, item.aadhaarNumber,item.panCardNumber, item.dob, item.permanentAddress, item.correspondenceAddress,
                                     item.tower_master ? item.tower_master.towerName:'',
-                                    item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master.flatNo,
+                                    item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master?item.flat_detail_master.flatNo:'',
                                     item.tower_master ? item.tower_master.towerId: '',
                                     item.floor_master ? item.floor_master.floorId: '',
-                                    item.flat_detail_master.flatDetailId, item.tenantId)}>View</Button>
+                                    item.flat_detail_master ? item.flat_detail_master.flatDetailId:'', item.tenantId)}>View</Button>
                             </td>
                             <td>
                                 <Button color="success" onClick={this.edit.bind(this,PicURN+item.picture.replace('../../',''),
                                      item.firstName, item.lastName, item.gender, item.email,
                                     item.contact, item.aadhaarNumber,item.panCardNumber, item.dob, item.permanentAddress,
                                     item.tower_master ? item.tower_master.towerName:'',
-                                    item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master.flatNo,
+                                    item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master ? item.flat_detail_master.flatNo:'',
                                     item.tower_master ? item.tower_master.towerId: '',
                                     item.floor_master ? item.floor_master.floorId: '',
-                                    item.flat_detail_master.flatDetailId, item.tenantId)} className="mr-2">Edit</Button>
+                                    item.flat_detail_master ? item.flat_detail_master.flatDetailId :'', item.tenantId)} className="mr-2">Edit</Button>
                                 <Button color="danger" onClick={this.delete.bind(this, item.tenantId)}>Delete</Button>
                             </td>
                         </tr>
