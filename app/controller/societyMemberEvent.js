@@ -114,6 +114,7 @@ exports.update = async (req, res, next) => {
                 [Op.and]: [
                     { isActive: true },
                     { societyMemberEventName: req.body.societyMemberEventName },
+                    { societyMemberEventId: { [Op.ne]: id } }
                 ]
             }
         })
