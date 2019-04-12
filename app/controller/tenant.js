@@ -1044,7 +1044,7 @@ exports.deleteSelectedTenantMembers = (req, res, next) => {
         })
 }
 
-exports.addFlats = (req, res, next) => {
+exports.addFlats = async (req, res, next) => {
     const body = req.body;
 
     console.log('Body ===>', body);
