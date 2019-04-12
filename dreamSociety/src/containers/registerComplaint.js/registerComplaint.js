@@ -9,7 +9,7 @@ import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
 
 
-class Register extends Component{
+class RegisterComplaint extends Component{
     
     constructor(props) {
         super(props);
@@ -40,6 +40,7 @@ class Register extends Component{
 
     service({item}){
         if(item){
+        
            return( 
             item.map((item) =>{ 
                    return(
@@ -266,7 +267,7 @@ class Register extends Component{
 }
 
 function mapStateToProps(state) {
-
+    console.log(state,"=================register")
     return {
         displayServiceMasterReducer :state.displayServiceMasterReducer,
         registerComplaintReducer : state.registerComplaintReducer
@@ -279,4 +280,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ getServiceType,userflatDetails,postRegister }, dispatch);
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(Register));
+export default (connect(mapStateToProps, mapDispatchToProps)(RegisterComplaint));
