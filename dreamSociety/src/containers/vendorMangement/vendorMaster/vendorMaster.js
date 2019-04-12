@@ -296,9 +296,9 @@ class vendorMaster extends Component {
             }
             
           
-            else if(this.state.contact===''){
-                errors.contact="Contact can't be empty"                
-            }
+            if(this.state.contact === '') errors.contact= `Contact can't be empty.`;
+            else if(this.state.contact.length !== 10) errors.contact= `Contact should be of 10 digit.`;
+
             else if(this.state.email===''){
                 errors.email="Email can't be empty"                
             }
