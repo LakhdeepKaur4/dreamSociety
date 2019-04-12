@@ -63,16 +63,16 @@ class Demo extends Component {
 
         });
     }
-    logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user-type');
-        return this.props.history.replace('/')
-    }
+    // logout = () => {
+    //     localStorage.removeItem('token');
+    //     localStorage.removeItem('user-type');
+    //     return this.props.history.replace('/')
+    // }
 
-    changePassword=()=>{
+    // changePassword=()=>{
           
-        return this.props.history.replace('/superDashboard/changePassword')
-      }
+    //     return this.props.history.replace('/superDashboard/changePassword')
+    //   }
     
 
     render() {
@@ -125,9 +125,9 @@ class Demo extends Component {
                             <div className="dropdown-menu dropdown-menu-lg-right bg-dark" aria-labelledby="dropdownMenuButton">
                                 <div className="form-inline ml-lg-3 ml-md-2 ml-sm-2 mt-2 mt-md-0">
                                 <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
-                                        onClick={this.changePassword} >Change Password</button> 
+                                        onClick={this.props.change} >Change Password</button> 
                                     <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
-                                        onClick={this.logout} >Logout</button>
+                                        onClick={this.props.onClick} >Logout</button>
                                 </div>
                             </div>
                         </div>
@@ -167,6 +167,7 @@ class Demo extends Component {
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/">Book Personal Events</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/">Revoke Tenants</Link></div></Menu.Item>
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/">Manage Vendor</Link></div></Menu.Item>
+                            <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/ownerDashboard/registerComplaintOwner">Register Complaint</Link></div></Menu.Item>
                             <div style={{ height: '10%' }}></div>
                         </div>
                     </nav>

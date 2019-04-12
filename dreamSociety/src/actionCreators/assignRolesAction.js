@@ -4,7 +4,7 @@ import { authHeader } from '../helper/authHeader';
 
 
 export const assignRole=()=>{
-    const request = axios.get(`${URN}/user/role/activate` , {headers:authHeader()})
+    const request = axios.get(`${URN}/role/assign` , {headers:authHeader()})
      .then(response => response.data)
   
      return{
@@ -55,7 +55,7 @@ export const assignRole=()=>{
 
  export const assignRoleData=()=>{
      console.log('djhduhcudsu');
-    const request = axios.get(`${URN}/user` , {headers:authHeader()})
+    const request = axios.get(`${URN}/rolesAssigned` , {headers:authHeader()})
      .then(response => response.data)
   
      return{

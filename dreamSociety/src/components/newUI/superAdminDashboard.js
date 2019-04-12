@@ -64,6 +64,8 @@ class Demo extends Component {
         });
     }
 
+
+
     
 
     render() {
@@ -115,10 +117,14 @@ class Demo extends Component {
                             </button>
                             <div className="dropdown-menu dropdown-menu-lg-right bg-dark" aria-labelledby="dropdownMenuButton">
                                 <div className="form-inline ml-lg-3 ml-md-2 ml-sm-2 mt-2 mt-md-0">
+                                <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="ownerDashboard" type="button"
+                                         onClick={this.props.changeDashboard}>Switch Dashboard</button>
                                 <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal"  type="button"
                                         onClick={this.props.change}>Change Password</button>
+                                        
                                     <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
                                         onClick={this.props.onClick} >Logout</button>
+                                  
                                 </div> 
                             </div>
                         </div>
@@ -182,7 +188,7 @@ class Demo extends Component {
                     </nav>
                     <nav id="sidebarMaster" className="bg-light  inactive">
                         <div id="sidebarMaster-content">
-                            <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/assignRoles">Assign Roles</Link></div></Menu.Item>
+                            {/* <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/assignRoles">Assign Roles</Link></div></Menu.Item> */}
                             <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/societyManagementDetail">Society Management Details</Link></div></Menu.Item>
                             <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/designationMasterDetail">Designation Master</Link></div></Menu.Item>
                             <Menu.Item className="master text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/countrymaster/countrymasterdetails"> Country Master</Link></div></Menu.Item>
