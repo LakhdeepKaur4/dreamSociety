@@ -59,6 +59,7 @@ exports.update = async (req, res, next) => {
         const relation = await Relation.findOne({
             where: {
                 isActive: true,
+                relationId:id
             }
         })
         console.log(relation);
