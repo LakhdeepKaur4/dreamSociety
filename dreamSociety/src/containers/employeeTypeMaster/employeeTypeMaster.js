@@ -114,16 +114,24 @@ changePassword=()=>{
     return this.props.history.replace('/superDashboard/changePassword')
  }
 
+ close=()=>{
+    return this.props.history.replace('/superDashBoard')
+}
+logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
+
 
 
 render(){
-    let form1;
-    if(!this.state.loading && this.props.employeeDetails.employeeType && this.props.employeeDetails.employeeWorkType){
-    form1=
+    let 
+        form1=
     <div>
     <form onSubmit={this.submit}>
     <div>
-         <h3 align="center">Employee Type Master</h3>
+      
         <div className="form-group">
         <label>Employee Type</label>
     <select  className="form-control"   defaultValue='no-value'  name ="employeeTypeId" onChange={this.onChange} >
@@ -146,20 +154,26 @@ render(){
     <span className="error">{this.state.errors.serviceType}</span>
     <span className="error">{this.state.message}</span>   
     </div>
-    <button className="btn btn-success">Submit</button>
+  <button className="btn btn-success mr-2">Submit</button>
+   
     <button className="btn btn-danger" onClick={this.displayEmployee}>Cancel</button>
     </div>
     </form>
 </div>
-}
-else if(this.submit){
-    form1 =<Spinner/>
-}
+
 
     return(
       <div>
-          <UI  change={this.changePassword}>
-              {form1}
+          <UI onClick={this.logout} change={this.changePassword}>
+
+          <div className="w3-container w3-margin-top w3-responsive">
+                        <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                            <span aria-hidden="true">&times;</span>
+                        </div>
+                <h3 align="center">Employee  Type Master </h3>
+
+              {!this.state.loading ?form1:<Spinner/>}
+              </div>
           </UI>
 
       </div>

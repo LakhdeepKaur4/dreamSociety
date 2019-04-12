@@ -275,7 +275,11 @@ ImageChange =(event)=>{
          if(!this.state.contact){
              errors.contact="contact can't be empty"
          }
-
+         if(!this.state.employeeDetailId){
+            errors.employeeDetailId ="service Type can't be empty"
+        }
+      
+       
          if(!this.state.email){
              errors.email="email can't be empty"
          }
@@ -770,6 +774,11 @@ ImageChange =(event)=>{
             event.preventDefault();
         }
     }
+    minDate = () => {
+        var d = new Date();
+        return d.toISOString().split('T')[0];
+    }
+
 
     pinChange1 = (e) => {
         console.log(this.state)
@@ -942,7 +951,7 @@ ImageChange =(event)=>{
                 <Row md={12}>
                     <Col md={6}>
                         <Label>Start Date</Label>
-                        <Input readOnly value={this.state.startDate} onChange={this.onChange} />
+                        <Input readOnly value={this.state.startDate}   min={this.minDate()} onChange={this.onChange} />
                     </Col>
                     <Col md={6}></Col>
                 </Row>
@@ -1062,11 +1071,10 @@ ImageChange =(event)=>{
                                   <Label > Contact Number</Label>
                                   <Input name="contact" value={this.state.contact}
                                       onChange={this.onChange}
-                                       maxLength={20}
+                                       maxLength={10}
 
                                        onKeyPress={this.OnKeyPressNumber}
-                                    
-                                  />
+                                    />
                                    {this.state.contactServerError ? <span  className='error'>{this.state.contactServerError}</span> : null}
                                    <span  className="error" >{this.state.errors.contact}</span>
                                    </FormGroup>
@@ -1076,6 +1084,8 @@ ImageChange =(event)=>{
           <DefaultSelect/>
           {this.getService(this.props.employeeDetails)}
           </Input>
+    <span className="error">{this.state.errors.employeeDetailId}</span>
+
           </FormGroup>
                                  
                                    <FormGroup>
@@ -1254,6 +1264,8 @@ ImageChange =(event)=>{
                               <FormGroup>
                                   <Label > Employment Date</Label>
                                   <Input type="date" value={this.state.editEmployeeData.startDate}
+                                         min={this.minDate()}
+
                                       onChange={(e) => {
                                           let { editEmployeeData } = this.state;
 

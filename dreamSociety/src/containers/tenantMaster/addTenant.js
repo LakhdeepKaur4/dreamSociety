@@ -8,7 +8,6 @@ import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
-import {getAllFloor} from '../../actionCreators/flatOwnerAction';
 import Spinner from '../../components/spinner/spinner';
 import { getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail } from '../../actionCreators/tenantMasterAction';
 
@@ -69,11 +68,7 @@ class AddTenant extends Component{
             societyLocation:"",
             defaultPermanentAddress:'',
             pin:'',
-            pinCode:'',
-            noOfFlats:'',
-            flatDetailIds:[],
-            optionalFloorId:'',
-            memberError:''
+            pinCode:''
         }
     }
 
@@ -343,42 +338,25 @@ class AddTenant extends Component{
 
     nextPrev = (e) => {
         let errors = {};
-        // const {firstName, lastName, dob, gender,permanentAddressUser, panCardNumber, contact, email, correspondenceAddress, aadhaarNumber, permanentAddress} = this.state;
-        // if(this.state.step === 1){
-        //     if(firstName === '') errors.firstName = `First Name can't be empty.`;
-        //     if(lastName === '') errors.lastName = `Last Name can't be empty.`;
-        //     if(dob === '') errors.dob = `Date of Birth can't be empty.`;
-            
-        //     if(gender === '') errors.gender = `Gender can't be empty`;
-        //     if(contact === '') errors.contact= `Contact can't be empty.`;
-        //     else if(contact.length !== 10) errors.contact= `Contact should be of 10 digit.`;
-        //     if(email === '') errors.email = `Email can't be empty.`;
-        //     if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
-        //     else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of 12 digit.`
-        //     if(panCardNumber === '') errors.panCardNumber = `Pan Card number can't be empty.`;
-        //     else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
-        //     const isValid = Object.keys(errors).length === 0
-        //     this.setState({ errors });
-        //     if (isValid) {
-        //         this.setState({ step: this.state.step + 1 })
-        //     }
-        // }
-        // // const { bankName, accountHolderName, accountNumber, panCardNumber, IFSCCode } = this.state;
-        // // if(this.state.step === 2){
-        // //     if(bankName === '') errors.bankName = `Bank name can't be empty.`;
-        // //     if(accountHolderName === '') errors.accountHolderName = `Account Holder name can't be empty.`;
-        // //     if(accountNumber === '') errors.accountNumber = `Account number can't be empty.`;
-           
-        // //     if(IFSCCode === '') errors.IFSCCode = `IFSC code can't be empty.`;
-        // //     else if(IFSCCode.length !== 11) errors.IFSCCode = `IFSC code should be of 11 digit.`;
-        // //     const isValid = Object.keys(errors).length === 0
-        // //     this.setState({ errors });
-        // //     if (isValid) {
-        // //         this.setState({ step: this.state.step + 1 })
-        // //     }
-        // // }
+        const {firstName, lastName, dob, gender,permanentAddressUser, panCardNumber, contact, email, correspondenceAddress, aadhaarNumber, permanentAddress} = this.state;
         if(this.state.step === 1){
-            this.setState({ step: this.state.step + 1 })
+            if(firstName === '') errors.firstName = `First Name can't be empty.`;
+            if(lastName === '') errors.lastName = `Last Name can't be empty.`;
+            if(dob === '') errors.dob = `Date of Birth can't be empty.`;
+            
+            if(gender === '') errors.gender = `Gender can't be empty`;
+            if(contact === '') errors.contact= `Contact can't be empty.`;
+            else if(contact.length !== 10) errors.contact= `Contact should be of 10 digit.`;
+            if(email === '') errors.email = `Email can't be empty.`;
+            if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar Number can't be empty.`
+            else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar Number should be of 12 digit.`
+            if(panCardNumber === '') errors.panCardNumber = `Pan Card number can't be empty.`;
+            else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
+            const isValid = Object.keys(errors).length === 0
+            this.setState({ errors });
+            if (isValid) {
+                this.setState({ step: this.state.step + 1 })
+            }
         }
         if(this.state.step === 2){
             let data = {};
@@ -404,49 +382,24 @@ class AddTenant extends Component{
                 this.setState({ step: this.state.step + 1 })
             }
         }
+        
+        const { towerId, floorId, flatDetailId, pin } = this.state;
         if(this.state.step === 3){
-            
-            this.setState({ step: this.state.step + 1 })
-        }
-        // const { towerId, floorId, flatDetailId, pin } = this.state;
-        // if(this.state.step === 3){
-        //     if(towerId === '') errors.towerId = `Please select Tower.`;
-        //     if(floorId === '') errors.floorId = `Please select a Floor.`;
-        //     if(document.getElementById('isChecked').checked === false){
-        //         if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
-        //         if(permanentAddressUser === '') errors.permanentAddressUser = `Permanent Address can't be empty.`;
-        //     }
-            
-        //     if(flatDetailId === '') errors.flatDetailId = `Please select a Flat.`;
-        //     if(correspondenceAddress === '') errors.correspondenceAddress = `Corresponding Address can't be empty.`;
-           
-        //     const isValid = Object.keys(errors).length === 0
-        //     this.setState({ errors });
-        //     if (isValid) {
-        //         this.setState({ step: this.state.step + 1 })
-        //     }
-        // }
-        if(this.state.step === 4){
-            this.state.flatDetailIds.splice(0, this.state.flatDetailIds.length)
-            let data;
-            for(let i = 0; i < 4; i++){
-                
-                // console.log(this.state.member)
-                // data = {
-                //     memberName: this.state['memberName'+i],
-                //     memberDob: this.state['memberDob'+i],
-                //     relationId: this.state['relationId'+i],
-                //     gender:this.state['gender'+i]
-                // }
-                data = this.state['flatDetailId'+i]
-                    
+            if(towerId === '') errors.towerId = `Please select Tower.`;
+            if(floorId === '') errors.floorId = `Please select a Floor.`;
+            if(document.getElementById('isChecked').checked === false){
+                if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
+                if(permanentAddressUser === '') errors.permanentAddressUser = `Permanent Address can't be empty.`;
             }
-            this.state.flatDetailIds.push(this.state.flatDetailId,data )
-            this.setState({ step: this.state.step + 1 })
-            console.log(this.state)
+            
+            if(flatDetailId === '') errors.flatDetailId = `Please select a Flat.`;
+           
+            const isValid = Object.keys(errors).length === 0
+            this.setState({ errors });
+            if (isValid) {
+                this.setState({ step: this.state.step + 1 })
+            }
         }
-        
-        
     }
 
     
@@ -531,29 +484,18 @@ class AddTenant extends Component{
               }
         }
 
-        getFlats1=({getFlatDetail})=>{
-            console.log('7777777jjjjjj',getFlatDetail)
-            if(getFlatDetail){
-              return  getFlatDetail.flatDetail.filter((flatRecord)=>{
-                    return flatRecord.floorId===this.state.optionalFloorId
-                }).map((selectFlat)=>{
-                    console.log('bbbbbbbbbbbbbbbbb',selectFlat)
-                    return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
-                });
-            }
-            else {
-                return []
-              }
-        }
+        
 
         
 
         towerChangeHandler = (towerId, towerName, selectOption) => {
             console.log(towerId, towerName, selectOption)
+            this.setState({correspondenceAddress:''})
             this.setState(function (prevState, props) {
                 return {
                     towerId: selectOption.towerId,
                     towerName: selectOption.towerName,
+                    
                     correspondenceAddress: 'Tower : ' + selectOption.towerName
                 }
             }, function () {
@@ -562,18 +504,6 @@ class AddTenant extends Component{
             this.props.getFlatDetailViaTowerId(selectOption.towerId);
         }
 
-        towerChangeHandler1 = (name, selectOption) => {
-            console.log(name, selectOption)
-            this.setState(function (prevState, props) {
-                return {
-                    [name]: selectOption.value,
-                }
-            }, function () {
-                console.log(selectOption.value)
-                console.log(this.state)
-            });
-            this.props.getFlatDetailViaTowerId(selectOption.towerId);
-        }
     
         floorChangeHandler=(floorName, floorId,selectOption)=>{
             console.log(floorName, floorId,selectOption);
@@ -587,17 +517,6 @@ class AddTenant extends Component{
             // this.getFlats(this.props.towerFloor);
         
             }
-            floorChangeHandler1=(name,selectOption)=>{
-                console.log(name,selectOption);
-                this.setState({
-                    [name]: selectOption.value
-                    
-                })
-                console.log(selectOption.value)
-                console.log(this.state)
-                // this.getFlats(this.props.towerFloor);
-            
-                }
 
             flatChangeHandler=(flatNo, flatDetailId ,selectOption)=>{
                 console.log(flatNo, flatDetailId ,selectOption)
@@ -637,7 +556,6 @@ class AddTenant extends Component{
 
             onChangeCountry = (countryId, countryName, selectOption) => {
                 console.log(countryId, countryName, selectOption)
-            
                 this.setState({
                     countryName: selectOption.countryName,
                     countryId:selectOption.countryId,
@@ -645,6 +563,15 @@ class AddTenant extends Component{
                 })
                 
                 this.props.getState(selectOption.countryId)
+                this.updatePermanentAddress4(selectOption.countryName)
+            }
+
+            updatePermanentAddress4 = (countryName) => {
+                console.log(countryName)
+                this.setState({countryName})
+                this.setState({permanentAddress: this.state.permanentAddressUser  + ', ' + this.state.location + ', ' +
+                this.state.cityName + ', ' + this.state.stateName + ', ' + countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+                console.log('updatePermanentAddress', this.state.permanentAddress)
             }
            
             stateName = ({stateResult}) => {
@@ -668,6 +595,15 @@ class AddTenant extends Component{
                     stateId:selectOption.stateId
                 })
                 this.props.getCity(selectOption.stateId);
+                this.updatePermanentAddress3(selectOption.stateName)
+            }
+
+            updatePermanentAddress3 = (stateName) => {
+                console.log(stateName)
+                this.setState({stateName})
+                this.setState({permanentAddress: this.state.permanentAddressUser  + ', ' + this.state.location + ', ' +
+                this.state.cityName + ', ' + stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+                console.log('updatePermanentAddress', this.state.permanentAddress)
             }
            
             cityName=({cityResult})=>{
@@ -693,6 +629,15 @@ class AddTenant extends Component{
                     cityId:selectOption.cityId
                 })
                 this.props.getLocation(selectOption.cityId)
+                this.updatePermanentAddress2(selectOption.cityName)
+            }
+
+            updatePermanentAddress2 = (cityName) => {
+                console.log(cityName)
+                this.setState({cityName})
+                this.setState({permanentAddress: this.state.permanentAddressUser  + ', ' + this.state.location + ', ' +
+                cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+                console.log('updatePermanentAddress', this.state.permanentAddress)
             }
             
            
@@ -797,37 +742,37 @@ class AddTenant extends Component{
         
         let userDatas = [];
 
-        let flatData = [];
+        // let flatData = [];
 
-        for (let i = 0; i < 4; i++) {
+        // for (let i = 0; i < 4; i++) {
             
-            flatData.push(<FormGroup key={i}>
-                <Row form md={12}>
-                    <Col md={4}>
-                        <Label>Tower</Label>
-                        <Select onChange={this.towerChangeHandler1.bind(this, 'towerId' + i )} placeholder={<DefaultSelect/>} name="towerId"
-                        options={this.getTower(this.props.towerList)} />
-                    </Col >
-                    <Col md={4}>
-                        <Label>Floor</Label>
-                        <Select options={this.getFloor(this.props.tenantReducer)}
-                            placeholder={<DefaultSelect/>}
-                            name="floorId"
-                            onChange={this.floorChangeHandler1.bind(this,'optionalFloorId')}
-                            />
-                    </Col>
-                    <Col md={4}>
-                        <Label>Flat Number</Label>
-                        <Select options={this.getFlats1(this.props.tenantReducer)} name="flatDetailId"
-                            onChange={this.flatChangeHandler1.bind(this, 'flatDetailId' + i)}
-                            placeholder={<DefaultSelect/>}
-                            />
-                    </Col >
-                </Row>
-            </FormGroup>
+        //     flatData.push(<FormGroup key={i}>
+        //         <Row form md={12}>
+        //             <Col md={4}>
+        //                 <Label>Tower</Label>
+        //                 <Select onChange={this.towerChangeHandler1.bind(this, 'towerId' + i )} placeholder={<DefaultSelect/>} name="towerId"
+        //                 options={this.getTower(this.props.towerList)} />
+        //             </Col >
+        //             <Col md={4}>
+        //                 <Label>Floor</Label>
+        //                 <Select options={this.getFloor(this.props.tenantReducer)}
+        //                     placeholder={<DefaultSelect/>}
+        //                     name="floorId"
+        //                     onChange={this.floorChangeHandler1.bind(this,'optionalFloorId')}
+        //                     />
+        //             </Col>
+        //             <Col md={4}>
+        //                 <Label>Flat Number</Label>
+        //                 <Select options={this.getFlats1(this.props.tenantReducer)} name="flatDetailId"
+        //                     onChange={this.flatChangeHandler1.bind(this, 'flatDetailId' + i)}
+        //                     placeholder={<DefaultSelect/>}
+        //                     />
+        //             </Col >
+        //         </Row>
+        //     </FormGroup>
 
-            );
-        }
+        //     );
+        // }
         
         for (let i = 0; i < this.state.noOfMembers; i++) {
             
@@ -844,7 +789,7 @@ class AddTenant extends Component{
                     <Col md={6}>
                         <Label>Relation With Tenant</Label>
                         <Select name={`relationId${i}`} options={this.getRelationList(this.props.relationList)} 
-                          onChange={this.relationHandler.bind(this,'relationId'+i )}  />
+                          onChange={this.relationHandler.bind(this,'relationId'+i )} placeholder={<DefaultSelect/>}  />
                     </Col>
                     <Col md={12} style={{marginTop:'20px', marginBottom:'20px'}}>
                         <Label>Gender:</Label>
@@ -1013,14 +958,14 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>Tower</Label>
                             <Select onChange={this.towerChangeHandler.bind(this, 'towerId', 'towerName')} placeholder={<DefaultSelect/>} name="towerId"
-                            options={this.getTower(this.props.towerList)} />
+                            options={this.getTower(this.props.towerList)} id="tower" />
                             {!this.state.towerId ? <span className="error">{this.state.errors.towerId}</span> : ''}
                         </FormGroup >
                         <FormGroup>
                             <Label>Floor</Label>
                             <Select options={this.getFloor(this.props.tenantReducer)}
                             placeholder={<DefaultSelect/>}
-                            name="floorId"
+                            name="floorId" id="floor"
                             onChange={this.floorChangeHandler.bind(this,'floorName','floorId')}
                             />
                             {!this.state.floorId ? <span className="error">{this.state.errors.floorId}</span> : ''}
@@ -1029,18 +974,18 @@ class AddTenant extends Component{
                             <Label>Flat Number</Label>
                             <Select options={this.getFlats(this.props.tenantReducer)} name="flatDetailId"
                                 onChange={this.flatChangeHandler.bind(this, 'flatNo' , 'flatDetailId')}
-                                placeholder={<DefaultSelect/>}
+                                placeholder={<DefaultSelect/>} id="flat"
                                 />
                             {!this.state.flatDetailId ? <span className="error">{this.state.errors.flatDetailId}</span> : ''}
                         </FormGroup >
-                        <FormGroup>
+                        {/* <FormGroup>
                             <Label>Corresponding Address</Label>
                             <Input type="textarea" value={this.state.correspondenceAddress} onChange={this.correspondenceAddressChange} maxLength="250"
                              name="correspondenceAddress" placeholder="Corresponding Address" />
                              {!this.state.towerId ?<span className="error">
                                 {this.state.errors.correspondenceAddress}
                             </span>:''}
-                        </FormGroup >
+                        </FormGroup > */}
                         
                         <FormGroup>
                            <span style={{fontWeight:'bold'}}>Is Your permanent address same as correspondence address?</span><Input type="checkbox" onChange={this.sameAddress} name="isChecked" id="isChecked" className="ml-3" />
@@ -1057,7 +1002,7 @@ class AddTenant extends Component{
                             <Row md={12}>
                                 <Col md={6}>
                                     <Label>Country</Label>
-                                    <Select placeholder={<DefaultSelect/>} options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                                    <Select placeholder={<DefaultSelect/>} options={this.countryName(this.props.societyReducer)} label={this.state.countryName} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
                                 </Col>
                                 <Col md={6}>
                                     <Label>State</Label>
@@ -1116,11 +1061,6 @@ class AddTenant extends Component{
                         </FormGroup> */}
                     </div>
                     <div style={{ 'display': this.state.step == 4 ? 'block' : 'none' }}>
-                        <h3>Other Flat Details</h3>
-                        
-                        {flatData}
-                    </div>
-                    <div style={{ 'display': this.state.step == 5 ? 'block' : 'none' }}>
                         <h3>Upload Your Image</h3>
                         <FormGroup>
                             <Label>Image</Label>
@@ -1135,8 +1075,8 @@ class AddTenant extends Component{
                     </div>
                     <div>
                         <Button color="primary" className="mr-2" id="prevBtn" style={{ display: this.state.step == 1 ? 'none' : 'inline-block' }} disabled={this.state.step == 1} onClick={() => { this.setState({ step: this.state.step - 1 }) }}>Previous</Button>
-                        <Button color="primary"className="mr-2" id="nextBtn" style={{ display: this.state.step == 5 ? 'none' : 'inline-block' }} disabled={this.state.step == 5} onClick={this.nextPrev}>Next</Button>
-                        <Button color="success" className="mr-2" style={{ display: this.state.step == 5 ? 'inline-block' : 'none' }}>Submit</Button>
+                        <Button color="primary"className="mr-2" id="nextBtn" style={{ display: this.state.step == 4 ? 'none' : 'inline-block' }} disabled={this.state.step == 4} onClick={this.nextPrev}>Next</Button>
+                        <Button color="success" className="mr-2" style={{ display: this.state.step == 4 ? 'inline-block' : 'none' }}>Submit</Button>
                         <Button color="danger" onClick={this.routeToDetail}>Cancel</Button>
                     </div>
         </div>

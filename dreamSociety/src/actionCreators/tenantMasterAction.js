@@ -2,7 +2,7 @@ import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
 import{URN,GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID,UPDATE_TENANT_DETAIL,GET_TENANT_MEMBER_DETAILS,
     DELETE_SELECTED_TENANT,ADD_TENANT_DETAIL, GET_TENANT_DETAIL, DELETE_TENANT, DELETE_TENANT_MEMBER,
-    DELETE_SELECTED_TENANT_MEMBER,EDIT_TENANT_MEMBER, ADD_NEW_TENANT} from '../actions/index';
+    DELETE_SELECTED_TENANT_MEMBER,EDIT_TENANT_MEMBER, ADD_NEW_TENANT, ADD_NEW_Flat,GET_FLATS} from '../actions/index';
 
 export function addTenantDetail(values){
     console.log(values)
@@ -144,6 +144,27 @@ export function addNewTenantDetail(values){
 
     return {
         type: ADD_NEW_TENANT,
+        payload:request
+    }
+}
+
+export function addNewFlatForTenant(values){
+    console.log(values)
+    const request = axios.post(`${URN}/tenant/addFlat`, values,  {headers: authHeader()})
+    .then((response) => console.log(response.data))
+
+    return {
+        type: ADD_NEW_Flat,
+        payload:request
+    }
+}
+
+export function getFlats(tenantId){
+    console.log(tenantId)
+    const request = axios.get(`${URN}/tenant/getFlats/${tenantId}`,  {headers: authHeader()})
+    .then((response) => response.data)
+    return {
+        type: GET_FLATS,
         payload:request
     }
 }
