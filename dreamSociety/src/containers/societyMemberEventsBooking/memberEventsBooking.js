@@ -256,7 +256,7 @@ class MemberEventsBooking extends Component {
                 <Input type="select" defaultValue='no-value' name="eventSpaceId"  onChange={this.onChange}>
                     <DefaultSelect />
                     {this.spaceName(this.props.eventSpaceMasterReducer)}
-                </Input >
+                </Input>
                 <span className='error'>{this.state.errors.eventSpaceId}</span>
             </FormGroup>
 
