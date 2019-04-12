@@ -47,6 +47,7 @@ exports.get = async (req, res, next) => {
 exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
+        let update = req.body;
         console.log("id==>", id)
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
