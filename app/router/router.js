@@ -359,39 +359,33 @@ module.exports = function (app) {
 
 	app.post('/api/employeeType', [authJwt.verifyToken, authJwt.isAdminRole], employeeTypeController.create);
 
-	app.get('/api/employeeType', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], employeeTypeController.get);
+	app.get('/api/employeeType', [authJwt.verifyToken, authJwt.isAdminRole], employeeTypeController.get);
 
-	app.post('/api/employeeWorkType', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], employeeWorkTypeController.create);
+	app.post('/api/employeeWorkType', [authJwt.verifyToken, authJwt.isAdminRole], employeeWorkTypeController.create);
 
-	app.get('/api/employeeWorkType', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], employeeWorkTypeController.get);
+	app.get('/api/employeeWorkType', [authJwt.verifyToken, authJwt.isAdminRole], employeeWorkTypeController.get);
 
-	app.post('/api/employeeDetail', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], employeeDetailController.create);
+	app.post('/api/employeeDetail', [authJwt.verifyToken, authJwt.isAdminRole], employeeDetailController.create);
 
-	app.get('/api/employeeDetail', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], employeeDetailController.get);
+	app.get('/api/employeeDetail', [authJwt.verifyToken, authJwt.isAdminRole], employeeDetailController.get);
 
-	app.put('/api/employeeDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], employeeDetailController.update);
+	app.put('/api/employeeDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], employeeDetailController.update);
 
 	app.put('/api/employeeDetail/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], employeeDetailController.deleteSelected);
 
 	app.put('/api/employeeDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], employeeDetailController.delete);
 
-	// app.post("/api/test/upload",fileUploadConfig.single('profileImage'),vendorController.uploadPicture);
+	app.post('/api/inventory', [authJwt.verifyToken, authJwt.isAdminRole], inventoryController.create);
 
-	// app.post("/api/test/upload",fileUploadConfig.array('photos',3),vendorController.uploadMultiple);
+	app.get('/api/inventory', [authJwt.verifyToken, authJwt.isAdminRole], inventoryController.get);
 
-	// app.post("/api/test/upload",fileUploadConfig.fields([{name:'profilePicture',maxCount:1},{name:'document',maxCount:2}]),vendorController.uploadMultiple)
+	app.get('/api/inventory/:id', [authJwt.verifyToken, authJwt.isAdminRole], inventoryController.getInventoryByAssetId);
 
-	app.post('/api/inventory', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], inventoryController.create);
+	app.put('/api/inventory/:id', [authJwt.verifyToken, authJwt.isAdminRole], inventoryController.update);
 
-	app.get('/api/inventory', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], inventoryController.get);
+	app.put('/api/inventory/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], inventoryController.deleteSelected);
 
-	app.get('/api/inventory/:id', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], inventoryController.getInventoryByAssetId);
-
-	app.put('/api/inventory/:id', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], inventoryController.update);
-
-	app.put('/api/inventory/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], inventoryController.deleteSelected);
-
-	app.put('/api/inventory/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], inventoryController.delete);
+	app.put('/api/inventory/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], inventoryController.delete);
 
 	app.post('/api/employee', fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), employeeController.createEncrypt);
 
@@ -457,13 +451,13 @@ module.exports = function (app) {
 
 	app.get('/api/owner/ownerMember/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.getMembers);
 
-	app.get('/api/owner/getFlatDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], owner.getFlatDetail);
+	app.get('/api/owner/getFlatDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.getFlatDetail);
 
-	app.put('/api/owner/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], owner.deleteSelected);
+	app.put('/api/owner/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], owner.deleteSelected);
 
-	app.put('/api/ownerMember/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], owner.deleteSelectedMembers);
+	app.put('/api/ownerMember/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], owner.deleteSelectedMembers);
 
-	app.put('/api/owner/ownerMember/update/:id', [authJwt.verifyToken, authJwt.isAdminRole, authJwt.isAdminRole], owner.updateMember);
+	app.put('/api/owner/ownerMember/update/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.updateMember);
 
 	app.put('/api/owner/delete/:id', owner.delete);
 
