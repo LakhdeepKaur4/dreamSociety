@@ -13,12 +13,20 @@ exports.create = async (req, res, next) => {
         let body = req.body;
         body.userId = req.userId;
 
-        const maintenanceType = await MaintenanceType.create(body);
-        if (maintenanceType) {
-            return res.status(httpStatus.CREATED).json({
-                message: "Maintenance Type successfully created",
-                maintenanceType
-            });
+        const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: body.maintenanceId } });
+
+        if (alreadyExist !== null) {
+            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                message: 'Maintenance Type already exist'
+            })
+        } else {
+            const maintenanceType = await MaintenanceType.create(body);
+            if (maintenanceType) {
+                return res.status(httpStatus.CREATED).json({
+                    message: "Maintenance Type successfully created",
+                    maintenanceType
+                });
+            }
         }
     } catch (error) {
         console.log("error==>", error);
@@ -61,14 +69,22 @@ exports.update = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const updatedMaintenanceType = await MaintenanceType.find({ where: { maintenanceTypeId: id } }).then(maintenanceType => {
-            return maintenanceType.updateAttributes(update)
-        })
-        if (updatedMaintenanceType) {
-            return res.status(httpStatus.OK).json({
-                message: "Maintenance Type Updated Page",
-                updatedMaintenanceType
-            });
+        const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: update.maintenanceId, maintenanceTypeId: { [Op.ne]: id } } });
+
+        if (alreadyExist !== null) {
+            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                message: 'Maintenance Type already exist'
+            })
+        } else {
+            const updatedMaintenanceType = await MaintenanceType.find({ where: { maintenanceTypeId: id } }).then(maintenanceType => {
+                return maintenanceType.updateAttributes(update)
+            })
+            if (updatedMaintenanceType) {
+                return res.status(httpStatus.OK).json({
+                    message: "Maintenance Type Updated Page",
+                    updatedMaintenanceType
+                });
+            }
         }
     } catch (error) {
         console.log(error)
