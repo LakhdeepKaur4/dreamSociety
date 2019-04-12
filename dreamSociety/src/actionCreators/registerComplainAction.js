@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URN, REGISTER_COMPLAINT , USER_FLAT_DETAILS,POST_REGISTER_COMPLAINT} from '../actions/index'
+import { URN, REGISTER_COMPLAINT , USER_FLAT_DETAILS,POST_REGISTER_COMPLAINT,SERVICE_DETAILS} from '../actions/index'
 import { authHeader } from '../helper/authHeader';
 
 
@@ -31,6 +31,21 @@ export const registerComplaint=(values)=>{
      return{
  
          type:USER_FLAT_DETAILS,
+         payload: request 
+     }
+ 
+ }
+
+ export const serviceDetails=()=>{
+   
+    const request = axios.get(`${URN}/vendor/service`  , {headers:authHeader()})
+     .then(response => response.data)
+  
+ 
+     
+     return{
+ 
+         type:SERVICE_DETAILS,
          payload: request 
      }
  
