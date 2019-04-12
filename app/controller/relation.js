@@ -60,6 +60,7 @@ exports.update = async (req, res, next) => {
                 isActive: true,
             }
         })
+        console.log(relation);
         if (relation.relationName === update.relationName) {
             const updatedRelation = await Relation.find({ where: { relationId: id } }).then(relation => {
                 return relation.updateAttributes(update)
