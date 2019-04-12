@@ -12,22 +12,35 @@ exports.create = async (req, res, next) => {
         console.log("creating maintenance");
         let body = req.body;
         body.userId = req.userId;
+        console.log(req.body)
+        console.log(parseFloat(req.body.rate))
 
-        const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: body.maintenanceId, rate: body.rate, sizeId: body.sizeId } });
-
-        if (alreadyExist !== null) {
-            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                message: 'Maintenance Type already exist'
-            })
-        } else {
-            const maintenanceType = await MaintenanceType.create(body);
-            if (maintenanceType) {
-                return res.status(httpStatus.CREATED).json({
-                    message: "Maintenance Type successfully created",
-                    maintenanceType
-                });
+        // const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: body.maintenanceId, rate: body.rate, sizeId: body.sizeId } });
+        const alreadyExist = await MaintenanceType.findOne({
+            where: {
+                [Op.and]: [
+                    { isActive: true },
+                    { maintenanceId: body.maintenanceId },
+                    { sizeId: body.sizeId },
+                ]
             }
-        }
+        })
+
+        if (alreadyExist !== null){
+            if (alreadyExist.rate === parseFloat(body.rate)) {
+                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                    message: 'Maintenance Type already exist'
+                })
+            }
+            } else {
+                const maintenanceType = await MaintenanceType.create(body);
+                if (maintenanceType) {
+                    return res.status(httpStatus.CREATED).json({
+                        message: "Maintenance Type successfully created",
+                        maintenanceType
+                    });
+                }
+            }
     } catch (error) {
         console.log("error==>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);

@@ -219,6 +219,8 @@ module.exports = function (app) {
 
 	app.get('/api/service', [authJwt.verifyToken, authJwt.isAdminRole], serviceController.get);
 
+	app.get('/api/vendor/service', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], serviceController.get);
+
 	app.get('/api/service/:id', [authJwt.verifyToken, authJwt.isAdminRole], serviceController.getById);
 
 	app.put('/api/service/:id', [authJwt.verifyToken, authJwt.isAdminRole], serviceController.update);
