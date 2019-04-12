@@ -1043,7 +1043,8 @@ exports.update2 = async (req, res, next) => {
       req.body.profilePicture !== undefined &&
       req.body.profilePicture !== null &&
       req.body.fileName !== undefined &&
-      req.body.fileName !== null
+      req.body.fileName !== null &&
+      req.body.profilePicture !== ""
     ) {
       req.body.profilePicture = req.body.profilePicture.split(",")[1]
       let fileName = req.body.fileName.split(".")[0];
@@ -1447,7 +1448,7 @@ exports.updateMember = async (req, res, next) => {
 
 exports.addMember = (req, res, next) => {
   try {
-    console.log(req.body);
+    console.log("gsdfhgsdahjfgjhadsf",req.body);
     let ownerId = req.params.id;
     req.body.ownerId = req.params.id;
     req.body.memberName = encrypt(key, req.body.memberName);
