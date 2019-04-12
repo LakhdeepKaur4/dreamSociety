@@ -655,7 +655,7 @@ class TenantDetail extends Component {
     updatePermanentAddress2 = (countryName) => {
         console.log(countryName)
         this.setState({countryName})
-        this.setState({permanentAddress: this.state.editAddress  + ', ' + this.state.location + ', ' +
+        this.setState({permanentAddress: this.state.editAddress  + ', ' + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
         this.state.cityName + ', ' + this.state.stateName + ', ' + countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
         console.log('updatePermanentAddress', this.state.permanentAddress)
     }
@@ -687,7 +687,7 @@ class TenantDetail extends Component {
     updatePermanentAddress3 = (stateName) => {
         console.log(stateName)
         this.setState({stateName})
-        this.setState({permanentAddress: this.state.editAddress  + ', ' + this.state.location + ', ' +
+        this.setState({permanentAddress: this.state.editAddress  + ', ' + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
         this.state.cityName + ', ' + stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
         console.log('updatePermanentAddress', this.state.permanentAddress)
     }
@@ -721,7 +721,7 @@ class TenantDetail extends Component {
     updatePermanentAddress3 = (cityName) => {
         console.log(cityName)
         this.setState({cityName})
-        this.setState({permanentAddress: this.state.editAddress  + ', ' + this.state.location + ', ' +
+        this.setState({permanentAddress: this.state.editAddress  + ', ' + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
         cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
         console.log('updatePermanentAddress', this.state.permanentAddress)
     }
