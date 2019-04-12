@@ -13,7 +13,6 @@ export  const UR = 'https://dreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://dreamsociety.herokuapp.com/';
 // export  const UR = 'https://dreamsociety.herokuapp.com/';
 
-
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
@@ -271,3 +270,14 @@ export const GET_SLOTS='GET_PARKING_SLOTS';
 export const GET_OWNER_FLAT='GET_OWNER_FLAT';
 export const DELETE_OWNER_FLAT='DELETE_OWNER_FLAT';
 export const ADD_MORE_FLATS="ADD_MORE_FLATS";
+export const GET_INDIVIDUAL_VENDOR='GET_INDIVIDUAL_VENDOR';
+export const DELETE_INDIVIDUAL_VENDOR='DELETE_INDIVIDUAL_VENDOR';
+export const DELETE_SELECT_INDIVIDUAL_VENDOR='DELETE_SELECT_INDIVIDUAL_VENDOR';
+export const UPDATE_INDIVIDUAL_VENDOR='UPDATE_INDIVIDUAL_VENDOR';
+export const GET_INDIVIDUAL_SERVICEID='GET_INDIVIDUAL_SERVICEID';
+export const USER_FLAT_DETAILS ='user_flat_details'
+export const REGISTER_COMPLAINT='REGISTER_COMPLAINT';
+export const POST_REGISTER_COMPLAINT='POST_REGISTER_COMPLAINT';
+export const GET_FLATS='GET_FLATS';
+export const ADD_NEW_Flat='ADD_NEW_Flat';
+

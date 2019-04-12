@@ -23,6 +23,9 @@ class eventSpaceMasterDetails extends Component {
             capacity: '',
             spaceType:'',
             sizeId: '',
+            price:'',
+            from:'',
+            to:'',
             open:'open',
             close:'close',
             area:'',
@@ -85,6 +88,10 @@ class eventSpaceMasterDetails extends Component {
         if (capacity === '') errors.capacity = "Cant be empty";
 
         if (area === '') errors.area = "Cant be empty";
+
+        // if (this.state.price === '') errors.price = "Cant be empty";
+        // if (this.state.from === '') errors.from = "Please enter date";
+        // if (this.state.to === '') errors.to = "Please enter date";
         
         if (description === '') errors.description = "Cant be empty";
         this.setState({ errors });
@@ -204,7 +211,9 @@ class eventSpaceMasterDetails extends Component {
                         <td>{item.spaceType}</td>
                         <td>{sizeType}</td>
                         <td>{item.area}</td>
-                      
+                        {/* <td>           </td>
+                        <td>           </td>
+                        <td>           </td> */}
                         <td>{item.description}</td>
                         <td>
                             <Button color="success" size="sm" className="mr-2"
@@ -321,6 +330,9 @@ class eventSpaceMasterDetails extends Component {
                 <th>Space Type </th>
                 <th>SizeType</th>
                 <th> Area</th>
+                {/* <th> From </th>
+                <th> To </th>
+                <th> Price </th> */}
                 <th>Desciption</th>
                 <th>Actions</th>
             </tr>
@@ -363,7 +375,7 @@ class eventSpaceMasterDetails extends Component {
                                         onKeyPress = {this.OnKeyPresshandlerPhone}
                                         onChange={this.onChange}
                                         onKeyPress={this.OnKeyPresshandlerPhone}
-                                        maxLength='3' />
+                                        maxLength='4' />
                                         <span  className='error'>{this.state.errors.capacity}</span>
                                 </FormGroup>
                                 <FormGroup>
@@ -424,6 +436,49 @@ class eventSpaceMasterDetails extends Component {
                                         <span  className='error'>{this.state.errors.area}</span>
 
                                 </FormGroup>
+
+                                {/* <FormGroup>
+                <Label>From</Label>
+                <Input
+                    type="date"
+                    name="from"
+                    // placeholder="enter price"
+                    // maxLength='8'
+                    // onKeyPress = {this.OnKeyPressPrice}
+                    // value={this.state.area}
+                    onChange={this.onChange} />
+                    
+                <span className='error'>{this.state.errors.from}</span>
+            </FormGroup>
+
+            <FormGroup>
+                <Label>To</Label>
+                <Input
+                    type="date"
+                    name="to"
+                    // placeholder="enter price"
+                    // maxLength='8'
+                    // onKeyPress = {this.OnKeyPressPrice}
+                    // value={this.state.area}
+                    onChange={this.onChange} />
+                    
+                <span className='error'>{this.state.errors.to}</span>
+            </FormGroup> 
+
+         <FormGroup>
+                <Label>Price</Label>
+                <Input
+                    type="text"
+                    name="price"
+                    placeholder="enter price"
+                    maxLength='8'
+                    onKeyPress = {this.OnKeyPressPrice}
+                    // value={this.state.area}
+                    onChange={this.onChange} />
+                    
+                <span className='error'>{this.state.errors.price}</span>
+            </FormGroup>  */}
+
                                 <FormGroup>
                                      <Label>Description</Label>
                                      <Input

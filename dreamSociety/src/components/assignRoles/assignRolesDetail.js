@@ -65,11 +65,9 @@ class AssignRolesDetail extends Component {
 
 
     renderRoles = ({ assignDisplay }) => {
-        
-        
-        if (assignDisplay) {
-           
-       return assignDisplay.sort((item1,item2)=>{ console.log(item1, item2)
+    
+        if (assignDisplay) { 
+          return assignDisplay.sort((item1,item2)=>{ console.log(item1, item2)
         var cmprVal = (item1.userId && item2.userId ) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
         return this.state.sortVal ? cmprVal : -cmprVal;
         }).filter(this.searchFilter(this.state.search)).map((item, index) => { console.log(item)

@@ -254,7 +254,9 @@ ImageChange =(event)=>{
 
     editEmployee(employeeId, picture, firstName, middleName, lastName, salary,contact,email, currentAddress, permanentAddress, documentOne, documentTwo, startDate,employeeDetailId) {
 
-        this.setState({ editEmployeeData: { employeeId,  startDate },   documentOne, documentTwo, picture, firstName, middleName, lastName, salary, contact,email,  currentAddress, permanentAddress,employeeDetailId,
+        this.setState({ editEmployeeData: { employeeId,  startDate },  
+             documentOne, documentTwo, picture, firstName, middleName, lastName, salary, contact,email, 
+              currentAddress, permanentAddress,employeeDetailId,
             readOnlyPermanent: permanentAddress, readOnlyCurrent: currentAddress, editEmployeeModal: !this.state.editEmployeeModal })
 
     }
@@ -273,7 +275,11 @@ ImageChange =(event)=>{
          if(!this.state.contact){
              errors.contact="contact can't be empty"
          }
-
+         if(!this.state.employeeDetailId){
+            errors.employeeDetailId ="service Type can't be empty"
+        }
+      
+       
          if(!this.state.email){
              errors.email="email can't be empty"
          }
@@ -515,7 +521,7 @@ ImageChange =(event)=>{
                         }
                              }}/></td>
                             <td>{index + 1}</td>
-                            <td > <img  style={{maxWidth: "100%",height: "auto",width: "auto\9"}}  src={UR + item.picture} alt="desc">
+                            <td style={{ width: "8%", height: "8%" }}> <img style={{ width: "100%", height: "20%" }}  src={UR + item.picture} alt="desc">
                             </img></td>
                             <td >{item.firstName}</td>
                             <td>{item.lastName}</td>
@@ -768,6 +774,11 @@ ImageChange =(event)=>{
             event.preventDefault();
         }
     }
+    minDate = () => {
+        var d = new Date();
+        return d.toISOString().split('T')[0];
+    }
+
 
     pinChange1 = (e) => {
         console.log(this.state)
@@ -940,7 +951,7 @@ ImageChange =(event)=>{
                 <Row md={12}>
                     <Col md={6}>
                         <Label>Start Date</Label>
-                        <Input readOnly value={this.state.startDate} onChange={this.onChange} />
+                        <Input readOnly value={this.state.startDate}   min={this.minDate()} onChange={this.onChange} />
                     </Col>
                     <Col md={6}></Col>
                 </Row>
@@ -972,7 +983,7 @@ ImageChange =(event)=>{
                     <tr>
                     <th style={{width:"4px"}}></th>
                         <th style={{width:"4px"}}>#</th>
-                        <th>Profile Picture</th>
+                        <th style={{ textAlign: "center", width: "12%" }}>Profile Picture</th>
                         <th  onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'firstName'}})
@@ -1050,25 +1061,20 @@ ImageChange =(event)=>{
                                 
                                    <FormGroup>
                                   <Label > Email Address</Label>
-                                  <Input name="email" value={this.state.email}
-                                      onChange={this.emailChange}
-                                      onKeyPress={this.emailValid}
-                                          
-
-                                  />
-                        {this.state.emailServerError ? <span className="error">{this.state.emailServerError}</span> : null}
-
-                                   <span  className="error" >{this.state.errors.email}</span>
+                                  <Input value={this.state.email} name="email" onChange={this.emailChange} onKeyPress={this.emailValid} />
+                    {this.state.messageEmailErr ? <span className='error'>{this.state.messageEmailErr}</span> : ''}
+                    {<span className="error">{this.state.emailValidError}</span>}
+                    <span><br/></span>
+                    {<span className="error">{this.state.errors.email}</span>}
                                    </FormGroup>
                                    <FormGroup>
                                   <Label > Contact Number</Label>
                                   <Input name="contact" value={this.state.contact}
                                       onChange={this.onChange}
-                                       maxLength={20}
+                                       maxLength={10}
 
                                        onKeyPress={this.OnKeyPressNumber}
-                                    
-                                  />
+                                    />
                                    {this.state.contactServerError ? <span  className='error'>{this.state.contactServerError}</span> : null}
                                    <span  className="error" >{this.state.errors.contact}</span>
                                    </FormGroup>
@@ -1078,6 +1084,8 @@ ImageChange =(event)=>{
           <DefaultSelect/>
           {this.getService(this.props.employeeDetails)}
           </Input>
+    <span className="error">{this.state.errors.employeeDetailId}</span>
+
           </FormGroup>
                                  
                                    <FormGroup>
@@ -1256,6 +1264,8 @@ ImageChange =(event)=>{
                               <FormGroup>
                                   <Label > Employment Date</Label>
                                   <Input type="date" value={this.state.editEmployeeData.startDate}
+                                         min={this.minDate()}
+
                                       onChange={(e) => {
                                           let { editEmployeeData } = this.state;
 

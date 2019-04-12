@@ -134,6 +134,12 @@ class MemberEventsBooking extends Component {
         else if(this.state.endDate === ''){
             errors.endDate = "cant be empty";
         }
+
+        else if(this.state.startDate > this.state.endDate){
+            errors.startDate = "Start Date should be less than end date ";
+        }
+
+        
         
 
         else if(this.state.numberOfGuestExpected === ''){
@@ -250,7 +256,7 @@ class MemberEventsBooking extends Component {
                 <Input type="select" defaultValue='no-value' name="eventSpaceId"  onChange={this.onChange}>
                     <DefaultSelect />
                     {this.spaceName(this.props.eventSpaceMasterReducer)}
-                </Input >
+                </Input>
                 <span className='error'>{this.state.errors.eventSpaceId}</span>
             </FormGroup>
 
