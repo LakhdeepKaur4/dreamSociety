@@ -486,7 +486,7 @@ module.exports = function (app) {
 
 	app.put('/api/tenant/editFlat', [authJwt.verifyToken, isAdminRole], tenant.editFlat);
 
-	app.delete('/api/tenant/deleteFlat', [authJwt.verifyToken, isAdminRole], tenant.deleteFlat);
+	app.put('/api/tenant/deleteFlat', [authJwt.verifyToken, isAdminRole], tenant.deleteFlat);
 
 	app.put('/api/tenant/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], tenant.deleteSelected);
 

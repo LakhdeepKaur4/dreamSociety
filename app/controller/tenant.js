@@ -1198,6 +1198,7 @@ exports.deleteFlat = (req, res, next) => {
         }
     })
         .then(flat => {
+            console.log(flat);
             if (flat !== null) {
                 flat.destroy();
                 res.status(httpStatus.OK).json({
