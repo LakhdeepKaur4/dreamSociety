@@ -331,11 +331,11 @@ exports.delete = async (req, res, next) => {
                         })
                 })
             TenantFlatDetail.findAll({ where: { tenantId: id } })
-            .then(flats => {
-                flats.map(item => {
-                    item.destroy();
+                .then(flats => {
+                    flats.map(item => {
+                        item.destroy();
+                    })
                 })
-            })
             TenantMembersDetail.update({ isActive: false }, { where: { tenantId: id } });
             return res.status(httpStatus.OK).json({
                 message: "Tenant deleted successfully",
@@ -1158,22 +1158,22 @@ exports.editFlat = (req, res, next) => {
                         isActive: true
                     }
                 })
-                .then(flatExisting => {
-                    if (flatExisting !== null) {
-                        res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                            message: 'Flat details already exist for same tenant'
-                        }) 
-                    } else {
-                        flat.updateAttributes({ flatDetailId: body.flatDetailId });
-                        res.status(httpStatus.CREATED).json({
-                            message: 'Flat details updated successfully'
-                        }) 
-                    }
-                })
-                .catch(err => {
-                    console.log('Error ===>',err);
-                    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-                })
+                    .then(flatExisting => {
+                        if (flatExisting !== null) {
+                            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                                message: 'Flat details already exist for same tenant'
+                            })
+                        } else {
+                            flat.updateAttributes({ flatDetailId: body.flatDetailId });
+                            res.status(httpStatus.CREATED).json({
+                                message: 'Flat details updated successfully'
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        console.log('Error ===>', err);
+                        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+                    })
             } else {
                 res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
                     message: 'Flat details not updated'
@@ -1186,9 +1186,31 @@ exports.editFlat = (req, res, next) => {
         })
 }
 
-// exports.deleteFlat = (req, res, next) => {
-//     const body = req.body;
-//     console.log('Body ===>',body);
+exports.deleteFlat = (req, res, next) => {
+    const body = req.body;
+    console.log('Body ===>', body);
 
-
-// }
+    TenantFlatDetail.findOne({
+        where: {
+            tenantId: body.tenantId,
+            flatDetailId: body.flatDetailId,
+            isActive: true
+        }
+    })
+        .then(flat => {
+            if (flat !== null) {
+                flat.destroy();
+                res.status(httpStatus.OK).json({
+                    message: 'Flat deleted successfully'
+                })
+            } else {
+                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                    message: 'Flat not deleted'
+                })
+            }
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
