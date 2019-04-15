@@ -330,7 +330,12 @@ exports.delete = async (req, res, next) => {
                             UserRoles.update({ isActive: false }, { where: { userId: user.userId, roleId: 4 } });
                         })
                 })
-            TenantFlatDetail.update({ isActive: false }, { where: { tenantId: id } });
+            TenantFlatDetail.findAll({ where: { tenantId: id } })
+            .then(flats => {
+                flats.map(item => {
+                    item.destroy();
+                })
+            })
             TenantMembersDetail.update({ isActive: false }, { where: { tenantId: id } });
             return res.status(httpStatus.OK).json({
                 message: "Tenant deleted successfully",
@@ -1138,12 +1143,15 @@ exports.editFlat = (req, res, next) => {
     console.log('Body ===>', body);
 
     TenantFlatDetail.findOne({
-        tenantId: body.tenantId.trim(),
-        flatDetailId: body.previousFlatDetailId
+        where: {
+            tenantId: body.tenantId,
+            flatDetailId: body.previousFlatDetailId,
+            isActive: true
+        }
     })
         .then(flat => {
             if (flat !== null) {
-                TenantFlatDetail.update({ flatDetailId: body.flatDetailId.trim() }, { where: { tenantId: body.tenantId.trim(), flatDetailId: body.previousFlatDetailId, isActive: true } });
+                flat.updateAttributes({ flatDetailId: body.flatDetailId });
                 res.status(httpStatus.CREATED).json({
                     message: 'Flat details updated successfully'
                 })

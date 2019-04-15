@@ -45,6 +45,7 @@ module.exports = function (app) {
 	const eventBooking = require('../controller/eventBooking');
 	const individualVendorController = require('../controller/individualVendor');
 	const complaint = require('../controller/complaint');
+	const machine = require('../controller/machine');
 
 
 	app.get('/', userController.start);
@@ -562,4 +563,6 @@ module.exports = function (app) {
 	app.post('/api/complaintRegister', [authJwt.verifyToken,authJwt.isOwnerOrTenantRole], complaint.create);
 
 	app.get('/api/complaintRegister', [authJwt.verifyToken,authJwt.isOwnerOrTenantRole], complaint.get);
+
+	app.post('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.create);
 }
