@@ -138,7 +138,7 @@ class DisplayEventMaster extends Component {
         getEvent({ events }) {
                 console.log("events rocks", events);
 
-                if (events) {
+                if (events &&  events.event) {
                         return (
                                 events.event.map((item) => {
                                         return (

@@ -195,11 +195,10 @@ class FlatMemberList extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-    relationHandler = (relationId ,selectOption) => {
-        console.log('selectOption',selectOption)
+    relationHandler = (relationName,relationId ,selectOption) => {
         this.setState(function (prevState, props) {
             return {
-              
+               relationName,
                relationId:selectOption.value
             }
         }, function () {

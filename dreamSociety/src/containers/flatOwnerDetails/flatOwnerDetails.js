@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import { detailSociety } from '../../actionCreators/societyMasterAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
-import {getFlatDetails,getSlots} from '../../actionCreators/flatDetailMasterAction';
+import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
 import {addFlatOwner,getAllFloor} from '../../actionCreators/flatOwnerAction';
 import {Link} from 'react-router-dom';
 import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
@@ -38,7 +38,7 @@ class FlatOwnerDetails extends Component {
             errors: {},
             societyName: '',
             flatNO:'',
-            flatDetailIds:[],
+            flatDetailId:'',
             profilePicture:'',
             currentAddress:'',
             permanentAddress:'',
@@ -61,11 +61,7 @@ class FlatOwnerDetails extends Component {
             flat:'flatNo.',
             permanentPinCode:'',
             pin:'',
-            documentOne:'',
-            towerId1:'',
-            floorId1:'',
-            towerName1:'',
-            floorName1:'',
+            documentOne:''
         }
     }
     toggles = () => {
@@ -156,43 +152,17 @@ class FlatOwnerDetails extends Component {
         });
         this.props.getAllFloor(selectOption.towerId);
     }
-    towerChangeHandler1 = (name, selectOption) => {
-        this.setState(function (prevState, props) {
-            return {
-                [name]: selectOption.value,
-                towerName1:selectOption.label
-            }
-        }, function () {
-        });
-        this.props.getAllFloor(selectOption.towerId1);
-    }
     flatChangeHandler=(name,selectOption)=>{
         let flatName=selectOption.label
         this.setState({
             [name]: selectOption.value,
             currentAddress:this.state.flat+flatName+','+this.state.floorName+','+this.state.towerName+','+this.state.currentAddress+' '+this.state.pinCode
-        },function (){
-            console.log(this.state.flatDetailIds)
-            this.props.getSlots(this.state.flatDetailIds)
-            .then(()=>{this.getParking(this.props.flatDetailMasterReducer)})
-        })
-    }
-    flatChangeHandler1=(name,selectOption)=>{
-        this.setState({
-            [name]: selectOption.push(selectOption.value),
         })
     }
     floorChangeHandler=(name,selectOption)=>{
         this.setState({
             [name]: selectOption.value,
             floorName:selectOption.label
-        })
-
-    }
-    floorChangeHandler1=(name,selectOption)=>{
-        this.setState({
-            [name]: selectOption.value,
-            floorName1:selectOption.label
         })
 
     }
@@ -216,7 +186,7 @@ class FlatOwnerDetails extends Component {
     }
     nextPrev = () => {
         let errors = {};
-        const { societyName,pin, number, firstName,lastName, ownerGender,permanentAddressUser, DOB, email, towerId, flatDetailIds,Aadhaar, floorId } = this.state
+        const { societyName,pin, number, firstName,lastName, ownerGender,permanentAddressUser, DOB, email, towerId, flatDetailId,Aadhaar  } = this.state
         if (this.state.step === 1) {
             if (firstName === '') {
                 errors.firstName = "First Name can't be empty"
@@ -224,11 +194,11 @@ class FlatOwnerDetails extends Component {
            else if (lastName === '') {
                 errors.lastName = "Last Name can't be empty"
             }
-            else if (DOB === '') {
-                errors.DOB = "Date of birth can't be empty"
-            }
             else if (ownerGender === '') {
                 errors.ownerGender = "Gender can't be empty"
+            }
+            else if (DOB === '') {
+                errors.DOB = "Date of birth can't be empty"
             }
             else if (number.length <= 9) {
                 errors.number = "Please enter 10 digit number"
@@ -236,20 +206,16 @@ class FlatOwnerDetails extends Component {
             else if (email === '') {
                 errors.email = "email can't be empty"
             }
-            if(Aadhaar === '') errors.Aadhaar=`Aadhaar Number can't be empty.`
-            else if (societyName === '') {
-                errors.societyName = "society name can't be empty"
+            else if (flatDetailId === '') {
+                errors.flatNO = "flat number can't be empty"
             }
             else if (towerId === '') {
                 errors.towerId = "tower can't be empty"
             }
-            else if(floorId===''){
-                errors.floorId="floor can't be empty"
+            else if (societyName === '') {
+                errors.societyName = "society name can't be empty"
             }
-            else if (flatDetailIds.length===0) {
-                errors.flatNO = "flat number can't be empty"
-            }
-
+            if(Aadhaar === '') errors.Aadhaar=`Aadhaar Number can't be empty.`
             else if(Aadhaar.length !== 12) errors.Aadhaar=`Aadhaar Number should be of 12 digit.`
             if(document.getElementById('isChecked').checked === false){
                 if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
@@ -330,7 +296,7 @@ OnKeyPresshandlerEmail=(event)=> {
             DOB,
             email,
             towerId,
-            flatDetailIds,
+            flatDetailId,
             familyMember,
             profilePicture,
             societyName,
@@ -492,7 +458,6 @@ OnKeyPresshandlerEmail=(event)=> {
     stateName = ({stateResult}) => {
         console.log(stateResult)
         if(stateResult){
-            
            return( 
             stateResult.map((item) =>{ 
                    return(
@@ -514,11 +479,7 @@ OnKeyPresshandlerEmail=(event)=> {
     onChangeState = ( stateName,stateId,selectOption) => {
         this.setState({
             stateName: selectOption.stateName,
-            stateId:selectOption.stateId,
-            cityName:'',
-            cityId:'',
-            locationName:'',
-            locationId:''
+            stateId:selectOption.stateId
         })
         this.props.getCity(selectOption.stateId);
     }
@@ -541,9 +502,7 @@ OnKeyPresshandlerEmail=(event)=> {
     onChangeCity = (cityName,cityId,selectOption) => {
         this.setState({
             cityName: selectOption.cityName,
-            cityId:selectOption.cityId,
-            locationName:'',
-            locationId:''
+            cityId:selectOption.cityId
         })
         this.props.getLocation(selectOption.cityId)
     }
@@ -573,9 +532,6 @@ OnKeyPresshandlerEmail=(event)=> {
         this.setState({[e.target.name]: e.target.value, 
             permanentAddress: this.state.permanentAddressUser + ',' + this.state.locationName + ',' +
         this.state.cityName + ' , ' + this.state.stateName + ',' + this.state.countryName+' '+this.state.pin })
-    }
-    getParking=({ slots })=>{
-this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingName})
     }
       
     render() {
@@ -646,18 +602,17 @@ this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingNam
                                 <span className="error">{this.state.errors.DOB}</span>
                             </FormGroup>
                             <FormGroup>
-                                <Label style={{paddingRight:'25px'}}>Gender:</Label>
-                                <span ><Input type="radio" id="Gender1" name="ownerGender" onChange={this.onChangeHandler} value="male"/></span>
+                                <Label>Gender:</Label>
                                 <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
-                                {/* <span><Input type="radio" id="Gender1" name="ownerGender" onChange={this.onChangeHandler} value="male"/></span> */}
+                                <span><Input type="radio" id="Gender1" name="ownerGender" onChange={this.onChangeHandler} value="male"/></span>
                                 
-                                <span><Input type="radio" id="Gender2" name="ownerGender" onChange={this.onChangeHandler} value="female"/></span>
+                                
                                 <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
-                                {/* <span><Input type="radio" id="Gender2" name="ownerGender" onChange={this.onChangeHandler} value="female"/></span> */}
+                                <span><Input type="radio" id="Gender2" name="ownerGender" onChange={this.onChangeHandler} value="female"/></span>
                                
-                                <span><Input type="radio" id="Gender3" name="ownerGender" onChange={this.onChangeHandler} value="other"/></span>
+                               
                                 <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
-                                {/* <span><Input type="radio" id="Gender3" name="ownerGender" onChange={this.onChangeHandler} value="other"/></span> */}
+                                <span><Input type="radio" id="Gender3" name="ownerGender" onChange={this.onChangeHandler} value="other"/></span>
                                 <span className="error">{this.state.errors.ownerGender}</span>
                             </FormGroup>
                             <FormGroup>
@@ -719,29 +674,16 @@ this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingNam
                                 <Label>Floor</Label>
                                 <Select options={this.getFloor(this.props.towerFloor)} 
                                 placeholder={PlaceHolder}
-                                name="floorId"
                                 onChange={this.floorChangeHandler.bind(this,'floorId')}
                                 />
-                                <span className="error">{this.state.errors.floorId}</span>
                             </FormGroup>
                             <FormGroup>
                                 <Label>Flat Number</Label>
                                 <Select options={this.getFlats(this.props.towerFloor)}
                                     placeholder={PlaceHolder} 
-                                    name="flatDetailIds"
-                                  onChange={this.flatChangeHandler.bind(this,'flatDetailIds')}
+                                  onChange={this.flatChangeHandler.bind(this,'flatDetailId')}
                                     />
-                                     <span className="error">{this.state.errors.flatNO}</span>
                             </FormGroup >
-                            {/* {this.getParking(this.props.flatDetailMasterReducer)} */}
-                            <FormGroup>
-                                <Label> Parking Name</Label>
-                                <Input readOnly type="text"  name="parkingName" value={this.state.parkingName}/>
-                            </FormGroup>
-                            <FormGroup>
-                                <Label>Total Parking Available</Label>
-                                <Input readOnly type="text"  name="totalParking" value={this.state.totalParking}/>
-                            </FormGroup>
                             <FormGroup>
                                 <Label>Current Address</Label>
                                 <Input readOnly type="text" style={{ 'textTransform': 'capitalize' }} maxLength={100} placeholder="Current Address" name="currentAddress" value={this.state.currentAddress}/>
@@ -766,7 +708,7 @@ this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingNam
                         </FormGroup>
                         <FormGroup>
                             <Label>State</Label>
-                            <Select placeholder={PlaceHolder} options={this.stateName(this.props.societyName)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')}/>
+                            <Select placeholder={PlaceHolder} options={this.stateName(this.props.societyName)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
                         </FormGroup>
                         <FormGroup>
                             <Label>City</Label>
@@ -779,7 +721,6 @@ this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingNam
                         <FormGroup>
                                 <Label>Pin Code</Label>
                                 <Input type="text" placeholder="Enter Pin Code " name="pin" onChange={this.onChangeHandler} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={6}/>
-                                <span className="error">{this.state.errors.pin}</span>
                             </FormGroup>
                         <FormGroup>
                             <Label>Permanent Address</Label>
@@ -787,7 +728,7 @@ this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingNam
                             maxLength={50}
                              name="permanentAddressUser" placeholder="Permanent Address"/>
                              {<span className="error">
-                                {this.state.errors.permanentAddressUser}
+                                {this.state.errors.permanentAddress}
                             </span>}
                         </FormGroup>
                         </div> : ''}
@@ -798,27 +739,7 @@ this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingNam
                                 <Label>Number of Member</Label>
                                 <Input placeholder="number of member" type='text' onKeyPress={this.OnKeyPresshandlerPhone} name="familyMember" onChange={this.userMemberHandler} />
                             </FormGroup>
-                            {/* <div style={{ 'display': this.state.step == 1 ? 'block' : 'none' }}>
-                            <div>Other Flats</div>
-                            <FormGroup>
-                            <Label>Tower</Label>
-                                <Select options={this.getTower(this.props.towerList)}
-                                    onChange={this.towerChangeHandler1.bind(this, 'towerId1')}
-                                    placeholder={PlaceHolder} />
-                                <Label>Floor</Label>
-                                <Select options={this.getFloor(this.props.towerFloor)} 
-                                placeholder={PlaceHolder}
-                                name="floorId1"
-                                onChange={this.floorChangeHandler1.bind(this,'floorId1')}
-                                />
-                               <Label>Flat Number</Label>
-                                <Select options={this.getFlats(this.props.towerFloor)}
-                                    placeholder={PlaceHolder} 
-                                    name="flatDetailIds"
-                                  onChange={this.flatChangeHandler1.bind(this,'flatDetailIds')}
-                                    />
-                            </FormGroup>
-                            </div>   */}
+                    
                             {userDatas}
                  
                             <FormGroup>
@@ -842,7 +763,7 @@ this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingNam
                         </div>
                     </Form>
                     <Modal isOpen={this.state.modal} toggle={this.toggles} onClosed={this.onModalClosed}>
-                    <ModalHeader toggle={this.toggle}>Error Message</ModalHeader>
+                    <ModalHeader toggle={this.toggle}>Edit Flat Owner</ModalHeader>
                     <ModalBody>
                         <h1 style={{display:"block",background: 'black'}}>{this.state.message}</h1> 
                     </ModalBody>
@@ -855,17 +776,15 @@ this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingNam
 }
 
 function mapStateToProps(state) {
-    console.log(state.flatDetailMasterReducer)
     return {
         societyName: state.societyReducer,
         towerList: state.TowerDetails,
         relationList: state.RelationMasterReducer,
         towerFloor:state.FlatOwnerReducer,
-        flatDetailMasterReducer: state.flatDetailMasterReducer
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner,getAllFloor,getCountry,getState,getCity, getLocation,getFlatDetails,getSlots}, dispatch)
+    return bindActionCreators({detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner,getAllFloor,getCountry,getState,getCity, getLocation}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerDetails);
 

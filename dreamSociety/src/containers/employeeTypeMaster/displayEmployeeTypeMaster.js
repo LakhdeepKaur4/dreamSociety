@@ -57,6 +57,11 @@ class DisplayEmployeeTypeMaster extends Component {
         }
     }
 
+    logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user-type');
+        return this.props.history.replace('/')
+    }
     onChange=(e)=> {
 
         this.setState({ message: '' })
