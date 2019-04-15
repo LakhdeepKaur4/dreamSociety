@@ -1128,3 +1128,33 @@ exports.getFlats = (req, res, next) => {
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
+
+exports.editFlat = (req, res, next) => {
+    const body = req.body;
+    console.log('Body ===>', body);
+
+    TenantFlatDetail.create(body)
+        .then(flat => {
+            if (flat !== null) {
+                TenantFlatDetail.update({ isActive: false }, { where: { tenantId: tenantId, flatDetailId: body.previousFlatDetailId } });
+                res.status(httpStatus.CREATED).json({
+                    message: 'Flat details updated successfully'
+                })
+            } else {
+                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                    message: 'Flat details not updated'
+                })
+            }
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+// exports.deleteFlat = (req, res, next) => {
+//     const body = req.body;
+//     console.log('Body ===>',body);
+
+
+// }
