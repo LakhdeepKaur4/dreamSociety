@@ -6,8 +6,7 @@
 export  const URN = 'https://mydreamsociety.herokuapp.com/api';
 export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
-export  const UR = 'https://dreamsociety.herokuapp.com/';
-
+export  const UR = 'https://mydreamsociety.herokuapp.com/';
 
 
 export const USER_LOGIN='user_login';

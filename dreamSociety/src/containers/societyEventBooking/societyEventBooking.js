@@ -6,6 +6,8 @@ import UI from '../../components/newUI/superAdminDashboard';
 import DefaultSelect from '../../constants/defaultSelect';
 import {ViewEvent,GetEventOrganiser} from '../../actionCreators/eventMasterAction';
 import {addSocietyEvents} from '../../actionCreators/societyEventBooking';
+import Spinner from '../../components/spinner/spinner';
+
 
 class SocietyEventBooking extends Component {
     constructor(props) {
@@ -28,15 +30,15 @@ class SocietyEventBooking extends Component {
            childAbove:'',
            charges:'',
            description:'',
-           loading:false,
+           loading:true,
            errors:{},
            message:'',
         }
     }
 
     componentDidMount(){
-        this.props.ViewEvent();
-        this.props.GetEventOrganiser();
+        this.props.ViewEvent().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
+        this.props.GetEventOrganiser().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
     }
 
     logout = () => {
@@ -206,18 +208,9 @@ class SocietyEventBooking extends Component {
         return d.toISOString().split('T')[0];
     }
     
-    render(){console.log(this.state)   
-        return(
-            <div>
-                <UI onClick={this.logout} change={this.changePassword}>
-
-                    <Form onSubmit={this.onSubmit} >
-
-                        <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
-                            <span aria-hidden="true">&times;</span>
-                        </div>
-                        <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Book Society Events </h3></div><br/>
-                        <Row form>
+    render(){
+        let  formData =<div>
+                <Row form>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event Name</Label>
@@ -350,6 +343,19 @@ class SocietyEventBooking extends Component {
                             </FormGroup>
                             <Button color="success" className="mr-2">Submit</Button>             
                             <Button color="danger" onClick={this.push} >Cancel</Button>
+        </div>
+        return(
+            <div>
+                <UI onClick={this.logout} change={this.changePassword}>
+
+                    <Form onSubmit={this.onSubmit} >
+
+                        <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                            <span aria-hidden="true">&times;</span>
+                        </div>
+                        <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Book Society Events </h3></div><br/>
+                        {!this.state.loading ? formData : <Spinner />}
+                          
 
                     </Form>
                 </UI>
