@@ -93,7 +93,7 @@ class flatDetails extends Component {
         this.setState({
             editFlatModal: !this.state.editFlatModal, message: ''
         });
-    }
+    } 
 
 
     searchOnChange = (e) => {

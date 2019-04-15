@@ -10,7 +10,7 @@ class slotList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-    
+            loading: true,
         }
 
     }
@@ -24,6 +24,7 @@ class slotList extends Component {
     }
     componentDidMount() {
         this.props.getSlots(id)
+        .then(() => this.setState({ loading: false }))
     }
     delete = (slotId) => {
         // this.setState({ loading: true })

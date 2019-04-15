@@ -187,7 +187,7 @@ export function deleteOwnerFlats(flatDetailId,ownerId){
 export function addAnotherFlats(ownerId,flatDetailId){
     console.log(ownerId,flatDetailId)
     const request = axios.post(`${URN}/owner/addMoreFlats`,{flatDetailId,ownerId},{headers:authHeader()})
-    .then(response=>console.log(response.data))
+    .then(response=>response.data)
     return{
         type:ADD_MORE_FLATS,
         payload:request

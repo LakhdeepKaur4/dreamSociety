@@ -9,6 +9,7 @@ import { PlaceHolder } from '../../actions/index';
 import {getAllFloor,addAnotherFlats} from '../../actionCreators/flatOwnerAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import {Link} from 'react-router-dom';
+import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
 class AddFlats extends Component {
     constructor(props) {
         super(props);
@@ -23,6 +24,7 @@ class AddFlats extends Component {
     }
     componentDidMount(){
         this.props.viewTower();
+        this.props.getFlatDetails();
     }
     getTower = ({ tower }) => {
         if (tower) {
@@ -56,6 +58,7 @@ class AddFlats extends Component {
             return []
         }}
         floorChangeHandler=(name,selectOption)=>{
+            console.log(selectOption)
             this.setState({
                 [name]: selectOption.value,
                 floorName:selectOption.label
@@ -65,8 +68,10 @@ class AddFlats extends Component {
         getFlats=({floor})=>{
             if(floor){
               return  floor.flatDetail.filter((flatRecord)=>{
+                  console.log('flatRecord',flatRecord)
                     return flatRecord.floorId===this.state.floorId
                 }).map((selectFlat)=>{
+                    console.log('selectFlat',selectFlat)
                     return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
                 });
             }
@@ -82,12 +87,11 @@ class AddFlats extends Component {
             })
         }
         
- onSubmit=()=>{
-let ownerId=localStorage.getItem('ownerId')
-console.log('mmmmmmmmmmmmmm',ownerId,this.state.flatDetailIds)
-this.props.addAnotherFlats(ownerId,this.state.flatDetailIds)
-.then(() => this.props.history.push('/superDashboard/viewOwnerFlats'))
-
+ onSubmit=(e)=>{
+    e.preventDefault();
+    let ownerId=localStorage.getItem('ownerId')
+    this.props.addAnotherFlats(ownerId,this.state.flatDetailIds)
+    .then(() => this.props.history.push('/superDashboard/viewOwnerFlats'))
         }
     render() {
         let formData;
@@ -148,6 +152,6 @@ function mapStateToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({getAllFloor,viewTower,addAnotherFlats}, dispatch)
+    return bindActionCreators({getAllFloor,viewTower,addAnotherFlats,getFlatDetails}, dispatch)
 }
 export default connect(mapStateToProps,mapDispatchToProps)(AddFlats);

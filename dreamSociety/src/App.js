@@ -114,9 +114,9 @@ import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
 import ChangePasswordTenant from './components/changePassword/changePasswordTenant';
 import RegisterComplaintOwner from './containers/registerComplaintOwner/registerComplaintOwner';
 import RegisterComplaint from './containers/registerComplaint.js/registerComplaint';
+import ParkingSlotList from './containers/flatDetailMaster/slotList';
 import ViewOwnerFlats from './containers/flatOwnerDetails/viewFlats';
 import AddOwnerFlat from './containers/flatOwnerDetails/addFlats'
-import ParkingSlotList from './containers/flatDetailMaster/slotList';
 
 
 
