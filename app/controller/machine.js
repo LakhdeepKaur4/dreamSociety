@@ -5,6 +5,7 @@ const httpStatus = require('http-status');
 const Op = db.Sequelize.Op;
 
 const Machine = db.machine;
+const FlatDetail = db.flatDetail;
 
 exports.create = (req, res, next) => {
     const body = req.body;
@@ -38,6 +39,39 @@ exports.create = (req, res, next) => {
                         console.log('Error', err);
                         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
                     })
+            }
+        })
+        .catch(err => {
+            console.log('Error', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+exports.get = (req, res, next) => {
+    Machine.findAll({
+        where: {
+            isActive: true
+        },
+        include: [
+            {
+                model: FlatDetail,
+                where: { isActive: true },
+                include: [
+                    { model: Tower, where: { isActive: true }, attributes: ['towerId', 'towerName'] },
+                    { model: Floor, where: { isActive: true }, attributes: ['floorId', 'floorName'] }
+                ]
+            }
+        ]
+    })
+        .then(machines => {
+            if (machines.length !== 0) {
+                res.status(httpStatus.OK).json({
+                    Machines: machines
+                })
+            } else {
+                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                    message: 'No data available'
+                })
             }
         })
         .catch(err => {
