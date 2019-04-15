@@ -195,6 +195,10 @@ function saveToDisc(name, fileExt, base64String, callback) {
     });
 }
 
+filterFlats = item => {
+    return item.tenant_flatDetail_master.isActive === true;
+}
+
 exports.create = async (req, res, next) => {
     try {
         let tenantBody = req.body;
@@ -1115,7 +1119,7 @@ exports.getFlats = (req, res, next) => {
             if (tenant !== null) {
                 // console.log(tenant);
                 res.status(httpStatus.OK).json({
-                    flats: tenant.flat_detail_masters
+                    flats: tenant.flat_detail_masters.filter(filterFlats)
                 })
             } else {
                 res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
@@ -1133,10 +1137,13 @@ exports.editFlat = (req, res, next) => {
     const body = req.body;
     console.log('Body ===>', body);
 
-    TenantFlatDetail.create(body)
+    TenantFlatDetail.findOne({
+        tenantId: body.tenantId.trim(),
+        flatDetailId: body.previousFlatDetailId
+    })
         .then(flat => {
             if (flat !== null) {
-                TenantFlatDetail.update({ isActive: false }, { where: { tenantId: tenantId, flatDetailId: body.previousFlatDetailId } });
+                TenantFlatDetail.update({ flatDetailId: body.flatDetailId.trim() }, { where: { tenantId: body.tenantId.trim(), flatDetailId: body.previousFlatDetailId, isActive: true } });
                 res.status(httpStatus.CREATED).json({
                     message: 'Flat details updated successfully'
                 })
