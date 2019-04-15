@@ -9,10 +9,7 @@ import { Label } from 'semantic-ui-react';
 import DefaultSelect from './../../constants/defaultSelect';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 import Spinner from '../../components/spinner/spinner';
-<<<<<<< HEAD
-=======
 import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
 let ownerId;
 class ViewFlats extends Component {
 
@@ -39,11 +36,7 @@ class ViewFlats extends Component {
         parkingId:'',
         slotId:'',
         modal: false,
-<<<<<<< HEAD
-        flatDetailIds:'',
-=======
         newFlatId:''
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
 
     }
 
@@ -55,10 +48,7 @@ class ViewFlats extends Component {
 
     componentDidMount(){
         this.props.viewTower();
-<<<<<<< HEAD
-=======
         this.props.getFlatDetails();
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
     }
 
     onHandleChange = (event) => {
@@ -77,17 +67,6 @@ class ViewFlats extends Component {
         this.props.history.push('/superDashboard/addOwnerFlat')
     }
     delete=(flatDetailId)=>{
-<<<<<<< HEAD
-        console.log('flatDetailId',flatDetailId)
-        let ownerId=localStorage.getItem('ownerId')
-        this.props.deleteOwnerFlats(flatDetailId,ownerId)
-        .then(()=>this.props.getOwnerFlats(ownerId))
-    }
-    toggle = (flatDetailId,flatNo,flatType,floor) => {
-        console.log(flatDetailId,flatNo,flatType,floor)
-        this.setState({
-     
-=======
         this.setState({loading:true})
         let ownerId=localStorage.getItem('ownerId')
         this.props.deleteOwnerFlats(flatDetailId,ownerId)
@@ -99,7 +78,6 @@ class ViewFlats extends Component {
         // this.props.getAllFloor(towerId)
         this.setState({
             // towerName, floorName, flatNo, towerId, floorId,flatDetailId,
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
             modal: !this.state.modal
             
         })
@@ -129,13 +107,9 @@ class ViewFlats extends Component {
                         <td>{item.tower_master.towerName}</td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewSlots.bind(this,item.flatDetailId)} >View Parking</button></td>
                         <td style={{ textAlign: "center" }}>
-<<<<<<< HEAD
-                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this,item.flatDetailId,item.flatNo,item.flat_master.flatType,item.floor_master.floorName,item.tower_master.towerName)}>Edit</button>
-=======
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this,item.tower_master.towerName,item.floor_master.floorName, item.flatNo,item.tower_master.towerId,
                              item.floor_master.floorId,
                                 item.flatDetailId)}>Edit</button>
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
                             <button className="btn btn-danger" onClick={this.delete.bind(this,item.flatDetailId)} >Delete</button>
                         </td>
                     </tr>
@@ -187,17 +161,6 @@ class ViewFlats extends Component {
 
     }
     getFlats=({floor})=>{
-<<<<<<< HEAD
-        if(floor){
-            return  floor.flatDetail.filter((flatRecord)=>{
-                return flatRecord.floorId===this.state.floorId
-            }).map((item)=>{
-                return (
-                    <option key={item.flatDetailId} value={item.flatDetailId}>{item.flatNo}</option>
-                )
-            });
-        }
-=======
         console.log(floor)
         if(floor){
             return  floor.flatDetail.filter((flatRecord)=>{
@@ -211,7 +174,6 @@ class ViewFlats extends Component {
         else {
             return []
           } 
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
     }
 
     towerChangeHandler=(e)=>{
@@ -221,13 +183,6 @@ class ViewFlats extends Component {
       
     }
     floorChangeHandler=(e)=>{
-<<<<<<< HEAD
-        this.setState({
-            floorId:e.target.value
-        })
-    }
-
-=======
         console.log('floorChangeHandler',e.target.value)
         this.setState({
             floorId:e.target.value
@@ -257,7 +212,6 @@ class ViewFlats extends Component {
     toggles = () => {
         this.setState({ modal: !this.state.modal })
     }
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
     render() {
         let tableData;
         tableData =
@@ -307,35 +261,20 @@ class ViewFlats extends Component {
                         <Modal isOpen={this.state.modal} toggle={this.toggles} style={{width:"100% !important"}}>
                                 <ModalHeader toggle={this.toggle}>Edit Owner's Flat</ModalHeader>
                                 <ModalBody>
-<<<<<<< HEAD
-                                    <FormGroup>
-                                        <Label>Tower Name</Label>
-                                        <Input type="select" defaultValue='no-value'  value={this.state.towerId} onChange={this.towerChangeHandler} name="towerId">
-=======
                                         <FormGroup>
                                         <Label>Tower Name</Label>
                                         <Input type="select" id="tower" value={this.state.towerId ? this.state.towerId : 'no-value'} onChange={this.towerChangeHandler} name="towerId">
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
                                         <DefaultSelect/>
                                         {this.getTower(this.props.towerList)}
                                          </Input>
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Floor Name</Label>
-<<<<<<< HEAD
-                                        <Input type="select" defaultValue='no-value'  value={this.state.floorId} onChange={this.floorChangeHandler} name="floorId">
-=======
                                         <Input type="select" id="floor"  value={this.state.floorId ?this.state.floorId : 'no-value'} onChange={this.floorChangeHandler} name="floorId">
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
                                         <DefaultSelect/>
                                         {this.getFloor(this.props.towerFloor)}
                                          </Input>
                                     </FormGroup>
-<<<<<<< HEAD
-                                    <FormGroup>
-                                        <Label>Flat Number</Label>
-                                        <Input type="select" defaultValue='no-value'  value={this.state.flatDetailIds} onChange={this.onChangeHandler} name="flatDetailIds">
-=======
                                      {/* <FormGroup>
                                         <Label>Flat Type</Label>
                                         <Input type="select" defaultValue='no-value'  value={this.state.flatId} onChange={this.floorChangeHandler} name="flatId">
@@ -347,18 +286,14 @@ class ViewFlats extends Component {
                                     <FormGroup>
                                         <Label>Flat Number</Label>
                                         <Input type="select"  value={this.state.floorId ?this.state.floorId : 'no-value'} onChange={this.onflatChangeHandler} name="flatDetailId">
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
                                         <DefaultSelect/>
                                         {this.getFlats(this.props.towerFloor)}
                                          </Input>
                                     </FormGroup>
-<<<<<<< HEAD
-=======
                                     <FormGroup>
                                         <Button color="primary mr-2" onClick={this.editOwnerFlat}>Save</Button>
                                         <Button color="danger" onClick={this.toggles}>Cancel</Button>
                                     </FormGroup>
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
                                 </ModalBody>
                         </Modal>
                     </div>
@@ -370,27 +305,17 @@ class ViewFlats extends Component {
 }
 
 function mapStateToProps(state) {
-<<<<<<< HEAD
-=======
     console.log('kjhfkldsjflkdjfkldsfjdklsjkl',state.FlatOwnerReducer)
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
     return {
         Owner: state.FlatOwnerReducer,
         towerFloor:state.FlatOwnerReducer,
         towerList: state.TowerDetails,
-<<<<<<< HEAD
-=======
         flatDetailMasterReducer : state.flatDetailMasterReducer
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
     }
 }
 
 function mapDispatchToProps(dispatch) {
-<<<<<<< HEAD
-    return bindActionCreators({getOwnerFlats,deleteOwnerFlats,viewTower,getAllFloor}, dispatch)
-=======
     return bindActionCreators({getOwnerFlats,deleteOwnerFlats,viewTower,getAllFloor,getFlatDetails}, dispatch)
->>>>>>> c7afbf143958eb26b553a7e7b7f05ef84472864e
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewFlats);
