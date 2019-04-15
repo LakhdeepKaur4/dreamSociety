@@ -1151,9 +1151,28 @@ exports.editFlat = (req, res, next) => {
     })
         .then(flat => {
             if (flat !== null) {
-                flat.updateAttributes({ flatDetailId: body.flatDetailId });
-                res.status(httpStatus.CREATED).json({
-                    message: 'Flat details updated successfully'
+                TenantFlatDetail.findOne({
+                    where: {
+                        tenantId: body.tenantId,
+                        flatDetailId: body.flatDetailId,
+                        isActive: true
+                    }
+                })
+                .then(flatExisting => {
+                    if (flatExisting !== null) {
+                        res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                            message: 'Flat details already exist for same tenant'
+                        }) 
+                    } else {
+                        flat.updateAttributes({ flatDetailId: body.flatDetailId });
+                        res.status(httpStatus.CREATED).json({
+                            message: 'Flat details updated successfully'
+                        }) 
+                    }
+                })
+                .catch(err => {
+                    console.log('Error ===>',err);
+                    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
                 })
             } else {
                 res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
