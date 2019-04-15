@@ -569,4 +569,6 @@ module.exports = function (app) {
 	app.post('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.create);
 
 	app.get('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.get);
+
+	app.put('/api/machine/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.update);
 }

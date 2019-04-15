@@ -84,6 +84,7 @@ exports.get = (req, res, next) => {
 
 exports.update = (req,res,next) => {
     const body = req.body;
+    body.machineId = req.params.id;
     console.log('Body ===>', body);
 
     Machine.findOne({
@@ -101,15 +102,21 @@ exports.update = (req,res,next) => {
                     message: 'Machine already in use for another flat'
                 })
             } else {
-                Machine.findOne()
+                Machine.findOne({
+                    where: {
+                        machineId: body.machineId,
+                        isActive: true
+                    }
+                })
                     .then(machine => {
                         if (machine !== null) {
+                            machine.updateattributes(body);
                             res.status(httpStatus.CREATED).json({
-                                message: 'Machine registered successfully'
+                                message: 'Machine updated successfully'
                             })
                         } else {
                             res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                                message: 'Machine registeration not successful'
+                                message: 'Machine updation not successful'
                             })
                         }
                     })
