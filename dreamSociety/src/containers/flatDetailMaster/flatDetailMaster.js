@@ -1,11 +1,13 @@
 import React,{ Component } from 'react';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import {getTowerName,getFlatType,addFlatDetails, getfloors} from '../../actionCreators/flatDetailMasterAction';
+import {getTowerName,getFlatType,addFlatDetails, getfloors,fetchParking,getSlotId} from '../../actionCreators/flatDetailMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 import { Form, Button, FormGroup, Input, Label } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes'; 
+import { PlaceHolder } from '../../actions/index';
 
 class flatDetailMaster extends Component{
     constructor(props){
@@ -17,7 +19,11 @@ class flatDetailMaster extends Component{
             towerId:'',
             errors:{},
             loading:true,
-            message:''
+            message:'',
+            parkingId:'',
+            slotId:[],
+            parkingDetails:[],
+            slotNumbers:''
         }
     }
 
@@ -38,6 +44,7 @@ class flatDetailMaster extends Component{
 
     componentDidMount(){
         this.refreshData();
+        this.props.fetchParking();
     }
     
     refreshData(){
@@ -95,12 +102,18 @@ class flatDetailMaster extends Component{
         else if(this.state.floorId===''){
             errors.floorId="Floor can't be empty"
         }
+        else if(this.state.parkingId===''){
+            errors.parkingId="Parking can't be empty"
+        }
+        else if(this.state.slotId.length>5){
+            errors.slotId="slots can't be more than 5"
+        }
         this.setState({errors});
         const isValid=Object.keys(errors).length === 0;
-
+        console.log('this.state',this.state)
         if(isValid){
             this.setState({loading:true});
-           
+           console.log('addflatDetails',this.state)
             this.props.addFlatDetails(this.state)
             .then(()=>this.props.history.push('/superDashboard/flatDetails'))
             .catch(err=>{
@@ -114,7 +127,8 @@ class flatDetailMaster extends Component{
                     flatId:'',
                     floorId:'',
                     towerId:'',
-            
+                    parkingId:'',
+                    slotId:''
 
                 }
             });
@@ -184,6 +198,87 @@ class flatDetailMaster extends Component{
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
+    onParkingChangeHandler=(event)=>{
+        this.setState({
+            parkingId:event.target.value
+        },function (){
+            this.props.getSlotId(this.state.parkingId,this.state.flatId);
+        })
+        
+    }
+    getParking=({parking})=>{
+        if(parking){
+            return parking.parking.map((items)=>{
+                return(
+                    <option key={items.parkingId} value={items.parkingId}>
+                    {items.parkingName}
+                    </option>
+                )
+            })
+        }
+
+    }
+    getSlot=({parkingSlot})=>{
+        console.log(parkingSlot)
+        // this.setState({
+        //     slotNumbers:parkingSlot.slotNumbers
+        // })
+        if(parkingSlot){
+            console.log(parkingSlot.slotNumbers)
+      
+            return parkingSlot.slot.map((items)=>{
+                return (
+                    {...items,label:items.slots,value:items.slotId}
+                )
+            })
+        }
+
+    }
+    slotChangeHandler=(name,selectOption)=>{
+        console.log(selectOption)
+        this.setState({
+            [name]: selectOption.map((item)=>{return item.slotId}),
+            parkingDetails:selectOption.map((item)=>{return {
+                parkingId:this.state.parkingId,
+                floorId:this.state.floorId,
+                flatId:this.state.flatId,
+                slotId:item.slotId}}),
+            errors:''
+        })
+        
+        
+        // switch(this.state.slotNumbers){
+        //     case 1:
+        //     return (
+        //         this.setState({
+        //             slots:selectOption.label,
+        //             slotId:selectOption.value
+        //         })
+        //     )
+        //     case 2:
+        //     return (    this.setState({
+        //         slots:selectOption.label,
+        //         slotId:selectOption.value
+        //     }))
+        //     case 3:
+        //     return (    this.setState({
+        //         slots:selectOption.label,
+        //         slotId:selectOption.value
+        //     }))
+        //     case 4:
+        //     return (    this.setState({
+        //         slots:selectOption.label,
+        //         slotId:selectOption.value
+        //     }))
+        //     default :
+        //     return{}
+        // }
+        //  this.setState({
+        //      slots:selectOption.label,
+        //      slotId:selectOption.value
+        //  })
+        }
+    
 
     render (){
         let formData=<div>
@@ -219,6 +314,29 @@ class flatDetailMaster extends Component{
                       
                         <span className="error">{this.state.errors.floorId}</span>
                     </div>
+                    <div>    
+                        <label>Parking</label>
+                        <select className ="form-control"  defaultValue='no-value'  name="parkingId"   onChange={this.onParkingChangeHandler}>
+                        <DefaultSelect/>
+                        {this.getParking(this.props.flatDetailMasterReducer)}
+                        </select>
+                      
+                        <span className="error">{this.state.errors.parking}</span>
+                    </div>
+                    <div>    
+                        <label>Slot</label>
+                        {/* <select className ="form-control"  defaultValue='no-value'  name="slotId"   onChange={this.handleChange}>
+                        <DefaultSelect/>
+                        {this.getSlot(this.props.flatDetailMasterReducer)}
+                        </select> */}
+                        <ReactMultiSelectCheckboxes
+                         options={this.getSlot(this.props.flatDetailMasterReducer)}
+                         name="slotId"
+                         placeholderButtonLabel={PlaceHolder}
+                         onChange={this.slotChangeHandler.bind(this,'slotId')}/>
+                      
+                        <span className="error">{this.state.errors.slotId}</span>
+                    </div>
                  
                     <div className="mt-4">
                     <Button type="submit" className="mr-2" color="success" value="submit">Submit</Button>
@@ -246,12 +364,13 @@ class flatDetailMaster extends Component{
 function mapStateToProps(state){
    
     return{
+
     flatDetailMasterReducer : state.flatDetailMasterReducer
             }
 }
 
 function mapDispatchToProps(dispatch){
-    return bindActionCreators({getTowerName,getFlatType,addFlatDetails, getfloors},dispatch);
+    return bindActionCreators({getTowerName,getFlatType,addFlatDetails, getfloors,fetchParking,getSlotId},dispatch);
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(flatDetailMaster);
