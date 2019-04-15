@@ -473,7 +473,7 @@ class AddTenant extends Component{
             console.log('7777777jjjjjj',getFlatDetail)
             if(getFlatDetail){
               return  getFlatDetail.flatDetail.filter((flatRecord)=>{
-                    return flatRecord.floorId===this.state.floorId
+                    return flatRecord.floorId==this.state.floorId
                 }).map((selectFlat)=>{
                     console.log('bbbbbbbbbbbbbbbbb',selectFlat)
                     return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
