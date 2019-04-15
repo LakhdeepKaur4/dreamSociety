@@ -309,7 +309,7 @@ class BoardMemberDetails extends Component {
     }
 
     fetchDesignation = ({ designation }) => {
-        if (designation) {
+        if (designation && designation.designation) {
             return designation.designation.map((item) => {
                 return (
                     <option key={item.designationId} value={item.designationId}>{item.designationName}</option>
@@ -354,6 +354,15 @@ class BoardMemberDetails extends Component {
         })
         
         this.props.getState(selectOption.countryId)
+        this.updateCountryAddress(selectOption.countryName)
+    }
+
+    updateCountryAddress = (countryName) => {
+        console.log(countryName)
+        this.setState({countryName})
+        this.setState({permanentAddress: this.state.permanentAddressDefault  + ', ' + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') + ', ' +
+        this.state.cityName + ', ' + this.state.stateName + ', ' + countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
     }
 
 
@@ -392,6 +401,15 @@ class BoardMemberDetails extends Component {
             stateId:selectOption.stateId
         })
         this.props.getCity(selectOption.stateId);
+        this.updateStateAddress(selectOption.stateName)
+    }
+
+    updateStateAddress = (stateName) => {
+        console.log(stateName)
+        this.setState({stateName})
+        this.setState({permanentAddress: this.state.permanentAddressDefault  + ', ' + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+        this.state.cityName + ', ' + stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
     }
     
     cityName=({cityResult})=>{
@@ -435,6 +453,15 @@ class BoardMemberDetails extends Component {
             cityId:selectOption.cityId
         })
         this.props.getLocation(selectOption.cityId)
+        this.updateCityAddress(selectOption.cityName)
+    }
+
+    updateCityAddress = (cityName) => {
+        console.log(cityName)
+        this.setState({cityName})
+        this.setState({permanentAddress: this.state.permanentAddressDefault  + ', ' + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+        cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
     }
     
     
@@ -682,6 +709,15 @@ countryChange = (currentCountryId, currentCountry, selectOption) => {
     })
     
     this.props.getState(selectOption.countryId)
+    this.updateCountryCurrent(selectOption.countryName)
+}
+
+updateCountryCurrent = (currentCountry) => {
+    console.log(currentCountry)
+    this.setState({currentCountry})
+    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+    this.state.currentCity + ', ' + this.state.currentState + ', ' + currentCountry + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+    console.log('currentAddress', this.state.currentAddress)
 }
 
 
@@ -692,6 +728,15 @@ stateChange = (currentState, currentStateId, selectOption) => {
         currentStateId:selectOption.stateId
     })
     this.props.getCity(selectOption.stateId);
+    this.updateStateCurrent(selectOption.stateName)
+}
+
+updateStateCurrent = (currentState) => {
+    console.log(currentState)
+    this.setState({currentState})
+    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+    this.state.currentCity + ', ' + currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+    console.log('currentAddress', this.state.currentAddress)
 }
 
 cityChange = (currentCity, currentCityId, selectOption) => {
@@ -701,6 +746,15 @@ cityChange = (currentCity, currentCityId, selectOption) => {
         currentCityId:selectOption.cityId
     })
     this.props.getLocation(selectOption.cityId)
+    this.updateCityCurrent(selectOption.cityName)
+}
+
+updateCityCurrent = (currentCity) => {
+    console.log(currentCity)
+    this.setState({currentCity})
+    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+    currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+    console.log('currentAddress', this.state.currentAddress)
 }
 
 locationChange = (currentLocation, currentLocationId, selectOption) => {

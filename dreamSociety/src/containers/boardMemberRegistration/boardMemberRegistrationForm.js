@@ -294,7 +294,7 @@ countryChange = (currentCountryId, currentCountry, selectOption) => {
 updateCurrentAddressonCountry = (currentCountry) => {
     console.log(currentCountry)
     this.setState({currentCountry})
-    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + this.state.location + ', ' +
+    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
     this.state.currentCity + ', ' + this.state.currentState + ', ' + currentCountry + ', ' + 'Pin/Zip Code: ' + this.state.pin})
     console.log('currentAddress', this.state.currentAddress)
 }
@@ -312,7 +312,7 @@ stateChange = (currentState, currentStateId, selectOption) => {
 updateCurrentAddressonState = (currentState) => {
     console.log(currentState)
     this.setState({currentState})
-    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + this.state.location + ', ' +
+    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
     this.state.currentCity + ', ' + currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip Code: ' + this.state.pin})
     console.log('currentAddress', this.state.currentAddress)
 }
@@ -329,7 +329,7 @@ cityChange = (currentCity, currentCityId, selectOption) => {
 updateCurrentAddressonCity = (currentCity) => {
     console.log(currentCity)
     this.setState({currentCity})
-    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + this.state.location + ', ' +
+    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
     currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip Code: ' + this.state.pin})
     console.log('currentAddress', this.state.currentAddress)
 }
@@ -381,7 +381,7 @@ onChange = (e) => {
 
 fetchDesignation = ({designation}) => {
     console.log(designation)
-    if(designation){
+    if(designation && designation.designation){
        return designation.designation.map((item) => {
             return (
                 <option key={item.designationId} value={item.designationId}>{item.designationName}</option>
