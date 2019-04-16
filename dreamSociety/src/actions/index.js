@@ -3,7 +3,7 @@
 // export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 // export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
-export  const URN = 'https://mydreamsociety.herokuapp.com/api';
+export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 export  const UR = 'https://dreamsociety.herokuapp.com/';
@@ -264,14 +264,14 @@ export const ASSIGN_OWNER='ASSIGN_OWNER';
 export const ASSIGN_CHANGES='ASSIGN_CHANGES';
 export const ASSIGN_POST='ASSIGN_POST';
 export const ASSIGN_DISPLAY='ASSIGN_DISPLAY';
-
+export const ADD_MORE_FLATS ='ADD_MORE_FLATS';
 export const ADD_VENDOR='ADD_VENDOR';
 export const GET_FLAT_PARKING='GET_FLAT_PARKING';
 export const GET_PARKING_SLOT='GET_PARKING_SLOT';
 export const GET_SLOTS='GET_PARKING_SLOTS';
 export const GET_OWNER_FLAT='GET_OWNER_FLAT';
 export const DELETE_OWNER_FLAT='DELETE_OWNER_FLAT';
-export const ADD_MORE_FLATS="ADD_MORE_FLATS";
+
 export const GET_INDIVIDUAL_VENDOR='GET_INDIVIDUAL_VENDOR';
 export const DELETE_INDIVIDUAL_VENDOR='DELETE_INDIVIDUAL_VENDOR';
 export const DELETE_SELECT_INDIVIDUAL_VENDOR='DELETE_SELECT_INDIVIDUAL_VENDOR';
@@ -282,4 +282,9 @@ export const REGISTER_COMPLAINT='REGISTER_COMPLAINT';
 export const POST_REGISTER_COMPLAINT='POST_REGISTER_COMPLAINT';
 export const GET_FLATS='GET_FLATS';
 export const ADD_NEW_Flat='ADD_NEW_Flat';
-export const SERVICE_DETAILS='SERVICE_DETAILS'
+export const SERVICE_DETAILS='SERVICE_DETAILS';
+export const ADD_MACHINE ='ADD_MACHINE';
+export const  GET_MACHINE ='GET_MACHINE'
+export const  UPDATE_MACHINE ='UPDATE_MACHINE';
+export const  DELETE_MACHINE ='DELETE_MACHINE';
+export const DELETE_MULTIPLE_MACHINE = 'DELETE_MULTIPLE_MACHINE';

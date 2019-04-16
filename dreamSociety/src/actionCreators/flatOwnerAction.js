@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,DELETE_MULTIPLE_OWNER_MEMBER,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER,GET_ALL_FLOOR } from '../actions/index';
+import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,DELETE_MULTIPLE_OWNER_MEMBER,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER,GET_ALL_FLOOR,ADD_MORE_FLATS } from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
 export function addFlatOwner(data){
@@ -158,6 +158,16 @@ export function getAllFloor(id){
     .then(response=>response.data)
     return {
         type:GET_ALL_FLOOR,
+        payload:request
+    }
+}
+
+export function addAnotherFlats(ownerId,flatDetailId){
+    console.log(ownerId,flatDetailId)
+    const request = axios.post(`${URN}/owner/addMoreFlats`,{flatDetailId,ownerId},{headers:authHeader()})
+    .then(response=>response.data)
+    return{
+        type:ADD_MORE_FLATS,
         payload:request
     }
 }
