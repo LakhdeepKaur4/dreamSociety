@@ -45,6 +45,7 @@ module.exports = function (app) {
 	const eventBooking = require('../controller/eventBooking');
 	const individualVendorController = require('../controller/individualVendor');
 	const complaint = require('../controller/complaint');
+	const machine = require('../controller/machine');
 
 
 	app.get('/', userController.start);
@@ -327,6 +328,8 @@ module.exports = function (app) {
 
 	app.get('/api/flatDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], flatDetailController.getSlot);
 
+	app.get('/api/flatDetailForOwner/:id', [authJwt.verifyToken, authJwt.isAdminRole], flatDetailController.getSlotNew);
+
 	app.get('/api/flatDetail', [authJwt.verifyToken, authJwt.isAdminRole], flatDetailController.get);
 
 	app.put('/api/flatDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], flatDetailController.update);
@@ -445,7 +448,7 @@ module.exports = function (app) {
 
 	app.post('/api/owner/ownerMember/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.addMember);
 
-	app.get('/api/owner',[authJwt.verifyToken], owner.get2);
+	app.get('/api/owner', [authJwt.verifyToken], owner.get2);
 
 	app.put('/api/owner/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.update2);
 
@@ -463,13 +466,13 @@ module.exports = function (app) {
 
 	app.put('/api/owner/delete/:id', [authJwt.verifyToken], owner.delete);
 
-	app.get('/api/owner/getFlats/:id',[authJwt.verifyToken], owner.getflats);
+	app.get('/api/owner/getFlats/:id', [authJwt.verifyToken], owner.getflats);
 
-	app.post('/api/owner/addMoreFlats',[authJwt.verifyToken], owner.addMoreFlats);
+	app.post('/api/owner/addMoreFlats', [authJwt.verifyToken], owner.addMoreFlats);
 
-	app.put('/api/owner/deleteFlat/:id',[authJwt.verifyToken], owner.deleteFlat);
+	app.put('/api/owner/deleteFlat/:id', [authJwt.verifyToken], owner.deleteFlat);
 
-	app.put('/api/owner/editFlat/:id',[authJwt.verifyToken], owner.editFlat);
+	app.put('/api/owner/editFlat/:id', [authJwt.verifyToken], owner.editFlat);
 
 	//app.put('/api/ownerMember/deleteSelected',[authJwt.verifyToken],owner.delete);
 
@@ -479,9 +482,13 @@ module.exports = function (app) {
 
 	app.get('/api/tenant', [authJwt.verifyToken, authJwt.isAdminRole], tenant.getDecrypted);
 
-	app.post('/api/tenant/addFlat', [authJwt.verifyToken,isAdminRole], tenant.addFlats);
+	app.post('/api/tenant/addFlat', [authJwt.verifyToken, isAdminRole], tenant.addFlats);
 
-	app.get('/api/tenant/getFlats/:id', [authJwt.verifyToken,isAdminRole], tenant.getFlats);
+	app.get('/api/tenant/getFlats/:id', [authJwt.verifyToken, isAdminRole], tenant.getFlats);
+
+	app.put('/api/tenant/editFlat', [authJwt.verifyToken, isAdminRole], tenant.editFlat);
+
+	app.put('/api/tenant/deleteFlat', [authJwt.verifyToken, isAdminRole], tenant.deleteFlat);
 
 	app.put('/api/tenant/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], tenant.deleteSelected);
 
@@ -557,7 +564,13 @@ module.exports = function (app) {
 
 	app.get('/api/flatbyid', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], userController.flatByUserId);
 
-	app.post('/api/complaintRegister', [authJwt.verifyToken,authJwt.isOwnerOrTenantRole], complaint.create);
+	app.post('/api/complaintRegister', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.create);
 
-	app.get('/api/complaintRegister', [authJwt.verifyToken,authJwt.isOwnerOrTenantRole], complaint.get);
+	app.get('/api/complaintRegister', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.get);
+
+	app.post('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.create);
+
+	app.get('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.get);
+
+	app.put('/api/machine/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.update);
 }
