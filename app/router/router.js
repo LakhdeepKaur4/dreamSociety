@@ -46,6 +46,7 @@ module.exports = function (app) {
 	const individualVendorController = require('../controller/individualVendor');
 	const complaint = require('../controller/complaint');
 	const ownerPermission = require('../controller/ownerPermission');
+	const machine = require('../controller/machine');
 
 
 	app.get('/', userController.start);
@@ -56,7 +57,7 @@ module.exports = function (app) {
 
 	app.post('/api/auth/signin', userController.signinDecrypted);
 
-	app.get('/api/user',  userController.getUserDecrypted);
+	app.get('/api/user', userController.getUserDecrypted);
 
 	app.get('/api/rolesAssigned', [authJwt.verifyToken, authJwt.isAdminRole], userController.getUserRoleDecrypted);
 
@@ -414,7 +415,7 @@ module.exports = function (app) {
 
 	app.put('/api/designation/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], designationController.delete);
 
-	app.post('/api/societyBoardMember',  [authJwt.verifyToken, authJwt.isAdminRole], societyBoardMemberController.createEncrypted);
+	app.post('/api/societyBoardMember', [authJwt.verifyToken, authJwt.isAdminRole], societyBoardMemberController.createEncrypted);
 
 	app.get('/api/societyBoardMember', [authJwt.verifyToken, authJwt.isAdminRole], societyBoardMemberController.getDecrypted);
 
@@ -448,7 +449,7 @@ module.exports = function (app) {
 
 	app.post('/api/owner/ownerMember/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.addMember);
 
-	app.get('/api/owner',[authJwt.verifyToken], owner.get2);
+	app.get('/api/owner', [authJwt.verifyToken], owner.get2);
 
 	app.put('/api/owner/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.update2);
 
@@ -466,27 +467,27 @@ module.exports = function (app) {
 
 	app.put('/api/owner/delete/:id', [authJwt.verifyToken], owner.delete);
 
-	app.get('/api/owner/getFlats/:id',[authJwt.verifyToken], owner.getflats);
+	app.get('/api/owner/getFlats/:id', [authJwt.verifyToken], owner.getflats);
 
-	app.post('/api/owner/addMoreFlats',[authJwt.verifyToken], owner.addMoreFlats);
+	app.post('/api/owner/addMoreFlats', [authJwt.verifyToken], owner.addMoreFlats);
 
-	app.put('/api/owner/deleteFlat/:id',[authJwt.verifyToken], owner.deleteFlat);
+	app.put('/api/owner/deleteFlat/:id', [authJwt.verifyToken], owner.deleteFlat);
 
-	app.put('/api/owner/editFlat/:id',[authJwt.verifyToken], owner.editFlat);
+	app.put('/api/owner/editFlat/:id', [authJwt.verifyToken], owner.editFlat);
 
 	//app.put('/api/ownerMember/deleteSelected',[authJwt.verifyToken],owner.delete);
 
 	app.put('/api/ownerMember/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.deleteMember);
 
 	app.post('/api/ownerPermission', ownerPermission.sendMailToTenant);
-	
+
 	app.post('/api/tenant', [authJwt.verifyToken, authJwt.isAdminRole], tenant.createEncrypted);
 
 	app.get('/api/tenant', [authJwt.verifyToken, authJwt.isAdminRole], tenant.getDecrypted);
 
-	app.post('/api/tenant/addFlat', [authJwt.verifyToken,isAdminRole], tenant.addFlats);
+	app.post('/api/tenant/addFlat', [authJwt.verifyToken, isAdminRole], tenant.addFlats);
 
-	app.get('/api/tenant/getFlats/:id', [authJwt.verifyToken,isAdminRole], tenant.getFlats);
+	app.get('/api/tenant/getFlats/:id', [authJwt.verifyToken, isAdminRole], tenant.getFlats);
 
 	app.put('/api/tenant/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], tenant.deleteSelected);
 
@@ -562,9 +563,10 @@ module.exports = function (app) {
 
 	app.get('/api/flatbyid', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], userController.flatByUserId);
 
-	app.post('/api/complaintRegister', [authJwt.verifyToken,authJwt.isOwnerOrTenantRole], complaint.create);
+	app.post('/api/complaintRegister', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.create);
 
-	app.get('/api/complaintRegister', [authJwt.verifyToken,authJwt.isOwnerOrTenantRole], complaint.get);
+	app.get('/api/complaintRegister', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.get);
+	
 	app.put('/api/machine/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.update);
 
 	app.put('/api/machine/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], machine.deleteSelected);
