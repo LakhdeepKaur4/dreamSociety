@@ -34,6 +34,7 @@ const Slot = db.slot;
 const OwnerFlatDetail = db.ownerFlatDetail;
 const FlatParkingDetails = db.flatParking;
 const Floor = db.floor;
+const TenantFlatDetail = db.tenantFlatDetail;
 
 function encrypt(key, data) {
   var cipher = crypto.createCipher("aes-128-cbc", key);
@@ -706,8 +707,9 @@ exports.update1 = async (req, res, next) => {
   if (req.body.email !== undefined && req.body.contact !== null) {
     let existingOwner = await Owner.find({
       where: {
-        isActive: true,
         [Op.and]: [{
+          isActive: true
+        }, {
           email: encrypt(key, req.body.email)
         }, {
           ownerId: {
@@ -1135,11 +1137,13 @@ exports.delete = async (req, res, next) => {
     }
     const updatedOwner = await Owner.find({
       where: {
-        ownerId: id
+        ownerId: id,
+        isActive: true
       }
     });
     if (updatedOwner) {
       updatedOwner.updateAttributes(update);
+
     }
     const updatedUser = await User.findOne({
       where: {
@@ -1163,10 +1167,22 @@ exports.delete = async (req, res, next) => {
 
     const flatDetails = await OwnerFlatDetail.findAll({
       where: {
-        ownerId: id
+        ownerId: id,
+        isActive: true
       }
     }).then(entries => {
-      return entries.forEach(function (entry) {
+      return entries.forEach(async function (entry) {
+        // Deactivate Tenant Here
+        let tenants = await TenantFlatDetail.findAll({
+          where: {
+            isActive: true,
+            flatDetailId: entry.flatDetailId
+          }
+        });
+        if (tenants) {
+          // tenants.forEach(tenant => tenant.updateAttributes(update))
+          tenants.forEach(tenant => tenant.destroy())
+        }
         return entry.updateAttributes(update);
       })
     });
@@ -1223,21 +1239,21 @@ exports.deleteSelected = async (req, res, next) => {
     // const updatedUsers = await User.findAll()
     if (usersToUpdate.length > 0) {
       usersToUpdate.forEach(async (updatedOwner) => {
-        console.log("updatedOwnerEmail",updatedOwner.email)
+        console.log("updatedOwnerEmail", updatedOwner.email)
         let user = await User.findOne({
           where: {
-            isActive:true,
+            isActive: true,
             email: updatedOwner.email
           }
         })
         let role = await UserRoles.findOne({
-            where: {
-              userId: user.userId
-            }
-          });
-          role.updateAttributes(update);
-          return user.updateAttributes(update);
+          where: {
+            userId: user.userId
+          }
         });
+        role.updateAttributes(update);
+        return user.updateAttributes(update);
+      });
     }
 
     // const updatedUsers = updatedOwners.forEach(async (owner) => {
@@ -1254,11 +1270,33 @@ exports.deleteSelected = async (req, res, next) => {
 
     let flatDetails = await OwnerFlatDetail.update(update, {
       where: {
+        isActive: true,
         ownerId: {
           [Op.in]: deleteSelected
         }
       }
     });
+
+    let flats = await OwnerFlatDetail.findAll({
+      where: {
+        isActive: true,
+        ownerId: {
+          [Op.in]: deleteSelected
+        }
+      }
+    });
+    if(flats.length > 0){
+      flats.forEach(async flat => {
+        let tenants = await TenantFlatDetail.findAll({where:{isActive:true,flatDetailId:flat.flatDetailId}});
+        if(tenants){
+          tenants.forEach(tenant => {
+            // tenant.updateAttributes({isActive:false});
+            tenant.destroy();
+          })
+        }
+      })
+    }
+
     if (updatedOwners && updatedOwnersMembers && flatDetails) {
       return res.status(httpStatus.OK).json({
         message: "Owners deleted successfully",
@@ -1448,7 +1486,7 @@ exports.updateMember = async (req, res, next) => {
 
 exports.addMember = (req, res, next) => {
   try {
-    console.log("gsdfhgsdahjfgjhadsf",req.body);
+    console.log("gsdfhgsdahjfgjhadsf", req.body);
     let ownerId = req.params.id;
     req.body.ownerId = req.params.id;
     req.body.memberName = encrypt(key, req.body.memberName);
@@ -1480,15 +1518,22 @@ exports.addMoreFlats = async (req, res, next) => {
           message: "Id is missing"
         });
     }
-    let check = await OwnerFlatDetail.findOne({where:{isActive:false,ownerId:ownerId,flatDetailId:flatDetailId}});
-    if(check){
-      check.updateAttributes({isActive:true});
+    let check = await OwnerFlatDetail.findOne({
+      where: {
+        isActive: false,
+        ownerId: ownerId,
+        flatDetailId: flatDetailId
+      }
+    });
+    if (check) {
+      check.updateAttributes({
+        isActive: true
+      });
       res.status(httpStatus.OK).json({
         message: "Flat Added Sucessfully to respective Owner",
         result: check
       })
-    }
-    else {
+    } else {
       let result = await OwnerFlatDetail.create({
         flatDetailId: flatDetailId,
         ownerId: ownerId
@@ -1498,9 +1543,9 @@ exports.addMoreFlats = async (req, res, next) => {
           message: "Flat Added Sucessfully to respective Owner",
           result: result
         })
-      } 
-    } 
-    
+      }
+    }
+
   } catch (error) {
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -1508,43 +1553,78 @@ exports.addMoreFlats = async (req, res, next) => {
 }
 
 exports.getflats = async (req, res, next) => {
-  try{
+  try {
     let parkingAndSlotArr = [];
     let flatDetailIds = [];
-    console.log("hello get," , req.params.id );
+    console.log("hello get,", req.params.id);
     let ownerId = req.params.id;
     let flat = await Owner.findOne({
       where: {
         isActive: true,
         ownerId: ownerId,
       },
-      include:[{model:FlatDetail,through:{where:{isActive:true}},include:[{model:Flat},{model:Tower},{model:Floor}]}]
+      include: [{
+        model: FlatDetail,
+        through: {
+          where: {
+            isActive: true
+          }
+        },
+        include: [{
+          model: Flat
+        }, {
+          model: Tower
+        }, {
+          model: Floor
+        }]
+      }]
 
     });
-    if(flat){
+    if (flat) {
       console.log("asdf");
       flat.flat_detail_masters.forEach(element => {
         flatDetailIds.push(element.flatDetailId);
       });
-      let parkAndSlot = await FlatParkingDetails.findAll({where:{isActive:true,flatDetailId:{[Op.in]:flatDetailIds}},include:[{model:FlatDetail,include:[{model:Flat},{model:Floor},{model:Tower}]},{model:Parking},{model:Slot}]});
-      console.log("flatParking",flat.parkAndSlot);
+      let parkAndSlot = await FlatParkingDetails.findAll({
+        where: {
+          isActive: true,
+          flatDetailId: {
+            [Op.in]: flatDetailIds
+          }
+        },
+        include: [{
+          model: FlatDetail,
+          include: [{
+            model: Flat
+          }, {
+            model: Floor
+          }, {
+            model: Tower
+          }]
+        }, {
+          model: Parking
+        }, {
+          model: Slot
+        }]
+      });
+      console.log("flatParking", flat.parkAndSlot);
       res.status(httpStatus.OK).json({
         message: "owner's flats",
         flats: flat
-        
+
       })
     }
-  }catch(error){
+  } catch (error) {
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
   }
- 
+
 }
 
 
-exports.deleteFlat = async (req,res,next) => {
-  try{
-    console.log("deleteflat is running",req.params.id,req.body.flatDetailId);
+exports.deleteFlat = async (req, res, next) => {
+  try {
+    console.log("deleteflat is running", req.params.id, req.body.flatDetailId);
     let ownerId = req.params.id;
     let flatDetailId = req.body.flatDetailId;
     if (ownerId === undefined || flatDetailId === undefined) {
@@ -1554,13 +1634,19 @@ exports.deleteFlat = async (req,res,next) => {
           message: "Id is missing"
         });
     };
-    let result = await OwnerFlatDetail.update({isActive:false},{
-      where:{
+    let result = await OwnerFlatDetail.update({
+      isActive: false
+    }, {
+      where: {
         flatDetailId: flatDetailId,
         ownerId: ownerId
       }
-     
+
     });
+    let tenants = await TenantFlatDetail.findAll({where:{isActive:true,flatDetailId:flatDetailId}});
+    if(tenants){
+      tenants.forEach(tenant => tenant.destroy())
+    }
     if (result) {
       res.status(httpStatus.OK).json({
         message: "Flat deleted Successfully",
@@ -1568,7 +1654,7 @@ exports.deleteFlat = async (req,res,next) => {
       })
     }
 
-  }catch(error){
+  } catch (error) {
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
   }
@@ -1594,16 +1680,29 @@ exports.editFlat = async (req,res,next) => {
     let deleteFlat = await OwnerFlatDetail.findOne({where:{isActive:true,flatDetailId:previousFlatId,ownerId:ownerId}});
     if(deleteFlat){
       deleteFlat.updateAttributes({isActive:false});
-      let newFlat = await OwnerFlatDetail.create({
-        ownerId:ownerId,
-        flatDetailId:newFlatId
-      });
-      if(newFlat){
+      let tenants = await TenantFlatDetail.findAll({where:{isActive:true,flatDetailId:previousFlatId}});
+      
+      tenants.forEach(tenant => tenant.destroy());
+      
+      let checkprev = await OwnerFlatDetail.findOne({where:{isActive:false,ownerId:ownerId,flatDetailId:newFlatId}});
+      if(checkprev){
+        checkprev.updateAttributes({isActive:true});
         res.status(httpStatus.OK).json({
-          message: "Flat edit successfully",
-          result: newFlat
+          message: "Flat edit successfully"
         })
-      }
+      }else{
+        let newFlat = await OwnerFlatDetail.create({
+          ownerId:ownerId,
+          flatDetailId:newFlatId
+        });
+        if(newFlat){
+          res.status(httpStatus.OK).json({
+            message: "Flat edit successfully",
+            result: newFlat
+          })
+        }
+      }   
+      
     }
   }catch(error){
     console.log(error);
