@@ -574,5 +574,5 @@ module.exports = function (app) {
 
 	app.put('/api/machine/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.update);
 
-	app.put('/api/machine/delete/:id',  machine.delete);
+	app.put('/api/machine/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.delete);
 }
