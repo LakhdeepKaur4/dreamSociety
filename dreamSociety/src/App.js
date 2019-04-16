@@ -119,7 +119,7 @@ import ViewMachinMaster from './containers/machineMaster/viewMachineMaster';
 import ParkingSlotList from './containers/flatDetailMaster/slotList';
 import ViewOwnerFlats from './containers/flatOwnerDetails/viewFlats';
 import AddOwnerFlat from './containers/flatOwnerDetails/addFlats'
-
+import TenantVerification from './components/tenantVerification/tenantVerification';
 
 
 
@@ -242,6 +242,7 @@ class App extends Component {
             <PrivateRoute path='/superDashBoard/tenantFlatsDetail' component={TenantFlatsDetail} />
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
+            <Route path='/login/tenantVerification' exact component={TenantVerification} />
           </Switch>
         </div>
         
