@@ -110,7 +110,7 @@ exports.update = (req, res, next) => {
                 })
                     .then(machine => {
                         if (machine !== null) {
-                            machine.updateattributes(body);
+                            machine.updateAttributes(body);
                             res.status(httpStatus.CREATED).json({
                                 message: 'Machine updated successfully'
                             })
@@ -144,7 +144,7 @@ exports.delete = (req, res, next) => {
     })
         .then(machine => {
             if (machine !== null) {
-                machine.updateattributes({ isActive: false });
+                machine.updateAttributes({ isActive: false });
                 res.status(httpStatus.OK).json({
                     message: 'Deleted successfully'
                 })
