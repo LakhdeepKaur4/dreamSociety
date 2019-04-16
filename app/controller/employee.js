@@ -7,7 +7,6 @@ const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921aa', '68afe5aeee2b5f9bbabf2489f2e8ade2');
-const random = require('random');
 const randomInt = require('random-int');
 
 const Employee = db.employee;
@@ -271,7 +270,7 @@ exports.createEncrypt = async (req, res, next) => {
         const employeeExists = await Employee.findOne({ where: { isActive: true, employeeId: randomNumber } });
         if (employeeExists) {
             console.log("duplicate random number")
-            randomNumber = random.int();
+            randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
         }
         console.log('Body ===>', body);
         body.userId = req.userId;
