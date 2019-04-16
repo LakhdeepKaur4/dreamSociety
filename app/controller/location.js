@@ -71,7 +71,7 @@ exports.get = (req, res) => {
 
 exports.getById = (req, res) => {
     Location.findAll({
-        where: { isActive:true,cityId: req.params.id },
+        where: { isActive: true, cityId: req.params.id },
     }).then(location => {
         res.status(200).json(
             location
@@ -106,14 +106,14 @@ exports.update = async (req, res) => {
     console.log("location==>", location)
     if (location.locationName === updates.locationName) {
         const updatedLocation = await Location.find({ where: { locationId: id } }).then(location => {
-            return location.updateAttributes(updates)
+            location.updateAttributes(updates)
         })
         if (updatedLocation) {
             return res.status(httpStatus.OK).json({
                 message: "Location Updated Page",
                 updatedLocation: updatedLocation
             });
-    }
+        }
     } else {
         const locations = await Location.findAll({
             where: {
