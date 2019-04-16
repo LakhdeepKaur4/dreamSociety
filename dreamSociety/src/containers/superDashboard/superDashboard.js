@@ -22,8 +22,9 @@ import UI from '../../components/newUI/superAdminDashboard';
   }
 
   logout=()=>{
+    console.log('hiiii')
     this.props.userLogout();   
-}
+  }
 
     changePassword=()=>{
           

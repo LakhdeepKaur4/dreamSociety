@@ -11,7 +11,7 @@ import UserDetails from './containers/userDetails/userDetails';
 import Demo from './containers/demo';
 import Registration from './containers/userRegistration/userRegistration';
 import AdminDashboard from './components/newUI/adminDashboard';
-import OwnerDashboard from './components/newUI/ownerDashboard';
+import OwnerDashboard from './containers/ownerDashboard/ownerDashboard';
 import SuperDashboard from './containers/superDashboard/superDashboard';
 import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
 import EmployeeDashboard from './components/newUI/employeeDashboard';
@@ -114,10 +114,12 @@ import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
 import ChangePasswordTenant from './components/changePassword/changePasswordTenant';
 import RegisterComplaintOwner from './containers/registerComplaintOwner/registerComplaintOwner';
 import RegisterComplaint from './containers/registerComplaint.js/registerComplaint';
+import MachineMaster from './containers/machineMaster/machineMaster';
+import ViewMachinMaster from './containers/machineMaster/viewMachineMaster';
 import ParkingSlotList from './containers/flatDetailMaster/slotList';
 import ViewOwnerFlats from './containers/flatOwnerDetails/viewFlats';
 import AddOwnerFlat from './containers/flatOwnerDetails/addFlats'
-
+import TenantVerification from './components/tenantVerification/tenantVerification';
 
 
 
@@ -232,12 +234,15 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/assignRolesDetail' component={AssignRolesDetail} />
             <PrivateRoute path='/tenantDashboard/registerComplaint' component={RegisterComplaint} />
             <PrivateRoute path='/ownerDashboard/registerComplaintOwner' component={RegisterComplaintOwner} />
+             <PrivateRoute path ='/superDashboard/machineMaster' component ={MachineMaster}/>
+              <PrivateRoute path ='/superDashBoard/viewMachineMaster' component={ViewMachinMaster}/>
             <PrivateRoute path='/superDashboard/viewOwnerFlats' component={ViewOwnerFlats} />
             <PrivateRoute path="/superDashboard/addOwnerFlat" component={AddOwnerFlat}/>
             <PrivateRoute path='/superDashboard/parkingSlotList' component={ParkingSlotList}/>
             <PrivateRoute path='/superDashBoard/tenantFlatsDetail' component={TenantFlatsDetail} />
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
+            <Route path='/login/tenantVerification' exact component={TenantVerification} />
           </Switch>
         </div>
         

@@ -78,7 +78,7 @@ class eventSpaceMasterDetails extends Component {
 
     updateBook = (e) => {
         e.preventDefault();
-        let { eventSpaceId, spaceName, capacity, spaceType, sizeId, area, description} = this.state
+        let { eventSpaceId, spaceName, capacity, spaceType, sizeId, area,from, to , price, description} = this.state
      
 
         let errors = {};
@@ -89,9 +89,11 @@ class eventSpaceMasterDetails extends Component {
 
         if (area === '') errors.area = "Cant be empty";
 
-        // if (this.state.price === '') errors.price = "Cant be empty";
-        // if (this.state.from === '') errors.from = "Please enter date";
-        // if (this.state.to === '') errors.to = "Please enter date";
+        if (this.state.price === '') errors.price = "Cant be empty";
+        if (this.state.from === '') errors.from = "Please enter date";
+        if (this.state.to === '') errors.to = "Please enter date";
+        else if (this.state.from >this.state.to) errors.to=
+        "From date cannot be ahead then To date";
         
         if (description === '') errors.description = "Cant be empty";
         this.setState({ errors });
@@ -99,7 +101,7 @@ class eventSpaceMasterDetails extends Component {
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.message === ''){
 
-            this.props.updateEventSpace(eventSpaceId, spaceName, capacity, spaceType, sizeId, area, description).then(() => this.refreshData())
+            this.props.updateEventSpace(eventSpaceId, spaceName, capacity, spaceType, sizeId, area,from,to,price, description).then(() => this.refreshData())
             .catch((err)=>{console.log(err.response.data.message)
             this.setState({modalLoading:false, message:err.response.data.message})});;
             if(this.state.message === ''){
@@ -132,12 +134,18 @@ class eventSpaceMasterDetails extends Component {
     searchFilter(search) {
         return function (x) {
             const capacity = x.capacity.toString();
-            const area = x.area.toString()
+            const area = x.area.toString();
+            const to = x.to.toString();
+            const from = x.from.toString();
+            const price = x.price.toString();
             return x.spaceName.toLowerCase().includes(search.toLowerCase()) ||
                 capacity.toLowerCase().includes(search.toLowerCase()) ||
                 x.spaceType.toLowerCase().includes(search.toLowerCase()) ||
                 x.size_master.sizeType.toLowerCase().includes(search.toLowerCase()) ||
                 area.toLowerCase().includes(search.toLowerCase()) ||
+                to.toLowerCase().includes(search.toLowerCase()) ||
+                from.toLowerCase().includes(search.toLowerCase()) ||
+                price.toLowerCase().includes(search.toLowerCase()) ||
                 x.description.toLowerCase().includes(search.toLowerCase()) ||
                 !search;
             
@@ -149,10 +157,10 @@ class eventSpaceMasterDetails extends Component {
     }
 
 
-    editBook( eventSpaceId, spaceName,capacity, spaceType,sizeId,sizeType,area,description) {
+    editBook( eventSpaceId, spaceName,capacity, spaceType,sizeId,sizeType,area,from,to,price,description) {
         console.log(spaceType,"space")
         this.setState({
-            eventSpaceId, spaceName,capacity ,spaceType, sizeId, sizeType ,area, description, editUserModal: !this.state.editUserModal
+            eventSpaceId, spaceName,capacity ,spaceType, sizeId, sizeType ,area,from,to,price, description, editUserModal: !this.state.editUserModal
         })
     }
 
@@ -211,14 +219,14 @@ class eventSpaceMasterDetails extends Component {
                         <td>{item.spaceType}</td>
                         <td>{sizeType}</td>
                         <td>{item.area}</td>
-                        {/* <td>           </td>
-                        <td>           </td>
-                        <td>           </td> */}
+                        <td>{item.from}</td>
+                        <td> {item.to} </td>
+                        <td> {item.price}</td>
                         <td>{item.description}</td>
                         <td>
                             <Button color="success" size="sm" className="mr-2"
                                 onClick={this.editBook.bind(this, item.eventSpaceId,item.spaceName,
-                                    item.capacity,item.spaceType, item.sizeId,sizeType, item.area,item.description)}>Edit</Button>
+                                    item.capacity,item.spaceType, item.sizeId,sizeType, item.area,item.from,item.to,item.price,item.description)}>Edit</Button>
                             <Button color="danger" size="sm" onClick={this.deleteUser.bind(this, item.eventSpaceId)} >Delete</Button>
                         </td>
                     </tr>
@@ -330,9 +338,9 @@ class eventSpaceMasterDetails extends Component {
                 <th>Space Type </th>
                 <th>SizeType</th>
                 <th> Area</th>
-                {/* <th> From </th>
+                <th> From </th>
                 <th> To </th>
-                <th> Price </th> */}
+                <th> Price </th>
                 <th>Desciption</th>
                 <th>Actions</th>
             </tr>
@@ -437,47 +445,50 @@ class eventSpaceMasterDetails extends Component {
 
                                 </FormGroup>
 
-                                {/* <FormGroup>
-                <Label>From</Label>
-                <Input
-                    type="date"
-                    name="from"
-                    // placeholder="enter price"
-                    // maxLength='8'
-                    // onKeyPress = {this.OnKeyPressPrice}
-                    // value={this.state.area}
-                    onChange={this.onChange} />
+                                <FormGroup>
+                                        <Label>From</Label>
+                                        <Input
+                                        type="date"
+                                        name="from"
+                                        value={this.state.from}
+                                        // placeholder="enter price"
+                                        // maxLength='8'
+                                        // onKeyPress = {this.OnKeyPressPrice}
+                                        // value={this.state.area}
+                                        onChange={this.onChange} />
                     
-                <span className='error'>{this.state.errors.from}</span>
-            </FormGroup>
+                                        <span className='error'>{this.state.errors.from}</span>
+                                    </FormGroup>
 
-            <FormGroup>
-                <Label>To</Label>
-                <Input
-                    type="date"
-                    name="to"
-                    // placeholder="enter price"
-                    // maxLength='8'
-                    // onKeyPress = {this.OnKeyPressPrice}
-                    // value={this.state.area}
-                    onChange={this.onChange} />
-                    
-                <span className='error'>{this.state.errors.to}</span>
-            </FormGroup> 
+                                    <FormGroup>
+                                        <Label>To</Label>
+                                        <Input
+                                            type="date"
+                                            name="to"
+                                            value={this.state.to}
+                                            // placeholder="enter price"
+                                            // maxLength='8'
+                                            // onKeyPress = {this.OnKeyPressPrice}
+                                            // value={this.state.area}
+                                            onChange={this.onChange} />
+                                            
+                                        <span className='error'>{this.state.errors.to}</span>
+                                    </FormGroup> 
 
-         <FormGroup>
-                <Label>Price</Label>
-                <Input
-                    type="text"
-                    name="price"
-                    placeholder="enter price"
-                    maxLength='8'
-                    onKeyPress = {this.OnKeyPressPrice}
-                    // value={this.state.area}
-                    onChange={this.onChange} />
-                    
-                <span className='error'>{this.state.errors.price}</span>
-            </FormGroup>  */}
+                                    <FormGroup>
+                                            <Label>Price</Label>
+                                            <Input
+                                                type="text"
+                                                name="price"
+                                                value={this.state.price}
+                                                placeholder="enter price"
+                                                maxLength='8'
+                                                onKeyPress = {this.OnKeyPressPrice}
+                                                // value={this.state.area}
+                                                onChange={this.onChange} />
+                                                
+                                            <span className='error'>{this.state.errors.price}</span>
+                                        </FormGroup> 
 
                                 <FormGroup>
                                      <Label>Description</Label>
@@ -497,7 +508,7 @@ class eventSpaceMasterDetails extends Component {
                                 <Button color="danger" onClick={this.toggleEditUserModal.bind(this)}>Cancel</Button>
                                 </FormGroup>
 
-    </div>
+                          </div>
     
     
         

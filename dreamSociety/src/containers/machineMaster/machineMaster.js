@@ -8,13 +8,15 @@ import Select from 'react-select';
 import { PlaceHolder } from '../../actions/index';
 import {getAllFloor,addAnotherFlats} from '../../actionCreators/flatOwnerAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
+import {addMachine} from '../../actionCreators/machineMasterAction';
 import {Link} from 'react-router-dom';
 import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
-class AddFlats extends Component {
+class MachineMaster extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            machineActualId:'',
             towerId:'',
             floorId:'',
             flatDetailIds:'',
@@ -25,6 +27,15 @@ class AddFlats extends Component {
     componentDidMount(){
         this.props.viewTower();
         this.props.getFlatDetails();
+    }
+
+
+    onChange = (e) => {
+      
+      
+            this.setState({ [e.target.name]: e.target.value.trim() });
+    
+    
     }
     getTower = ({ tower }) => {
         if (tower) {
@@ -37,9 +48,7 @@ class AddFlats extends Component {
         }
         return [];
     }
-
     towerChangeHandler = (name, selectOption) => {
-        
         this.setState(function (prevState, props) {
             return {
                 [name]: selectOption.value,
@@ -52,7 +61,7 @@ class AddFlats extends Component {
     getFloor=({floor})=>{
         if(floor){
             return floor.tower.Floors.map((item)=>{
-                      
+
                 return {...item ,label: item.floorName, value: item.floorId }
             })
         }
@@ -65,15 +74,13 @@ class AddFlats extends Component {
                 [name]: selectOption.value,
                 floorName:selectOption.label
             })
-    
+
         }
         getFlats=({floor})=>{
             if(floor){
               return  floor.flatDetail.filter((flatRecord)=>{
-                  console.log('flatRecord',flatRecord)
                     return flatRecord.floorId===this.state.floorId
                 }).map((selectFlat)=>{
-                    console.log('selectFlat',selectFlat)
                     return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
                 });
             }
@@ -88,33 +95,33 @@ class AddFlats extends Component {
                 currentAddress:this.state.flat+flatName+','+this.state.floorName+','+this.state.towerName+','+this.state.currentAddress+' '+this.state.pinCode
             })
         }
-        
+
+  
+
+        push=()=>{
+        this.props.history.push('/superDashboard/viewMachineMaster')
+        }
+
  onSubmit=(e)=>{
     e.preventDefault();
-    let errors = {};
-    if(this.state.towerId===''){
-        errors.towerId="Tower can't be empty"
+    let errors ={};
+    if(!this.state.machineActualId){
+     errors.machineActualId="Machine Id can't be empty"
     }
-    else if(this.state.floorId===''){
-        errors.floorId="floor can't be empty"
-    }
-    else if(this.state.flatDetailIds==='')
-    {
-        errors.flatDetailIds="flat can't be empty"
-    }
-    this.setState({errors});
-    const isValid=Object.keys(errors).length === 0;
-    let ownerId=localStorage.getItem('ownerId')
-    if(isValid){
-        this.props.addAnotherFlats(ownerId,this.state.flatDetailIds)
-        .then(() => this.props.history.push('/superDashboard/viewOwnerFlats'))
-    }
-   
+    this.props.addMachine( this.state.machineActualId,this.state.flatDetailIds)
+    
         }
     render() {
         let formData;
         formData =
             <div>
+                    <FormGroup>
+                    <Label>Machine Id</Label>
+                    <Input  name ="machineActualId" onChange ={this.onChange}  onKeyPress={this.KeyPress}  maxLength={50}></Input>
+                    <span className="error">{this.state.errors.machineActualId}</span>
+                    
+                </FormGroup >
+
                 <FormGroup>
                     <Label>Tower</Label>
                     <Select options={this.getTower(this.props.towerList)}
@@ -129,7 +136,7 @@ class AddFlats extends Component {
                         name="floorId"
                         onChange={this.floorChangeHandler.bind(this, 'floorId')}
                     />
-                    <span className="error">{this.state.errors.floorId}</span>
+                    {/* <span className="error">{this.state.errors.floorId}</span> */}
                 </FormGroup>
                 <FormGroup>
                     <Label>Flat Number</Label>
@@ -138,10 +145,10 @@ class AddFlats extends Component {
                         name="flatDetailIds"
                         onChange={this.flatChangeHandler.bind(this, 'flatDetailIds')}
                     />
-                    <span className="error">{this.state.errors.flatDetailIds}</span>
+                    {/* <span className="error">{this.state.errors.flatNO}</span> */}
                 </FormGroup >
-                <Button className="btn btn-success" >Add Flat</Button>
-                <Link to='/superDashBoard/viewOwnerFlats'>
+                <Button className="btn btn-success" >Add Machine</Button>
+                <Link to='/superDashBoard/viewMachineMaster'>
                 <Button color="danger" id="addAssets" >Cancel</Button>
             </Link>
             </div>
@@ -153,7 +160,7 @@ class AddFlats extends Component {
                             <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                                 <span aria-hidden="true">&times;</span>
                             </div>
-                            <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Add Owner's Flat</h3></div>
+                            <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Add Machine Details</h3></div>
                             {!this.state.loading ? formData : <Spinner />}
                         </Form>
                     </div>
@@ -170,6 +177,6 @@ function mapStateToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({getAllFloor,viewTower,addAnotherFlats,getFlatDetails}, dispatch)
+    return bindActionCreators({getAllFloor,viewTower,addAnotherFlats,getFlatDetails,addMachine}, dispatch)
 }
-export default connect(mapStateToProps,mapDispatchToProps)(AddFlats);
+export default connect(mapStateToProps,mapDispatchToProps)(MachineMaster);
