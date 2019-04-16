@@ -231,6 +231,7 @@ class DisplayVendorMaster extends Component {
             else if(this.state.lastName===''){
                 errors.lastName="Last Name can't be empty"
             }
+
             if(!!document.getElementById('isChecked').checked){
                 if(this.state.permanentAddressDefault === '') errors.permanentAddressDefault = `Permanent Address can't be empty.`;
             }
@@ -249,9 +250,9 @@ class DisplayVendorMaster extends Component {
             //  }
             // if (this.state.permanentAddress === '') { errors.permanentAddress = `Permanent Address can't be empty.` 
             // }
-            else if(this.state.contact===''){
-                errors.contact="Contact can't be empty"                
-            }
+            if(this.state.contact === '') errors.contact= `Contact can't be empty.`;
+            else if(this.state.contact.length !== 10) errors.contact= `Contact should be of 10 digit.`;
+
             else if(this.state.email===''){
                 errors.email="Email can't be empty"                
             }

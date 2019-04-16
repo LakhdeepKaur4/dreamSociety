@@ -5,8 +5,16 @@ export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:808
 
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
 //  export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
+// export  const URN = 'http://192.168.1.101:8085/api';
+// export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const UR = 'https://mydreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com/';
+
+
+// export  const URN = 'https://dreamsociety.herokuapp.com/api';
+// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com/';
 
 // export  const URN = 'https://dreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://dreamsociety.herokuapp.com/';
@@ -214,6 +222,8 @@ export const EDIT_TENANT_MEMBER='EDIT_TENANT_MEMBER';
 export const ADD_NEW_TENANT='ADD_NEW_TENANT';
 export const ADD_FLAT_OWNER='add_flat_owner';
 export const GET_FLAT_DETAIL_VIA_TOWERID='GET_FLAT_DETAIL_VIA_TOWERID';
+export const EDIT_FLATS='EDIT_FLATS';
+export const DELETE_FLATS='DELETE_FLATS'
 export const GET_TOTAL_ITEMS='GET_TOTAL_ITEMS';
 export const GET_FLAT_OWNER='get_flat_owner';
 export const DELETE_MULTIPLE_OWNER='DELETE_MULTIPLE_OWNER';
@@ -263,15 +273,29 @@ export const ASSIGN_OWNER='ASSIGN_OWNER';
 export const ASSIGN_CHANGES='ASSIGN_CHANGES';
 export const ASSIGN_POST='ASSIGN_POST';
 export const ASSIGN_DISPLAY='ASSIGN_DISPLAY';
-
+export const ADD_MORE_FLATS ='ADD_MORE_FLATS';
 export const ADD_VENDOR='ADD_VENDOR';
+export const GET_FLAT_PARKING='GET_FLAT_PARKING';
+export const GET_PARKING_SLOT='GET_PARKING_SLOT';
+export const GET_SLOTS='GET_PARKING_SLOTS';
+export const GET_OWNER_FLAT='GET_OWNER_FLAT';
+export const DELETE_OWNER_FLAT='DELETE_OWNER_FLAT';
+
 export const GET_INDIVIDUAL_VENDOR='GET_INDIVIDUAL_VENDOR';
 export const DELETE_INDIVIDUAL_VENDOR='DELETE_INDIVIDUAL_VENDOR';
 export const DELETE_SELECT_INDIVIDUAL_VENDOR='DELETE_SELECT_INDIVIDUAL_VENDOR';
 export const UPDATE_INDIVIDUAL_VENDOR='UPDATE_INDIVIDUAL_VENDOR';
 export const GET_INDIVIDUAL_SERVICEID='GET_INDIVIDUAL_SERVICEID';
-
+export const USER_FLAT_DETAILS ='user_flat_details'
 export const REGISTER_COMPLAINT='REGISTER_COMPLAINT';
+export const POST_REGISTER_COMPLAINT='POST_REGISTER_COMPLAINT';
+export const GET_FLATS='GET_FLATS';
+export const ADD_NEW_Flat='ADD_NEW_Flat';
+export const SERVICE_DETAILS='SERVICE_DETAILS';
+export const EDIT_OWNER_FLAT='EDIT_OWNER_FLAT';
 
-
-
+export const ADD_MACHINE ='ADD_MACHINE';
+export const  GET_MACHINE ='GET_MACHINE'
+export const  UPDATE_MACHINE ='UPDATE_MACHINE';
+export const  DELETE_MACHINE ='DELETE_MACHINE';
+export const DELETE_MULTIPLE_MACHINE = 'DELETE_MULTIPLE_MACHINE';

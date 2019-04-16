@@ -2,18 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {getServiceType} from '../../actionCreators/serviceMasterAction';
-import UI from '../../components/newUI/tenantDashboard';
+import {userflatDetails} from '../../actionCreators/registerComplainAction';
 import {Form, Button,  FormGroup,  Input, Label,Row, Col } from 'reactstrap';
-import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
 
 
-class RegisterComplaint extends Component{
-
+class Register extends Component{
+    
     constructor(props) {
         super(props);
         this.state = {
-            flatno:'',
+            flatDetailId:'',
             serviceId:'',
             date:'',
             slotTime1:'',
@@ -35,6 +34,7 @@ class RegisterComplaint extends Component{
 
     refreshData=()=>{
          this.props.getServiceType().then(() => this.setState({loading: false}));
+         this.props.userflatDetails().then(() => this.setState({loading: false}));
         
     }
 
@@ -53,6 +53,22 @@ class RegisterComplaint extends Component{
         }
     }
 
+    userflatDetails({userFlat}){
+        if(userFlat){
+            console.log(userFlat)
+            return( 
+                userFlat.flats.map((item) =>{ 
+                    return(
+                        <option key={item.flatDetailId} value={item.flatDetailId}>
+                         {"Flatno-"+item.flatNo+", "+item.tower_master.towerName+", "+item.floor_master.floorName+" floor"}
+                        </option>
+                    )
+                })
+            )
+             
+         }
+    }
+
     minDate = () => {
         var d = new Date();
         return d.toISOString().split('T')[0];
@@ -65,14 +81,18 @@ class RegisterComplaint extends Component{
 
         let errors = {};
         
-        if(!this.state.flatno) {
-            errors.flatno = "cant be empty";
+        if(!this.state.flatDetailId) {
+            errors.flatDetailId = "cant be empty";
         }
 
        
 
         else if(this.state.serviceId ==='') {
             errors.serviceId = "cant be empty";
+        }
+
+        else if(this.state.priority==='') {
+            errors.priority = "cant be empty";
         }
 
         else if(this.state.slotTime1 ==='') {
@@ -84,24 +104,17 @@ class RegisterComplaint extends Component{
         }
    
         this.setState({ errors });
-        console.log("submited===========================");
+        console.log("submited===========================", this.state);
     }
 
-    logout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user-type');
-        return this.props.history.replace('/')
-    }
-
-    changePassword=()=>{ 
-        return this.props.history.replace('/superDashboard/changePassword')
-    }
+    
 
     close = () => {
         return this.props.history.replace('/tenantDashboard')
     }
 
     onChange = (e) => {
+        console.log(e.target.value)
         this.setState({message:'' })
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
@@ -123,19 +136,17 @@ class RegisterComplaint extends Component{
              
              <FormGroup>
                 <Label>Flat no</Label>
-                <Input type="select" defaultValue='no-value' name="flatno"  onChange={this.onChange} >
+                <Input type="select" defaultValue='no-value' name="flatDetailId"  onChange={this.onChange} >
                     <DefaultSelect />
-                    {/* {this.service(this.props.displayServiceMasterReducer)} */}
+                    {this.userflatDetails(this.props.registerComplaintReducer)}
                 </Input >
-                <span className='error'>{this.state.errors.flatno}</span>
+                <span className='error'>{this.state.errors.flatDetailId}</span>
             </FormGroup>
          
 
-           
-
              <FormGroup>
                 <Label>Service Type</Label>
-                <Input type="select" defaultValue='no-value' name="serviceid"  onChange={this.onChange}>
+                <Input type="select" defaultValue='no-value' name="serviceId"  onChange={this.onChange}>
                     <DefaultSelect />
                     {this.service(this.props.displayServiceMasterReducer)}
                 </Input >
@@ -147,7 +158,9 @@ class RegisterComplaint extends Component{
                 <Label>Priority</Label>
                 <Input type="select" defaultValue='no-value' name="priority"  onChange={this.onChange}>
                     <DefaultSelect />
-                    {/* {this.service(this.props.displayServiceMasterReducer)} */}
+                    <option>High</option>
+                    <option>Medium</option>
+                    <option>Low</option>
                 </Input >
                 <span className='error'>{this.state.errors.priority}</span>
             </FormGroup>
@@ -213,7 +226,7 @@ class RegisterComplaint extends Component{
         </div>
         return(
             <div>
-               <UI onClick={this.logout} change={this.changePassword}>
+            
                     <Form onSubmit={this.handleSubmit}>
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
@@ -222,7 +235,7 @@ class RegisterComplaint extends Component{
                         {!this.state.loading ? formData : <Spinner />}
 
                     </Form>
-                </UI>
+               
             </div>
         )
     }
@@ -232,13 +245,14 @@ function mapStateToProps(state) {
 
     return {
         displayServiceMasterReducer :state.displayServiceMasterReducer,
+        registerComplaintReducer : state.registerComplaintReducer
     }
 
 
 
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getServiceType }, dispatch);
+    return bindActionCreators({ getServiceType,userflatDetails }, dispatch);
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(RegisterComplaint));
+export default (connect(mapStateToProps, mapDispatchToProps)(Register));

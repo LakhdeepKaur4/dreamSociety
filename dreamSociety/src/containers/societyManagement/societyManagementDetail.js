@@ -35,6 +35,7 @@ class SocietyManagementDetail extends Component {
                 registrationNumber:'',
                 totalBoardMembers:'',
                 isActive:false,
+                
 
             
             menuVisible: false,
@@ -490,7 +491,7 @@ class SocietyManagementDetail extends Component {
         this.props.history.push('/superDashboard/societyManagement')
     }
     close=()=>{
-        return this.props.history.replace('/superDashBoard')
+        return this.props.history.replace('/superDashboard')
     }
 
     render() {
@@ -580,14 +581,14 @@ class SocietyManagementDetail extends Component {
 
                         <FormGroup>
                             <Label>Bank Name</Label>
-                            <Input type="text"  name="bankName" onChange={this.onChangeHandler} value={this.state.bankName.toUpperCase()} onKeyPress={this.onKeyPressHandler} maxLength={50}/>
+                            <Input type="text"  name="bankName" onChange={this.onChangeHandler} value={this.state.bankName} onKeyPress={this.onKeyPressHandler} maxLength={50}/>
                             <span className="error">{this.state.errors.bankName}</span> 
                         </FormGroup>
 
                         
                         <FormGroup>
                             <Label>IFSC Code</Label>
-                            <Input type="text"  name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode.toUpperCase()} onKeyPress={(e) => {
+                            <Input type="text"  name="IFSCCode" onChange={this.onChangeHandler} value={this.state.IFSCCode} onKeyPress={(e) => {
                                 const pattern = /^[a-zA-Z0-9]+$/;
                                 let inputChar = String.fromCharCode(e.charCode);
                                 if (!pattern.test(inputChar)) {
@@ -625,7 +626,7 @@ class SocietyManagementDetail extends Component {
                         </FormGroup>
                         <FormGroup>
                             <Label>Registration Number</Label>
-                            <Input type="text"  name="registrationNumber" onChange={this.onChangeHandler} value={this.state.registrationNumber.toUpperCase()}  maxLength={20}/>
+                            <Input type="text"  name="registrationNumber" onChange={this.onChangeHandler} value={this.state.registrationNumber}  maxLength={20}/>
                             <span className="error">{this.state.errors.registrationNumber}</span> 
                         </FormGroup>
 

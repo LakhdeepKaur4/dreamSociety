@@ -17,7 +17,8 @@ class MaintenanceSubMasterForm extends Component{
             sizeId:'',
             rate:'',
             errors:{},
-            loading:true
+            loading:true,
+            subMaintenanceErr:''
         }
     }
 
@@ -85,9 +86,9 @@ class MaintenanceSubMasterForm extends Component{
         if(isValid){
             this.setState({loading: true});
             this.props.postMaintenanceSubMaster({...this.state})
-            .then(() => this.props.history.replace('/superDashboard/MaintenanceSubMasterDetails'))
-            .catch(err => {
-                this.setState({modalLoading:false})
+            .then(() => this.props.history.push('/superDashboard/MaintenanceSubMasterDetails'))
+            .catch(err => {err
+                this.setState({loading:false, subMaintenanceErr: err.response.data.message})
             });
         }
         
@@ -100,7 +101,7 @@ class MaintenanceSubMasterForm extends Component{
 
     rateChange = (e) => {
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
-            this.setState({[e.target.name]:e.target.value});
+            this.setState({[e.target.name]:e.target.value,subMaintenanceErr:''});
         }
     }
 
@@ -108,10 +109,10 @@ class MaintenanceSubMasterForm extends Component{
         if (!!this.state.errors[e.target.name]){
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value, errors });
+            this.setState({ [e.target.name]: e.target.value, errors,subMaintenanceErr:'' });
         }
         else{
-            this.setState({[e.target.name]:e.target.value});
+            this.setState({[e.target.name]:e.target.value,subMaintenanceErr:''});
         }
     }
 
@@ -131,6 +132,7 @@ class MaintenanceSubMasterForm extends Component{
 
     render(){
         let formData = <div>
+            <div><span className="error">{this.state.subMaintenanceErr}</span></div>
             <FormGroup>
                 <Input type="select" defaultValue="no-value" name='maintenanceId' value={this.state.maintenanceType}
                 onChange={this.onChange}>

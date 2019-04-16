@@ -214,11 +214,23 @@ class FlatOwnerList extends Component {
         }, function () {
         });
     }
+    viewSlots(id) {
+        console.log(id)
+        localStorage.setItem('flatDetailId', id)
+        this.props.history.push('/superDashboard/parkingSlotList')
+
+    }
+    addFlat(ownerId){
+        console.log(ownerId)
+        localStorage.setItem('ownerId',ownerId)
+        this.props.history.push('/superDashboard/viewOwnerFlats')
+    }
     renderList = ({ owners }) => {
         if (owners) {
             return owners.getOwners.sort((item1,item2)=>{
                 let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal?cmpValue: -cmpValue;}).filter(this.searchFilter(this.state.search)).map((items, index) => {
+                    console.log('--------------',items)
                 return (
 
                     <tr key={items.ownerId}>
@@ -249,9 +261,11 @@ class FlatOwnerList extends Component {
                         </img></td>
                         <td style={{ textAlign: "center", width: '10px',textTransform: 'capitalize'  }}  >{items.firstName+' '+items.lastName}</td>
                         <td style={{ textAlign: "center" }}>{items.contact}</td>
-                        <td style={{ textAlign: "center" }}>{items.correspondenceAddress}</td>
+                        {/* <td style={{ textAlign: "center" }}>{items.correspondenceAddress}</td> */}
                         <td style={{ textAlign: "center" }}>{items.permanentAddress}</td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewMember.bind(this, items.ownerId)}>View Member</button></td>
+                        {/* <td><button className="btn btn-success mr-2" onClick={this.viewSlots.bind(this,items.flat_detail_masters.map(flat=>flat.flatDetailId))} >View Parking</button></td> */}
+                        <td><button className="btn btn-success mr-2" onClick={this.addFlat.bind(this,items.ownerId)}>View Flats</button></td>
                         <td style={{ textAlign: "center" }}>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, 
                                 items.firstName, items.lastName,items.dob, items.gender, items.contact, items.email,
@@ -307,13 +321,11 @@ class FlatOwnerList extends Component {
             
         }
     }
-    onChangeCountry = (selectOption) => {    
+    onChangeCountry = (countryName,countryId,selectOption) => {    
         this.setState({
             countryName: selectOption.countryName,
             countryId:selectOption.countryId, 
-        })
-        
-        this.props.getState(selectOption.countryId)
+        },function(){this.props.getState(selectOption.countryId)})  
     }
     stateName = ({stateResult}) => {
         if(stateResult){
@@ -328,12 +340,12 @@ class FlatOwnerList extends Component {
         }
     }
 
-    onChangeState = (selectOption) => {
+    onChangeState = (stateName,stateId,selectOption) => {
         this.setState({
             stateName: selectOption.stateName,
             stateId:selectOption.stateId
-        })
-        this.props.getCity(selectOption.stateId);
+        },function (){this.props.getCity(selectOption.stateId);})
+        
     }
     cityName=({cityResult})=>{
                
@@ -351,12 +363,12 @@ class FlatOwnerList extends Component {
         }
     }
 
-    onChangeCity = (selectOption) => {
+    onChangeCity = (cityName,cityId,selectOption) => {
         this.setState({
             cityName: selectOption.cityName,
             cityId:selectOption.cityId
-        })
-        this.props.getLocation(selectOption.cityId)
+        },function(){this.props.getLocation(selectOption.cityId)})
+        
     }
     locationName=({locationResult})=>{
         if(locationResult){
@@ -373,12 +385,12 @@ class FlatOwnerList extends Component {
          }
      }
 
-     onChangeLocation = (selectOption) => {
+     onChangeLocation = (locationName,locationId,selectOption) => {
          this.setState({
              locationName: selectOption.locationName,
              locationId:selectOption.locationId,
             
-         })
+         },function(){this.props.getLocation(selectOption.locationId)})
      }
     flatChangeHandler=(name,selectOption)=>{
         this.setState({
@@ -542,9 +554,11 @@ class FlatOwnerList extends Component {
                             });
                         }}>Name <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th style={{ textAlign: "center" }}>Contact No.</th>
-                    <th style={{ textAlign: "center", width: "16%" }}>Correspondance Address</th>
+                    {/* <th style={{ textAlign: "center", width: "16%" }}>Correspondance Address</th> */}
                     <th style={{ textAlign: "center", width: "16%" }}>Permanent Address</th>
                     <th style={{ textAlign: "center", width: "8%" }}>View Member</th>
+                    {/* <th style={{ textAlign: "center", width: "8%" }}>View Parking</th> */}
+                    <th style={{ textAlign: "center", width: "8%" }}>View Flats</th>
                     <th style={{ textAlign: "center" }}>Actions</th>
                 </tr>
             </thead>

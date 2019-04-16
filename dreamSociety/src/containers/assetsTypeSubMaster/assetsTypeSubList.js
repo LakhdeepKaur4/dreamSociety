@@ -44,7 +44,7 @@ class AssetsTypeSubList extends Component {
     }
 
     toggle = (assetTypeId, assetId,assets,assetType, description) => {
-
+console.log(assetTypeId, assetId,assets,assetType, description)
         this.setState({
             assetId,
             assetTypeId,

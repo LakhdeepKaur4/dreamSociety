@@ -122,6 +122,16 @@ onChangeCountry = (countryId, countryName, selectOption) => {
     })
     
     this.props.getState(selectOption.countryId)
+    this.updatePermanentAddressonCountry(selectOption.countryName)
+}
+
+
+updatePermanentAddressonCountry = (countryName) => {
+    console.log(countryName)
+    this.setState({countryName})
+    this.setState({permanentAddress: this.state.permanentAddressDefault  + ', ' + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') + ', ' +
+    this.state.cityName + ', ' + this.state.stateName + ', ' + countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+    console.log('updatePermanentAddress', this.state.permanentAddress)
 }
 
 stateName = ({stateResult}) => {
@@ -159,6 +169,15 @@ onChangeState = (stateName, stateId, selectOption) => {
         stateId:selectOption.stateId
     })
     this.props.getCity(selectOption.stateId);
+    this.updatePermanentAddressonState(selectOption.stateName)
+}
+
+updatePermanentAddressonState = (stateName) => {
+    console.log(stateName)
+    this.setState({stateName})
+    this.setState({permanentAddress: this.state.permanentAddressDefault  + ', ' + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') + ', ' +
+    this.state.cityName + ', ' + stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+    console.log('updatePermanentAddress', this.state.permanentAddress)
 }
 
 cityName=({cityResult})=>{
@@ -200,6 +219,14 @@ onChangeCity = (cityName, cityId, selectOption) => {
         cityId:selectOption.cityId
     })
     this.props.getLocation(selectOption.cityId)
+}
+
+updatePermanentAddressonCity = (cityName) => {
+    console.log(cityName)
+    this.setState({cityName})
+    this.setState({permanentAddress: this.state.permanentAddressDefault  + ', ' + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') + ', ' +
+    cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+    console.log('updatePermanentAddress', this.state.permanentAddress)
 }
 
 
@@ -261,6 +288,15 @@ countryChange = (currentCountryId, currentCountry, selectOption) => {
     })
     
     this.props.getState(selectOption.countryId)
+    this.updateCurrentAddressonCountry(selectOption.countryName)
+}
+
+updateCurrentAddressonCountry = (currentCountry) => {
+    console.log(currentCountry)
+    this.setState({currentCountry})
+    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+    this.state.currentCity + ', ' + this.state.currentState + ', ' + currentCountry + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+    console.log('currentAddress', this.state.currentAddress)
 }
 
 
@@ -273,6 +309,14 @@ stateChange = (currentState, currentStateId, selectOption) => {
     this.props.getCity(selectOption.stateId);
 }
 
+updateCurrentAddressonState = (currentState) => {
+    console.log(currentState)
+    this.setState({currentState})
+    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+    this.state.currentCity + ', ' + currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+    console.log('currentAddress', this.state.currentAddress)
+}
+
 cityChange = (currentCity, currentCityId, selectOption) => {
     console.log(currentCity, currentCityId, selectOption)
     this.setState({
@@ -281,6 +325,15 @@ cityChange = (currentCity, currentCityId, selectOption) => {
     })
     this.props.getLocation(selectOption.cityId)
 }
+
+updateCurrentAddressonCity = (currentCity) => {
+    console.log(currentCity)
+    this.setState({currentCity})
+    this.setState({currentAddress: this.state.currentAddressDefault  + ', ' + (this.state.currentLocation ? (', ' + this.state.currentLocation + ', ') : ', ') +
+    currentCity + ', ' + this.state.currentState + ', ' + this.state.currentCountry + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+    console.log('currentAddress', this.state.currentAddress)
+}
+
 
 locationChange = (currentLocation, currentLocationId, selectOption) => {
     console.log(currentLocation, currentLocationId, selectOption)
@@ -328,7 +381,7 @@ onChange = (e) => {
 
 fetchDesignation = ({designation}) => {
     console.log(designation)
-    if(designation){
+    if(designation && designation.designation){
        return designation.designation.map((item) => {
             return (
                 <option key={item.designationId} value={item.designationId}>{item.designationName}</option>

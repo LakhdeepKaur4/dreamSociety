@@ -11,9 +11,9 @@ import UserDetails from './containers/userDetails/userDetails';
 import Demo from './containers/demo';
 import Registration from './containers/userRegistration/userRegistration';
 import AdminDashboard from './components/newUI/adminDashboard';
-import OwnerDashboard from './components/newUI/ownerDashboard';
+import OwnerDashboard from './containers/ownerDashboard/ownerDashboard';
 import SuperDashboard from './containers/superDashboard/superDashboard';
-import TenantDashboard from './components/newUI/tenantDashboard';
+import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
 import EmployeeDashboard from './components/newUI/employeeDashboard';
 import VendorDashboard from './components/newUI/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
@@ -88,6 +88,7 @@ import forgetPassword from './containers/login/forgetPassword';
 import resetPassword from './containers/resetPassword/resetPassword';
 import AccountVarification from './components/accountVarification/accountVarification'
 import TenantMemberDetail from './containers/tenantMaster/tenantMemberDetail';
+import TenantFlatsDetail from './containers/tenantMaster/tenantFlatsDetail';
 import AddFloor from './containers/floorMaster/addFloor';
 import GetFloorDetail from './containers/floorMaster/getFloorDetail';
 import submitOTP from './containers/login/submitOtp';
@@ -109,7 +110,16 @@ import DisplaySocietyEventBooking from './containers/societyEventBooking/display
 
 import ViewTenantDetail from './containers/tenantMaster/tenantDetail/viewTenantDetail';
 import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
-import RegisterComplaint from './containers/registerComplaint/registerComplaint';
+
+import ChangePasswordTenant from './components/changePassword/changePasswordTenant';
+import RegisterComplaintOwner from './containers/registerComplaintOwner/registerComplaintOwner';
+import RegisterComplaint from './containers/registerComplaint.js/registerComplaint';
+import MachineMaster from './containers/machineMaster/machineMaster';
+import ViewMachinMaster from './containers/machineMaster/viewMachineMaster';
+import ParkingSlotList from './containers/flatDetailMaster/slotList';
+import ViewOwnerFlats from './containers/flatOwnerDetails/viewFlats';
+import AddOwnerFlat from './containers/flatOwnerDetails/addFlats'
+
 
 
 
@@ -127,7 +137,7 @@ class App extends Component {
             <Route path='/login' exact component={Login} />
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
             <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
-            <PrivateRoute path='/ownerDashboard' component={OwnerDashboard} />
+            <PrivateRoute path='/ownerDashboard' exact component={OwnerDashboard} />
             <PrivateRoute path='/tenantDashboard' exact component={TenantDashboard} />
             <PrivateRoute path='/vendorDashboard' component={VendorDashboard} />
             <PrivateRoute path='/employeeDashboard' component={EmployeeDashboard} />
@@ -205,6 +215,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/addFloor' component={AddFloor} />
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
+            <PrivateRoute path='/tenantDashboard/changePasswordTenant' component={ChangePasswordTenant} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
             <PrivateRoute path='/superDashboard/displayEmployee2' component={DisplayEmployeeMaster2} />
             <PrivateRoute path='/superDashboard/inventoryList' component={InventoryList} />
@@ -222,6 +233,13 @@ class App extends Component {
             <PrivateRoute path='/superDashBoard/viewTenantDetail' component={ViewTenantDetail} />
             <PrivateRoute path='/superDashboard/assignRolesDetail' component={AssignRolesDetail} />
             <PrivateRoute path='/tenantDashboard/registerComplaint' component={RegisterComplaint} />
+            <PrivateRoute path='/ownerDashboard/registerComplaintOwner' component={RegisterComplaintOwner} />
+             <PrivateRoute path ='/superDashboard/machineMaster' component ={MachineMaster}/>
+              <PrivateRoute path ='/superDashBoard/viewMachineMaster' component={ViewMachinMaster}/>
+            <PrivateRoute path='/superDashboard/viewOwnerFlats' component={ViewOwnerFlats} />
+            <PrivateRoute path="/superDashboard/addOwnerFlat" component={AddOwnerFlat}/>
+            <PrivateRoute path='/superDashboard/parkingSlotList' component={ParkingSlotList}/>
+            <PrivateRoute path='/superDashBoard/tenantFlatsDetail' component={TenantFlatsDetail} />
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
           </Switch>

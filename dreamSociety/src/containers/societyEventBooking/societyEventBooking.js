@@ -6,6 +6,8 @@ import UI from '../../components/newUI/superAdminDashboard';
 import DefaultSelect from '../../constants/defaultSelect';
 import {ViewEvent,GetEventOrganiser} from '../../actionCreators/eventMasterAction';
 import {addSocietyEvents} from '../../actionCreators/societyEventBooking';
+import Spinner from '../../components/spinner/spinner';
+
 
 class SocietyEventBooking extends Component {
     constructor(props) {
@@ -28,15 +30,15 @@ class SocietyEventBooking extends Component {
            childAbove:'',
            charges:'',
            description:'',
-           loading:false,
+           loading:true,
            errors:{},
            message:'',
         }
     }
 
     componentDidMount(){
-        this.props.ViewEvent();
-        this.props.GetEventOrganiser();
+        this.props.ViewEvent().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
+        this.props.GetEventOrganiser().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
     }
 
     logout = () => {
@@ -131,6 +133,9 @@ class SocietyEventBooking extends Component {
         }          
         else if(this.state.endDate===''){
             errors.endDate="End Date can't be empty"
+        }       
+        else if(this.state.startDate > this.state.endDate){
+            errors.startDate = "Start Date should be less than end date ";
         }
         else if(this.state.startTime===''){
             errors.startTime="Start Time can't be empty"
@@ -198,19 +203,14 @@ class SocietyEventBooking extends Component {
         return this.props.history.replace('/superDashboard/changePassword')
     }
     
+    minDate = () => {
+        var d = new Date();
+        return d.toISOString().split('T')[0];
+    }
     
-    render(){console.log(this.state)
-        return(
-            <div>
-                <UI onClick={this.logout} change={this.changePassword}>
-
-                    <Form onSubmit={this.onSubmit} >
-
-                        <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
-                            <span aria-hidden="true">&times;</span>
-                        </div>
-                        <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Book Society Events </h3></div><br/>
-                        <Row form>
+    render(){
+        let  formData =<div>
+                <Row form>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event Name</Label>
@@ -238,14 +238,14 @@ class SocietyEventBooking extends Component {
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event Start Date</Label>
-                                <Input type="date" name="startDate" value={this.state.startDate} onChange={this.handleChange}/>
+                                <Input type="date" name="startDate" min={this.minDate()} value={this.state.startDate} onChange={this.handleChange}/>
                                 <span className="error">{this.state.errors.startDate}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event End Date</Label>
-                                <Input type="date" name="endDate" value={this.state.endDate} onChange={this.handleChange}/>
+                                <Input type="date" name="endDate" min={this.minDate()} value={this.state.endDate} onChange={this.handleChange}/>
                                 <span className="error">{this.state.errors.endDate}</span>
                             </FormGroup>
                             </Col>
@@ -316,7 +316,7 @@ class SocietyEventBooking extends Component {
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Per Person Charge</Label>                               
-                                <Input type="text" name ="perPersonCharge"  placeholder="Enter Price" value={this.state.perPersonCharge} maxLength={8} onChange={this.perHandleChange}/>
+                                <Input type="text" name ="perPersonCharge"  placeholder="Enter Price" value={this.state.perPersonCharge} maxLength={4} onChange={this.perHandleChange}/>
                                 <div>{!this.state.perPersonCharge ? <span className="error">{this.state.errors.perPersonCharge}</span>: null}</div>
                             </FormGroup>
                             </Col> 
@@ -325,14 +325,14 @@ class SocietyEventBooking extends Component {
                             <Col md={6}>
                             <FormGroup>                               
                                 <Label>Child Above </Label>                               
-                                <Input type="text" name ="childAbove"  placeholder="Example 12 years"maxLength={15}   onChange={this.handleChange}/>
+                                <Input type="text" name ="childAbove"  placeholder="Example 12 years"maxLength={8}   onChange={this.handleChange}/>
                                 <span className="error">{this.state.errors.childAbove}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Charges </Label>                               
-                                <Input type="text" name ="charges" placeholder="Enter Price" maxLength={6}  value={this.state.charges} onChange={this.perHandleChange}/>
+                                <Input type="text" name ="charges" placeholder="Enter Price" maxLength={4}  value={this.state.charges} onChange={this.perHandleChange}/>
                                 <div>{!this.state.charges ? <span className="error">{this.state.errors.charges}</span>: null}</div>
                             </FormGroup>
                             </Col>
@@ -343,6 +343,19 @@ class SocietyEventBooking extends Component {
                             </FormGroup>
                             <Button color="success" className="mr-2">Submit</Button>             
                             <Button color="danger" onClick={this.push} >Cancel</Button>
+        </div>
+        return(
+            <div>
+                <UI onClick={this.logout} change={this.changePassword}>
+
+                    <Form onSubmit={this.onSubmit} >
+
+                        <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                            <span aria-hidden="true">&times;</span>
+                        </div>
+                        <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Book Society Events </h3></div><br/>
+                        {!this.state.loading ? formData : <Spinner />}
+                          
 
                     </Form>
                 </UI>

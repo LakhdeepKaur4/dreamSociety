@@ -48,7 +48,7 @@ class DisplaySocietyEventBooking extends Component {
 
     searchFilter(search) {
         return function (x) {
-            return x.event_master.eventName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.event_master? x.event_master.eventName.toLowerCase().includes(search.toLowerCase()):'' || !search;
         }
     }
 
@@ -109,7 +109,7 @@ class DisplaySocietyEventBooking extends Component {
     }
 
 
-    renderList({ societyEvents }) {console.log(societyEvents)
+    renderList({ societyEvents }) {
         if (societyEvents && societyEvents.eventBookings ) {
             return  societyEvents.eventBookings.sort((item1,item2)=>{
                 var cmprVal =  (item1.event_master[this.state.filterName].localeCompare(item2.event_master[this.state.filterName]))
@@ -148,7 +148,6 @@ class DisplaySocietyEventBooking extends Component {
                        <td>{item.perPersonCharge}</td>
                        <td>{item.childAbove}</td>
                        <td>{item.charges}</td>
-                       <td style={{width:'12%'}}>{item.breakfast?"BreakFast":'' }<br/>{item.lunch?"Lunch":''}<br/>{item.eveningSnacks?" Evening Snacks":''}<br/>{item.dinner?"Dinner":''}<br/>{item.dj? " DJ":''}<br/>{item.drinks?" Drinks":''}</td>
                        <td>
                              <Button color="success" className="mr-2" onClick={this.editEvent.bind(this,item.societyEventBookId,item.event_master.eventId,item.event_master?item.event_master.eventName:'',item.user_master?item.user_master.firstName:'',item.startDate,item.endDate,item.startTime,item.endTime,item.perPersonCharge,item.childAbove,item.charges,item.description,item.breakfast,item.lunch,item.eveningSnacks,item.dinner,item.dj,item.drinks)}>Edit</Button>                 
                              <Button color="danger"  onClick={this.deleteEvents.bind(this, item.societyEventBookId)}>Delete</Button>
@@ -188,7 +187,7 @@ class DisplaySocietyEventBooking extends Component {
 
 
 getEventOrganiser({events}){
-    if(events){
+    if(events  && events.event){
         return events.event.map((item) => {
             return (
                 <option key={item.userId} value={item.userId}>
@@ -196,6 +195,11 @@ getEventOrganiser({events}){
             )
         })
     }
+}
+
+minDate = () => {
+    var d = new Date();
+    return d.toISOString().split('T')[0];
 }
 
 updateEvents(){
@@ -210,6 +214,10 @@ updateEvents(){
             else if(this.state.charges===''){
                 errors.charges="Charges can't be empty"
             }  
+            else if(this.state.startDate > this.state.endDate){
+                errors.startDate = "Start Date should be less than end date ";
+            }
+            
             this.setState({ errors });
             const isValid = Object.keys(errors).length === 0
             if (isValid  &&  this.state.message === '') {
@@ -288,7 +296,6 @@ render() {
                 <th>Per Person Charges</th>
                 <th>Child Above</th>
                 <th>Charges</th>   
-                <th style={{width:'4%'}}>Selected Options</th>
                 <th style={{width:'14%'}}>Actions</th>                          
             </tr>
             
@@ -320,13 +327,14 @@ render() {
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event Start Date</Label>
-                                <Input type="date" name="startDate" value={this.state.startDate} onChange={this.handleChange}/>
+                                <Input type="date" name="startDate" min={this.minDate()} value={this.state.startDate} onChange={this.handleChange}/>
+                                <span className="error">{this.state.errors.startDate}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Event End Date</Label>
-                                <Input type="date" name="endDate" value={this.state.endDate} onChange={this.handleChange}/>
+                                <Input type="date" name="endDate" min={this.minDate()} value={this.state.endDate} onChange={this.handleChange}/>
                             </FormGroup>
                             </Col>
                             </Row>             
@@ -391,7 +399,7 @@ render() {
 
                             <FormGroup>
                                 <Label>Per Person Charge</Label>                               
-                                <Input type="text" name ="perPersonCharge"  value={this.state.perPersonCharge} maxLength={8}  onChange={this.perHandleChange}/>
+                                <Input type="text" name ="perPersonCharge"  value={this.state.perPersonCharge} maxLength={4}  onChange={this.perHandleChange}/>
                                 <div>{!this.state.perPersonCharge ? <span className="error">{this.state.errors.perPersonCharge}</span>: null}</div>
                             </FormGroup>
                                
@@ -399,14 +407,14 @@ render() {
                             <Col md={6}>
                             <FormGroup>                               
                                 <Label>Child Above </Label>                               
-                                <Input type="text" name ="childAbove"  value={this.state.childAbove} maxLength={15}  onChange={this.handleChange}/>
+                                <Input type="text" name ="childAbove"  value={this.state.childAbove} maxLength={8}  onChange={this.handleChange}/>
                                 <span className="error">{this.state.errors.childAbove}</span>
                             </FormGroup>
                             </Col>
                             <Col md={6}>
                             <FormGroup>
                                 <Label>Charges </Label>                               
-                                <Input type="text" name ="charges" value={this.state.charges} maxLength={6} onChange={this.perHandleChange}/>
+                                <Input type="text" name ="charges" value={this.state.charges} maxLength={4} onChange={this.perHandleChange}/>
                                 <div>{!this.state.charges ? <span className="error">{this.state.errors.charges}</span>: null}</div>
                             </FormGroup>
                             </Col>

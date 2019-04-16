@@ -114,7 +114,7 @@ class locationMaster extends Component{
 
 
     onChange=(e)=>{
-     
+
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -218,7 +218,7 @@ class locationMaster extends Component{
                     </div>
                     <div>
                         <label>Location Name</label>
-                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={30}   onChange={this.onChange}  onKeyPress={this.OnKeyPresshandler} ></input>
+                        <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={80}   onChange={this.onChange}  onKeyPress={this.OnKeyPresshandler} ></input>
                         <span className='error'>{this.state.errors.locationName}</span>
                         <span className="error">{this.state.message}</span>
                     </div>

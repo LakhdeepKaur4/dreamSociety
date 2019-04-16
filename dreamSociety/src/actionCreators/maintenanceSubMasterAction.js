@@ -16,8 +16,6 @@ export function getMaintenanceSubSize(){
 
 export function postMaintenanceSubMaster(values){
     const request = axios.post(`${URN}/maintenanceType`, values, {headers: authHeader()})
-    .then((response) => response.data)
-    .catch(error => alert(error));
     return {
         type: POST_SUB_MAINTENANCE,
         payload: request

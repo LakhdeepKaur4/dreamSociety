@@ -4,7 +4,7 @@ import { FormGroup, Input, Table, Label, Button, Modal, Row, Col, ModalBody, Mod
 import DefaultSelect from '../../../constants/defaultSelect';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import { getTenantDetail, deleteTenant,getFlatDetailViaTowerId, deleteSelectedTenant,getOwnerDetailViaFlatId,
-updateTenantDetail } from '../../../actionCreators/tenantMasterAction';
+updateTenantDetail,addNewFlatForTenant, getFlats } from '../../../actionCreators/tenantMasterAction';
 import Select from 'react-select';
 import {getCountry,getState,getCity, getLocation} from '../../../actionCreators/societyMasterAction';
 import {getAllFloor} from '../../../actionCreators/flatOwnerAction';
@@ -40,6 +40,7 @@ class TenantDetail extends Component {
             fileName:'',
             towerName:'',
             flatNo:'',
+            flatDetailId:'',
             towerId:'',
             picture:'',
             flatDetailId:'',
@@ -69,7 +70,13 @@ class TenantDetail extends Component {
             accountHolderName:'',
             IFSCCode:'',
             bankName:'',
-            pin:''
+            pin:'',
+            addFlat: false,
+            addFlatLoading:false,
+            viewFlatDetail:false,
+            viewFlatLoading:false,
+            flatError:'',
+            selectedOption:null
         }
     }
 
@@ -152,10 +159,7 @@ class TenantDetail extends Component {
         }
     }
 
-    viewMembers(id){
-        localStorage.setItem('tenantId', id)
-        this.props.history.push('/superDashBoard/tenantMemberDetail');
-    }
+    
 
     viewTenantDetail = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber , dob, permanentAddress, correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) => {
         console.log(picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId)
@@ -222,6 +226,9 @@ class TenantDetail extends Component {
                                     item.flat_detail_master ? item.flat_detail_master.flatDetailId:'', item.tenantId)}>View</Button>
                             </td>
                             <td>
+                                <Button color="success" onClick={this.viewFlats.bind(this, item.tenantId)}>View</Button>
+                            </td>
+                            <td>
                                 <Button color="success" onClick={this.edit.bind(this,PicURN+item.picture.replace('../../',''),
                                      item.firstName, item.lastName, item.gender, item.email,
                                     item.contact, item.aadhaarNumber,item.panCardNumber, item.dob, item.permanentAddress,
@@ -238,6 +245,20 @@ class TenantDetail extends Component {
                 else return false
             })
         }
+    }
+
+    viewMembers(id){
+        localStorage.setItem('tenantId', id)
+        this.props.history.push('/superDashBoard/tenantMemberDetail');
+    }
+
+    viewFlats(tenantId){
+        // this.setState({viewFlatLoading:true})
+        // this.props.getFlats(tenantId)
+        // .then(() => this.setState({viewFlatLoading:false}))
+        // this.setState({viewFlatDetail: true})
+        localStorage.setItem('tenantId1', tenantId);
+        this.props.history.push('/superDashBoard/tenantFlatsDetail');
     }
 
     deleteSelected(ids){
@@ -302,7 +323,6 @@ class TenantDetail extends Component {
     }
 
     getTower = ({ tower }) => {
-        console.log(tower)
         if (tower) {
             return tower.tower.map((item) => {
                 return (
@@ -314,10 +334,10 @@ class TenantDetail extends Component {
         return [];
     }
 
-    getFloor=({floor})=>{
-        console.log("floor",floor)
-        if(floor && floor.tower.Floors){
-            return floor.tower.Floors.map((item)=>{
+    getFloor=({getFlatDetail})=>{
+        console.log("floor",getFlatDetail)
+        if(getFlatDetail && getFlatDetail.tower){
+            return getFlatDetail.tower.Floors.map((item)=>{
                       
                 return {...item ,label: item.floorName, value: item.floorId }
             })
@@ -329,11 +349,11 @@ class TenantDetail extends Component {
             return []
         }}
 
-        getFlats=({floor})=>{
-            console.log('7777777jjjjjj',floor)
-            if(floor){
-              return  floor.flatDetail.filter((flatRecord)=>{
-                    return flatRecord.floorId===this.state.floorId
+        getFlats=({getFlatDetail})=>{
+            console.log('7777777jjjjjj',getFlatDetail)
+            if(getFlatDetail){
+              return  getFlatDetail.flatDetail.filter((flatRecord)=>{
+                    return flatRecord.floorId==this.state.floorId
                 }).map((selectFlat)=>{
                     console.log('bbbbbbbbbbbbbbbbb',selectFlat)
                     return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
@@ -350,31 +370,43 @@ class TenantDetail extends Component {
     //     this.setState({towerId:e.target.value, flatNo:'', floorId:'', floorName:'', flatDetailId:''})
     //     this.props.getFlatDetailViaTowerId(this.state.towerId)
     // }
-    towerChangeHandler = (name, selectOption) => {
+    towerChangeHandler = (towerId, towerName, selectOption) => {
+        document.getElementById('floor').value === null
+        console.log(towerId, towerName, selectOption)
+        this.setState({correspondenceAddress:'',memberError:''})
         this.setState(function (prevState, props) {
             return {
-                [name]: selectOption.value
+                towerId: selectOption.towerId,
+                towerName: selectOption.towerName
             }
         }, function () {
             console.log(selectOption.towerId)
         });
-        this.props.getAllFloor(selectOption.towerId);
+        this.props.getFlatDetailViaTowerId(selectOption.towerId);
     }
 
-    floorChangeHandler=(name,selectOption)=>{
-        console.log('=======selectOption=======',selectOption.value);
+
+    floorChangeHandler=(floorName, floorId,selectOption)=>{
+        console.log(floorName, floorId,selectOption);
         this.setState({
-            [name]: selectOption.value
+            floorName: selectOption.floorName,
+            floorId: selectOption.floorId,
+            memberError:''
         })
         console.log('lllllllll=======',this.state.floorId)
         // this.getFlats(this.props.towerFloor);
     
         }
-        flatChangeHandler=(name,selectOption)=>{
+
+        flatChangeHandler=(flatNo, flatDetailId ,selectOption)=>{
+            console.log(flatNo, flatDetailId ,selectOption)
+            console.log(this.state.flatDetailId)
             this.setState({
-                [name]: selectOption.value
+                flatNo: selectOption.flatNo,
+                flatDetailId: selectOption.flatDetailId,
+                memberError:''
             })
-            this.props.getAllFloor(selectOption.towerId);
+            this.props.getFlatDetailViaTowerId(selectOption.towerId);
         }
 
     contactChange = (e) => {
@@ -608,13 +640,23 @@ class TenantDetail extends Component {
 
     onChangeCountry = (countryId, countryName, selectOption) => {
         console.log(countryId, countryName, selectOption)
-    
+        console.log(document.getElementById('state'))
         this.setState({
             countryName: selectOption.countryName,
             countryId:selectOption.countryId, 
+            stateName:''
         })
         
         this.props.getState(selectOption.countryId)
+        this.updatePermanentAddress2(selectOption.countryName)
+    }
+
+    updatePermanentAddress2 = (countryName) => {
+        console.log(countryName)
+        this.setState({countryName})
+        this.setState({permanentAddress: this.state.editAddress  + ', ' + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+        this.state.cityName + ', ' + this.state.stateName + ', ' + countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
     }
    
     stateName = ({stateResult}) => {
@@ -633,11 +675,21 @@ class TenantDetail extends Component {
 
     onChangeState = (stateName, stateId, selectOption) => {
         console.log(stateName, stateId, selectOption)
+        console.log(selectOption)
         this.setState({
             stateName: selectOption.stateName,
             stateId:selectOption.stateId
         })
         this.props.getCity(selectOption.stateId);
+        this.updatePermanentAddress3(selectOption.stateName)
+    }
+
+    updatePermanentAddress3 = (stateName) => {
+        console.log(stateName)
+        this.setState({stateName})
+        this.setState({permanentAddress: this.state.editAddress  + ', ' + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+        this.state.cityName + ', ' + stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
     }
    
     cityName=({cityResult})=>{
@@ -663,6 +715,15 @@ class TenantDetail extends Component {
             cityId:selectOption.cityId
         })
         this.props.getLocation(selectOption.cityId)
+        this.updatePermanentAddress3(selectOption.cityName)
+    }
+
+    updatePermanentAddress3 = (cityName) => {
+        console.log(cityName)
+        this.setState({cityName})
+        this.setState({permanentAddress: this.state.editAddress  + ', ' + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
+        cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + this.state.pin})
+        console.log('updatePermanentAddress', this.state.permanentAddress)
     }
     
    
@@ -758,8 +819,51 @@ class TenantDetail extends Component {
         }
         this.updatePermanentAddress(e.target.value)
     }
+    
+
+    toggleFlatDetail = () => {
+        this.setState({viewFlatDetail: !this.state.viewFlatDetail})
+    }
+
+    
+
+    flatInputs = ({getTenantFlats}) => {
+        if(getTenantFlats){
+            console.log(getTenantFlats)
+            return getTenantFlats.flats.map((item) => {
+                return (
+                    <div key={item.flatDetailId}>
+                        <FormGroup>
+                            <Row md={12}>
+                                <Col md={4}>
+                                    <Label>Tower</Label>
+                                    <Input disabled onChange={this.onChange} value={item.tower_master.towerName}/>
+                                </Col>
+                                <Col md={4}>
+                                    <Label>Floor</Label>
+                                    <Input disabled onChange={this.onChange} value={item.floor_master.floorName} />
+                                </Col>
+                                <Col md={4}>
+                                    <Label>Flat Number</Label>
+                                    <Input disabled onChange={this.onChange} value={item.flatNo} />
+                                </Col>
+                            </Row>
+                        </FormGroup>
+                        
+                    </div>
+                )
+            })
+        }
+    }
 
     render(){
+        let viewFlatModal = <div>
+            {this.flatInputs(this.props.tenantReducer)}
+            <FormGroup>
+                <Button color="danger" onClick={this.toggleFlatDetail.bind(this)}>Cancel</Button>
+            </FormGroup>
+        </div>
+
 
         let viewTenantData = <div>
             <FormGroup>
@@ -847,6 +951,7 @@ class TenantDetail extends Component {
                                     <th>Contact No.</th>
                                     <th>Member details</th>
                                     <th>Tenant Detail</th>
+                                    <th>View Flat details</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -982,11 +1087,13 @@ class TenantDetail extends Component {
                     <Row md={12}>
                         <Col md={6}>
                             <Label>Country</Label>
-                            <Select placeholder={<DefaultSelect/>} options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                            <Input type="select" onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} >
+                                {this.countryName(this.props.societyReducer)}
+                            </Input>
                         </Col>
                         <Col md={6}>
                             <Label>State</Label>
-                            <Select placeholder={<DefaultSelect/>} options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                            <Select placeholder={<DefaultSelect/>} id="state" options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
                         </Col>
                     </Row>
                 </FormGroup>
@@ -1027,53 +1134,7 @@ class TenantDetail extends Component {
             
             
             
-            {/* <FormGroup>
-                <Label>Tower Name</Label>
-                <Select type="select" options =  {this.getTower(this.props.towerList)} onChange={this.towerChangeHandler.bind(this, 'towerId')} value={this.state.towerId} placeholder="Tower" name="towerId" />
-                   
-                {!this.state.towerId ? <span className='error'>{this.state.errors.towerId}</span>: ''}
-            </FormGroup>
-            <FormGroup>
-                <Label>Floor</Label>
-                <Input  name="floorId" onChange = {this.floorChange} type="select">
-                    {this.state.floorName ? <option>{this.state.floorName}</option> : <option disabled>--Select--</option>}
-                    {this.state.floorName ? <DefaultSelect />: null}
-                    {this.state.floorName ? null : this.fetchFloorDetail(this.props.tenantReducer)}
-                </Input>
-                {!this.state.floorId ? <span className='error'>{this.state.errors.floorId}</span>: ''}
-            </FormGroup>
-            <FormGroup>
-                <Label>Flat No</Label>
-                <Input onKeyPress={this.numberValidation} onChange={this.flatChangeHandler}
-                    type='select' name="flatDetailId" >
-                    {this.state.flatNo ? <option>{this.state.flatNo}</option> : <option disabled>--Select--</option>}
-                    {this.state.flatNo ? <DefaultSelect />: null}
-                    {this.state.flatNo ? null : this.fetchFlatDetail(this.props.tenantReducer)}
-                </Input>
-                {!this.state.flatDetailId ? <span className='error'>{this.state.errors.flatDetailId}</span>: ''}
-            </FormGroup> */}
-            {/* <FormGroup>
-                <Label>Tower</Label>
-                <Select options={this.getTower(this.props.towerList)} placeholder={this.state.towerName}
-                defaultValue={this.state.towerName}
-                    onChange={this.towerChangeHandler.bind(this, 'towerId')} />
-                <span className="error">{this.state.errors.tower}</span>
-            </FormGroup >
-            <FormGroup>
-                <Label>Floor</Label>
-                <Select options={this.getFloor(this.props.towerFloor)} placeholder={this.state.floorName}
-                 defaultValue={this.state.floorName}
-                name="floorId"
-                onChange={this.floorChangeHandler.bind(this,'floorId')}
-                />
-            </FormGroup>
-            <FormGroup>
-                <Label>Flat Number</Label>
-                <Select options={this.getFlats(this.props.towerFloor)} name="flatDetailId" placeholder={this.state.flatNo}
-                defaultValue={this.state.flatNo}
-                    onChange={this.flatChangeHandler.bind(this,'flatDetailId')}
-                    />
-            </FormGroup > */}
+            
             <FormGroup>
                 <Button className="mr-2" color="primary" onClick={this.updateTenant}>Save</Button>
                 <Button color="danger" onClick={this.toggleTenant.bind(this)}>Cancel</Button>
@@ -1106,6 +1167,12 @@ class TenantDetail extends Component {
                             } 
                         }  
                     }/></Label>
+                    <Modal isOpen={this.state.viewFlatDetail} toggle={this.toggleFlatDetail.bind(this)}>
+                        <ModalHeader toggle={this.toggleFlatDetail.bind(this)}>View Flat Detail</ModalHeader>
+                        <ModalBody>
+                            {!this.state.viewFlatLoading ? viewFlatModal : <Spinner/>}
+                        </ModalBody>
+                    </Modal>
                     <Modal isOpen={this.state.viewData} toggle={this.toggleData.bind(this)}>
                         <ModalHeader toggle={this.toggleData.bind(this)}>Tenant's Detail</ModalHeader>
                         <ModalBody>
@@ -1125,7 +1192,7 @@ class TenantDetail extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     console.log(state)
     return {
         tenantReducer:state.tenantReducer,
@@ -1137,7 +1204,8 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, {getTenantDetail, getFlatDetailViaTowerId, deleteTenant, getAllFloor,
-    deleteSelectedTenant,viewTower, getOwnerDetailViaFlatId, updateTenantDetail,getCountry,getState,getCity, getLocation})(TenantDetail);
+    deleteSelectedTenant,viewTower, getOwnerDetailViaFlatId, updateTenantDetail,getCountry,getState,getCity, getLocation,
+    addNewFlatForTenant,getFlats})(TenantDetail);
 
 
 

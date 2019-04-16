@@ -215,6 +215,15 @@ FileChange=(event)=>{
          if(!this.state.salary){
             errors.salary ="salary can't be empty."
               }
+        if(!this.state.employeeDetailId){
+            errors.employeeDetailId ="service Type can't be empty"
+        }
+        if(!this.state.contact){
+            errors.contact="contact Number can't be empty"
+        }
+        if(!this.state.email){
+            errors.email = "Email address can't be empty"
+        }
          if(!this.state.startDate){
           errors.startDate =" Start Date can't be empty ."
          }
@@ -671,7 +680,10 @@ updatePermanentAddress = (pin) => {
             event.preventDefault();
         }
     }
-
+    minDate = () => {
+        var d = new Date();
+        return d.toISOString().split('T')[0];
+    }
 
     logout = () => {
         localStorage.removeItem('token');
@@ -736,8 +748,10 @@ let formData=
           <select className="form-control" name="employeeDetailId"   onChange ={this.onChange} defaultValue='no-value'>
           <DefaultSelect/>
           {this.getService(this.props.employeeDetails)}
-          </select>
 
+          </select>
+    <span className="error">{this.state.errors.employeeDetailId}</span>
+        
       </div>
     <div>
                         <label>Contact Number</label>
@@ -750,7 +764,7 @@ let formData=
                           maxLength='10'
                           minLength='10' />
                           {this.state.contactServerError ? <span  className='error'>{this.state.contactServerError}</span> : null}
-                        {<span  className="error">{this.state.errors.contactNumber}</span> }
+                        {<span  className="error">{this.state.errors.contact}</span> }
                         </div>
                          <div>
                         <label>Email</label>
@@ -883,6 +897,8 @@ let formData=
           <label> Employment  Date</label>
           <input
             type="date"
+            min={this.minDate()}
+
             className="form-control"
             name="startDate"
             onChange={this.onChange}
