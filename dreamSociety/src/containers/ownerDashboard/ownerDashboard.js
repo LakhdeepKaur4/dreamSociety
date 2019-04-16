@@ -21,7 +21,7 @@ import UI from '../../components/newUI/ownerDashboard';
 
   logout=()=>{
     this.props.userLogout();   
-   }
+  }
 
     changePassword=()=>{
           
@@ -64,7 +64,7 @@ import UI from '../../components/newUI/ownerDashboard';
           </form>
         </div>
       </nav> */}
-      <UI onClick={this.logout} change={this.changePassword}>
+      <UI onClick={this.logout} change={this.changePassword} >
         
       </UI>
       {/* <div style={{ margin: '48px auto' }}>

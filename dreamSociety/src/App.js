@@ -11,7 +11,7 @@ import UserDetails from './containers/userDetails/userDetails';
 import Demo from './containers/demo';
 import Registration from './containers/userRegistration/userRegistration';
 import AdminDashboard from './components/newUI/adminDashboard';
-import OwnerDashboard from './components/newUI/ownerDashboard';
+import OwnerDashboard from './containers/ownerDashboard/ownerDashboard';
 import SuperDashboard from './containers/superDashboard/superDashboard';
 import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
 import EmployeeDashboard from './components/newUI/employeeDashboard';

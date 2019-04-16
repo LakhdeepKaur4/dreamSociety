@@ -37,7 +37,9 @@ class AddFlats extends Component {
         }
         return [];
     }
+
     towerChangeHandler = (name, selectOption) => {
+        
         this.setState(function (prevState, props) {
             return {
                 [name]: selectOption.value,
@@ -89,9 +91,25 @@ class AddFlats extends Component {
         
  onSubmit=(e)=>{
     e.preventDefault();
+    let errors = {};
+    if(this.state.towerId===''){
+        errors.towerId="Tower can't be empty"
+    }
+    else if(this.state.floorId===''){
+        errors.floorId="floor can't be empty"
+    }
+    else if(this.state.flatDetailIds==='')
+    {
+        errors.flatDetailIds="flat can't be empty"
+    }
+    this.setState({errors});
+    const isValid=Object.keys(errors).length === 0;
     let ownerId=localStorage.getItem('ownerId')
-    this.props.addAnotherFlats(ownerId,this.state.flatDetailIds)
-    .then(() => this.props.history.push('/superDashboard/viewOwnerFlats'))
+    if(isValid){
+        this.props.addAnotherFlats(ownerId,this.state.flatDetailIds)
+        .then(() => this.props.history.push('/superDashboard/viewOwnerFlats'))
+    }
+   
         }
     render() {
         let formData;
@@ -111,7 +129,7 @@ class AddFlats extends Component {
                         name="floorId"
                         onChange={this.floorChangeHandler.bind(this, 'floorId')}
                     />
-                    {/* <span className="error">{this.state.errors.floorId}</span> */}
+                    <span className="error">{this.state.errors.floorId}</span>
                 </FormGroup>
                 <FormGroup>
                     <Label>Flat Number</Label>
@@ -120,7 +138,7 @@ class AddFlats extends Component {
                         name="flatDetailIds"
                         onChange={this.flatChangeHandler.bind(this, 'flatDetailIds')}
                     />
-                    {/* <span className="error">{this.state.errors.flatNO}</span> */}
+                    <span className="error">{this.state.errors.flatDetailIds}</span>
                 </FormGroup >
                 <Button className="btn btn-success" >Add Flat</Button>
                 <Link to='/superDashBoard/viewOwnerFlats'>

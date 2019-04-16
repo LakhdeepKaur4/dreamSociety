@@ -8,7 +8,7 @@ export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 export  const UR = 'https://mydreamsociety.herokuapp.com/';
 
-// export  const URN = 'https://mydreamsociety.herokuapp.com/api';
+// export  const URN = 'http://192.168.1.101:8085/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://mydreamsociety.herokuapp.com/';
@@ -282,4 +282,5 @@ export const POST_REGISTER_COMPLAINT='POST_REGISTER_COMPLAINT';
 export const GET_FLATS='GET_FLATS';
 export const ADD_NEW_Flat='ADD_NEW_Flat';
 export const SERVICE_DETAILS='SERVICE_DETAILS';
+export const EDIT_OWNER_FLAT='EDIT_OWNER_FLAT';
 
