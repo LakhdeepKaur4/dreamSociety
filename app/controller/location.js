@@ -103,11 +103,9 @@ exports.update = async (req, res) => {
             ]
         }
     })
-    // console.log("location==>", location)
-    console.log(location.locationName)
-    console.log(updates.locationName)
+    console.log("location==>", location)
     if (location.locationName === updates.locationName) {
-        console.log("in if")
+        // console.log("in if")
         const updatedLocation = await Location.find({ where: { locationId: id } }).then(location => {
            return location.updateAttributes(updates);
         })
