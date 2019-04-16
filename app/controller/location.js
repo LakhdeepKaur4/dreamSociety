@@ -104,7 +104,6 @@ exports.update = async (req, res) => {
         }
     })
     console.log("location==>", location)
-    if(location != null){
     if (location.locationName === updates.locationName) {
         const updatedLocation = await Location.find({ where: { locationId: id } }).then(location => {
             return location.updateAttributes(updates)
@@ -114,7 +113,6 @@ exports.update = async (req, res) => {
                 message: "Location Updated Page",
                 updatedLocation: updatedLocation
             });
-        }
     }
     } else {
         const locations = await Location.findAll({
