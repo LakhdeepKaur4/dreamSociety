@@ -159,3 +159,35 @@ exports.delete = (req, res, next) => {
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
+
+exports.deleteSelected = (req, res, next) => {
+    const machineIds = req.body.ids;
+    console.log('IDs ===>', machineIds);
+
+    Machine.findAll({
+        where: {
+            machineId: {
+                [Op.in]: machineIds
+            },
+            isActive: true
+        }
+    })
+        .then(machines => {
+            if (machines.length !== 0) {
+                machines.map(item => {
+                    item.updateAttributes({ isActive: false })
+                })
+                res.status(httpStatus.OK).json({
+                    message: 'Deleted successfully'
+                })
+            } else {
+                res.status(httpStatus.NO_CONTENT).json({
+                    message: 'No data found'
+                })
+            }
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
