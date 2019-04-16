@@ -230,9 +230,9 @@ class vendorMaster extends Component {
         this.props.getVendorMaster();
         this.props.getServiceType();
         this.props.getRateType();
-        this.props.getCountry().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
-        this.props.getState().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
-        this.props.getCity().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));;
+        this.props.getCountry().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
+        this.props.getState().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
+        this.props.getCity().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
         this.props.getLocation().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
     }
 
@@ -685,7 +685,7 @@ class vendorMaster extends Component {
         }
     }
 
-    render() {console.log(this.state)
+    render() {
       let  formData =<div>
         <FormGroup>
             <Label>First Name</Label>
@@ -952,6 +952,8 @@ class vendorMaster extends Component {
                 </FormGroup>
             </Col>
         </Row>
+                            <Button color="success" className="mr-2">Submit</Button>             
+                            <Button color="danger" onClick={this.push}>Cancel</Button>
     </div>
     
         return (
@@ -965,11 +967,8 @@ class vendorMaster extends Component {
                         </div>
                         <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Add Vendor</h3></div>
                         {!this.state.loading ? formData : <Spinner />}
-                            <Button color="success" className="mr-2">Submit</Button>             
-                            <Button color="danger" onClick={this.push}>Cancel</Button>
-
+                           
                     </Form>
-
                 </UI>
 
             </div>

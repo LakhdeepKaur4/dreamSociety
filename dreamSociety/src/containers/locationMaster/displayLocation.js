@@ -65,7 +65,7 @@ onChangeHandler = (event) => {
 }
 
 onChangeCountry= (event)=>{
-    console.log(this.state);
+
      let selected= event.target.value
  
      var country = _.find(this.props.societyReducer.countryResult,function(obj){
