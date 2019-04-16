@@ -88,6 +88,7 @@ import forgetPassword from './containers/login/forgetPassword';
 import resetPassword from './containers/resetPassword/resetPassword';
 import AccountVarification from './components/accountVarification/accountVarification'
 import TenantMemberDetail from './containers/tenantMaster/tenantMemberDetail';
+import TenantFlatsDetail from './containers/tenantMaster/tenantFlatsDetail';
 import AddFloor from './containers/floorMaster/addFloor';
 import GetFloorDetail from './containers/floorMaster/getFloorDetail';
 import submitOTP from './containers/login/submitOtp';
@@ -113,6 +114,9 @@ import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
 import ChangePasswordTenant from './components/changePassword/changePasswordTenant';
 import RegisterComplaintOwner from './containers/registerComplaintOwner/registerComplaintOwner';
 import RegisterComplaint from './containers/registerComplaint.js/registerComplaint';
+import ParkingSlotList from './containers/flatDetailMaster/slotList';
+import ViewOwnerFlats from './containers/flatOwnerDetails/viewFlats';
+import AddOwnerFlat from './containers/flatOwnerDetails/addFlats'
 
 
 
@@ -228,8 +232,10 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/assignRolesDetail' component={AssignRolesDetail} />
             <PrivateRoute path='/tenantDashboard/registerComplaint' component={RegisterComplaint} />
             <PrivateRoute path='/ownerDashboard/registerComplaintOwner' component={RegisterComplaintOwner} />
-             
-          
+            <PrivateRoute path='/superDashboard/viewOwnerFlats' component={ViewOwnerFlats} />
+            <PrivateRoute path="/superDashboard/addOwnerFlat" component={AddOwnerFlat}/>
+            <PrivateRoute path='/superDashboard/parkingSlotList' component={ParkingSlotList}/>
+            <PrivateRoute path='/superDashBoard/tenantFlatsDetail' component={TenantFlatsDetail} />
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
           </Switch>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getFlatDetails, getFlatType, getTowerName, deleteSelectedFlat, updateFlatDetails, getfloors } from '../../actionCreators/flatDetailMasterAction';
+import { getFlatDetails, getFlatType, getTowerName, deleteSelectedFlat, updateFlatDetails, getfloors,fetchParking,getSlotId } from '../../actionCreators/flatDetailMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Table, Input, Label } from 'reactstrap';
@@ -10,7 +10,7 @@ import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
-import _ from 'underscore'
+
 
 class flatDetails extends Component {
 
@@ -34,6 +34,9 @@ class flatDetails extends Component {
         loading: true,
         message: '',
         modalLoading: false,
+        parkingId:'',
+        slotId:'',
+
     }
 
 
@@ -42,7 +45,7 @@ class flatDetails extends Component {
 
     componentWillMount() {
         this.refreshData();
-
+        this.props.fetchParking();
     }
 
 
@@ -65,9 +68,10 @@ class flatDetails extends Component {
     }
 
 
-    edit(flatDetailId, flatNo, flatType, floorName, towerName, flatId, floorId, towerId) {
+    edit(flatDetailId, flatNo, flatType, floorName, towerName, flatId, floorId, towerId,parkingId) {
+
         this.setState({
-            flatDetailId, flatNo, flatType, floorName, towerName, flatId, floorId, towerId, editFlatModal: !this.state.editFlatModal
+            flatDetailId, flatNo, flatType, floorName, towerName, flatId, floorId, towerId, editFlatModal: !this.state.editFlatModal,parkingId
         })
 
     }
@@ -75,10 +79,10 @@ class flatDetails extends Component {
 
     searchFilter = (search) => {
         return function (x) {
-            return  x.floor_master.floorName.toLowerCase().includes(search.toLowerCase()) ||
-                x.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
-                   x.flat_master.flatType.toLowerCase().includes(search.toLowerCase())  ||
-                        x.flatNo.toLowerCase().includes(search.toLowerCase()) 
+            console.log(x)
+            return x.flat_detail_master.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
+                   x.flat_detail_master.flat_master.flatType.toLowerCase().includes(search.toLowerCase())  ||
+                        x.flat_detail_master.flatNo.toLowerCase().includes(search.toLowerCase()) 
 
                         || !search;
         }
@@ -213,6 +217,11 @@ class flatDetails extends Component {
         }
     }
 
+    viewSlots(id) {
+        localStorage.setItem('flatDetailId', id)
+        this.props.history.push('/superDashboard/parkingSlotList')
+    }
+
 
     push = () => {
         this.props.history.push('/superDashboard/flatDetailMaster')
@@ -226,10 +235,11 @@ class flatDetails extends Component {
                 var cmprVal = (item1.flatNo && item2.flatNo) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
+                console.log("***********",item)
 
                 return (
 
-                    <tr key={item.flatDetailId}>
+                    <tr key={item.flat_detail_master.flatDetailId}>
                         <td><input type="checkbox" name="ids" className="SelectAll" value={item.flatDetailId}
                             onChange={(e) => {
                                 const { flatDetailId } = item
@@ -252,13 +262,15 @@ class flatDetails extends Component {
 
                             }} /></td>
                         <td>{index + 1}</td>
-                        <td>{item.flatNo}</td>
-                        <td>{item.flat_master ? item.flat_master.flatType : ''}</td>
-                        <td>{item.floor_master ? item.floor_master.floorName : ''}</td>
-                        <td>{item.tower_master ? item.tower_master.towerName : ''}</td>
-
+                        <td>{item.flat_detail_master?item.flat_detail_master.flatNo:''}</td>
+                        <td>{item.flat_detail_master.flat_master ? item.flat_detail_master.flat_master.flatType : ''}</td>
+                        <td>{item.flat_detail_master.floor_master ? item.flat_detail_master.floor_master.floorName : ''}</td>
+                        <td>{item.flat_detail_master.tower_master ? item.flat_detail_master.tower_master.towerName : ''}</td>
+                        <td>{item.parking_master ? item.parking_master.parkingName : ''}</td>
+                        <td>{item.count}</td>
+                        <td><button className="btn btn-success mr-2" onClick={this.viewSlots.bind(this,item.flat_detail_master.flatDetailId)}>View Slots</button></td>
                         <td>
-                            <Button color="success" className="mr-2" onClick={this.edit.bind(this, item.flatDetailId, item.flatNo, item.flat_master ? item.flat_master.flatType : '', item.floor_master ? item.floor_master.floorName : '', item.tower_master ? item.tower_master.towerName : '', item.flatId, item.floorId, item.towerId)} >Edit</Button>
+                            <Button color="success" className="mr-2" onClick={this.edit.bind(this, item.flat_detail_master.flatDetailId, item.flat_detail_master.flatNo, item.flat_detail_master.flat_master.flatType, item.flat_detail_master.floor_master.floorName,item.flat_detail_master.tower_master.towerName, item.flatId, item.floorId, item.towerId,item.parking_master.parkingName)} >Edit</Button>
 
                             <Button color="danger" onClick={this.delete.bind(this, item.flatDetailId)}>Delete</Button>
                         </td>
@@ -334,6 +346,39 @@ class flatDetails extends Component {
     close = () => {
         return this.props.history.replace('/superDashBoard')
     }
+    onParkingChangeHandler=(event)=>{
+        this.setState({
+            parkingId:event.target.value
+        },function (){
+            this.props.getSlotId(this.state.parkingId);
+        })
+        
+    }
+    getParking=({parking})=>{
+        if(parking){
+            return parking.parking.map((items)=>{
+                return(
+                    <option key={items.parkingId} value={items.parkingId}>
+                    {items.parkingName}
+                    </option>
+                )
+            })
+        }
+
+    }
+    getSlot=({parkingSlot})=>{
+        console.log(parkingSlot)
+        if(parkingSlot){
+            return parkingSlot.slot.map((items)=>{
+                return (
+                    <option key={items.slotId} value={items.slotId}>
+                    {items.slots}
+                    </option> 
+                )
+            })
+        }
+
+    }
 
     render() {
         let tableData;
@@ -354,6 +399,9 @@ class flatDetails extends Component {
                         <th>Flat Type</th>
                         <th>Floor</th>
                         <th>Tower Name</th>
+                        <th>Parking</th>
+                        <th>Total no. Slot</th>
+                        <th>View Slots</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -408,6 +456,22 @@ class flatDetails extends Component {
                     {this.getFloorData(this.props.flatDetailMasterReducer)}
                 </Input>
             </FormGroup>
+            <FormGroup>
+                <Label>Parking</Label>
+                <Input type="select" name="parkingId" value={this.state.parkingId} onChange={this.onParkingChangeHandler}>
+                    {/* <option>{this.state.parkingId}</option> */}
+                    <DefaultSelect />
+                    {this.getParking(this.props.flatDetailMasterReducer)}
+                </Input>
+            </FormGroup>
+            {/* <FormGroup>
+                <Label>Slot</Label>
+                <Input type="select" name="slotId" value={this.state.slots} onChange={this.onHandleChange}>
+                    {/* <option>{this.state.slotId}</option> */}
+                    {/* <DefaultSelect />
+                    {this.getSlot(this.props.flatDetailMasterReducer)}
+                </Input> */}
+            {/* </FormGroup> */}
 
 
             <Button color="primary" className="mr-2" onClick={this.updateDetails.bind(this)}>Save </Button>
@@ -467,7 +531,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getFlatDetails, getFlatType, getTowerName, deleteSelectedFlat, updateFlatDetails, getfloors }, dispatch)
+    return bindActionCreators({ getFlatDetails, getFlatType, getTowerName, deleteSelectedFlat, updateFlatDetails, getfloors,fetchParking,getSlotId }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(flatDetails);

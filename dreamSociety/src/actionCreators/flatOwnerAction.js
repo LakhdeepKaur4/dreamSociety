@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,DELETE_MULTIPLE_OWNER_MEMBER,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER,GET_ALL_FLOOR } from '../actions/index';
+import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,DELETE_MULTIPLE_OWNER_MEMBER,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER,GET_ALL_FLOOR,GET_OWNER_FLAT,DELETE_OWNER_FLAT,ADD_MORE_FLATS} from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
 export function addFlatOwner(data){
@@ -13,7 +13,7 @@ export function addFlatOwner(data){
         correspondenceAddress:data.currentAddress,
         permanentAddress:data.permanentAddress,
         towerId:data.towerId,
-        flatDetailId:data.flatDetailId,
+        flatDetailIds:data.flatDetailIds,
         noOfMembers:data.familyMember,
         member:data.member,
         profilePicture:data.profilePicture,
@@ -145,6 +145,7 @@ export function memberUpdate(memberName,gender,memberDob,relationId,memberId){
 }
 
 export function addNewMember(memberName,memberDob,gender,relationId,id){
+    console.log(memberName,memberDob,gender,relationId,id)
     const request=axios.post(`${URN}/owner/ownerMember/${id}`,{memberName,memberDob,gender,relationId},{headers:authHeader()})
     .then(response=>response.data)
     return {
@@ -153,11 +154,42 @@ export function addNewMember(memberName,memberDob,gender,relationId,id){
     }
 }
 
-export function getAllFloor(id){
+export function getAllFloor (id){
+    console.log(id)
     const request =axios.get(`${URN}/towerFloor/${id}`,{headers:authHeader()})
     .then(response=>response.data)
     return {
         type:GET_ALL_FLOOR,
+        payload:request
+    }
+}
+
+export function getOwnerFlats(ownerId){
+    console.log(ownerId)
+    const request =axios.get(`${URN}/owner/getFlats/${ownerId}`,{headers:authHeader()})
+    .then(response=>response.data)
+    return{
+        type:GET_OWNER_FLAT,
+        payload:request
+    }
+}
+
+export function deleteOwnerFlats(flatDetailId,ownerId){
+    console.log(flatDetailId,ownerId)
+    const request =axios.put(`${URN}/owner/deleteFlat/${ownerId}`,{flatDetailId},{headers:authHeader()})
+    .then(response=>response.data)
+    return {
+        type:DELETE_OWNER_FLAT,
+        payload:request
+    }
+}
+
+export function addAnotherFlats(ownerId,flatDetailId){
+    console.log(ownerId,flatDetailId)
+    const request = axios.post(`${URN}/owner/addMoreFlats`,{flatDetailId,ownerId},{headers:authHeader()})
+    .then(response=>response.data)
+    return{
+        type:ADD_MORE_FLATS,
         payload:request
     }
 }

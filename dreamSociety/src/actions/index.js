@@ -6,7 +6,13 @@ export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:808
 // export  const URN = 'https://mydreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const UR = 'https://mydreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com/';
+
+
+// export  const URN = 'https://dreamsociety.herokuapp.com/api';
+// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com/';
 
 // export  const URN = 'https://dreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://dreamsociety.herokuapp.com/';
@@ -214,6 +220,8 @@ export const EDIT_TENANT_MEMBER='EDIT_TENANT_MEMBER';
 export const ADD_NEW_TENANT='ADD_NEW_TENANT';
 export const ADD_FLAT_OWNER='add_flat_owner';
 export const GET_FLAT_DETAIL_VIA_TOWERID='GET_FLAT_DETAIL_VIA_TOWERID';
+export const EDIT_FLATS='EDIT_FLATS';
+export const DELETE_FLATS='DELETE_FLATS'
 export const GET_TOTAL_ITEMS='GET_TOTAL_ITEMS';
 export const GET_FLAT_OWNER='get_flat_owner';
 export const DELETE_MULTIPLE_OWNER='DELETE_MULTIPLE_OWNER';
@@ -281,4 +289,5 @@ export const REGISTER_COMPLAINT='REGISTER_COMPLAINT';
 export const POST_REGISTER_COMPLAINT='POST_REGISTER_COMPLAINT';
 export const GET_FLATS='GET_FLATS';
 export const ADD_NEW_Flat='ADD_NEW_Flat';
-export const SERVICE_DETAILS='SERVICE_DETAILS'
+export const SERVICE_DETAILS='SERVICE_DETAILS';
+
