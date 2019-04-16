@@ -195,7 +195,7 @@ class FlatMemberList extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-    relationHandler = (relationId ,selectOption) => {
+    relationHandler = (relationName,relationId ,selectOption) => {
         console.log('selectOption',selectOption)
         this.setState(function (prevState, props) {
             return {
