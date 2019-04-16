@@ -82,7 +82,7 @@ exports.get = (req, res, next) => {
         })
 }
 
-exports.update = (req,res,next) => {
+exports.update = (req, res, next) => {
     const body = req.body;
     body.machineId = req.params.id;
     console.log('Body ===>', body);
@@ -128,6 +128,34 @@ exports.update = (req,res,next) => {
         })
         .catch(err => {
             console.log('Error', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+exports.delete = (req, res, next) => {
+    const machineId = req.params.id;
+    console.log('ID ===>', machineId);
+
+    Machine.findOne({
+        where: {
+            machineId: machineId,
+            isActive: true
+        }
+    })
+        .then(machine => {
+            if (machine !== null) {
+                machine.updateattributes({ isActive: false });
+                res.status(httpStatus.OK).json({
+                    message: 'Deleted successfully'
+                })
+            } else {
+                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                    message: 'Not deleted'
+                })
+            }
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
