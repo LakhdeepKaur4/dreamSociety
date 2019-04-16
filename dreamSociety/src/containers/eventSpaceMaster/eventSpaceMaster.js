@@ -55,9 +55,11 @@ class EventSpaceMaster extends Component {
         if (this.state.area === '') errors.area = "Cant be empty";
 
          
-        // if (this.state.price === '') errors.price = "Cant be empty";
-        // if (this.state.from === '') errors.from = "Please enter date";
-        // if (this.state.to === '') errors.to = "Please enter date";
+        if (this.state.price === '') errors.price = "Cant be empty";
+        if (this.state.from === '') errors.from = "Please enter date";
+        if (this.state.to === '') errors.to = "Please enter date";
+        else if (this.state.from >this.state.to) errors.to=
+        "From date cannot be ahead then To date";
 
         if (this.state.description  === '') errors.description = "Cant be empty";
         
@@ -170,6 +172,11 @@ class EventSpaceMaster extends Component {
         return this.props.history.replace('/superDashboard/changePassword')
      }
 
+     minDate=()=>{
+         var d =new Date();
+         return d.toISOString().split('T')[0];
+     }
+
 
     render() {
           let form;
@@ -262,11 +269,12 @@ class EventSpaceMaster extends Component {
                 <span className='error'>{this.state.errors.area}</span>
             </FormGroup>
 
-             {/* <FormGroup>
+             <FormGroup>
                 <Label>From</Label>
                 <Input
                     type="date"
                     name="from"
+                    min={this.minDate()}
                     // placeholder="enter price"
                     // maxLength='8'
                     // onKeyPress = {this.OnKeyPressPrice}
@@ -281,6 +289,7 @@ class EventSpaceMaster extends Component {
                 <Input
                     type="date"
                     name="to"
+                    min={this.minDate()}
                     // placeholder="enter price"
                     // maxLength='8'
                     // onKeyPress = {this.OnKeyPressPrice}
@@ -302,7 +311,7 @@ class EventSpaceMaster extends Component {
                     onChange={this.onChange} />
                     
                 <span className='error'>{this.state.errors.price}</span>
-            </FormGroup>  */}
+            </FormGroup> 
 
             <FormGroup>
                 <Label>Description</Label>
