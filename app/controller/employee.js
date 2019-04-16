@@ -268,7 +268,8 @@ exports.createEncrypt = async (req, res, next) => {
         let randomNumber;
         randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
         const employeeExists = await Employee.findOne({ where: { isActive: true, employeeId: randomNumber } });
-        if (employeeExists) {
+        const userExists = await User.findOne({ where: { isActive: true, userId: randomNumber } });
+        if (employeeExists !== null ||  userExists !== null) {
             console.log("duplicate random number")
             randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
         }
@@ -317,12 +318,13 @@ exports.createEncrypt = async (req, res, next) => {
         body.uniqueId = uniqueId;
         body.employeeId = randomNumber;
         userName = body.firstName + body.uniqueId.toString(36);
-        console.log("atin------>", body.userName);
+        console.log("atin------>", userName);
 
         if (user1 === null && user2 === null) {
             if ((messageErr.messageEmailErr === '') && (messageErr.messageContactErr === '')) {
                 await Employee
                     .create({
+                        employeeId: body.employeeId,
                         uniqueId: uniqueId,
                         userName: encrypt(userName),
                         firstName: encrypt(body.firstName),
@@ -348,7 +350,7 @@ exports.createEncrypt = async (req, res, next) => {
                         // locationId2: body.locationId2
                     })
                     .then(emp => {
-                        // console.log(emp);
+                        console.log(emp);
                         employee = emp;
                         // console.log(emp.employeeId);
                         employeeId = emp.employeeId;
