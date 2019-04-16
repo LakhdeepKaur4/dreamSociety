@@ -392,7 +392,7 @@ module.exports = function (app) {
 
 	app.put('/api/inventory/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], inventoryController.delete);
 
-	app.post('/api/employee', fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), employeeController.createEncrypt);
+	app.post('/api/employee', [authJwt.verifyToken, authJwt.isAdminRole], fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), employeeController.createEncrypt);
 
 	app.put('/api/employee/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], employeeController.deleteSelected);
 
@@ -565,4 +565,9 @@ module.exports = function (app) {
 	app.post('/api/complaintRegister', [authJwt.verifyToken,authJwt.isOwnerOrTenantRole], complaint.create);
 
 	app.get('/api/complaintRegister', [authJwt.verifyToken,authJwt.isOwnerOrTenantRole], complaint.get);
+	app.put('/api/machine/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.update);
+
+	app.put('/api/machine/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], machine.deleteSelected);
+
+	app.put('/api/machine/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.delete);
 }
