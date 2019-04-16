@@ -1,9 +1,9 @@
-// export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
+export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
 export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
+// export  const URN = 'https://dreamsociety.herokuapp.com/api';
 //  export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const URN = 'http://192.168.1.101:8085/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
