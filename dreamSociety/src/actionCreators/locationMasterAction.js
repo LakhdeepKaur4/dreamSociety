@@ -66,7 +66,7 @@ export  function getLocation(){
 
     
 export function updateLocation(locationId, countryId, stateId, cityId, locationName ){
-
+    console.log("action",locationId,locationName);
     const request = axios.put(`${URN}/location/`+locationId,{countryId, stateId, cityId, locationName },{headers:authHeader()})
     .then()
     return{
@@ -79,7 +79,7 @@ export const deleteLocation=(locationId,isActive)=>{
 
     const request = axios.put(`${URN}/location/delete/${locationId}`,{isActive}, {headers:authHeader()})
      .then(response => response.data)
- 
+  
      
      return{
  
