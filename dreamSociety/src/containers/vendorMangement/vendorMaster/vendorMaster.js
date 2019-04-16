@@ -952,6 +952,8 @@ class vendorMaster extends Component {
                 </FormGroup>
             </Col>
         </Row>
+                            <Button color="success" className="mr-2">Submit</Button>             
+                            <Button color="danger" onClick={this.push}>Cancel</Button>
     </div>
     
         return (
@@ -965,8 +967,7 @@ class vendorMaster extends Component {
                         </div>
                         <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Add Vendor</h3></div>
                         {!this.state.loading ? formData : <Spinner />}
-                            <Button color="success" className="mr-2">Submit</Button>             
-                            <Button color="danger" onClick={this.push}>Cancel</Button>
+                           
                     </Form>
                 </UI>
 

@@ -75,7 +75,8 @@ class TenantDetail extends Component {
             addFlatLoading:false,
             viewFlatDetail:false,
             viewFlatLoading:false,
-            flatError:''
+            flatError:'',
+            selectedOption:null
         }
     }
 
@@ -158,10 +159,7 @@ class TenantDetail extends Component {
         }
     }
 
-    viewMembers(id){
-        localStorage.setItem('tenantId', id)
-        this.props.history.push('/superDashBoard/tenantMemberDetail');
-    }
+    
 
     viewTenantDetail = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber , dob, permanentAddress, correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) => {
         console.log(picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId)
@@ -228,9 +226,6 @@ class TenantDetail extends Component {
                                     item.flat_detail_master ? item.flat_detail_master.flatDetailId:'', item.tenantId)}>View</Button>
                             </td>
                             <td>
-                                <Button color="success" onClick={this.addFlats.bind(this, item.tenantId)}>Add</Button>
-                            </td>
-                            <td>
                                 <Button color="success" onClick={this.viewFlats.bind(this, item.tenantId)}>View</Button>
                             </td>
                             <td>
@@ -251,16 +246,19 @@ class TenantDetail extends Component {
             })
         }
     }
-    viewFlats(tenantId){
-        this.setState({viewFlatLoading:true})
-        this.props.getFlats(tenantId)
-        .then(() => this.setState({viewFlatLoading:false}))
-        this.setState({viewFlatDetail: true})
+
+    viewMembers(id){
+        localStorage.setItem('tenantId', id)
+        this.props.history.push('/superDashBoard/tenantMemberDetail');
     }
 
-    addFlats(tenantId){
-        console.log(tenantId)
-        this.setState({addFlat: true,tenantId})
+    viewFlats(tenantId){
+        // this.setState({viewFlatLoading:true})
+        // this.props.getFlats(tenantId)
+        // .then(() => this.setState({viewFlatLoading:false}))
+        // this.setState({viewFlatDetail: true})
+        localStorage.setItem('tenantId1', tenantId);
+        this.props.history.push('/superDashBoard/tenantFlatsDetail');
     }
 
     deleteSelected(ids){
@@ -355,7 +353,7 @@ class TenantDetail extends Component {
             console.log('7777777jjjjjj',getFlatDetail)
             if(getFlatDetail){
               return  getFlatDetail.flatDetail.filter((flatRecord)=>{
-                    return flatRecord.floorId===this.state.floorId
+                    return flatRecord.floorId==this.state.floorId
                 }).map((selectFlat)=>{
                     console.log('bbbbbbbbbbbbbbbbb',selectFlat)
                     return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
@@ -642,10 +640,11 @@ class TenantDetail extends Component {
 
     onChangeCountry = (countryId, countryName, selectOption) => {
         console.log(countryId, countryName, selectOption)
-    
+        console.log(document.getElementById('state'))
         this.setState({
             countryName: selectOption.countryName,
             countryId:selectOption.countryId, 
+            stateName:''
         })
         
         this.props.getState(selectOption.countryId)
@@ -676,6 +675,7 @@ class TenantDetail extends Component {
 
     onChangeState = (stateName, stateId, selectOption) => {
         console.log(stateName, stateId, selectOption)
+        console.log(selectOption)
         this.setState({
             stateName: selectOption.stateName,
             stateId:selectOption.stateId
@@ -819,26 +819,7 @@ class TenantDetail extends Component {
         }
         this.updatePermanentAddress(e.target.value)
     }
-
-    toggleFlat(){
-        this.setState({addFlat: !this.state.addFlat,flatError:''})
-    }
-    addNewFlat(tenantId, flatDetailId){
-        this.setState({addFlatLoading: true})
-        console.log(tenantId, flatDetailId)
-        let data = {
-            tenantId, flatDetailId
-        }
-        this.props.addNewFlatForTenant(data)
-        .then(() => this.refresFlatData())
-        .catch(err => {err
-            console.log(err)
-            this.setState({addFlatLoading: false, flatError:err.response.data.message})})
-    }
-
-    refresFlatData = () => {
-        this.setState({addFlatLoading: false, addFlat:false})
-    }
+    
 
     toggleFlatDetail = () => {
         this.setState({viewFlatDetail: !this.state.viewFlatDetail})
@@ -883,36 +864,6 @@ class TenantDetail extends Component {
             </FormGroup>
         </div>
 
-        let flatModal = <div>
-            <div><span className="error">{this.state.flatError}</span></div>
-            <FormGroup>
-                <Label>Tower</Label>
-                <Select onChange={this.towerChangeHandler.bind(this, 'towerId', 'towerName')} placeholder={<DefaultSelect/>} name="towerId"
-                options={this.getTower(this.props.towerList)} id="tower"  />
-                {!this.state.towerId ? <span className="error">{this.state.errors.towerId}</span> : ''}
-            </FormGroup >
-            <FormGroup>
-                <Label>Floor</Label>
-                <Select options={this.getFloor(this.props.tenantReducer)}
-                placeholder={<DefaultSelect/>} 
-                name="floorId" id="floor"
-                onChange={this.floorChangeHandler.bind(this,'floorName','floorId')}
-                />
-                {!this.state.floorId ? <span className="error">{this.state.errors.floorId}</span> : ''}
-            </FormGroup>
-            <FormGroup>
-                <Label>Flat Number</Label>
-                <Select options={this.getFlats(this.props.tenantReducer)} name="flatDetailId"
-                    onChange={this.flatChangeHandler.bind(this, 'flatNo' , 'flatDetailId')}
-                    placeholder={<DefaultSelect/>} id="flat"
-                    />
-                {!this.state.flatDetailId ? <span className="error">{this.state.errors.flatDetailId}</span> : ''}
-            </FormGroup >
-            <FormGroup>
-                <Button color="success" className="mr-2" onClick={this.addNewFlat.bind(this, this.state.tenantId, this.state.flatDetailId)}>Add</Button>
-                <Button color="danger" onClick={this.toggleFlat.bind(this)}>Cancel</Button>
-            </FormGroup>
-        </div>
 
         let viewTenantData = <div>
             <FormGroup>
@@ -1000,7 +951,6 @@ class TenantDetail extends Component {
                                     <th>Contact No.</th>
                                     <th>Member details</th>
                                     <th>Tenant Detail</th>
-                                    <th>Add Flat detail</th>
                                     <th>View Flat details</th>
                                     <th>Actions</th>
                                 </tr>
@@ -1137,11 +1087,13 @@ class TenantDetail extends Component {
                     <Row md={12}>
                         <Col md={6}>
                             <Label>Country</Label>
-                            <Select placeholder={<DefaultSelect/>} options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                            <Input type="select" onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} >
+                                {this.countryName(this.props.societyReducer)}
+                            </Input>
                         </Col>
                         <Col md={6}>
                             <Label>State</Label>
-                            <Select placeholder={<DefaultSelect/>} options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
+                            <Select placeholder={<DefaultSelect/>} id="state" options={this.stateName(this.props.societyReducer)} onChange={this.onChangeState.bind(this, 'stateName', 'stateId')} />
                         </Col>
                     </Row>
                 </FormGroup>
@@ -1219,12 +1171,6 @@ class TenantDetail extends Component {
                         <ModalHeader toggle={this.toggleFlatDetail.bind(this)}>View Flat Detail</ModalHeader>
                         <ModalBody>
                             {!this.state.viewFlatLoading ? viewFlatModal : <Spinner/>}
-                        </ModalBody>
-                    </Modal>
-                    <Modal isOpen={this.state.addFlat} toggle={this.toggleFlat.bind(this)}>
-                        <ModalHeader toggle={this.toggleFlat.bind(this)}>Add Flat Detail</ModalHeader>
-                        <ModalBody>
-                            {!this.state.addFlatLoading ? flatModal:<Spinner/>}
                         </ModalBody>
                     </Modal>
                     <Modal isOpen={this.state.viewData} toggle={this.toggleData.bind(this)}>

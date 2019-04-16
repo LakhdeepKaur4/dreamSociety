@@ -1,0 +1,182 @@
+import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Button, Table, Form, Input, Label,FormGroup } from 'reactstrap';
+import Spinner from '../../components/spinner/spinner';
+import UI from '../../components/newUI/superAdminDashboard';
+import Select from 'react-select';
+import { PlaceHolder } from '../../actions/index';
+import {getAllFloor,addAnotherFlats} from '../../actionCreators/flatOwnerAction';
+import { viewTower } from '../../actionCreators/towerMasterAction';
+import {addMachine} from '../../actionCreators/machineMasterAction';
+import {Link} from 'react-router-dom';
+import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
+class MachineMaster extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            machineActualId:'',
+            towerId:'',
+            floorId:'',
+            flatDetailIds:'',
+            loading: false,
+            errors: {},
+        }
+    }
+    componentDidMount(){
+        this.props.viewTower();
+        this.props.getFlatDetails();
+    }
+
+
+    onChange = (e) => {
+      
+      
+            this.setState({ [e.target.name]: e.target.value.trim() });
+    
+    
+    }
+    getTower = ({ tower }) => {
+        if (tower) {
+            return tower.tower.map((item) => {
+                return (
+                    { ...item, label: item.towerName, value: item.towerId }
+                )
+            }
+            );
+        }
+        return [];
+    }
+    towerChangeHandler = (name, selectOption) => {
+        this.setState(function (prevState, props) {
+            return {
+                [name]: selectOption.value,
+                towerName:selectOption.label
+            }
+        }, function () {
+        });
+        this.props.getAllFloor(selectOption.towerId);
+    }
+    getFloor=({floor})=>{
+        if(floor){
+            return floor.tower.Floors.map((item)=>{
+
+                return {...item ,label: item.floorName, value: item.floorId }
+            })
+        }
+        else {
+            return []
+        }}
+        floorChangeHandler=(name,selectOption)=>{
+            console.log(selectOption)
+            this.setState({
+                [name]: selectOption.value,
+                floorName:selectOption.label
+            })
+
+        }
+        getFlats=({floor})=>{
+            if(floor){
+              return  floor.flatDetail.filter((flatRecord)=>{
+                    return flatRecord.floorId===this.state.floorId
+                }).map((selectFlat)=>{
+                    return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
+                });
+            }
+            else {
+                return []
+              }
+        }
+        flatChangeHandler=(name,selectOption)=>{
+            let flatName=selectOption.label
+            this.setState({
+                [name]: selectOption.value,
+                currentAddress:this.state.flat+flatName+','+this.state.floorName+','+this.state.towerName+','+this.state.currentAddress+' '+this.state.pinCode
+            })
+        }
+
+  
+
+        push=()=>{
+        this.props.history.push('/superDashboard/viewMachineMaster')
+        }
+
+ onSubmit=(e)=>{
+    e.preventDefault();
+    let errors ={};
+    if(!this.state.machineActualId){
+     errors.machineActualId="Machine Id can't be empty"
+    }
+    this.props.addMachine( this.state.machineActualId,this.state.flatDetailIds)
+    
+        }
+    render() {
+        let formData;
+        formData =
+            <div>
+                    <FormGroup>
+                    <Label>Machine Id</Label>
+                    <Input  name ="machineActualId" onChange ={this.onChange}  onKeyPress={this.KeyPress}  maxLength={50}></Input>
+                    <span className="error">{this.state.errors.machineActualId}</span>
+                    
+                </FormGroup >
+
+                <FormGroup>
+                    <Label>Tower</Label>
+                    <Select options={this.getTower(this.props.towerList)}
+                        onChange={this.towerChangeHandler.bind(this, 'towerId')}
+                        placeholder={PlaceHolder} />
+                    <span className="error">{this.state.errors.towerId}</span>
+                </FormGroup >
+                <FormGroup>
+                    <Label>Floor</Label>
+                    <Select options={this.getFloor(this.props.towerFloor)}
+                        placeholder={PlaceHolder}
+                        name="floorId"
+                        onChange={this.floorChangeHandler.bind(this, 'floorId')}
+                    />
+                    {/* <span className="error">{this.state.errors.floorId}</span> */}
+                </FormGroup>
+                <FormGroup>
+                    <Label>Flat Number</Label>
+                    <Select options={this.getFlats(this.props.towerFloor)}
+                        placeholder={PlaceHolder}
+                        name="flatDetailIds"
+                        onChange={this.flatChangeHandler.bind(this, 'flatDetailIds')}
+                    />
+                    {/* <span className="error">{this.state.errors.flatNO}</span> */}
+                </FormGroup >
+                <Button className="btn btn-success" >Add Machine</Button>
+                <Link to='/superDashBoard/viewMachineMaster'>
+                <Button color="danger" id="addAssets" >Cancel</Button>
+            </Link>
+            </div>
+        return (
+            <div>
+                <UI onClick={this.logout} change={this.changePassword}>
+                    <div>
+                        <Form onSubmit={this.onSubmit}>
+                            <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true">&times;</span>
+                            </div>
+                            <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Add Machine Details</h3></div>
+                            {!this.state.loading ? formData : <Spinner />}
+                        </Form>
+                    </div>
+                </UI>
+            </div>
+        )
+    }
+}
+function mapStateToProps(state) {
+    console.log(state.FlatOwnerReducer)
+    return {
+        towerFloor:state.FlatOwnerReducer,
+        towerList: state.TowerDetails,
+    }
+}
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({getAllFloor,viewTower,addAnotherFlats,getFlatDetails,addMachine}, dispatch)
+}
+export default connect(mapStateToProps,mapDispatchToProps)(MachineMaster);
