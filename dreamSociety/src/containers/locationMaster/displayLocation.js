@@ -349,7 +349,7 @@ render(){
     let tableData;
     tableData=
     <Table className="table table-bordered">
-        <thead>
+        <thead> 
         <tr>
         <th  style={{width:'4%'}}></th>
             <th  style={{width:'4%'}}>#</th>

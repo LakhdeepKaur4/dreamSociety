@@ -1,6 +1,6 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN, GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT_DETAIL_IDS,UPDATE_FLAT_DETAILS,GET_FLOOR_DATA,GET_FLAT_PARKING,GET_PARKING_SLOT,GET_SLOTS} from '../actions/index';
+import {URN, GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT,DELETE_FLAT_DETAIL_IDS,UPDATE_FLAT_DETAILS,GET_FLOOR_DATA,GET_FLAT_PARKING,GET_PARKING_SLOT,GET_SLOTS} from '../actions/index';
 
 
 
@@ -31,15 +31,6 @@ export function getFlatDetails(){
     }
 }   
 
-// export function addFlatDetails( values){
-//     console.log(values,"hwsghqwgdhqwg")
-//     const request = axios.post(`${URN}/flatDetail`, {values},{headers:authHeader()},{method:'POST'})
-//     .then(()=>getFlatDetails());
-//     return{
-//         type:ADD_FLAT_DETAILS,
-//         payload:request
-//     }
-// }
 
 export function addFlatDetails( values){
     console.log("result", values)
@@ -54,7 +45,7 @@ export function addFlatDetails( values){
   
   }
 
-export function deleteSelectedFlat(ids){
+export function deleteSelectedFlat(ids){console.log(ids)
 const request= axios.put(`${URN}/flatDetail/delete/deleteSelected`,{ids},{headers:authHeader()})
 .then((response) => response.data)
 
@@ -112,4 +103,14 @@ export function getSlots (id){
         type:GET_SLOTS,
         payload:request
     }
+}
+
+export function deleteFlat(flatDetailId,isActive){console.log(flatDetailId,"deleteAction")
+    const request = axios.put(`${URN}/flatDetail/delete/`+flatDetailId,{isActive}, {headers:authHeader()})
+     .then()     
+     return{
+ 
+         type:DELETE_FLAT,
+         payload: request 
+     }
 }

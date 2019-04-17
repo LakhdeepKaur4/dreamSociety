@@ -181,7 +181,7 @@ export function editFlats(tenantId, flatDetailId, previousFlatDetailId){
 
 export function deleteFlat(values){
     const request = axios.put(`${URN}/tenant/deleteFlat`, values,  {headers: authHeader()})
-    .then((response) => {this.getFlats()})
+    .then((response) => {response.data})
     return {
         type: DELETE_FLATS,
         payload:request

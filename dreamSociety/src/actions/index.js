@@ -1,21 +1,21 @@
-// export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
-// export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-// export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-// export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
+export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+
+
+
 
 // export  const URN = 'https://mydreamsociety.herokuapp.com/api';
-//  export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const URN = 'http://192.168.1.101:8083/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const UR = 'https://mydreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com/';
 
 
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
-export  const PicURN = 'https://dreamsociety.herokuapp.com/';
-export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-export  const UR = 'https://dreamsociety.herokuapp.com/';
-
+// export  const URN = 'https://dreamsociety.herokuapp.com/api';
+// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com
 
 
 export const USER_LOGIN='user_login';
@@ -79,6 +79,7 @@ export const GET_FLAT_TYPE ='get_flat_type';
 export const ADD_FLAT_DETAILS= 'add_flat_details';
 export const GET_FLAT_DETAILS='get_flat_details';
 export const UPDATE_FLAT_DETAILS='update_flat_details';
+export const DELETE_FLAT='DELETE_FLAT';
 export const GET_COUNTRY_NAME='get_country_name';
 export const GET_STATE_NAME='get_state_name';
 export const GET_CITY_NAME='get_city_name';
