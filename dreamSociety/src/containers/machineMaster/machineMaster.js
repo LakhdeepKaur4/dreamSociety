@@ -22,6 +22,7 @@ class MachineMaster extends Component {
             flatDetailIds:'',
             loading: false,
             errors: {},
+            message:'',
         }
     }
     componentDidMount(){
@@ -30,10 +31,20 @@ class MachineMaster extends Component {
     }
 
 
-    onChange = (e) => {
+    onChange = (event) => {
       
+        this.setState({
+            message:''
+        })
       
-            this.setState({ [e.target.name]: e.target.value.trim() });
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value, errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value });
+        }
     
     
     }
@@ -104,12 +115,30 @@ class MachineMaster extends Component {
 
  onSubmit=(e)=>{
     e.preventDefault();
-    let errors ={};
+    let errors = {};
     if(!this.state.machineActualId){
-     errors.machineActualId="Machine Id can't be empty"
+        errors.machineActualId="Machine Id can't be empty"
+       }
+    if(this.state.towerId===''){
+        errors.towerId="Tower can't be empty"
     }
-    this.props.addMachine( this.state.machineActualId,this.state.flatDetailIds)
+    else if(this.state.floorId===''){
+        errors.floorId="floor can't be empty"
+    }
+    else if(this.state.flatDetailIds==='')
+    {
+        errors.flatDetailIds="flat can't be empty"
+    }
+    this.setState({errors});
+    const isValid=Object.keys(errors).length === 0;
     
+    if(isValid){
+    
+  
+    this.props.addMachine( this.state.machineActualId,this.state.flatDetailIds).then(()=> this.props.history.push('/superDashboard/viewMachineMaster')).catch(err => {
+        this.setState({message: err.response.data.message, loading: false})
+    })
+}
         }
     render() {
         let formData;
@@ -119,6 +148,7 @@ class MachineMaster extends Component {
                     <Label>Machine Id</Label>
                     <Input  name ="machineActualId" onChange ={this.onChange}  onKeyPress={this.KeyPress}  maxLength={50}></Input>
                     <span className="error">{this.state.errors.machineActualId}</span>
+                              <span className="error">{this.state.message}</span>
                     
                 </FormGroup >
 
@@ -127,7 +157,8 @@ class MachineMaster extends Component {
                     <Select options={this.getTower(this.props.towerList)}
                         onChange={this.towerChangeHandler.bind(this, 'towerId')}
                         placeholder={PlaceHolder} />
-                    <span className="error">{this.state.errors.towerId}</span>
+            {!this.state.towerId ? <span className="error">{this.state.errors.towerId}</span> : ''}
+                   
                 </FormGroup >
                 <FormGroup>
                     <Label>Floor</Label>
@@ -136,8 +167,8 @@ class MachineMaster extends Component {
                         name="floorId"
                         onChange={this.floorChangeHandler.bind(this, 'floorId')}
                     />
-                    {/* <span className="error">{this.state.errors.floorId}</span> */}
-                </FormGroup>
+            {!this.state.floorId ? <span className="error">{this.state.errors.floorId}</span> : ''}
+                    </FormGroup>
                 <FormGroup>
                     <Label>Flat Number</Label>
                     <Select options={this.getFlats(this.props.towerFloor)}
@@ -145,9 +176,10 @@ class MachineMaster extends Component {
                         name="flatDetailIds"
                         onChange={this.flatChangeHandler.bind(this, 'flatDetailIds')}
                     />
-                    {/* <span className="error">{this.state.errors.flatNO}</span> */}
+            {!this.state.flatDetailIds ? <span className="error">{this.state.errors.flatDetailIds}</span> : ''}
+                   
                 </FormGroup >
-                <Button className="btn btn-success" >Add Machine</Button>
+                <Button className="btn btn-success mr-2" >Add Machine</Button>
                 <Link to='/superDashBoard/viewMachineMaster'>
                 <Button color="danger" id="addAssets" >Cancel</Button>
             </Link>
