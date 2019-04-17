@@ -61,7 +61,8 @@ class FlatOwnerList extends Component {
             permanentAddressDefault:'',
             currentAddressDefault:'',
             profilePicture:'',
-            fileName:''
+            fileName:'',
+            pin1:''
         }
     }
     toggles = () => {
@@ -526,9 +527,28 @@ class FlatOwnerList extends Component {
             }
             else {
                 this.setState({permanentAddressDefault: e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
-                this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
+                this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + '  ' + this.state.pin1})
             }
         }
+        pinChange1 = (e) => {
+            console.log(this.state)
+            if (!!this.state.errors[e.target.name]) {
+                let errors = Object.assign({}, this.state.errors);
+                delete errors[e.target.name];
+                this.setState({ pin1: e.target.value, errors });
+            }
+            else {
+                this.setState({pin1: e.target.value});
+            }
+        }
+
+        OnKeyPresshandlerPhone = (event) => {
+            const pattern = /^[0-9]$/;
+            let inputChar = String.fromCharCode(event.charCode);
+            if (!pattern.test(inputChar)) {
+                event.preventDefault();
+            }
+        } 
 
     close = () => {
         return this.props.history.replace('/superDashBoard')

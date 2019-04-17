@@ -1087,9 +1087,8 @@ class TenantDetail extends Component {
                     <Row md={12}>
                         <Col md={6}>
                             <Label>Country</Label>
-                            <Input type="select" onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} >
-                                {this.countryName(this.props.societyReducer)}
-                            </Input>
+                            <Select placeholder={<DefaultSelect/>} type="select" options={this.countryName(this.props.societyReducer)} onChange={this.onChangeCountry.bind(this, 'countryName', 'countryId')} />
+                                
                         </Col>
                         <Col md={6}>
                             <Label>State</Label>
