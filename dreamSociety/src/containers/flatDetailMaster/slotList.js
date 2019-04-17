@@ -47,12 +47,12 @@ class slotList extends Component {
             return slots.slots.rows.map((item, index) => {
                 return (
                     <tr key={item.slotId}>
-                        <td>{index + 1}</td>
-                        <td>{item.flat_detail_master ?item.flat_detail_master.flatNo:''}</td>
-                        <td>{item.flat_detail_master ? item.flat_detail_master.flat_master.flatType : ''}</td>
-                        <td>{item.flat_detail_master ? item.flat_detail_master.floor_master.floorName : ''}</td>
-                        <td>{item.flat_detail_master ? item.flat_detail_master.tower_master.towerName : ''}</td>
-                        <td>{item.parking_master ? item.parking_master.parkingName : ''}</td>
+                        <td style={{ textAlign: "center" }}>{index + 1}</td>
+                        <td style={{ textAlign: "center" }}>{item.flat_detail_master ?item.flat_detail_master.flatNo:''}</td>
+                        <td style={{ textAlign: "center" }}>{item.flat_detail_master ? item.flat_detail_master.flat_master.flatType : ''}</td>
+                        <td style={{ textAlign: "center" }}>{item.flat_detail_master ? item.flat_detail_master.floor_master.floorName : ''}</td>
+                        <td style={{ textAlign: "center" }}>{item.flat_detail_master ? item.flat_detail_master.tower_master.towerName : ''}</td>
+                        <td style={{ textAlign: "center" }}>{item.parking_master ? item.parking_master.parkingName : ''}</td>
                         <td style={{ textAlign: "center", width: '10px' }}>{item.slot_master?item.slot_master.slots:''}</td>
                         {/* <td> 
                              <Button color="danger" onClick={this.delete.bind(this, item.slotId)}>Delete</Button>
@@ -71,12 +71,12 @@ class slotList extends Component {
             <thead>
                 <tr>
                     <th style={{ textAlign: "center", width: "4%" }}>#</th>
-                    <th style={{ textAlign: "center", width: "16%" }}>Flat No</th>
-                    <th style={{ textAlign: "center", width: "16%" }}>Flat Type</th>
-                    <th style={{ textAlign: "center" }}>Floor</th>
-                    <th style={{ textAlign: "center" }}>Tower Name</th>
-                    <th style={{ textAlign: "center" }}>Parking</th>
-                    <th style={{ textAlign: "center" }}>Slots</th>
+                    <th style={{ textAlign: "center", width: "10%" }}>Flat No</th>
+                    <th style={{ textAlign: "center", width: "10%" }}>Flat Type</th>
+                    <th style={{ textAlign: "center", width: "10%" }}>Floor</th>
+                    <th style={{ textAlign: "center", width: "16%" }}>Tower Name</th>
+                    <th style={{ textAlign: "center", width: "10%"  }}>Parking</th>
+                    <th style={{ textAlign: "center", width: "10%"  }}>Slots</th>
                     {/* <th style={{ textAlign: "center" }}>Action</th> */}
                 </tr>
             </thead>
