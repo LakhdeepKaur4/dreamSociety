@@ -680,10 +680,7 @@ updatePermanentAddress = (pin) => {
             event.preventDefault();
         }
     }
-    minDate = () => {
-        var d = new Date();
-        return d.toISOString().split('T')[0];
-    }
+   
 
     logout = () => {
         localStorage.removeItem('token');
