@@ -54,15 +54,17 @@ class slotList extends Component {
                         <td>{item.flat_detail_master ? item.flat_detail_master.tower_master.towerName : ''}</td>
                         <td>{item.parking_master ? item.parking_master.parkingName : ''}</td>
                         <td style={{ textAlign: "center", width: '10px' }}>{item.slot_master?item.slot_master.slots:''}</td>
-                        <td> 
+                        {/* <td> 
                              <Button color="danger" onClick={this.delete.bind(this, item.slotId)}>Delete</Button>
-                        </td>
+                        </td> */}
                     </tr>
                 )
             })
         }
     }
-
+    close = () => {
+        return this.props.history.replace('/superDashBoard')
+    }
     render() {
         let tableData;
         tableData = <Table className="table table-bordered">
@@ -75,7 +77,7 @@ class slotList extends Component {
                     <th style={{ textAlign: "center" }}>Tower Name</th>
                     <th style={{ textAlign: "center" }}>Parking</th>
                     <th style={{ textAlign: "center" }}>Slots</th>
-                    <th style={{ textAlign: "center" }}>Action</th>
+                    {/* <th style={{ textAlign: "center" }}>Action</th> */}
                 </tr>
             </thead>
             <tbody>
