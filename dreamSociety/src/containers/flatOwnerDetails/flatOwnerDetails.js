@@ -575,7 +575,7 @@ OnKeyPresshandlerEmail=(event)=> {
         this.state.cityName + ' , ' + this.state.stateName + ',' + this.state.countryName+' '+this.state.pin })
     }
     getParking=({ slots })=>{
-this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingName})
+this.setState({totalParking:slots.slots.count,parkingName:slots?slots.slots.rows[0].parking_master.parkingName:''})
     }
       
     render() {
