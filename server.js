@@ -13,12 +13,12 @@ app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
-require('./app/router/router.js')(app);
-
 app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 app.use(bodyParser.json({ limit: '5mb' }));
 
 app.use('/public',express.static(path.resolve(__dirname, 'public')));
+
+require('./app/router/router.js')(app);
 
 // app.use(bodyParser());
 // app.use(upload());
