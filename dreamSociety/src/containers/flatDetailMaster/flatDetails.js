@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getFlatDetails, getFlatType, getTowerName, deleteSelectedFlat, updateFlatDetails, getfloors,fetchParking,getSlotId } from '../../actionCreators/flatDetailMasterAction';
+import { getFlatDetails, getFlatType, getTowerName, deleteSelectedFlat,deleteFlat, updateFlatDetails, getfloors,fetchParking,getSlotId } from '../../actionCreators/flatDetailMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Table, Input, Label } from 'reactstrap';
@@ -79,7 +79,7 @@ class flatDetails extends Component {
 
     searchFilter = (search) => {
         return function (x) {
-            console.log(x)
+         
             return x.flat_detail_master.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
                    x.flat_detail_master.flat_master.flatType.toLowerCase().includes(search.toLowerCase())  ||
                         x.flat_detail_master.flatNo.toLowerCase().includes(search.toLowerCase()) 
@@ -116,7 +116,7 @@ class flatDetails extends Component {
             this.props.updateFlatDetails(flatDetailId, flatNo, flatId, floorId, towerId)
                 .then(() => this.refreshData())
                 .catch(err => {
-                    console.log(err.response.data.message, "error==========")
+                  
                     this.setState({ modalLoading: false, message: err.response.data.message })
                 })
             if (this.state.message === '') {
@@ -132,16 +132,16 @@ class flatDetails extends Component {
         }
     }
 
-    delete = (flatDetailId) => {
-        this.setState({ loading: true })
-        let { isActive } = this.state;
-        axios.put(`${URN}/flatDetail/delete/` + flatDetailId, { isActive }, { headers: authHeader() }).then((response) => {
-            this.refreshData();
-            this.setState({
-                isActive: false
-            })
-        })
+  
+    delete=(flatDetailId)=>{    
+        this.setState({loading:true})
+        let{isActive}=this.state;
+        this.props.deleteFlat(flatDetailId,isActive)
+        .then(()=>this.refreshData())
+        this.setState({isActive:false})
+
     }
+
 
 
     deleteSelected = (ids) => {
@@ -182,11 +182,11 @@ class flatDetails extends Component {
     }
 
     getFloorData = ({ floorDetails }) => {
-        console.log(floorDetails)
+     
         if (floorDetails) {
 
             return floorDetails.tower.Floors.map((items) => {
-                console.log(items)
+              
                 return (
                     <option key={items.floorId} value={items.floorId}>
                         {items.floorName}
@@ -200,12 +200,6 @@ class flatDetails extends Component {
         this.setState({ loading: false })
         let selected = event.target.value
         this.props.getfloors(selected);
-
-        //   var data = _.find(this.props.flatDetailMasterReducer.floorDetails,function(obj){  console.log(obj)
-        //     return obj.floorId === selected
-        //     })
-
-        // console.log(data);
 
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
@@ -230,22 +224,22 @@ class flatDetails extends Component {
     renderList = ({ details }) => {
 
         if (details) {
-            console.log(details)
+          
             return details.flatDetail.sort((item1, item2) => {
                 var cmprVal = (item1.flatNo && item2.flatNo) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
-                console.log("***********",item)
+              
 
                 return (
 
                     <tr key={item.flat_detail_master.flatDetailId}>
-                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.flatDetailId}
+                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.flat_detail_master.flatDetailId}
                             onChange={(e) => {
                                 const { flatDetailId } = item
                                 if (!e.target.checked) {
                                     document.getElementById('allSelect').checked = false;
-                                    let indexOfId = this.state.ids.indexOf(flatDetailId);
+                                    let indexOfId = this.state.ids.indexOf(item.flat_detail_master.flatDetailId);
                                     if (indexOfId > -1) {
                                         this.state.ids.splice(indexOfId, 1);
                                     }
@@ -254,7 +248,7 @@ class flatDetails extends Component {
                                     }
                                 }
                                 else {
-                                    this.setState({ ids: [...this.state.ids, flatDetailId] });
+                                    this.setState({ ids: [...this.state.ids, item.flat_detail_master.flatDetailId] });
                                     if (this.state.ids.length >= 0) {
                                         this.setState({ isDisabled: false })
                                     }
@@ -272,7 +266,7 @@ class flatDetails extends Component {
                         <td>
                             <Button color="success" className="mr-2" onClick={this.edit.bind(this, item.flat_detail_master.flatDetailId, item.flat_detail_master.flatNo, item.flat_detail_master.flat_master.flatType, item.flat_detail_master.floor_master.floorName,item.flat_detail_master.tower_master.towerName, item.flatId, item.floorId, item.towerId,item.parking_master.parkingName)} >Edit</Button>
 
-                            <Button color="danger" onClick={this.delete.bind(this, item.flatDetailId)}>Delete</Button>
+                            <Button color="danger" onClick={this.delete.bind(this, item.flat_detail_master.flatDetailId)}>Delete</Button>
                         </td>
                     </tr>
 
@@ -326,8 +320,6 @@ class flatDetails extends Component {
         }
 
     }
-
-
 
 
 
@@ -459,19 +451,12 @@ class flatDetails extends Component {
             <FormGroup>
                 <Label>Parking</Label>
                 <Input type="select" name="parkingId" value={this.state.parkingId} onChange={this.onParkingChangeHandler}>
-                    {/* <option>{this.state.parkingId}</option> */}
+               
                     <DefaultSelect />
                     {this.getParking(this.props.flatDetailMasterReducer)}
                 </Input>
             </FormGroup>
-            {/* <FormGroup>
-                <Label>Slot</Label>
-                <Input type="select" name="slotId" value={this.state.slots} onChange={this.onHandleChange}>
-                    {/* <option>{this.state.slotId}</option> */}
-                    {/* <DefaultSelect />
-                    {this.getSlot(this.props.flatDetailMasterReducer)}
-                </Input> */}
-            {/* </FormGroup> */}
+         
 
 
             <Button color="primary" className="mr-2" onClick={this.updateDetails.bind(this)}>Save </Button>
@@ -524,14 +509,14 @@ class flatDetails extends Component {
 }
 
 function mapStateToProps(state) {
-    console.log(state, "state==============")
+    
     return {
         flatDetailMasterReducer: state.flatDetailMasterReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getFlatDetails, getFlatType, getTowerName, deleteSelectedFlat, updateFlatDetails, getfloors,fetchParking,getSlotId }, dispatch)
+    return bindActionCreators({ getFlatDetails, getFlatType, getTowerName, deleteSelectedFlat, updateFlatDetails, deleteFlat,getfloors,fetchParking,getSlotId }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(flatDetails);
