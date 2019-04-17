@@ -112,7 +112,7 @@ onChangeCountry= (event)=>{
 }
 
 toggle = (locationId, countryId,stateId,cityId, countryName, stateName, cityName, locationName) => {
-
+console.log("edit",locationId,locationName);
     this.setState({
         locationId,
         countryId,
@@ -124,6 +124,7 @@ toggle = (locationId, countryId,stateId,cityId, countryName, stateName, cityName
         locationName,
         modal: !this.state.modal
     })
+    
 }
 
 searchFilter(search) {
@@ -294,7 +295,7 @@ updateLocation = () => {
         this.setState({ modalLoading: true
     })
         }
-
+        console.log("update",locationId,locationName);
 }
 
 push=()=>{

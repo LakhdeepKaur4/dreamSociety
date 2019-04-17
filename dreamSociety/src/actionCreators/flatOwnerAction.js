@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,DELETE_MULTIPLE_OWNER_MEMBER,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER,GET_ALL_FLOOR,GET_OWNER_FLAT,DELETE_OWNER_FLAT,ADD_MORE_FLATS} from '../actions/index';
+import { URN,ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,DELETE_MULTIPLE_OWNER_MEMBER,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER,GET_ALL_FLOOR,GET_OWNER_FLAT,DELETE_OWNER_FLAT,ADD_MORE_FLATS,EDIT_OWNER_FLAT} from '../actions/index';
 import { authHeader } from '../helper/authHeader';
 
 export function addFlatOwner(data){
@@ -190,6 +190,16 @@ export function addAnotherFlats(ownerId,flatDetailId){
     .then(response=>response.data)
     return{
         type:ADD_MORE_FLATS,
+        payload:request
+    }
+}
+
+export function editOwnerFlat(ownerId,previousId,newId){
+    console.log(ownerId,previousId,newId)
+    const request =axios.put(`${URN}/owner/editFlat/${ownerId}`,{previousId,newId},{headers:authHeader()})
+    .then(response=>response.data)
+    return{
+        type:EDIT_OWNER_FLAT,
         payload:request
     }
 }

@@ -33,10 +33,10 @@ export  function getEventDetails(){
 
 }
 
-export function updateEventSpace( eventSpaceId ,spaceName,capacity,spaceType,sizeId,area,description){
-       console.log('jii',eventSpaceId ,spaceName,capacity,spaceType,sizeId,area,description);
+export function updateEventSpace( eventSpaceId ,spaceName,capacity,spaceType,sizeId,area,from,to,price,description){
+       console.log('jii',eventSpaceId ,spaceName,capacity,spaceType,sizeId,area,from,to,price,description);
     const request =  axios.put(`${URN}/eventSpaceMaster/` +  eventSpaceId, {
-           spaceName, capacity, spaceType, sizeId, area, description }, { headers: authHeader()})
+           spaceName, capacity, spaceType, sizeId, area,from,to,price, description }, { headers: authHeader()})
          .then(response => response.data)
          .then(getEventDetails());
 

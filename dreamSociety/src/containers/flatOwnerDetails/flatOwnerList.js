@@ -321,13 +321,11 @@ class FlatOwnerList extends Component {
             
         }
     }
-    onChangeCountry = (selectOption) => {    
+    onChangeCountry = (countryName,countryId,selectOption) => {    
         this.setState({
             countryName: selectOption.countryName,
             countryId:selectOption.countryId, 
-        })
-        
-        this.props.getState(selectOption.countryId)
+        },function(){this.props.getState(selectOption.countryId)})  
     }
     stateName = ({stateResult}) => {
         if(stateResult){
@@ -342,12 +340,12 @@ class FlatOwnerList extends Component {
         }
     }
 
-    onChangeState = (selectOption) => {
+    onChangeState = (stateName,stateId,selectOption) => {
         this.setState({
             stateName: selectOption.stateName,
             stateId:selectOption.stateId
-        })
-        this.props.getCity(selectOption.stateId);
+        },function (){this.props.getCity(selectOption.stateId);})
+        
     }
     cityName=({cityResult})=>{
                
@@ -365,12 +363,12 @@ class FlatOwnerList extends Component {
         }
     }
 
-    onChangeCity = (selectOption) => {
+    onChangeCity = (cityName,cityId,selectOption) => {
         this.setState({
             cityName: selectOption.cityName,
             cityId:selectOption.cityId
-        })
-        this.props.getLocation(selectOption.cityId)
+        },function(){this.props.getLocation(selectOption.cityId)})
+        
     }
     locationName=({locationResult})=>{
         if(locationResult){
@@ -387,12 +385,12 @@ class FlatOwnerList extends Component {
          }
      }
 
-     onChangeLocation = (selectOption) => {
+     onChangeLocation = (locationName,locationId,selectOption) => {
          this.setState({
              locationName: selectOption.locationName,
              locationId:selectOption.locationId,
             
-         })
+         },function(){this.props.getLocation(selectOption.locationId)})
      }
     flatChangeHandler=(name,selectOption)=>{
         this.setState({

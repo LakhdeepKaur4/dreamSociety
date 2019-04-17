@@ -25,7 +25,7 @@ import MaintenanceSubMaster from './maintenanceSubMasterReducer/maintenanceSubMa
 import EmpDetails from './employeeMasterReducer/employeeMasterReducer';
 import DesignationMasterReducer from './designationMasterReducer/designationMasterReducer';
 import RelationMasterReducer from './relationMasterReducer/relationMasterReducer'
-
+import MachineDetails from './machineMasterReducer.js/machineMaster'
 import societyMemberEventReducer from './societyMemberEventReducer/societyMemberEventReducer'
 import memberEventsBookingReducer from './memberEventsBookingReducer/memberEventsBookingReducer';
 
@@ -92,7 +92,8 @@ const rootReducer = combineReducers({
     activeDeactive,
     AssignRolesReducer,
     IndividualVendorReducer,
-    registerComplaintReducer
+    registerComplaintReducer,
+    MachineDetails
 
 })
 export default rootReducer;
