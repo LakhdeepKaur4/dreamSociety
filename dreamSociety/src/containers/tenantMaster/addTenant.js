@@ -68,7 +68,8 @@ class AddTenant extends Component{
             societyLocation:"",
             defaultPermanentAddress:'',
             pin:'',
-            pinCode:''
+            pinCode:'',
+            message:''
         }
     }
 
@@ -118,10 +119,10 @@ class AddTenant extends Component{
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value.trim(), errors });
+            this.setState({ [e.target.name]: e.target.value.trim(), errors,message:'' });
         }
         else {
-            this.setState({[e.target.name]:e.target.value.trim(),messageContactErr:''});
+            this.setState({[e.target.name]:e.target.value.trim(),message:'',messageContactErr:''});
         }
     }
 
@@ -130,11 +131,11 @@ class AddTenant extends Component{
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value.trim(), errors, defaultPermanentAddress: e.target.value,
+            this.setState({ [e.target.name]: e.target.value.trim(), errors,message:'', defaultPermanentAddress: e.target.value,
              });
         }
         else {
-            this.setState({[e.target.name]:e.target.value.trim(),messageContactErr:'', defaultPermanentAddress: e.target.value,
+            this.setState({[e.target.name]:e.target.value.trim(),message:'',messageContactErr:'', defaultPermanentAddress: e.target.value,
             });
         }
 
@@ -149,10 +150,10 @@ class AddTenant extends Component{
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value.toUpperCase(), errors });
+            this.setState({ [e.target.name]: e.target.value.toUpperCase(), errors,message:'' });
         }
         else {
-            this.setState({panCardNumber:e.target.value.toUpperCase()});
+            this.setState({panCardNumber:e.target.value.toUpperCase(),message:''});
         }
     }
 
@@ -161,10 +162,10 @@ class AddTenant extends Component{
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value.toUpperCase(), errors });
+            this.setState({ [e.target.name]: e.target.value.toUpperCase(), errors,message:'' });
         }
         else {
-            this.setState({IFSCCode:e.target.value.toUpperCase()});
+            this.setState({IFSCCode:e.target.value.toUpperCase(),message:''});
         }
     }
 
@@ -202,7 +203,8 @@ class AddTenant extends Component{
         this.setState(function (prevState, props) {
             return {
                 'societyName': selectOption.value,
-                societyId
+                societyId,
+                message:''
             }
         }, function () {
         });
@@ -235,13 +237,14 @@ class AddTenant extends Component{
         if (e.target.value != '') {
             this.setState({
                 noOfMembers: e.target.value,
-                errors:{}
+                errors:{},
+                message:''
             });
         }
     }
 
     memberDetailChange = (e) => {
-        this.setState({[e.target.name]:e.target.value,errors:''})
+        this.setState({[e.target.name]:e.target.value,errors:'',message:''})
         console.log(this.state)  
     }
 
@@ -291,8 +294,9 @@ class AddTenant extends Component{
                 .then(() => this.props.history.push('/superDashboard/tenantDetails'))
                 .catch(err => {
                     err.response
-                    this.setState({messageContactErr:err.response.data.messageContactErr,messageEmailErr:err.response.data.messageEmailErr,
-                         loading:false})
+                    
+                    this.setState({message:err.response.data.message ,messageContactErr:err.response.data.messageContactErr,messageEmailErr:err.response.data.messageEmailErr,
+                         loading:false, defaultPermanent:false, permanentAddrDefault:true})
                 });
         }
     }
@@ -326,13 +330,14 @@ class AddTenant extends Component{
               this.setState({
                 profilePicture :  reader.result,
                 fileName,
-                imageSizeError:''
+                imageSizeError:'',
+                message:''
               })
               console.log(this.state.profilePicture)
           };
         }
         else {
-            this.setState({imageSizeError:'Image size should not be more than 4 MB.'});
+            this.setState({imageSizeError:'Image size should not be more than 4 MB.',message:''});
         }
     }
 
@@ -416,19 +421,19 @@ class AddTenant extends Component{
         console.log(this.state.email)
         this.setState({email:e.target.value, messageEmailErr:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
-            this.setState({[e.target.name]:e.target.value});
+            this.setState({[e.target.name]:e.target.value,message:''});
             console.log(this.state.email)
-            this.setState({emailValidError: ''})
+            this.setState({emailValidError: '',message:''})
         }
         else{ this.setState({emailValidError: 'Invalid Email.'})}
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             console.log(this.state.email)
-            this.setState({ [e.target.name]: e.target.value, errors });
+            this.setState({ [e.target.name]: e.target.value, errors,message:'' });
         }
         else {
-            this.setState({email:e.target.value});
+            this.setState({email:e.target.value,message:''});
         }
         
         
@@ -495,7 +500,7 @@ class AddTenant extends Component{
                 return {
                     towerId: selectOption.towerId,
                     towerName: selectOption.towerName,
-                    
+                    message:'',
                     correspondenceAddress: 'Tower : ' + selectOption.towerName
                 }
             }, function () {
@@ -510,6 +515,7 @@ class AddTenant extends Component{
             this.setState({
                 floorName: selectOption.floorName,
                 floorId: selectOption.floorId,
+                message:'',
                 correspondenceAddress: 'Floor : ' + selectOption.floorName + ' , ' + this.state.correspondenceAddress
                 
             })
@@ -524,6 +530,7 @@ class AddTenant extends Component{
                 this.setState({
                     flatNo: selectOption.flatNo,
                     flatDetailId: selectOption.flatDetailId,
+                    message:'',
                     correspondenceAddress: ('Flat Number : ' + selectOption.flatNo  + ' , ' + this.state.correspondenceAddress) + 
                     ' , ' +this.state.societyName + ' , ' +this.state.societyLocation + ' , ' + this.state.societyCity +
                     ' , ' + this.state.societyState + ' , ' + this.state.societyCountry
@@ -535,6 +542,7 @@ class AddTenant extends Component{
                 console.log(name ,selectOption)
                 this.setState({
                     [name]: selectOption.value,
+                    message:''
                 })
                 this.props.getFlatDetailViaTowerId(selectOption.towerId);
                 console.log(this.state)
@@ -559,7 +567,7 @@ class AddTenant extends Component{
                 this.setState({
                     countryName: selectOption.countryName,
                     countryId:selectOption.countryId,
-                    
+                    message:''
                 })
                 
                 this.props.getState(selectOption.countryId)
@@ -592,7 +600,8 @@ class AddTenant extends Component{
                 console.log(stateName, stateId, selectOption)
                 this.setState({
                     stateName: selectOption.stateName,
-                    stateId:selectOption.stateId
+                    stateId:selectOption.stateId,
+                    message:''
                 })
                 this.props.getCity(selectOption.stateId);
                 this.updatePermanentAddress3(selectOption.stateName)
@@ -626,7 +635,8 @@ class AddTenant extends Component{
                 console.log(cityName, cityId, selectOption)
                 this.setState({
                     cityName: selectOption.cityName,
-                    cityId:selectOption.cityId
+                    cityId:selectOption.cityId,
+                    message:''
                 })
                 this.props.getLocation(selectOption.cityId)
                 this.updatePermanentAddress2(selectOption.cityName)
@@ -661,7 +671,7 @@ class AddTenant extends Component{
                 this.setState({
                     locationName: selectOption.locationName,
                     locationId:selectOption.locationId,
-                    
+                    message:''
                 })
                 this.updatePermanentAddress1(selectOption.locationName)
             }
@@ -694,18 +704,18 @@ class AddTenant extends Component{
                     let errors = Object.assign({}, this.state.errors);
                     delete errors[e.target.name];
                     this.setState({permanentAddressUser:e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
-                    this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin , errors })
+                    this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin , errors, message:'' })
                     console.log(this.state)
                 }
                 else {
                     this.setState({permanentAddressUser:e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
-                    this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin })
+                    this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin, message:'' })
                     console.log(this.state)
                 }
         }
             
     defaultPermanentAddressChange = (e) =>{
-        this.setState({defaultPermanentAddress: this.state.correspondenceAddress ,permanentAddress: e.target.value})
+        this.setState({defaultPermanentAddress: this.state.correspondenceAddress ,permanentAddress: e.target.value,message:''})
     }
 
     fNameKeyPress(event){
@@ -721,10 +731,10 @@ class AddTenant extends Component{
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ pin: e.target.value, errors });
+            this.setState({ pin: e.target.value, errors,message:'' });
         }
         else {
-            this.setState({pin: e.target.value});
+            this.setState({pin: e.target.value,message:''});
         }
         this.updatePermanentAddress(e.target.value)
     }
@@ -954,7 +964,7 @@ class AddTenant extends Component{
                         {userDatas}
                     </div>
                     <div style={{ 'display': this.state.step == 3 ? 'block' : 'none' }}>
-                        <h3>Flat Details</h3>
+                        <h3>Corresponding Address</h3>
                         <FormGroup>
                             <Label>Tower</Label>
                             <Select onChange={this.towerChangeHandler.bind(this, 'towerId', 'towerName')} placeholder={<DefaultSelect/>} name="towerId"
@@ -1070,6 +1080,7 @@ class AddTenant extends Component{
                         <span className="error">{this.state.imageSizeError}</span>
                     </div>
                     <div>
+                        {this.state.message ? <span className="error">{this.state.message}</span>:''}<br/>
                         {this.state.messageEmailErr ? <span className="error">{this.state.messageEmailErr}</span>:''}<br/>
                         {this.state.messageContactErr ? <span className="error">{this.state.messageContactErr}</span>:''}
                     </div>
