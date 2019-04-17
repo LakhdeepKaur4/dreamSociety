@@ -103,12 +103,12 @@ class ViewFlats extends Component {
                 return (
 
                     <tr key={item.flatDetailId}>
-                        <td>{index + 1}</td>
-                        <td>{item.flatNo}</td>
-                        <td>{item.flat_master.flatType}</td>
-                        <td>{item.floor_master.floorName}</td>
-                        <td>{item.tower_master.towerName}</td>
-                        <td><button className="btn btn-success mr-2" onClick={this.viewSlots.bind(this,item.flatDetailId)} >View Parking</button></td>
+                        <td style={{ textAlign: "center" }}>{index + 1}</td>
+                        <td style={{ textAlign: "center" }}>{item.flatNo}</td>
+                        <td style={{ textAlign: "center", width: '10px',textTransform: 'capitalize'  }} >{item.flat_master.flatType}</td>
+                        <td style={{ textAlign: "center", width: '10px',textTransform: 'capitalize'  }} >{item.floor_master.floorName}</td>
+                        <td style={{ textAlign: "center", width: '10px',textTransform: 'capitalize'  }} >{item.tower_master.towerName}</td>
+                        <td style={{ textAlign: "center" }}><button className="btn btn-success mr-2" onClick={this.viewSlots.bind(this,item.flatDetailId)} >View Parking</button></td>
                         <td style={{ textAlign: "center" }}>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this,item.tower_master.towerId,item.floor_master.floorId,item.flatDetailId)}>Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this,item.flatDetailId)} >Delete</button>
@@ -231,7 +231,7 @@ class ViewFlats extends Component {
             <Table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th style={{ width: '4%' }}>#</th>
+                        <th style={{ width: '4%'}}>#</th>
                         <th onClick={() => {
                             this.setState((state) => {
                                 return {
@@ -239,12 +239,12 @@ class ViewFlats extends Component {
                                     filterName: 'flatNo'
                                 }
                             });
-                        }}>Flat No</th>
-                        <th>Flat Type</th>
-                        <th>Floor</th>
-                        <th>Tower Name</th>
-                    <th style={{ textAlign: "center", width: "8%" }}>View Parking</th>
-                        <th>Actions</th>
+                        }} style={{ textAlign: "center" ,width: "10%" }}>Flat No</th>
+                        <th style={{ textAlign: "center", width: "10%" }}>Flat Type</th>
+                        <th style={{ textAlign: "center", width: "10%" }}>Floor</th>
+                        <th style={{ textAlign: "center", width: "16%" }}>Tower Name</th>
+                    <th style={{ textAlign: "center", width: "16%" }}>View Parking</th>
+                        <th style={{ textAlign: "center" }}>Actions</th>
                     </tr>
                 </thead>
 
