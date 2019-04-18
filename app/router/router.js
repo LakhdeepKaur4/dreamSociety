@@ -47,6 +47,7 @@ module.exports = function (app) {
 	const complaint = require('../controller/complaint');
 	const ownerPermission = require('../controller/ownerPermission');
 	const machine = require('../controller/machine');
+	const machineDetail = require('../controller/machineDetail');
 
 
 	app.get('/', userController.start);
@@ -580,4 +581,14 @@ module.exports = function (app) {
 	app.put('/api/machine/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], machine.deleteSelected);
 
 	app.put('/api/machine/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.delete);
+
+	app.get('/api/machineDetail', [authJwt.verifyToken, authJwt.isAdminRole], machineDetail.get);
+
+	app.post('/api/machineDetail', [authJwt.verifyToken, authJwt.isAdminRole], machineDetail.create);
+
+	app.put('/api/machineDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], machineDetail.update);
+
+	app.put('/api/machineDetail/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], machineDetail.deleteSelected);
+
+	app.put('/api/machineDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], machineDetail.delete);
 }
