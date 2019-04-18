@@ -947,7 +947,7 @@ ImageChange =(event)=>{
                 <Row md={12}>
                     <Col md={6}>
                         <Label>Start Date</Label>
-                        <Input readOnly value={this.state.startDate}   min={this.minDate()} onChange={this.onChange} />
+                        <Input readOnly value={this.state.startDate}   onChange={this.onChange} />
                     </Col>
                     <Col md={6}></Col>
                 </Row>
@@ -1260,7 +1260,7 @@ ImageChange =(event)=>{
                               <FormGroup>
                                   <Label > Employment Date</Label>
                                   <Input type="date" value={this.state.editEmployeeData.startDate}
-                                         min={this.minDate()}
+                                        
 
                                       onChange={(e) => {
                                           let { editEmployeeData } = this.state;
