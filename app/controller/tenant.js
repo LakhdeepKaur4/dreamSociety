@@ -148,7 +148,10 @@ let mailToOwner = async (ownerId, tenant) => {
     let key = config.secret;
     const owner = await Owner.findOne({ where: { isActive: true, ownerId: ownerId } });
     let email = decrypt1(key, owner.email)
-    let userName = tenant.userName;
+    mailToUser(decrypt1(key, tenant.email), tenant.tenantId);
+    ownerId = encrypt(ownerId.toString());
+    tenantId = encrypt(tenant.tenantId.toString());
+    let userName = decrypt(tenant.userName);
     const request = mailjet.post("send", { 'version': 'v3.1' })
         .request({
             "Messages": [
@@ -700,12 +703,12 @@ exports.updateEncrypted = async (req, res, next) => {
     user2 = await User.findOne({ where: { [Op.and]: [{ contact: encrypt(update.contact) }, { isActive: true }, { userName: { [Op.ne]: tenant.userName } }] } });
 
     if (update['email'] !== undefined) {
-        tenantEmailErr = await Tenant.findOne({ where: { email: encrypt(update.email), tenantId: { [Op.ne]: id } } });
+        tenantEmailErr = await Tenant.findOne({ where: { email: encrypt(update.email), isActive: true, tenantId: { [Op.ne]: id } } });
     } else {
         tenantEmailErr = null;
     }
     if (update['contact'] !== undefined) {
-        tenantContactErr = await Tenant.findOne({ where: { contact: encrypt(update.contact), tenantId: { [Op.ne]: id } } });
+        tenantContactErr = await Tenant.findOne({ where: { contact: encrypt(update.contact), isActive: true, tenantId: { [Op.ne]: id } } });
     } else {
         tenantContactErr = null;
     }
