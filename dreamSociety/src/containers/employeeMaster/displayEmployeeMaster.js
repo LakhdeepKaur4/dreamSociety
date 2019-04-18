@@ -521,8 +521,8 @@ ImageChange =(event)=>{
                         }
                              }}/></td>
                             <td>{index + 1}</td>
-                            <td style={{ width: "8%", height: "8%" }}> <img style={{ width: "100%", height: "20%" }}  src={UR + item.picture} alt="desc">
-                            </img></td>
+                            <td style={{width:'4%'}}><img style={{ width: "100px", height: "100px" }} src={UR+item.picture} alt="Profile Pic" /></td>
+
                             <td >{item.firstName}</td>
                             <td>{item.lastName}</td>
                             <td>{item.employee_detail_master?item.employee_detail_master.serviceType:''}-
@@ -774,11 +774,7 @@ ImageChange =(event)=>{
             event.preventDefault();
         }
     }
-    minDate = () => {
-        var d = new Date();
-        return d.toISOString().split('T')[0];
-    }
-
+  
 
     pinChange1 = (e) => {
         console.log(this.state)
@@ -951,7 +947,7 @@ ImageChange =(event)=>{
                 <Row md={12}>
                     <Col md={6}>
                         <Label>Start Date</Label>
-                        <Input readOnly value={this.state.startDate}   min={this.minDate()} onChange={this.onChange} />
+                        <Input readOnly value={this.state.startDate}   onChange={this.onChange} />
                     </Col>
                     <Col md={6}></Col>
                 </Row>
@@ -1264,7 +1260,7 @@ ImageChange =(event)=>{
                               <FormGroup>
                                   <Label > Employment Date</Label>
                                   <Input type="date" value={this.state.editEmployeeData.startDate}
-                                         min={this.minDate()}
+                                        
 
                                       onChange={(e) => {
                                           let { editEmployeeData } = this.state;
