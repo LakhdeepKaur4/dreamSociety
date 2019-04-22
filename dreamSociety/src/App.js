@@ -120,6 +120,8 @@ import ParkingSlotList from './containers/flatDetailMaster/slotList';
 import ViewOwnerFlats from './containers/flatOwnerDetails/viewFlats';
 import AddOwnerFlat from './containers/flatOwnerDetails/addFlats'
 import TenantVerification from './components/tenantVerification/tenantVerification';
+import RFID from './containers/rfIdMaster/rfIdMaster';
+import RfIdDetail from './containers/rfIdMaster/rfIdDetails';
 
 
 
@@ -243,6 +245,9 @@ class App extends Component {
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
             <Route path='/login/tenantVerification' exact component={TenantVerification} />
+            <PrivateRoute path='/superDashboard/rfId' component={RFID}/>
+            <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail}/>
+
           </Switch>
         </div>
         
