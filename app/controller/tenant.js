@@ -356,6 +356,15 @@ exports.createEncrypted = async (req, res, next) => {
     try {
         console.log('Creating Tenant');
 
+        let randomNumber;
+        randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
+        const tenantExists = await Tenant.findOne({ where: { isActive: true, tenantId: randomNumber } });
+        const userExists = await User.findOne({ where: { isActive: true, userId: randomNumber } });
+        if (tenantExists !== null || userExists !== null) {
+            console.log("duplicate random number")
+            randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
+        }
+
         let tenant = req.body;
         let members = req.body.member;
         const membersArr = [];
@@ -369,6 +378,7 @@ exports.createEncrypted = async (req, res, next) => {
         tenant.fileExt = tenant.fileName.slice(index + 1);
         tenant.fileName = tenant.fileName.slice(0, index);
         tenant.profilePicture = tenant.profilePicture.split(',')[1];
+        tenant.tenantId = randomNumber;
         const password = passwordGenerator.generate({
             length: 10,
             numbers: true
@@ -419,6 +429,7 @@ exports.createEncrypted = async (req, res, next) => {
         if (user1 === null && user2 === null) {
             if ((messageErr.messageEmailErr === '') && (messageErr.messageContactErr === '')) {
                 Tenant.create({
+                    tenantId: tenant.tenantId,
                     firstName: encrypt(tenant.firstName),
                     lastName: encrypt(tenant.lastName),
                     userName: encrypt(tenant.userName),
@@ -466,6 +477,7 @@ exports.createEncrypted = async (req, res, next) => {
                         })
 
                         User.create({
+                            userId: tenant.tenantId,
                             firstName: encrypt(tenant.firstName),
                             lastName: encrypt(tenant.lastName),
                             userName: encrypt(tenant.userName),

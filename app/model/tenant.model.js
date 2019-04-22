@@ -4,7 +4,7 @@ module.exports = (sequelize, Sequelize) => {
       const Tenant = sequelize.define('tenant_master', {
             tenantId: {
                   type: Sequelize.INTEGER,
-                  autoIncrement: true,
+                  // autoIncrement: true,
                   primaryKey: true
             },
             firstName: {
