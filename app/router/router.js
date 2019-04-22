@@ -48,6 +48,7 @@ module.exports = function (app) {
 	const ownerPermission = require('../controller/ownerPermission');
 	const machine = require('../controller/machine');
 	const machineDetail = require('../controller/machineDetail');
+	const rfidController = require('../controller/rfid');
 
 
 	app.get('/', userController.start);
@@ -591,4 +592,8 @@ module.exports = function (app) {
 	app.put('/api/machineDetail/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], machineDetail.deleteSelected);
 
 	app.put('/api/machineDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], machineDetail.delete);
+
+	app.get('/api/rfid', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.get);
+
+	app.post('/api/rfid', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.create);
 }

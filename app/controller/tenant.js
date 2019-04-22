@@ -11,6 +11,7 @@ const bcrypt = require('bcryptjs');
 const Op = db.Sequelize.Op;
 const jwt = require('jsonwebtoken');
 const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921aa', '68afe5aeee2b5f9bbabf2489f2e8ade2');
+const randomInt = require('random-int');
 
 
 const Tenant = db.tenant;
