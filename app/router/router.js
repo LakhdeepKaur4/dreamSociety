@@ -596,4 +596,10 @@ module.exports = function (app) {
 	app.get('/api/rfid', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.get);
 
 	app.post('/api/rfid', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.create);
+
+	app.put('/api/rfid/:id', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.update);
+
+	app.put('/api/rfid/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.deleteSelected);
+
+	app.put('/api/rfid/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.delete);
 }
