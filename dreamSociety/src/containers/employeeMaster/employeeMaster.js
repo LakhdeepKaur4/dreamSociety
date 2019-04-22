@@ -894,7 +894,7 @@ let formData=
           <label> Employment  Date</label>
           <input
             type="date"
-            min={this.minDate()}
+            
 
             className="form-control"
             name="startDate"

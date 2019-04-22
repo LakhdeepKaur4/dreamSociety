@@ -123,7 +123,8 @@ import TenantVerification from './components/tenantVerification/tenantVerificati
 import RFID from './containers/rfIdMaster/rfIdMaster';
 import RfIdDetail from './containers/rfIdMaster/rfIdDetails';
 
-
+import MachineIdMaster from './containers/machineIdMaster/machineIdMaster';
+import DisplayMachineIdMaster from './containers/machineIdMaster/displayMachineIdMaster';
 
 class App extends Component {
   render() {
@@ -247,7 +248,8 @@ class App extends Component {
             <Route path='/login/tenantVerification' exact component={TenantVerification} />
             <PrivateRoute path='/superDashboard/rfId' component={RFID}/>
             <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail}/>
-
+            <PrivateRoute path='/superDashboard/machineIdMaster' component ={MachineIdMaster}/>
+            <PrivateRoute path='/superDashboard/displayMachineIdMaster' component={DisplayMachineIdMaster}/>
           </Switch>
         </div>
         

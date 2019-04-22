@@ -7,6 +7,7 @@
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://dreamsociety.herokuapp.com/';
+// 
 
 
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
@@ -298,3 +299,8 @@ export const GET_RF='GET_RF';
 export const DELETE_RF='DELETE_RF'
 export const MULTIPLE_DELETE_RF='MULTIPLE_DELETE_RF';
 export const UPDATE_RF='UPDATE_RF';
+export const ADD_MACHINE_ID ='ADD_MACHINE_ID';
+export const  GET_MACHINE_ID ='GET_MACHINE_ID'
+export const  UPDATE_MACHINE_ID ='UPDATE_MACHINE_ID';
+export const  DELETE_MACHINE_ID ='DELETE_MACHINE_ID';
+export const DELETE_MULTIPLE_MACHINE_ID = 'DELETE_MULTIPLE_MACHINE_ID';
