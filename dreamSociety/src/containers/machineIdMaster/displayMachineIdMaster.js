@@ -59,7 +59,7 @@ class DisplayMachineIdMaster extends Component {
     }
 
     push = () => {
-        this.props.history.push('/superDashboard/machineMaster')
+        this.props.history.push('/superDashboard/machineIdMaster')
     }
     delete=(machineDetailId)=>{
         this.setState({loading:true})
