@@ -46,7 +46,7 @@ import activeDeactive from './activeDeactive/activeDeactiveReducer';
 
 import AssignRolesReducer from './assignRolesReducer/assignRolesReducer';
 import IndividualVendorReducer from './individualVendorReducer/individualVendorReducer';
-
+import  MachineIdDetails from './MachineIdMasterReducer.js/machineIdMaster'
 import registerComplaintReducer from './registerComplaintReducer/registerComplaintReducer';
 
 const rootReducer = combineReducers({
@@ -93,7 +93,8 @@ const rootReducer = combineReducers({
     AssignRolesReducer,
     IndividualVendorReducer,
     registerComplaintReducer,
-    MachineDetails
-
+    MachineDetails,
+    MachineIdDetails
+  
 })
 export default rootReducer;

@@ -121,7 +121,8 @@ import ViewOwnerFlats from './containers/flatOwnerDetails/viewFlats';
 import AddOwnerFlat from './containers/flatOwnerDetails/addFlats'
 import TenantVerification from './components/tenantVerification/tenantVerification';
 
-
+import MachineIdMaster from './containers/machineIdMaster/machineIdMaster';
+import DisplayMachineIdMaster from './containers/machineIdMaster/displayMachineIdMaster';
 
 class App extends Component {
   render() {
@@ -243,6 +244,9 @@ class App extends Component {
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
             <Route path='/login/tenantVerification' exact component={TenantVerification} />
+
+            <PrivateRoute path='/superDashboard/machineIdMaster' component ={MachineIdMaster}/>
+            <PrivateRoute path='/superDashboard/displayMachineIdMaster' component={DisplayMachineIdMaster}/>
           </Switch>
         </div>
         
