@@ -23,16 +23,10 @@ const Tower = db.tower;
 const Society = db.society;
 const Relation = db.relation;
 const Floor = db.floor;
-const Location = db.location;
-const City = db.city;
-const State = db.state;
-const Country = db.country;
 const User = db.user;
 const Otp = db.otp;
 const Role = db.role;
 const UserRoles = db.userRole;
-const Slot = db.slot;
-const Parking = db.parking;
 const TenantFlatDetail = db.tenantFlatDetail;
 
 setInterval(async function () {
@@ -1230,4 +1224,33 @@ exports.deleteFlat = (req, res, next) => {
             console.log('Error ===>', err);
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
+}
+
+
+exports.flatsList = async (req, res, next) => {
+    try {
+        const activeFlats = await FlatDetail.findAndCountAll({ where: { isActive: true } });
+        const occupiedFlats = await OwnerFlatDetail.findAndCountAll({ where: { isActive: true } });
+        const emptyFlats = activeFlats.count - occupiedFlats.count;
+        res.status(httpStatus.OK).json({ activeFlats: occupiedFlats.count, emptyFlats });
+    } catch (error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.rfidCount = async (req, res, next) => {
+    try {
+        const rfidCount = await Tenant.findAndCountAll({
+            where: {
+                rfidId: {
+                    [Op.ne]: null
+                }
+            }
+        });
+        if(rfidCount){
+        res.status(httpStatus.OK).json({ rfid:rfidCount.count });
+        }
+    } catch (error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
 }
