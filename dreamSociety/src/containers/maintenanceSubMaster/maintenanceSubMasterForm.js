@@ -169,7 +169,7 @@ class MaintenanceSubMasterForm extends Component{
                             <span aria-hidden="true">&times;</span>
                     </div>
                     <div>
-                        <h3 style={{textAlign:'center', marginBottom: '15px'}}>Maintenance Sub Master Form</h3>
+                        <h3 style={{textAlign:'center', marginBottom: '15px'}}>Maintenance Sub Master</h3>
                         {!this.state.loading ? formData: <Spinner />}
                     </div>
                 </Form>
