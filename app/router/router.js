@@ -602,4 +602,6 @@ module.exports = function (app) {
 	app.put('/api/rfid/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.deleteSelected);
 
 	app.put('/api/rfid/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.delete);
+
+	app.get('/api/tenant/rfid', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.getRFID);
 }

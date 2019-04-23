@@ -447,6 +447,7 @@ exports.createEncrypted = async (req, res, next) => {
                     panCardNumber: encrypt(tenant.panCardNumber),
                     // IFSCCode: encrypt(tenant.IFSCCode),
                     noOfMembers: tenant.noOfMembers,
+                    rfidId: tenant.rfidId,
                     // ownerId: tenant.ownerId1,
                     // ownerId1: tenant.ownerId1,
                     // ownerId2: tenant.ownerId2,
@@ -764,6 +765,7 @@ exports.updateEncrypted = async (req, res, next) => {
             towerIdCheck = constraintCheck('towerId', update);
             // flatDetailIdCheck = constraintCheck('flatDetailId', update);
             floorIdCheck = constraintCheck('floorId', update);
+            rfidIdCheck = constraintCheck('rfidId', update);
 
 
             firstName = constraintReturn(firstNameCheck, update, 'firstName', tenant);
@@ -784,6 +786,7 @@ exports.updateEncrypted = async (req, res, next) => {
             towerId = referenceConstraintReturn(towerIdCheck, update, 'towerId', tenant);
             // flatDetailId = referenceConstraintReturn(flatDetailIdCheck, update, 'flatDetailId', tenant);
             floorId = referenceConstraintReturn(floorIdCheck, update, 'floorId', tenant);
+            rfidId = referenceConstraintReturn(rfidIdCheck, update, 'rfidId', tenant);
 
 
             // await Owner.findAll({
@@ -866,6 +869,7 @@ exports.updateEncrypted = async (req, res, next) => {
                 userId: req.userId,
                 societyId: societyId,
                 towerId: towerId,
+                rfidId: rfidId,
                 // flatDetailId: flatDetailId
             };
 

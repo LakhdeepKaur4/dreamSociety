@@ -10,10 +10,13 @@ const Tenant = db.tenant;
 filterItem = (sendedItem, arr) => {
     let count = 0;
     arr.map(item => {
-        if (condition) {
-            
+        if (item === sendedItem.rfid) {
+            count += 1
         }
     })
+    if (count === 0) {
+        return sendedItem;
+    }
 }
 
 exports.create = (req, res, next) => {
@@ -183,7 +186,7 @@ exports.deleteSelected = (req, res, next) => {
 }
 
 exports.getRFID = (req, res, next) => {
-    const rfidsArr = []
+    const rfidsArr = [];
     RFID.findAll({
         where: {
             isActive: true
@@ -202,13 +205,28 @@ exports.getRFID = (req, res, next) => {
                             tenantRFIDs.map(item => {
                                 rfidsArr.push(item);
                             })
-                            rfids.filter(filterItem(rfidsArr))
+                            sendRFIDs = rfids.filter(filterItem(rfidsArr));
+                            res.status(httpStatus.OK).json({
+                                rfids: sendRFIDs
+                            })
                         } else {
-
+                            res.status(httpStatus.OK).json({
+                                rfids: rfids
+                            })
                         }
                     })
+                    .catch(err => {
+                        console.log('Error ===>',err);
+                        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err)
+                    })
             } else {
-
+                res.status(httpStatus.NO_CONTENT).json({
+                    message: 'No data available!'
+                })
             }
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err)
         })
 }
