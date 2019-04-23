@@ -24,5 +24,5 @@ module.exports = (sequelize, Sequelize) => {
 		freezeTableName: true
 	});
 
-	return FlatParking;
+    return CommonArea;
 }
