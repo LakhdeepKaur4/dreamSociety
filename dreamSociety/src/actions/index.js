@@ -3,19 +3,18 @@
 // export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 // export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
-
-
-
 // export  const URN = 'https://mydreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://dreamsociety.herokuapp.com/';
 // 
 
+
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-export  const UR = 'https://dreamsociety.herokuapp.com/'
+export  const UR = 'https://dreamsociety.herokuapp.com/';
+
 
 
 export const USER_LOGIN='user_login';
@@ -220,6 +219,7 @@ export const ADD_NEW_TENANT='ADD_NEW_TENANT';
 export const ADD_FLAT_OWNER='add_flat_owner';
 export const GET_FLAT_DETAIL_VIA_TOWERID='GET_FLAT_DETAIL_VIA_TOWERID';
 export const EDIT_FLATS='EDIT_FLATS';
+export const GET_RFID='GET_RFID';
 export const DELETE_FLATS='DELETE_FLATS'
 export const GET_TOTAL_ITEMS='GET_TOTAL_ITEMS';
 export const GET_FLAT_OWNER='get_flat_owner';
@@ -297,9 +297,11 @@ export const GET_MACHINE_ACTUAL_ID='GET_MACHINE_ACTUAL_ID';
 export const  UPDATE_MACHINE ='UPDATE_MACHINE';
 export const  DELETE_MACHINE ='DELETE_MACHINE';
 export const DELETE_MULTIPLE_MACHINE = 'DELETE_MULTIPLE_MACHINE';
-
-
-
+export const ADD_RF='ADD_RF';
+export const GET_RF='GET_RF';
+export const DELETE_RF='DELETE_RF'
+export const MULTIPLE_DELETE_RF='MULTIPLE_DELETE_RF';
+export const UPDATE_RF='UPDATE_RF';
 export const ADD_MACHINE_ID ='ADD_MACHINE_ID';
 export const  GET_MACHINE_ID ='GET_MACHINE_ID'
 export const  UPDATE_MACHINE_ID ='UPDATE_MACHINE_ID';
