@@ -70,10 +70,10 @@ exports.get = (req, res, next) => {
 }
 
 exports.update = (req, res, next) => {
+    const body = req.body;
     const machineDetailId = req.params.id;
     console.log('Id ===>', machineDetailId);
     body.machineDetailId = machineDetailId;
-    const body = req.body;
     console.log('Body ===>', body);
 
     MachineDetail.findOne({

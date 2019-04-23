@@ -5,6 +5,16 @@ const httpStatus = require('http-status');
 const Op = db.Sequelize.Op;
 
 const RFID = db.rfid;
+const Tenant = db.tenant;
+
+filterItem = (sendedItem, arr) => {
+    let count = 0;
+    arr.map(item => {
+        if (condition) {
+            
+        }
+    })
+}
 
 exports.create = (req, res, next) => {
     const body = req.body;
@@ -169,5 +179,36 @@ exports.deleteSelected = (req, res, next) => {
         .catch(err => {
             console.log('Error ===>', err);
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+exports.getRFID = (req, res, next) => {
+    const rfidsArr = []
+    RFID.findAll({
+        where: {
+            isActive: true
+        }
+    })
+        .then(rfids => {
+            if (rfids.length !== 0) {
+                Tenant.findAll({
+                    where: {
+                        isActive: true
+                    },
+                    attributes: ['rfid']
+                })
+                    .then(tenantRFIDs => {
+                        if (tenantRFIDs.length !== 0) {
+                            tenantRFIDs.map(item => {
+                                rfidsArr.push(item);
+                            })
+                            rfids.filter(filterItem(rfidsArr))
+                        } else {
+
+                        }
+                    })
+            } else {
+
+            }
         })
 }
