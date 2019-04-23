@@ -30,6 +30,10 @@ class MachineIdMaster extends Component {
         return this.props.history.replace('/') 
     }
        
+    changePassword = () => {
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+ 
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
@@ -83,6 +87,8 @@ class MachineIdMaster extends Component {
                 <Label> Machine Id</Label>
                 <Input type="text" className="form-control" placeholder="Machine Id" name="machineActualId" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={30} />
                 <span className="error">{this.state.errors.machineActualId}</span>
+                <span className="error">{this.state.message}</span>
+
 
             </FormGroup>
             <FormGroup>

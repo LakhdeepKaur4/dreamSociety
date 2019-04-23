@@ -3,7 +3,7 @@
 // export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 // export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
-// export  const URN = 'https://mydreamsociety.herokuapp.com/api';
+// export  const URN = 'http://192.168.1.102:8082/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://dreamsociety.herokuapp.com/';
@@ -293,6 +293,7 @@ export const EDIT_OWNER_FLAT='EDIT_OWNER_FLAT';
 
 export const ADD_MACHINE ='ADD_MACHINE';
 export const  GET_MACHINE ='GET_MACHINE'
+export const GET_MACHINE_ACTUAL_ID='GET_MACHINE_ACTUAL_ID';
 export const  UPDATE_MACHINE ='UPDATE_MACHINE';
 export const  DELETE_MACHINE ='DELETE_MACHINE';
 export const DELETE_MULTIPLE_MACHINE = 'DELETE_MULTIPLE_MACHINE';
@@ -306,3 +307,4 @@ export const  GET_MACHINE_ID ='GET_MACHINE_ID'
 export const  UPDATE_MACHINE_ID ='UPDATE_MACHINE_ID';
 export const  DELETE_MACHINE_ID ='DELETE_MACHINE_ID';
 export const DELETE_MULTIPLE_MACHINE_ID = 'DELETE_MULTIPLE_MACHINE_ID';
+export const GET_OWNER_RF="GET_OWNER_RF";
