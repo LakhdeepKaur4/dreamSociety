@@ -94,6 +94,5 @@ const rootReducer = combineReducers({
     IndividualVendorReducer,
     registerComplaintReducer,
     MachineDetails
-
 })
 export default rootReducer;

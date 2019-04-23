@@ -9,7 +9,8 @@ import { viewTower } from '../../actionCreators/towerMasterAction';
 import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
 import { getRelation } from './../../actionCreators/relationMasterAction';
 import Spinner from '../../components/spinner/spinner';
-import { getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail } from '../../actionCreators/tenantMasterAction';
+import { numberValidation, maxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler, memberMaxDate } from '../../validation/validation';
+import { getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail, rfid } from '../../actionCreators/tenantMasterAction';
 
 class AddTenant extends Component{
     constructor(props) {
@@ -69,18 +70,21 @@ class AddTenant extends Component{
             defaultPermanentAddress:'',
             pin:'',
             pinCode:'',
-            message:''
+            message:'',
+            refidId:''
         }
     }
+
 
     componentDidMount() {
         this.props.detailSociety();
         this.props.viewTower();
         this.props.getRelation();
-        this.props.getCountry()
-        this.props.getState()
-        this.props.getCity()
-        this.props.getLocation()
+        this.props.getCountry();
+        this.props.getState();
+        this.props.getCity();
+        this.props.getLocation();
+        this.props.rfid();
         let societyId = localStorage.getItem('societyId')
         console.log(societyId);
         this.setState({societyId})
@@ -105,13 +109,7 @@ class AddTenant extends Component{
         return this.props.history.replace('/superDashBoard');
     }
 
-    numberValidation = (event) => {
-        const pattern = /^[0-9]$/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
-    }
+    
 
     onChange = (e) => {
         
@@ -227,12 +225,6 @@ class AddTenant extends Component{
         return [];
     }
 
-    maxDate = () => {
-        var d = new Date();
-        d.setFullYear(d.getFullYear()-18, d.getMonth());
-        return d.toISOString().split('T')[0];
-    }
-
     userMemberHandler = (e) => {
         if (e.target.value != '') {
             this.setState({
@@ -248,35 +240,13 @@ class AddTenant extends Component{
         console.log(this.state)  
     }
 
-    // memberDetailChange2 = (e) => {
-        
-    //     if([e.target.value] !== ''){
-    //         this.setState({[e.target.name]:e.target.value, memberError2:''})
-    //         console.log(this.state)
-    //     }
-    //     if(!e.target.value) {
-    //         this.setState({memberError2:`Gender can't be empty.`});
-    //     }   
-    // }
-
-    // memberDetailChange3 = (e) => {
-        
-    //     if([e.target.value] !== ''){
-    //         this.setState({[e.target.name]:e.target.value, memberError3:''})
-    //         console.log(this.state)
-    //     }
-    //     if(!e.target.value) {
-    //         this.setState({memberError3:`Date of birth can't be empty.`});
-    //     }   
-    // }
-
     onSubmit = (e) => {
         this.setState({loading: true})
         console.log(this.state.societyId)
         e.preventDefault()
         let { firstName,lastName, dob, gender, email, contact, profilePicture, aadhaarNumber, permanentAddress, correspondenceAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, member, fileName, societyId, towerName, towerId, floorId, countryId, stateId, cityId, locationId } = this.state;
+            societyName, member, fileName, societyId, towerName, towerId, floorId, countryId, stateId, cityId, locationId, rfidId } = this.state;
         console.log(this.state)
         
         
@@ -284,10 +254,11 @@ class AddTenant extends Component{
         
         console.log(firstName,lastName, dob, gender,aadhaarNumber, email, contact, profilePicture, correspondenceAddress, permanentAddress, bankName, 
             accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, 
-            societyName, societyId, member, towerName, fileName, towerId, floorId, countryId, stateId, cityId, locationId );
+            societyName, societyId, member, towerName, fileName, towerId, floorId, countryId, stateId, cityId, locationId, rfidId );
 
         const data1 = {firstName,lastName, dob, gender,aadhaarNumber, email, contact, profilePicture, correspondenceAddress, permanentAddress, bankName, 
-            accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, societyName, societyId, member, towerName, fileName, towerId, floorId, countryId, stateId, cityId, locationId }
+            accountHolderName, accountNumber, panCardNumber, IFSCCode, noOfMembers, flatDetailId, societyName, societyId, member, towerName, fileName, towerId, floorId, countryId, stateId, cityId, locationId,
+            rfidId }
 
         if(this.state.imageSizeError === '' && this.state.messageContactErr==='' && this.state.messageEmailErr===''){
             this.props.addTenantDetail(data1)
@@ -369,14 +340,16 @@ class AddTenant extends Component{
             for(let i = 0; i < this.state.noOfMembers; i++){
                if(this.state.noOfMembers !== 0 || this.state.noOfMembers){
                 if(!this.state[`memberName` + i] || !this.state[`memberDob` + i]
-                || !this.state[`relationId` + i] || !this.state[`gender` + i]) errors.memberError = `Please fill all member details`
+                || !this.state[`relationId` + i] || !this.state[`gender` + i] || 
+                !this.state[`rfidId` + i] ) errors.memberError  = `Please fill all member details`
                }
                 console.log(this.state.member)
                 data = {
                     memberName: this.state['memberName'+i],
                     memberDob: this.state['memberDob'+i],
                     relationId: this.state['relationId'+i],
-                    gender:this.state['gender'+i]
+                    gender:this.state['gender'+i],
+                    rfidId:this.state[`rfidId` + i]
                 }
                     this.state.member.push(data)
                     this.setState({memberError1:this.state['memberName'+i]})
@@ -405,15 +378,14 @@ class AddTenant extends Component{
                 this.setState({ step: this.state.step + 1 })
             }
         }
-    }
-
-    
-
-    emailValid(event) {
-        const pattern = /^(?!@*?\@\@)[a-zA-Z0-9@._]+$/
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
+        const { rfidId } = this.state;
+        if(this.state.step === 4){
+            if(!rfidId) errors.rfidId = `Please select RFID.`
+            const isValid = Object.keys(errors).length === 0
+            this.setState({ errors });
+            if (isValid) {
+                this.setState({ step: this.state.step + 1 })
+            }
         }
     }
 
@@ -439,25 +411,11 @@ class AddTenant extends Component{
         
     }
 
-    OnKeyPressUserhandler(event) {
-        const pattern = /^[a-zA-Z ]+$/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
-    }
-
     changePassword=()=>{ 
         return this.props.history.replace('/superDashboard/changePassword')
      }
     
-    bankValidation(e){
-        const pattern = /^[a-zA-Z0-9_, ]+$/;
-        let inputChar = String.fromCharCode(e.charCode);
-        if (!pattern.test(inputChar)) {
-            e.preventDefault();
-        }
-    }
+    
 
     getFloor=({getFlatDetail})=>{
         console.log("floor",getFlatDetail)
@@ -718,13 +676,7 @@ class AddTenant extends Component{
         this.setState({defaultPermanentAddress: this.state.correspondenceAddress ,permanentAddress: e.target.value,message:''})
     }
 
-    fNameKeyPress(event){
-        const pattern = /^[a-zA-Z]+$/;
-        let inputChar = String.fromCharCode(event.charCode);
-        if (!pattern.test(inputChar)) {
-            event.preventDefault();
-        }
-    }
+    
 
     pinChange = (e) => {
         console.log(this.state)
@@ -746,6 +698,34 @@ class AddTenant extends Component{
         this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip Code: ' + pin})
         console.log('updatePermanentAddress', this.state.permanentAddress)
     }
+
+    rfidOptions = ({getRFID}) => {
+        console.log(getRFID)
+        if (getRFID && getRFID.rfids) {
+            return getRFID.rfids.map((item) => {
+                return (
+                    { ...item, name:"rfid", label: item.rfid, value: item.rfidId }
+                )
+            }
+            );
+        }
+        return [];
+    }
+
+    rfidChange = (name,selectOption) => {
+        
+        if(name && selectOption){
+            this.setState(function (prevState, props) {
+                return {
+                    [name]: selectOption.value,
+                    errors:''
+                }
+            }, function () {
+                console.log(selectOption.value)
+            });
+        }
+        console.log(this.state)
+}
 
     render(){
         console.log(this.state.societyCountry)
@@ -788,18 +768,22 @@ class AddTenant extends Component{
             
             userDatas.push(<FormGroup key={i}>
                 <Row form>
-                    <Col md={6}>
+                    <Col md={4}>
                         <Label>Name</Label>
                         <Input placeholder="Name Of Member"
-                        onKeyPress={this.OnKeyPressUserhandler}
+                        onKeyPress={OnKeyPressUserhandler}
                          name = {`memberName${i}`} onChange={this.memberDetailChange} 
                         className="input"  />
                        
                     </Col>
-                    <Col md={6}>
+                    <Col md={4}>
                         <Label>Relation With Tenant</Label>
                         <Select name={`relationId${i}`} options={this.getRelationList(this.props.relationList)} 
                           onChange={this.relationHandler.bind(this,'relationId'+i )} placeholder={<DefaultSelect/>}  />
+                    </Col>
+                    <Col md={4}>
+                        <Label>Date of Birth</Label>
+                        <Input type="date"  max={memberMaxDate()}  name={`memberDob${i}`} onChange={this.memberDetailChange} />
                     </Col>
                     <Col md={12} style={{marginTop:'20px', marginBottom:'20px'}}>
                         <Label>Gender:</Label>
@@ -814,13 +798,19 @@ class AddTenant extends Component{
                         
                         
                         <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
-                        <span><Input type="radio" onKeyPress={this.OnKeyPressUserhandler}
+                        <span><Input type="radio" onKeyPress={OnKeyPressUserhandler}
                                     name = {`memberName${i}`} onChange={this.memberDetailChange} 
                                     className="input"/></span>
                     </Col>
-                    <Col md={12}>
-                        <Label>Date of Birth</Label>
-                        <Input type="date"  max={this.maxDate()}  name={`memberDob${i}`} onChange={this.memberDetailChange} />
+                    
+                    <Col md={6}>
+                        <Label>RFID</Label>
+                        <Select name={`rfidId${i}`} placeholder={<DefaultSelect />} 
+                        options={this.rfidOptions(this.props.tenantReducer)}
+                        onChange={this.rfidChange.bind(this, 'rfidId'+i)} />
+                    </Col>
+                    <Col md={6}>
+                        
                     </Col>
                 </Row>
             </FormGroup>
@@ -833,14 +823,14 @@ class AddTenant extends Component{
                         <h3>Tenant Details</h3>
                         <FormGroup>
                             <Label>First Name</Label>
-                            <Input type="text" placeholder="First Name"  onKeyPress={this.fNameKeyPress}
+                            <Input type="text" placeholder="First Name"  onKeyPress={fNameKeyPress}
                             onChange={this.onChange} 
                             maxLength={100} name='firstName' />
                             {<span className="error">{this.state.errors.firstName}</span>}
                         </FormGroup>
                         <FormGroup>
                             <Label>Last Name</Label>
-                            <Input type="text" placeholder="Last Name"  onKeyPress={this.fNameKeyPress} 
+                            <Input type="text" placeholder="Last Name"  onKeyPress={fNameKeyPress} 
                             onChange={this.onChange} 
                             maxLength={100} name='lastName' />
                             {<span className="error">{this.state.errors.lastName}</span>}
@@ -848,7 +838,7 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>Date of Birth</Label>
                             <Input type="date" onChange={this.onChange} name="dob"
-                             max={this.maxDate()} name="dob" />
+                             max={maxDate()} name="dob" />
                              {<span className="error">{this.state.errors.dob}</span>}
                         </FormGroup>
                         <FormGroup>
@@ -871,7 +861,7 @@ class AddTenant extends Component{
                         </FormGroup>
                         <FormGroup>
                             <Label>Contact Number</Label>
-                            <Input onKeyPress={this.numberValidation} onChange={this.onChange}
+                            <Input onKeyPress={numberValidation} onChange={this.onChange}
                              name="contact" placeholder="Contact Number" type="text" maxLength="10" />
                              {<span className="error">
                                 {this.state.errors.contact}
@@ -880,7 +870,7 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>Email</Label>
                             <Input placeholder="Email" onChange={this.emailChange}
-                            onKeyPress={this.emailValid} name="email" type="email" maxLength="70" />
+                            onKeyPress={emailValid} name="email" type="email" maxLength="70" />
                             {<span className="error">{this.state.emailValidError}</span>}
                             <span><br/></span>
                             {<span className="error">{this.state.errors.email}</span>}
@@ -889,7 +879,7 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>Aadhaar Number</Label>
                             <Input placeholder="Aadhaar number" onChange={this.onChange}
-                            name="aadhaarNumber"  onKeyPress={this.numberValidation} type="text"
+                            name="aadhaarNumber"  onKeyPress={numberValidation} type="text"
                             maxLength="12" />
                             {<span className="error">
                                 {this.state.errors.aadhaarNumber}
@@ -900,13 +890,7 @@ class AddTenant extends Component{
                             <Input placeholder="Pan Number" onChange={this.panChange}
                             value={this.state.panCardNumber.toUpperCase()}
                              type='text' name="panCardNumber"
-                             maxLength='10' onKeyPress={(e) => {
-                                const pattern = /^[a-zA-Z0-9]+$/;
-                                let inputChar = String.fromCharCode(e.charCode);
-                                if (!pattern.test(inputChar)) {
-                                    e.preventDefault();
-                                }
-                            }}  />
+                             maxLength='10' onKeyPress={panCardValidation}  />
                              {<span className="error">{this.state.errors.panCardNumber}</span>}
                         </FormGroup>
                     </div>
@@ -923,13 +907,13 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>Account Holder Name</Label>
                             <Input placeholder="Holder Name" onChange={this.onChange}
-                            onKeyPress={this.OnKeyPressUserhandler} maxLength="80"
+                            onKeyPress={OnKeyPressUserhandler} maxLength="80"
                              type="text" name='accountHolderName' />
                              {<span className="error">{this.state.errors.accountHolderName}</span>}
                         </FormGroup>
                         <FormGroup >
                             <Label>Account Number</Label>
-                            <Input onKeyPress={this.numberValidation} onChange={this.onChange}
+                            <Input onKeyPress={numberValidation} onChange={this.onChange}
                              placeholder="Account Number"
                              type="text" className="quantity" name='accountNumber' maxLength='18'/>
                              {<span className="error">{this.state.errors.accountNumber}</span>}
@@ -956,7 +940,7 @@ class AddTenant extends Component{
                         <div style={{textAlign:'right'}}><span className="error">{this.state.errors.memberError}</span></div>
                         <FormGroup>
                             <Label>Number of Member</Label>
-                            <Input onKeyPress={this.numberValidation} placeholder="number of member"
+                            <Input onKeyPress={numberValidation} placeholder="number of member"
                              onChange={this.userMemberHandler} type='text' 
                              className="quantity" name="noOfMembers" />
                         </FormGroup>
@@ -1035,7 +1019,7 @@ class AddTenant extends Component{
                         <FormGroup>
                             <Label>Pin/Zip Code</Label>
                             <Input type="text" onChange={this.pinChange}
-                            maxLength="6" onKeyPress={this.numberValidation}
+                            maxLength="6" onKeyPress={numberValidation}
                                 name="pin" placeholder="Pin/Zip Code" />
                                 <span className="error">{this.state.errors.pin}</span>
                         </FormGroup>
@@ -1061,7 +1045,7 @@ class AddTenant extends Component{
                         </FormGroup>
                         <FormGroup>
                             <Label>Flat No.</Label>
-                            <Input onKeyPress={this.numberValidation} onChange={this.flatChangeHandler}
+                            <Input onKeyPress={numberValidation} onChange={this.flatChangeHandler}
                              placeholder="Flat No." defaultValue="no-value"
                             type='select' name="flatDetailId" >
                             <DefaultSelect />
@@ -1078,6 +1062,13 @@ class AddTenant extends Component{
                              type='file' name="profilePicture" />
                         </FormGroup>
                         <span className="error">{this.state.imageSizeError}</span>
+                        <FormGroup>
+                            <Label>RFID</Label>
+                            <Select name='rfidId' placeholder={<DefaultSelect />} 
+                                options={this.rfidOptions(this.props.tenantReducer)}
+                                onChange={this.rfidChange.bind(this, 'rfidId')} />
+                            {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
+                        </FormGroup>
                     </div>
                     <div>
                         {this.state.message ? <span className="error">{this.state.message}</span>:''}<br/>
@@ -1118,5 +1109,5 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {detailSociety, viewTower, getRelation,getFlatDetailViaTowerId,
+export default connect(mapStateToProps, {detailSociety, viewTower, getRelation,getFlatDetailViaTowerId,rfid,
     getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail, getCountry,getState,getCity, getLocation})(AddTenant);
