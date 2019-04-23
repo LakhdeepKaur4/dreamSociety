@@ -15,6 +15,7 @@ const jwt = require('jsonwebtoken');
 const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921aa', '68afe5aeee2b5f9bbabf2489f2e8ade2');
 const bcrypt = require('bcryptjs');
 const randomInt = require('random-int');
+const RfId = db.rfid;
 
 const Owner = db.owner;
 
@@ -315,6 +316,7 @@ exports.create1 = async (req, res, next) => {
       userId: req.userId,
       societyId: ownerBody.societyId,
       towerId: ownerBody.towerId,
+      rfidId:ownerBody.rfidId,
       // flatDetailId: ownerBody.flatDetailId,
       floorId: ownerBody.floorId
     });
@@ -367,7 +369,7 @@ exports.create1 = async (req, res, next) => {
         memberNewArray, {
           returning: true
         }, {
-          fields: ["memberName", "memberDob", "gender", "relationId"]
+          fields: ["memberName", "memberDob", "gender", "relationId" , "memberRfId"]
           // updateOnDuplicate: ["name"]
         }
       );
@@ -487,6 +489,9 @@ exports.get1 = async (req, res, next) => {
         },
         {
           model: Tower
+        },
+        {
+          model:RfId
         }
       ]
     });
@@ -577,6 +582,9 @@ exports.get2 = async (req, res, next) => {
         },
         {
           model: Tower
+        },
+        {
+          model:RfId
         }
       ]
     });
@@ -784,7 +792,7 @@ exports.update1 = async (req, res, next) => {
     "email",
     "contact"
   ]
-  let ids = ["flatDetailId", "societyId", "towerId", "floorId"];
+  let ids = ["flatDetailId", "societyId", "towerId", "floorId","rfidId"];
   let others = ["dob", "noOfMembers"];
   try {
     const id = req.params.id;
@@ -978,7 +986,7 @@ exports.update2 = async (req, res, next) => {
   ];
 
   let updUserAttr = {};
-  let ids = ["flatDetailId", "societyId", "towerId", "floorId"];
+  let ids = ["flatDetailId", "societyId", "towerId", "floorId" , "rfidId"];
   let others = ["dob", "noOfMembers"];
   try {
     const id = req.params.id;
@@ -1425,7 +1433,7 @@ exports.updateMember = async (req, res, next) => {
       "memberName",
       "gender"
     ];
-    let ids = ["relationId"];
+    let ids = ["relationId","memberRfId"];
     let others = ["memberDob"];
 
     console.log("updating ownerMember");
