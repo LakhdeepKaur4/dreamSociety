@@ -10,7 +10,7 @@ const Tenant = db.tenant;
 filterItem = (sendedItem, arr) => {
     let count = 0;
     arr.map(item => {
-        if (item === sendedItem.rfid) {
+        if (item.rfidId === sendedItem.rfid) {
             count += 1
         }
     })
@@ -198,7 +198,7 @@ exports.getRFID = (req, res, next) => {
                     where: {
                         isActive: true
                     },
-                    attributes: ['rfid']
+                    attributes: ['rfidId']
                 })
                     .then(tenantRFIDs => {
                         if (tenantRFIDs.length !== 0) {
