@@ -11,6 +11,9 @@ import { viewTower } from '../../actionCreators/towerMasterAction';
 import {addMachine} from '../../actionCreators/machineMasterAction';
 import {Link} from 'react-router-dom';
 import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
+import {viewMachine} from '../../actionCreators/machineIdMasterAction';
+import DefaultSelect from '../../constants/defaultSelect';
+
 class MachineMaster extends Component {
     constructor(props) {
         super(props);
@@ -28,8 +31,30 @@ class MachineMaster extends Component {
     componentDidMount(){
         this.props.viewTower();
         this.props.getFlatDetails();
+        this.props.viewMachine();
     }
 
+
+
+    flatList =({machine})=>{
+        console.log(machine);
+        if(machine)
+        {
+
+                     return machine.machinesDetail.map((item)=>{
+                                
+                                return (
+                
+                                    <option key={item.machineDetailId} value ={item.machineDetailId}>
+                         
+                                         {item.machineActualId}
+                       
+
+                                        </option>
+            )
+        })
+    }
+}
 
     onChange = (event) => {
       
@@ -146,7 +171,12 @@ class MachineMaster extends Component {
             <div>
                     <FormGroup>
                     <Label>Machine Id</Label>
-                    <Input  name ="machineActualId" onChange ={this.onChange}  onKeyPress={this.KeyPress}  maxLength={50}></Input>
+                    <select  className="form-control"   defaultValue='no-value'  name ="machineActualId" onChange ={this.onChange}  onKeyPress={this.KeyPress}  maxLength={16}>
+                   <DefaultSelect/>
+                    
+                    {this.flatList(this.props.MachineIdDetails)}
+                    
+                    </select>
                     <span className="error">{this.state.errors.machineActualId}</span>
                               <span className="error">{this.state.message}</span>
                     
@@ -206,9 +236,11 @@ function mapStateToProps(state) {
     return {
         towerFloor:state.FlatOwnerReducer,
         towerList: state.TowerDetails,
+        MachineIdDetails: state.MachineIdDetails,
+
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({getAllFloor,viewTower,addAnotherFlats,getFlatDetails,addMachine}, dispatch)
+    return bindActionCreators({getAllFloor,viewTower,addAnotherFlats,getFlatDetails,addMachine,viewMachine}, dispatch)
 }
 export default connect(mapStateToProps,mapDispatchToProps)(MachineMaster);

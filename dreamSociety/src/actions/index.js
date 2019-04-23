@@ -7,6 +7,7 @@
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://dreamsociety.herokuapp.com/';
+// 
 
 
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
@@ -77,6 +78,7 @@ export const GET_FLAT_TYPE ='get_flat_type';
 export const ADD_FLAT_DETAILS= 'add_flat_details';
 export const GET_FLAT_DETAILS='get_flat_details';
 export const UPDATE_FLAT_DETAILS='update_flat_details';
+export const DELETE_FLAT='DELETE_FLAT';
 export const GET_COUNTRY_NAME='get_country_name';
 export const GET_STATE_NAME='get_state_name';
 export const GET_CITY_NAME='get_city_name';
@@ -294,3 +296,13 @@ export const  GET_MACHINE ='GET_MACHINE'
 export const  UPDATE_MACHINE ='UPDATE_MACHINE';
 export const  DELETE_MACHINE ='DELETE_MACHINE';
 export const DELETE_MULTIPLE_MACHINE = 'DELETE_MULTIPLE_MACHINE';
+export const ADD_RF='ADD_RF';
+export const GET_RF='GET_RF';
+export const DELETE_RF='DELETE_RF'
+export const MULTIPLE_DELETE_RF='MULTIPLE_DELETE_RF';
+export const UPDATE_RF='UPDATE_RF';
+export const ADD_MACHINE_ID ='ADD_MACHINE_ID';
+export const  GET_MACHINE_ID ='GET_MACHINE_ID'
+export const  UPDATE_MACHINE_ID ='UPDATE_MACHINE_ID';
+export const  DELETE_MACHINE_ID ='DELETE_MACHINE_ID';
+export const DELETE_MULTIPLE_MACHINE_ID = 'DELETE_MULTIPLE_MACHINE_ID';

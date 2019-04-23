@@ -805,7 +805,6 @@ class vendorMaster extends Component {
                 <Label>Contact Number</Label>
                 <Input type="text" placeholder="Contact Number" name="contact" maxLength={10} onKeyPress={this.OnKeyPresshandlerPhone} value={this.state.contact} onChange={this.handleChange} />
                 <span className="error">{this.state.errors.contact}</span>
-                <span className="error">{this.state.message}</span>
             </FormGroup>
             </Col>
             <Col md={6}>
@@ -813,6 +812,7 @@ class vendorMaster extends Component {
                 <Label>Email</Label>
                 <Input type="email" placeholder="Email" name="email" maxLength={80}  value={this.state.email} onKeyPress={this.OnKeyPresshandlerEmail} onBlur={this.OnKeyPresshandlerEmail} onChange={this.handleChange}/>
                 <span className="error">{this.state.errors.email}</span>
+                <span className="error">{this.state.message}</span>
                 <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
             </FormGroup>
             </Col>

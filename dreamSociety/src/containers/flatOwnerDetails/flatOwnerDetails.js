@@ -12,6 +12,7 @@ import {getFlatDetails,getSlots} from '../../actionCreators/flatDetailMasterActi
 import {addFlatOwner,getAllFloor} from '../../actionCreators/flatOwnerAction';
 import {Link} from 'react-router-dom';
 import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
+import {fetchRf} from '../../actionCreators/rfIdAction';
 
 class FlatOwnerDetails extends Component {
     constructor(props) {
@@ -66,6 +67,10 @@ class FlatOwnerDetails extends Component {
             floorId1:'',
             towerName1:'',
             floorName1:'',
+            fingerPrint:'',
+            rfId:'',
+            memberFingerPrintId:'',
+            memberRfId:''
         }
     }
     toggles = () => {
@@ -80,6 +85,7 @@ class FlatOwnerDetails extends Component {
         this.props.getState()
         this.props.getCity()
         this.props.getLocation()
+        this.props.fetchRf()
     }
     logout = () => {
         localStorage.removeItem('token');
@@ -561,6 +567,17 @@ OnKeyPresshandlerEmail=(event)=> {
              
          }
      }
+     RfID=({rfList})=>{
+         console.log(rfList)
+         if(rfList){
+             return (
+                rfList.RFIDs.map((item)=>{
+                    return ({ ...item, label:item.rfid, value:item.rfidId})
+                })
+             )
+         }
+
+     }
 
      onChangeLocation = (locationName, locationId, selectOption) => {
          this.setState({
@@ -575,7 +592,13 @@ OnKeyPresshandlerEmail=(event)=> {
         this.state.cityName + ' , ' + this.state.stateName + ',' + this.state.countryName+' '+this.state.pin })
     }
     getParking=({ slots })=>{
-this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingName})
+this.setState({totalParking:slots.slots.count,parkingName:slots?slots.slots.rows[0].parking_master.parkingName:''})
+    }
+    fingerPrintHandler=(e)=>{
+        this.setState({
+            fingerPrint:e.target.value
+        })
+
     }
       
     render() {
@@ -619,6 +642,14 @@ this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingNam
                                 </div>
                                 </Col>
                 </Row>
+                <FormGroup>
+                                <Label>Finger Print Id</Label>
+                                <Input type='text' name={'memberFingerPrintId'+i} onChange={this.onChangeHandler} />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>RF ID</Label>
+                                <Select placeholder={PlaceHolder} name={'memberRfId'+i} options={this.RfID(this.props.rfId)} onChange={this.onChangeHandler}/>
+                            </FormGroup>
             </FormGroup>);
         }
         return (
@@ -828,6 +859,14 @@ this.setState({totalParking:slots.slots.count,parkingName:slots.slots.parkingNam
                                  <img src={this.state.profilePicture} height='100px' width='100px' />
                                  </div>
                             </FormGroup>
+                            <FormGroup>
+                                <Label>Finger Print Id</Label>
+                                <Input type='text' onChange={this.fingerPrintHandler} />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>RF ID</Label>
+                                <Select placeholder={PlaceHolder} options={this.RfID(this.props.rfId)}/>
+                            </FormGroup>
                             {/* <Label>upload your ID</Label> 
          <input  accept='.docx ,.doc,application/pdf' type="file"   name ="documentOne" onChange={this.onFileChange}/> */}
                         </div>
@@ -861,11 +900,12 @@ function mapStateToProps(state) {
         towerList: state.TowerDetails,
         relationList: state.RelationMasterReducer,
         towerFloor:state.FlatOwnerReducer,
-        flatDetailMasterReducer: state.flatDetailMasterReducer
+        flatDetailMasterReducer: state.flatDetailMasterReducer,
+        rfId:state.RFIdReducer
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner,getAllFloor,getCountry,getState,getCity, getLocation,getFlatDetails,getSlots}, dispatch)
+    return bindActionCreators({detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner,getAllFloor,getCountry,getState,getCity, getLocation,getFlatDetails,getSlots,fetchRf}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerDetails);
 
