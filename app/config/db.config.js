@@ -75,6 +75,8 @@ db.complaintStatus = require('../model/complaintStatus.model')(sequelize, Sequel
 db.machine = require('../model/machine.model')(sequelize, Sequelize);
 db.machineDetail = require('../model/machineDetail.model')(sequelize, Sequelize);
 db.rfid = require('../model/rfid.model')(sequelize, Sequelize);
+db.fingerprintData = require('../model/fingerprintData.model')(sequelize, Sequelize);
+db.commonArea = require('../model/commonArea.model')(sequelize, Sequelize);
 
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
 db.otp.belongsTo(db.tenant, { foreignKey: 'tenantId' });
@@ -162,9 +164,11 @@ db.tenantMembersDetail.belongsTo(db.tenant, { foreignKey: 'tenantId' });
 // db.tenant.belongsTo(db.owner, { as: 'Owner3', foreignKey: 'ownerId3' });
 db.tenantMembersDetail.belongsTo(db.relation, { foreignKey: 'relationId' });
 db.tenantMembersDetail.belongsTo(db.user, { foreignKey: 'userId' });
+db.tenantMembersDetail.belongsTo(db.rfid, { foreignKey: 'rfidId' });
 db.tenant.belongsTo(db.user, { foreignKey: 'userId' });
 db.tenant.belongsTo(db.society, { foreignKey: 'societyId' });
 db.tenant.belongsTo(db.tower, { foreignKey: 'towerId' });
+db.tenant.belongsTo(db.rfid, { foreignKey: 'rfidId' });
 db.tenant.belongsToMany(db.flatDetail, { through: 'tenant_flatDetail_master', foreignKey: 'tenantId' });
 db.flatDetail.belongsToMany(db.tenant, { as: 'TenantFlat', through: 'tenant_flatDetail_master', foreignKey: 'flatDetailId' });
 db.tenant.belongsTo(db.floor, { foreignKey: 'floorId' });

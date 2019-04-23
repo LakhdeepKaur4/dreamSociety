@@ -28,6 +28,7 @@ const Otp = db.otp;
 const Role = db.role;
 const UserRoles = db.userRole;
 const TenantFlatDetail = db.tenantFlatDetail;
+const RFID = db.rfid;
 
 setInterval(async function () {
     // console.log("atin")
@@ -441,6 +442,7 @@ exports.createEncrypted = async (req, res, next) => {
                     panCardNumber: encrypt(tenant.panCardNumber),
                     // IFSCCode: encrypt(tenant.IFSCCode),
                     noOfMembers: tenant.noOfMembers,
+                    rfidId: tenant.rfidId,
                     // ownerId: tenant.ownerId1,
                     // ownerId1: tenant.ownerId1,
                     // ownerId2: tenant.ownerId2,
@@ -628,6 +630,7 @@ exports.getDecrypted = async (req, res, next) => {
             include: [
                 { model: Society },
                 // { model: Tower },
+                { model: RFID },
                 {
                     model: FlatDetail, include: [
                         { model: Tower, where: { isActive: true }, attributes: ['towerId', 'towerName'] },
@@ -758,6 +761,7 @@ exports.updateEncrypted = async (req, res, next) => {
             towerIdCheck = constraintCheck('towerId', update);
             // flatDetailIdCheck = constraintCheck('flatDetailId', update);
             floorIdCheck = constraintCheck('floorId', update);
+            rfidIdCheck = constraintCheck('rfidId', update);
 
 
             firstName = constraintReturn(firstNameCheck, update, 'firstName', tenant);
@@ -778,6 +782,7 @@ exports.updateEncrypted = async (req, res, next) => {
             towerId = referenceConstraintReturn(towerIdCheck, update, 'towerId', tenant);
             // flatDetailId = referenceConstraintReturn(flatDetailIdCheck, update, 'flatDetailId', tenant);
             floorId = referenceConstraintReturn(floorIdCheck, update, 'floorId', tenant);
+            rfidId = referenceConstraintReturn(rfidIdCheck, update, 'rfidId', tenant);
 
 
             // await Owner.findAll({
@@ -860,6 +865,7 @@ exports.updateEncrypted = async (req, res, next) => {
                 userId: req.userId,
                 societyId: societyId,
                 towerId: towerId,
+                rfidId: rfidId,
                 // flatDetailId: flatDetailId
             };
 
@@ -922,10 +928,14 @@ exports.getTenantMembers = async (req, res, next) => {
             tenantId: tenantId,
             isActive: true
         },
-        include: {
-            model: Relation,
-            attributes: ['relationName']
-        }
+        include: [
+            {
+                model: Relation,
+                attributes: ['relationName']
+            },
+            { model: RFID }
+        ]
+
     });
     // console.log(tenantMembers)
 
