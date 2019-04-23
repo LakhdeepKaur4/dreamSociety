@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 import { Form, FormGroup, Input, Button, Label } from 'reactstrap';
-import { bindActionCreators } from 'C:/Users/mohit/AppData/Local/Microsoft/TypeScript/3.4.3/node_modules/redux';
+import { bindActionCreators } from 'redux';
 import {addMachine} from '../../actionCreators/machineIdMasterAction';
 import { connect } from 'react-redux';
 

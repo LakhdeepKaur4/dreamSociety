@@ -1,8 +1,6 @@
 import {ADD_FLAT_OWNER,GET_FLAT_OWNER,DELETE_MULTIPLE_OWNER,REMOVE_OWNER,UPDATE_OWNER,GET_OWNER_MEMBER,OWNER_MEMBER_DELETE,MEMBER_OWNER_UPDATE,ADD_NEW_MEMBER,GET_ALL_FLOOR,GET_OWNER_FLAT,DELETE_OWNER_FLAT,ADD_MORE_FLATS,EDIT_OWNER_FLAT} from '../../actions/index';
 
 export default function (state={},action){
-    console.log('action.type',action.type)
-    console.log('action.paload',action.payload)
     switch(action.type){
         case ADD_FLAT_OWNER:
         return {...state ,ownerList:action.payload}
