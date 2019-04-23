@@ -76,6 +76,7 @@ db.machine = require('../model/machine.model')(sequelize, Sequelize);
 db.machineDetail = require('../model/machineDetail.model')(sequelize, Sequelize);
 db.rfid = require('../model/rfid.model')(sequelize, Sequelize);
 db.fingerprintData = require('../model/fingerprintData.model')(sequelize, Sequelize);
+db.commonArea = require('../model/commonArea.model')(sequelize, Sequelize);
 
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
 db.otp.belongsTo(db.tenant, { foreignKey: 'tenantId' });

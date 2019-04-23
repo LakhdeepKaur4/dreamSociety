@@ -9,9 +9,11 @@ const Tenant = db.tenant;
 const TenantMembersDetail = db.tenantMembersDetail
 
 filterItem = (rfids, arr) => {
+    // console.log(arr);
     const resArr = rfids.filter(item => {
         return arr.includes(item.rfidId) === false;
     });
+    // console.log(resArr);
     return resArr;
 }
 
@@ -199,7 +201,7 @@ exports.getRFID = (req, res, next) => {
                     .then(tenantRFIDs => {
                         if (tenantRFIDs.length !== 0) {
                             tenantRFIDs.map(item => {
-                                rfidsArr.push(item);
+                                rfidsArr.push(item.rfidId);
                             })
                             TenantMembersDetail.findAll({
                                 where: {
@@ -210,7 +212,7 @@ exports.getRFID = (req, res, next) => {
                                 .then(tenantmembersRFIDs => {
                                     if (tenantmembersRFIDs.length !== 0) {
                                         tenantmembersRFIDs.map(item => {
-                                            rfidsArr.push(item);
+                                            rfidsArr.push(item.rfidId);
                                         })
                                         sendRFIDs = filterItem(rfids,rfidsArr);
                                         res.status(httpStatus.OK).json({
