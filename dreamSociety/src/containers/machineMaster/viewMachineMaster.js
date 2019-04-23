@@ -8,7 +8,9 @@ import {getAllFloor} from '../../actionCreators/flatOwnerAction';
 import { Label } from 'semantic-ui-react';
 import DefaultSelect from './../../constants/defaultSelect';
 import { viewTower } from '../../actionCreators/towerMasterAction';
-import {viewMachine,updateMachine,deleteMachine,deleteMultipleMachine} from '../../actionCreators/machineMasterAction';
+
+
+import {viewMachine,updateMachine,deleteMachine,deleteMultipleMachine,getMachine} from '../../actionCreators/machineMasterAction';
 import {addNewFlatForTenant, getFlats,getFlatDetailViaTowerId, editFlats, deleteFlat } from '../../actionCreators/tenantMasterAction';
 import Select from 'react-select';
 import { PlaceHolder } from '../../actions/index';
@@ -40,6 +42,7 @@ class ViewMachineMaster extends Component {
         modal: false,
         newFlatId:'',
         machineActualId:'',
+        machineDetailId:'',
         machineId:'',
         message:'',
         flatDetailIds:''
@@ -52,14 +55,15 @@ class ViewMachineMaster extends Component {
         this.props.viewTower();
             this.props.viewMachine().then(() => this.setState({loading:false,modalLoading:false}))
             this.props.getFlats(this.state.tenantId).then(() => this.setState({loading:false}))
-
+             this.props.getMachine()
             console.log(this.props.viewMachine());
     }
 
     refreshData=()=>{
         this.props.viewTower();
         this.props.viewMachine().then(()=>this.setState({modalLoading:false,modal:false}))
-
+ 
+        
 
     }
 
@@ -88,12 +92,12 @@ class ViewMachineMaster extends Component {
         
     }
    
-    toggle = (machineId,machineActualId,towerName,floorName,flatNo,towerId,floorId) => {
+    toggle = (machineId,machineDetailId, machineActualId,towerName,floorName,flatNo,towerId,floorId) => {
         console.log(machineActualId,towerName,floorName,flatNo,towerId,floorId)
         this.props.getFlatDetailViaTowerId(towerId);
 
         this.setState({
-            machineId,machineActualId,towerName,floorName,flatNo,towerId,floorId,
+            machineId,machineDetailId,machineActualId,towerName,floorName,flatNo,towerId,floorId,
             modal: !this.state.modal
             
         })
@@ -223,9 +227,9 @@ class ViewMachineMaster extends Component {
                 this.setState({modalLoading:true})
             
                
-                    let { flatDetailId,machineActualId,machineId } = this.state;
+                    let { flatDetailId,machineDetailId,machineId } = this.state;
                     console.log(flatDetailId )
-                    this.props.updateMachine(flatDetailId,machineActualId,machineId).then(() => this.refreshData())
+                    this.props.updateMachine(flatDetailId,machineDetailId,machineId).then(() => this.refreshData())
     
                 .catch(err=>{ console.log(err.response.data.message)
                     this.setState({modalLoading:false,message: err.response.data.message})
@@ -288,8 +292,8 @@ class ViewMachineMaster extends Component {
             {
     
                          return machine.Machines.sort((item1,item2) =>{
-                            var cmprVal=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
-                            return this.state.sortVal ?cmprVal:-cmprVal}).filter(this.searchFilter(this.state.search)).map((item,index)=>{
+                            var cmprVal=(item1.machine_detail_master[this.state.filterName].localeCompare(item2.machine_detail_master[this.state.filterName]))
+                            return this.state.sortVal ?cmprVal:-cmprVal}).filter(this.searchFilter(this.state.search)).map((item,index)=>{ console.log(item)
                                     
                                     return (
                     
@@ -318,12 +322,12 @@ class ViewMachineMaster extends Component {
                                     }} /></td>
                                            
                                             <td>{index + 1}</td>
-                                            <td> {item.machineActualId}</td>
+                                            <td> {item.machine_detail_master.machineActualId}</td>
                                             <td>{item.flat_detail_master.tower_master.towerName}</td>
                                             <td>{item.flat_detail_master.floor_master.floorName}</td>
                                             <td>{item.flat_detail_master.flatNo}</td>
                                           <td style={{ textAlign: "center" }}>
-                                 <button className="btn btn-success mr-2" onClick={this.toggle.bind(this,item.machineId,item.machineActualId,item.flat_detail_master.tower_master.towerName,item.flat_detail_master.floor_master.floorName,item.flat_detail_master.flatNo,item.flat_detail_master.tower_master.towerId,
+                                 <button className="btn btn-success mr-2" onClick={this.toggle.bind(this,item.machineId, item.machine_detail_master.machineDetailId,item.machine_detail_master.machineActualId,item.flat_detail_master.tower_master.towerName,item.flat_detail_master.floor_master.floorName,item.flat_detail_master.flatNo,item.flat_detail_master.tower_master.towerId,
                                  item.flat_detail_master.floor_master.floorId)}>Edit</button>
                              <button className="btn btn-danger" onClick={this.delete.bind(this,item.machineId)} >Delete</button>
                        </td>
@@ -333,10 +337,7 @@ class ViewMachineMaster extends Component {
             })
         }
     }
-    
-        
-   
-   
+
     logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
@@ -357,11 +358,30 @@ class ViewMachineMaster extends Component {
 }
     searchFilter=(search) =>{
         return function (x) {
-            return x.machineActualId.toLowerCase().includes(search.toLowerCase()) ||
+            return x.machine_detail_master.machineActualId.toLowerCase().includes(search.toLowerCase()) ||
              !search;
         }
     }
-  
+    flat =({machine1})=>{
+        console.log(machine1);
+        if(machine1)
+        {
+
+                     return machine1.machinesDetail.map((item)=>{
+                                
+                                return (
+                
+                                    <option key={item.machineDetailId} value ={item.machineDetailId}>
+                         
+                                         {item.machineActualId}
+                       
+
+                                        </option>
+            )
+        })
+    }
+}
+
    
 
     towerChangeHandler=(e)=>{
@@ -477,7 +497,7 @@ class ViewMachineMaster extends Component {
                    
                         <th>Tower Name</th>
                         <th>Floor</th>
-                        <th>Flat Type</th>
+                        <th>Flat Number</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -493,19 +513,21 @@ class ViewMachineMaster extends Component {
 
         let formData =<div>
        
-        <FormGroup>
- <Label> Machine Id</Label>
- <Input type="text" name="machineActualId" value={this.state.machineActualId} onChange={this.onChange}
-         maxLength={50} required
- />
- <span className="error">{this.state.message}</span>
- 
- </FormGroup>
- 
-        
+       <FormGroup>
+                    <label>Machine Id</label>
+                    <select  className="form-control"   value={this.state.machineDetailId} name ="machineDetailId" onChange ={this.onChange}  onKeyPress={this.KeyPress}  maxLength={16}>
+                   <DefaultSelect/>
+                      
+                    {this.flat(this.props.MachineDetails)}
+                    
+                    </select>
+                    <span className="error">{this.state.errors.machineDetailId}</span>
+                              <span className="error">{this.state.message}</span>
+                    
+                </FormGroup >
         
  <FormGroup>
-                    <Label>Tower</Label>
+                    <label>Tower</label>
                     <Select options={this.getTower(this.props.towerList)}
                         onChange={this.towerChangeHandler.bind(this, 'towerId')}
                         placeholder={PlaceHolder} />
@@ -513,7 +535,7 @@ class ViewMachineMaster extends Component {
                     
                 </FormGroup >
                 <FormGroup>
-                    <Label>Floor</Label>
+                    <label>Floor</label>
                     <Select options={this.getFloor(this.props.towerFloor)}
                         placeholder={PlaceHolder}
                         name="floorId"
@@ -523,14 +545,14 @@ class ViewMachineMaster extends Component {
                
                 </FormGroup>
                 <FormGroup>
-                    <Label>Flat Number</Label>
+                    <label>Flat Number</label>
                     <Select options={this.getFlats(this.props.towerFloor)}
                         placeholder={PlaceHolder}
                         name="flatDetailIds"
                         onChange={this.flatChangeHandler.bind(this, 'flatDetailIds')}
                     />
             {!this.state.flatDetailIds ? <span className="error">{this.state.errors.flatDetailIds}</span> : ''}
-            
+
                 </FormGroup >
                            
                                    <FormGroup>
@@ -588,14 +610,16 @@ function mapStateToProps(state) {
         MachineDetails: state.MachineDetails,
         towerFloor:state.FlatOwnerReducer,
         tenantReducer:state.tenantReducer,
-        towerList: state.TowerDetails
+        towerList: state.TowerDetails,
+        MachineIdDetails: state.MachineIdDetails
+
 
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({viewTower,getAllFloor,viewMachine,deleteMachine,deleteMultipleMachine, updateMachine,getFlats, addNewFlatForTenant, getFlatDetailViaTowerId, viewTower, editFlats,
-        deleteFlat}, dispatch)
+        deleteFlat,getMachine}, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewMachineMaster);

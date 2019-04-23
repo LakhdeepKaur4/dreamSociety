@@ -4,7 +4,7 @@ import { FormGroup, Input, Table, Label, Button, Modal, Row, Col, ModalBody, Mod
 import DefaultSelect from '../../../constants/defaultSelect';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import { getTenantDetail, deleteTenant,getFlatDetailViaTowerId, deleteSelectedTenant,getOwnerDetailViaFlatId,
-updateTenantDetail,addNewFlatForTenant, getFlats } from '../../../actionCreators/tenantMasterAction';
+updateTenantDetail,addNewFlatForTenant, getFlats, rfid } from '../../../actionCreators/tenantMasterAction';
 import Select from 'react-select';
 import {getCountry,getState,getCity, getLocation} from '../../../actionCreators/societyMasterAction';
 import {getAllFloor} from '../../../actionCreators/flatOwnerAction';
@@ -76,19 +76,26 @@ class TenantDetail extends Component {
             viewFlatDetail:false,
             viewFlatLoading:false,
             flatError:'',
-            selectedOption:null
+            selectedOption:null,
+            rfid:'',
+            rfidId:'',
+            defaultRFID:true,
+            editRFID:false,
+            defRFID:''
         }
     }
 
     componentDidMount(){
         this.refreshData();
         this.props.viewTower();
-        this.props.getCountry()
-        this.props.getState()
-        this.props.getCity()
-        this.props.getLocation()
+        this.props.getCountry();
+        this.props.getState();
+        this.props.getCity();
+        this.props.getLocation();
+        this.props.rfid();
         console.log(this.state.societyName)
     }
+
 
     logout = () => {
         localStorage.removeItem('token');
@@ -138,10 +145,10 @@ class TenantDetail extends Component {
         })
     }
 
-    edit = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) =>{
-        console.log(floorName, floorId)
+    edit = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId, rfidId, rfid) =>{
+        console.log(floorName, floorId, rfidId, rfid)
         this.setState({picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, dob, permanentAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId, readOnly:permanentAddress,
-              editTenant: true})
+            rfid, rfidId,defRFID:rfidId,editTenant: true})
     }
 
     searchFilter(search){
@@ -161,11 +168,13 @@ class TenantDetail extends Component {
 
     
 
-    viewTenantDetail = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber , dob, permanentAddress, correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId) => {
-        console.log(picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId)
+    viewTenantDetail = (picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber , dob, permanentAddress, correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId,
+        rfidId,rfid) => {
+        console.log(picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId,
+            rfidId,rfid)
 
         this.setState({picture,firstName,lastName,gender, email, contact, aadhaarNumber, panCardNumber, viewData: !this.state.viewData ,
-             dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId})
+             dob, permanentAddress,correspondenceAddress, towerName, floorName,flatNo,towerId,floorId,flatDetailId, tenantId,rfidId,rfid})
         
         
 
@@ -223,7 +232,8 @@ class TenantDetail extends Component {
                                     item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master?item.flat_detail_master.flatNo:'',
                                     item.tower_master ? item.tower_master.towerId: '',
                                     item.floor_master ? item.floor_master.floorId: '',
-                                    item.flat_detail_master ? item.flat_detail_master.flatDetailId:'', item.tenantId)}>View</Button>
+                                    item.flat_detail_master ? item.flat_detail_master.flatDetailId:'', item.tenantId,
+                                    item.rfidId, item.rfid_master ? item.rfid_master.rfid:'')}>View</Button>
                             </td>
                             <td>
                                 <Button color="success" onClick={this.viewFlats.bind(this, item.tenantId)}>View</Button>
@@ -236,7 +246,8 @@ class TenantDetail extends Component {
                                     item.floor_master ? item.floor_master.floorName: '',item.flat_detail_master ? item.flat_detail_master.flatNo:'',
                                     item.tower_master ? item.tower_master.towerId: '',
                                     item.floor_master ? item.floor_master.floorId: '',
-                                    item.flat_detail_master ? item.flat_detail_master.flatDetailId :'', item.tenantId)} className="mr-2">Edit</Button>
+                                    item.flat_detail_master ? item.flat_detail_master.flatDetailId :'', item.tenantId,
+                                    item.rfidId, item.rfid_master ? item.rfid_master.rfid:'')} className="mr-2">Edit</Button>
                                 <Button color="danger" onClick={this.delete.bind(this, item.tenantId)}>Delete</Button>
                             </td>
                         </tr>
@@ -273,7 +284,7 @@ class TenantDetail extends Component {
     toggleTenant(){
         this.setState({editTenant: !this.state.editTenant, emailValidError:'',messageContactErr:'',messageEmailErr:'',
     permanentAddressVisible:true, editPermanent:false, permanentAddress:this.state.readOnly, countryId:'',
-    stateId:'', cityId:'', locationId:''})
+    stateId:'', cityId:'', locationId:'', editRFID:false, defaultRFID:true, rfidId:''})
     }
 
     toggleData(){
@@ -453,7 +464,7 @@ class TenantDetail extends Component {
 
     refreshDataAfterUpdate = () => {
         this.props.getTenantDetail().then(() => this.setState({editTenant:false, modalLoading: false,permanentAddressVisible:true, editPermanent:false, permanentAddress:this.state.readOnly, countryId:'',
-        stateId:'', cityId:'', locationId:''}))
+        stateId:'', cityId:'', locationId:'', editRFID:false, defaultRFID:true, rfidId:''}))
         .catch(() => this.setState({modalLoading:false}));
     }
 
@@ -462,7 +473,7 @@ class TenantDetail extends Component {
         
         let {firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
             accountHolderName ,accountNumber ,dob, permanentAddress, fileName, towerName, flatNo, towerId,
-        picture, flatDetailId, tenantId, floorId, countryId, stateId, cityId, locationId, pin} = this.state;
+        picture, flatDetailId, tenantId, floorId, countryId, stateId, cityId, locationId, pin, rfid, rfidId} = this.state;
         let errors = {};
         if(this.state.firstName === '') {
             console.log('tenant');
@@ -491,6 +502,9 @@ class TenantDetail extends Component {
             if(pin === '') errors.pin = `Pin/Zip code can't be empty.`
             else if(pin.length < 5) errors.pin = `Pin/Zip code should be of 5 digits atleast.`
         }
+        if(!!document.getElementById('isRfidChecked').checked){
+            if(rfidId === '') errors.rfidId = `Please select RFID.`
+        }
         if(this.state.editAddress === '' && !!this.state.editPermanent) errors.editAddress = `Permanent Address can't be empty.`;
         // if(!this.state.towerId) {
         //     console.log('1');
@@ -516,7 +530,7 @@ class TenantDetail extends Component {
             this.setState({modalLoading: true})
             this.props.updateTenantDetail(firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
                  accountNumber,accountHolderName, dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId,
-                 countryId, stateId, cityId, locationId)
+                 countryId, stateId, cityId, locationId,rfidId)
                 .then(() => this.refreshDataAfterUpdate())
                 .catch((err) => {
                     console.log(err.response.data)
@@ -856,6 +870,45 @@ class TenantDetail extends Component {
         }
     }
 
+    rfidOptions = ({getRFID}) => {
+        console.log(getRFID)
+        if (getRFID && getRFID.rfids) {
+            return getRFID.rfids.map((item) => {
+                return (
+                    { ...item, name:"rfid", label: item.rfid, value: item.rfidId }
+                )
+            }
+            );
+        }
+        return [];
+    }
+
+    rfidChange = (name,selectOption) => {
+        
+        if(name && selectOption){
+            this.setState(function (prevState, props) {
+                return {
+                    [name]: selectOption.value,
+                    errors:''
+                }
+            }, function () {
+                console.log(selectOption.value)
+            });
+        }
+        console.log(this.state)
+}
+    editRFID = () => {
+        if(!!document.getElementById('isRfidChecked').checked){
+            console.log('is checked')
+        this.setState({rfidId: '' , defaultRFID:false, editRFID:true})
+        
+        
+        }
+    else{
+            this.setState({rfidId:this.state.defRFID, defaultRFID:true, editRFID:false})
+        }
+    }
+
     render(){
         let viewFlatModal = <div>
             {this.flatInputs(this.props.tenantReducer)}
@@ -897,13 +950,17 @@ class TenantDetail extends Component {
            </FormGroup>
             <FormGroup>
                 <Row md={12}>
-                    <Col md={6}>
+                    <Col md={4}>
                         <Label>Email</Label>
                         <Input value={this.state.email} name="email" onChange={this.emailChange} disabled />
                     </Col>
-                    <Col md={6}>
+                    <Col md={4}>
                         <Label>Contact</Label>
                         <Input value={this.state.contact} disabled onChange={this.contactChange} />
+                    </Col>
+                    <Col md={4}>
+                        <Label>RFID</Label>
+                        <Input value={this.state.rfid} onChange={this.onChange} readOnly />
                     </Col>
                 </Row>
             </FormGroup>
@@ -1129,10 +1186,32 @@ class TenantDetail extends Component {
                         </Col>
                     </Row>
                 </FormGroup>
+                
             </div> : ''}
             
-            
-            
+            <FormGroup>
+                <Row md={12}>
+                {this.state.defaultRFID ? 
+                    <Col md={6}>
+                        <Label>RFID</Label>
+                        <Input value={this.state.rfid} onChange={this.onChange} readOnly />
+                    </Col> : ''}
+                    {this.state.defaultRFID ? <Col md={6}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your RFID?</span><Input type="checkbox" onChange={this.editRFID} name="isRfidChecked" id="isRfidChecked" className="ml-3" />
+                    </Col> : 
+                    <Col md={12} style={{textAlign:'center'}}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your RFID?</span><Input type="checkbox" onChange={this.editRFID} name="isRfidChecked" id="isRfidChecked" className="ml-3" />
+                    </Col>}
+                </Row>
+            </FormGroup>
+            {this.state.editRFID ? 
+                <FormGroup>
+                    <Label>RFID</Label>
+                    <Select name='rfidId' placeholder={<DefaultSelect />} 
+                        options={this.rfidOptions(this.props.tenantReducer)}
+                        onChange={this.rfidChange.bind(this, 'rfidId')} />
+                    {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
+                </FormGroup> : ''}
             
             <FormGroup>
                 <Button className="mr-2" color="primary" onClick={this.updateTenant}>Save</Button>
@@ -1204,7 +1283,7 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {getTenantDetail, getFlatDetailViaTowerId, deleteTenant, getAllFloor,
     deleteSelectedTenant,viewTower, getOwnerDetailViaFlatId, updateTenantDetail,getCountry,getState,getCity, getLocation,
-    addNewFlatForTenant,getFlats})(TenantDetail);
+    addNewFlatForTenant,getFlats, rfid})(TenantDetail);
 
 
 

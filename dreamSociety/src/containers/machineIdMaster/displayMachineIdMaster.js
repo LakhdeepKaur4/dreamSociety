@@ -265,10 +265,12 @@ class DisplayMachineIdMaster extends Component {
         let formData =<div>
        
         <FormGroup>
- <Label> Machine Id</Label>
+ <label> Machine Id</label>
  <Input type="text" name="machineActualId" value={this.state.machineActualId} onChange={this.onChange}
          maxLength={50} required
  />
+                    <span className="error">{this.state.errors.machineActualId}</span>
+
  <span className="error">{this.state.message}</span>
  
  </FormGroup>
