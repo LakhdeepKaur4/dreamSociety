@@ -577,7 +577,7 @@ module.exports = function (app) {
 	app.get('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.get);
 
 	app.post('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.create);
-	
+
 	app.put('/api/machine/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.update);
 
 	app.put('/api/machine/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], machine.deleteSelected);
@@ -603,6 +603,16 @@ module.exports = function (app) {
 	app.put('/api/rfid/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.deleteSelected);
 
 	app.put('/api/rfid/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.delete);
+
+	app.get('/api/user/count/list', [authJwt.verifyToken, authJwt.isAdminRole], userController.activeUsersCount);
+
+	app.get('/api/inventory/count/list', [authJwt.verifyToken, authJwt.isAdminRole], inventoryController.inventoryList);
+
+	app.get('/api/flats/count', [authJwt.verifyToken, authJwt.isAdminRole], tenant.flatsList);
+
+	app.get('/api/rfid/tenant/count', [authJwt.verifyToken, authJwt.isAdminRole], tenant.rfidCount);
+
+	app.get('/api/rfid/owner/count', [authJwt.verifyToken, authJwt.isAdminRole], owner.rfidCount);
 
 	app.get('/api/tenant/rfid', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.getRFID);
 

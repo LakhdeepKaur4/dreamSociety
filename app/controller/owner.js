@@ -1721,11 +1721,27 @@ exports.editFlat = async (req,res,next) => {
           })
         }
       }   
-      
     }
   }catch(error){
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
   }
-  
+}
+
+
+exports.rfidCount = async (req, res, next) => {
+  try {
+      const rfidCount = await Owner.findAndCountAll({
+          where: {
+              rfidId: {
+                  [Op.ne]: null
+              }
+          }
+      });
+      if(rfidCount){
+      res.status(httpStatus.OK).json({ rfid:rfidCount.count });
+      }
+  } catch (error) {
+      res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+  }
 }

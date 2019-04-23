@@ -175,6 +175,30 @@ exports.deleteSelected = async (req, res, next) => {
     }
 }
 
+exports.totalNumberOfAssets = async(req,res,next) =>{
+    try{
+        
+    }catch(error){
+        console.log(error)
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.inventoryList= async(req,res,next) =>{
+    try{
+      const inventoryCount = await Inventory.findAndCountAll({where:{isActive:true}});
+      const inventory = await Inventory.findAll({
+        where: { isActive: true },
+        attributes: [[sequelize.fn('count', sequelize.col('serialNumber')), 'count'], [sequelize.fn('AVG', sequelize.col('rate')), 'avgRate']],
+    });
+    if(inventory){
+        res.status(httpStatus.OK).json({count:inventory})
+    }
+    }catch(error){
+      res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+  }
+
 
 
 

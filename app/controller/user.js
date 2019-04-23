@@ -2477,3 +2477,28 @@ exports.flatByUserId = (req, res, next) => {
 		})
 }
 
+exports.activeUsersCount = async (req, res, next) => {
+	try {
+		const activeUsers = await User.findAndCountAll({ where: { isActive: true } });
+		const deactiveUsers = await User.findAndCountAll({ where: { isActive: false } });
+		const activeTenant = await Tenant.findAndCountAll({ where: { isActive: true } });
+		const deactiveTenant = await Tenant.findAndCountAll({ where: { isActive: false } });
+		const activeVendor = await Vendor.findAndCountAll({ where: { isActive: true } });
+		const deactiveVendor = await Vendor.findAndCountAll({ where: { isActive: false } });
+		const activeEmployee = await Employee.findAndCountAll({ where: { isActive: true } });
+		const deactiveEmployee = await Employee.findAndCountAll({ where: { isActive: false } });
+		const activeOwner = await Owner.findAndCountAll({ where: { isActive: true } });
+		const deactiveOwner = await Owner.findAndCountAll({ where: { isActive: false } });
+		if (activeUsers && deactiveUsers && activeTenant && deactiveTenant && activeVendor && deactiveVendor && activeEmployee && deactiveEmployee && activeOwner && deactiveOwner) {
+			res.status(httpStatus.OK).json({
+				totalActiveTenant: activeTenant.count,
+				totalDeactiveTenant: deactiveTenant.count, totalActiveVendor: activeVendor.count,
+				totalDeactiveVendor: deactiveVendor.count, totalActiveEmployee: activeEmployee.count, totalDeactiveEmployee: deactiveEmployee.count,
+				totalActiveOwner: activeOwner.count, totalDeactiveCount: deactiveOwner.count
+			})
+		}
+	} catch (error) {
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+	}
+}
+
