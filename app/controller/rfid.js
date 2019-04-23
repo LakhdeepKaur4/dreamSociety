@@ -6,17 +6,13 @@ const Op = db.Sequelize.Op;
 
 const RFID = db.rfid;
 const Tenant = db.tenant;
+const TenantMembersDetail = db.tenantMembersDetail
 
-filterItem = (sendedItem, arr) => {
-    let count = 0;
-    arr.map(item => {
-        if (item === sendedItem.rfid) {
-            count += 1
-        }
-    })
-    if (count === 0) {
-        return sendedItem;
-    }
+filterItem = (rfids, arr) => {
+    const resArr = rfids.filter(item => {
+        return arr.includes(item.rfidId) === false;
+    });
+    return resArr;
 }
 
 exports.create = (req, res, next) => {
@@ -205,10 +201,32 @@ exports.getRFID = (req, res, next) => {
                             tenantRFIDs.map(item => {
                                 rfidsArr.push(item);
                             })
-                            sendRFIDs = rfids.filter(filterItem(rfidsArr));
-                            res.status(httpStatus.OK).json({
-                                rfids: sendRFIDs
+                            TenantMembersDetail.findAll({
+                                where: {
+                                    isActive: true
+                                },
+                                attributes: ['rfidId']
                             })
+                                .then(tenantmembersRFIDs => {
+                                    if (tenantmembersRFIDs.length !== 0) {
+                                        tenantmembersRFIDs.map(item => {
+                                            rfidsArr.push(item);
+                                        })
+                                        sendRFIDs = filterItem(rfids,rfidsArr);
+                                        res.status(httpStatus.OK).json({
+                                            rfids: sendRFIDs
+                                        })
+                                    } else {
+                                        sendRFIDs = filterItem(rfids, rfidsArr);
+                                        res.status(httpStatus.OK).json({
+                                            rfids: sendRFIDs
+                                        })
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log('Error ===>', err);
+                                    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err)
+                                })
                         } else {
                             res.status(httpStatus.OK).json({
                                 rfids: rfids
@@ -216,7 +234,7 @@ exports.getRFID = (req, res, next) => {
                         }
                     })
                     .catch(err => {
-                        console.log('Error ===>',err);
+                        console.log('Error ===>', err);
                         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err)
                     })
             } else {
