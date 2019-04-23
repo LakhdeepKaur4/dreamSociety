@@ -42,8 +42,8 @@ class MaintenanceSubMasterDetails extends Component{
 
     refreshData(){
         this.props.getMaintenanceSubSizeDetails().then(() => this.setState({loading:false})).catch((err) => this.setState({loading:false}));
-        this.props.getMaintenanceType().then(() => this.setState({loading:false})).catch((err) => this.setState({loading:false}));;
-        this.props.getMaintenanceSubSize().then(() => this.setState({loading:false})).catch((err) => this.setState({loading:false}));;
+        this.props.getMaintenanceType();
+        this.props.getMaintenanceSubSize();
     }
     
 
