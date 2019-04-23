@@ -17,6 +17,7 @@ exports.create = (req, res, next) => {
     Machine.findOne({
         where: {
             machineDetailId: body.machineDetailId,
+            flatDetailId: body.flatDetailId,
             isActive: true
         }
     })
@@ -92,6 +93,7 @@ exports.update = (req, res, next) => {
     Machine.findOne({
         where: {
             machineDetailId: body.machineDetailId,
+            flatDetailId: body.flatDetailId,
             isActive: true,
             machineId: {
                 [Op.ne]: body.machineId

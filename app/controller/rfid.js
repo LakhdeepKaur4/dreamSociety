@@ -6,14 +6,15 @@ const Op = db.Sequelize.Op;
 
 const RFID = db.rfid;
 const Tenant = db.tenant;
+const TenantMembersDetail = db.tenantMembersDetail
 
-filterItem = (sendedItem, arr) => {
-    let count = 0;
-    arr.map(item => {
-        if (condition) {
-            
-        }
-    })
+filterItem = (rfids, arr) => {
+    // console.log(arr);
+    const resArr = rfids.filter(item => {
+        return arr.includes(item.rfidId) === false;
+    });
+    // console.log(resArr);
+    return resArr;
 }
 
 exports.create = (req, res, next) => {
@@ -183,7 +184,7 @@ exports.deleteSelected = (req, res, next) => {
 }
 
 exports.getRFID = (req, res, next) => {
-    const rfidsArr = []
+    const rfidsArr = [];
     RFID.findAll({
         where: {
             isActive: true
@@ -195,20 +196,57 @@ exports.getRFID = (req, res, next) => {
                     where: {
                         isActive: true
                     },
-                    attributes: ['rfid']
+                    attributes: ['rfidId']
                 })
                     .then(tenantRFIDs => {
                         if (tenantRFIDs.length !== 0) {
                             tenantRFIDs.map(item => {
-                                rfidsArr.push(item);
+                                rfidsArr.push(item.rfidId);
                             })
-                            rfids.filter(filterItem(rfidsArr))
+                            TenantMembersDetail.findAll({
+                                where: {
+                                    isActive: true
+                                },
+                                attributes: ['rfidId']
+                            })
+                                .then(tenantmembersRFIDs => {
+                                    if (tenantmembersRFIDs.length !== 0) {
+                                        tenantmembersRFIDs.map(item => {
+                                            rfidsArr.push(item.rfidId);
+                                        })
+                                        sendRFIDs = filterItem(rfids,rfidsArr);
+                                        res.status(httpStatus.OK).json({
+                                            rfids: sendRFIDs
+                                        })
+                                    } else {
+                                        sendRFIDs = filterItem(rfids, rfidsArr);
+                                        res.status(httpStatus.OK).json({
+                                            rfids: sendRFIDs
+                                        })
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log('Error ===>', err);
+                                    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err)
+                                })
                         } else {
-
+                            res.status(httpStatus.OK).json({
+                                rfids: rfids
+                            })
                         }
                     })
+                    .catch(err => {
+                        console.log('Error ===>', err);
+                        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err)
+                    })
             } else {
-
+                res.status(httpStatus.NO_CONTENT).json({
+                    message: 'No data available!'
+                })
             }
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err)
         })
 }

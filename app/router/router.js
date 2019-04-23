@@ -49,6 +49,7 @@ module.exports = function (app) {
 	const machine = require('../controller/machine');
 	const machineDetail = require('../controller/machineDetail');
 	const rfidController = require('../controller/rfid');
+	const commonAreaController = require('../controller/commonArea');
 
 
 	app.get('/', userController.start);
@@ -602,4 +603,16 @@ module.exports = function (app) {
 	app.put('/api/rfid/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.deleteSelected);
 
 	app.put('/api/rfid/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.delete);
+
+	app.get('/api/tenant/rfid', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.getRFID);
+
+	app.get('/api/commonArea', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaController.get);
+
+	app.post('/api/commonArea', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaController.create);
+
+	app.put('/api/commonArea/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaController.update);
+
+	app.put('/api/commonArea/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaController.deleteSelected);
+
+	app.put('/api/commonArea/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaController.delete);
 }
