@@ -34,6 +34,7 @@ const UserRoles = db.userRole;
 const Slot = db.slot;
 const Parking = db.parking;
 const TenantFlatDetail = db.tenantFlatDetail;
+const RFID = db.rfid;
 
 setInterval(async function () {
     // console.log("atin")
@@ -635,6 +636,7 @@ exports.getDecrypted = async (req, res, next) => {
             include: [
                 { model: Society },
                 // { model: Tower },
+                { model: RFID },
                 {
                     model: FlatDetail, include: [
                         { model: Tower, where: { isActive: true }, attributes: ['towerId', 'towerName'] },
@@ -932,10 +934,14 @@ exports.getTenantMembers = async (req, res, next) => {
             tenantId: tenantId,
             isActive: true
         },
-        include: {
-            model: Relation,
-            attributes: ['relationName']
-        }
+        include: [
+            {
+                model: Relation,
+                attributes: ['relationName']
+            },
+            { model: RFID }
+        ]
+
     });
     // console.log(tenantMembers)
 
