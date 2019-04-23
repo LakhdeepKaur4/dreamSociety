@@ -616,6 +616,8 @@ module.exports = function (app) {
 
 	app.get('/api/tenant/rfid', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.getRFID);
 
+	app.get('/api/getRfid', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.getRFIDByAll);
+
 	app.get('/api/commonArea', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaController.get);
 
 	app.post('/api/commonArea', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaController.create);
