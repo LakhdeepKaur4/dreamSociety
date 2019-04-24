@@ -48,7 +48,6 @@ class RFIdDetails extends Component {
         })
     }
     delete = (rfidId) => {
-        console.log(rfidId)
         this.setState({loading:true})
         if(window.confirm('Are You Sure ?')){
         this.props.removeRf(rfidId)
@@ -165,15 +164,12 @@ class RFIdDetails extends Component {
             this.props.updateRF(this.state.rfidId,this.state.rfid)
             .then(() => this.props.fetchRf().then(()=>{this.setState({loading:false,modal:false})}))
             .catch(err => {
-                console.log(err.response.data.message)
                 this.setState({ loading: false, message: err.response.data.message })
             })
         if (this.state.message === '') {
-            console.log('modal true')
             this.setState({ modal: true })
         }
         else {
-            console.log('modal false')
             this.setState({ modal: false })
         }
 

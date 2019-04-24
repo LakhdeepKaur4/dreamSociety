@@ -50,7 +50,6 @@ class FlatMemberList extends Component {
             .then(() => this.setState({ loading: false }))
     }
     rfIdChangeHandler=(selectOption)=>{
-        console.log(selectOption)
         this.setState({
             rfidId:selectOption.rfidId
         })
@@ -157,7 +156,6 @@ class FlatMemberList extends Component {
         })
     }
     getRelationList = ({ relationResult }) => {
-        console.log(relationResult)
         if (relationResult) {
             return relationResult.relation.map((item) => {
                 return (
@@ -209,14 +207,12 @@ class FlatMemberList extends Component {
         }
     }
     relationHandler = (relationName,relationId ,selectOption) => {
-        console.log('selectOption',selectOption)
         this.setState(function (prevState, props) {
             return {
               
                relationId:selectOption.value
             }
         }, function () {
-            console.log(selectOption.value)
         });
     }
     RfID=({ownerRf})=>{
