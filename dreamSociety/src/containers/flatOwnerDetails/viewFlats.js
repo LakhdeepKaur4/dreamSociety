@@ -76,8 +76,7 @@ class ViewFlats extends Component {
         .then(()=>this.props.getOwnerFlats(ownerId).then(()=>this.setState({loading:false})))
     }
     toggle = ( towerId, floorId,flatDetailId) => {
-        console.log(towerId, floorId,flatDetailId)
-        
+      
         this.setState({
              towerId, floorId,previousFlatDetailId:flatDetailId,
             modal: !this.state.modal
@@ -86,7 +85,6 @@ class ViewFlats extends Component {
         this.props.getAllFloor(towerId)
     }
     viewSlots(id) {
-        console.log(id)
         localStorage.setItem('flatDetailId', id)
         this.props.history.push('/superDashboard/parkingSlotList')
 
@@ -95,11 +93,9 @@ class ViewFlats extends Component {
     flatList = ({ flats }) => {
         
         if (flats) {
-            console.log(flats)
             
 
           return  flats.flats.flat_detail_masters.map((item,index)=>{
-                console.log(item.flat_master.flatType)
                 return (
 
                     <tr key={item.flatDetailId}>
@@ -171,7 +167,6 @@ class ViewFlats extends Component {
             return []
         }}
         floorChangeHandler=(name,selectOption)=>{
-            console.log(selectOption)
             this.setState({
                 [name]: selectOption.value,
                 floorName:selectOption.label
@@ -181,10 +176,8 @@ class ViewFlats extends Component {
         getFlats=({floor})=>{
             if(floor){
               return  floor.flatDetail.filter((flatRecord)=>{
-                  console.log('flatRecord',flatRecord)
                     return flatRecord.floorId===this.state.floorId
                 }).map((selectFlat)=>{
-                    console.log('selectFlat',selectFlat)
                     return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
                 });
             }
@@ -200,7 +193,6 @@ class ViewFlats extends Component {
             })
         }
     editOwnerFlat=()=>{
-        console.log('editOwnerFlat',ownerId,this.state.previousFlatDetailId,this.state.flatDetailIds)
         let errors = {};
         if(this.state.towerId===''){
             errors.towerId="Tower can't be empty"
@@ -314,7 +306,6 @@ class ViewFlats extends Component {
 }
 
 function mapStateToProps(state) {
-    console.log('kjhfkldsjflkdjfkldsfjdklsjkl',state.FlatOwnerReducer)
     return {
         Owner: state.FlatOwnerReducer,
         towerFloor:state.FlatOwnerReducer,
