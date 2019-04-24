@@ -16,7 +16,7 @@ class DisplayCommonArea  extends Component {
             commonAreaId:'',
             commonArea: '',
             errors:{},
-            loading:false,
+            loading:true,
             modalLoading: false,
             message:'',
             editCommonAreaModal: false,
@@ -132,6 +132,10 @@ selectAll = () => {
         }
 }
 
+push=()=>{
+    this.props.history.push('/superDashboard/commonAreaMaster')
+}
+
 unSelectAll = () =>{
     
     let unSelectMultiple = document.getElementsByClassName('SelectAll');
@@ -145,6 +149,15 @@ unSelectAll = () =>{
         this.setState({isDisabled: true});
     }
     
+}
+
+
+OnKeyPressUserhandler=(event) => {
+    const pattern = /^[a-zA-Z ]+$/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
+    }
 }
 
 logout=()=>{
@@ -218,14 +231,14 @@ render(){
            let modalData =<div>
            <FormGroup>
                         <Label>Common Area</Label>                               
-                        <Input type="text" name="commonArea"  maxLength={100} onChange={this.handleChange} value={this.state.commonArea} ></Input>
+                        <Input type="text" name="commonArea"  maxLength={100} onChange={this.handleChange} onKeyPress={this.OnKeyPressUserhandler} value={this.state.commonArea} ></Input>
 
                         <span className="error">{this.state.errors.commonArea}</span>
                         <span className="error">{this.state.message}</span>
                     </FormGroup>
                     <FormGroup>
                             <Button color="primary" className="mr-2"  onClick={this.updateAreas.bind(this)}>Save </Button>
-                            <Button color="danger" >Cancel</Button>
+                            <Button color="danger" onClick={this.toggleCommonModal.bind(this)} >Cancel</Button>
                         </FormGroup>
           </div>
           

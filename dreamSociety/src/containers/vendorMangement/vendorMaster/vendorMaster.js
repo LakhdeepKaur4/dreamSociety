@@ -75,8 +75,8 @@ class vendorMaster extends Component {
 
     }
 
-    OnKeyPressUserhandler(event) {
-        const pattern = /[a-zA-Z_ ]/;
+    OnKeyPressUserhandler=(event) => {
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();

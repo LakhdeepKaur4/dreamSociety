@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { addCommonArea} from '../../actionCreators/commonAreaAction';
 import { Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
+import Spinner from '../../components/spinner/spinner';
 
 class CommonArea  extends Component {
     constructor(props) {
@@ -12,11 +13,20 @@ class CommonArea  extends Component {
 
             commonArea: '',
             errors:{},
-            loading:false,
+            loading:true,
             message:''
            
         }
 
+    }
+
+
+    OnKeyPressUserhandler=(event) => {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
     }
 
 
@@ -25,7 +35,7 @@ componentDidMount() {
 }
 
 refreshData() {
-
+this.setState({loading:false})
 }
 
 handleChange = (event) => {
@@ -40,6 +50,9 @@ handleChange = (event) => {
     }
 }
 
+push=()=>{
+    this.props.history.push('/superDashboard/displayCommonAreaMaster')
+}
 
 onSubmit = (e) => {
     e.preventDefault();
@@ -70,6 +83,19 @@ onSubmit = (e) => {
 
 
 render() {
+    let form;
+    form=<div>
+                   
+                   <FormGroup>
+                        <Label>Common Area</Label>                               
+                        <Input type="text"  placeholder="Common Area"  onKeyPress={this.OnKeyPressUserhandler}  name="commonArea" maxLength={100} onChange={this.handleChange} ></Input>
+                        <span className="error">{this.state.errors.commonArea}</span>
+                        <span className="error">{this.state.message}</span>
+                    </FormGroup>
+                    
+                    <Button color="success" className="mr-2">Submit</Button>             
+                    <Button color="danger" onClick={this.push}>Cancel</Button>
+    </div>
     return(       
             <div>       
                 <UI onClick={this.logout} change={this.changePassword}>
@@ -79,16 +105,7 @@ render() {
                             <span aria-hidden="true">&times;</span>
                         </div>
                         <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Add Common Area</h3></div>
-                        
-                    <FormGroup>
-                        <Label>Common Area</Label>                               
-                        <Input type="text"  placeholder="Common Area"  name="commonArea" maxLength={100} onChange={this.handleChange} ></Input>
-                        <span className="error">{this.state.errors.commonArea}</span>
-                        <span className="error">{this.state.message}</span>
-                    </FormGroup>
-                    
-                    <Button color="success" className="mr-2">Submit</Button>             
-                    <Button color="danger" onClick={this.push}>Cancel</Button>
+                        {!this.state.loading ? form : <Spinner />}
                                                                                       
                 </Form>
                 </UI> 

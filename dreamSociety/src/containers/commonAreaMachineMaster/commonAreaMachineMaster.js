@@ -5,6 +5,8 @@ import { getCommonArea} from '../../actionCreators/commonAreaAction';
 import { Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import DefaultSelect from '../../constants/defaultSelect';
+import {viewMachine} from '../../actionCreators/machineIdMasterAction';
+import {addCommonAreaMachine} from '../../actionCreators/commonAreaMachineMasterAction';
 
 class CommonAreaMachine  extends Component {
     constructor(props) {
@@ -12,8 +14,8 @@ class CommonAreaMachine  extends Component {
         this.state = {
             commonAreaId:'',
             commonArea: '',
-            machineId:'',
-
+            machineDetailId:'',
+            machineActualId:'',
             errors:{},
             loading:false,
             message:''
@@ -29,6 +31,7 @@ componentDidMount() {
 
 refreshData() {
     this.props.getCommonArea();
+    this.props.viewMachine();
 }
 
 handleChange = (event) => {
@@ -52,19 +55,25 @@ onSubmit = (e) => {
     if(this.state.commonArea===''){
         errors.commonArea="Common Area can't be empty"
     }
+    else  if(this.state.machineDetailId===''){
+        errors.machineDetailId="Machine Name can't be empty"
+    }
 
     this.setState({ errors });
     const isValid = Object.keys(errors).length === 0
     if(isValid){           
         this.setState({loading:true});
-        this.props.addCommonArea(commonArea)
+        this.props.addCommonAreaMachine(commonArea)
         .then(()=>
-        this.props.history.push('/superDashboard/displayCommonAreaMaster'))
+        this.props.history.push('/superDashboard/displayCommonAreaMachineMaster'))
         .catch(err=>{
             this.setState({message: err.response.data.message, loading: false})                    
         })
         this.setState({
-            commonArea:''
+            commonAreaId:'',
+            commonArea: '',
+            machineDetailId:'',
+            machineActualId:''
         })   
         }      
     console.log("commonArea",commonArea)
@@ -83,6 +92,19 @@ getCommonArea= ({ getAreas }) => {
 
 } 
 
+getMachine= ({machine}) => {
+    if(machine){
+      return machine.machinesDetail.map((item)=>{  
+         return (           
+                <option key={item.machineDetailId} value ={item.machineDetailId}>
+                        {item.machineActualId}
+                </option>
+        )
+    })
+}
+}
+
+
 render() {
     return(       
             <div>       
@@ -92,7 +114,7 @@ render() {
                 <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
                         </div>
-                        <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Add Common Area</h3></div><br/>
+                        <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Add Common Area Machine</h3></div><br/>
                     <Row>
                         <Col md={6}>
                         <FormGroup>
@@ -105,10 +127,10 @@ render() {
                         </Col>
                         <Col md={6}>
                         <FormGroup>
-                            <Label>Machine</Label>                               
-                            <Input type="select" name="machine" defaultValue='no-value' onChange={this.handleChange}>                                     
+                            <Label>Machine Name</Label>                               
+                            <Input type="select" name="machineDetailId" defaultValue='no-value' onChange={this.handleChange}>                                     
                             <DefaultSelect/>
-                            {this.getCommonArea(this.props.commonAreaReducer)}
+                            {this.getMachine(this.props.MachineIdDetails)}
                             </Input>
                         </FormGroup>
                         </Col>
@@ -127,13 +149,16 @@ render() {
 
 function mapStateToProps(state) {
      return {
-        commonAreaReducer: state.commonAreaReducer
+        commonAreaReducer: state.commonAreaReducer,
+        MachineIdDetails: state.MachineIdDetails,
+        commonAreaMachineReducer:state.commonAreaMachineReducer
+
 
         }
     }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({getCommonArea}, dispatch);
+    return bindActionCreators({getCommonArea,viewMachine,addCommonAreaMachine}, dispatch);
     }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommonAreaMachine);
