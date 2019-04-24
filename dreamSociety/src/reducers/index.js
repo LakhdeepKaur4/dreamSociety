@@ -48,6 +48,7 @@ import AssignRolesReducer from './assignRolesReducer/assignRolesReducer';
 import IndividualVendorReducer from './individualVendorReducer/individualVendorReducer';
 
 import registerComplaintReducer from './registerComplaintReducer/registerComplaintReducer';
+import commonAreaReducer from './commonAreaReducer/commonAreaReducer';
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -93,7 +94,8 @@ const rootReducer = combineReducers({
     AssignRolesReducer,
     IndividualVendorReducer,
     registerComplaintReducer,
-    MachineDetails
+    MachineDetails,
+    commonAreaReducer
 
 })
 export default rootReducer;
