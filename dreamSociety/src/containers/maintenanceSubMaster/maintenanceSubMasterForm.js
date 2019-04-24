@@ -134,6 +134,7 @@ class MaintenanceSubMasterForm extends Component{
         let formData = <div>
             <div><span className="error">{this.state.subMaintenanceErr}</span></div>
             <FormGroup>
+                <Label>Mainenance Type</Label>
                 <Input type="select" defaultValue="no-value" name='maintenanceId' value={this.state.maintenanceType}
                 onChange={this.onChange}>
                 <DefaultSelect />
@@ -142,6 +143,7 @@ class MaintenanceSubMasterForm extends Component{
                 <div><span className="error">{this.state.errors.maintenanceId}</span></div>
             </FormGroup>
             <FormGroup>
+                <Label>Size Type</Label>
                 <Input type="select" defaultValue="no-value" name="sizeId" value={this.sizeId}
                     onChange={this.onChange}>
                     <DefaultSelect />
@@ -151,12 +153,13 @@ class MaintenanceSubMasterForm extends Component{
             </FormGroup>
             <FormGroup>
                 <FormGroup>
+                    <Label>Rate</Label>
                     <Input name="rate" onChange={this.rateChange}
                     value={this.state.rate} placeholder="Enter Price" maxLength="16"/>
                     <div>{!this.state.rate ? <span className="error">{this.state.errors.rate}</span>: null}</div>
                 </FormGroup>
             </FormGroup>
-            <Button color="success" className="mr-2">Add User</Button>
+            <Button color="success" className="mr-2">Add</Button>
             <Button  color="danger" onClick={this.route}>Cancel</Button>
         </div>
         return(
@@ -166,7 +169,7 @@ class MaintenanceSubMasterForm extends Component{
                             <span aria-hidden="true">&times;</span>
                     </div>
                     <div>
-                        <h3 style={{textAlign:'center', marginBottom: '15px'}}>Maintenance Sub Master Form</h3>
+                        <h3 style={{textAlign:'center', marginBottom: '15px'}}>Maintenance Sub Master</h3>
                         {!this.state.loading ? formData: <Spinner />}
                     </div>
                 </Form>

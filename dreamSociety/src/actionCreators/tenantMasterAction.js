@@ -2,7 +2,8 @@ import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
 import{URN,GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID,UPDATE_TENANT_DETAIL,GET_TENANT_MEMBER_DETAILS,
     DELETE_SELECTED_TENANT,ADD_TENANT_DETAIL, GET_TENANT_DETAIL, DELETE_TENANT, DELETE_TENANT_MEMBER,
-    DELETE_SELECTED_TENANT_MEMBER,EDIT_TENANT_MEMBER, ADD_NEW_TENANT, ADD_NEW_Flat,GET_FLATS,EDIT_FLATS,DELETE_FLATS} from '../actions/index';
+    DELETE_SELECTED_TENANT_MEMBER,EDIT_TENANT_MEMBER, ADD_NEW_TENANT, ADD_NEW_Flat,GET_FLATS,EDIT_FLATS,DELETE_FLATS,
+    GET_RFID} from '../actions/index';
 
 export function addTenantDetail(values){
     console.log(values)
@@ -75,14 +76,14 @@ export function deleteSelectedTenant(ids){
 
 export function updateTenantDetail(firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
     accountNumber,accountHolderName, dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId,
-    countryId, stateId, cityId, locationId){
+    countryId, stateId, cityId, locationId,rfidId){
         console.log(firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
             accountNumber,accountHolderName, dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId,
-            countryId, stateId, cityId, locationId)
+            countryId, stateId, cityId, locationId,rfidId)
         
         const request = axios.put(`${URN}/tenant/` + tenantId, {firstName,lastName, gender, email, contact, aadhaarNumber, panCardNumber, bankName, IFSCCode,
             accountNumber,accountHolderName, dob, permanentAddress, fileName, towerName, flatNo, towerId, floorId, picture, flatDetailId, tenantId,
-            countryId, stateId, cityId, locationId},
+            countryId, stateId, cityId, locationId,rfidId},
              {headers: authHeader()})
 
             return {
@@ -126,8 +127,8 @@ export function deleteSelectedTenantMember(ids){
     }
 }
 
-export function editTenantMember(memberName, memberDob, gender, relationId, memberId){
-    const request = axios.put(`${URN}/tenant/members/` + memberId , {memberName, memberDob, gender, relationId, memberId}, 
+export function editTenantMember(memberName, memberDob, gender, relationId, memberId,rfidId){
+    const request = axios.put(`${URN}/tenant/members/` + memberId , {memberName, memberDob, gender, relationId, memberId,rfidId}, 
     {headers: authHeader()})
     .then(response => response.data);
 
@@ -184,6 +185,15 @@ export function deleteFlat(values){
     .then((response) => {response.data})
     return {
         type: DELETE_FLATS,
+        payload:request
+    }
+}
+
+export function rfid(){
+    const request = axios.get(`${URN}/getRfid`, {headers: authHeader()})
+    .then((response) => response.data)
+    return {
+        type: GET_RFID,
         payload:request
     }
 }
