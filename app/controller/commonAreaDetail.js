@@ -82,7 +82,7 @@ exports.update = (req, res, next) => {
 }
 
 exports.get = (req, res, next) => {
-    commonAreaDetailId.findAll({
+    CommonAreaDetail.findAll({
         where: {
             isActive: true
         },

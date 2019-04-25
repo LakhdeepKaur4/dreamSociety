@@ -29,6 +29,7 @@ const Role = db.role;
 const UserRoles = db.userRole;
 const TenantFlatDetail = db.tenantFlatDetail;
 const RFID = db.rfid;
+const UserRFID = db.userRfid;
 
 setInterval(async function () {
     // console.log("atin")
@@ -194,7 +195,7 @@ function saveToDisc(name, fileExt, base64String, callback) {
     });
 }
 
-filterFlats = item => {
+let filterFlats = item => {
     return item.tenant_flatDetail_master.isActive === true;
 }
 
@@ -442,7 +443,7 @@ exports.createEncrypted = async (req, res, next) => {
                     panCardNumber: encrypt(tenant.panCardNumber),
                     // IFSCCode: encrypt(tenant.IFSCCode),
                     noOfMembers: tenant.noOfMembers,
-                    rfidId: tenant.rfidId,
+                    // rfidId: tenant.rfidId,
                     // ownerId: tenant.ownerId1,
                     // ownerId1: tenant.ownerId1,
                     // ownerId2: tenant.ownerId2,
@@ -465,6 +466,7 @@ exports.createEncrypted = async (req, res, next) => {
                             })
                         }
 
+                        UserRFID.create({userId: tenant.tenantId, rfidId: tenant.rfidId});
 
                         const roles = await Role.findOne({
                             where: {
@@ -504,7 +506,8 @@ exports.createEncrypted = async (req, res, next) => {
                         }
                         if (tenant.noOfMembers !== 0 && tenant.noOfMembers !== null) {
                             members.map(item => {
-                                item.memberName = encrypt(item.memberName);
+                                item.firstName = encrypt(item.firstName);
+                                item.lastName = encrypt(item.lastName);
                                 item.gender = encrypt(item.gender);
                                 item.userId = req.userId;
                                 item.tenantId = entry.tenantId;
