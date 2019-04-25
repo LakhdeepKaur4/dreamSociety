@@ -86,7 +86,7 @@ exports.get = (req, res, next) => {
         where: {
             isActive: true
         },
-        includes: [
+        include: [
             { model: CommonArea, where: { isActive: true }, attributes: ['commonAreaId', 'commonArea'] },
             { model: MachineDetail, where: { isActive: true }, attributes: ['machineDetailId', 'machineActualId'] }
         ]
