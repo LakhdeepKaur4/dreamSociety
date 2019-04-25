@@ -359,8 +359,27 @@ exports.create1 = async (req, res, next) => {
       memberBody.userId = req.userId;
       memberBody.ownerId = ownerId;
 
-      req.body.member.map(member => {
-        member.memberName = encrypt(key, member.memberName);
+      req.body.member.map( async member => {
+
+        let randomNumber;
+        randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
+        const OwnerExists = await OwnerMembersDetail.findOne({ where: { isActive: true, memberId: randomNumber } });
+        const userExists = await User.findOne({ where: { isActive: true, userId: randomNumber } });
+        if (OwnerExists !== null || userExists !== null) {
+            console.log("duplicate random number")
+            randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
+        }
+        member.memberId = randomNumber;
+        member.password = passwordGenerator.generate({
+          length: 10,
+          numbers: true
+        });
+        member.memberUserName = member.memberFirstName + member.memberLastName + 'OM' + req.body.towerId + shortId.generate()
+        member.memberUserName = encrypt(key,member.memberUserName);
+        member.memberEmail = encrypt(key,member.memberEmail);
+        member.memberContact = encrypt(key,member.memberContact);
+        member.memberFirstName = encrypt(key, member.memberFirstName);
+        member.memberLastName = encrypt(key, member.memberLastName);
         member.gender = encrypt(key, member.gender);
         memberNewArray.push(member);
       });
@@ -369,7 +388,7 @@ exports.create1 = async (req, res, next) => {
         memberNewArray, {
           returning: true
         }, {
-          fields: ["memberName", "memberDob", "gender", "relationId" , "memberRfId"]
+          fields: ["memberId","memberFirstName", "memberLastName","memberUserName","memberEmail","memberContact","password", "memberDob", "gender", "relationId" , "memberRfId"]
           // updateOnDuplicate: ["name"]
         }
       );
@@ -390,8 +409,45 @@ exports.create1 = async (req, res, next) => {
         }
       });
 
-    }
-    if (owner.firstName && owner.lastName !== '') {
+      ownerMember.map( async member => {
+        if(member.memberFirstName !== '' && member.memberLastName !== ''){
+          firstName = decrypt(key, member,memberFirstName);
+          lastName = decrypt(key, memberLastName);
+        } else if(member.memberFirstName && member.memberLastName !== ''){
+          firstName = decrypt(key, member.memberFirstName);
+          lastName = '...'; 
+        }
+
+        let ownerMemberUserName = decrypt(key, member.memberUserName);
+        let email = decrypt(key, member.memberEmail);
+
+        let user = await User.create({
+          userId: member.memberId,
+          rstName: encrypt1(key, firstName),
+          lastName: encrypt1(key, lastName),
+          userName: encrypt1(key, ownerMemberUserName),
+          password: bcrypt.hashSync(member.password, 8),
+          contact: encrypt1(key, member.contact),
+          towerId: owner.towerId,
+          email: encrypt1(key, email),
+          isActive: false
+        })
+        let roles = await Role.findOne({
+          where: {
+            id: 3
+          }
+        });
+    
+        // user.setRoles(roles);
+        console.log("owner role==>", roles);
+        UserRoles.create({
+          userId: user.userId,
+          roleId: roles.id
+        });
+      })
+
+    }       
+    if (owner.firstName !== '' && owner.lastName !== '') {
       firstName = decrypt(key, owner.firstName);
       lastName = decrypt(key, owner.lastName)
     } else if (owner.firstName && owner.lastName !== '') {
