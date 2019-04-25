@@ -6,10 +6,13 @@ const Op = db.Sequelize.Op;
 
 const RFID = db.rfid;
 const Tenant = db.tenant;
-const TenantMembersDetail = db.tenantMembersDetail
+const TenantMembersDetail = db.tenantMembersDetail;
+const Owner = db.owner;
+const OwnerMembersDetail = db.ownerMembersDetail;
 
-filterItem = (rfids, arr) => {
-    // console.log(arr);
+
+let filterItem = (rfids, arr) => {
+    console.log(arr);
     const resArr = rfids.filter(item => {
         return arr.includes(item.rfidId) === false;
     });
@@ -214,7 +217,7 @@ exports.getRFID = (req, res, next) => {
                                         tenantmembersRFIDs.map(item => {
                                             rfidsArr.push(item.rfidId);
                                         })
-                                        sendRFIDs = filterItem(rfids,rfidsArr);
+                                        sendRFIDs = filterItem(rfids, rfidsArr);
                                         res.status(httpStatus.OK).json({
                                             rfids: sendRFIDs
                                         })
@@ -239,6 +242,47 @@ exports.getRFID = (req, res, next) => {
                         console.log('Error ===>', err);
                         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err)
                     })
+            } else {
+                res.status(httpStatus.NO_CONTENT).json({
+                    message: 'No data available!'
+                })
+            }
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err)
+        })
+}
+
+exports.getRFIDByAll = (req, res, next) => {
+    const rfidsArr = [];
+    RFID.findAll({
+        where: {
+            isActive: true
+        }
+    })
+        .then(async rfids => {
+            if (rfids.length !== 0) {
+                tenantRFIDs = await Tenant.findAll({ where: { isActive: true }, attributes: ['rfidId'] });
+                tenantMembersRFIDs = await TenantMembersDetail.findAll({ where: { isActive: true }, attributes: ['rfidId'] });
+                ownerRFIDs = await Owner.findAll({ where: { isActive: true }, attributes: ['rfidId'] });
+                ownerMembersRFIDs = await OwnerMembersDetail.findAll({ where: { isActive: true }, attributes: ['memberRfId'] });
+                tenantRFIDs.map(item => {
+                    rfidsArr.push(item.rfidId);
+                })
+                tenantMembersRFIDs.map(item => {
+                    rfidsArr.push(item.rfidId);
+                })
+                ownerRFIDs.map(item => {
+                    rfidsArr.push(item.rfidId);
+                })
+                ownerMembersRFIDs.map(item => {
+                    rfidsArr.push(item.memberRfId);
+                })
+                sendRFIDs = filterItem(rfids, rfidsArr);
+                res.status(httpStatus.OK).json({
+                    rfids: sendRFIDs
+                })
             } else {
                 res.status(httpStatus.NO_CONTENT).json({
                     message: 'No data available!'

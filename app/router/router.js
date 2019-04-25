@@ -585,6 +585,8 @@ module.exports = function (app) {
 
 	app.put('/api/machine/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.delete);
 
+	app.get('/api/getMachines', [authJwt.verifyToken, authJwt.isAdminRole], machine.getMachineForCommonArea);
+
 	app.get('/api/machineDetail', [authJwt.verifyToken, authJwt.isAdminRole], machineDetail.get);
 
 	app.post('/api/machineDetail', [authJwt.verifyToken, authJwt.isAdminRole], machineDetail.create);
@@ -616,6 +618,8 @@ module.exports = function (app) {
 	app.get('/api/rfid/owner/count', [authJwt.verifyToken, authJwt.isAdminRole], owner.rfidCount);
 
 	app.get('/api/tenant/rfid', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.getRFID);
+
+	app.get('/api/getRfid', [authJwt.verifyToken, authJwt.isAdminRole], rfidController.getRFIDByAll);
 
 	app.get('/api/commonArea', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaController.get);
 
