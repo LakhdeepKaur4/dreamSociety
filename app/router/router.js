@@ -74,6 +74,10 @@ module.exports = function (app) {
 
 	// app.get('/api/user/test', [authJwt.verifyToken], userController.userContent);
 
+	app.post('/api/check/email', [authJwt.verifyToken, authJwt.isAdminRole], userController.checkEmail);
+
+	app.post('/api/check/contact', [authJwt.verifyToken, authJwt.isAdminRole], userController.checkContact);
+
 	app.get('/api/user/userRole', [authJwt.verifyToken, authJwt.isAdminRole], userController.roleTest);
 
 	app.get('/api/user/role', [authJwt.verifyToken, authJwt.isAdminRole], userController.role);

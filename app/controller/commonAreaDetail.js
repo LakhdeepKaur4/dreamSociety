@@ -8,28 +8,6 @@ const CommonAreaDetail = db.commonAreaDetail;
 const MachineDetail = db.machineDetail;
 const CommonArea = db.commonArea;
 
-// exports.create = (req, res, next) => {
-//     const body = req.body;
-//     console.log('Body ===>', body);
-
-//     CommonAreaDetail.create(body)
-//         .then(commonArea => {
-//             if (commonArea !== null) {
-//                 res.status(httpStatus.CREATED).json({
-//                     message: 'Machine added to common area succesfully'
-//                 })
-//             } else {
-//                 res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-//                     message: 'Machine not added to common area. Please try again!'
-//                 })
-//             }
-//         })
-//         .catch(err => {
-//             console.log('Error ===>', err);
-//             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-//         })
-// }
-
 exports.create = (req, res, next) => {
     const body = req.body;
     console.log('Body ===>', body);
