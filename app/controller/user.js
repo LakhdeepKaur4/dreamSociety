@@ -2535,3 +2535,56 @@ exports.activeUsersCount = async (req, res, next) => {
 	}
 }
 
+exports.checkEmail = (req, res, next) => {
+	const body = req.body;
+	console.log('Body ===>', body);
+
+	User.findOne({
+		where: {
+			isActive: true,
+			email: encrypt(body.email)
+		}
+	})
+		.then(user => {
+			if (user !== null) {
+				res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+					message: 'Email in use for another user'
+				})
+			} else {
+				res.status(httpStatus.OK).json({
+					message: 'Email can be used'
+				})
+			}
+		})
+		.catch(err => {
+			console.log('Error ===>', err);
+			res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+		})
+}
+
+exports.checkContact = (req, res, next) => {
+	const body = req.body;
+	console.log('Body ===>', body);
+
+	User.findOne({
+		where: {
+			isActive: true,
+			email: encrypt(body.contact)
+		}
+	})
+		.then(user => {
+			if (user !== null) {
+				res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+					message: 'Contact in use for another user'
+				})
+			} else {
+				res.status(httpStatus.OK).json({
+					message: 'Contact can be used'
+				})
+			}
+		})
+		.catch(err => {
+			console.log('Error ===>', err);
+			res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+		})
+}
