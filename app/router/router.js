@@ -584,6 +584,8 @@ module.exports = function (app) {
 
 	app.put('/api/machine/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.delete);
 
+	app.get('/api/getMachines', [authJwt.verifyToken, authJwt.isAdminRole], machine.getMachineForCommonArea);
+
 	app.get('/api/machineDetail', [authJwt.verifyToken, authJwt.isAdminRole], machineDetail.get);
 
 	app.post('/api/machineDetail', [authJwt.verifyToken, authJwt.isAdminRole], machineDetail.create);

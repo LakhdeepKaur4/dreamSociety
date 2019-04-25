@@ -77,6 +77,7 @@ db.machineDetail = require('../model/machineDetail.model')(sequelize, Sequelize)
 db.rfid = require('../model/rfid.model')(sequelize, Sequelize);
 db.fingerprintData = require('../model/fingerprintData.model')(sequelize, Sequelize);
 db.commonArea = require('../model/commonArea.model')(sequelize, Sequelize);
+db.commonAreaDetail = require('../model/commonAreaDetail.model')(sequelize, Sequelize);
 
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
 db.otp.belongsTo(db.tenant, { foreignKey: 'tenantId' });
@@ -206,5 +207,9 @@ db.complaint.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.complaint.belongsTo(db.complaintStatus, { foreignKey: 'complaintStatusId' });
 db.machine.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.machine.belongsTo(db.machineDetail, { foreignKey: 'machineDetailId' });
+// db.commonArea.belongsToMany(db.machine, { through: 'common_area_detail_master', foreignKey: 'commonAreaId' });
+// db.machineDetail.belongsToMany(db.commonArea, { through: 'common_area_detail_master', foreignKey: 'machineDetailId'});
+db.commonAreaDetail.belongsTo(db.machineDetail, { foreignKey: 'machineDetailId' });
+db.commonAreaDetail.belongsTo(db.commonArea, { foreignKey: 'commonAreaId' });
 
 module.exports = db;
