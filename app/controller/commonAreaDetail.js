@@ -45,7 +45,7 @@ exports.update = (req, res, next) => {
     const body = req.body;
     console.log('Body ===>', body);
 
-    CommonAreaDetail.findOne({
+    CommonAreaDetail.findAll({
         where: {
             machineDetailId: body.machineDetailId,
             commonAreaId: body.commonAreaId,
@@ -92,7 +92,7 @@ exports.update = (req, res, next) => {
 }
 
 exports.get = (req, res, next) => {
-    const commonAreaIds = [];
+    // const commonAreaIds = [];
     CommonAreaDetail.findAll({
         where: {
             isActive: true
@@ -104,11 +104,9 @@ exports.get = (req, res, next) => {
     })
         .then(commonAreas => {
             if (commonAreas.length !== 0) {
-                commonAreas.map(item => {
-                    commonAreaIds.push(item.commonAreaId);
-                })
+                // console.log(commonAreaIds);
                 res.status(httpStatus.OK).json({
-                    commonAreas: commonAreas
+                    commonAreas: commonAreas.sort()
                 })
             } else {
                 res.status(httpStatus.NO_CONTENT).json({
@@ -121,6 +119,7 @@ exports.get = (req, res, next) => {
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
+
 
 exports.delete = (req, res, next) => {
     const commonAreaDetailId = req.params.id;
