@@ -93,88 +93,6 @@ function saveToDisc(name, fileExt, base64String, callback) {
   });
 }
 
-exports.create = async (req, res, next) => {
-  try {
-    console.log("creating owner");
-    let ownerBody = req.body;
-    let memberBody = req.body;
-    let memberId = [];
-    ownerBody.userId = req.userId;
-    console.log("owner body==>", ownerBody);
-    let customVendorName = ownerBody.ownerName;
-    const userName =
-      customVendorName + "O" + ownerBody.towerId + ownerBody.flatDetailId;
-    console.log("userName==>", userName);
-    ownerBody.userName = userName;
-    const password = passwordGenerator.generate({
-      length: 10,
-      numbers: true
-    });
-    ownerBody.password = password;
-
-    const owner = await Owner.create(ownerBody);
-    const ownerId = owner.ownerId;
-    if (req.body.profilePicture) {
-      saveToDisc(
-        ownerBody.fileName,
-        ownerBody.fileExt,
-        ownerBody.profilePicture,
-        (err, resp) => {
-          if (err) {
-            console.log(err);
-          }
-          console.log(resp);
-          // }
-          const updatedImage = {
-            picture: resp
-          };
-          Owner.update(updatedImage, {
-            where: {
-              ownerId: ownerId
-            }
-          });
-        }
-      );
-    }
-    if (ownerBody.noOfMembers) {
-      memberBody.userId = req.userId;
-      memberBody.ownerId = ownerId;
-      const ownerMember = await OwnerMembersDetail.bulkCreate(
-        ownerBody.member, {
-          returning: true
-        }, {
-          fields: ["memberName", "memberDob", "gender", "relationId"]
-          // updateOnDuplicate: ["name"]
-        }
-      );
-      ownerMember.forEach(item => {
-        memberId.push(item.memberId);
-        console.log("member id0", memberId);
-      });
-      const bodyToUpdate = {
-        ownerId: ownerId,
-        userId: req.userId
-      };
-      console.log("bodytoUpdate ==>", bodyToUpdate);
-      console.log(ownerMember.memberId);
-      const updatedMember = await OwnerMembersDetail.update(bodyToUpdate, {
-        where: {
-          memberId: {
-            [Op.in]: memberId
-          }
-        }
-      });
-    }
-    return res.status(httpStatus.CREATED).json({
-      message: "Owner successfully created",
-      owner
-    });
-  } catch (error) {
-    console.log("error==>", error);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-  }
-};
-
 let testSms = (contact) => {
   const apikey = 'mJUH4QVvP+E-coDtRnQr7wvdVc8ClAWDcKjPew8Gxl';
   const number = contact;
@@ -316,7 +234,7 @@ exports.create1 = async (req, res, next) => {
       userId: req.userId,
       societyId: ownerBody.societyId,
       towerId: ownerBody.towerId,
-      rfidId:ownerBody.rfidId,
+      // rfidId:ownerBody.rfidId,
       // flatDetailId: ownerBody.flatDetailId,
       floorId: ownerBody.floorId
     });
@@ -363,12 +281,12 @@ exports.create1 = async (req, res, next) => {
 
         let randomNumber;
         randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
-        const OwnerExists = await OwnerMembersDetail.findOne({ where: { isActive: true, memberId: randomNumber } });
-        const userExists = await User.findOne({ where: { isActive: true, userId: randomNumber } });
-        if (OwnerExists !== null || userExists !== null) {
-            console.log("duplicate random number")
-            randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
-        }
+        // const OwnerExists = await OwnerMembersDetail.findOne({ where: { isActive: true, memberId: randomNumber } });
+        // const userExists = await User.findOne({ where: { isActive: true, userId: randomNumber } });
+        // if (OwnerExists !== null || userExists !== null) {
+        //     console.log("duplicate random number")
+        //     randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
+        // }
         member.memberId = randomNumber;
         member.password = passwordGenerator.generate({
           length: 10,
@@ -379,7 +297,9 @@ exports.create1 = async (req, res, next) => {
         member.memberEmail = encrypt(key,member.memberEmail);
         member.memberContact = encrypt(key,member.memberContact);
         member.memberFirstName = encrypt(key, member.memberFirstName);
-        member.memberLastName = encrypt(key, member.memberLastName);
+       
+          member.memberLastName = encrypt(key, member.memberLastName);
+    
         member.gender = encrypt(key, member.gender);
         memberNewArray.push(member);
       });
@@ -388,7 +308,7 @@ exports.create1 = async (req, res, next) => {
         memberNewArray, {
           returning: true
         }, {
-          fields: ["memberId","memberFirstName", "memberLastName","memberUserName","memberEmail","memberContact","password", "memberDob", "gender", "relationId" , "memberRfId"]
+          fields: ["memberId","memberFirstName", "memberLastName","memberUserName","memberEmail","memberContact","password", "memberDob", "gender", "relationId" ]
           // updateOnDuplicate: ["name"]
         }
       );
@@ -410,9 +330,9 @@ exports.create1 = async (req, res, next) => {
       });
 
       ownerMember.map( async member => {
-        if(member.memberFirstName !== '' && member.memberLastName !== ''){
-          firstName = decrypt(key, member,memberFirstName);
-          lastName = decrypt(key, memberLastName);
+        if(member.memberFirstName !== '' && member.memberLastName !== '' ){
+          firstName = decrypt(key, member.memberFirstName);
+          lastName = decrypt(key, member.memberLastName);
         } else if(member.memberFirstName && member.memberLastName !== ''){
           firstName = decrypt(key, member.memberFirstName);
           lastName = '...'; 
@@ -423,11 +343,11 @@ exports.create1 = async (req, res, next) => {
 
         let user = await User.create({
           userId: member.memberId,
-          rstName: encrypt1(key, firstName),
+          firstName: encrypt1(key, firstName),
           lastName: encrypt1(key, lastName),
           userName: encrypt1(key, ownerMemberUserName),
           password: bcrypt.hashSync(member.password, 8),
-          contact: encrypt1(key, member.contact),
+          contact: encrypt1(key, member.memberContact),
           towerId: owner.towerId,
           email: encrypt1(key, email),
           isActive: false
@@ -546,9 +466,9 @@ exports.get1 = async (req, res, next) => {
         {
           model: Tower
         },
-        {
-          model:RfId
-        }
+        // {
+        //   model:RfId
+        // }
       ]
     });
 
@@ -639,9 +559,9 @@ exports.get2 = async (req, res, next) => {
         {
           model: Tower
         },
-        {
-          model:RfId
-        }
+        // {
+        //   model:RfId
+        // }
       ]
     });
 
@@ -664,7 +584,10 @@ exports.get2 = async (req, res, next) => {
       // owner.picture = owner.picture.replace('../', '');
       owner.adhaarCardNo = decrypt(key, owner.adhaarCardNo);
       owner.owner_members_detail_masters.forEach(x => {
-        x.memberName = decrypt(key, x.memberName);
+        x.memberFirstName = decrypt(key, x.memberFirstName);
+        x.memberLastName = decrypt(key, x.memberLastName);
+        x.memberEmail = decrypt(key,x.memberEmail);
+        x.memberContact = decrypt(key,x.memberContact);
         x.gender = decrypt(key, x.gender);
       });
       owner.society_master.societyName = decrypt1(key, owner.society_master.societyName);
@@ -1220,9 +1143,29 @@ exports.delete = async (req, res, next) => {
       updatedOwner.updateAttributes(update);
 
     }
+    // const updatedUser = await User.findOne({
+    //   where: {
+    //     email: updatedOwner.email
+    //   }
+    // });
+    // console.log("show yourself", updatedUser);
+    // if (updatedUser) {
+    //   updatedUser.updateAttributes({
+    //     isActive: false
+    //   });
+    //   let updatedUserRoles = await UserRoles.find({
+    //     where: {
+    //       userId: updatedUser.userId
+    //     }
+    //   }).then(userRole => {
+    //     userRole.updateAttributes(update);
+    //   })
+    // }
+
     const updatedUser = await User.findOne({
       where: {
-        email: updatedOwner.email
+        isActive:true,
+        userId: updatedOwner.ownerId
       }
     });
     console.log("show yourself", updatedUser);
@@ -1238,6 +1181,8 @@ exports.delete = async (req, res, next) => {
         userRole.updateAttributes(update);
       })
     }
+
+
 
 
     const flatDetails = await OwnerFlatDetail.findAll({
@@ -1267,11 +1212,31 @@ exports.delete = async (req, res, next) => {
     // const updatedVendorService = await VendorService.find({ where: { vendorId: id } }).then(vendorService => {
     //     return vendorService.updateAttributes(update)
     // })
-    const updatedOwnerMembersDetail = await OwnerMembersDetail.update(update, {
+    const updatedOwnerMembersDetail = await OwnerMembersDetail.findAll({
       where: {
+        isActive:true,
         ownerId: id
       }
+    });
+
+    updatedOwnerMembersDetail.forEach( async member => {
+    let memberUser = await User.findOne({
+      where: {
+        isActive:true,
+        userId:member.memberId
+      }
+    });
+    let role = await UserRoles.findOne({
+      where: {
+        userId: memberUser.userId
+      }
+    });
+    memberUser.updateAttributes(update);
+    role.updateAttributes(update);
+    member.updateAttributes(update);
     })
+
+    
     if (updatedOwner && updatedOwnerMembersDetail) {
       return res.status(httpStatus.OK).json({
         message: "Owner deleted successfully",
@@ -1318,7 +1283,7 @@ exports.deleteSelected = async (req, res, next) => {
         let user = await User.findOne({
           where: {
             isActive: true,
-            email: updatedOwner.email
+            userId: updatedOwner.ownerId
           }
         })
         let role = await UserRoles.findOne({
@@ -1335,13 +1300,30 @@ exports.deleteSelected = async (req, res, next) => {
     //   await User.update(update,{where:{email:owner.email}})
     // })
 
-    const updatedOwnersMembers = await OwnerMembersDetail.update(update, {
+    const updatedOwnersMembers = await OwnerMembersDetail.findAll( {
       where: {
         ownerId: {
           [Op.in]: deleteSelected
         }
       }
     });
+
+    updatedOwnersMembers.forEach(async member =>{
+      let memberUser = await User.findOne( {
+        where: {
+          isActive: true,
+          userId:member.memberId
+        }
+      });
+      let role = await UserRoles.findOne({
+        where: {
+          userId: memberUser.userId
+        }
+      });
+      role.updateAttributes(update);
+      memberUser.updateAttributes(update);
+      member.updateAttributes(update);
+    })
 
     let flatDetails = await OwnerFlatDetail.update(update, {
       where: {
@@ -1404,7 +1386,10 @@ exports.getMembers = async (req, res, next) => {
     });
 
     ownerMembers.map(ownerMember => {
-      ownerMember.memberName = decrypt(key, ownerMember.memberName);
+      ownerMember.memberFirstName = decrypt(key, ownerMember.memberFirstName);
+      ownerMember.memberLastName = decrypt(key, ownerMember.memberLastName);
+      ownerMember.memberEmail = decrypt(key, ownerMember.memberEmail);
+      ownerMember.memberContact = decrypt(key, ownerMember.memberContact);
       ownerMember.gender = decrypt(key, ownerMember.gender);
       memberArr.push(ownerMember);
     })
@@ -1431,15 +1416,27 @@ exports.deleteMember = async (req, res, next) => {
     isActive: false
   };
 
-  const updatedOwnerMembersDetail = await OwnerMembersDetail.update(update, {
+  const updatedOwnerMembersDetail = await OwnerMembersDetail.findOne({
     where: {
-      [Op.and]: [{
-        memberId: ownerMemberId
-      }, {
+        memberId: ownerMemberId,
         isActive: true
-      }]
+    }
+  })
+  let memberUser = await User.findOne({
+    where: {
+      isActive: true,
+      userId:updatedOwnerMembersDetail.memberId
     }
   });
+  memberUser.updateAttributes(update);
+  let role = await UserRoles.findOne({
+    where: {
+      userId: memberUser.userId
+    }
+  });
+  role.updateAttributes(update);
+  updatedOwnerMembersDetail.updateAttributes(update);
+
   if (updatedOwnerMembersDetail) {
     return res.status(httpStatus.OK).json({
       message: "OwnerMember deleted successfully",
@@ -1462,18 +1459,46 @@ exports.deleteSelectedMembers = async (req, res, next) => {
     }
     // const updatedOwners = await Owner.update(update, { where: { ownerId: { [Op.in]: deleteSelected } } })
 
-    const updatedOwnersMembers = await OwnerMembersDetail.update(update, {
-      where: {
+    const selectedMembers = await OwnerMembersDetail.findAll({
+      where:{
+        isActive:true,
         memberId: {
           [Op.in]: deleteSelected
         }
       }
     });
-    if (updatedOwnersMembers) {
+
+    selectedMembers.forEach(async member => {
+      let memberUser = await User.findOne({
+          where:{
+            isActive:true,
+            userId:member.memberId
+          }
+        });
+
+        memberUser.updateAttributes(update);
+        let role = await UserRoles.findOne({
+          where: {
+            userId: memberUser.userId
+          }
+        });
+        role.updateAttributes(update);
+        member.updateAttributes(update);
+    })
+
+    // const updatedOwnersMembers = await OwnerMembersDetail.update(update, {
+    //   where: {
+    //     isActive: true,
+    //     memberId: {
+    //       [Op.in]: deleteSelected
+    //     }
+    //   }
+    // });
+  
       return res.status(httpStatus.OK).json({
         message: "Owners deleted successfully",
       });
-    };
+
   } catch (error) {
     console.log(error)
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -1486,7 +1511,10 @@ exports.updateMember = async (req, res, next) => {
     console.log("updatememberreq====>", req.body);
     let updAttr = {};
     let attrArr = [
-      "memberName",
+      "memberFirstName",
+      "memberLastName",
+      "memberEmail",
+      "memberContact",
       "gender"
     ];
     let ids = ["relationId","memberRfId"];
@@ -1564,7 +1592,10 @@ exports.addMember = (req, res, next) => {
     console.log("gsdfhgsdahjfgjhadsf", req.body);
     let ownerId = req.params.id;
     req.body.ownerId = req.params.id;
-    req.body.memberName = encrypt(key, req.body.memberName);
+    req.body.memberFirstName = encrypt(key, req.body.memberFirstName);
+    req.body.memberLastName = encrypt(key, req.body.memberLastName);
+    req.body.memberEmail = encrypt(key, req.body.memberEmail);
+    req.body.memberContact = encrypt(key, req.body.memberContact);
     req.body.gender = encrypt(key, req.body.gender);
     let fields = req.body;
     fields.userId = req.userId;
