@@ -1,4 +1,4 @@
-import {URN,ADD_COMMON_AREA,GET_COMMON_AREA,UPDATE_AREAS,DELETE_AREA,DELETE_AREA_IDS} from '../actions/index';
+import {URN,ADD_COMMON_AREA,GET_COMMON_AREA,UPDATE_AREAS,DELETE_AREA,DELETE_AREA_IDS, GET_MACHINES} from '../actions/index';
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
 
@@ -18,6 +18,16 @@ export function getCommonArea(){
     .then(response =>response.data)
     return {
         type:GET_COMMON_AREA,
+        payload:request
+    }
+}
+
+
+export function getMachines(machineDetailId){console.log(machineDetailId)
+    const request=axios.get(`${URN}/getMachines`,{headers:authHeader()})
+    .then(response =>response.data)
+    return {
+        type:GET_MACHINES,
         payload:request
     }
 }

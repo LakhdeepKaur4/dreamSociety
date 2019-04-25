@@ -3,8 +3,8 @@ import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
 
 
-export function addCommonAreaMachine(commonArea){
-    const request = axios.post(`${URN}/commonArea`,{commonArea}, {headers:authHeader()})
+export function addCommonAreaMachine(commonAreaId,machineDetailId){console.log("action",commonAreaId,machineDetailId)
+    const request = axios.post(`${URN}/commonAreaDetail`,{commonAreaId,machineDetailId}, {headers:authHeader()})
    
     return {
         type:ADD_COMMON_AREA_MACHINE,
@@ -14,7 +14,7 @@ export function addCommonAreaMachine(commonArea){
 }
 
 export function getCommonAreaMachine(){
-    const request=axios.get(`${URN}/commonArea`,{headers:authHeader()})
+    const request=axios.get(`${URN}/commonAreaDetail`,{headers:authHeader()})
     .then(response =>response.data)
     return {
         type:GET_COMMON_AREA_MACHINE,
@@ -22,9 +22,9 @@ export function getCommonAreaMachine(){
     }
 }
 
-export function updateMachineAreas(commonAreaId,commonArea){
+export function updateMachineAreas(commonAreaDetailId,commonAreaId,machineDetailId){
 
-    const request = axios.put(`${URN}/commonArea/`+commonAreaId,{commonArea},{headers:authHeader()})
+    const request = axios.put(`${URN}/commonAreaDetail/`+commonAreaDetailId,{commonAreaId,machineDetailId},{headers:authHeader()})
     .then()
     return{
         type:UPDATE_AREAS_MACHINE,
@@ -32,9 +32,9 @@ export function updateMachineAreas(commonAreaId,commonArea){
     }
 }
 
-export const deleteCommonAreaMachine=(commonAreaId,isActive)=>{
+export const deleteCommonAreaMachine=(commonAreaDetailId,isActive)=>{
     
-       const request = axios.put(`${URN}/commonArea/delete/${commonAreaId}`,{isActive}, {headers:authHeader()})
+       const request = axios.put(`${URN}/commonAreaDetail/delete/${commonAreaDetailId}`,{isActive}, {headers:authHeader()})
         .then(response => response.data)
     
      
@@ -48,7 +48,7 @@ export const deleteCommonAreaMachine=(commonAreaId,isActive)=>{
 
 
     export function deleteSelectedCommonAreaMachine(ids){
-        const request= axios.put(`${URN}/commonArea/delete/deleteSelected`,{ids},{headers:authHeader()})
+        const request= axios.put(`${URN}/commonAreaDetail/delete/deleteSelected`,{ids},{headers:authHeader()})
         .then((response) => response.data)
         .then(() => this.getCommonArea())
         ;

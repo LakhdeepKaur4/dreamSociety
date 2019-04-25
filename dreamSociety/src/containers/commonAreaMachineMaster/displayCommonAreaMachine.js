@@ -1,25 +1,30 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {getCommonArea,updateAreas,deleteCommonArea,deleteSelectedCommonArea} from '../../actionCreators/commonAreaAction';
+import {getCommonAreaMachine,updateMachineAreas,deleteCommonAreaMachine,deleteSelectedCommonAreaMachine} from '../../actionCreators/commonAreaMachineMasterAction';
 import { Button,Col,Row, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import DefaultSelect from '../../constants/defaultSelect';
-import {viewMachine} from '../../actionCreators/machineIdMasterAction';
+import {getCommonArea,getMachines} from '../../actionCreators/commonAreaAction';
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes'; 
+import { PlaceHolder } from '../../actions/index';
+    
+
 
 class DisplayCommonAreaMachine  extends Component {
     constructor(props) {
         super(props);
         this.state = {
             filterName:"commonArea",
+            commonAreaDetailId:'',
             commonAreaId:'',
             commonArea: '',
-            machineDetailId:'',
+            machineDetailId:[],
             machineActualId:'',
             errors:{},  
-            loading:false,
+            loading:true,
             modalLoading: false,
             message:'',
             editCommonAreaModal: false,
@@ -36,12 +41,15 @@ componentDidMount() {
  }
     
 refreshData() {
+    this.props.getCommonAreaMachine().then(()=> this.setState({loading:false, modalLoading: false, editCommonAreaModal:false}));
     this.props.getCommonArea().then(()=> this.setState({loading:false, modalLoading: false, editCommonAreaModal:false}));
+    this.props.getMachines().then(()=> this.setState({loading:false, modalLoading: false, editCommonAreaModal:false}));
 }
+
 
 searchFilter(search) {
     return function (x) {
-        return x.commonArea.toLowerCase().includes(search.toLowerCase()) || !search;
+        return x.common_area_master.commonArea.toLowerCase().includes(search.toLowerCase()) || !search;
     }
 }
 
@@ -58,10 +66,10 @@ handleChange = (event) => {
     }
 }
 
-edit (commonAreaId,commonArea) {console.log(commonArea)
+edit (commonAreaDetailId,commonAreaId,commonArea) {console.log(commonAreaId,commonArea)
     this.setState({
 
-        commonAreaId,commonArea, editCommonAreaModal: !this.state.editCommonAreaModal
+        commonAreaDetailId,commonAreaId,commonArea, editCommonAreaModal: !this.state.editCommonAreaModal
     });
 
 }
@@ -77,37 +85,34 @@ searchOnChange = (e) => {
     this.setState({ search: e.target.value })
 }
 
-updateAreas() {
-    const {commonAreaId,commonArea} = this.state;
-    let errors={};
-    if(this.state.commonArea===''){
-        errors.commonArea="Common Area can't be empty";
+
+     
+    updateAreas() {
+        const {commonAreaDetailId,commonAreaId,machineDetailId} = this.state;
+      
+    
+            this.props.updateMachineAreas(commonAreaDetailId,commonAreaId,machineDetailId)
+            .then(() => this.refreshData())
+            .catch(err=>{
+                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                })
+                if(this.state.message === ''){
+                    this.setState({editCommonAreaModal: true})
+                }
+                else {
+                    this.setState({editCommonAreaModal: false})
+                }       
+            this.setState({ modalLoading: true
+       })
+    
+        
     }
-    this.setState({errors});
-    const isValid =Object.keys(errors).length===0;
-    if(isValid &&  this.state.message === ''){
+    
 
-        this.props.updateAreas(commonAreaId,commonArea)
-        .then(() => this.refreshData())
-        .catch(err=>{
-            this.setState({modalLoading:false,message: err.response.data.message, loading: false})
-            })
-            if(this.state.message === ''){
-                this.setState({editCommonAreaModal: true})
-            }
-            else {
-                this.setState({editCommonAreaModal: false})
-            }       
-        this.setState({ modalLoading: true
-   })
-
-    }         
-}
-
-deleteArea(commonAreaId){console.log(commonAreaId)
+deleteArea(commonAreaDetailId){console.log(commonAreaDetailId)
     this.setState({loading:true})
     let {isActive } =this.state;  
-    this.props.deleteCommonArea(commonAreaId,isActive)
+    this.props.deleteCommonAreaMachine(commonAreaDetailId,isActive)
         .then(() => this.refreshData())
         this.setState({isActive:false})
 }
@@ -116,7 +121,7 @@ deleteArea(commonAreaId){console.log(commonAreaId)
 deleteSelected(ids){
     this.setState({loading:true,
     isDisabled:true});
-    this.props.deleteSelectedCommonArea(ids)
+    this.props.deleteSelectedCommonAreaMachine(ids)
     .then(() => this.refreshData())
     .catch(err => err.response.data.message);
 }
@@ -151,7 +156,15 @@ unSelectAll = () =>{
 }
 
 
-getCommonArea= ({ getAreas }) => {
+machineChangeHandler=(name,selectOption)=>{
+    console.log(selectOption)
+    this.setState({
+        [name]: selectOption.map((item)=>{return item.machineDetailId})
+    })
+}
+    
+
+getCommonArea= ({ getAreas }) => {console.log(getAreas)
     if (getAreas) {
         return getAreas.commonAreas.map((item) => {
             return (
@@ -163,18 +176,20 @@ getCommonArea= ({ getAreas }) => {
     }
 
 } 
-
-getMachine= ({machine}) => {
-    if(machine){
-      return machine.machinesDetail.map((item)=>{  
-         return (           
-                <option key={item.machineDetailId} value ={item.machineDetailId}>
-                        {item.machineActualId}
-                </option>
+getMachine= ({getMachines}) => {console.log(getMachines)
+    if(getMachines){
+      return getMachines.machines.map((item)=>{  
+          console.log(item.machineDetailId)
+         return (   {...item,label:item.machineActualId,value:item.machineDetailId}          
         )
     })
 }
 }
+
+push=()=>{
+    this.props.history.push('/superDashboard/commonAreaMachineMaster')
+}
+
 
 logout=()=>{
     localStorage.removeItem('token');
@@ -183,20 +198,20 @@ logout=()=>{
 }
 
 
-renderList = ({ getAreas }) => {console.log(getAreas)
-    if (getAreas) {
-        return getAreas.commonAreas.sort((item1,item2)=>{
-            var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
+renderList = ({ getMachineAreas }) => {console.log(getMachineAreas)
+    if (getMachineAreas) {
+        return getMachineAreas.commonAreas.sort((item1,item2)=>{
+            var cmprVal = (item1.common_area_master[this.state.filterName].localeCompare(item2.common_area_master[this.state.filterName]))
             return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).map((item,index)=>{
             return (
-            <tr key={item.commonAreaId}>
-              <td><input type="checkbox" name="ids" className="SelectAll" value={item.commonAreaId}
+            <tr key={item.commonAreaDetailId}>
+              <td><input type="checkbox" name="ids" className="SelectAll" value={item.commonAreaDetailId}
                          onChange={(e) => {
-                            const {commonAreaId} = item
+                            const {commonAreaDetailId} = item
                             if(!e.target.checked){
                                 document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(commonAreaId);
+                                let indexOfId = this.state.ids.indexOf(commonAreaDetailId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1);
                                 }
@@ -205,7 +220,7 @@ renderList = ({ getAreas }) => {console.log(getAreas)
                                 }
                             }
                             else {
-                                this.setState({ids: [...this.state.ids, commonAreaId]});
+                                this.setState({ids: [...this.state.ids, commonAreaDetailId]});
                                 if(this.state.ids.length >= 0){
                                     this.setState({isDisabled: false})
                                 }
@@ -213,10 +228,11 @@ renderList = ({ getAreas }) => {console.log(getAreas)
                                 
                              }}/></td>
              <td>{index+1}</td>
-             <td>{item.commonArea}</td>
+             <td>{item.common_area_master.commonArea}</td>
+             <td>{item.machine_detail_master.machineActualId}</td>
              <td>
-                <Button color="success" className="mr-2" onClick={this.edit.bind(this,item.commonAreaId,item.commonArea)} >Edit</Button>
-                <Button color="danger" onClick={this.deleteArea.bind(this, item.commonAreaId)}>Delete</Button>
+                <Button color="success" className="mr-2" onClick={this.edit.bind(this,item.commonAreaDetailId,item.common_area_master.commonAreaId,item.common_area_master.commonArea)} >Edit</Button>
+                <Button color="danger" onClick={this.deleteArea.bind(this, item.commonAreaDetailId)}>Delete</Button>
              </td>
              </tr>
         )
@@ -232,16 +248,17 @@ render(){
             <tr>
             <th style={{width:'4%'}}></th>
                 <th style={{width:'4%'}}>#</th>
-                <th  onClick={()=>{
+                <th onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
                                 filterName:'commonArea'}});
                         }}>Common Area <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                <th  style={{width:'12%'}}>View Machines</th>
                 <th>Actions</th>        
             </tr>
         </thead>
 
         <tbody>
-            {this.renderList(this.props.commonAreaReducer)}
+            {this.renderList(this.props.commonAreaMachineReducer)}
         </tbody>
     </Table>
            let modalData =<div>
@@ -249,22 +266,28 @@ render(){
                 <Col md={6}>
                     <FormGroup>
                         <Label>Common Area</Label>                               
-                        <Input type="select" name="commonArea" defaultValue='no-value' onChange={this.handleChange}>                                     
+                        <Input  type="select" name="commonAreaId" value={this.state.commonAreaId} onChange={this.handleChange}>                                     
                         <DefaultSelect/>
                             {this.getCommonArea(this.props.commonAreaReducer)}
                         </Input>
+                        <span className="error">{this.state.message}</span>
                     </FormGroup>
                 </Col>
                 <Col md={6}>
                     <FormGroup>
-                        <Label>Machine Name</Label>                               
-                        <Input type="select" name="machineDetailId" defaultValue='no-value' onChange={this.handleChange}>                                     
-                        <DefaultSelect/>
-                        {this.getMachine(this.props.MachineIdDetails)}
-                        </Input>
+                        <Label>Machine Name</Label>   
+                        <ReactMultiSelectCheckboxes
+                         options= {this.getMachine(this.props.commonAreaReducer)}
+                         name="machineDetailId" 
+                         placeholderButtonLabel={PlaceHolder}
+                         onChange={this.machineChangeHandler.bind(this,'machineDetailId')}/>
                     </FormGroup>
-                        </Col>
+                </Col>
             </Row>
+            <FormGroup>
+                            <Button color="primary" className="mr-2"  onClick={this.updateAreas.bind(this)}>Save </Button>
+                            <Button color="danger" onClick={this.toggleCommonModal.bind(this)} >Cancel</Button>
+                        </FormGroup>
           </div>
           
           let deleteSelectedButton = <Button color="danger" className="mb-2"
@@ -317,7 +340,6 @@ render(){
 function mapStateToProps(state) {
     return {
        commonAreaReducer: state.commonAreaReducer,
-       MachineIdDetails: state.MachineIdDetails,
        commonAreaMachineReducer:state.commonAreaMachineReducer
 
 
@@ -325,7 +347,7 @@ function mapStateToProps(state) {
    }
 
 function mapDispatchToProps(dispatch) {
-   return bindActionCreators({getCommonArea,updateAreas,deleteCommonArea,deleteSelectedCommonArea}, dispatch);
+   return bindActionCreators({getCommonAreaMachine,updateMachineAreas,deleteCommonAreaMachine,getCommonArea,getMachines,deleteSelectedCommonAreaMachine}, dispatch);
    }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayCommonAreaMachine);

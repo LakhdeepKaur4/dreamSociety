@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getCommonArea} from '../../actionCreators/commonAreaAction';
+import { getCommonArea,getMachines} from '../../actionCreators/commonAreaAction';
 import { Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import DefaultSelect from '../../constants/defaultSelect';
-import {viewMachine} from '../../actionCreators/machineIdMasterAction';
 import {addCommonAreaMachine} from '../../actionCreators/commonAreaMachineMasterAction';
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes'; 
+import { PlaceHolder } from '../../actions/index';
+import Spinner from '../../components/spinner/spinner';
+    
 
 class CommonAreaMachine  extends Component {
     constructor(props) {
@@ -14,10 +17,10 @@ class CommonAreaMachine  extends Component {
         this.state = {
             commonAreaId:'',
             commonArea: '',
-            machineDetailId:'',
+            machineDetailId:[],
             machineActualId:'',
             errors:{},
-            loading:false,
+            loading:true,
             message:''
            
         }
@@ -30,8 +33,8 @@ componentDidMount() {
 }
 
 refreshData() {
-    this.props.getCommonArea();
-    this.props.viewMachine();
+    this.props.getCommonArea().then(()=> this.setState({loading:false, modalLoading: false, editCommonAreaModal:false}));
+    this.props.getMachines().then(()=> this.setState({loading:false, modalLoading: false, editCommonAreaModal:false}));
 }
 
 handleChange = (event) => {
@@ -47,13 +50,13 @@ handleChange = (event) => {
 }
 
 
-onSubmit = (e) => {
+onSubmit = (e) => {console.log(commonAreaId,machineDetailId)
     e.preventDefault();
-    const {commonArea} = this.state
+    const {commonAreaId,machineDetailId} = this.state
     
     let errors = {};
-    if(this.state.commonArea===''){
-        errors.commonArea="Common Area can't be empty"
+    if(this.state.commonAreaId===''){
+        errors.commonAreaId="Common Area can't be empty"
     }
     else  if(this.state.machineDetailId===''){
         errors.machineDetailId="Machine Name can't be empty"
@@ -63,7 +66,7 @@ onSubmit = (e) => {
     const isValid = Object.keys(errors).length === 0
     if(isValid){           
         this.setState({loading:true});
-        this.props.addCommonAreaMachine(commonArea)
+        this.props.addCommonAreaMachine(commonAreaId,machineDetailId)
         .then(()=>
         this.props.history.push('/superDashboard/displayCommonAreaMachineMaster'))
         .catch(err=>{
@@ -76,7 +79,7 @@ onSubmit = (e) => {
             machineActualId:''
         })   
         }      
-    console.log("commonArea",commonArea)
+    console.log(commonAreaId,machineDetailId)
 }
 
 getCommonArea= ({ getAreas }) => {
@@ -92,20 +95,57 @@ getCommonArea= ({ getAreas }) => {
 
 } 
 
-getMachine= ({machine}) => {
-    if(machine){
-      return machine.machinesDetail.map((item)=>{  
-         return (           
-                <option key={item.machineDetailId} value ={item.machineDetailId}>
-                        {item.machineActualId}
-                </option>
+getMachine= ({getMachines}) => {console.log(getMachines)
+    if(getMachines){
+      return getMachines.machines.map((item)=>{  
+          console.log(item.machineDetailId)
+         return (   {...item,label:item.machineActualId,value:item.machineDetailId}          
         )
     })
 }
 }
 
+push=()=>{
+this.props.history.push('/superDashboard/displayCommonAreaMachineMaster')
+}
+
+machineChangeHandler=(name,selectOption)=>{
+    console.log(selectOption)
+    this.setState({
+        [name]: selectOption.map((item)=>{return item.machineDetailId})
+    })
+}
+    
 
 render() {
+    let form;
+    form=<div>
+        <Row>
+                        <Col md={6}>
+                        <FormGroup >
+                            <Label>Common Area</Label>                               
+                            <Input  type="select" name="commonAreaId" defaultValue='no-value' onChange={this.handleChange}>                                     
+                            <DefaultSelect/>
+                            {this.getCommonArea(this.props.commonAreaReducer)}
+                            </Input>
+                        </FormGroup>
+                        </Col>
+                        <Col md={6}>
+                        <FormGroup>
+                            <Label>Machine Name</Label>   
+                            <ReactMultiSelectCheckboxes
+                         options= {this.getMachine(this.props.commonAreaReducer)}
+                         name="machineDetailId" 
+                         placeholderButtonLabel={PlaceHolder}
+                         onChange={this.machineChangeHandler.bind(this,'machineDetailId')}/>
+                        </FormGroup>
+                        </Col>
+                    </Row>
+                    
+                    <Button color="success" className="mr-2">Submit</Button>             
+                    <Button color="danger" onClick={this.push}>Cancel</Button>
+                    </div>
+                 
     return(       
             <div>       
                 <UI onClick={this.logout} change={this.changePassword}>
@@ -115,30 +155,8 @@ render() {
                             <span aria-hidden="true">&times;</span>
                         </div>
                         <div><h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Add Common Area Machine</h3></div><br/>
-                    <Row>
-                        <Col md={6}>
-                        <FormGroup>
-                            <Label>Common Area</Label>                               
-                            <Input type="select" name="commonArea" defaultValue='no-value' onChange={this.handleChange}>                                     
-                            <DefaultSelect/>
-                            {this.getCommonArea(this.props.commonAreaReducer)}
-                            </Input>
-                        </FormGroup>
-                        </Col>
-                        <Col md={6}>
-                        <FormGroup>
-                            <Label>Machine Name</Label>                               
-                            <Input type="select" name="machineDetailId" defaultValue='no-value' onChange={this.handleChange}>                                     
-                            <DefaultSelect/>
-                            {this.getMachine(this.props.MachineIdDetails)}
-                            </Input>
-                        </FormGroup>
-                        </Col>
-                    </Row>
                     
-                    <Button color="success" className="mr-2">Submit</Button>             
-                    <Button color="danger" onClick={this.push}>Cancel</Button>
-                                                                                      
+                        {!this.state.loading ? form : <Spinner />}                                                              
                 </Form>
                 </UI> 
         </div>
@@ -150,7 +168,6 @@ render() {
 function mapStateToProps(state) {
      return {
         commonAreaReducer: state.commonAreaReducer,
-        MachineIdDetails: state.MachineIdDetails,
         commonAreaMachineReducer:state.commonAreaMachineReducer
 
 
@@ -158,7 +175,7 @@ function mapStateToProps(state) {
     }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({getCommonArea,viewMachine,addCommonAreaMachine}, dispatch);
+    return bindActionCreators({getCommonArea,getMachines,addCommonAreaMachine}, dispatch);
     }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommonAreaMachine);

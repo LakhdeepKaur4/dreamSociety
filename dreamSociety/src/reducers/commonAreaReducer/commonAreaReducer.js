@@ -1,10 +1,13 @@
-import {ADD_COMMON_AREA,GET_COMMON_AREA,DELETE_AREA_IDS,DELETE_AREA} from '../../actions/index';
+import {ADD_COMMON_AREA,GET_COMMON_AREA,DELETE_AREA_IDS,DELETE_AREA,GET_MACHINES} from '../../actions/index';
 
 export default function(state={}, action) {
 
     switch(action.type){
         case ADD_COMMON_AREA:
             return {...state, addAreas: action.payload}
+        
+        case GET_MACHINES:
+            return {...state, getMachines: action.payload}
         
         case GET_COMMON_AREA:
             return {...state, getAreas: action.payload}
