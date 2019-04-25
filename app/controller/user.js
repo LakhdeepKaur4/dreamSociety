@@ -2494,7 +2494,7 @@ exports.activeUsersCount = async (req, res, next) => {
 				totalActiveTenant: activeTenant.count,
 				totalDeactiveTenant: deactiveTenant.count, totalActiveVendor: activeVendor.count,
 				totalDeactiveVendor: deactiveVendor.count, totalActiveEmployee: activeEmployee.count, totalDeactiveEmployee: deactiveEmployee.count,
-				totalActiveOwner: activeOwner.count, totalDeactiveCount: deactiveOwner.count
+				totalActiveOwner: activeOwner.count, totalDeactiveOwner: deactiveOwner.count
 			})
 		}
 	} catch (error) {

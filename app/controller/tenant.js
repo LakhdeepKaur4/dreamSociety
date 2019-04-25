@@ -1241,7 +1241,10 @@ exports.flatsList = async (req, res, next) => {
     try {
         const activeFlats = await FlatDetail.findAndCountAll({ where: { isActive: true } });
         const occupiedFlats = await OwnerFlatDetail.findAndCountAll({ where: { isActive: true } });
+        console.log("active Flats==>",activeFlats.count);
+        console.log("empty flats ==>",occupiedFlats.count);
         const emptyFlats = activeFlats.count - occupiedFlats.count;
+        console.log(emptyFlats)
         res.status(httpStatus.OK).json({ activeFlats: occupiedFlats.count, emptyFlats });
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);

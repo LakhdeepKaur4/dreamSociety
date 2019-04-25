@@ -50,6 +50,7 @@ module.exports = function (app) {
 	const machineDetail = require('../controller/machineDetail');
 	const rfidController = require('../controller/rfid');
 	const commonAreaController = require('../controller/commonArea');
+	const electricityConsumerController = require('../controller/electricityConsumer');
 
 
 	app.get('/', userController.start);
@@ -625,4 +626,16 @@ module.exports = function (app) {
 	app.put('/api/commonArea/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaController.deleteSelected);
 
 	app.put('/api/commonArea/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaController.delete);
+
+	app.post('/api/electricityConsumer', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.create);
+
+	app.get('/api/electricityConsumer', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.get);
+
+	app.put('/api/electricityConsumer/:id', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.update);
+
+	app.put('/api/electricityConsumer/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.deleteSelected);
+
+	app.put('/api/electricityConsumer/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.delete);
+
+
 }

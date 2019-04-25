@@ -77,6 +77,7 @@ db.machineDetail = require('../model/machineDetail.model')(sequelize, Sequelize)
 db.rfid = require('../model/rfid.model')(sequelize, Sequelize);
 db.fingerprintData = require('../model/fingerprintData.model')(sequelize, Sequelize);
 db.commonArea = require('../model/commonArea.model')(sequelize, Sequelize);
+db.electricityConsumer = require('../model/electricityConsumer.model')(sequelize, Sequelize);
 
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
 db.otp.belongsTo(db.tenant, { foreignKey: 'tenantId' });
@@ -206,5 +207,7 @@ db.complaint.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.complaint.belongsTo(db.complaintStatus, { foreignKey: 'complaintStatusId' });
 db.machine.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.machine.belongsTo(db.machineDetail, { foreignKey: 'machineDetailId' });
+db.electricityConsumer.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
+db.electricityConsumer.belongsTo(db.maintenanceType, { foreignKey: 'maintenanceTypeId' });
 
 module.exports = db;
