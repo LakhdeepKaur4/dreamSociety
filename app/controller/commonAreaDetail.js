@@ -47,8 +47,8 @@ exports.update = (req, res, next) => {
 
     CommonAreaDetail.findOne({
         where: {
-            machineDetailId: machineDetailId,
-            commonAreaId: commonAreaId,
+            machineDetailId: body.machineDetailId,
+            commonAreaId: body.commonAreaId,
             isActive: true,
             commonAreaDetailId: {
                 [Op.ne]: commonAreaDetailId
@@ -92,6 +92,7 @@ exports.update = (req, res, next) => {
 }
 
 exports.get = (req, res, next) => {
+    const commonAreaIds = [];
     CommonAreaDetail.findAll({
         where: {
             isActive: true
@@ -103,6 +104,9 @@ exports.get = (req, res, next) => {
     })
         .then(commonAreas => {
             if (commonAreas.length !== 0) {
+                commonAreas.map(item => {
+                    commonAreaIds.push(item.commonAreaId);
+                })
                 res.status(httpStatus.OK).json({
                     commonAreas: commonAreas
                 })

@@ -104,7 +104,7 @@ module.exports = function (app) {
 
 	app.get('/api/user/:id', userController.getById);
 
-	app.post('/api/user/changePassword', [authJwt.verifyToken, isAdminRole], userController.changePassword);
+	app.post('/api/user/changePassword', [authJwt.verifyToken], userController.changePassword);
 
 	app.get('/api/forgotPassword/:userName', userController.forgottenPassword);
 
