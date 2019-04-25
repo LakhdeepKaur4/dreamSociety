@@ -77,6 +77,9 @@ db.machineDetail = require('../model/machineDetail.model')(sequelize, Sequelize)
 db.rfid = require('../model/rfid.model')(sequelize, Sequelize);
 db.fingerprintData = require('../model/fingerprintData.model')(sequelize, Sequelize);
 db.commonArea = require('../model/commonArea.model')(sequelize, Sequelize);
+db.electricityConsumer = require('../model/electricityConsumer.model')(sequelize, Sequelize);
+db.commonAreaDetail = require('../model/commonAreaDetail.model')(sequelize, Sequelize);
+db.userRfid = require('../model/userRfid.model')(sequelize, Sequelize);
 
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
 db.otp.belongsTo(db.tenant, { foreignKey: 'tenantId' });
@@ -166,11 +169,11 @@ db.tenantMembersDetail.belongsTo(db.tenant, { foreignKey: 'tenantId' });
 // db.tenant.belongsTo(db.owner, { as: 'Owner3', foreignKey: 'ownerId3' });
 db.tenantMembersDetail.belongsTo(db.relation, { foreignKey: 'relationId' });
 db.tenantMembersDetail.belongsTo(db.user, { foreignKey: 'userId' });
-db.tenantMembersDetail.belongsTo(db.rfid, { foreignKey: 'rfidId' });
+// db.tenantMembersDetail.belongsTo(db.rfid, { foreignKey: 'rfidId' });
 db.tenant.belongsTo(db.user, { foreignKey: 'userId' });
 db.tenant.belongsTo(db.society, { foreignKey: 'societyId' });
 db.tenant.belongsTo(db.tower, { foreignKey: 'towerId' });
-db.tenant.belongsTo(db.rfid, { foreignKey: 'rfidId' });
+// db.tenant.belongsTo(db.rfid, { foreignKey: 'rfidId' });
 db.tenant.belongsToMany(db.flatDetail, { through: 'tenant_flatDetail_master', foreignKey: 'tenantId' });
 db.flatDetail.belongsToMany(db.tenant, { as: 'TenantFlat', through: 'tenant_flatDetail_master', foreignKey: 'flatDetailId' });
 db.tenant.belongsTo(db.floor, { foreignKey: 'floorId' });
@@ -206,5 +209,13 @@ db.complaint.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.complaint.belongsTo(db.complaintStatus, { foreignKey: 'complaintStatusId' });
 db.machine.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.machine.belongsTo(db.machineDetail, { foreignKey: 'machineDetailId' });
+db.electricityConsumer.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
+db.electricityConsumer.belongsTo(db.maintenanceType, { foreignKey: 'maintenanceTypeId' });
+// db.commonArea.belongsToMany(db.machine, { through: 'common_area_detail_master', foreignKey: 'commonAreaId' });
+// db.machineDetail.belongsToMany(db.commonArea, { through: 'common_area_detail_master', foreignKey: 'machineDetailId'});
+db.commonAreaDetail.belongsTo(db.machineDetail, { foreignKey: 'machineDetailId' });
+db.commonAreaDetail.belongsTo(db.commonArea, { foreignKey: 'commonAreaId' });
+db.userRfid.belongsTo(db.user, { foreignKey: 'userId' });
+db.userRfid.belongsTo(db.rfid, { foreignKey: 'rfidId' });
 
 module.exports = db;

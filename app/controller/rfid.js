@@ -11,8 +11,8 @@ const Owner = db.owner;
 const OwnerMembersDetail = db.ownerMembersDetail;
 
 
-filterItem = (rfids, arr) => {
-    // console.log(arr);
+let filterItem = (rfids, arr) => {
+    console.log(arr);
     const resArr = rfids.filter(item => {
         return arr.includes(item.rfidId) === false;
     });

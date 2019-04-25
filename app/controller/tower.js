@@ -163,8 +163,7 @@ exports.getFloorByTowerId = async (req, res) => {
         console.log(error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message })
     }
-}
-
+} 
 
 exports.getFloorByTowerIdForTenant = async (req, res, next) => {
     const towerId = req.params.id;

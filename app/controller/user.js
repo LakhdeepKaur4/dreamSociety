@@ -146,6 +146,22 @@ generateToken = () => {
 	return token;
 }
 
+sendSMS = (number, OTP) => {
+	const apiKey = '07hlECj1sy4-ynODCNlExLsx91Pv29Zdrh0bxc1pLc';
+	const num = number;
+
+	const message = `Your OTP for password reset is ${OTP} which is valid for 5 min. Please do not disclose OTP.`;
+
+	http.get(`http://api.textlocal.in/send/?apiKey=${apikey}&numbers=${num}&message=${message}`, (err, data) => {
+		if (err) {
+			console.log('Message sending error ===>', err);
+			return false;
+		} else {
+			return true;
+		}
+	});
+}
+
 exports.signup = async (req, res) => {
 	// Save User to Database
 	let alreadyExists = false;
@@ -1701,7 +1717,7 @@ exports.changePassword = (req, res, next) => {
 		})
 }
 
-exports.tokenVerify = (req, res, next) => {
+exports.tokenVerify = async (req, res, next) => {
 	console.log(req.params);
 	url = req.params.url;
 	const reqObj = {};
@@ -1715,6 +1731,16 @@ exports.tokenVerify = (req, res, next) => {
 
 	token = decrypt(reqObj.token);
 
+	userContact = await User.findOne({
+		where: {
+			userId: userId,
+			isActive: true
+		},
+		attributes: ['contact']
+	});
+
+	contact = decrypt(userContact.contact);
+
 	Token.findOne({
 		where: {
 			token: token
@@ -1725,13 +1751,20 @@ exports.tokenVerify = (req, res, next) => {
 				OTP = generateOTP();
 				console.log(OTP);
 
-				OTPTable.create({
-					otp: OTP,
-					userId: userId
-				})
-				res.status(httpStatus.OK).json({
-					message: 'Token verified'
-				});
+				smsSended = sendSMS(contact, OTP);
+				if (!smsSended) {
+					res.status(httpStatus.FAILED_DEPENDENCY).json({
+						message: 'SMS send failure. Please contact admin.'
+					})
+				} else {
+					OTPTable.create({
+						otp: OTP,
+						userId: userId
+					})
+					res.status(httpStatus.OK).json({
+						message: 'Token verified'
+					});
+				}
 			} else {
 				res.status(httpStatus.UNAUTHORIZED).json({
 					messageErr: 'Token expired'
@@ -2494,7 +2527,7 @@ exports.activeUsersCount = async (req, res, next) => {
 				totalActiveTenant: activeTenant.count,
 				totalDeactiveTenant: deactiveTenant.count, totalActiveVendor: activeVendor.count,
 				totalDeactiveVendor: deactiveVendor.count, totalActiveEmployee: activeEmployee.count, totalDeactiveEmployee: deactiveEmployee.count,
-				totalActiveOwner: activeOwner.count, totalDeactiveCount: deactiveOwner.count
+				totalActiveOwner: activeOwner.count, totalDeactiveOwner: deactiveOwner.count
 			})
 		}
 	} catch (error) {
