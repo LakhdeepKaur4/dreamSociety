@@ -466,9 +466,9 @@ exports.get1 = async (req, res, next) => {
         {
           model: Tower
         },
-        // {
-        //   model:RfId
-        // }
+        {
+          model:RfId
+        }
       ]
     });
 
@@ -559,9 +559,9 @@ exports.get2 = async (req, res, next) => {
         {
           model: Tower
         },
-        // {
-        //   model:RfId
-        // }
+        {
+          model:RfId
+        }
       ]
     });
 
