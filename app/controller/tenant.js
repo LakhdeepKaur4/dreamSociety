@@ -496,8 +496,18 @@ exports.createEncrypted = async (req, res, next) => {
                         }
                         if (tenant.noOfMembers !== 0 && tenant.noOfMembers !== null) {
                             members.map(item => {
+                                let memberUserName = item.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
+                                const password = passwordGenerator.generate({
+                                    length: 10,
+                                    numbers: true
+                                });
+                                item.password = password;
+                                item.memeberDob = item.memberDob;
+                                item.email = encrypt(item.email);
+                                item.contact = encrypt(item.contact);
                                 item.firstName = encrypt(item.firstName);
                                 item.lastName = encrypt(item.lastName);
+                                item.userName = encrypt(memberUserName);
                                 item.gender = encrypt(item.gender);
                                 item.userId = req.userId;
                                 item.tenantId = entry.tenantId;
