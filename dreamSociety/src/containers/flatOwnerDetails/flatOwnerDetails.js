@@ -595,7 +595,6 @@ this.setState({totalParking:slots.slots.count,parkingName:slots?slots.slots.rows
     }
 
     rfIdChangeHandler=(selectOption)=>{
-        console.log(selectOption)
         this.setState({
             rfidId:selectOption.rfidId
         })

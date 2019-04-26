@@ -26,11 +26,9 @@ class RFId extends Component{
       }
       submit=(e)=>{
         e.preventDefault();
-        console.log(this.state.rfId)
         this.props.addRF(this.state.rfId)
         .then(()=>this.props.history.push('/superDashboard/rfIdDetail'))
         .catch(err=>{
-            console.log(err)
             this.setState({message:err.response.data.message})
         })
       }

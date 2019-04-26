@@ -120,6 +120,12 @@ import ParkingSlotList from './containers/flatDetailMaster/slotList';
 import ViewOwnerFlats from './containers/flatOwnerDetails/viewFlats';
 import AddOwnerFlat from './containers/flatOwnerDetails/addFlats'
 import TenantVerification from './components/tenantVerification/tenantVerification';
+import CommonAreaMaster from './containers/commonAreaMaster/commonAreaMaster';
+import DisplayCommonArea from './containers/commonAreaMaster/displayCommonAreaMaster';
+import CommonAreaMachine from './containers/commonAreaMachineMaster/commonAreaMachineMaster';
+import DisplayCommonAreaMachine from './containers/commonAreaMachineMaster/displayCommonAreaMachine';
+     
+
 import RFID from './containers/rfIdMaster/rfIdMaster';
 import RfIdDetail from './containers/rfIdMaster/rfIdDetails';
 
@@ -246,6 +252,10 @@ class App extends Component {
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
             <Route path='/login/tenantVerification' exact component={TenantVerification} />
+            <Route path='/superDashboard/commonAreaMaster' component={CommonAreaMaster}/>
+            <Route path='/superDashboard/DisplayCommonAreaMaster' component={DisplayCommonArea}/>
+            <Route path='/superDashboard/CommonAreaMachineMaster' component={CommonAreaMachine}/>
+            <Route path='/superDashboard/DisplayCommonAreaMachineMaster' component={DisplayCommonAreaMachine}/>
             <PrivateRoute path='/superDashboard/rfId' component={RFID}/>
             <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail}/>
             <PrivateRoute path='/superDashboard/machineIdMaster' component ={MachineIdMaster}/>

@@ -17,12 +17,12 @@ class ServiceMaster extends Component {
         super(props);
         this.state = {
 
-            serviceName: '',
+            serviceName: '',  
             serviceDetailId: '',
             service_detail: '',
             menuVisible: false,
             errors:{},
-            loading:false,
+            loading:true,
             message:'',
             isSubmit: false,
         }
@@ -48,8 +48,8 @@ class ServiceMaster extends Component {
     }
 
     refreshData() {
-        this.props.getServiceDetail();
-        this.props.getServiceType();
+        this.props.getServiceDetail().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
+        this.props.getServiceType().then(() => this.setState({loading: false})).catch(() => this.setState({loading:false}));
     }
   
     getDropdown = ({ detail }) => {
@@ -107,8 +107,8 @@ class ServiceMaster extends Component {
     }
 
 
-    OnKeyPressUserhandler(event) {
-        const pattern = /[a-zA-Z_ ]/ ; 
+    OnKeyPressUserhandler=(event) => {
+        const pattern = /^[a-zA-Z ]+$/;
         let inputChar = String.fromCharCode(event.charCode);
         if (!pattern.test(inputChar)) {
             event.preventDefault();
