@@ -51,6 +51,7 @@ module.exports = function (app) {
 	const rfidController = require('../controller/rfid');
 	const commonAreaController = require('../controller/commonArea');
 	const electricityConsumerController = require('../controller/electricityConsumer');
+	const commonAreaDetailController = require('../controller/commonAreaDetail');
 
 
 	app.get('/', userController.start);
@@ -72,6 +73,10 @@ module.exports = function (app) {
 	app.get('/api/user/search', userController.search);
 
 	// app.get('/api/user/test', [authJwt.verifyToken], userController.userContent);
+
+	app.post('/api/check/email', [authJwt.verifyToken, authJwt.isAdminRole], userController.checkEmail);
+
+	app.post('/api/check/contact', [authJwt.verifyToken, authJwt.isAdminRole], userController.checkContact);
 
 	app.get('/api/user/userRole', [authJwt.verifyToken, authJwt.isAdminRole], userController.roleTest);
 
@@ -99,7 +104,7 @@ module.exports = function (app) {
 
 	app.get('/api/user/:id', userController.getById);
 
-	app.post('/api/user/changePassword', [authJwt.verifyToken, isAdminRole], userController.changePassword);
+	app.post('/api/user/changePassword', [authJwt.verifyToken], userController.changePassword);
 
 	app.get('/api/forgotPassword/:userName', userController.forgottenPassword);
 
@@ -641,5 +646,13 @@ module.exports = function (app) {
 
 	app.put('/api/electricityConsumer/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.delete);
 
+	app.post('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.create);
 
+	app.get('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.get);
+
+	app.put('/api/commonAreaDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.update);
+
+	app.put('/api/commonAreaDetail/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.deleteSelected);
+
+	app.put('/api/commonAreaDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.delete);
 }

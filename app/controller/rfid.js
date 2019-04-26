@@ -9,6 +9,7 @@ const Tenant = db.tenant;
 const TenantMembersDetail = db.tenantMembersDetail;
 const Owner = db.owner;
 const OwnerMembersDetail = db.ownerMembersDetail;
+const UserRFID = db.userRfid;
 
 
 let filterItem = (rfids, arr) => {
@@ -263,22 +264,12 @@ exports.getRFIDByAll = (req, res, next) => {
     })
         .then(async rfids => {
             if (rfids.length !== 0) {
-                tenantRFIDs = await Tenant.findAll({ where: { isActive: true }, attributes: ['rfidId'] });
-                tenantMembersRFIDs = await TenantMembersDetail.findAll({ where: { isActive: true }, attributes: ['rfidId'] });
-                ownerRFIDs = await Owner.findAll({ where: { isActive: true }, attributes: ['rfidId'] });
-                ownerMembersRFIDs = await OwnerMembersDetail.findAll({ where: { isActive: true }, attributes: ['memberRfId'] });
-                tenantRFIDs.map(item => {
+                userRFIDs = await UserRFID.findAll({ where: { isActive: true }, attributes: ['rfidId'] });
+                
+                userRFIDs.map(item => {
                     rfidsArr.push(item.rfidId);
                 })
-                tenantMembersRFIDs.map(item => {
-                    rfidsArr.push(item.rfidId);
-                })
-                ownerRFIDs.map(item => {
-                    rfidsArr.push(item.rfidId);
-                })
-                ownerMembersRFIDs.map(item => {
-                    rfidsArr.push(item.memberRfId);
-                })
+                
                 sendRFIDs = filterItem(rfids, rfidsArr);
                 res.status(httpStatus.OK).json({
                     rfids: sendRFIDs

@@ -2,15 +2,34 @@ module.exports = (sequelize, Sequelize) => {
     const TenantMembersDetail = sequelize.define('tenant_members_detail_master', {
         memberId: {
             type: Sequelize.INTEGER,
-            autoIncrement: true,
             primaryKey: true
         },
-        memberName: {
+        firstName: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        lastName: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        userName: {
             type: Sequelize.STRING,
             allowNull: false
         },
         memberDob: {
             type: Sequelize.DATEONLY,
+            allowNull: false
+        },
+        email: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        contact: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        password: {
+            type: Sequelize.STRING,
             allowNull: false
         },
         gender: {

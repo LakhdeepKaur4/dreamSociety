@@ -29,6 +29,7 @@ const Role = db.role;
 const UserRoles = db.userRole;
 const TenantFlatDetail = db.tenantFlatDetail;
 const RFID = db.rfid;
+const UserRFID = db.userRfid;
 
 setInterval(async function () {
     // console.log("atin")
@@ -194,7 +195,7 @@ function saveToDisc(name, fileExt, base64String, callback) {
     });
 }
 
-filterFlats = item => {
+let filterFlats = item => {
     return item.tenant_flatDetail_master.isActive === true;
 }
 
@@ -435,19 +436,9 @@ exports.createEncrypted = async (req, res, next) => {
                     permanentAddress: encrypt(tenant.permanentAddress),
                     correspondenceAddress: encrypt(tenant.correspondenceAddress),
                     aadhaarNumber: encrypt(tenant.aadhaarNumber),
-                    // bankName: encrypt(tenant.bankName),
-                    // accountHolderName: encrypt(tenant.accountHolderName),
-                    // accountNumber: encrypt(tenant.accountNumber),
                     gender: encrypt(tenant.gender),
                     panCardNumber: encrypt(tenant.panCardNumber),
-                    // IFSCCode: encrypt(tenant.IFSCCode),
                     noOfMembers: tenant.noOfMembers,
-                    rfidId: tenant.rfidId,
-                    // ownerId: tenant.ownerId1,
-                    // ownerId1: tenant.ownerId1,
-                    // ownerId2: tenant.ownerId2,
-                    // ownerId3: tenant.ownerId3,
-
                     userId: tenant.userId,
                     floorId: tenant.floorId,
                     societyId: tenant.societyId,
@@ -465,6 +456,7 @@ exports.createEncrypted = async (req, res, next) => {
                             })
                         }
 
+                        UserRFID.create({ userId: tenant.tenantId, rfidId: tenant.rfidId });
 
                         const roles = await Role.findOne({
                             where: {
@@ -504,7 +496,8 @@ exports.createEncrypted = async (req, res, next) => {
                         }
                         if (tenant.noOfMembers !== 0 && tenant.noOfMembers !== null) {
                             members.map(item => {
-                                item.memberName = encrypt(item.memberName);
+                                item.firstName = encrypt(item.firstName);
+                                item.lastName = encrypt(item.lastName);
                                 item.gender = encrypt(item.gender);
                                 item.userId = req.userId;
                                 item.tenantId = entry.tenantId;
@@ -514,47 +507,6 @@ exports.createEncrypted = async (req, res, next) => {
                                 TenantMembersDetail.create(item);
                             })
                         }
-
-                        // await Owner.findOne({
-                        //     attributes: ['ownerId'],
-                        //     where: {
-                        //         flatDetailId: tenant.flatDetailId
-                        //     }
-                        // })
-                        //     .then(owners => {
-                        //         owners.map(item => {
-                        //             ownersArr.push(item.ownerId);
-                        //         })
-                        //         return ownersArr;
-                        //     })
-                        //     .then(owners => {
-                        //         if (ownersArr.length !== 0) {
-                        //             if (ownersArr[0]) {
-                        //                 ownerId1 = ownersArr[0];
-                        //             }
-                        //             else {
-                        //                 ownerId1 = null;
-                        //             }
-                        //             if (ownersArr[1]) {
-                        //                 ownerId2 = ownersArr[1];
-                        //             }
-                        //             else {
-                        //                 ownerId2 = null;
-                        //             }
-                        //             if (ownersArr[2]) {
-                        //                 ownerId3 = ownersArr[2];
-                        //             }
-                        //             else {
-                        //                 ownerId3 = null;
-                        //             }
-                        //             const ownersIds = {
-                        //                 ownerId1: ownerId1,
-                        //                 ownerId2: ownerId2,
-                        //                 ownerId3: ownerId3
-                        //             };
-                        //             Tenant.update(ownersIds, { where: { tenantId: entry.tenantId } });
-                        //         }
-                        //     })
                     })
                     .then(() => {
                         Tenant.find({
@@ -564,21 +516,6 @@ exports.createEncrypted = async (req, res, next) => {
                         })
                             .then(async tenantSend => {
                                 let ownerId;
-                                // tenantSend.firstName = decrypt(tenantSend.firstName);
-                                // tenantSend.lastName = decrypt(tenantSend.lastName);
-                                // tenantSend.userName = decrypt(tenantSend.userName);
-                                // tenantSend.email = decrypt(tenantSend.email);
-                                // tenantSend.contact = decrypt(tenantSend.contact);
-                                // tenantSend.picture = decrypt(tenantSend.picture);
-                                // tenantSend.aadhaarNumber = decrypt(tenantSend.aadhaarNumber);
-                                // tenantSend.permanentAddress = decrypt(tenantSend.permanentAddress);
-                                // tenantSend.correspondenceAddress = decrypt(tenantSend.correspondenceAddress);
-                                // tenantSend.bankName = decrypt(tenantSend.bankName);
-                                // tenantSend.accountHolderName = decrypt(tenantSend.accountHolderName);
-                                // tenantSend.accountNumber = decrypt(tenantSend.accountNumber);
-                                // tenantSend.gender = decrypt(tenantSend.gender);
-                                // tenantSend.panCardNumber = decrypt(tenantSend.panCardNumber);
-                                // tenantSend.IFSCCode = decrypt(tenantSend.IFSCCode);
 
                                 const owners = await OwnerFlatDetail.findAll({
                                     where: {
@@ -629,18 +566,12 @@ exports.getDecrypted = async (req, res, next) => {
             order: [['createdAt', 'DESC']],
             include: [
                 { model: Society },
-                // { model: Tower },
-                { model: RFID },
                 {
                     model: FlatDetail, include: [
                         { model: Tower, where: { isActive: true }, attributes: ['towerId', 'towerName'] },
                         { model: Floor, where: { isActive: true }, attributes: ['floorId', 'floorName'] }
                     ]
                 },
-                // { model: Floor },
-                // { model: Owner, as: 'Owner1' },
-                // { model: Owner, as: 'Owner2' },
-                // { model: Owner, as: 'Owner3' }
             ]
         })
             .then(tenants => {
@@ -655,14 +586,9 @@ exports.getDecrypted = async (req, res, next) => {
                     item.picture = decrypt(item.picture);
                     item.permanentAddress = decrypt(item.permanentAddress);
                     item.correspondenceAddress = decrypt(item.correspondenceAddress);
-                    // item.bankName = decrypt(item.bankName);
-                    // item.accountHolderName = decrypt(item.accountHolderName);
-                    // item.accountNumber = decrypt(item.accountNumber);
                     item.gender = decrypt(item.gender);
                     item.panCardNumber = decrypt(item.panCardNumber);
-                    // item.IFSCCode = decrypt(item.IFSCCode);
                     tenantsArr.push(item);
-                    // console.log(tenantsArr);
                 })
                 return tenantsArr;
             })
@@ -673,12 +599,6 @@ exports.getDecrypted = async (req, res, next) => {
                 });
             })
             .catch(err => console.log(err))
-        // if (tenantsArr) {
-        //     return res.status(httpStatus.OK).json({
-        //         message: "Tenant Content Page",
-        //         tenantsArr
-        //     });
-        // }
     } catch (error) {
         console.log("error==>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -784,47 +704,6 @@ exports.updateEncrypted = async (req, res, next) => {
             floorId = referenceConstraintReturn(floorIdCheck, update, 'floorId', tenant);
             rfidId = referenceConstraintReturn(rfidIdCheck, update, 'rfidId', tenant);
 
-
-            // await Owner.findAll({
-            //     attributes: ['ownerId'],
-            //     where: {
-            //         flatDetailId: flatDetailId
-            //     }
-            // })
-            //     .then(owners => {
-            //         owners.map(item => {
-            //             ownersArr.push(item.ownerId);
-            //         })
-            //         return ownersArr;
-            //     })
-            //     .then(owners => {
-            //         if (ownersArr.length !== 0) {
-            //             if (ownersArr[0]) {
-            //                 ownerId1 = ownersArr[0];
-            //             }
-            //             else {
-            //                 ownerId1 = null;
-            //             }
-            //             if (ownersArr[1]) {
-            //                 ownerId2 = ownersArr[1];
-            //             }
-            //             else {
-            //                 ownerId2 = null;
-            //             }
-            //             if (ownersArr[2]) {
-            //                 ownerId3 = ownersArr[2];
-            //             }
-            //             else {
-            //                 ownerId3 = null;
-            //             }
-            //             const ownersIds = {
-            //                 ownerId1: ownerId1,
-            //                 ownerId2: ownerId2,
-            //                 ownerId3: ownerId3
-            //             };
-            //             Tenant.update(ownersIds, { where: { tenantId: id } });
-            //         }
-            //     })
             if ((update.picture !== '') && (update.picture !== null) && (update.picture !== undefined)) {
                 tenantImage = await Tenant.find({ where: { tenantId: id }, attributes: ['picture'] });
                 fs.unlink((decrypt(tenantImage.picture)).replace('../../', ''), err => {
@@ -866,7 +745,6 @@ exports.updateEncrypted = async (req, res, next) => {
                 societyId: societyId,
                 towerId: towerId,
                 rfidId: rfidId,
-                // flatDetailId: flatDetailId
             };
 
             Tenant.find({
@@ -879,19 +757,6 @@ exports.updateEncrypted = async (req, res, next) => {
                     return tenant.updateAttributes(updates);
                 })
                 .then(tenant => {
-                    // tenant.tenantName = decrypt(tenant.tenantName);
-                    // tenant.userName = decrypt(tenant.userName);
-                    // tenant.email = decrypt(tenant.email);
-                    // tenant.contact = decrypt(tenant.contact);
-                    // tenant.aadhaarNumber = decrypt(tenant.aadhaarNumber);
-                    // tenant.picture = decrypt(tenant.picture);
-                    // tenant.permanentAddress = decrypt(tenant.permanentAddress);
-                    // tenant.bankName = decrypt(tenant.bankName);
-                    // tenant.accountHolderName = decrypt(tenant.accountHolderName);
-                    // tenant.accountNumber = decrypt(tenant.accountNumber);
-                    // tenant.gender = decrypt(tenant.gender);
-                    // tenant.panCardNumber = decrypt(tenant.panCardNumber);
-                    // tenant.IFSCCode = decrypt(tenant.IFSCCode);
                     return res.status(httpStatus.CREATED).json({
                         message: "Tenant successfully updated",
                         // tenant: tenant
@@ -912,12 +777,6 @@ exports.getTenantMembers = async (req, res, next) => {
     const tenantId = req.params.id;
     const membersArr = [];
     console.log('Tenant-ID ===>', tenantId);
-
-    // const tenant = Tenant.findOne({
-    //     where: {
-    //         tenantId: tenantId
-    //     }
-    // });
 
     if (!tenantId) {
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
@@ -1241,8 +1100,8 @@ exports.flatsList = async (req, res, next) => {
     try {
         const activeFlats = await FlatDetail.findAndCountAll({ where: { isActive: true } });
         const occupiedFlats = await OwnerFlatDetail.findAndCountAll({ where: { isActive: true } });
-        console.log("active Flats==>",activeFlats.count);
-        console.log("empty flats ==>",occupiedFlats.count);
+        console.log("active Flats==>", activeFlats.count);
+        console.log("empty flats ==>", occupiedFlats.count);
         const emptyFlats = activeFlats.count - occupiedFlats.count;
         console.log(emptyFlats)
         res.status(httpStatus.OK).json({ activeFlats: occupiedFlats.count, emptyFlats });
@@ -1260,8 +1119,8 @@ exports.rfidCount = async (req, res, next) => {
                 }
             }
         });
-        if(rfidCount){
-        res.status(httpStatus.OK).json({ rfid:rfidCount.count });
+        if (rfidCount) {
+            res.status(httpStatus.OK).json({ rfid: rfidCount.count });
         }
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
