@@ -95,7 +95,7 @@ getCommonArea= ({ getAreas }) => {
 
 } 
 
-getMachine= ({getMachines}) => {console.log(getMachines)
+getMachine= ({getMachines}) => {
     if(getMachines){
       return getMachines.machines.map((item)=>{  
           console.log(item.machineDetailId)
@@ -128,6 +128,7 @@ render() {
                             <DefaultSelect/>
                             {this.getCommonArea(this.props.commonAreaReducer)}
                             </Input>
+                            <span className="error">{this.state.message}</span>
                         </FormGroup>
                         </Col>
                         <Col md={6}>

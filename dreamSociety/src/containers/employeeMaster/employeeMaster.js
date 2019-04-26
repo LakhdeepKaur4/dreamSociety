@@ -313,7 +313,7 @@ FileChange=(event)=>{
 
     getService=({getEmployee})=>{
  console.log("abc",getEmployee)
- if(getEmployee){
+ if(getEmployee && getEmployee.employeeDetail){
      return getEmployee.employeeDetail.map((item)=>{
    return(
        <option key={item.employeeDetailId} value={item.employeeDetailId}>
@@ -566,7 +566,7 @@ onChange = (e) => {
 
 fetchDesignation = ({designation}) => {
     console.log(designation)
-    if(designation){
+    if(designation &&  designation.designation){
        return designation.designation.map((item) => {
             return (
                 <option key={item.designationId}  value={item.designationId}>{item.designationName}</option>
@@ -575,19 +575,9 @@ fetchDesignation = ({designation}) => {
     }
 }
 
-// sameAddress = (e) => {
-//     if(!!document.getElementById('isChecked').checked){
-//         console.log('is checked')
-//        this.setState({permanentAddress: this.state.currentAddress.trim()})
-//        document.getElementById('currenttaddr').disabled = true;
-//     }
-//    else{
-//         this.setState({permanentAddress: ''})
-//         document.getElementById('currenttaddr').disabled = false;
-//     }
-// }
+
 sameAddress = () => {
-    console.log(this.state)
+   
     if(!!document.getElementById('isChecked').checked){
         console.log('is checked')
        this.setState({currentAddress: this.state.permanentAddress,  currentAddressVisible:true, editCurrent:false})
@@ -598,7 +588,7 @@ sameAddress = () => {
 }
 
 permanentAddressChange = (e) => {
-    console.log(this.state)
+
     if (!!this.state.errors[e.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[e.target.name];
@@ -616,7 +606,7 @@ permanentAddressChange = (e) => {
 }
 
 currentAddressChange = (e) => {
-    console.log(this.state)
+
     if (!!this.state.errors[e.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[e.target.name];
@@ -630,7 +620,7 @@ currentAddressChange = (e) => {
 }
 
 pinChange = (e) => {
-    console.log(this.state)
+ 
     if (!!this.state.errors[e.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[e.target.name];
@@ -638,21 +628,21 @@ pinChange = (e) => {
     }
     else {
         this.setState({[e.target.name]: e.target.value});
-        console.log(this.state)
+    
     }
     this.updateCurrentAddress(e.target.value)
 }
 
 updateCurrentAddress = (pin) => {
-    console.log(pin)
+   
     this.setState({pin})
     this.setState({currentAddress: this.state.currentAddressDefault   + (this.state.currentLocation ? (', ' + this.state.currentLocation +  ', ') : ', ') +
     this.state.currentCity + ', ' + this.state.currentState + ', ' +  this.state.currentCountry + ', ' + 'Pin/Zip Code: ' + pin})
-    console.log('currentAddress', this.state.currentAddress)
+   
 }
 
 pinChange1 = (e) => {
-    console.log(this.state)
+    
     if (!!this.state.errors[e.target.name]) {
         let errors = Object.assign({}, this.state.errors);
         delete errors[e.target.name];

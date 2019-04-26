@@ -397,6 +397,11 @@ render(){
                    <span className="error">{this.state.errors.locationName}</span>
                    <span className="error">{this.state.message}</span>
                </FormGroup> 
+               <FormGroup> 
+                        <Button color="primary" className="mr-2" onClick={this.updateLocation}>Save</Button> 
+                        <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
+               </FormGroup> 
+                 
                </div>    
         let deleteSelectedButton = <Button color="danger" className="mb-2"
         onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>;
@@ -416,9 +421,7 @@ render(){
                  <ModalBody>
       
                     {!this.state.modalLoading?modalData:<Spinner/>}
-                        <Button color="primary" className="mr-2" onClick={this.updateLocation}>Save</Button> 
-                        <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
-                 
+                        
                  </ModalBody>
              </Modal> 
              <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Location Details</h3>
