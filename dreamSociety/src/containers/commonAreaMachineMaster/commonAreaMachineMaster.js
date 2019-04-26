@@ -83,7 +83,7 @@ onSubmit = (e) => {console.log(commonAreaId,machineDetailId)
 }
 
 getCommonArea= ({ getAreas }) => {
-    if (getAreas) {
+    if (getAreas && getAreas.commonAreas) {
         return getAreas.commonAreas.map((item) => {
             return (
                 <option key={item.commonAreaId} value={item.commonAreaId}>
@@ -96,7 +96,7 @@ getCommonArea= ({ getAreas }) => {
 } 
 
 getMachine= ({getMachines}) => {
-    if(getMachines){
+    if(getMachines && getMachines.machines){
       return getMachines.machines.map((item)=>{  
           console.log(item.machineDetailId)
          return (   {...item,label:item.machineActualId,value:item.machineDetailId}          

@@ -79,22 +79,17 @@ toggleCommonModal() {
         editCommonAreaModal: !this.state.editCommonAreaModal, message:''
     });
 }
-
-
+  
 searchOnChange = (e) => {
     this.setState({ search: e.target.value })
 }
-
-
-     
-    updateAreas() {
-        const {commonAreaDetailId,commonAreaId,machineDetailId} = this.state;
-      
-    
-            this.props.updateMachineAreas(commonAreaDetailId,commonAreaId,machineDetailId)
-            .then(() => this.refreshData())
-            .catch(err=>{
-                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+        
+updateAreas() {
+    const {commonAreaDetailId,commonAreaId,machineDetailId} = this.state;  
+        this.props.updateMachineAreas(commonAreaDetailId,commonAreaId,machineDetailId)
+        .then(() => this.refreshData())
+        .catch(err=>{
+            this.setState({modalLoading:false,message: err.response.data.message, loading: false})
                 })
                 if(this.state.message === ''){
                     this.setState({editCommonAreaModal: true})
@@ -103,9 +98,7 @@ searchOnChange = (e) => {
                     this.setState({editCommonAreaModal: false})
                 }       
             this.setState({ modalLoading: true
-       })
-    
-        
+       })       
     }
     
 
