@@ -216,6 +216,7 @@ export const ADD_FLAT_OWNER='add_flat_owner';
 export const GET_FLAT_DETAIL_VIA_TOWERID='GET_FLAT_DETAIL_VIA_TOWERID';
 export const EDIT_FLATS='EDIT_FLATS';
 export const GET_RFID='GET_RFID';
+export const CHECK_EMAIL='CHECK_EMAIL';
 export const DELETE_FLATS='DELETE_FLATS'
 export const GET_TOTAL_ITEMS='GET_TOTAL_ITEMS';
 export const GET_FLAT_OWNER='get_flat_owner';
