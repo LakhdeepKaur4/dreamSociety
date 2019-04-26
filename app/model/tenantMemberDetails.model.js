@@ -7,16 +7,16 @@ module.exports = (sequelize, Sequelize) => {
         },
         memberName: {
             type: Sequelize.STRING,
-            allowNull:false
+            allowNull: false
         },
         memberDob: {
             type: Sequelize.DATEONLY,
-            allowNull:false
+            allowNull: false
         },
         gender: {
             type: Sequelize.STRING,
             allowNull: false
-      },
+        },
         isActive: {
             type: Sequelize.BOOLEAN,
             defaultValue: true
