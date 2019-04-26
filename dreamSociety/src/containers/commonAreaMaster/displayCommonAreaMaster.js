@@ -168,7 +168,7 @@ logout=()=>{
 
 
 renderList = ({ getAreas }) => {console.log(getAreas)
-    if (getAreas) {
+    if (getAreas && getAreas.commonAreas) {
         return getAreas.commonAreas.sort((item1,item2)=>{
             var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
             return this.state.sortVal ? cmprVal : -cmprVal;
