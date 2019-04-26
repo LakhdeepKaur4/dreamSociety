@@ -97,9 +97,9 @@ class ChangePassword extends Component{
 
             this.props.changePassword(this.state,this.state.userId=user)
             .then(()=>this.props.history.push('/superDashboard'))
-            // .catch(err=>{
-            //     this.setState({message: err.response.data.message, loading: false})
-            // })
+            .catch(err=>{
+                this.setState({message: err.response.data.message, loading: false})
+            })
         }
     }
 
@@ -134,7 +134,8 @@ class ChangePassword extends Component{
                 <Label>Old Password</Label>
                 <Input  type="password" name="oldPassword"  type={this.state.type} placeholder="old password" onChange={this.passwordOnChange} maxLength={128} minLength={6} ></Input> 
                 <span className="oldPassword" onClick={this.showHide}>{this.state.type === 'password' ? hide: show}</span>
-                <span className="error">{this.state.errors.oldPassword}</span>  
+                <span className="error">{this.state.errors.oldPassword}</span>
+                <span className="error">{this.state.message}</span>  
           </FormGroup>
 
 

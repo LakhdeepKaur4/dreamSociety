@@ -68,7 +68,10 @@ class IndividualVendor extends Component{
             editCurrent:true,
             pin:'',
             pin1:'',
-            dailyRoutine:false
+            dailyRoutine:false,
+            message:'',
+            messageContactErr:'',
+            messageEmailErr:'',
            
         }
     }
@@ -145,7 +148,7 @@ class IndividualVendor extends Component{
     
     emailChange = (e) => {
    
-        this.setState({email:e.target.value})
+        this.setState({email:e.target.value, messageEmailErr:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value});
             
@@ -229,10 +232,10 @@ class IndividualVendor extends Component{
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+            this.setState({ [e.target.name]: e.target.value.trim(), errors,message:'' });
         }
         else {
-            this.setState({ [e.target.name]: e.target.value.trim('') });
+            this.setState({[e.target.name]:e.target.value.trim(),message:'',messageContactErr:''});
         }
     }
 
@@ -681,8 +684,17 @@ class IndividualVendor extends Component{
              if(isValid){
                 
                 this.props.addVendor(this.state).then(()=>this.props.history.push('/superDashboard/individualVendorDetail'))
+                .catch((err)=>{ console.log(err.response.data)
+                    this.setState({message: err.response.data.message,messageContactErr:err.response.data.messageContactErr,messageEmailErr:err.response.data.messageEmailErr ,loading: false})
+                
+                }) 
              }
     }
+
+    close = () => {
+        return this.props.history.replace('/superDashBoard')
+    }
+
 
      
     dashbordPage=()=>{
@@ -816,6 +828,8 @@ class IndividualVendor extends Component{
                         onKeyPress={this.emailValid}/>
                      {!this.state.email ? <span className="error">{this.state.errors.email}</span> : ''}
                             <span className="error">{this.state.emailValidError}</span>
+                            <span className="error">{this.state.messageEmailErr}</span>
+                           
             </FormGroup>
             </Col>
 
@@ -826,6 +840,8 @@ class IndividualVendor extends Component{
                 {/* <Input placeholder="Contact No." type="text" name="contact" value={this.state.contact} onChange={this.onChange} onKeyPress={this.OnKeyPresshandlerPhone} maxLength={10}/> */}
                 <Input placeholder="Contact No." type="text" name="contact"  onKeyPress={this.OnKeyPresshandlerPhone} onChange={this.onChange} maxLength={10}/>
                 <span className='error'>{this.state.errors.contact}</span>
+                <span className="error">{this.state.messageContactErr}</span>
+               
                 </FormGroup>
                 </Col>
                 </Row>
@@ -960,6 +976,9 @@ class IndividualVendor extends Component{
                 <Label>Document 2</Label>
                     <Input type="file" name="documentTwo" accept="image/*" onChange={this.FileChange2} />
                     <span className="error">{this.state.errors.documentTwo}</span>     
+                </FormGroup>
+                <FormGroup>
+                <span className="error">{this.state.message}</span>
                 </FormGroup>
 
                

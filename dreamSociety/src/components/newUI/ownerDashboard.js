@@ -93,7 +93,7 @@ class Demo extends Component {
 
                         </div>
                     </div>
-                    <Link className="navbar-brand" to="/superDashboard"><i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa mr-1">&#xf1ad;</i>DRE@M SOCIETY</Link>
+                    <Link className="navbar-brand" to="/ownerDashboard"><i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa mr-1">&#xf1ad;</i>DRE@M SOCIETY</Link>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
@@ -101,7 +101,7 @@ class Demo extends Component {
                     <div className="collapse navbar-collapse" id="navbarsExample05">
                         <ul className="navbar-nav mr-auto mx-auto">
                             <li className="nav-item mx-3 active">
-                                <Link className="nav-link" to="/superDashboard">Home<span className="sr-only">(current)</span></Link>
+                                <Link className="nav-link" to="/ownerDashboard">Home<span className="sr-only">(current)</span></Link>
                             </li>
                             <li className="nav-item mx-3">
                                 <Link className="nav-link" to="#">Gallery</Link>

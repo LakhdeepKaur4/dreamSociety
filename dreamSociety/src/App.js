@@ -125,6 +125,8 @@ import RfIdDetail from './containers/rfIdMaster/rfIdDetails';
 
 import MachineIdMaster from './containers/machineIdMaster/machineIdMaster';
 import DisplayMachineIdMaster from './containers/machineIdMaster/displayMachineIdMaster';
+import Dashboard from './components/dashboard/dashboard';
+import ChangePasswordOwner from './components/changePassword/changePasswordOwner';
 
 class App extends Component {
   render() {
@@ -219,6 +221,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
             <PrivateRoute path='/tenantDashboard/changePasswordTenant' component={ChangePasswordTenant} />
+            <PrivateRoute path='/ownerDashboard/changePasswordOwner' component={ChangePasswordOwner} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
             <PrivateRoute path='/superDashboard/displayEmployee2' component={DisplayEmployeeMaster2} />
             <PrivateRoute path='/superDashboard/inventoryList' component={InventoryList} />
@@ -250,6 +253,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail}/>
             <PrivateRoute path='/superDashboard/machineIdMaster' component ={MachineIdMaster}/>
             <PrivateRoute path='/superDashboard/displayMachineIdMaster' component={DisplayMachineIdMaster}/>
+            <PrivateRoute path='/superDashboard/dashboard' component={Dashboard}/>
           </Switch>
         </div>
         
