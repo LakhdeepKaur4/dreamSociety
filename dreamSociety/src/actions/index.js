@@ -1,20 +1,19 @@
-// export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
-// export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-// export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-// export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
+export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
-export  const URN = 'http://192.168.1.105:8082/api';
+// export  const URN = 'https://mydreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const UR = 'https://dreamsociety.herokuapp.com/';
-// 
+// export  const UR = 'https://mydreamsociety.herokuapp.com/';
+
 
 
 // export  const URN = 'https://dreamsociety.herokuapp.com/api';
-export  const PicURN = 'https://dreamsociety.herokuapp.com/';
-export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-export  const UR = 'https://dreamsociety.herokuapp.com/';
-
+// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com';
 
 
 export const USER_LOGIN='user_login';
@@ -220,6 +219,7 @@ export const ADD_FLAT_OWNER='add_flat_owner';
 export const GET_FLAT_DETAIL_VIA_TOWERID='GET_FLAT_DETAIL_VIA_TOWERID';
 export const EDIT_FLATS='EDIT_FLATS';
 export const GET_RFID='GET_RFID';
+export const CHECK_EMAIL='CHECK_EMAIL';
 export const DELETE_FLATS='DELETE_FLATS'
 export const GET_TOTAL_ITEMS='GET_TOTAL_ITEMS';
 export const GET_FLAT_OWNER='get_flat_owner';
@@ -284,6 +284,7 @@ export const DELETE_SELECT_INDIVIDUAL_VENDOR='DELETE_SELECT_INDIVIDUAL_VENDOR';
 export const UPDATE_INDIVIDUAL_VENDOR='UPDATE_INDIVIDUAL_VENDOR';
 export const GET_INDIVIDUAL_SERVICEID='GET_INDIVIDUAL_SERVICEID';
 export const USER_FLAT_DETAILS ='user_flat_details'
+
 export const REGISTER_COMPLAINT='REGISTER_COMPLAINT';
 export const POST_REGISTER_COMPLAINT='POST_REGISTER_COMPLAINT';
 export const GET_FLATS='GET_FLATS';
@@ -297,6 +298,20 @@ export const GET_MACHINE_ACTUAL_ID='GET_MACHINE_ACTUAL_ID';
 export const  UPDATE_MACHINE ='UPDATE_MACHINE';
 export const  DELETE_MACHINE ='DELETE_MACHINE';
 export const DELETE_MULTIPLE_MACHINE = 'DELETE_MULTIPLE_MACHINE';
+
+export const ADD_COMMON_AREA='ADD_COMMON_AREA';
+export const GET_COMMON_AREA='GET_COMMON_AREA';
+export const UPDATE_AREAS='UPDATE_AREAS';
+export const DELETE_AREA='DELETE_AREA';
+export const DELETE_AREA_IDS='DELETE_AREA_IDS';
+export const GET_MACHINES='GET_MACHINES';
+
+export const ADD_COMMON_AREA_MACHINE='ADD_COMMON_AREA_MACHINE';
+export const GET_COMMON_AREA_MACHINE='GET_COMMON_AREA_MACHINE';
+export const UPDATE_AREAS_MACHINE='UPDATE_AREAS_MACHINE';
+export const DELETE_AREA_MACHINE ='DELETE_AREA_MACHINE';
+export const DELETE_AREA_MACHINE_IDS ='DELETE_AREA_MACHINE_IDS';
+
 export const ADD_RF='ADD_RF';
 export const GET_RF='GET_RF';
 export const DELETE_RF='DELETE_RF'

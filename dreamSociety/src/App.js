@@ -120,11 +120,19 @@ import ParkingSlotList from './containers/flatDetailMaster/slotList';
 import ViewOwnerFlats from './containers/flatOwnerDetails/viewFlats';
 import AddOwnerFlat from './containers/flatOwnerDetails/addFlats'
 import TenantVerification from './components/tenantVerification/tenantVerification';
+import CommonAreaMaster from './containers/commonAreaMaster/commonAreaMaster';
+import DisplayCommonArea from './containers/commonAreaMaster/displayCommonAreaMaster';
+import CommonAreaMachine from './containers/commonAreaMachineMaster/commonAreaMachineMaster';
+import DisplayCommonAreaMachine from './containers/commonAreaMachineMaster/displayCommonAreaMachine';
+     
+
 import RFID from './containers/rfIdMaster/rfIdMaster';
 import RfIdDetail from './containers/rfIdMaster/rfIdDetails';
 
 import MachineIdMaster from './containers/machineIdMaster/machineIdMaster';
 import DisplayMachineIdMaster from './containers/machineIdMaster/displayMachineIdMaster';
+import Dashboard from './components/dashboard/dashboard';
+import ChangePasswordOwner from './components/changePassword/changePasswordOwner';
 
 class App extends Component {
   render() {
@@ -219,6 +227,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/getFloor' component={GetFloorDetail} />
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
             <PrivateRoute path='/tenantDashboard/changePasswordTenant' component={ChangePasswordTenant} />
+            <PrivateRoute path='/ownerDashboard/changePasswordOwner' component={ChangePasswordOwner} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
             <PrivateRoute path='/superDashboard/displayEmployee2' component={DisplayEmployeeMaster2} />
             <PrivateRoute path='/superDashboard/inventoryList' component={InventoryList} />
@@ -246,10 +255,15 @@ class App extends Component {
             <Route path='/submitotp' component= {submitOTP}/>
             <Route path='/token' component= {token}/>
             <Route path='/login/tenantVerification' exact component={TenantVerification} />
+            <Route path='/superDashboard/commonAreaMaster' component={CommonAreaMaster}/>
+            <Route path='/superDashboard/DisplayCommonAreaMaster' component={DisplayCommonArea}/>
+            <Route path='/superDashboard/CommonAreaMachineMaster' component={CommonAreaMachine}/>
+            <Route path='/superDashboard/DisplayCommonAreaMachineMaster' component={DisplayCommonAreaMachine}/>
             <PrivateRoute path='/superDashboard/rfId' component={RFID}/>
             <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail}/>
             <PrivateRoute path='/superDashboard/machineIdMaster' component ={MachineIdMaster}/>
             <PrivateRoute path='/superDashboard/displayMachineIdMaster' component={DisplayMachineIdMaster}/>
+            <PrivateRoute path='/superDashboard/dashboard' component={Dashboard}/>
           </Switch>
         </div>
         

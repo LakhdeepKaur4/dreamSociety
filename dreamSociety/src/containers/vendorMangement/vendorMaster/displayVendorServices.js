@@ -83,7 +83,7 @@ class DisplayVendorServices extends Component {
     }
 
     getDropDown1 = ({rate}) => {
-        if (rate) {
+        if (rate && rate.rate) {
             return rate.rate.map((item) => {
                 return (
                     <option key={item.rateId} value={item.rateId}>
@@ -116,7 +116,7 @@ class DisplayVendorServices extends Component {
    
 
 editUser(vendorId,vendorServiceId,serviceId,rateId,serviceName,rateType,rate){
-    console.log(vendorId,"vendorId",vendorServiceId,"vendorServiceId-----edit---",rate,"rate")
+   
     this.setState({
         vendorId,vendorServiceId,serviceId,rateId,serviceName,rateType,rate
             ,editVendorModal: !this.state.editServiceModal})

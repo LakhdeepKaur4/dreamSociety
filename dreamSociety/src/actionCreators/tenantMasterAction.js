@@ -3,7 +3,7 @@ import { authHeader } from '../helper/authHeader';
 import{URN,GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID,UPDATE_TENANT_DETAIL,GET_TENANT_MEMBER_DETAILS,
     DELETE_SELECTED_TENANT,ADD_TENANT_DETAIL, GET_TENANT_DETAIL, DELETE_TENANT, DELETE_TENANT_MEMBER,
     DELETE_SELECTED_TENANT_MEMBER,EDIT_TENANT_MEMBER, ADD_NEW_TENANT, ADD_NEW_Flat,GET_FLATS,EDIT_FLATS,DELETE_FLATS,
-    GET_RFID} from '../actions/index';
+    GET_RFID,CHECK_EMAIL} from '../actions/index';
 
 export function addTenantDetail(values){
     console.log(values)
@@ -194,6 +194,14 @@ export function rfid(){
     .then((response) => response.data)
     return {
         type: GET_RFID,
+        payload:request
+    }
+}
+
+export function validOnChange(email){
+    const request = axios.post(`${URN}/check/email`, {email}, {headers: authHeader()})
+    return {
+        type: CHECK_EMAIL,
         payload:request
     }
 }

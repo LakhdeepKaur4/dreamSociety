@@ -83,7 +83,7 @@ class ViewMachineMaster extends Component {
     push = () => {
         this.props.history.push('/superDashboard/machineMaster')
     }
-    delete=(machineId)=>{
+    delete=(machineId)=>{console.log(machineId)
         this.setState({loading:true})
         let { isActive } = this.state;
         this.props.deleteMachine(machineId,isActive).then(() => this.refreshData())
@@ -288,7 +288,7 @@ class ViewMachineMaster extends Component {
 
         flatList =({machine})=>{
             console.log(machine);
-            if(machine)
+            if(machine && machine.Machines)
             {
     
                          return machine.Machines.sort((item1,item2) =>{

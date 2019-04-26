@@ -174,7 +174,7 @@ class DisplaySocietyEventBooking extends Component {
  }
  
  getEventName({getEvent}){
-    if(getEvent){
+    if(getEvent &&  getEvent.event){
         return getEvent.event.map((item) => {
             return (
                 <option key={item.eventId} value={item.eventId}>

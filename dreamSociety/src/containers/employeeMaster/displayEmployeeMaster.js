@@ -560,7 +560,7 @@ ImageChange =(event)=>{
 
     getService=({getEmployee})=>{
         console.log("abc",getEmployee)
-        if(getEmployee){
+        if(getEmployee && getEmployee.employeeDetail){
             return getEmployee.employeeDetail.map((item)=>{
           return(
               <option key={item.employeeDetailId} value={item.employeeDetailId}>
@@ -663,21 +663,6 @@ ImageChange =(event)=>{
     }
 
      
-    //  countryName = ({countryResult}) => {
-    //      if(countryResult){
-           
-    //         return( 
-    //          countryResult.map((item) =>{
-    //                 return(
-    //                     <option key={item.countryId} value={item.countryName}>
-    //                      {item.countryName}
-    //                     </option>
-    //                 )
-    //             })
-    //         )
-             
-    //      }
-    //  }
     
      
      logout=()=>{
@@ -868,10 +853,7 @@ ImageChange =(event)=>{
             this.setState({permanentAddressDefault: e.target.value, permanentAddress: e.target.value  + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
             this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
         }
-        // if(!!document.getElementById('isChecked1').checked){
-        //     this.setState({currentAddress: e.target.value + (this.state.locationName ? (', ' + this.state.locationName + ', ') : ', ') +
-        //     this.state.cityName + ', ' + this.state.stateName + ', ' + this.state.countryName + ', ' + 'Pin/Zip code: ' + this.state.pin1})
-        // }
+      
     }
 
     toggleEmployeeModal = () => {
