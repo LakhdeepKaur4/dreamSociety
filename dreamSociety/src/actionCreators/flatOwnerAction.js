@@ -78,7 +78,8 @@ export function updateFlatOwner(
     permanentAddress,
     gender,
     Aadhaar,
-    profilePicture,fileName,rfidId){
+    profilePicture,
+    fileName,rfidId){
 
   
         const data={
@@ -90,7 +91,8 @@ export function updateFlatOwner(
             permanentAddress,
             gender,
             adhaarCardNo:Aadhaar,
-            profilePicture,fileName,rfidId}
+            profilePicture,
+            fileName,rfidId}
             console.log('=============data============',data)
     const request=axios.put(`${URN}/owner/`+ownerId,data,{headers:authHeader()})
         .then(reponse=>reponse.data)
@@ -134,9 +136,9 @@ export function deleteMultipleMember(ids){
     }
 }
 
-export function memberUpdate(memberName,gender,memberDob,relationId,memberId,memberRfId){
+export function memberUpdate(memberFirstName,memberLastName,gender,memberDob,relationId,memberId,memberRfId){
     
-    const request=axios.put(`${URN}/owner/ownerMember/update/${memberId}`,{memberName,gender,memberDob,relationId,memberRfId},{headers:authHeader()})
+    const request=axios.put(`${URN}/owner/ownerMember/update/${memberId}`,{memberFirstName,memberLastName,gender,memberDob,relationId,memberRfId},{headers:authHeader()})
     .then(response=>response.data)
     return {
         type:MEMBER_OWNER_UPDATE,

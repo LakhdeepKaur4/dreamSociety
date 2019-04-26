@@ -19,7 +19,8 @@ class FlatMemberList extends Component {
             ids: [],
             isDisabled: true,
             modal: false,
-            memberName: '',
+            memberFirstName: '',
+            memberLastName: '',
             gender: '',
             memberDob: '',
             relationId: '',
@@ -128,12 +129,12 @@ class FlatMemberList extends Component {
                                 }
                             }} /></td>
                         <td>{index + 1}</td>
-                        <td style={{ textAlign: "center", width: '10px' }}>{item.memberName}</td>
+                        <td style={{ textAlign: "center", width: '10px' }}>{item.memberFirstName+' '+item.memberLastName}</td>
                         <td style={{ textAlign: "center", width: '10px' }}>{item.memberDob}</td>
                         <td style={{ textAlign: "center", width: '10px' }}>{item.relation_master ? item.relation_master.relationName : ''}</td>
                         <td style={{ textAlign: "center", width: '10px' }}>{item.gender}</td>
                         <td style={{ textAlign: "center" }}>
-                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, item.memberId, item.memberName, item.memberDob, item.relationId, item.gender)} >Edit</button>
+                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, item.memberId, item.memberFirstName,item.memberLastName, item.memberDob, item.relationId, item.gender)} >Edit</button>
                             <button className="btn btn-danger" onClick={this.deleteMember.bind(this, item.memberId)} >Delete</button>
                         </td>
 
@@ -143,15 +144,16 @@ class FlatMemberList extends Component {
         }
     }
     toggles = () => {
-        this.setState({ modal: !this.state.modal })
+        this.setState({ modal: !this.state.modal,
+            memberFirstName:'',memberLastName:'',memberDob:'',relationId:'',gender:'' })
     }
     toggles1 = () => {
         this.setState({ formModal: !this.state.formModal,
-        memberName:'',memberDob:'',relationId:'',gender:'' })
+        memberFirstName:'',memberLastName:'',memberDob:'',relationId:'',gender:'' })
     }
-    toggle = (memberId, memberName, memberDob, relationId, gender) => {
+    toggle = (memberId, memberFirstName,memberLastName, memberDob, relationId, gender) => {
         this.setState({
-            memberName, gender, memberDob, relationId, memberId,
+            memberFirstName,memberLastName, gender, memberDob, relationId, memberId,
             modal: !this.state.modal
         })
     }
@@ -172,7 +174,7 @@ class FlatMemberList extends Component {
         return d.toISOString().split('T')[0];
     }
     editMember = () => {
-        const { memberId, memberName, gender, memberDob, relationId,rfidId } = this.state
+        const { memberId, memberFirstName,memberLastName, gender, memberDob, relationId,rfidId } = this.state
         let errors = {};
         if (this.state.memberName === '') {
             errors.memberName = "Member Name can't be empty"
@@ -190,7 +192,7 @@ class FlatMemberList extends Component {
         const isValid = Object.keys(errors).length === 0
         if(isValid){
             this.setState({ loading: true })
-            this.props.memberUpdate(memberName, gender, memberDob, relationId, memberId,rfidId)
+            this.props.memberUpdate(memberFirstName,memberLastName, gender, memberDob, relationId, memberId,rfidId)
             .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
             this.setState({ modal: !this.state.modal })
         }        
@@ -216,7 +218,7 @@ class FlatMemberList extends Component {
         });
     }
     RfID=({ownerRf})=>{
-        if(ownerRf){
+        if(ownerRf && ownerRf.rfids){
             return (
                ownerRf.rfids.map((item)=>{
                    return ({ ...item, label:item.rfid, value:item.rfidId})
@@ -303,8 +305,13 @@ class FlatMemberList extends Component {
                                 <ModalHeader toggle={this.toggle}>Edit Flat Owner</ModalHeader>
                                 <ModalBody>
                                     <FormGroup>
-                                        <Label>Name</Label>
-                                        <Input placeholder="Name Of Member" name="memberName" onChange={this.onChangeHandler} value={this.state.memberName} />
+                                        <Label>First Name</Label>
+                                        <Input placeholder="Enter First Name" name="memberFirstName" onChange={this.onChangeHandler} value={this.state.memberFirstName} />
+                                        <span className="error">{this.state.errors.memberName}</span>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label>Last Name</Label>
+                                        <Input placeholder="Enter Last Name" name="memberLastName" onChange={this.onChangeHandler} value={this.state.memberLastName} />
                                         <span className="error">{this.state.errors.memberName}</span>
                                     </FormGroup>
                                     <FormGroup>
@@ -349,9 +356,14 @@ class FlatMemberList extends Component {
                                 <ModalHeader>Add Member</ModalHeader>
                                 <ModalBody>
                                     <FormGroup>
-                                        <Label>Name</Label>
-                                        <Input placeholder="Name Of Member" name="memberName" onChange={this.onChangeHandler} value={this.state.memberName} />
-                                        <span className="error">{this.state.errors.memberName}</span>
+                                        <Label>First Name</Label>
+                                        <Input placeholder="Enter First Name" name="memberFirstName" onChange={this.onChangeHandler} value={this.state.memberFirstName} />
+                                        {/* <span className="error">{this.state.errors.memberName}</span> */}
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label>Last Name</Label>
+                                        <Input placeholder="Enter Last Name" name="memberLastName" onChange={this.onChangeHandler} value={this.state.memberLastName} />
+                                        {/* <span className="error">{this.state.errors.memberName}</span> */}
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Relation With Owner</Label>
