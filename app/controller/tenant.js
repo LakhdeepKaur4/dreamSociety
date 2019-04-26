@@ -455,7 +455,8 @@ exports.createEncrypted = async (req, res, next) => {
                                 tenantId: entry.tenantId
                             })
                         }
-
+                        console.log("_____________________>>>",tenant.tenantId);
+                        console.log("_____________________>>>",tenant.rfidId);
                         UserRFID.create({ userId: tenant.tenantId, rfidId: tenant.rfidId });
 
                         const roles = await Role.findOne({
@@ -496,13 +497,16 @@ exports.createEncrypted = async (req, res, next) => {
                         }
                         if (tenant.noOfMembers !== 0 && tenant.noOfMembers !== null) {
                             members.map(item => {
+                                let randomNumber;
+                                randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
+                                item.memberId = randomNumber;
                                 let memberUserName = item.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
                                 const password = passwordGenerator.generate({
                                     length: 10,
                                     numbers: true
                                 });
                                 item.password = password;
-                                item.memeberDob = item.memberDob;
+                                item.memberDob = item.memberDob;
                                 item.email = encrypt(item.email);
                                 item.contact = encrypt(item.contact);
                                 item.firstName = encrypt(item.firstName);
@@ -515,6 +519,23 @@ exports.createEncrypted = async (req, res, next) => {
                             })
                             membersArr.map(item => {
                                 TenantMembersDetail.create(item);
+                                 User.create({
+                                    userId:item.memberId,
+                                    firstName: encrypt(item.firstName),
+                                    lastName: encrypt(item.lastName),
+                                    userName: encrypt(item.userName),
+                                    contact: encrypt(item.contact),
+                                    email: encrypt(item.email),
+                                    password: bcrypt.hashSync(item.password, 8),
+                                    // familyMember: encrypt(tenant.noOfMembers.toString()),
+                                    // parking: encrypt('...'),
+                                    towerId: tenant.towerId,
+                                    isActive: false
+                                })
+                                    .then(user => {
+                                        // user.setRoles(roles);
+                                        UserRoles.create({ userId: user.userId, roleId: roles.id });
+                                    })
                             })
                         }
                     })
