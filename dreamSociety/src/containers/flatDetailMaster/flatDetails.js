@@ -158,7 +158,7 @@ class flatDetails extends Component {
 
 
     getDropDown1 = ({ flattype }) => {
-        if (flattype) {
+        if (flattype && flattype.flat) {
             return flattype.flat.map((item) => {
                 return (
                     <option key={item.flatId} value={item.flatId}>
@@ -223,7 +223,7 @@ class flatDetails extends Component {
 
     renderList = ({ details }) => {
 
-        if (details) {
+        if (details && details.flatDetail) {
           
             return details.flatDetail.sort((item1, item2) => {
                 var cmprVal = (item1.flatNo && item2.flatNo) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''

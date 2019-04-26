@@ -13,6 +13,8 @@ import { getFlatDetails } from '../../actionCreators/flatDetailMasterAction';
 import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label,Col, Row } from 'reactstrap';
 import { getOwnerMember, getOwnerList, multipleDelete, removeOwner, updateFlatOwner,getAllFloor } from '../../actionCreators/flatOwnerAction'
+import {getRfId} from '../../actionCreators/rfIdAction';
+
 class FlatOwnerList extends Component {
     constructor(props) {
         super(props);
@@ -62,13 +64,32 @@ class FlatOwnerList extends Component {
             currentAddressDefault:'',
             profilePicture:'',
             fileName:'',
-            pin1:''
+            pin1:'',
+            editRf:false,
+            rfidId:'',
+            rfid:'',
+            defaultRFID:true,
         }
     }
     toggles = () => {
         this.setState({ modalError: !this.state.modalError })
     }
+    rfidChange = (name,selectOption) => {
+        
+        if(name && selectOption){
+            this.setState(function (prevState, props) {
+                return {
+                    [name]: selectOption.value,
+                    errors:''
+                }
+            }, function () {
+                console.log(selectOption.value)
+            });
+        }
+        console.log(this.state)
+}
     componentDidMount() {
+        this.props.getRfId();
         this.props.getOwnerList();
         this.props.detailSociety();
         this.props.viewTower();
@@ -94,7 +115,31 @@ class FlatOwnerList extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-    toggle = (ownerId, firstName,lastName, dob, gender, contact, email,Aadhaar,permanentAddress) => {
+    editRFID = () => {
+        if(!!document.getElementById('isRfidChecked').checked){
+            console.log('is checked')
+        this.setState({rfidId: '' , defaultRFID:false, editRFID:true})
+        
+        
+        }
+    else{
+            this.setState({rfidId:this.state.defRFID, defaultRFID:true, editRFID:false})
+        }
+    }
+    rfidOptions = ({ownerRf}) => {
+        if(ownerRf){
+            return (
+               ownerRf.rfids.map((item)=>{
+                   return ({ ...item, label:item.rfid, value:item.rfidId})
+               })
+            )
+        }
+        else{
+            return [];
+        }
+    }
+
+    toggle = (ownerId, firstName,lastName, dob, gender, contact, email,Aadhaar,permanentAddress,rfidId,rfid) => {
         this.setState({
             ownerId,
             firstName,
@@ -104,9 +149,10 @@ class FlatOwnerList extends Component {
             contact,
             email,
             Aadhaar,
-            readOnlyPermanent: permanentAddress,      
-            modal: !this.state.modal
-            
+            readOnlyPermanent: permanentAddress, 
+            rfidId,     
+            modal: !this.state.modal,
+            rfid,
         })
     }
     delete = (ownerId) => {
@@ -190,6 +236,16 @@ class FlatOwnerList extends Component {
         this.props.history.push('/superDashBoard/flatMemberList')
 
     }
+    onChange = (e) => {
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value });
+        }
+    }
     societyChangeHandler = (selectOption) => {
         let countryName = selectOption.country_master ? selectOption.country_master.countryName : '';
         let countryId = selectOption.country_master ? selectOption.country_master.countryId : '';
@@ -216,13 +272,13 @@ class FlatOwnerList extends Component {
         });
     }
     viewSlots(id) {
-        console.log(id)
+
         localStorage.setItem('flatDetailId', id)
         this.props.history.push('/superDashboard/parkingSlotList')
 
     }
     addFlat(ownerId){
-        console.log(ownerId)
+
         localStorage.setItem('ownerId',ownerId)
         this.props.history.push('/superDashboard/viewOwnerFlats')
     }
@@ -231,9 +287,8 @@ class FlatOwnerList extends Component {
             return owners.getOwners.sort((item1,item2)=>{
                 let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal?cmpValue: -cmpValue;}).filter(this.searchFilter(this.state.search)).map((items, index) => {
-                    console.log('--------------',items)
-                return (
 
+                return (    
                     <tr key={items.ownerId}>
                         <td><input type="checkbox" name="ids" value={items.ownerId} className="SelectAll"
                             onChange={(e, i) => {
@@ -270,7 +325,7 @@ class FlatOwnerList extends Component {
                         <td style={{ textAlign: "center" }}>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, 
                                 items.firstName, items.lastName,items.dob, items.gender, items.contact, items.email,
-                                items.adhaarCardNo, items.permanentAddress)}>Edit</button>
+                                items.adhaarCardNo, items.permanentAddress,items.rfid_master.rfidId,items.rfid_master.rfid,)}>Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.ownerId)} >Delete</button>
                         </td>
                     </tr>
@@ -417,7 +472,8 @@ class FlatOwnerList extends Component {
              gender,
              Aadhaar,
              profilePicture,
-             fileName
+             fileName,
+             rfidId
             } = this.state
         if (firstName === '') {
             errors.firstName = "Owern Name can't be empty"
@@ -447,7 +503,8 @@ class FlatOwnerList extends Component {
                 gender,
                 Aadhaar,
                 profilePicture,
-                fileName
+                fileName,
+                rfidId
                 )
                 .then(() => this.props.getOwnerList().then(() => this.setState({ loading: false })))
                 .catch(err => {
@@ -517,6 +574,15 @@ class FlatOwnerList extends Component {
             locationId: this.state.readOnlyLocationId })
             }
         }
+
+        editRfId=()=>{
+            if(!!document.getElementById('isRfIdChecked').checked){
+            this.setState({editRf:true, rfidId:''})
+            }
+            else{
+                this.setState({rfidId:this.state.rfidId})
+            }
+        }
     
         permanentAddressChange = (e) => {
             if (!!this.state.errors[e.target.name]) {
@@ -531,7 +597,7 @@ class FlatOwnerList extends Component {
             }
         }
         pinChange1 = (e) => {
-            console.log(this.state)
+
             if (!!this.state.errors[e.target.name]) {
                 let errors = Object.assign({}, this.state.errors);
                 delete errors[e.target.name];
@@ -549,6 +615,26 @@ class FlatOwnerList extends Component {
                 event.preventDefault();
             }
         } 
+
+        RfID=({ownerRf})=>{
+            if(ownerRf){
+                return (
+                   ownerRf.rfids.map((item)=>{
+                       return ({ ...item, label:item.rfid, value:item.rfidId})
+                   })
+                )
+            }
+            else{
+                return [];
+            }
+        }
+        rfIdChangeHandler=(selectOption)=>{
+            this.setState({
+                rfidId:selectOption.rfidId
+            })
+    
+        }
+          
 
     close = () => {
         return this.props.history.replace('/superDashBoard')
@@ -688,6 +774,13 @@ class FlatOwnerList extends Component {
                         <Col md={6} style={{ paddingTop: '44px' }}><span style={{ fontWeight: '600' }}>Do you want to edit permanent<br /> address?</span><Input type="checkbox" onChange={this.editPermanentAddress} name="isChecked" id="isChecked" className="ml-3" /></Col>}
                 </Row>
             </FormGroup>
+            {/* <span style={{ fontWeight: '600' }}>Do you want to edit RF ID?</span><Input type="checkbox" onChange={this.editRfId} name="editRf" id="isRfIdChecked" className="ml-3" />
+            {this.state.editRf  ?  <Col md={6}>
+                    <Label>RF ID</Label>
+                    <Input value={this.state.rfidId} onChange={this.onChange} readOnly />
+
+                                {/* <Select  options={this.RfID(this.props.rfId)} name='rfidId' onChange={this.rfIdChangeHandler.bind(this)}/> */}
+                                {/* </Col> :'' }                 */} 
 
              {this.state.userPermanent ? <div>
                 <h4 style={{textAlign:'center', fontWeight:'600', textDecoration: 'underline'}}>Edit Permanent Address</h4>
@@ -735,6 +828,29 @@ class FlatOwnerList extends Component {
                     </Row>
                 </FormGroup>
             </div> : ''}
+            <FormGroup>
+                <Row md={12}>
+                {this.state.defaultRFID ? 
+                    <Col md={6}>
+                        <Label>RFID</Label>
+                        <Input value={this.state.rfid} onChange={this.onChange} readOnly />
+                    </Col> : ''}
+                    {this.state.defaultRFID ? <Col md={6}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your RFID?</span><Input type="checkbox" onChange={this.editRFID} name="isRfidChecked" id="isRfidChecked" className="ml-3" />
+                    </Col> : 
+                    <Col md={12} style={{textAlign:'center'}}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your RFID?</span><Input type="checkbox" onChange={this.editRFID} name="isRfidChecked" id="isRfidChecked" className="ml-3" />
+                    </Col>}
+                </Row>
+            </FormGroup>
+            {this.state.editRFID ? 
+                <FormGroup>
+                    <Label>RFID</Label>
+                    <Select name='rfidId' placeholder={<DefaultSelect />} 
+                        options={this.RfID(this.props.rfId)}
+                        onChange={this.rfidChange.bind(this, 'rfidId')} />
+                    {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
+                </FormGroup> : ''}
                                     <FormGroup>
                                         <Button color="primary mr-2" onClick={this.editFlatOwnerDetails}>Save</Button>
                                         <Button color="danger" onClick={this.toggles}>Cancel</Button>
@@ -760,10 +876,11 @@ function mapStateToProps(state) {
         Owner: state.FlatOwnerReducer,
         towerList: state.TowerDetails,
         towerFloor:state.FlatOwnerReducer,
+        rfId:state.RFIdReducer
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getOwnerList, multipleDelete, removeOwner, detailSociety, getFlatDetails, viewTower, updateFlatOwner, getOwnerMember,getAllFloor,getCountry,getState,getCity, getLocation }, dispatch)
+    return bindActionCreators({ getOwnerList, multipleDelete, removeOwner, detailSociety, getFlatDetails, viewTower, updateFlatOwner, getOwnerMember,getAllFloor,getCountry,getState,getCity, getLocation,getRfId }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerList);

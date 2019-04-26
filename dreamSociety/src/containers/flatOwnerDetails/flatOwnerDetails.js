@@ -12,7 +12,7 @@ import {getFlatDetails,getSlots} from '../../actionCreators/flatDetailMasterActi
 import {addFlatOwner,getAllFloor} from '../../actionCreators/flatOwnerAction';
 import {Link} from 'react-router-dom';
 import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
-import {fetchRf} from '../../actionCreators/rfIdAction';
+import {getRfId} from '../../actionCreators/rfIdAction';
 
 class FlatOwnerDetails extends Component {
     constructor(props) {
@@ -68,9 +68,8 @@ class FlatOwnerDetails extends Component {
             towerName1:'',
             floorName1:'',
             fingerPrint:'',
-            rfId:'',
-            memberFingerPrintId:'',
-            memberRfId:''
+            rfidId:'',
+
         }
     }
     toggles = () => {
@@ -85,7 +84,7 @@ class FlatOwnerDetails extends Component {
         this.props.getState()
         this.props.getCity()
         this.props.getLocation()
-        this.props.fetchRf()
+        this.props.getRfId()
     }
     logout = () => {
         localStorage.removeItem('token');
@@ -178,7 +177,6 @@ class FlatOwnerDetails extends Component {
             [name]: selectOption.value,
             currentAddress:this.state.flat+flatName+','+this.state.floorName+','+this.state.towerName+','+this.state.currentAddress+' '+this.state.pinCode
         },function (){
-            console.log(this.state.flatDetailIds)
             this.props.getSlots(this.state.flatDetailIds)
             .then(()=>{this.getParking(this.props.flatDetailMasterReducer)})
         })
@@ -208,7 +206,12 @@ class FlatOwnerDetails extends Component {
                 [name]: selectOption.value
             }
         }, function () {
-            console.log(selectOption.value)
+            
+        })
+    }
+    memberRfIdChangeHandler=(name,selectOption)=>{
+        this.setState({
+            [name]: selectOption.value
         })
     }
     maxDateMember = () => {
@@ -270,7 +273,6 @@ class FlatOwnerDetails extends Component {
         const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
             if (isValid) {
-                console.log('isValid')
                 this.setState({ step: this.state.step + 1 })
             }
 
@@ -351,7 +353,7 @@ OnKeyPresshandlerEmail=(event)=> {
             locationName,
             member,
             fileName,
-            ownerGender,Aadhaar,floorId} = this.state
+            ownerGender,Aadhaar,floorId,rfidId} = this.state
             const d = new FormData()
             d.append('profilePicture',this.state.profilePicture)
             let data;        
@@ -360,7 +362,8 @@ OnKeyPresshandlerEmail=(event)=> {
                     memberName: this.state['memberName'+i],
                     memberDob: this.state['memberDOB'+i],
                     relationId: this.state['relationName'+i],
-                    gender:this.state['gender'+i]
+                    gender:this.state['gender'+i],
+                    memberRfId:this.state['memberRfId'+i]
                 }
                 this.state.member.push(data)
             }
@@ -488,7 +491,6 @@ OnKeyPresshandlerEmail=(event)=> {
     }
 
     onChangeCountry = (countryName,countryId,selectOption) => {    
-        console.log(selectOption)
         this.setState({
             countryName: selectOption.countryName,
             countryId:selectOption.countryId, 
@@ -496,7 +498,6 @@ OnKeyPresshandlerEmail=(event)=> {
         this.props.getState(selectOption.countryId)
     }
     stateName = ({stateResult}) => {
-        console.log(stateResult)
         if(stateResult){
             
            return( 
@@ -567,16 +568,14 @@ OnKeyPresshandlerEmail=(event)=> {
              
          }
      }
-     RfID=({rfList})=>{
-         console.log(rfList)
-         if(rfList){
+     RfID=({ownerRf})=>{
+         if(ownerRf){
              return (
-                rfList.RFIDs.map((item)=>{
+                ownerRf.rfids.map((item)=>{
                     return ({ ...item, label:item.rfid, value:item.rfidId})
                 })
              )
          }
-
      }
 
      onChangeLocation = (locationName, locationId, selectOption) => {
@@ -594,9 +593,10 @@ OnKeyPresshandlerEmail=(event)=> {
     getParking=({ slots })=>{
 this.setState({totalParking:slots.slots.count,parkingName:slots?slots.slots.rows[0].parking_master.parkingName:''})
     }
-    fingerPrintHandler=(e)=>{
+
+    rfIdChangeHandler=(selectOption)=>{
         this.setState({
-            fingerPrint:e.target.value
+            rfidId:selectOption.rfidId
         })
 
     }
@@ -641,14 +641,10 @@ this.setState({totalParking:slots.slots.count,parkingName:slots?slots.slots.rows
                                 </div>
                                 </div>
                                 </Col>
-                </Row>
-                <FormGroup>
-                                <Label>Finger Print Id</Label>
-                                <Input type='text' name={'memberFingerPrintId'+i} onChange={this.onChangeHandler} />
-                            </FormGroup>
+                            </Row>
                             <FormGroup>
                                 <Label>RF ID</Label>
-                                <Select placeholder={PlaceHolder} name={'memberRfId'+i} options={this.RfID(this.props.rfId)} onChange={this.onChangeHandler}/>
+                                <Select placeholder={PlaceHolder} name={'memberRfId'+i} options={this.RfID(this.props.rfId)} onChange={this.memberRfIdChangeHandler.bind(this,'memberRfId'+i )}/>
                             </FormGroup>
             </FormGroup>);
         }
@@ -860,12 +856,8 @@ this.setState({totalParking:slots.slots.count,parkingName:slots?slots.slots.rows
                                  </div>
                             </FormGroup>
                             <FormGroup>
-                                <Label>Finger Print Id</Label>
-                                <Input type='text' onChange={this.fingerPrintHandler} />
-                            </FormGroup>
-                            <FormGroup>
                                 <Label>RF ID</Label>
-                                <Select placeholder={PlaceHolder} options={this.RfID(this.props.rfId)}/>
+                                <Select placeholder={PlaceHolder} options={this.RfID(this.props.rfId)} name='rfidId' onChange={this.rfIdChangeHandler.bind(this)}/>
                             </FormGroup>
                             {/* <Label>upload your ID</Label> 
          <input  accept='.docx ,.doc,application/pdf' type="file"   name ="documentOne" onChange={this.onFileChange}/> */}
@@ -894,7 +886,6 @@ this.setState({totalParking:slots.slots.count,parkingName:slots?slots.slots.rows
 }
 
 function mapStateToProps(state) {
-    console.log(state.flatDetailMasterReducer)
     return {
         societyName: state.societyReducer,
         towerList: state.TowerDetails,
@@ -905,7 +896,7 @@ function mapStateToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner,getAllFloor,getCountry,getState,getCity, getLocation,getFlatDetails,getSlots,fetchRf}, dispatch)
+    return bindActionCreators({detailSociety, viewTower, getRelation,getFlatDetails,addFlatOwner,getAllFloor,getCountry,getState,getCity, getLocation,getFlatDetails,getSlots,getRfId}, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FlatOwnerDetails);
 

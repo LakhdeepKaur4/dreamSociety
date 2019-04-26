@@ -19,26 +19,26 @@ class MachineMaster extends Component {
         super(props);
 
         this.state = {
-            machineActualId:'',
+            machineDetailId:'',
             towerId:'',
             floorId:'',
             flatDetailIds:'',
-            loading: false,
+            loading: true,
             errors: {},
             message:'',
         }
     }
     componentDidMount(){
-        this.props.viewTower();
-        this.props.getFlatDetails();
-        this.props.viewMachine();
+        this.props.viewTower().then(()=>this.setState({loading:false}))
+        this.props.getFlatDetails().then(()=>this.setState({loading:false}))
+       this.props.viewMachine().then(()=>this.setState({loading:false}))
     }
 
 
 
     flatList =({machine})=>{
         console.log(machine);
-        if(machine)
+        if(machine &&  machine.machinesDetail)
         {
 
                      return machine.machinesDetail.map((item)=>{
@@ -56,6 +56,19 @@ class MachineMaster extends Component {
     }
 }
 
+
+
+
+logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/')
+}
+
+changePassword = () => {
+    return this.props.history.replace('/superDashboard/changePassword')
+}
+
     onChange = (event) => {
       
         this.setState({
@@ -70,11 +83,9 @@ class MachineMaster extends Component {
         else {
             this.setState({ [event.target.name]: event.target.value });
         }
-    
-    
     }
     getTower = ({ tower }) => {
-        if (tower) {
+        if (tower && tower.tower) {
             return tower.tower.map((item) => {
                 return (
                     { ...item, label: item.towerName, value: item.towerId }
@@ -95,7 +106,7 @@ class MachineMaster extends Component {
         this.props.getAllFloor(selectOption.towerId);
     }
     getFloor=({floor})=>{
-        if(floor){
+        if(floor && floor.tower.Floors){
             return floor.tower.Floors.map((item)=>{
 
                 return {...item ,label: item.floorName, value: item.floorId }
@@ -113,7 +124,7 @@ class MachineMaster extends Component {
 
         }
         getFlats=({floor})=>{
-            if(floor){
+            if(floor && floor.flatDetail){
               return  floor.flatDetail.filter((flatRecord)=>{
                     return flatRecord.floorId===this.state.floorId
                 }).map((selectFlat)=>{
@@ -141,8 +152,8 @@ class MachineMaster extends Component {
  onSubmit=(e)=>{
     e.preventDefault();
     let errors = {};
-    if(!this.state.machineActualId){
-        errors.machineActualId="Machine Id can't be empty"
+    if(!this.state.machineDetailId){
+        errors.machineDetailId="Machine Id can't be empty"
        }
     if(this.state.towerId===''){
         errors.towerId="Tower can't be empty"
@@ -159,8 +170,9 @@ class MachineMaster extends Component {
     
     if(isValid){
     
+        this.setState({loading:true})
   
-    this.props.addMachine( this.state.machineActualId,this.state.flatDetailIds).then(()=> this.props.history.push('/superDashboard/viewMachineMaster')).catch(err => {
+    this.props.addMachine(this.state.machineDetailId, this.state.flatDetailIds).then(()=> this.props.history.push('/superDashboard/viewMachineMaster')).catch(err => {
         this.setState({message: err.response.data.message, loading: false})
     })
 }
@@ -171,13 +183,13 @@ class MachineMaster extends Component {
             <div>
                     <FormGroup>
                     <Label>Machine Id</Label>
-                    <select  className="form-control"   defaultValue='no-value'  name ="machineActualId" onChange ={this.onChange}  onKeyPress={this.KeyPress}  maxLength={16}>
+                    <select  className="form-control"   defaultValue='no-value'  name ="machineDetailId" onChange ={this.onChange}  onKeyPress={this.KeyPress}  maxLength={16}>
                    <DefaultSelect/>
                     
                     {this.flatList(this.props.MachineIdDetails)}
                     
                     </select>
-                    <span className="error">{this.state.errors.machineActualId}</span>
+                    <span className="error">{this.state.errors.machineDetailId}</span>
                               <span className="error">{this.state.message}</span>
                     
                 </FormGroup >

@@ -1,4 +1,4 @@
-import {GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID, GET_TENANT_DETAIL, GET_TENANT_MEMBER_DETAILS,GET_FLATS,DELETE_FLATS} from '../../actions'
+import {GET_OWNER_DETAIL_VIA_FLATID,GET_FLAT_DETAIL_VIA_TOWERID, GET_TENANT_DETAIL, GET_TENANT_MEMBER_DETAILS,GET_FLATS,GET_RFID,DELETE_FLATS} from '../../actions'
 export default function(state=[], action){
     switch(action.type){
         case GET_TENANT_DETAIL:
@@ -12,7 +12,9 @@ export default function(state=[], action){
         case GET_FLATS:
             return {...state, getTenantFlats: action.payload}
         case DELETE_FLATS:
-        return {...state, deletedFlats: action.payload}
+            return {...state, deletedFlats: action.payload}
+        case GET_RFID:
+            return {...state, getRFID: action.payload}
         default:
             return state;
     }

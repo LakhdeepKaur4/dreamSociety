@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {viewMember, deleteTenantMember, deleteSelectedTenantMember,editTenantMember,
-    addNewTenantDetail} from '../../actionCreators/tenantMasterAction';
+    addNewTenantDetail,rfid} from '../../actionCreators/tenantMasterAction';
 import { connect } from 'react-redux';
 import UI from '../../components/newUI/superAdminDashboard';
 import { getRelation } from './../../actionCreators/relationMasterAction';
 import Select from 'react-select';
-import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader } from 'reactstrap';
+import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader, Row, Col } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import Spinner from '../../components/spinner/spinner';
@@ -33,15 +33,20 @@ class TenantMemberDetail extends Component {
             loadingAfterEdit:false,
             errors:{},
             search:'',
-            filterName:'memberName'
+            filterName:'memberName',
+            rfid:'',
+            rfidId:'',
+            defaultRFID:true,
+            editRFID:false,
+            defRFID:''
         }
-        console.log(props)
     }
 
     componentDidMount(){
         this.refreshData()
         
         this.props.getRelation();
+        this.props.rfid();
     }
 
     searchOnChange = (e) => {
@@ -70,9 +75,9 @@ class TenantMemberDetail extends Component {
         return this.props.history.push('/superDashBoard/tenantDetails')
     }
 
-    edit = (member, dob, gen, relationName, relationId, memberId) => {
-        console.log(member, dob, gen, relationName, relationId, memberId)
-        this.setState({memberName:member, memberDob:dob, gender:gen, relationName, relationId,memberId, editTenantMember: !this.state.editTenantMember})
+    edit = (member, dob, gen, relationName, relationId, memberId, rfidId, rfid) => {
+        console.log(member, dob, gen, relationName, relationId, memberId, rfidId, rfid)
+        this.setState({memberName:member, memberDob:dob, gender:gen, relationName, relationId,memberId, rfidId, rfid,defRFID:rfidId, editTenantMember: !this.state.editTenantMember})
     }
 
     getRelationList = ({ relationResult }) => {
@@ -139,9 +144,10 @@ class TenantMemberDetail extends Component {
                             <td>{item.memberDob}</td>
                             <td>{item.gender}</td>
                             <td>{item.relation_master ? item.relation_master.relationName : ''}</td>
+                            <td>{item.rfid_master ? item.rfid_master.rfid:''}</td>
                             <td>
                                 <Button className="mr-2" color="success" onClick={this.edit.bind(this,item.memberName,item.memberDob,
-                                    item.gender, item.relation_master.relationName, item.relationId, item.memberId)}>Edit</Button>
+                                    item.gender, item.relation_master.relationName, item.relationId, item.memberId,item.rfidId, item.rfid_master ? item.rfid_master.rfid:'')}>Edit</Button>
                                 <Button color="danger" onClick={this.deleteMemberSelected.bind(this, item.memberId)}>Delete</Button>
                             </td>
                         </tr>
@@ -192,7 +198,7 @@ class TenantMemberDetail extends Component {
     }
 
     toggleEditTenant(){
-        this.setState({editTenantMember: !this.state.editTenantMember, errors:{}})
+        this.setState({editTenantMember: !this.state.editTenantMember, errors:{}, editRFID:false, defaultRFID:true, rfidId:''})
     }
 
     changeHandler = (e) => {
@@ -245,7 +251,7 @@ class TenantMemberDetail extends Component {
     updateTenantMember = (e) => {
         e.preventDefault();
         
-        let { memberName, memberDob, gender, relationId, memberId } = this.state;
+        let { memberName, memberDob, gender, relationId, memberId,rfidId } = this.state;
         console.log(memberName, memberDob, gender, relationId, memberId)
         let errors = {};
         if(memberName === '') errors.memberName = `Member Name can't be empty.`;
@@ -253,12 +259,14 @@ class TenantMemberDetail extends Component {
         if(memberDob === '') errors.memberDob = `Date of Birth can't be empty.`;
         if(gender === '') errors.gender = `Please select any gender.`;
         if(!relationId) errors.relationId = `Select relation with tenant.`;
-        
+        if(!!document.getElementById('isRfidChecked').checked){
+            if(rfidId === '') errors.rfidId = `Please select RFID.`
+        }
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
             this.setState({loadingAfterEdit:true})
-            this.props.editTenantMember(memberName, memberDob, gender, relationId, memberId)
+            this.props.editTenantMember(memberName, memberDob, gender, relationId, memberId,rfidId)
             .then(() => {
                 this.loadDetailAfterEdit()
             })
@@ -270,24 +278,24 @@ class TenantMemberDetail extends Component {
         
     }
 
-    addNewTenantMember(member, dob, gen, relId, tenId){
-        console.log(member, dob, gen, relId, tenId);
+    addNewTenantMember(member, dob, gen, relId, tenId,rfIdId){
+        console.log(member, dob, gen, relId, tenId,rfIdId);
         
-        let {memberName, memberDob, gender, relationId, tenantId} = this.state;
+        let {memberName, memberDob, gender, relationId, tenantId,rfidId} = this.state;
         
-        this.setState({memberName:member, memberDob:dob, gender:gen, relationId:relId, tenantId:tenId})
+        this.setState({memberName:member, memberDob:dob, gender:gen, relationId:relId, tenantId:tenId,rfidId:rfIdId})
         let errors = {};
         if(memberName === '') errors.memberName = `Member Name can't be empty.`;
 
         if(memberDob === '') errors.memberDob = `Date of Birth can't be empty.`;
         if(gender === '') errors.gender = `Please select any gender.`;
         if(!relationId) errors.relationId = `Select relation with tenant.`;
-        
+        if(!rfidId) errors.rfidId = `Please select RFID.`
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
             this.setState({loadingAfterAdd:true})
-            this.props.addNewTenantDetail({memberName, memberDob, gender, relationId, tenantId})
+            this.props.addNewTenantDetail({memberName, memberDob, gender, relationId, tenantId, rfidId})
             .then(() => {
                 this.loadDetailAfterAdd()
             })
@@ -304,12 +312,51 @@ class TenantMemberDetail extends Component {
     }
 
     loadDetailAfterEdit = () => {
-        this.props.viewMember(this.state.tenantId).then(() => this.setState({loadingAfterEdit:false,editTenantMember:false}))
+        this.props.viewMember(this.state.tenantId).then(() => this.setState({loadingAfterEdit:false,editTenantMember:false, editRFID:false, defaultRFID:true, rfidId:''}))
     }
 
     changePassword=()=>{ 
         return this.props.history.replace('/superDashboard/changePassword')
      }
+    
+     rfidOptions = ({getRFID}) => {
+        console.log(getRFID)
+        if (getRFID && getRFID.rfids) {
+            return getRFID.rfids.map((item) => {
+                return (
+                    { ...item, name:"rfid", label: item.rfid, value: item.rfidId }
+                )
+            }
+            );
+        }
+        return [];
+    }
+
+    rfidChange = (name,selectOption) => {
+        
+        if(name && selectOption){
+            this.setState(function (prevState, props) {
+                return {
+                    [name]: selectOption.value,
+                    errors:''
+                }
+            }, function () {
+                console.log(selectOption.value)
+            });
+        }
+        console.log(this.state)
+}
+    editRFID = () => {
+        if(!!document.getElementById('isRfidChecked').checked){
+            console.log('is checked')
+        this.setState({rfidId: '' , defaultRFID:false, editRFID:true})
+        
+        
+        }
+    else{
+            this.setState({rfidId:this.state.defRFID, defaultRFID:true, editRFID:false})
+        }
+    }
 
     render(){
         let tableData = <Table className="table table-bordered">
@@ -324,6 +371,7 @@ class TenantMemberDetail extends Component {
                 <th>Date of Birth</th>
                 <th>Gender</th>
                 <th>Relation with Tenant</th>
+                <th>RFID</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -363,16 +411,27 @@ class TenantMemberDetail extends Component {
             </div>
         </FormGroup>
         <FormGroup>
-            <Label>Relation with Tenant</Label>
-            <Select name='relationId' options={this.getRelationList(this.props.relationList)}
-            placeholder={<DefaultSelect />} 
-                onChange={this.relationHandler.bind(this,'relationId' )}  required/>
-            {!this.state.relationId ? <span className="error">{this.state.errors.relationId}</span> : ''}
+            <Row md={12}>
+                <Col md={6}>
+                    <Label>Relation with Tenant</Label>
+                    <Select name='relationId' options={this.getRelationList(this.props.relationList)}
+                    placeholder={<DefaultSelect />} 
+                        onChange={this.relationHandler.bind(this,'relationId' )}  required/>
+                    {!this.state.relationId ? <span className="error">{this.state.errors.relationId}</span> : ''}
+                </Col>
+                <Col md={6}>
+                    <Label>RFID</Label>
+                    <Select name='rfidId' placeholder={<DefaultSelect />} 
+                        options={this.rfidOptions(this.props.tenantReducer)}
+                        onChange={this.rfidChange.bind(this, 'rfidId')} />
+                    {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
+                </Col>
+            </Row>
         </FormGroup>
         <FormGroup>
             <Button className="mr-2" color="primary" onClick={this.addNewTenantMember.bind(this,
                 this.state.memberName, this.state.memberDob, this.state.gender, this.state.relationId,
-                this.state.tenantId)}>Save</Button>
+                this.state.tenantId,this.state.rfidId)}>Save</Button>
             <Button color="danger" onClick={this.toggleTenantMemberForm.bind(this)}>Cancel</Button> 
         </FormGroup>
         </div>
@@ -414,6 +473,29 @@ class TenantMemberDetail extends Component {
                 </Input>
                 {!this.state.relationId ? <span className="error">{this.state.errors.relationId}</span> : ''}
             </FormGroup>
+            <FormGroup>
+                <Row md={12}>
+                {this.state.defaultRFID ? 
+                    <Col md={6}>
+                        <Label>RFID</Label>
+                        <Input value={this.state.rfid} onChange={this.onChange} readOnly />
+                    </Col> : ''}
+                    {this.state.defaultRFID ? <Col md={6} style={{padding:'34px'}}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your RFID?</span><Input type="checkbox" onChange={this.editRFID} name="isRfidChecked" id="isRfidChecked" className="ml-3" />
+                    </Col> : 
+                    <Col md={12} style={{textAlign:'center'}}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your RFID?</span><Input type="checkbox" onChange={this.editRFID} name="isRfidChecked" id="isRfidChecked" className="ml-3" />
+                    </Col>}
+                </Row>
+            </FormGroup>
+            {this.state.editRFID ? 
+                <FormGroup>
+                    <Label>RFID</Label>
+                    <Select name='rfidId' placeholder={<DefaultSelect />} 
+                        options={this.rfidOptions(this.props.tenantReducer)}
+                        onChange={this.rfidChange.bind(this, 'rfidId')} />
+                    {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
+                </FormGroup> : ''}
             <FormGroup>
                 <Button className="mr-2" color="primary" onClick={this.updateTenantMember}>Save</Button>
                 <Button color="danger" onClick={this.toggleEditTenant.bind(this)}>Cancel</Button> 
@@ -476,4 +558,4 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, { viewMember, getRelation, deleteTenantMember,
-     deleteSelectedTenantMember, editTenantMember, addNewTenantDetail})(TenantMemberDetail);
+     deleteSelectedTenantMember, editTenantMember, addNewTenantDetail,rfid})(TenantMemberDetail);

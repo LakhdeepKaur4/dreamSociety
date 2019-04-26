@@ -42,8 +42,8 @@ class MaintenanceSubMasterDetails extends Component{
 
     refreshData(){
         this.props.getMaintenanceSubSizeDetails().then(() => this.setState({loading:false})).catch((err) => this.setState({loading:false}));
-        this.props.getMaintenanceType().then(() => this.setState({loading:false})).catch((err) => this.setState({loading:false}));;
-        this.props.getMaintenanceSubSize().then(() => this.setState({loading:false})).catch((err) => this.setState({loading:false}));;
+        this.props.getMaintenanceType();
+        this.props.getMaintenanceSubSize();
     }
     
 
@@ -300,7 +300,7 @@ class MaintenanceSubMasterDetails extends Component{
                             <span aria-hidden="true">&times;</span>
                     </div>
                     <div className="top-details">
-                        <h3>Maintenance Sub Master Details</h3>
+                        <h3>Maintenance Sub Master</h3>
                         <Button color="primary" onClick={this.route} color="primary">Add Sub Maintenance</Button>
                     </div>
                     <Modal isOpen={this.state.editSubMaintenanceModal} toggle={this.toggleEditSubMaintenanceModal.bind(this)}>

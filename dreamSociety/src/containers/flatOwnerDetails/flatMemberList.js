@@ -8,6 +8,8 @@ import Spinner from '../../components/spinner/spinner';
 import { getOwnerMember, deleteMember, deleteMultipleMember, memberUpdate, addNewMember } from '../../actionCreators/flatOwnerAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
+import {getRfId} from '../../actionCreators/rfIdAction';
+
 var id;
 class FlatMemberList extends Component {
     constructor(props) {
@@ -28,7 +30,8 @@ class FlatMemberList extends Component {
             Male:'male',
             Female:'female',
             Other:'other',
-            relationName:''
+            relationName:'',
+            rfidId:'',
         }
 
     }
@@ -41,9 +44,16 @@ class FlatMemberList extends Component {
         id = localStorage.getItem('ownerId')
     }
     componentDidMount() {
+        this.props.getRfId()
         this.props.getRelation();
         this.props.getOwnerMember(id)
             .then(() => this.setState({ loading: false }))
+    }
+    rfIdChangeHandler=(selectOption)=>{
+        this.setState({
+            rfidId:selectOption.rfidId
+        })
+
     }
     deleteMember(memberid) {
         this.props.deleteMember(memberid)
@@ -136,7 +146,8 @@ class FlatMemberList extends Component {
         this.setState({ modal: !this.state.modal })
     }
     toggles1 = () => {
-        this.setState({ formModal: !this.state.formModal })
+        this.setState({ formModal: !this.state.formModal,
+        memberName:'',memberDob:'',relationId:'',gender:'' })
     }
     toggle = (memberId, memberName, memberDob, relationId, gender) => {
         this.setState({
@@ -161,7 +172,7 @@ class FlatMemberList extends Component {
         return d.toISOString().split('T')[0];
     }
     editMember = () => {
-        const { memberId, memberName, gender, memberDob, relationId } = this.state
+        const { memberId, memberName, gender, memberDob, relationId,rfidId } = this.state
         let errors = {};
         if (this.state.memberName === '') {
             errors.memberName = "Member Name can't be empty"
@@ -179,7 +190,7 @@ class FlatMemberList extends Component {
         const isValid = Object.keys(errors).length === 0
         if(isValid){
             this.setState({ loading: true })
-            this.props.memberUpdate(memberName, gender, memberDob, relationId, memberId)
+            this.props.memberUpdate(memberName, gender, memberDob, relationId, memberId,rfidId)
             .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
             this.setState({ modal: !this.state.modal })
         }        
@@ -196,21 +207,28 @@ class FlatMemberList extends Component {
         }
     }
     relationHandler = (relationName,relationId ,selectOption) => {
-        console.log('selectOption',selectOption)
         this.setState(function (prevState, props) {
             return {
               
                relationId:selectOption.value
             }
         }, function () {
-            console.log(selectOption.value)
         });
+    }
+    RfID=({ownerRf})=>{
+        if(ownerRf){
+            return (
+               ownerRf.rfids.map((item)=>{
+                   return ({ ...item, label:item.rfid, value:item.rfidId})
+               })
+            )
+        }
     }
     close = () => {
         return this.props.history.replace('/superDashBoard/flatOwnerList')
     }
     addMember = () => {
-        const { memberName, memberDob, gender, relationId } = this.state
+        const { memberName, memberDob, gender, relationId,rfidId } = this.state
         let errors = {};
         if (this.state.memberName === '') {
             errors.memberName = "Member Name can't be empty"
@@ -229,7 +247,7 @@ class FlatMemberList extends Component {
         if (isValid) {
             this.setState({ loading: true })
             this.setState({ formModal: !this.state.formModal })
-            this.props.addNewMember(memberName, memberDob, gender, relationId, id)
+            this.props.addNewMember(memberName, memberDob, gender, relationId, id,rfidId)
                 .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
         }
     }
@@ -317,6 +335,10 @@ class FlatMemberList extends Component {
                                         </div>
                                     </div>
                                     <FormGroup>
+                                <Label>RF ID</Label>
+                                <Select placeholder={PlaceHolder} options={this.RfID(this.props.rfId)} name='rfidId' onChange={this.rfIdChangeHandler.bind(this)}/>
+                            </FormGroup>
+                                    <FormGroup>
                                         <Button color="primary mr-2" onClick={this.editMember}>Save</Button>
                                         <Button color="danger" onClick={this.toggles}>Cancel</Button>
                                     </FormGroup>
@@ -334,7 +356,7 @@ class FlatMemberList extends Component {
                                     <FormGroup>
                                         <Label>Relation With Owner</Label>
                                         <Select options={this.getRelationList(this.props.relationList)}
-                                            onChange={this.relationHandler.bind(this, 'relationId')}
+                                            onChange={this.relationHandler.bind(this,'relationName', 'relationId')}
                                             name="relationId"
                                             placeholder={PlaceHolder}
                                         />
@@ -362,6 +384,10 @@ class FlatMemberList extends Component {
                                     </div>
                                     <span className="error">{this.state.errors.gender}</span>
                                     <FormGroup>
+                                    <FormGroup>
+                                <Label>RF ID</Label>
+                                <Select placeholder={PlaceHolder} options={this.RfID(this.props.rfId)} name='rfidId' onChange={this.rfIdChangeHandler.bind(this)}/>
+                            </FormGroup>
                                         <Button color="primary mr-2" onClick={this.addMember}>Add Member</Button>
                                         <Button color="danger" onClick={this.toggles1}>Cancel</Button>
                                     </FormGroup>
@@ -379,9 +405,10 @@ function mapStateToProps(state) {
     return {
         OwnerMemberList: state.FlatOwnerReducer,
         relationList: state.RelationMasterReducer,
+        rfId:state.RFIdReducer
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getOwnerMember, deleteMember, deleteMultipleMember, getRelation, memberUpdate, addNewMember }, dispatch)
+    return bindActionCreators({ getOwnerMember, deleteMember, deleteMultipleMember, getRelation, memberUpdate, addNewMember,getRfId }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FlatMemberList);

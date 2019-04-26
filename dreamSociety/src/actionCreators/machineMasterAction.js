@@ -1,17 +1,24 @@
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
-import {URN,ADD_MACHINE,GET_MACHINE,UPDATE_MACHINE, DELETE_MACHINE,DELETE_MULTIPLE_MACHINE}  from '../actions/index'
+import {URN,ADD_MACHINE,GET_MACHINE,GET_MACHINE_ACTUAL_ID,UPDATE_MACHINE, DELETE_MACHINE,DELETE_MULTIPLE_MACHINE}  from '../actions/index'
 
 
   
-export  function addMachine(machineActualId,flatDetailId){
-    const request= axios.post(`${URN}/machine `,{flatDetailId,machineActualId} ,{headers:authHeader()})
+export  function addMachine(machineDetailId,flatDetailId){
+    const request= axios.post(`${URN}/machine `,{flatDetailId,machineDetailId} ,{headers:authHeader()})
     return{
         type :ADD_MACHINE,
         payload:request
     }
 }
 
+export  function getMachine(){
+    const request= axios.get(`${URN}/machineDetail`,{headers:authHeader()}).then(response=> response.data)
+    return{
+        type :GET_MACHINE_ACTUAL_ID,
+        payload:request
+    }
+}
 
   
 export  function viewMachine(){
@@ -22,15 +29,15 @@ export  function viewMachine(){
     }
 }
 
-export function updateMachine( flatDetailId,machineActualId,machineId){
-    const request =axios.put(`${URN}/machine/`+machineId,{flatDetailId,machineActualId},{headers:authHeader()})
+export function updateMachine( flatDetailId,machineDetailId,machineId){
+    const request =axios.put(`${URN}/machine/`+machineId,{flatDetailId,machineDetailId},{headers:authHeader()})
     return{
         type:UPDATE_MACHINE,
         payload:request
     }
 }
 
-export function deleteMachine(machineId,isActive){
+export function deleteMachine(machineId,isActive){console.log("action",machineId)
     const request = axios.put(`${URN}/machine/delete/` +machineId,{ isActive }, {headers:authHeader()})
     return{
         type:DELETE_MACHINE,

@@ -19,6 +19,7 @@ class RFIdDetails extends Component {
             search: '',
             ids:[],
             errors: {},
+            message:''
         }
     }
 
@@ -47,7 +48,6 @@ class RFIdDetails extends Component {
         })
     }
     delete = (rfidId) => {
-        console.log(rfidId)
         this.setState({loading:true})
         if(window.confirm('Are You Sure ?')){
         this.props.removeRf(rfidId)
@@ -138,10 +138,11 @@ class RFIdDetails extends Component {
         }
     }
     onChangeHandler = (event) => {
+        this.setState({ message: '' })
           if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
-            this.setState({ [event.target.name]: event.target.value, errors });
+            this.setState({ [event.target.name]: event.target.value, errors});
         }
         else {
             this.setState({ [event.target.name]: event.target.value });
@@ -161,8 +162,21 @@ class RFIdDetails extends Component {
         if (isValid) {
             this.setState({loading: true})
             this.props.updateRF(this.state.rfidId,this.state.rfid)
-            .then(() => this.props.fetchRf().then(()=>this.setState({loading:false})));
-            this.setState({ modal: !this.state.modal })
+            .then(() => this.props.fetchRf().then(()=>{this.setState({loading:false,modal:false})}))
+            .catch(err => {
+                this.setState({ loading: false, message: err.response.data.message })
+            })
+        if (this.state.message === '') {
+            this.setState({ modal: true })
+        }
+        else {
+            this.setState({ modal: false })
+        }
+
+        this.setState({
+            loading: true
+        })
+            // this.setState({ modal: !this.state.modal })
         }
     }
     render() {
@@ -216,6 +230,7 @@ class RFIdDetails extends Component {
                                     <Label htmlFor="AssetName">RF ID</Label>
                                     <Input type="text"  name="rfid" onChange={this.onChangeHandler} value={this.state.rfid}/>
                                     <span className="error">{this.state.errors.rfid}</span>
+                                    <span className="error">{this.state.message}</span>
                                 </FormGroup>
                             <FormGroup>
                                 <Button color="primary mr-2" onClick={this.editRFID}>Save</Button>

@@ -1,4 +1,4 @@
-import {GET_MACHINE,ADD_MACHINE} from '../../actions/index'
+import {GET_MACHINE,ADD_MACHINE,GET_MACHINE_ACTUAL_ID} from '../../actions/index'
 
 
 export default  function(state=[],action){
@@ -8,6 +8,8 @@ export default  function(state=[],action){
             return{...state, Add_machine:action.payload}
             case GET_MACHINE:
             return{...state,machine:action.payload}
+            case GET_MACHINE_ACTUAL_ID:
+            return{...state,machine1:action.payload}
         default :
          return state
     }

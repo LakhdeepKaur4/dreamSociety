@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
-import {URN,ADD_RF,GET_RF,DELETE_RF,MULTIPLE_DELETE_RF,UPDATE_RF} from '../actions/index';
+import {URN,ADD_RF,GET_RF,DELETE_RF,MULTIPLE_DELETE_RF,UPDATE_RF,GET_OWNER_RF} from '../actions/index';
 
 export function addRF(rfid) {
     const data={
@@ -50,10 +50,18 @@ export function updateRF(rfidId,rfid){
     }
     const request=axios.put(`${URN}/rfid/`+rfidId,data,{headers:authHeader()})
     .then(response=>response.data)
-    .catch(error=>error)
     return{
         type:UPDATE_RF,
         payload:request
     }
 
+ }
+
+ export function getRfId(){
+     const request = axios.get(`${URN}/getRfid`,{headers:authHeader()} )
+     .then(response=>response.data)
+     return {
+         type:GET_OWNER_RF,
+         payload:request
+     }
  }

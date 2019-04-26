@@ -5,7 +5,7 @@ import {URN} from '../../actions/index';
 
 class  TokenVerification extends React.Component {
     state={
-        tokenVerified:false ,
+        tokenVerified:false,
         message:''
     }
     componentDidMount(){

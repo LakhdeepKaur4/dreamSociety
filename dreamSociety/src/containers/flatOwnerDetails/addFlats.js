@@ -60,7 +60,6 @@ class AddFlats extends Component {
             return []
         }}
         floorChangeHandler=(name,selectOption)=>{
-            console.log(selectOption)
             this.setState({
                 [name]: selectOption.value,
                 floorName:selectOption.label
@@ -70,10 +69,8 @@ class AddFlats extends Component {
         getFlats=({floor})=>{
             if(floor){
               return  floor.flatDetail.filter((flatRecord)=>{
-                  console.log('flatRecord',flatRecord)
                     return flatRecord.floorId===this.state.floorId
                 }).map((selectFlat)=>{
-                    console.log('selectFlat',selectFlat)
                     return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
                 });
             }
@@ -163,7 +160,6 @@ class AddFlats extends Component {
     }
 }
 function mapStateToProps(state) {
-    console.log(state.FlatOwnerReducer)
     return {
         towerFloor:state.FlatOwnerReducer,
         towerList: state.TowerDetails,
