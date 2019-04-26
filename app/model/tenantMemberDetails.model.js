@@ -6,7 +6,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         firstName: {
             type: Sequelize.STRING,
-            allowNull:false
+            allowNull: false
         },
         lastName: {
             type: Sequelize.STRING,
@@ -35,7 +35,7 @@ module.exports = (sequelize, Sequelize) => {
         gender: {
             type: Sequelize.STRING,
             allowNull: false
-      },
+        },
         isActive: {
             type: Sequelize.BOOLEAN,
             defaultValue: true

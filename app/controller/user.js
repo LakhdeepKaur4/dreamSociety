@@ -1516,7 +1516,7 @@ exports.getUserDecrypted = (req, res, next) => {
 						// item.lastName = decrypt(item.lastName);
 						item.userName = decrypt(item.userName);
 						item.email = decrypt(item.email);
-						// item.contact = decrypt(item.contact);
+						item.contact = decrypt(item.contact);
 						// item.familyMember = decrypt(item.familyMember);
 						// item.parking = decrypt(item.parking);
 						// user.floor = decrypt(user.floor);
@@ -2569,7 +2569,7 @@ exports.checkContact = (req, res, next) => {
 	User.findOne({
 		where: {
 			isActive: true,
-			email: encrypt(body.contact)
+			contact: encrypt(body.contact)
 		}
 	})
 		.then(user => {
