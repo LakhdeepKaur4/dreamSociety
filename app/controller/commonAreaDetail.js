@@ -10,9 +10,9 @@ const CommonArea = db.commonArea;
 const AreaMachine = db.areaMachine;
 
 exports.create = async (req, res) => {
-    let body = req.body;
-    body.userId = req.userId;
     try {
+        let body = req.body;
+        body.userId = req.userId;
         const commonAreaDetail = await CommonAreaDetail.create(body);
 
         const commonAreaDetailId = commonAreaDetail.commonAreaDetailId;
