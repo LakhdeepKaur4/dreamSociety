@@ -455,9 +455,9 @@ exports.createEncrypted = async (req, res, next) => {
                                 tenantId: entry.tenantId
                             })
                         }
-                        console.log("_____________________>>>",tenant.tenantId);
-                        console.log("_____________________>>>",tenant.rfidId);
-                        UserRFID.create({ userId: tenant.tenantId, rfidId: tenant.rfidId });
+                        // console.log("_____________________>>>",tenant.tenantId);
+                        // console.log("_____________________>>>",tenant.rfidId);
+                        
 
                         const roles = await Role.findOne({
                             where: {
@@ -481,6 +481,7 @@ exports.createEncrypted = async (req, res, next) => {
                             .then(user => {
                                 // user.setRoles(roles);
                                 UserRoles.create({ userId: user.userId, roleId: roles.id });
+                                UserRFID.create({ userId: tenant.tenantId, rfidId: tenant.rfidId });
                             })
                         if (tenant.profilePicture) {
                             await saveToDisc(tenant.fileName, tenant.fileExt, tenant.profilePicture, (err, res) => {
@@ -607,7 +608,16 @@ exports.getDecrypted = async (req, res, next) => {
         })
             .then(tenants => {
                 // console.log(tenants);
-                tenants.map(item => {
+                tenants.map(async item => {
+                    let rfid = await UserRFID.findOne({
+                        where: {
+                            userId: item.tenantId,
+                            isActive: true
+                        },
+                        include: [
+                            {model: RFID, where: {isActive: true},attributes:['rfidId','rfid']}
+                        ]
+                    })
                     item.firstName = decrypt(item.firstName);
                     item.lastName = decrypt(item.lastName);
                     item.userName = decrypt(item.userName);
@@ -619,6 +629,7 @@ exports.getDecrypted = async (req, res, next) => {
                     item.correspondenceAddress = decrypt(item.correspondenceAddress);
                     item.gender = decrypt(item.gender);
                     item.panCardNumber = decrypt(item.panCardNumber);
+                    item.rfid_master = rfid;
                     tenantsArr.push(item);
                 })
                 return tenantsArr;
