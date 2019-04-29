@@ -36,6 +36,7 @@ const OwnerFlatDetail = db.ownerFlatDetail;
 const FlatParkingDetails = db.flatParking;
 const Floor = db.floor;
 const TenantFlatDetail = db.tenantFlatDetail;
+const UserRfId = db.userRfid;
 
 function encrypt(key, data) {
   var cipher = crypto.createCipher("aes-128-cbc", key);
@@ -234,7 +235,7 @@ exports.create1 = async (req, res, next) => {
       userId: req.userId,
       societyId: ownerBody.societyId,
       towerId: ownerBody.towerId,
-      // rfidId:ownerBody.rfidId,
+      rfidId:ownerBody.rfidId,
       // flatDetailId: ownerBody.flatDetailId,
       floorId: ownerBody.floorId
     });
@@ -308,7 +309,7 @@ exports.create1 = async (req, res, next) => {
         memberNewArray, {
           returning: true
         }, {
-          fields: ["memberId","memberFirstName", "memberLastName","memberUserName","memberEmail","memberContact","password", "memberDob", "gender", "relationId" ]
+          fields: ["memberId","memberFirstName", "memberLastName","memberUserName","memberEmail","memberContact","password", "memberDob", "gender", "relationId","memberRfId" ]
           // updateOnDuplicate: ["name"]
         }
       );
@@ -351,6 +352,11 @@ exports.create1 = async (req, res, next) => {
           towerId: owner.towerId,
           email: encrypt1(key, email),
           isActive: false
+        });
+
+        let userRfId = await UserRfId.create({
+          userId:user.userId,
+          rfidId:member.memberRfId
         })
         let roles = await Role.findOne({
           where: {
@@ -391,6 +397,11 @@ exports.create1 = async (req, res, next) => {
       email: encrypt1(key, email),
       isActive: false
     });
+
+    let userRfId = await UserRfId.create({
+      userId:user.userId,
+      rfidId:owner.rfidId
+    })
     // set roles
     console.log(owner.password);
     console.log(user.password);
@@ -416,31 +427,6 @@ exports.create1 = async (req, res, next) => {
   }
 };
 
-
-exports.get = async (req, res, next) => {
-  try {
-    const owner = await Owner.findAll({
-      // where: { isActive: true },
-      order: [
-        ["createdAt", "DESC"]
-      ]
-      // include: [{
-      //     model: User,
-      //     as: 'organiser',
-      //     attributes: ['userId', 'userName'],
-      // }]
-    });
-    if (owner) {
-      return res.status(httpStatus.CREATED).json({
-        message: "Owner Content Page",
-        owner
-      });
-    }
-  } catch (error) {
-    console.log("error==>", error);
-    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-  }
-};
 
 exports.get1 = async (req, res, next) => {
   let getOwners = [];
@@ -995,10 +981,19 @@ exports.update2 = async (req, res, next) => {
     });
     const user = await User.findOne({
       where: {
-        email: updatedOwner.email,
+        userId: updatedOwner.ownerId,
         isActive: true
       }
-    })
+    });
+    if(req.body.rfidId){
+      let userRf = await UserRfId.findOne({
+        where:{
+          isActive:true,
+          userId:id
+        }
+      });
+      userRf.updateAttributes({rfidId:req.body.rfidId});
+    }
     attrArr.forEach(attr => {
       if (
         attr in req.body &&
@@ -1079,7 +1074,9 @@ exports.update2 = async (req, res, next) => {
       // updatedOwner1.userName = decrypt(key, updatedOwner1.userName);
       updatedOwner1.firstName = decrypt(key, updatedOwner1.firstName);
       updatedOwner1.lastName = decrypt(key, updatedOwner1.lastName);
-      updatedOwner1.picture = decrypt(key, updatedOwner1.picture);
+      if(updatedOwner1.picture){
+        updatedOwner1.picture = decrypt(key, updatedOwner1.picture);
+      }
       updatedOwner1.email = decrypt(key, updatedOwner1.email);
       updatedOwner1.permanentAddress = decrypt(
         key,
@@ -1168,6 +1165,15 @@ exports.delete = async (req, res, next) => {
         userId: updatedOwner.ownerId
       }
     });
+    let urfId = await UserRfId.findOne({
+      where:{
+        isActive:true,
+        userId:id
+      }
+    });
+    console.log("user_rf_id ====>", urfId)
+    urfId.updateAttributes(update);
+
     console.log("show yourself", updatedUser);
     if (updatedUser) {
       updatedUser.updateAttributes({
@@ -1226,6 +1232,13 @@ exports.delete = async (req, res, next) => {
         userId:member.memberId
       }
     });
+    const uRfId = await UserRfId.findOne({
+      where:{
+        isActive:true,
+        userId:member.memberId
+      }
+    });
+    uRfId.updateAttributes(update);
     let role = await UserRoles.findOne({
       where: {
         userId: memberUser.userId
@@ -1285,7 +1298,15 @@ exports.deleteSelected = async (req, res, next) => {
             isActive: true,
             userId: updatedOwner.ownerId
           }
-        })
+        });
+        let urfId = await UserRfId.findOne({
+          where:{
+            isActive:true,
+            userId:updatedOwner.ownerId
+          }
+        });
+        console.log("user_rf_id ====>", urfId)
+        urfId.updateAttributes(update);
         let role = await UserRoles.findOne({
           where: {
             userId: user.userId
@@ -1320,6 +1341,14 @@ exports.deleteSelected = async (req, res, next) => {
           userId: memberUser.userId
         }
       });
+      let urfId = await UserRfId.findOne({
+        where:{
+          isActive:true,
+          userId:member.memberId
+        }
+      });
+      console.log("user_rf_id ====>", urfId)
+      urfId.updateAttributes(update);
       role.updateAttributes(update);
       memberUser.updateAttributes(update);
       member.updateAttributes(update);
@@ -1545,6 +1574,15 @@ exports.updateMember = async (req, res, next) => {
         memberId: id
       }
     });
+    if(req.body.memberRfId){
+    let uRfId  =  await UserRfId.find({
+        where:{
+          isActive:true,
+          userId: id
+        }
+      });
+    uRfId.updateAttributes({rfidId:req.body.memberRfId});
+    };
     attrArr.forEach(attr => {
       if (
         attr in req.body &&
