@@ -874,7 +874,7 @@ exports.updateEncrypted = async (req, res, next) => {
                 userId: req.userId,
                 societyId: societyId,
                 towerId: towerId,
-                rfidId: rfidId,
+                rfidId: update.rfidId,
             };
 
             Tenant.find({
