@@ -38,7 +38,7 @@ class MachineMaster extends Component {
 
     flatList =({machine})=>{
         console.log(machine);
-        if(machine)
+        if(machine &&  machine.machinesDetail)
         {
 
                      return machine.machinesDetail.map((item)=>{
@@ -85,7 +85,7 @@ changePassword = () => {
         }
     }
     getTower = ({ tower }) => {
-        if (tower) {
+        if (tower && tower.tower) {
             return tower.tower.map((item) => {
                 return (
                     { ...item, label: item.towerName, value: item.towerId }
@@ -106,7 +106,7 @@ changePassword = () => {
         this.props.getAllFloor(selectOption.towerId);
     }
     getFloor=({floor})=>{
-        if(floor){
+        if(floor && floor.tower.Floors){
             return floor.tower.Floors.map((item)=>{
 
                 return {...item ,label: item.floorName, value: item.floorId }
@@ -124,7 +124,7 @@ changePassword = () => {
 
         }
         getFlats=({floor})=>{
-            if(floor){
+            if(floor && floor.flatDetail){
               return  floor.flatDetail.filter((flatRecord)=>{
                     return flatRecord.floorId===this.state.floorId
                 }).map((selectFlat)=>{

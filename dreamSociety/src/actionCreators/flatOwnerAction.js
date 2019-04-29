@@ -21,7 +21,7 @@ export function addFlatOwner(data){
         fileName:data.fileName,
         adhaarCardNo:data.Aadhaar,
         floorId:data.floorId,
-        
+        rfidId:data.rfidId
     }
     const config = {
         headers: {
@@ -78,7 +78,8 @@ export function updateFlatOwner(
     permanentAddress,
     gender,
     Aadhaar,
-    profilePicture,fileName){
+    profilePicture,
+    fileName,rfidId){
 
   
         const data={
@@ -90,7 +91,8 @@ export function updateFlatOwner(
             permanentAddress,
             gender,
             adhaarCardNo:Aadhaar,
-            profilePicture,fileName}
+            profilePicture,
+            fileName,rfidId}
             console.log('=============data============',data)
     const request=axios.put(`${URN}/owner/`+ownerId,data,{headers:authHeader()})
         .then(reponse=>reponse.data)
@@ -134,9 +136,9 @@ export function deleteMultipleMember(ids){
     }
 }
 
-export function memberUpdate(memberName,gender,memberDob,relationId,memberId){
+export function memberUpdate(memberFirstName,memberLastName,gender,memberDob,relationId,memberId,memberRfId){
     
-    const request=axios.put(`${URN}/owner/ownerMember/update/${memberId}`,{memberName,gender,memberDob,relationId},{headers:authHeader()})
+    const request=axios.put(`${URN}/owner/ownerMember/update/${memberId}`,{memberFirstName,memberLastName,gender,memberDob,relationId,memberRfId},{headers:authHeader()})
     .then(response=>response.data)
     return {
         type:MEMBER_OWNER_UPDATE,
@@ -144,9 +146,9 @@ export function memberUpdate(memberName,gender,memberDob,relationId,memberId){
     }
 }
 
-export function addNewMember(memberName,memberDob,gender,relationId,id){
+export function addNewMember(memberName,memberDob,gender,relationId,id,memberRfId){
     console.log(memberName,memberDob,gender,relationId,id)
-    const request=axios.post(`${URN}/owner/ownerMember/${id}`,{memberName,memberDob,gender,relationId},{headers:authHeader()})
+    const request=axios.post(`${URN}/owner/ownerMember/${id}`,{memberName,memberDob,gender,relationId,memberRfId},{headers:authHeader()})
     .then(response=>response.data)
     return {
         type:ADD_NEW_MEMBER,

@@ -10,7 +10,7 @@ import {getCountry,getState,getCity, getLocation} from '../../actionCreators/soc
 import { getRelation } from './../../actionCreators/relationMasterAction';
 import Spinner from '../../components/spinner/spinner';
 import { numberValidation, maxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler, memberMaxDate } from '../../validation/validation';
-import { getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail, rfid } from '../../actionCreators/tenantMasterAction';
+import { getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail, rfid,validOnChange } from '../../actionCreators/tenantMasterAction';
 
 class AddTenant extends Component{
     constructor(props) {
@@ -71,7 +71,8 @@ class AddTenant extends Component{
             pin:'',
             pinCode:'',
             message:'',
-            refidId:''
+            refidId:'',
+            memberContactError:''
         }
     }
 
@@ -339,20 +340,25 @@ class AddTenant extends Component{
             this.state.member.splice(0, this.state.member.length)
             for(let i = 0; i < this.state.noOfMembers; i++){
                if(this.state.noOfMembers !== 0 || this.state.noOfMembers){
-                if(!this.state[`memberName` + i] || !this.state[`memberDob` + i]
-                || !this.state[`relationId` + i] || !this.state[`gender` + i] || 
-                !this.state[`rfidId` + i] ) errors.memberError  = `Please fill all member details`
+                if(!this.state[`firstName` + i] || !this.state[`lastName` + i] || !this.state[`lastName` + i] || !this.state[`memberDob` + i] || 
+                !this.state[`relationId` + i] || !this.state[`gender` + i] ) errors.memberError  = `Please fill all member details`;
+                if(this.state[`contact` + i]){
+                    if(this.state[`contact` + i].length !== 10) errors.memberContactError = `Contact should be of 10 digit.`
+                }
                }
                 console.log(this.state.member)
                 data = {
-                    memberName: this.state['memberName'+i],
+                    firstName: this.state['firstName'+i],
+                    lastName: this.state['lastName'+i],
+                    email: this.state['email'+i],
+                    contact: this.state['contact'+i],
                     memberDob: this.state['memberDob'+i],
                     relationId: this.state['relationId'+i],
                     gender:this.state['gender'+i],
                     rfidId:this.state[`rfidId` + i]
                 }
                     this.state.member.push(data)
-                    this.setState({memberError1:this.state['memberName'+i]})
+                    this.setState({memberError1:this.state['firstName'+i] + this.state['lastName'+i]})
             }
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
@@ -378,23 +384,18 @@ class AddTenant extends Component{
                 this.setState({ step: this.state.step + 1 })
             }
         }
-        const { rfidId } = this.state;
+        
         if(this.state.step === 4){
-            if(!rfidId) errors.rfidId = `Please select RFID.`
-            const isValid = Object.keys(errors).length === 0
-            this.setState({ errors });
-            if (isValid) {
                 this.setState({ step: this.state.step + 1 })
-            }
         }
     }
 
     emailChange = (e) => {
-        console.log(this.state.email)
+        console.log(this.state)
         this.setState({email:e.target.value, messageEmailErr:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value,message:''});
-            console.log(this.state.email)
+            console.log(this.state)
             this.setState({emailValidError: '',message:''})
         }
         else{ this.setState({emailValidError: 'Invalid Email.'})}
@@ -406,9 +407,8 @@ class AddTenant extends Component{
         }
         else {
             this.setState({email:e.target.value,message:''});
-        }
-        
-        
+        } 
+        this.props.validOnChange(e.target.value);
     }
 
     changePassword=()=>{ 
@@ -769,12 +769,35 @@ class AddTenant extends Component{
             userDatas.push(<FormGroup key={i}>
                 <Row form>
                     <Col md={4}>
-                        <Label>Name</Label>
-                        <Input placeholder="Name Of Member"
+                        <Label>First Name</Label>
+                        <Input placeholder="First Name"
                         onKeyPress={OnKeyPressUserhandler}
-                         name = {`memberName${i}`} onChange={this.memberDetailChange} 
+                         name = {`firstName${i}`} onChange={this.memberDetailChange} 
                         className="input"  />
-                       
+                    </Col>
+                    <Col md={4}>
+                        <Label>Last Name</Label>
+                        <Input placeholder="Last Name"
+                        onKeyPress={OnKeyPressUserhandler}
+                         name = {`lastName${i}`} onChange={this.memberDetailChange} 
+                        className="input"  />
+                    </Col>
+                    <Col md={4}>
+                        <Label>Email</Label>
+                        <Input placeholder="Email"
+                        onKeyPress={emailValid}
+                         name = {`email${i}`} onChange={this.emailChange}
+                         maxLength="70" 
+                        className="input"  />
+                        {<span className="error">{this.state.emailValidError}</span>}
+                    </Col>
+                    <Col md={4}>
+                        <Label>Contact</Label>
+                        <Input placeholder="Contact"
+                        onKeyPress={numberValidation}
+                        maxLength="10"
+                         name = {`contact${i}`} onChange={this.memberDetailChange} 
+                        className="input"  />
                     </Col>
                     <Col md={4}>
                         <Label>Relation With Tenant</Label>
@@ -938,6 +961,7 @@ class AddTenant extends Component{
                     <div style={{ 'display': this.state.step == 2 ? 'block' : 'none' }}>
                         <h3>Tenant Member Details</h3>
                         <div style={{textAlign:'right'}}><span className="error">{this.state.errors.memberError}</span></div>
+                        <div style={{textAlign:'right'}}><span className="error">{this.state.errors.memberContactError}</span></div>
                         <FormGroup>
                             <Label>Number of Member</Label>
                             <Input onKeyPress={numberValidation} placeholder="number of member"
@@ -1067,7 +1091,6 @@ class AddTenant extends Component{
                             <Select name='rfidId' placeholder={<DefaultSelect />} 
                                 options={this.rfidOptions(this.props.tenantReducer)}
                                 onChange={this.rfidChange.bind(this, 'rfidId')} />
-                            {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
                         </FormGroup>
                     </div>
                     <div>
@@ -1110,4 +1133,4 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps, {detailSociety, viewTower, getRelation,getFlatDetailViaTowerId,rfid,
-    getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail, getCountry,getState,getCity, getLocation})(AddTenant);
+    getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail, getCountry,getState,getCity, getLocation,validOnChange})(AddTenant);

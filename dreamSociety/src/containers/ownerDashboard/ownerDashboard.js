@@ -25,7 +25,7 @@ import UI from '../../components/newUI/ownerDashboard';
 
     changePassword=()=>{
           
-      return this.props.history.replace('/tenantDashboard/changePasswordTenant')
+      return this.props.history.replace('/ownerDashboard/changePasswordOwner')
     }
 
   editUser() {

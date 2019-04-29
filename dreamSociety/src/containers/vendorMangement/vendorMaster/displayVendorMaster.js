@@ -109,7 +109,7 @@ class DisplayVendorMaster extends Component {
     }
 
     editUser(vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,documentOne,documentTwo,picture){
-        // let { countryId, stateId, cityId, locationId, readOnlyCountryId,readOnlyStateId,readOnlyCityId,readOnlyLocationId} = this.state
+        
     this.setState({
             vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,documentOne,documentTwo,picture
             ,editVendorModal: !this.state.editVendorModal,
@@ -246,10 +246,7 @@ class DisplayVendorMaster extends Component {
                 if(this.state.pin === '') errors.pin = `Pin/Zip code can't be empty.`
                 else if(this.state.pin.length < 5) errors.pin = `Pin/Zip code should be of 5 digits atleast.`
             }
-            // if (this.state.currentAddress === '') { errors.currentAddress = `Current Address can't be empty.`
-            //  }
-            // if (this.state.permanentAddress === '') { errors.permanentAddress = `Permanent Address can't be empty.` 
-            // }
+         
             if(this.state.contact === '') errors.contact= `Contact can't be empty.`;
             else if(this.state.contact.length !== 10) errors.contact= `Contact should be of 10 digit.`;
 
