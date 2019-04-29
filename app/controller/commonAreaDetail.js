@@ -95,9 +95,21 @@ exports.getAreaAndMachine = async (req, res) => {
 exports.updateAreaAndMachine = async (req, res) => {
     try {
         const commonAreaDetailId = req.params.id;
+        let commonAreaDetailIds = [];
         let body = req.body;
 
-        let commonAreaDetailIds = [];
+        const commonAreaDetail = await CommonAreaDetail.findOne({
+            where: {
+                [Op.and]: [
+                    { isActive: true },
+                    { commonAreaDetailId: commonAreaDetailId },
+                ]
+            }
+        })
+        const updatedCommonArea = await CommonAreaDetail.find({ where: { commonAreaDetailId: commonAreaDetailId } }).then(commonAreaDetail => {
+            return commonAreaDetail.updateAttributes(body);
+        })
+
         const areaMachine = await AreaMachine.findAll({ where: { isActive: true, commonAreaDetailId: commonAreaDetailId } });
         const areaMachineMasterId = areaMachine.map(areaMachine => {
             commonAreaDetailIds.push(areaMachine.areaMachineMasterId)
@@ -201,7 +213,6 @@ exports.get = (req, res, next) => {
         })
 }
 
-
 exports.delete = async (req, res, next) => {
     try {
         let commonAreaDetailIds = [];
@@ -216,12 +227,12 @@ exports.delete = async (req, res, next) => {
         const areaMachineMasterId = areaMachine.map(areaMachine => {
             commonAreaDetailIds.push(areaMachine.areaMachineMasterId)
         });
-        console.log("in here ==>",commonAreaDetailIds);
-        // const deleteAreaMachine = await AreaMachine.destroy({ where: { areaMachineMasterId: { [Op.in]: commonAreaDetailId } } });
+        console.log("in here ==>", commonAreaDetailIds);
+        const deleteAreaMachine = await AreaMachine.destroy({ where: { areaMachineMasterId: { [Op.in]: commonAreaDetailIds } } });
         // if (deleteAreaMachine) {
-            return res.status(httpStatus.OK).json({
-                message: "Area and machine deleted successfully"
-            });
+        return res.status(httpStatus.OK).json({
+            message: "Area and machine deleted successfully"
+        });
         // }
     } catch (error) {
         console.log(error)
@@ -229,34 +240,62 @@ exports.delete = async (req, res, next) => {
     }
 }
 
-exports.deleteSelected = (req, res, next) => {
-    const commonAreaDetailIds = req.body.ids;
-    console.log('IDs ===>', commonAreaDetailIds);
+// exports.deleteSelected = (req, res, next) => {
+//     const commonAreaDetailIds = req.body.ids;
+//     console.log('IDs ===>', commonAreaDetailIds);
 
-    CommonAreaDetail.findAll({
-        where: {
-            commonAreaDetailId: {
-                [Op.in]: commonAreaDetailIds
-            },
-            isActive: true
+//     CommonAreaDetail.findAll({
+//         where: {
+//             commonAreaDetailId: {
+//                 [Op.in]: commonAreaDetailIds
+//             },
+//             isActive: true
+//         }
+//     })
+//         .then(commonAreas => {
+//             if (commonAreas.length !== 0) {
+//                 commonAreas.map(item => {
+//                     item.updateAttributes({ isActive: false });
+//                 })
+//                 res.status(httpStatus.OK).json({
+//                     message: 'Deleted successfully'
+//                 })
+//             } else {
+//                 res.status(httpStatus.NO_CONTENT).json({
+//                     message: 'No data found'
+//                 })
+//             }
+//         })
+//         .catch(err => {
+//             console.log('Error ===>', err);
+//             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+//         })
+// }
+
+exports.deleteSelected = async (req, res, next) => {
+    try {
+        const deleteSelected = req.body.ids;
+        let commonAreaDetailIds = [];
+        console.log("delete selected==>", deleteSelected);
+        const update = { isActive: false };
+        if (!deleteSelected) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
         }
-    })
-        .then(commonAreas => {
-            if (commonAreas.length !== 0) {
-                commonAreas.map(item => {
-                    item.updateAttributes({ isActive: false });
-                })
-                res.status(httpStatus.OK).json({
-                    message: 'Deleted successfully'
-                })
-            } else {
-                res.status(httpStatus.NO_CONTENT).json({
-                    message: 'No data found'
-                })
-            }
-        })
-        .catch(err => {
-            console.log('Error ===>', err);
-            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-        })
+        const updatedAreaMachine = await CommonAreaDetail.update(update, { where: { commonAreaDetailId: { [Op.in]: deleteSelected } } });
+
+        const areaMachine = await AreaMachine.findAll({ where: { isActive: true, commonAreaDetailId: { [Op.in]: deleteSelected } } });
+        const areaMachineId = areaMachine.map(areaMachine => {
+            commonAreaDetailIds.push(areaMachine.areaMachineMasterId)
+        });
+        // console.log(towerIds);
+        const deleteAreaMachine = await AreaMachine.destroy({ where: { areaMachineMasterId: { [Op.in]: commonAreaDetailIds } } });
+        if (deleteAreaMachine) {
+            return res.status(httpStatus.OK).json({
+                message: "Area and Machines deleted successfully",
+            });
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
 }
