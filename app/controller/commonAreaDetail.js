@@ -7,6 +7,31 @@ const Op = db.Sequelize.Op;
 const CommonAreaDetail = db.commonAreaDetail;
 const MachineDetail = db.machineDetail;
 const CommonArea = db.commonArea;
+const AreaMachine = db.areaMachine;
+
+exports.create1 = async (req, res) => {
+    let body = req.body;
+    body.userId = req.userId;
+    try {
+        const commonAreaDetail = await CommonAreaDetail.create(body);
+        const commonAreaDetailId = commonAreaDetail.commonAreaDetailId;
+
+        const result = body.machineDetailId.map(function (element) { element.commonAreaDetailId = commonAreaDetailId });
+
+        const updated = await AreaMachine.bulkCreate(body.machineDetailId, { returning: true }, {
+            fields: ["machineDetailId", "commonAreaDetailId"],
+        });
+
+        if (updated) {
+            return res.status(httpStatus.CREATED).json({
+                message: "Created successfully"
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message })
+    }
+}
 
 exports.create = (req, res, next) => {
     const body = req.body;
@@ -37,6 +62,57 @@ exports.create = (req, res, next) => {
         res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
             message: 'Machine not added to common area. Please try again!'
         })
+    }
+}
+
+exports.getAreaAndMachine = async (req, res) => {
+    try {
+        const commonAreaDetail = await CommonAreaDetail.findAll({
+            where: { isActive: true },
+            include: [{
+                model: MachineDetail,
+                as: 'Machine',
+                attributes: ['machineDetailId', 'machineActualId'],
+                through: {
+                    attributes: ['machineDetailId', 'commonAreaDetailId'],
+                }
+            }
+            ]
+            , order: [['createdAt', 'DESC']]
+        });
+        if (commonAreaDetail) {
+            res.status(httpStatus.OK).json({ message: 'Common Area with machine', commonAreaDetail })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message })
+    }
+}
+
+exports.updateAreaAndMachine = async (req, res) => {
+    try {
+        const commonAreaDetailId = req.params.id;
+        
+        let commonAreaDetailIds = [];
+        const areaMachine = await AreaMachine.findAll({ where: { isActive: true, commonAreaDetailId: commonAreaDetailId } });
+        const areaMachineId = areaMachine.map(areaMachine => {
+            commonAreaDetailIds.push(areaMachine.areaMachineId)
+        });
+        // console.log(towerIds);
+        const deleteTowerFloor = await AreaMachine.destroy({ where: { areaMachineId: { [Op.in]: areaMachineId } } });
+
+        const result = req.body.machineDetailId.forEach(function (element) {
+            element.commonAreaDetailId = commonAreaDetailId
+            console.log(element.commonAreaDetailId)
+        });
+        const updatedAreaMachine = await AreaMachine.bulkCreate(req.body.machineDetailId, { returning: true }, {
+            fields: ["machineDetailId", "commonAreaDetailId"],
+        },
+        );
+
+        res.json({ message: 'Updated Successfully' });
+    } catch (error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
     }
 }
 
@@ -97,6 +173,7 @@ exports.get = (req, res, next) => {
         where: {
             isActive: true
         },
+        // group: ['common_area_detail_master.commonAreaId'],
         include: [
             { model: CommonArea, where: { isActive: true }, attributes: ['commonAreaId', 'commonArea'] },
             { model: MachineDetail, where: { isActive: true }, attributes: ['machineDetailId', 'machineActualId'] }

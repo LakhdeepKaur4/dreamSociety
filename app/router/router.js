@@ -550,7 +550,7 @@ module.exports = function (app) {
 
 	app.post('/api/ownerActivation', otpChecker.checkOtp);
 
-	app.post('/api/checkToken', checkToken.checkToken);
+	app.post('/api/checkToken', checkToken.checkToken);	
 
 	app.post('/api/createEventBooking', [authJwt.verifyToken, authJwt.isAdminRole], eventBooking.create);
 
@@ -646,9 +646,11 @@ module.exports = function (app) {
 
 	app.put('/api/electricityConsumer/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.delete);
 
-	app.post('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.create);
+	app.post('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.create1);
 
 	app.get('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.get);
+
+	app.get('/api/commonAreaDetail/machine', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.getAreaAndMachine);
 
 	app.put('/api/commonAreaDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.update);
 
