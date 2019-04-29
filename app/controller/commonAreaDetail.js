@@ -13,13 +13,14 @@ exports.create = async (req, res) => {
     try {
         let body = req.body;
         body.userId = req.userId;
+        console.log(body.userId)
         const commonAreaDetail = await CommonAreaDetail.create(body);
 
         const commonAreaDetailId = commonAreaDetail.commonAreaDetailId;
 
         const result = body.machines.map(function (element) { element.commonAreaDetailId = commonAreaDetailId });
 
-        const updated = await AreaMachine.bulkCreate(body.machineDetailId, { returning: true }, {
+        const updated = await AreaMachine.bulkCreate(body.machines, { returning: true }, {
             fields: ["machineDetailId", "commonAreaDetailId"],
         });
 
