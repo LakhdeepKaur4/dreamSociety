@@ -932,6 +932,7 @@ exports.updateEncrypted = async (req, res, next) => {
 exports.getTenantMembers = async (req, res, next) => {
     const tenantId = req.params.id;
     const membersArr = [];
+    const memberIds = [];
     console.log('Tenant-ID ===>', tenantId);
 
     if (!tenantId) {
