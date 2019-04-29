@@ -811,7 +811,7 @@ exports.updateEncrypted = async (req, res, next) => {
             towerIdCheck = constraintCheck('towerId', update);
             // flatDetailIdCheck = constraintCheck('flatDetailId', update);
             floorIdCheck = constraintCheck('floorId', update);
-            rfidIdCheck = constraintCheck('rfidId', update);
+            // rfidIdCheck = constraintCheck('rfidId', update);
 
 
             firstName = constraintReturn(firstNameCheck, update, 'firstName', tenant);
@@ -832,7 +832,7 @@ exports.updateEncrypted = async (req, res, next) => {
             towerId = referenceConstraintReturn(towerIdCheck, update, 'towerId', tenant);
             // flatDetailId = referenceConstraintReturn(flatDetailIdCheck, update, 'flatDetailId', tenant);
             floorId = referenceConstraintReturn(floorIdCheck, update, 'floorId', tenant);
-            rfidId = referenceConstraintReturn(rfidIdCheck, update, 'rfidId', tenant);
+            // rfidId = referenceConstraintReturn(rfidIdCheck, update, 'rfidId', tenant);
 
             if ((update.picture !== '') && (update.picture !== null) && (update.picture !== undefined)) {
                 tenantImage = await Tenant.find({ where: { tenantId: id }, attributes: ['picture'] });
