@@ -296,8 +296,20 @@ exports.deleteSelected = async (req, res, next) => {
         if (updatedTenant) {
             User.update({ isActive: false }, { where: { userName: { [Op.in]: userNames } } });
             UserRoles.update({ isActive: false }, { where: { userId: { [Op.in]: userIds }, roleId: 4 } });
+            UserRFID.update({ isActive: false }, { where: { userId: { [Op.in]: deleteSelected } } });
             TenantFlatDetail.update({ isActive: false }, { where: { tenantId: { [Op.in]: deleteSelected } } });
-            TenantMembersDetail.update(update, { where: { tenantId: { [Op.in]: deleteSelected } } });
+            TenantMembersDetail.findAll({
+                where: {
+                    tenantId: { [Op.in]: deleteSelected }
+                }
+            })
+                .then(tenantMembers => {
+                    tenantMembers.map(item => {
+                        item.updateAttributes({ isActive: false });
+                        UserRFID.update({ isActive: false }, { where: { userId: item.memberId } });
+                    })
+                })
+
             return res.status(httpStatus.OK).json({
                 message: "Tenant deleted successfully",
             });
@@ -330,13 +342,25 @@ exports.delete = async (req, res, next) => {
                             UserRoles.update({ isActive: false }, { where: { userId: user.userId, roleId: 4 } });
                         })
                 })
+            UserRFID.update({ isActive: false }, { where: { userId: id } });
             TenantFlatDetail.findAll({ where: { tenantId: id } })
                 .then(flats => {
                     flats.map(item => {
                         item.destroy();
                     })
                 })
-            TenantMembersDetail.update({ isActive: false }, { where: { tenantId: id } });
+            TenantMembersDetail.findAll({
+                where: {
+                    tenantId: id
+                }
+            })
+                .then(tenantMembers => {
+                    tenantMembers.map(item => {
+                        item.updateAttributes({ isActive: false });
+                        UserRFID.update({ isActive: false }, { where: { userId: item.memberId } });
+                    })
+                })
+
             return res.status(httpStatus.OK).json({
                 message: "Tenant deleted successfully",
                 tenant: updatedTenant
@@ -533,6 +557,7 @@ exports.createEncrypted = async (req, res, next) => {
                                     .then(user => {
                                         // user.setRoles(roles);
                                         UserRoles.create({ userId: user.userId, roleId: roles.id });
+                                        UserRFID.create({ userId: user.userId, rfidId: item.rfidId });
                                     })
                             })
                         }
@@ -883,8 +908,8 @@ exports.updateEncrypted = async (req, res, next) => {
                 }
             })
                 .then(tenant => {
-                    UserRFID.update({ rfidId: update.rfidId}, { where: { userId: tenant.tenantId } });
-                    User.update(updates, { where: { userName: tenant.userName } });
+                    UserRFID.update({ rfidId: update.rfidId }, { where: { userId: tenant.tenantId, isActive: true } });
+                    User.update(updates, { where: { userName: tenant.userName, isActive: true } });
                     return tenant.updateAttributes(updates);
                 })
                 .then(tenant => {
@@ -913,33 +938,78 @@ exports.getTenantMembers = async (req, res, next) => {
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
     }
 
-    const tenantMembers = await TenantMembersDetail.findAll({
+    TenantMembersDetail.findAll({
         where: {
-            tenantId: tenantId,
-            isActive: true
+            isActive: true,
+            tenantId: tenantId
         },
-        include: [
-            {
-                model: Relation,
-                attributes: ['relationName']
-            },
-            { model: RFID }
-        ]
+        attributes: ['memberId']
+    })
+    .then(members => {
+        members.map(item => {
+            memberIds.push(item.memberId);
+        })
+        memberIds.map(item => {
+            TenantMembersDetail.findOne({
+                where: {
+                    isActive: true,
+                    memberId: item
+                },
+                order: [['createdAt', 'DESC']],
+                include: [
+                    { model: Relation }
+                ]
+            })
+            .then(async member => {
+                let rfid = await UserRFID.findOne({
+                    where: {
+                        userId: member.memberId,
+                        isActive: true
+                    },
+                    include: [
+                        { model: RFID, where: { isActive: true }, attributes: ['rfidId', 'rfid'] }
+                    ]
+                })
 
-    });
+                member.firstName = decrypt(member.firstName);
+                member.lastName = decrypt(member.lastName);
+                member.userName = decrypt(member.userName);
+                member.email = decrypt(member.email);
+                member.contact = decrypt(member.contact);
+                member.aadhaarNumber = decrypt(member.aadhaarNumber);
+                // member.picture = decrypt(member.picture);
+                // member.permanentAddress = decrypt(member.permanentAddress);
+                // member.correspondenceAddress = decrypt(member.correspondenceAddress);
+                member.gender = decrypt(member.gender);
+                // member.panCardNumber = decrypt(member.panCardNumber);
+
+                member = member.toJSON();
+                if (rfid !== null) {
+                    member['rfid_master'] = {
+                        rfidId: rfid.rfid_master.rfidId,
+                        rfid: rfid.rfid_master.rfid
+                    };
+                }
+                else {
+                    member['rfid_master'] = null;
+                }
+
+                return member;
+            })
+            .then(member => {
+                membersArr.push(member);
+            })
+        })
+    })
     // console.log(tenantMembers)
 
-
-
-    tenantMembers.map(item => {
-        item.memberName = decrypt(item.memberName);
-        item.gender = decrypt(item.gender);
-    })
-
-    res.status(httpStatus.OK).json({
-        message: "Tenant Members Details",
-        members: tenantMembers
-    });
+    setTimeout(() => {
+        let members = membersArr;
+        res.status(httpStatus.OK).json({
+            message: "Tenant Members Details",
+            members
+        });
+    }, 1000);
 }
 
 exports.deleteTenantMember = async (req, res, next) => {
@@ -958,17 +1028,21 @@ exports.deleteTenantMember = async (req, res, next) => {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
 
-        const member = await TenantMembersDetail.find({ where: { memberId: id } });
-
-        const updatedMember = await member.updateAttributes(update);
-
-        updatedMember.memberName = decrypt(updatedMember.memberName);
-        updatedMember.gender = decrypt(updatedMember.gender);
+        TenantMembersDetail.findOne({
+            where: {
+                memberId: id
+            }
+        })
+            .then(member => {
+                member.updateAttributes({ isActive: false });
+                User.update({ isActive: false }, { where: { userId: member.memberId } });
+                UserRoles.update({ isActive: false }, { where: { userId: member.memberId } });
+                UserRFID.update({ isActive: false }, { where: { userId: member.memberId } });
+            })
 
         if (updatedMember) {
             return res.status(httpStatus.OK).json({
-                message: "Member deleted successfully",
-                member: updatedMember
+                message: "Member deleted successfully"
             });
         }
     } catch (error) {
@@ -977,20 +1051,52 @@ exports.deleteTenantMember = async (req, res, next) => {
     }
 }
 
-exports.addTenantMembers = (req, res, next) => {
+exports.addTenantMembers = async (req, res, next) => {
     const member = req.body;
     member.userId = req.userId;
 
-    member.memberName = encrypt(member.memberName);
+    let randomNumber;
+    randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
+    const tenantExists = await TenantMembersDetail.findOne({ where: { isActive: true, memberId: randomNumber } });
+    const userExists = await User.findOne({ where: { isActive: true, userId: randomNumber } });
+    if (tenantExists !== null || userExists !== null) {
+        console.log("duplicate random number")
+        randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
+    }
+
+    let userName = member.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
+    member.userName = userName;
+    const password = passwordGenerator.generate({
+        length: 10,
+        numbers: true
+    });
+    member.firstName = encrypt(member.firstName);
+    member.lastName = encrypt(member.lastName);
+    member.userName = encrypt(member.userName);
+    member.email = encrypt(member.email);
+    member.contact = encrypt(member.contact);
+    member.aadhaarNumber = encrypt(member.aadhaarNumber);
     member.gender = encrypt(member.gender);
+    member.password = password;
+    member.memberId = randomNumber;
 
     TenantMembersDetail.create(member)
-        .then(member => {
-            member.memberName = decrypt(member.memberName);
-            member.gender = decrypt(member.gender);
+        .then(memberCreated => {
+            member.password = bcrypt.hashSync(member.password, 8);
+            member.userId = member.memberId;
+            User.create(member)
+                .then(user => {
+                    UserRoles.create({
+                        userId: member.userId,
+                        roleId: 4
+                    })
+                    UserRFID.create({
+                        userId: member.userId,
+                        rfidId: member.rfidId
+                    })
+                })
             return res.status(httpStatus.CREATED).json({
-                message: 'Member created successfully',
-                member
+                message: 'Member created successfully'
             });
         })
         .catch(err => {
@@ -1014,18 +1120,29 @@ exports.editTenantMembers = async (req, res, next) => {
 
     member = await TenantMembersDetail.findOne({ where: { memberId: id } });
 
-    memberNameCheck = constraintCheck('memberName', update);
+    firstNameCheck = constraintCheck('firstName', update);
+    lastNameCheck = constraintCheck('lastName', update);
+    emailCheck = constraintCheck('email', update);
+    contactCheck = constraintCheck('contact', update);
+    aadhaarNumberCheck = constraintCheck('aadhaarNumber', update);
     genderCheck = constraintCheck('gender', update);
 
-    update.memberName = constraintReturn(memberNameCheck, update, 'memberName', member);
+    update.firstName = constraintReturn(firstNameCheck, update, 'firstName', member);
+    update.lastName = constraintReturn(lastNameCheck, update, 'lastName', member);
+    update.email = constraintReturn(emailCheck, update, 'email', member);
+    update.contact = constraintReturn(contactCheck, update, 'contact', member);
+    update.aadhaarNumber = constraintReturn(aadhaarNumberCheck, update, 'aadhaarNumber', member);
     update.gender = constraintReturn(genderCheck, update, 'gender', member);
 
-    TenantMembersDetail.update(update, {
+    TenantMembersDetail.findAll({
         where: {
             memberId: id
         }
     })
         .then(member => {
+            member.updateAttributes(update);
+            User.update(update, { where: { userId: id } })
+            UserRFID.update({ rfidId: update.rfidId }, { where: { userId: id } });
             return res.status(httpStatus.CREATED).json({
                 message: 'Member updated successfully',
             })
@@ -1045,7 +1162,7 @@ exports.deleteSelectedTenantMembers = (req, res, next) => {
 
     const deleteUpdate = { isActive: false };
 
-    TenantMembersDetail.update(deleteUpdate, {
+    TenantMembersDetail.findAll({
         where: {
             memberId: {
                 [Op.or]: ids
@@ -1053,6 +1170,12 @@ exports.deleteSelectedTenantMembers = (req, res, next) => {
         }
     })
         .then(members => {
+            members.map(item => {
+                item.updateAttributes(deleteUpdate);
+                User.update(deleteUpdate, { where: { userId: item.memberId } });
+                UserRoles.update(deleteUpdate, { where: { userId: item.memberId } });
+                UserRFID.update(deleteUpdate, { where: { userId: item.memberId } });
+            })
             return res.status(httpStatus.OK).json({
                 message: 'Members deleted successfully'
             });

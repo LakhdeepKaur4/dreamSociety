@@ -36,9 +36,13 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             allowNull: false
         },
+        aadhaarNumber: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
         isActive: {
             type: Sequelize.BOOLEAN,
-            defaultValue: true
+            defaultValue: false
         },
         createdAt: {
             allowNull: false,
