@@ -646,7 +646,7 @@ exports.createEncrypted = async (req, res, next) => {
 // }
 
 exports.getDecrypted = (req, res, next) => {
-    const rfidsArr = [];
+    // const rfidsArr = [];
     const tenantsArr = [];
     const tenantIds = [];
     Tenant.findAll({
@@ -660,10 +660,12 @@ exports.getDecrypted = (req, res, next) => {
                 tenants.map(item => {
                     tenantIds.push(item.tenantId);
                 })
+                // console.log(tenantIds);
                 tenantIds.map(item => {
                     Tenant.findOne({
                         where: {
-                            isActive: true
+                            isActive: true,
+                            tenantId: item
                         },
                         order: [['createdAt', 'DESC']],
                         include: [
@@ -699,7 +701,7 @@ exports.getDecrypted = (req, res, next) => {
                             tenant.correspondenceAddress = decrypt(tenant.correspondenceAddress);
                             tenant.gender = decrypt(tenant.gender);
                             tenant.panCardNumber = decrypt(tenant.panCardNumber);
-                            rfidsArr.push(rfid.rfid_master);
+                            // rfidsArr.push(rfid.rfid_master);
                             tenant = tenant.toJSON();
                             if (rfid !== null) {
                                 tenant['rfid_master'] = {
@@ -881,6 +883,7 @@ exports.updateEncrypted = async (req, res, next) => {
                 }
             })
                 .then(tenant => {
+                    UserRFID.update(updates, { where: { userId: tenant.tenantId } });
                     User.update(updates, { where: { userName: tenant.userName } });
                     return tenant.updateAttributes(updates);
                 })
