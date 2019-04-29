@@ -720,7 +720,8 @@ exports.getDecrypted = (req, res, next) => {
                     let tenants = tenantsArr;
                     res.status(httpStatus.OK).json({
                         message: "Tenant Content Page",
-                        tenants
+                        tenants,
+                        rfids: rfidsArr
                     });
                 }, 1000);
                 // console.log(tenantsArr);
