@@ -874,7 +874,7 @@ exports.updateEncrypted = async (req, res, next) => {
                 userId: req.userId,
                 societyId: societyId,
                 towerId: towerId,
-                rfidId: update.rfidId,
+                // rfidId: update.rfidId,
             };
 
             Tenant.find({
@@ -883,7 +883,7 @@ exports.updateEncrypted = async (req, res, next) => {
                 }
             })
                 .then(tenant => {
-                    UserRFID.update(updates, { where: { userId: tenant.tenantId } });
+                    UserRFID.update({ rfidId: update.rfidId}, { where: { userId: tenant.tenantId } });
                     User.update(updates, { where: { userName: tenant.userName } });
                     return tenant.updateAttributes(updates);
                 })
