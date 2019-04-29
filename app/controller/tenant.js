@@ -700,6 +700,7 @@ exports.getDecrypted = (req, res, next) => {
                             tenant.gender = decrypt(tenant.gender);
                             tenant.panCardNumber = decrypt(tenant.panCardNumber);
                             rfidsArr.push(rfid.rfid_master);
+                            tenant = tenant.toJSON();
                             if (rfid !== null) {
                                 tenant['rfid_master'] = {
                                     rfidId: rfid.rfid_master.rfidId,
@@ -709,7 +710,7 @@ exports.getDecrypted = (req, res, next) => {
                             else {
                                 tenant['rfid_master'] = null;
                             }
-                            console.log(tenant);
+                            // console.log(tenant);
                             return tenant;
                         })
                         .then(tenant => {
@@ -720,8 +721,7 @@ exports.getDecrypted = (req, res, next) => {
                     let tenants = tenantsArr;
                     res.status(httpStatus.OK).json({
                         message: "Tenant Content Page",
-                        tenants,
-                        rfids: rfidsArr
+                        tenants
                     });
                 }, 1000);
                 // console.log(tenantsArr);
