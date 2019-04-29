@@ -9,7 +9,7 @@ const MachineDetail = db.machineDetail;
 const CommonArea = db.commonArea;
 const AreaMachine = db.areaMachine;
 
-exports.create1 = async (req, res) => {
+exports.create = async (req, res) => {
     let body = req.body;
     body.userId = req.userId;
     try {
@@ -33,7 +33,7 @@ exports.create1 = async (req, res) => {
     }
 }
 
-exports.create = (req, res, next) => {
+exports.create1 = (req, res, next) => {
     const body = req.body;
     console.log('Body ===>', body);
     let success = 0;

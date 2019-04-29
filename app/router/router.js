@@ -648,9 +648,9 @@ module.exports = function (app) {
 
 	app.post('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.create1);
 
-	app.get('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.get);
+	// app.get('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.get);
 
-	app.get('/api/commonAreaDetail/machine', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.getAreaAndMachine);
+	app.get('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.getAreaAndMachine);
 
 	app.put('/api/commonAreaDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.update);
 
