@@ -126,6 +126,11 @@ import RfIdDetail from './containers/rfIdMaster/rfIdDetails';
 import MachineIdMaster from './containers/machineIdMaster/machineIdMaster';
 import DisplayMachineIdMaster from './containers/machineIdMaster/displayMachineIdMaster';
 
+import  FlatPieChart from './containers/chart/flatpiechart';
+import FlatLineChart from './containers/chart/flatlinechart';
+import InventoryLineChart from './containers/chart/inventoryLineChart';
+import InventoryPieChart from './containers/chart/inventoryPieChart';
+import Chart from './containers/chart/chart';
 class App extends Component {
   render() {
     return (
@@ -250,6 +255,14 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail}/>
             <PrivateRoute path='/superDashboard/machineIdMaster' component ={MachineIdMaster}/>
             <PrivateRoute path='/superDashboard/displayMachineIdMaster' component={DisplayMachineIdMaster}/>
+          
+            <PrivateRoute  path ='/superDashboard/flatPieChart' component ={FlatPieChart}/>
+            <PrivateRoute path='/superDashboard/flatLineChart' component={FlatLineChart}/>
+            <PrivateRoute path='/superDashboard/inventoryLineChart' component={InventoryLineChart}/>
+            <PrivateRoute path='/superDashboard/inventoryPieChart' component={InventoryPieChart}/>
+            <PrivateRoute path ='/superDashboard/charts' component ={Chart}/>
+
+
           </Switch>
         </div>
         
