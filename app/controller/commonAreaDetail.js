@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
     try {
         let body = req.body;
         body.userId = req.userId;
-        console.log(body.userId)
+     
         const commonAreaDetail = await CommonAreaDetail.create(body);
 
         const commonAreaDetailId = commonAreaDetail.commonAreaDetailId;
@@ -78,7 +78,8 @@ exports.getAreaAndMachine = async (req, res) => {
                 through: {
                     attributes: ['machineDetailId', 'commonAreaDetailId'],
                 }
-            }
+            },
+            {model:CommonArea,attributes:['commonArea']}
             ]
             , order: [['createdAt', 'DESC']]
         });
@@ -96,27 +97,6 @@ exports.updateAreaAndMachine = async (req, res) => {
         const commonAreaDetailId = req.params.id;
         let body = req.body;
 
-        // let machineDetailsIds = [];
-        // const result = body.machineDetailId.map(function (element) { console.log(element.machineDetailId)});
-
-        // const commonAreaExisting = AreaMachine.findAll({
-        //     where: {
-        //         machineDetailId: body.machineDetailId,
-        //         // commonAreaId: body.commonAreaId,
-        //         isActive: true,
-        //         commonAreaDetailId: {
-        //             // [Op.ne]: 
-        //             commonAreaDetailId
-        //         }
-        //     }
-        // })
-        // if (commonAreaExisting) {
-        //     if (commonAreaExisting !== null) {
-        //         res.status(httpStatus.NOT_MODIFIED).json({
-        //             message: 'Machine already exist for another common area'
-        //         })
-        //     }
-        // } else {
             let commonAreaDetailIds = [];
             const areaMachine = await AreaMachine.findAll({ where: { isActive: true, commonAreaDetailId: commonAreaDetailId } });
             const areaMachineId = areaMachine.map(areaMachine => {
@@ -135,7 +115,7 @@ exports.updateAreaAndMachine = async (req, res) => {
             );
 
             res.json({ message: 'Updated Successfully' });
-        // }
+
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
     }
