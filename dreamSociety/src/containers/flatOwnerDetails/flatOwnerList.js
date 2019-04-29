@@ -232,8 +232,9 @@ class FlatOwnerList extends Component {
         }
         return [];
     }
-    viewMember(id) {
+    viewMember(id,towerId) {
         localStorage.setItem('ownerId', id)
+        localStorage.setItem('towerId',towerId)
         this.props.history.push('/superDashBoard/flatMemberList')
 
     }
@@ -319,7 +320,7 @@ class FlatOwnerList extends Component {
                         <td style={{ textAlign: "center", width: '10px',textTransform: 'capitalize'  }}  >{items.firstName+' '+items.lastName}</td>
                         <td style={{ textAlign: "center" }}>{items.contact}</td>
                         <td style={{ textAlign: "center" }}>{items.permanentAddress}</td>
-                        <td><button className="btn btn-success mr-2" onClick={this.viewMember.bind(this, items.ownerId)}>View Member</button></td>
+                        <td><button className="btn btn-success mr-2" onClick={this.viewMember.bind(this, items.ownerId,items.tower_master.towerId)}>View Member</button></td>
                         <td><button className="btn btn-success mr-2" onClick={this.addFlat.bind(this,items.ownerId)}>View Flats</button></td>
                         <td style={{ textAlign: "center" }}>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, 
