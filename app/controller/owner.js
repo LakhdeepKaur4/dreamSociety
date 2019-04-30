@@ -108,6 +108,41 @@ let testSms = (contact) => {
 };
 
 
+let mailToUser1 = (email, memberId) => {
+  const token = jwt.sign({
+      data: 'foo'
+    },
+    'secret', {
+      expiresIn: '1h'
+    });
+  memberId = encrypt(key, memberId.toString());
+  const request = mailjet.post("send", {
+      'version': 'v3.1'
+    })
+    .request({
+      "Messages": [{
+        "From": {
+          "Email": "rohit.khandelwal@greatwits.com",
+          "Name": "Greatwits"
+        },
+        "To": [{
+          "Email": email,
+          "Name": 'Atin' + ' ' + 'Tanwar'
+        }],
+        "Subject": "Activation link",
+        "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://192.168.1.16:3000/login/tokenVerification?memberId=${memberId}&token=${token}">click here</a>`
+      }]
+    })
+  request.then((result) => {
+      console.log(result.body)
+      // console.log(`http://192.168.1.105:3000/submitotp?userId=${encryptedId}token=${encryptedToken}`);
+    })
+    .catch((err) => {
+      console.log(err.statusCode)
+    })
+}
+
+
 let mailToUser = (email, ownerId) => {
   const token = jwt.sign({
       data: 'foo'
@@ -130,7 +165,7 @@ let mailToUser = (email, ownerId) => {
           "Name": 'Atin' + ' ' + 'Tanwar'
         }],
         "Subject": "Activation link",
-        "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://mydreamsociety.com/login/tokenVerification?ownerId=${ownerId}&token=${token}">click here</a>`
+        "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://192.168.1.16:3000/login/tokenVerification?ownerId=${ownerId}&token=${token}">click here</a>`
       }]
     })
   request.then((result) => {
@@ -182,6 +217,45 @@ exports.create1 = async (req, res, next) => {
         message: "contact already exist"
       });
     }
+
+    req.body.member.map( async (member,index) => {
+      let existingOwner = await OwnerMembersDetail.find({
+        where: {
+          isActive: true,
+          memberEmail: encrypt(key, member.memberEmail)
+        }
+      });
+      let existingUser = await User.find({
+        where: {
+          isActive: true,
+          email: encrypt(key, member.memberEmail)
+        }
+      })
+      if (existingOwner || existingUser) {
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+          message: "email already exist for member " + (index + 1)
+        });
+      }
+      let existingOwner1 = await OwnerMembersDetail.find({
+        where: {
+          isActive: true,
+          memberContact: encrypt(key, member.memberContact)
+        }
+      });
+      let existingContact = await User.find({
+        where: {
+          isActive: true,
+          contact: encrypt(key, member.memberContact)
+        }
+      })
+      if (existingOwner1 || existingContact) {
+        return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+          message: "contact already exist for member" + (index + 1)
+        });
+      }
+
+    });
+    
     let randomNumber;
     randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
     const OwnerExists = await Owner.findOne({ where: { isActive: true, ownerId: randomNumber } });
@@ -278,16 +352,10 @@ exports.create1 = async (req, res, next) => {
       memberBody.userId = req.userId;
       memberBody.ownerId = ownerId;
 
-      req.body.member.map( async member => {
+      req.body.member.map( async (member,index) => {
 
         let randomNumber;
         randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
-        // const OwnerExists = await OwnerMembersDetail.findOne({ where: { isActive: true, memberId: randomNumber } });
-        // const userExists = await User.findOne({ where: { isActive: true, userId: randomNumber } });
-        // if (OwnerExists !== null || userExists !== null) {
-        //     console.log("duplicate random number")
-        //     randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
-        // }
         member.memberId = randomNumber;
         member.password = passwordGenerator.generate({
           length: 10,
@@ -370,6 +438,8 @@ exports.create1 = async (req, res, next) => {
           userId: user.userId,
           roleId: roles.id
         });
+        const message = mailToUser1(email, member.memberId);
+
       })
 
     }       
@@ -1117,7 +1187,7 @@ exports.update2 = async (req, res, next) => {
 
 exports.delete = async (req, res, next) => {
   try {
-    console.log("deleting");
+    console.log("deleting=====>",req.params.id);
     const id = req.params.id;
     if (!id) {
       return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
@@ -1241,7 +1311,7 @@ exports.delete = async (req, res, next) => {
     uRfId.updateAttributes(update);
     let role = await UserRoles.findOne({
       where: {
-        userId: memberUser.userId
+        userId: member.memberId
       }
     });
     memberUser.updateAttributes(update);
@@ -1422,7 +1492,7 @@ exports.getMembers = async (req, res, next) => {
       ownerMember.gender = decrypt(key, ownerMember.gender);
       memberArr.push(ownerMember);
     })
-
+    console.log("getting members");
     return res.status(httpStatus.OK).json({
       message: "OwnerMembers fetched successfully",
       memberArr
@@ -1457,13 +1527,27 @@ exports.deleteMember = async (req, res, next) => {
       userId:updatedOwnerMembersDetail.memberId
     }
   });
-  memberUser.updateAttributes(update);
+  if(memberUser){
+    memberUser.updateAttributes(update);
+
+  }
   let role = await UserRoles.findOne({
     where: {
-      userId: memberUser.userId
+      isActive:true,
+      userId: ownerMemberId
     }
   });
-  role.updateAttributes(update);
+  if(role){
+    role.updateAttributes(update);
+  }
+  let urfId = await UserRfId.findOne({
+    where:{
+      isActive:true,
+      userId:ownerMemberId
+    }
+  });
+  console.log("user_rf_id ====>", urfId)
+  urfId.updateAttributes(update);
   updatedOwnerMembersDetail.updateAttributes(update);
 
   if (updatedOwnerMembersDetail) {
@@ -1504,26 +1588,25 @@ exports.deleteSelectedMembers = async (req, res, next) => {
             userId:member.memberId
           }
         });
-
-        memberUser.updateAttributes(update);
-        let role = await UserRoles.findOne({
-          where: {
-            userId: memberUser.userId
+        if(memberUser){
+         await  memberUser.updateAttributes(update);
+        }      
+        let urfId = await UserRfId.findOne({
+          where:{
+            isActive:true,
+            userId:member.memberId
           }
         });
-        role.updateAttributes(update);
-        member.updateAttributes(update);
+        // console.log("user_rf_id ====>", urfId)
+        await urfId.updateAttributes(update);
+        let role = await UserRoles.findOne({
+          where: {
+            userId: member.memberId
+          }
+        });
+        await role.updateAttributes(update);
+        await member.updateAttributes(update);
     })
-
-    // const updatedOwnersMembers = await OwnerMembersDetail.update(update, {
-    //   where: {
-    //     isActive: true,
-    //     memberId: {
-    //       [Op.in]: deleteSelected
-    //     }
-    //   }
-    // });
-  
       return res.status(httpStatus.OK).json({
         message: "Owners deleted successfully",
       });
@@ -1537,6 +1620,54 @@ exports.deleteSelectedMembers = async (req, res, next) => {
 
 exports.updateMember = async (req, res, next) => {
   try {
+
+    if (req.body.memberEmail !== undefined && req.body.memberEmail !== null) {
+      let existingOwnerMember = await OwnerMembersDetail.find({
+        where: {
+          [Op.and]: [{
+            isActive: true
+          }, {
+            memberEmail: encrypt(key, req.body.memberEmail)
+          }, {
+            memberId: {
+              [Op.ne]: req.params.id
+            }
+          }]
+        }
+      });
+      if (existingOwnerMember) {
+        return res
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
+          .json({
+            message: "email already exist"
+          });
+      }
+    }
+  
+    if (req.body.memberContact !== undefined && req.body.memberContact !== null) {
+      let existingOwner1 = await OwnerMembersDetail.find({
+        where: {
+          isActive: true,
+          [Op.and]: [{
+            memberContact: encrypt(key, req.body.memberContact)
+          }, {
+            memberId: {
+              [Op.ne]: req.params.id
+            }
+          }]
+        }
+      });
+      if (existingOwner1) {
+        return res
+          .status(httpStatus.UNPROCESSABLE_ENTITY)
+          .json({
+            message: "contact already exist"
+          });
+      }
+    }
+
+
+
     console.log("updatememberreq====>", req.body);
     let updAttr = {};
     let attrArr = [
@@ -1625,25 +1756,113 @@ exports.updateMember = async (req, res, next) => {
 };
 
 
-exports.addMember = (req, res, next) => {
+exports.addMember = async (req, res, next) => {
   try {
+
+
+    let existingOwner = await OwnerMembersDetail.find({
+      where: {
+        isActive: true,
+        memberEmail: encrypt(key, req.body.memberEmail)
+      }
+    });
+    let existingUser = await User.find({
+      where: {
+        isActive: true,
+        email: encrypt(key, req.body.memberEmail)
+      }
+    })
+    if (existingOwner || existingUser) {
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+        message: "email already exist for member "
+      });
+    }
+    let existingOwner1 = await OwnerMembersDetail.find({
+      where: {
+        isActive: true,
+        memberContact: encrypt(key, req.body.memberContact)
+      }
+    });
+    let existingContact = await User.find({
+      where: {
+        isActive: true,
+        contact: encrypt(key, req.body.memberContact)
+      }
+    })
+    if (existingOwner1 || existingContact) {
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+        message: "contact already exist for member" 
+      });
+    }
+
+
     console.log("gsdfhgsdahjfgjhadsf", req.body);
-    let ownerId = req.params.id;
+    const password = passwordGenerator.generate({
+      length: 10,
+      numbers: true
+    });
+    let randomNumber;
+    randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
+    req.body.memberId = randomNumber;
     req.body.ownerId = req.params.id;
+    req.body.memberUserName = req.body.memberFirstName + req.body.memberLastName + 'OM' + req.body.towerId + shortId.generate()
+    req.body.memberUserName = encrypt(key,req.body.memberUserName);
     req.body.memberFirstName = encrypt(key, req.body.memberFirstName);
     req.body.memberLastName = encrypt(key, req.body.memberLastName);
     req.body.memberEmail = encrypt(key, req.body.memberEmail);
     req.body.memberContact = encrypt(key, req.body.memberContact);
     req.body.gender = encrypt(key, req.body.gender);
+    req.body.password = password;
     let fields = req.body;
     fields.userId = req.userId;
 
     console.log(fields);
 
-    OwnerMembersDetail.create(fields).then(newOwner => res.status(httpStatus.OK).json({
-      message: "OwnerMember created successfully",
-      owner: newOwner
-    }))
+    let member = await OwnerMembersDetail.create(fields);
+      if(member.memberFirstName !== '' && member.memberLastName !== '' ){
+        firstName = decrypt(key, member.memberFirstName);
+        lastName = decrypt(key, member.memberLastName);
+      } else if(member.memberFirstName && member.memberLastName !== ''){
+        firstName = decrypt(key, member.memberFirstName);
+        lastName = '...'; 
+      }
+
+      let ownerMemberUserName = decrypt(key, member.memberUserName);
+      let email = decrypt(key, member.memberEmail);
+
+      let user = await User.create({
+        userId: member.memberId,
+        firstName: encrypt1(key, firstName),
+        lastName: encrypt1(key, lastName),
+        userName: encrypt1(key, ownerMemberUserName),
+        password: bcrypt.hashSync(member.password, 8),
+        contact: encrypt1(key, member.memberContact),
+        towerId: req.body.towerId,
+        email: encrypt1(key, email),
+        isActive: false
+      });
+
+      let userRfId = await UserRfId.create({
+        userId:user.userId,
+        rfidId:member.memberRfId
+      })
+      let roles = await Role.findOne({
+        where: {
+          id: 3
+        }
+      });
+  
+      // user.setRoles(roles);
+      console.log("owner role==>", roles);
+      await UserRoles.create({
+        userId: user.userId,
+        roleId: roles.id
+      });
+      const message = mailToUser1(email, member.memberId);
+      res.status(httpStatus.OK).json({
+        message: "Member Added Sucessfully to respective Owner",
+      })
+
   } catch (error) {
     console.log(error);
     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
