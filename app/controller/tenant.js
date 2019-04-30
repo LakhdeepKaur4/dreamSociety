@@ -148,7 +148,7 @@ let mailToOwner = async (ownerId, email, id, userName) => {
     mailToUser(decrypt1(key, email), id);
     ownerId = encrypt(ownerId.toString());
     tenantId = encrypt(id.toString());
-    let userName = decrypt(userName);
+    let userName1 = decrypt(userName);
     const request = mailjet.post("send", { 'version': 'v3.1' })
         .request({
             "Messages": [
@@ -164,7 +164,7 @@ let mailToOwner = async (ownerId, email, id, userName) => {
                         }
                     ],
                     "Subject": "Tenant tried to register in Dream Society",
-                    "HTMLPart": `${userName} is registering in Dream society`
+                    "HTMLPart": `${userName1} is registering in Dream society`
                     //   "HTMLPart": `your username is: ${userName} and password is: ${password}. `
                 }
             ]
