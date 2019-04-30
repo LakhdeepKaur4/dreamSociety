@@ -78,7 +78,8 @@ export function updateFlatOwner(
     permanentAddress,
     gender,
     Aadhaar,
-    profilePicture,fileName,rfidId){
+    profilePicture,
+    fileName,rfidId){
 
   
         const data={
@@ -90,7 +91,8 @@ export function updateFlatOwner(
             permanentAddress,
             gender,
             adhaarCardNo:Aadhaar,
-            profilePicture,fileName,rfidId}
+            profilePicture,
+            fileName,rfidId}
             console.log('=============data============',data)
     const request=axios.put(`${URN}/owner/`+ownerId,data,{headers:authHeader()})
         .then(reponse=>reponse.data)
@@ -122,10 +124,6 @@ export function deleteMember(id){
 }
 
 export function deleteMultipleMember(ids){
-    console.log(ids)
-    // const data={    
-    //     isActive:false
-    // }
     const request=axios.put(`${URN}/ownerMember/delete/deleteSelected`,{ids},{headers:authHeader()})
     .then(response=>response)
     return {
@@ -134,9 +132,9 @@ export function deleteMultipleMember(ids){
     }
 }
 
-export function memberUpdate(memberName,gender,memberDob,relationId,memberId,memberRfId){
+export function memberUpdate(memberFirstName,memberLastName,gender,memberDob,relationId,memberId,memberRfId,memberContact,memberEmail){
     
-    const request=axios.put(`${URN}/owner/ownerMember/update/${memberId}`,{memberName,gender,memberDob,relationId,memberRfId},{headers:authHeader()})
+    const request=axios.put(`${URN}/owner/ownerMember/update/${memberId}`,{memberFirstName,memberLastName,gender,memberDob,relationId,memberRfId,memberContact,memberEmail},{headers:authHeader()})
     .then(response=>response.data)
     return {
         type:MEMBER_OWNER_UPDATE,
@@ -144,9 +142,9 @@ export function memberUpdate(memberName,gender,memberDob,relationId,memberId,mem
     }
 }
 
-export function addNewMember(memberName,memberDob,gender,relationId,id,memberRfId){
-    console.log(memberName,memberDob,gender,relationId,id)
-    const request=axios.post(`${URN}/owner/ownerMember/${id}`,{memberName,memberDob,gender,relationId,memberRfId},{headers:authHeader()})
+export function addNewMember(memberFirstName,memberLastName,memberDob,gender,relationId,id,memberRfId,towerId,memberContact,memberEmail){
+    console.log(memberFirstName,memberLastName,memberDob,gender,relationId,id,towerId)
+    const request=axios.post(`${URN}/owner/ownerMember/${id}`,{memberFirstName,memberLastName,memberDob,gender,relationId,memberRfId,towerId,memberContact,memberEmail},{headers:authHeader()})
     .then(response=>response.data)
     return {
         type:ADD_NEW_MEMBER,

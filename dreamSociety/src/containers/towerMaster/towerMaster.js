@@ -106,7 +106,7 @@ class TowerMaster extends Component {
 }
 getFloor=({floorDetails})=>{
     console.log('getFloor',floorDetails)
-    if(floorDetails){
+    if(floorDetails && floorDetails.floor){
         return floorDetails.floor.map((item)=>{
             return (
                 {...item,label:item.floorName,value:item.floorId}

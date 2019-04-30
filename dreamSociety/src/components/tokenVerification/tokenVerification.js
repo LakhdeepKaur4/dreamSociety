@@ -8,7 +8,7 @@ class  TokenVerification extends React.Component {
         tokenVerified:false,
         message:''
     }
-    componentDidMount(){
+    componentWillMount(){
         axios.post(`${URN}/checkToken?${window.location.href.split('?')[1]}`)
         .then((response)=>{
             this.setState({

@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {changePassword} from '../../actionCreators/changePasswordAction';
-import UI from '../newUI/tenantDashboard';
+import UI from '../newUI/ownerDashboard';
 import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 
 let user;
-class ChangePassword extends Component{
+class ChangePasswordOwner extends Component{
 
     constructor(props){
         super(props);
@@ -96,7 +96,7 @@ class ChangePassword extends Component{
           
 
             this.props.changePassword(this.state,this.state.userId=user)
-            .then(()=>this.props.history.push('/tenantDashboard'))
+            .then(()=>this.props.history.push('/ownerDashboard'))
             .catch(err=>{
                 this.setState({message: err.response.data.message, loading: false})
             })
@@ -112,14 +112,14 @@ class ChangePassword extends Component{
 
 
   close=()=>{
-  return this.props.history.replace('/tenantDashboard')
+  return this.props.history.replace('/ownerDashboard')
   }
       
 
     
 
     dashbordPage=()=>{
-        this.props.history.push('/tenantDashboard');
+        this.props.history.push('/ownerDashboard');
     }
 
         render(){
@@ -135,7 +135,7 @@ class ChangePassword extends Component{
                 <Input  type="password" name="oldPassword"  type={this.state.type} placeholder="old password" onChange={this.passwordOnChange} maxLength={128} minLength={6} ></Input> 
                 <span className="oldPassword" onClick={this.showHide}>{this.state.type === 'password' ? hide: show}</span>
                 <span className="error">{this.state.errors.oldPassword}</span>
-                <span className="error">{this.state.message}</span>   
+                <span className="error">{this.state.message}</span>  
           </FormGroup>
 
 
@@ -191,4 +191,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ changePassword }, dispatch);
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(ChangePassword));
+export default (connect(mapStateToProps, mapDispatchToProps)(ChangePasswordOwner));

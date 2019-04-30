@@ -7,7 +7,6 @@
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://mydreamsociety.herokuapp.com/';
-// 
 
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export  const PicURN = 'https://dreamsociety.herokuapp.com/';
@@ -283,6 +282,7 @@ export const DELETE_SELECT_INDIVIDUAL_VENDOR='DELETE_SELECT_INDIVIDUAL_VENDOR';
 export const UPDATE_INDIVIDUAL_VENDOR='UPDATE_INDIVIDUAL_VENDOR';
 export const GET_INDIVIDUAL_SERVICEID='GET_INDIVIDUAL_SERVICEID';
 export const USER_FLAT_DETAILS ='user_flat_details'
+
 export const REGISTER_COMPLAINT='REGISTER_COMPLAINT';
 export const POST_REGISTER_COMPLAINT='POST_REGISTER_COMPLAINT';
 export const GET_FLATS='GET_FLATS';

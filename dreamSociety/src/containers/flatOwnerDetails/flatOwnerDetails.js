@@ -106,7 +106,7 @@ class FlatOwnerDetails extends Component {
         return [];
     }
     getTower = ({ tower }) => {
-        if (tower) {
+        if (tower && tower.tower) {
             return tower.tower.map((item) => {
                 return (
                     { ...item, label: item.towerName, value: item.towerId }
@@ -117,7 +117,7 @@ class FlatOwnerDetails extends Component {
         return [];
     }
     getflat=({details})=>{
-    if(details){
+    if(details && details.flatDetail){
         return details.flatDetail.map((item)=>{
             return (
                 {...item,label:item.flatNo,value:item.flatDetailId}
@@ -359,11 +359,14 @@ OnKeyPresshandlerEmail=(event)=> {
             let data;        
             for(let i = 0; i < this.state.familyMember; i++){
                  data={
-                    memberName: this.state['memberName'+i],
+                    memberFirstName: this.state['memberFirstName'+i],
+                    memberLastName: this.state['memberLastName'+i],
                     memberDob: this.state['memberDOB'+i],
                     relationId: this.state['relationName'+i],
                     gender:this.state['gender'+i],
-                    memberRfId:this.state['memberRfId'+i]
+                    memberRfId:this.state['memberRfId'+i],
+                    memberContact:this.state['memberContact'+i],
+                    memberEmail:this.state['memberEmail'+i]
                 }
                 this.state.member.push(data)
             }
@@ -569,7 +572,7 @@ OnKeyPresshandlerEmail=(event)=> {
          }
      }
      RfID=({ownerRf})=>{
-         if(ownerRf){
+         if(ownerRf && ownerRf.rfids){
              return (
                 ownerRf.rfids.map((item)=>{
                     return ({ ...item, label:item.rfid, value:item.rfidId})
@@ -609,8 +612,12 @@ this.setState({totalParking:slots.slots.count,parkingName:slots?slots.slots.rows
             userDatas.push(<FormGroup key={i} >
                 <Row form>
                     <Col md={3}>
-                        <Label>Name</Label>
-                        <Input placeholder="Name Of Member" name={`memberName${i}`} onChange={this.onChangeHandler} onKeyPress={this.onKeyPressHandler}/>
+                        <Label>First Name</Label>
+                        <Input placeholder="Enter First Name" name={`memberFirstName${i}`} onChange={this.onChangeHandler} onKeyPress={this.onKeyPressHandler}/>
+                    </Col>
+                    <Col md={3}>
+                        <Label>Last Name</Label>
+                        <Input placeholder="Enter Last Name" name={`memberLastName${i}`} onChange={this.onChangeHandler} onKeyPress={this.onKeyPressHandler}/>
                     </Col>
                     <Col md={3}>
                         <Label>Relation With Owner</Label>
@@ -642,6 +649,19 @@ this.setState({totalParking:slots.slots.count,parkingName:slots?slots.slots.rows
                                 </div>
                                 </Col>
                             </Row>
+                            <Row>
+                            <Col md={6}>
+                            <Label>Contact Number</Label>
+                                <Input placeholder="Contact Number" onKeyPress={this.OnKeyPresshandlerPhone} type="text" maxLength={10}  onChange={this.onChangeHandler} name={`memberContact${i}`} />   
+                             </Col>
+                             <Col md={6}>
+                             <Label>Email </Label>
+                                <Input placeholder="Email" type='email' name={`memberEmail${i}`} 
+                                onChange={this.onChangeHandler} 
+                                onBlur={this.OnKeyPresshandlerEmail}
+                                onKeyPress={this.OnKeyPresshandlerEmail} />
+                             </Col>
+                             </Row>
                             <FormGroup>
                                 <Label>RF ID</Label>
                                 <Select placeholder={PlaceHolder} name={'memberRfId'+i} options={this.RfID(this.props.rfId)} onChange={this.memberRfIdChangeHandler.bind(this,'memberRfId'+i )}/>

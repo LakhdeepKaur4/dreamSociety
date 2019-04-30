@@ -125,7 +125,7 @@ class DisplayServices extends Component {
 
 
     getDropdown1 = ({ detail }) => {
-        if (detail) {
+        if (detail &&  detail.service) {
             return detail.service.map((item) => {
                 return (
                     <option key={item.serviceDetailId} value={item.serviceDetailId}>

@@ -7,10 +7,11 @@ import { getRelation } from './../../actionCreators/relationMasterAction';
 import Spinner from '../../components/spinner/spinner';
 import { getOwnerMember, deleteMember, deleteMultipleMember, memberUpdate, addNewMember } from '../../actionCreators/flatOwnerAction';
 import UI from '../../components/newUI/superAdminDashboard';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
+import { Row,Col,Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
 import {getRfId} from '../../actionCreators/rfIdAction';
 
 var id;
+var towerId;
 class FlatMemberList extends Component {
     constructor(props) {
         super(props)
@@ -19,7 +20,8 @@ class FlatMemberList extends Component {
             ids: [],
             isDisabled: true,
             modal: false,
-            memberName: '',
+            memberFirstName: '',
+            memberLastName: '',
             gender: '',
             memberDob: '',
             relationId: '',
@@ -32,6 +34,8 @@ class FlatMemberList extends Component {
             Other:'other',
             relationName:'',
             rfidId:'',
+            memberEmail:'',
+            memberContact:''
         }
 
     }
@@ -41,7 +45,8 @@ class FlatMemberList extends Component {
         return this.props.history.replace('/')
     }
     componentWillMount() {
-        id = localStorage.getItem('ownerId')
+        id = localStorage.getItem('ownerId');
+        towerId = localStorage.getItem('towerId');
     }
     componentDidMount() {
         this.props.getRfId()
@@ -54,6 +59,20 @@ class FlatMemberList extends Component {
             rfidId:selectOption.rfidId
         })
 
+    }
+    OnKeyPresshandlerEmail=(event)=> {
+        const pattern = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/
+        let inputChar = event.target.value;
+        if (!pattern.test(inputChar)) {
+            this.setState({
+                emailError:true
+            })
+        }
+        else{
+            this.setState({
+                emailError:false
+            })
+        }
     }
     deleteMember(memberid) {
         this.props.deleteMember(memberid)
@@ -95,13 +114,13 @@ class FlatMemberList extends Component {
                 .catch(err => err.response.data.message);
         }
         else {
-            this.props.getOwnerMember()
+            this.props.getOwnerMember(id)
                 .then(() => this.setState({ loading: false }))
         }
     }
 
     renderList = ({ ownerMember }) => {
-        if (ownerMember) {
+        if (ownerMember && ownerMember.memberArr) {
             return ownerMember.memberArr.map((item, index) => {
                 return (
                     <tr key={item.memberId}>
@@ -128,12 +147,12 @@ class FlatMemberList extends Component {
                                 }
                             }} /></td>
                         <td>{index + 1}</td>
-                        <td style={{ textAlign: "center", width: '10px' }}>{item.memberName}</td>
+                        <td style={{ textAlign: "center", width: '10px' }}>{item.memberFirstName+' '+item.memberLastName}</td>
                         <td style={{ textAlign: "center", width: '10px' }}>{item.memberDob}</td>
                         <td style={{ textAlign: "center", width: '10px' }}>{item.relation_master ? item.relation_master.relationName : ''}</td>
                         <td style={{ textAlign: "center", width: '10px' }}>{item.gender}</td>
                         <td style={{ textAlign: "center" }}>
-                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, item.memberId, item.memberName, item.memberDob, item.relationId, item.gender)} >Edit</button>
+                            <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, item.memberId, item.memberFirstName,item.memberLastName, item.memberDob, item.relationId, item.gender)} >Edit</button>
                             <button className="btn btn-danger" onClick={this.deleteMember.bind(this, item.memberId)} >Delete</button>
                         </td>
 
@@ -143,15 +162,16 @@ class FlatMemberList extends Component {
         }
     }
     toggles = () => {
-        this.setState({ modal: !this.state.modal })
+        this.setState({ modal: !this.state.modal,
+            memberFirstName:'',memberLastName:'',memberDob:'',relationId:'',gender:'' })
     }
     toggles1 = () => {
         this.setState({ formModal: !this.state.formModal,
-        memberName:'',memberDob:'',relationId:'',gender:'' })
+        memberFirstName:'',memberLastName:'',memberDob:'',relationId:'',gender:'' })
     }
-    toggle = (memberId, memberName, memberDob, relationId, gender) => {
+    toggle = (memberId, memberFirstName,memberLastName, memberDob, relationId, gender) => {
         this.setState({
-            memberName, gender, memberDob, relationId, memberId,
+            memberFirstName,memberLastName, gender, memberDob, relationId, memberId,
             modal: !this.state.modal
         })
     }
@@ -172,7 +192,7 @@ class FlatMemberList extends Component {
         return d.toISOString().split('T')[0];
     }
     editMember = () => {
-        const { memberId, memberName, gender, memberDob, relationId,rfidId } = this.state
+        const { memberId, memberFirstName,memberLastName, gender, memberDob, relationId,rfidId,memberContact,memberEmail } = this.state
         let errors = {};
         if (this.state.memberName === '') {
             errors.memberName = "Member Name can't be empty"
@@ -190,7 +210,7 @@ class FlatMemberList extends Component {
         const isValid = Object.keys(errors).length === 0
         if(isValid){
             this.setState({ loading: true })
-            this.props.memberUpdate(memberName, gender, memberDob, relationId, memberId,rfidId)
+            this.props.memberUpdate(memberFirstName,memberLastName, gender, memberDob, relationId, memberId,rfidId,memberContact,memberEmail)
             .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
             this.setState({ modal: !this.state.modal })
         }        
@@ -216,7 +236,7 @@ class FlatMemberList extends Component {
         });
     }
     RfID=({ownerRf})=>{
-        if(ownerRf){
+        if(ownerRf && ownerRf.rfids){
             return (
                ownerRf.rfids.map((item)=>{
                    return ({ ...item, label:item.rfid, value:item.rfidId})
@@ -228,7 +248,7 @@ class FlatMemberList extends Component {
         return this.props.history.replace('/superDashBoard/flatOwnerList')
     }
     addMember = () => {
-        const { memberName, memberDob, gender, relationId,rfidId } = this.state
+        const { memberFirstName,memberLastName, memberDob, gender, relationId,rfidId,memberContact,memberEmail } = this.state
         let errors = {};
         if (this.state.memberName === '') {
             errors.memberName = "Member Name can't be empty"
@@ -247,8 +267,15 @@ class FlatMemberList extends Component {
         if (isValid) {
             this.setState({ loading: true })
             this.setState({ formModal: !this.state.formModal })
-            this.props.addNewMember(memberName, memberDob, gender, relationId, id,rfidId)
+            this.props.addNewMember(memberFirstName,memberLastName, memberDob, gender, relationId, id,rfidId,towerId,memberContact,memberEmail)
                 .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
+        }
+    }
+    OnKeyPresshandlerPhone(event) {
+        const pattern = /^[0-9]$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
         }
     }
     changePassword=()=>{
@@ -303,8 +330,13 @@ class FlatMemberList extends Component {
                                 <ModalHeader toggle={this.toggle}>Edit Flat Owner</ModalHeader>
                                 <ModalBody>
                                     <FormGroup>
-                                        <Label>Name</Label>
-                                        <Input placeholder="Name Of Member" name="memberName" onChange={this.onChangeHandler} value={this.state.memberName} />
+                                        <Label>First Name</Label>
+                                        <Input placeholder="Enter First Name" name="memberFirstName" onChange={this.onChangeHandler} value={this.state.memberFirstName} />
+                                        <span className="error">{this.state.errors.memberName}</span>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label>Last Name</Label>
+                                        <Input placeholder="Enter Last Name" name="memberLastName" onChange={this.onChangeHandler} value={this.state.memberLastName} />
                                         <span className="error">{this.state.errors.memberName}</span>
                                     </FormGroup>
                                     <FormGroup>
@@ -338,6 +370,19 @@ class FlatMemberList extends Component {
                                 <Label>RF ID</Label>
                                 <Select placeholder={PlaceHolder} options={this.RfID(this.props.rfId)} name='rfidId' onChange={this.rfIdChangeHandler.bind(this)}/>
                             </FormGroup>
+                            <Row>
+                            <Col md={6}>
+                            <Label>Contact Number</Label>
+                                <Input placeholder="Contact Number" onKeyPress={this.OnKeyPresshandlerPhone} type="text" maxLength={10}  onChange={this.onChangeHandler} name='memberContact' />   
+                             </Col>
+                             <Col md={6}>
+                             <Label>Email </Label>
+                                <Input placeholder="Email" type='email' name='memberEmail' 
+                                onChange={this.onChangeHandler} 
+                                onBlur={this.OnKeyPresshandlerEmail}
+                                onKeyPress={this.OnKeyPresshandlerEmail} />
+                             </Col>
+                             </Row>
                                     <FormGroup>
                                         <Button color="primary mr-2" onClick={this.editMember}>Save</Button>
                                         <Button color="danger" onClick={this.toggles}>Cancel</Button>
@@ -349,9 +394,14 @@ class FlatMemberList extends Component {
                                 <ModalHeader>Add Member</ModalHeader>
                                 <ModalBody>
                                     <FormGroup>
-                                        <Label>Name</Label>
-                                        <Input placeholder="Name Of Member" name="memberName" onChange={this.onChangeHandler} value={this.state.memberName} />
-                                        <span className="error">{this.state.errors.memberName}</span>
+                                        <Label>First Name</Label>
+                                        <Input placeholder="Enter First Name" name="memberFirstName" onChange={this.onChangeHandler} value={this.state.memberFirstName} />
+                                        {/* <span className="error">{this.state.errors.memberName}</span> */}
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <Label>Last Name</Label>
+                                        <Input placeholder="Enter Last Name" name="memberLastName" onChange={this.onChangeHandler} value={this.state.memberLastName} />
+                                        {/* <span className="error">{this.state.errors.memberName}</span> */}
                                     </FormGroup>
                                     <FormGroup>
                                         <Label>Relation With Owner</Label>
@@ -388,6 +438,19 @@ class FlatMemberList extends Component {
                                 <Label>RF ID</Label>
                                 <Select placeholder={PlaceHolder} options={this.RfID(this.props.rfId)} name='rfidId' onChange={this.rfIdChangeHandler.bind(this)}/>
                             </FormGroup>
+                            <Row>
+                            <Col md={6}>
+                            <Label>Contact Number</Label>
+                                <Input placeholder="Contact Number" onKeyPress={this.OnKeyPresshandlerPhone} type="text" maxLength={10}  onChange={this.onChangeHandler} name='memberContact' />   
+                             </Col>
+                             <Col md={6}>
+                             <Label>Email </Label>
+                                <Input placeholder="Email" type='email' name='memberEmail' 
+                                onChange={this.onChangeHandler} 
+                                onBlur={this.OnKeyPresshandlerEmail}
+                                onKeyPress={this.OnKeyPresshandlerEmail} />
+                             </Col>
+                             </Row>
                                         <Button color="primary mr-2" onClick={this.addMember}>Add Member</Button>
                                         <Button color="danger" onClick={this.toggles1}>Cancel</Button>
                                     </FormGroup>

@@ -37,7 +37,7 @@ export function updateMachine( flatDetailId,machineDetailId,machineId){
     }
 }
 
-export function deleteMachine(machineId,isActive){
+export function deleteMachine(machineId,isActive){console.log("action",machineId)
     const request = axios.put(`${URN}/machine/delete/` +machineId,{ isActive }, {headers:authHeader()})
     return{
         type:DELETE_MACHINE,

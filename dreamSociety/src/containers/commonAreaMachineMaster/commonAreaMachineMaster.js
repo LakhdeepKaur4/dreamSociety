@@ -83,7 +83,7 @@ onSubmit = (e) => {console.log(commonAreaId,machineDetailId)
 }
 
 getCommonArea= ({ getAreas }) => {
-    if (getAreas) {
+    if (getAreas && getAreas.commonAreas) {
         return getAreas.commonAreas.map((item) => {
             return (
                 <option key={item.commonAreaId} value={item.commonAreaId}>
@@ -95,8 +95,8 @@ getCommonArea= ({ getAreas }) => {
 
 } 
 
-getMachine= ({getMachines}) => {console.log(getMachines)
-    if(getMachines){
+getMachine= ({getMachines}) => {
+    if(getMachines && getMachines.machines){
       return getMachines.machines.map((item)=>{  
           console.log(item.machineDetailId)
          return (   {...item,label:item.machineActualId,value:item.machineDetailId}          
@@ -128,6 +128,7 @@ render() {
                             <DefaultSelect/>
                             {this.getCommonArea(this.props.commonAreaReducer)}
                             </Input>
+                            <span className="error">{this.state.message}</span>
                         </FormGroup>
                         </Col>
                         <Col md={6}>

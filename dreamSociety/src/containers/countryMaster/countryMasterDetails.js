@@ -386,7 +386,7 @@ class CountryDetails extends Component{
                                 <Button onClick={this.routeToAddNewUser} color="primary">Add Country</Button>
                             </div>
                         <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
-                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit a flat</ModalHeader>
+                            <ModalHeader toggle={this.toggleEditUserModal.bind(this)}>Edit Details</ModalHeader>
                             <ModalBody>
                                 {!this.state.modalLoading  ? modalData : <Spinner />}
                             </ModalBody>
