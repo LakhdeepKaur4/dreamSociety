@@ -79,6 +79,13 @@ class AssetsTypeSubMaster extends Component {
           
         return this.props.history.replace('/superDashboard/changePassword')
       }
+      onKeyPressHandler = (event) => {
+        const pattern = /^[a-zA-Z ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
 
     render() {
         let formData;
@@ -96,13 +103,13 @@ class AssetsTypeSubMaster extends Component {
                     </FormGroup>
                 </div>
                 <Label>Assets Sub Type</Label>
-                <Input placeholder="Enter Assets Sub Type" style={{ 'textTransform': 'capitalize' }} maxLength={30} name='assetsSubType' onChange={this.onChangeHandler} />
+                <Input placeholder="Enter Assets Sub Type" style={{ 'textTransform': 'capitalize' }} onKeyPress={this.onKeyPressHandler} maxLength={30} name='assetsSubType' onChange={this.onChangeHandler} />
                 <span className="error">{this.state.errors.assetsSubType}</span>
 
 
                 <div>
                     <Label>Description</Label>
-                    <textarea type="text" style={{ 'textTransform': 'capitalize' }} maxLength={1000} id="Description" placeholder="Enter Description..." onChange={this.onChangeHandler} className="form-control" onChange={this.onChangeHandler} name='description' />
+                    <textarea type="text" style={{ 'textTransform': 'capitalize' , 'height':'100px' }} maxLength={3000} id="Description" placeholder="Enter Description..." onChange={this.onChangeHandler} className="form-control" onChange={this.onChangeHandler} name='description' />
                     <span className="error">{this.state.errors.description}</span>
                 </div>
                 <div>
