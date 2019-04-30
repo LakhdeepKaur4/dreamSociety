@@ -521,6 +521,12 @@ exports.createEncrypted = async (req, res, next) => {
                             members.map(item => {
                                 let randomNumber;
                                 randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
+                                const tenantExists = await TenantMembersDetail.findOne({ where: { isActive: true, memberId: randomNumber } });
+                                const userExists = await User.findOne({ where: { isActive: true, userId: randomNumber } });
+                                if (tenantExists !== null || userExists !== null) {
+                                    console.log("duplicate random number")
+                                    randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
+                                }
                                 item.memberId = randomNumber;
                                 let memberUserName = item.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
                                 const password = passwordGenerator.generate({
@@ -533,6 +539,7 @@ exports.createEncrypted = async (req, res, next) => {
                                 item.contact = encrypt(item.contact);
                                 item.firstName = encrypt(item.firstName);
                                 item.lastName = encrypt(item.lastName);
+                                item.aadhaarNumber = encrypt(item.aadhaarNumber);
                                 item.userName = encrypt(memberUserName);
                                 item.gender = encrypt(item.gender);
                                 item.userId = req.userId;
@@ -1135,7 +1142,7 @@ exports.editTenantMembers = async (req, res, next) => {
     update.aadhaarNumber = constraintReturn(aadhaarNumberCheck, update, 'aadhaarNumber', member);
     update.gender = constraintReturn(genderCheck, update, 'gender', member);
 
-    TenantMembersDetail.findAll({
+    TenantMembersDetail.findOne({
         where: {
             memberId: id
         }
