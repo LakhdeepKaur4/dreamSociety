@@ -518,7 +518,7 @@ exports.createEncrypted = async (req, res, next) => {
                             })
                         }
                         if (tenant.noOfMembers !== 0 && tenant.noOfMembers !== null) {
-                            members.map(item => {
+                            members.map(async item => {
                                 let randomNumber;
                                 randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
                                 const tenantExists = await TenantMembersDetail.findOne({ where: { isActive: true, memberId: randomNumber } });
