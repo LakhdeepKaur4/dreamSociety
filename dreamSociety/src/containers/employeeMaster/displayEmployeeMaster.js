@@ -356,9 +356,14 @@ ImageChange =(event)=>{
 
         this.setState({ search: e.target.value })
     }
+
     searchFilter(search) {
-        return function (x) {
-            return x.firstName.toLowerCase().includes(search.toLowerCase()) || !search;
+        return function (x) {  console.log(x)
+            return x.firstName.toLowerCase().includes(search.toLowerCase()) ||
+            x.lastName.toLowerCase().includes(search.toLowerCase())||
+            x.salary.toLowerCase().includes(search.toLowerCase())  ||
+            x.employee_detail_master.serviceType.toLowerCase().includes(search.toLowerCase())  ||
+            !search;
         }
     }
 
@@ -494,7 +499,7 @@ ImageChange =(event)=>{
                 getEmployee.data.employee.sort((item1,item2)=>{
                     var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                     return this.state.sortVal ? cmprVal : -cmprVal;
-                }).filter(this.searchFilter(this.state.search)).filter(this.searchFilter(this.state.search)).map((item, index) => {
+                }).filter(this.searchFilter(this.state.search)).map((item, index) => {
 
                     return (
                         <tr key={item.employeeId}>
@@ -1257,7 +1262,8 @@ ImageChange =(event)=>{
 
                                   />
                               </FormGroup>
-
+                              <Button color="primary" className="mr-2" onClick={this.updateEmployee}>Save</Button>
+                                <Button color="danger" onClick={this.toggleEditEmployeeModal.bind(this)}>Cancel</Button>
 
 
            </div>
@@ -1281,8 +1287,7 @@ ImageChange =(event)=>{
                             <ModalBody>
                             {!this.state.modalLoading ? modalData : <Spinner />}
 
-                                <Button color="primary" className="mr-2" onClick={this.updateEmployee}>Save</Button>
-                                <Button color="danger" onClick={this.toggleEditEmployeeModal.bind(this)}>Cancel</Button>
+                               
 
                             </ModalBody>
                         </Modal>
@@ -1296,16 +1301,18 @@ ImageChange =(event)=>{
                         <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
 
                         {deleteSelectedButton}
-                        <label className="ml-2"><b> Select All</b><input
-                         type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            }
-                        }
-                    }/></label>
+                        <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                                id="allSelect"
+                                type="checkbox" onChange={(e) => {
+                                        if(e.target.checked) {
+                                            this.selectAll();
+                                        }
+                                        else if(!e.target.checked){
+                                            this.unSelectAll();
+                                        } 
+                                    }  
+                                }/>
+                            </Label>
                         {!this.state.loading ? tableData : <Spinner />}
                     </div>
 

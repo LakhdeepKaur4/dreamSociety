@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Table,Modal,ModalBody,ModalHeader,FormGroup,Input} from 'reactstrap';
+import { Button, Table,Modal,ModalBody,ModalHeader,FormGroup,Input,Label} from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import {getAllFloor} from '../../actionCreators/flatOwnerAction';
-import { Label } from 'semantic-ui-react';
+
 import DefaultSelect from './../../constants/defaultSelect';
 import { viewTower } from '../../actionCreators/towerMasterAction';
 
@@ -227,10 +227,9 @@ class ViewMachineMaster extends Component {
                 this.setState({modalLoading:true})
             
                
-                    let { flatDetailId,machineDetailId,machineId } = this.state;
-                    console.log(flatDetailId )
-                    this.props.updateMachine(flatDetailId,machineDetailId,machineId).then(() => this.refreshData())
-    
+                    let { flatDetailIds,machineDetailId,machineId } = this.state;
+           
+                    this.props.updateMachine(flatDetailIds,machineDetailId,machineId).then(() => this.refreshData())
                 .catch(err=>{ console.log(err.response.data.message)
                     this.setState({modalLoading:false,message: err.response.data.message})
                     })
@@ -240,7 +239,8 @@ class ViewMachineMaster extends Component {
                     else {
                         this.setState({modal: false})
                     }
-            
+                
+                   
             // this.setState({
             //     modalLoading: true
             // })
@@ -359,6 +359,9 @@ class ViewMachineMaster extends Component {
     searchFilter=(search) =>{
         return function (x) {
             return x.machine_detail_master.machineActualId.toLowerCase().includes(search.toLowerCase()) ||
+            x.flat_detail_master.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
+            x.flat_detail_master.floor_master.floorName.toLowerCase().includes(search.toLowerCase()) ||
+            x.flat_detail_master.flatNo.toLowerCase().includes(search.toLowerCase()) ||
              !search;
         }
     }
@@ -573,16 +576,18 @@ class ViewMachineMaster extends Component {
                          </div>
                          <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
                          {deleteSelectedButton}
-                         <label><b> Select All</b><input
-                          type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                             if(e.target.checked) {
-                                 this.selectAll();
-                             }
-                             else if(!e.target.checked){
-                                 this.unSelectAll();
-                             } 
-                         }  
-                     }/></label>
+                         <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                                id="allSelect"
+                                type="checkbox" onChange={(e) => {
+                                        if(e.target.checked) {
+                                            this.selectAll();
+                                        }
+                                        else if(!e.target.checked){
+                                            this.unSelectAll();
+                                        } 
+                                    }  
+                                }/>
+                            </Label>
                         {(this.state.loading) ? <Spinner /> : tableData}
                          
                          
