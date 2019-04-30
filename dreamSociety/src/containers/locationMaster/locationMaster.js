@@ -6,7 +6,7 @@ import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard'; 
 import DefaultSelect from '../../constants/defaultSelect';
 import Spinner from '../../components/spinner/spinner';
-
+import { Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 class locationMaster extends Component{
     constructor(props){
@@ -192,6 +192,8 @@ class locationMaster extends Component{
         form= <div>
       
                     <div>
+                    <Row md={12}>
+                    <Col md={6}>
                         <label>Country Name</label>
                         <select defaultValue='no-value' className ="form-control" name="countryId"  onChange={this.onChangeCountry} >
                         <DefaultSelect/>
@@ -199,28 +201,35 @@ class locationMaster extends Component{
                         </select>
                         <span className='error'>{this.state.errors.countryId}</span>
                     
-                    </div>
-                    <div>    
+                    </Col>     
+                    <Col md={6}>   
                         <label>State Name</label>
                         <select defaultValue='no-value' className ="form-control" name="stateId" onChange={this.onChangeState}>
                         <DefaultSelect/>
                             {this.getDropdown2(this.props.locationMasterReducer)}
                         </select>
                         <span className='error'>{this.state.errors.stateId}</span>
+                        </Col>
+                        </Row>
                     </div>
                     <div>    
+                    <Row md={12}>
+                    <Col md={6}>
                         <label>City Name</label>
                         <select defaultValue='no-value' className ="form-control"  name="cityId" onChange={this.onChangeCity} >
                         <DefaultSelect/>
                             {this.getDropdown3(this.props.locationMasterReducer)}
                         </select>
                         <span className='error'>{this.state.errors.cityId}</span>
-                    </div>
-                    <div>
+                    </Col>     
+                    <Col md={6}>   
+                  
                         <label>Location Name</label>
                         <input  type="text" placeholder="Location Name" className ="form-control" name="locationName" maxLength={80}   onChange={this.onChange}  onKeyPress={this.OnKeyPresshandler} ></input>
                         <span className='error'>{this.state.errors.locationName}</span>
                         <span className="error">{this.state.message}</span>
+                    </Col>
+                    </Row>
                     </div>
              
                     <div className="mt-4">

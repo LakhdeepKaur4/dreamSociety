@@ -278,9 +278,7 @@ class vendorMaster extends Component {
         if(this.state.firstName===''){
             errors.firstName="First Name can't be empty"
         }
-            else if(this.state.lastName===''){
-                errors.lastName="Last Name can't be empty"
-            }     
+              
             else if(this.state.permanentAddressDefault===''){
                 errors.permanentAddressDefault="Permanent Address can't be empty"
             }
@@ -688,14 +686,18 @@ class vendorMaster extends Component {
     render() {
       let  formData =<div>
         <FormGroup>
+            <Row md={12}>
+            <Col md={6}>
             <Label>First Name</Label>
             <Input type="text" placeholder="First Name" name="firstName" maxLength={20} value={this.state.firstName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  />
             <span className="error">{this.state.errors.firstName}</span>
-        </FormGroup>
-        <FormGroup>
+            </Col>     
+            <Col md={6}>
+      
             <Label>Last Name</Label>
             <Input type="text" placeholder="Last Name" name="lastName" maxLength={20} value={this.state.lastName} onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange}  />
-            <span className="error">{this.state.errors.lastName}</span>
+            </Col>
+            </Row>
         </FormGroup>
         <FormGroup style={{paddingTop:'20px'}}>
             <h4 style={{textAlign:'center', fontWeight:'600', marginBottom:'20px'}}>Permanent Address</h4>
