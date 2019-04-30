@@ -105,11 +105,11 @@ function decrypt1(key, data) {
     return decrypted;
 }
 
-let mailToUser = (email, tenantId) => {
+let mailToUser = (email, id) => {
     const token = jwt.sign(
         { data: 'foo' },
         'secret', { expiresIn: '1h' });
-    tenantId = encrypt(tenantId.toString());
+    tenantId = encrypt(id.toString());
     const request = mailjet.post("send", { 'version': 'v3.1' })
         .request({
             "Messages": [
@@ -139,16 +139,16 @@ let mailToUser = (email, tenantId) => {
         })
 }
 
-let mailToOwner = async (ownerId, tenant) => {
+let mailToOwner = async (ownerId, email, id, userName) => {
     // let email = decrypt1(key,owner.email);
     // let password = owner.password;
     let key = config.secret;
     const owner = await Owner.findOne({ where: { isActive: true, ownerId: ownerId } });
     let email = decrypt1(key, owner.email)
-    mailToUser(decrypt1(key, tenant.email), tenant.tenantId);
+    mailToUser(decrypt1(key, email), id);
     ownerId = encrypt(ownerId.toString());
-    tenantId = encrypt(tenant.tenantId.toString());
-    let userName = decrypt(tenant.userName);
+    tenantId = encrypt(id.toString());
+    let userName = decrypt(userName);
     const request = mailjet.post("send", { 'version': 'v3.1' })
         .request({
             "Messages": [
@@ -199,84 +199,6 @@ let filterFlats = item => {
     return item.tenant_flatDetail_master.isActive === true;
 }
 
-exports.create = async (req, res, next) => {
-    try {
-        let tenantBody = req.body;
-        let memberBody = req.body;
-        let memberId = [];
-        tenantBody.userId = req.userId;
-        let customVendorName = tenantBody.tenantName;
-        const userName = customVendorName + 'T' + tenantBody.towerId + tenantBody.flatDetailId;
-        tenantBody.userName = userName;
-        const password = passwordGenerator.generate({
-            length: 10,
-            numbers: true
-        });
-        tenantBody.password = password;
-        const tenant = await Tenant.create(tenantBody);
-        const tenantId = tenant.tenantId;
-        if (req.body.profilePicture) {
-            saveToDisc(tenantBody.fileName, tenantBody.fileExt, tenantBody.profilePicture, (err, resp) => {
-                if (err) {
-                    console.log(err)
-                }
-                console.log(resp)
-                const updatedImage = {
-                    picture: resp
-                };
-                Tenant.update(updatedImage, { where: { tenantId: tenantId } });
-            });
-        }
-        if (tenantBody.noOfMembers) {
-            memberBody.userId = req.userId;
-            memberBody.tenantId = tenantId;
-            const tenantMember = await TenantMembersDetail.bulkCreate(tenantBody.member, { returning: true },
-                {
-                    fields: ["memberName", "memberDob", "relationId", "gender"],
-                })
-            tenantMember.forEach(item => {
-                memberId.push(item.memberId)
-            });
-            const bodyToUpdate = {
-                userId: req.userId
-            }
-            const updatedMember = await TenantMembersDetail.update(bodyToUpdate, { where: { memberId: { [Op.in]: memberId } } });
-
-        }
-
-        return res.status(httpStatus.CREATED).json({
-            message: "Tenant successfully created",
-            tenant
-        });
-    } catch (error) {
-        console.log("error==>", error);
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-    }
-}
-
-exports.get = async (req, res, next) => {
-    try {
-        const tenant = await Tenant.findAll({
-            // where: { isActive: true },
-            order: [['createdAt', 'DESC']],
-            // include: [{
-            //     model: User,
-            //     as: 'organiser',
-            //     attributes: ['userId', 'userName'],
-            // }]
-        });
-        if (tenant) {
-            return res.status(httpStatus.OK).json({
-                message: "Tenant Content Page",
-                tenant
-            });
-        }
-    } catch (error) {
-        console.log("error==>", error)
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-    }
-}
-
 
 exports.deleteSelected = async (req, res, next) => {
     try {
@@ -306,6 +228,8 @@ exports.deleteSelected = async (req, res, next) => {
                 .then(tenantMembers => {
                     tenantMembers.map(item => {
                         item.updateAttributes({ isActive: false });
+                        User.update({ isActive: false }, { where: { userId: item.memberId } });
+                        UserRoles.update({ isActive: false }, { where: { userId: item.memberId, roleId: 4 } });
                         UserRFID.update({ isActive: false }, { where: { userId: item.memberId } });
                     })
                 })
@@ -346,7 +270,7 @@ exports.delete = async (req, res, next) => {
             TenantFlatDetail.findAll({ where: { tenantId: id } })
                 .then(flats => {
                     flats.map(item => {
-                        item.destroy();
+                        item.updateAttributes({ isActive: false });
                     })
                 })
             TenantMembersDetail.findAll({
@@ -357,6 +281,8 @@ exports.delete = async (req, res, next) => {
                 .then(tenantMembers => {
                     tenantMembers.map(item => {
                         item.updateAttributes({ isActive: false });
+                        User.update({ isActive: false }, { where: { userId: item.memberId } });
+                        UserRoles.update({ isActive: false }, { where: { userId: item.memberId, roleId: 4 } });
                         UserRFID.update({ isActive: false }, { where: { userId: item.memberId } });
                     })
                 })
@@ -501,8 +427,8 @@ exports.createEncrypted = async (req, res, next) => {
                         })
                             .then(user => {
                                 // user.setRoles(roles);
-                                UserRoles.create({ userId: user.userId, roleId: roles.id });
-                                UserRFID.create({ userId: tenant.tenantId, rfidId: tenant.rfidId });
+                                UserRoles.create({ userId: user.userId, roleId: roles.id, isActive: false });
+                                UserRFID.create({ userId: tenant.tenantId, rfidId: tenant.rfidId, isActive: false });
                             })
                         if (tenant.profilePicture) {
                             await saveToDisc(tenant.fileName, tenant.fileExt, tenant.profilePicture, (err, res) => {
@@ -521,7 +447,7 @@ exports.createEncrypted = async (req, res, next) => {
                             members.map(item => {
                                 let randomNumber;
                                 randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
-                                
+
                                 item.memberId = randomNumber;
                                 let memberUserName = item.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
                                 const password = passwordGenerator.generate({
@@ -542,7 +468,20 @@ exports.createEncrypted = async (req, res, next) => {
                                 membersArr.push(item);
                             })
                             membersArr.map(item => {
-                                TenantMembersDetail.create(item);
+                                TenantMembersDetail.create(item)
+                                .then(async member => {
+                                    const owners = await OwnerFlatDetail.findAll({
+                                        where: {
+                                            isActive: true,
+                                            flatDetailId: tenant.flatDetailId
+                                        },
+                                        attributes: ['ownerId']
+                                    })
+                                    owners.map(item => {
+                                        ownerId = item.ownerId;
+                                        mailToOwner(ownerId, member.email, member.memberId, member.userName);
+                                    });
+                                });
                                 User.create({
                                     userId: item.memberId,
                                     firstName: encrypt(item.firstName),
@@ -582,11 +521,11 @@ exports.createEncrypted = async (req, res, next) => {
                                 })
                                 // ownerId = owners[0].ownerId;
 
-                                const message = mailToUser(req.body.email, tenantSend.tenantId);
+                                // const message = mailToUser(req.body.email, tenantSend.tenantId);
                                 console.log("ownerID1====?", tenantSend.owner, "87389547374 ", tenantSend)
                                 owners.map(item => {
                                     ownerId = item.ownerId;
-                                    mailToOwner(ownerId, tenantSend);
+                                    mailToOwner(ownerId, tenantSend.email, tenantSend.tenantId, tenantSend.userName);
                                 });
                                 // mailToOwner(ownerId, tenantSend);
                                 return res.status(httpStatus.CREATED).json({
@@ -948,62 +887,62 @@ exports.getTenantMembers = async (req, res, next) => {
         },
         attributes: ['memberId']
     })
-    .then(members => {
-        members.map(item => {
-            memberIds.push(item.memberId);
-        })
-        memberIds.map(item => {
-            TenantMembersDetail.findOne({
-                where: {
-                    isActive: true,
-                    memberId: item
-                },
-                order: [['createdAt', 'DESC']],
-                include: [
-                    { model: Relation }
-                ]
+        .then(members => {
+            members.map(item => {
+                memberIds.push(item.memberId);
             })
-            .then(async member => {
-                let rfid = await UserRFID.findOne({
+            memberIds.map(item => {
+                TenantMembersDetail.findOne({
                     where: {
-                        userId: member.memberId,
-                        isActive: true
+                        isActive: true,
+                        memberId: item
                     },
+                    order: [['createdAt', 'DESC']],
                     include: [
-                        { model: RFID, where: { isActive: true }, attributes: ['rfidId', 'rfid'] }
+                        { model: Relation }
                     ]
                 })
+                    .then(async member => {
+                        let rfid = await UserRFID.findOne({
+                            where: {
+                                userId: member.memberId,
+                                isActive: true
+                            },
+                            include: [
+                                { model: RFID, where: { isActive: true }, attributes: ['rfidId', 'rfid'] }
+                            ]
+                        })
 
-                member.firstName = decrypt(member.firstName);
-                member.lastName = decrypt(member.lastName);
-                member.userName = decrypt(member.userName);
-                member.email = decrypt(member.email);
-                member.contact = decrypt(member.contact);
-                member.aadhaarNumber = decrypt(member.aadhaarNumber);
-                // member.picture = decrypt(member.picture);
-                // member.permanentAddress = decrypt(member.permanentAddress);
-                // member.correspondenceAddress = decrypt(member.correspondenceAddress);
-                member.gender = decrypt(member.gender);
-                // member.panCardNumber = decrypt(member.panCardNumber);
+                        member.firstName = decrypt(member.firstName);
+                        member.lastName = decrypt(member.lastName);
+                        member.userName = decrypt(member.userName);
+                        member.email = decrypt(member.email);
+                        member.contact = decrypt(member.contact);
+                        member.aadhaarNumber = decrypt(member.aadhaarNumber);
+                        // member.picture = decrypt(member.picture);
+                        // member.permanentAddress = decrypt(member.permanentAddress);
+                        // member.correspondenceAddress = decrypt(member.correspondenceAddress);
+                        member.gender = decrypt(member.gender);
+                        // member.panCardNumber = decrypt(member.panCardNumber);
 
-                member = member.toJSON();
-                if (rfid !== null) {
-                    member['rfid_master'] = {
-                        rfidId: rfid.rfid_master.rfidId,
-                        rfid: rfid.rfid_master.rfid
-                    };
-                }
-                else {
-                    member['rfid_master'] = null;
-                }
+                        member = member.toJSON();
+                        if (rfid !== null) {
+                            member['rfid_master'] = {
+                                rfidId: rfid.rfid_master.rfidId,
+                                rfid: rfid.rfid_master.rfid
+                            };
+                        }
+                        else {
+                            member['rfid_master'] = null;
+                        }
 
-                return member;
-            })
-            .then(member => {
-                membersArr.push(member);
+                        return member;
+                    })
+                    .then(member => {
+                        membersArr.push(member);
+                    })
             })
         })
-    })
     // console.log(tenantMembers)
 
     setTimeout(() => {
@@ -1065,7 +1004,7 @@ exports.addTenantMembers = async (req, res, next) => {
     if (tenantExists !== null || userExists !== null) {
         console.log("duplicate random number")
         randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
-    } 
+    }
     let uniqueId = generateRandomId();
     let userName = member.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
     member.userName = userName;
@@ -1084,20 +1023,48 @@ exports.addTenantMembers = async (req, res, next) => {
     member.memberId = randomNumber;
 
     TenantMembersDetail.create(member)
-        .then(memberCreated => {
+        .then(async memberCreated => {
             member.password = bcrypt.hashSync(member.password, 8);
             member.userId = member.memberId;
             User.create(member)
                 .then(user => {
                     UserRoles.create({
                         userId: member.userId,
-                        roleId: 4
+                        roleId: 4,
+                        isActive: false
                     })
                     UserRFID.create({
                         userId: member.userId,
-                        rfidId: member.rfidId
+                        rfidId: member.rfidId,
+                        isActive: false
                     })
                 })
+
+            const flats = await TenantFlatDetail.findAll({
+                where: {
+                    isActive: true,
+                    tenantId: member.tenantId
+                },
+                attributes: ['flatDetailId']
+            })
+
+            flats.map(item => {
+                flatIds.push(item.flatDetailId);
+            })
+            
+            const owners = await OwnerFlatDetail.findAll({
+                where: {
+                    isActive: true,
+                    flatDetailId: {
+                        [Op.in]: flatIds
+                    }
+                },
+                attributes: ['ownerId']
+            })
+            owners.map(item => {
+                ownerId = item.ownerId;
+                mailToOwner(ownerId, member.email, member.memberId, member.userName);
+            });
             return res.status(httpStatus.CREATED).json({
                 message: 'Member created successfully'
             });
@@ -1208,22 +1175,38 @@ exports.addFlats = async (req, res, next) => {
             })
         } else {
             if (body !== null) {
-                TenantFlatDetail.create(body)
-                    .then(flat => {
-                        if (flat !== null) {
+                TenantFlatDetail.findOne({
+                    where: {
+                        tenantId: body.tenantId,
+                        flatDetailId: body.flatDetailId
+                    }
+                })
+                    .then(tenant => {
+                        if (tenant !== null) {
+                            tenant.updateAttributes({ isActive: true });
                             res.status(httpStatus.CREATED).json({
                                 message: 'Flat added successfully'
                             })
                         } else {
-                            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                                message: 'Flat not added'
-                            })
+                            TenantFlatDetail.create(body)
+                                .then(flat => {
+                                    if (flat !== null) {
+                                        res.status(httpStatus.CREATED).json({
+                                            message: 'Flat added successfully'
+                                        })
+                                    } else {
+                                        res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                                            message: 'Flat not added'
+                                        })
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log('Error ===>', err);
+                                    res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+                                })
                         }
                     })
-                    .catch(err => {
-                        console.log('Error ===>', err);
-                        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-                    })
+
             } else {
                 res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
                     message: 'Please provide required data'
@@ -1300,10 +1283,26 @@ exports.editFlat = (req, res, next) => {
                                 message: 'Flat details already exist for same tenant'
                             })
                         } else {
-                            flat.updateAttributes({ flatDetailId: body.flatDetailId });
-                            res.status(httpStatus.CREATED).json({
-                                message: 'Flat details updated successfully'
+                            TenantFlatDetail.findOne({
+                                where: {
+                                    tenantId: body.tenantId,
+                                    flatDetailId: body.flatDetailId
+                                }
                             })
+                                .then(flatExistingNotActive => {
+                                    if (flatExistingNotActive !== null) {
+                                        flatExistingNotActive.updateAttributes({ isActive: true });
+                                        flat.updateAttributes({ isActive: false });
+                                        res.status(httpStatus.CREATED).json({
+                                            message: 'Flat details updated successfully'
+                                        });
+                                    } else {
+                                        flat.updateAttributes({ flatDetailId: body.flatDetailId });
+                                        res.status(httpStatus.CREATED).json({
+                                            message: 'Flat details updated successfully'
+                                        });
+                                    }
+                                })
                         }
                     })
                     .catch(err => {
@@ -1336,7 +1335,7 @@ exports.deleteFlat = (req, res, next) => {
         .then(flat => {
             console.log(flat);
             if (flat !== null) {
-                flat.destroy();
+                flat.updateAttributes({ isActive: false });
                 res.status(httpStatus.OK).json({
                     message: 'Flat deleted successfully'
                 })
