@@ -82,8 +82,8 @@ class DisplayEventMaster extends Component {
                 if (!this.state.eventName) {
                         errors.eventName = "Event Name cant be empty please Select"
                 }
-                if (!this.state.eventOrganiser) {
-                        errors.eventOrganiser = "Event Organiser cant be empty please Select"
+                if (!this.state.userId) {
+                        errors.userId = "Event Organiser cant be empty please Select"
                 }
                
 
@@ -132,7 +132,10 @@ class DisplayEventMaster extends Component {
 
         searchFilter(search) {
                 return function (x) {
-                        return x.eventType.toLowerCase().includes(search.toLowerCase()) || !search;
+                        return x.eventType.toLowerCase().includes(search.toLowerCase()) ||
+                        x.eventName.toLowerCase().includes(search.toLowerCase()) ||
+                        x.organiser.firstName.toLowerCase().includes(search.toLowerCase()) || 
+                        !search;
                 }
         }
         getEvent({ events }) {
@@ -319,10 +322,10 @@ let modalData=<div>
 
         {this.getEvent(this.props.EventDetails)}
 </Input>
-<span className="error"> {this.state.errors.userName}</span>
+<span className="error"> {this.state.errors.userId}</span>
 </FormGroup>
-
-</div>
+<Button color="primary" className="mr-2" onClick={this.updateEvent}>Save</Button>
+                                                                <Button color="danger" onClick={this.toggleEditEventModal.bind(this)}>Cancel</Button></div>
                 let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
                         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
                 return (
@@ -345,24 +348,25 @@ let modalData=<div>
 
                                                         {!this.state.modalLoading ? modalData : <Spinner/>}
 
-                                                                <Button color="primary" className="mr-2" onClick={this.updateEvent}>Save</Button>
-                                                                <Button color="danger" onClick={this.toggleEditEventModal.bind(this)}>Cancel</Button>
+                                                            
 
                                                         </ModalBody>
                                                 </Modal>
                                                 <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
 
                                                 {deleteSelectedButton}
-                                                <label><b> Select All</b><input
-                                                        type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                                                                if (e.target.checked) {
-                                                                        this.selectAll();
-                                                                }
-                                                                else if (!e.target.checked) {
-                                                                        this.unSelectAll();
-                                                                }
-                                                        }
-                                                        } /></label>
+                                                <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                                id="allSelect"
+                                type="checkbox" onChange={(e) => {
+                                        if(e.target.checked) {
+                                            this.selectAll();
+                                        }
+                                        else if(!e.target.checked){
+                                            this.unSelectAll();
+                                        } 
+                                    }  
+                                }/>
+                            </Label>
                                                 {!this.state.loading ? tableData : <Spinner />}
 
 

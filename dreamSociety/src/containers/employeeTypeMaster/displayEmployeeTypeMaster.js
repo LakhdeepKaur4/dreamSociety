@@ -177,7 +177,11 @@ class DisplayEmployeeTypeMaster extends Component {
 }
 searchFilter(search) {
     return function (x) {
-            return x.serviceType.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.serviceType.toLowerCase().includes(search.toLowerCase()) || 
+            x.employee_work_type_master.employeeWorkType.toLowerCase().includes(search.toLowerCase()) || 
+            x.employee_type_master.employeeType.toLowerCase().includes(search.toLowerCase()) || 
+            
+            !search;
     }
 }
 
@@ -337,7 +341,8 @@ searchFilter(search) {
                                     </select>
                                 </FormGroup>
 
-
+                                <Button color="primary" className="mr-2" onClick={this.updateEmployee}>Save</Button>
+                                <Button color="danger" onClick={this.toggleEditEmployeeModal.bind(this)}>Cancel</Button>
             </div>
         let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
             onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>;
@@ -363,8 +368,7 @@ searchFilter(search) {
 
 
                                                 {!this.state.modalLoading?modalData:<Spinner/>}
-                                <Button color="primary" className="mr-2" onClick={this.updateEmployee}>Save</Button>
-                                <Button color="danger" onClick={this.toggleEditEmployeeModal.bind(this)}>Cancel</Button>
+                             
 
                             </ModalBody>
                         </Modal>
@@ -372,16 +376,18 @@ searchFilter(search) {
                         
                         {deleteSelectedButton}
 
-                        <label><b> Select All</b><input
-                         type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></label>
+                        <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                                id="allSelect"
+                                type="checkbox" onChange={(e) => {
+                                        if(e.target.checked) {
+                                            this.selectAll();
+                                        }
+                                        else if(!e.target.checked){
+                                            this.unSelectAll();
+                                        } 
+                                    }  
+                                }/>
+                            </Label>
                         {!this.state.loading ? tableData : <Spinner />}
 
                     </div>
