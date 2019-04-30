@@ -1063,8 +1063,8 @@ exports.addTenantMembers = async (req, res, next) => {
     if (tenantExists !== null || userExists !== null) {
         console.log("duplicate random number")
         randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
-    }
-
+    } 
+    let uniqueId = generateRandomId();
     let userName = member.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
     member.userName = userName;
     const password = passwordGenerator.generate({
