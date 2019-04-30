@@ -518,15 +518,10 @@ exports.createEncrypted = async (req, res, next) => {
                             })
                         }
                         if (tenant.noOfMembers !== 0 && tenant.noOfMembers !== null) {
-                            members.map(async item => {
+                            members.map(item => {
                                 let randomNumber;
                                 randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
-                                const tenantExists = await TenantMembersDetail.findOne({ where: { isActive: true, memberId: randomNumber } });
-                                const userExists = await User.findOne({ where: { isActive: true, userId: randomNumber } });
-                                if (tenantExists !== null || userExists !== null) {
-                                    console.log("duplicate random number")
-                                    randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
-                                }
+                                
                                 item.memberId = randomNumber;
                                 let memberUserName = item.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
                                 const password = passwordGenerator.generate({
