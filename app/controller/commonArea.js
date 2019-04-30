@@ -50,7 +50,7 @@ exports.get = (req, res, next) => {
     CommonArea.findAll({
         where: {
             isActive: true
-        }
+        },
     })
         .then(commonAreas => {
             if (commonAreas.length !== 0) {

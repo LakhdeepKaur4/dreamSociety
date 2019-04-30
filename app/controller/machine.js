@@ -5,6 +5,7 @@ const httpStatus = require('http-status');
 const Op = db.Sequelize.Op;
 
 const Machine = db.machine;
+const AreaMachine = db.areaMachine;
 const FlatDetail = db.flatDetail;
 const Tower = db.tower;
 const Floor = db.floor;
@@ -262,7 +263,7 @@ exports.getMachineForCommonArea = (req, res, next) => {
     MachineDetail.findAll({ where: { isActive: true } })
         .then(async machines => {
             if (machines.length !== 0) {
-                const commonAreaMachines = await CommonAreaDetail.findAll({ where: { isActive: true }, attributes: ['machineDetailId'] });
+                const commonAreaMachines = await AreaMachine.findAll({ where: { isActive: true }, attributes: ['machineDetailId'] });
                 const flatMachines = await Machine.findAll({ where: { isActive: true }, attributes: ['machineDetailId'] });
 
                 flatMachines.map(item => {

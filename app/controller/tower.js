@@ -21,7 +21,7 @@ exports.create = async (req, res) => {
                 isActive: true
             }
         })
-
+    
         let error = towers.some(tower => {
             return tower.towerName.toLowerCase().replace(/ /g, '') == req.body.towerName.toLowerCase().replace(/ /g, '');
         });
@@ -443,7 +443,7 @@ exports.update = async (req, res) => {
 exports.updateTowerAndFloor = async (req, res) => {
     try {
         const towerId = req.params.id;
-
+        
         let towerIds = [];
         const towerFloor = await TowerFloor.findAll({ where: { isActive: true, towerId: towerId } });
         const towerFloorId = towerFloor.map(towerFloor => {

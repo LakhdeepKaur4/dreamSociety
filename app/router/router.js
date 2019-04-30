@@ -550,7 +550,7 @@ module.exports = function (app) {
 
 	app.post('/api/ownerActivation', otpChecker.checkOtp);
 
-	app.post('/api/checkToken', checkToken.checkToken);
+	app.post('/api/checkToken', checkToken.checkToken);	
 
 	app.post('/api/createEventBooking', [authJwt.verifyToken, authJwt.isAdminRole], eventBooking.create);
 
@@ -648,9 +648,11 @@ module.exports = function (app) {
 
 	app.post('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.create);
 
-	app.get('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.get);
+	// app.get('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.get);
 
-	app.put('/api/commonAreaDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.update);
+	app.get('/api/commonAreaDetail', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.getAreaAndMachine);
+
+	app.put('/api/commonAreaDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.updateAreaAndMachine);
 
 	app.put('/api/commonAreaDetail/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.deleteSelected);
 

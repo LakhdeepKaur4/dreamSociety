@@ -177,11 +177,28 @@ exports.deleteSelected = async (req, res, next) => {
 
 exports.inventoryList = async (req, res, next) => {
     try {
+        let inventoryArr = [];
         const inventoryCount = await Inventory.findAndCountAll({ where: { isActive: true } });
         const inventory = await Inventory.findAll({
             where: { isActive: true },
-            attributes: [[sequelize.fn('count', sequelize.col('serialNumber')), 'count'], [sequelize.fn('AVG', sequelize.col('rate')), 'avgRate']],
+            attributes: ['inventoryId', 'rate', 'dateOfPurchase', [sequelize.fn('count', sequelize.col('serialNumber')), 'count'], [sequelize.fn('AVG', sequelize.col('rate')), 'avgRate'], [sequelize.fn('SUM', sequelize.col('rate')), 'sum']],
+            include: [{ model: Assets, attributes: ['assetId', 'assetName'] },
+            { model: AssetsType, attributes: ['assetTypeId', 'assetType'] },
+            ],
+            group: ['inventory_master.assetId'],
+            order: [['createdAt', 'DESC']],
+            raw: false,
+            // order: sequelize.literal('count DESC')
         });
+      
+        console.log("length-->",inventory.length);
+        // for(i=0;i<inventory.length;i++){
+        //     console.log("inside-->",inventory);
+        // }
+        // inventory.map(inventory=>{
+        //         inventoryArr['customCount' + i] = inventory.inventoryId;
+        //         console.log({inventoryArr})     
+        // })
         if (inventory) {
             res.status(httpStatus.OK).json({ count: inventory })
         }
