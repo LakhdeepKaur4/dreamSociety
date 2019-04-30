@@ -30,6 +30,7 @@ export  function viewMachine(){
 }
 
 export function updateMachine( flatDetailId,machineDetailId,machineId){
+    console.log(flatDetailId,machineDetailId,machineId);
     const request =axios.put(`${URN}/machine/`+machineId,{flatDetailId,machineDetailId},{headers:authHeader()})
     return{
         type:UPDATE_MACHINE,

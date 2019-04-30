@@ -4,8 +4,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Link} from 'react-router-dom';
-import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
+
+import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader,  Input, Label } from 'reactstrap';
 
 import UI  from '../../components/newUI/superAdminDashboard';
 import SearchFilter from '../../components/searchFilter/searchFilter';
@@ -278,7 +278,9 @@ deleteSelected(ids){
                      <span className="error">{this.state.errors.sizeType}</span> 
                      <span className="error">{this.state.message} </span>  
                 </FormGroup>
-
+    
+                <Button color="primary"   className="mr-2" onClick={this.updateSize.bind(this)}>Save</Button>
+                <Button color="danger" onClick={this.toggleEditSizeModal.bind(this)}>Cancel</Button>
   </div>
    if(!this.props.SizeDetails.getSize){
     tableData=<div style={{textAlign:'center',fontSize:'20px'}}><Spinner>....Fetching details</Spinner></div>
@@ -310,9 +312,7 @@ deleteSelected(ids){
             {!this.state.modalLoading?modalData:<Spinner/>}
 
              
-             
-                <Button color="primary"   className="mr-2" onClick={this.updateSize.bind(this)}>Save</Button>
-                <Button color="danger" onClick={this.toggleEditSizeModal.bind(this)}>Cancel</Button>
+            
                 </ModalBody>
             </Modal>
             <SearchFilter type="text" value={this.state.search}
@@ -320,16 +320,18 @@ deleteSelected(ids){
              
              {deleteSelectedButton}
 
-             <label><b> Select All</b><input
-                         type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                            if(e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if(!e.target.checked){
-                                this.unSelectAll();
-                            } 
-                        }  
-                    }/></label>
+             <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                                id="allSelect"
+                                type="checkbox" onChange={(e) => {
+                                        if(e.target.checked) {
+                                            this.selectAll();
+                                        }
+                                        else if(!e.target.checked){
+                                            this.unSelectAll();
+                                        } 
+                                    }  
+                                }/>
+                            </Label>
          {!this.state.loading?tableData:<Spinner/>}
           </div>
         </UI>

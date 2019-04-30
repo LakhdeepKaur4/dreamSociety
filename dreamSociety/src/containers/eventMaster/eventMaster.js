@@ -70,8 +70,8 @@ class EventMaster extends Component {
     if(!this.state.eventName){
       errors.eventName = "Event Name can't be empty. Please select."
   }
-  if(!this.state.eventOrganiser){
-    errors.eventOrganiser = "event Organiser can't be empty. Please select."
+  if(!this.state.userId){
+    errors.userId = "Event Organiser can't be empty. Please select."
 }
 
 
@@ -166,7 +166,7 @@ changePassword=()=>{
           <label >Event Organiser</label>
           <select
             className="form-control"  
-            name="eventOrganiser"
+            name="userId"
             onChange={this.onChange}
             defaultValue='no-value'>
           <DefaultSelect/>
