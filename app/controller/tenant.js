@@ -144,7 +144,7 @@ let mailToOwner = async (ownerId, email, id, userName) => {
     // let password = owner.password;
     let key = config.secret;
     const owner = await Owner.findOne({ where: { isActive: true, ownerId: ownerId } });
-    let email = decrypt1(key, owner.email)
+    let email1 = decrypt1(key, owner.email)
     mailToUser(decrypt1(key, email), id);
     ownerId = encrypt(ownerId.toString());
     tenantId = encrypt(id.toString());
@@ -159,7 +159,7 @@ let mailToOwner = async (ownerId, email, id, userName) => {
                     },
                     "To": [
                         {
-                            "Email": email,
+                            "Email": email1,
                             "Name": 'Atin' + ' ' + 'Tanwar'
                         }
                     ],
