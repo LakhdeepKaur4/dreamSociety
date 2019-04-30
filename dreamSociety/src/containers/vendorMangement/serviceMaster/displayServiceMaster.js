@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { getServiceType, getServiceDetail,deleteSelectedService,deleteService,updateServices } from '../../../actionCreators/serviceMasterAction';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table } from 'reactstrap';
+import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table, Col, Row } from 'reactstrap';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/vendorDashboardInside';
 import Spinner from '../../../components/spinner/spinner';
@@ -271,18 +271,22 @@ class DisplayServices extends Component {
 
         let modalData =<div>
                              <FormGroup>
+                             <Row md={12}>
+                             <Col md={6}>
                                 <Label for="serviceName">Service Type</Label>
                                 <Input type="text" value={this.state.serviceName} name="serviceName" onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}  />
                                 <span className="error">{this.state.errors.serviceName}</span>
                                 <span className="error">{this.state.message}</span>
-                            </FormGroup>
-
-                            <FormGroup>
+                                </Col>     
+                                <Col md={6}>
                                 <Label for="service_detail">Service Details</Label>
                                 <Input type="select" name="serviceDetailId" value={this.state.serviceDetailId} onChange={this.onHandleChange}> 
                                     <DefaultSelect/>
                                     {this.getDropdown1(this.props.serviceMasterReducer)}
                                 </Input>
+                             
+                                </Col>
+                                </Row>
                             </FormGroup>                    
 
                         <FormGroup>

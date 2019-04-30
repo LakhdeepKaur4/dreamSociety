@@ -228,9 +228,6 @@ class DisplayVendorMaster extends Component {
         if(this.state.firstName===''){
             errors.firstName="First Name can't be empty"
         }
-            else if(this.state.lastName===''){
-                errors.lastName="Last Name can't be empty"
-            }
 
             if(!!document.getElementById('isChecked').checked){
                 if(this.state.permanentAddressDefault === '') errors.permanentAddressDefault = `Permanent Address can't be empty.`;
@@ -778,16 +775,21 @@ class DisplayVendorMaster extends Component {
     </Table>
           let modalData=<div>
                     <FormGroup>
+                        <Row md={12}>
+                        <Col md={6}>
                         <Label> First Name</Label>
                         <Input name="firstName" value={this.state.firstName}  onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}>
                         </Input>
                         <span className="error">{this.state.errors.firstName}</span>
-                    </FormGroup>
-                    <FormGroup>
+                        </Col>
+       
+                        <Col md={6}>
                         <Label> Last Name</Label>
                         <Input name="lastName" value={this.state.lastName}  onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}>
                         </Input>
-                        <span className="error">{this.state.errors.lastName}</span>
+                      
+                        </Col>
+                        </Row>
                     </FormGroup>
                     <FormGroup>
                 <Row md={12}>
@@ -926,19 +928,22 @@ class DisplayVendorMaster extends Component {
                     </FormGroup>
                 </div>:''}
                     <FormGroup>
+                        <Row md={12}>
+                        <Col md={6}>
                         <Label>Contact</Label>
                         <Input name="contact" value={this.state.contact} onKeyPress={this.OnKeyPresshandlerPhone}  maxLength={10} onChange={this.onHandleChange}>
                         </Input>
                         <span className="error">{this.state.errors.contact}</span>
                         <span className="error">{this.state.message}</span>
-                    </FormGroup>
-                    <FormGroup>
+                        </Col>     
+                        <Col md={6}>
                         <Label>Email</Label>
                         <Input type="email" name="email" value={this.state.email}  maxLength={80} onKeyPress={this.OnKeyPresshandlerEmail} onBlur={this.OnKeyPresshandlerEmail} onChange={this.onHandleChange}>
                         </Input>
                         <span className="error">{this.state.errors.email}</span>
                         <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
-            
+                        </Col>
+                        </Row>
                     </FormGroup>
                     <FormGroup>
                         <Label> Document One</Label>

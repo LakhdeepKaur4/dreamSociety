@@ -3,8 +3,8 @@ import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
 
 
-export function addCommonAreaMachine(commonAreaId,machineDetailId){console.log("action",commonAreaId,machineDetailId)
-    const request = axios.post(`${URN}/commonAreaDetail`,{commonAreaId,machineDetailId}, {headers:authHeader()})
+export function addCommonAreaMachine(commonAreaId,machineDetailId,machines){console.log("action",commonAreaId,machineDetailId,machines)
+    const request = axios.post(`${URN}/commonAreaDetail`,{commonAreaId,machineDetailId,machines}, {headers:authHeader()})
    
     return {
         type:ADD_COMMON_AREA_MACHINE,
@@ -22,9 +22,9 @@ export function getCommonAreaMachine(){
     }
 }
 
-export function updateMachineAreas(commonAreaDetailId,commonAreaId,machineDetailId){
+export function updateMachineAreas(commonAreaDetailId,commonAreaId,machines){
 
-    const request = axios.put(`${URN}/commonAreaDetail/`+commonAreaDetailId,{commonAreaId,machineDetailId},{headers:authHeader()})
+    const request = axios.put(`${URN}/commonAreaDetail/`+commonAreaDetailId,{commonAreaId,machines},{headers:authHeader()})
     .then()
     return{
         type:UPDATE_AREAS_MACHINE,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {getLocation, getLocationName,updateLocation,deleteLocation,deleteSelectedLocation} from '../../actionCreators/locationMasterAction';
 import { bindActionCreators } from 'redux';
-import { Button, Modal, FormGroup, ModalBody,Table, ModalHeader, Input, Label } from 'reactstrap';
+import { Button, Row,Col, Modal, FormGroup, ModalBody,Table, ModalHeader, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import Spinner from '../../components/spinner/spinner';
@@ -163,7 +163,7 @@ toggleModal = () => {
 }
 
 renderList=({details})=>{
-    if(details){
+    if(details){console.log(details)
         return details.sort((item1,item2)=>{
             var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
             return this.state.sortVal ? cmprVal : -cmprVal;
@@ -198,7 +198,7 @@ renderList=({details})=>{
                 <td>{item.city_master?item.city_master.cityName:''}</td>
                 <td>{item.locationName}</td>
                 <td>
-                    <Button color="success"  className="mr-2" onClick={this.toggle.bind(this, item.locationId,item.country_master.countryId,item.state_master.stateId,item.city_master.cityId, item.country_master?item.country_master.countryName:'',item.state_master?item.state_master.stateName:'',item.city_master?item.city_master.cityName:'',item.locationName)}> Edit</Button>
+                    <Button color="success"  className="mr-2" onClick={this.toggle.bind(this, item.locationId,item.country_master?item.country_master.countryId:'',item.state_master?item.state_master.stateId:'',item.city_master?item.city_master.cityId:'', item.country_master?item.country_master.countryName:'',item.state_master?item.state_master.stateName:'',item.city_master?item.city_master.cityName:'',item.locationName)}> Edit</Button>
                
                     <Button color="danger" onClick={this.deleteLocation.bind(this,item.locationId)}> Delete</Button>
                 </td>
@@ -368,34 +368,43 @@ render(){
         {this.renderList(this.props.locationMasterReducer)}
         </tbody>
     </Table> 
-               let modalData=<div><FormGroup>
+               let modalData=<div>
+                <FormGroup>
+                   <Row md={12}>
+                    <Col md={6}>
                    <Label> Country Name</Label>
                    <Input type="select" name="countryId" value={this.state.countryName} onChange={this.onChangeCountry}>
                    <DefaultSelect />
                               {this.fetchCountry(this.props.societyReducer)}
                   </Input>
-               </FormGroup>
-               <FormGroup>
+                  </Col>     
+                    <Col md={6}>  
                    <Label>State Name</Label>          
                    <Input type="select" id="stateId" name="stateId" onChange={this.onChangeState}>
                    {this.state.stateName ? <option>{this.state.stateName}</option> : <option disabled>--Select--</option>}
                             {this.state.stateName ? <DefaultSelect />: null}
                               {this.state.stateName ? null : this.stateName(this.props.societyReducer)}                 
                    </Input>
+                   </Col>
+                        </Row>
                </FormGroup>
                <FormGroup>
+               <Row md={12}>
+                    <Col md={6}>
                    <Label>City Name</Label>
                    <Input type="select" id="cityId" name="cityName"   onChange={this.onChangeCity}  >
                          {this.state.cityName ? <option>{this.state.cityName}</option> : <option disabled>--Select--</option>}
                           {this.state.cityName ? <DefaultSelect />: null}
                           {this.state.cityName ? null : this.cityName(this.props.societyReducer)}  
                    </Input>
-               </FormGroup>
-               <FormGroup>
+                   </Col>     
+                    <Col md={6}>  
                    <Label>Location Name</Label>
                    <Input type="text" id="locationId" name="locationName" maxLength={80} onChange={this.onChangeHandler} value={this.state.locationName} />
                    <span className="error">{this.state.errors.locationName}</span>
                    <span className="error">{this.state.message}</span>
+                   </Col>
+                        </Row>
                </FormGroup> 
                <FormGroup> 
                         <Button color="primary" className="mr-2" onClick={this.updateLocation}>Save</Button> 

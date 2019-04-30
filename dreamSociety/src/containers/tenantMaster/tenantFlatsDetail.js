@@ -217,7 +217,7 @@ class TenantFlatsDetail extends Component{
 
         getFlats=({getFlatDetail})=>{
             console.log('7777777jjjjjj',getFlatDetail)
-            if(getFlatDetail){
+            if(getFlatDetail && getFlatDetail.flatDetail){
               return  getFlatDetail.flatDetail.filter((flatRecord)=>{
                 return flatRecord.floorId==this.state.floorId
             }).map((selectFlat)=>{

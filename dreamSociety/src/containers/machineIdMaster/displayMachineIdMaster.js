@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Table,Modal,ModalBody,ModalHeader,FormGroup,Input} from 'reactstrap';
+import { Button, Table,Modal,ModalBody,ModalHeader,FormGroup,Input,Label} from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 
-import { Label } from 'semantic-ui-react';
+
 import {viewMachine,updateMachine,deleteMachine,deleteMultipleMachine} from '../../actionCreators/machineIdMasterAction';
 
 
@@ -295,16 +295,18 @@ class DisplayMachineIdMaster extends Component {
                          </div>
                          <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
                          {deleteSelectedButton}
-                         <label><b> Select All</b><input
-                          type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                             if(e.target.checked) {
-                                 this.selectAll();
-                             }
-                             else if(!e.target.checked){
-                                 this.unSelectAll();
-                             } 
-                         }  
-                     }/></label>
+                         <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                                id="allSelect"
+                                type="checkbox" onChange={(e) => {
+                                        if(e.target.checked) {
+                                            this.selectAll();
+                                        }
+                                        else if(!e.target.checked){
+                                            this.unSelectAll();
+                                        } 
+                                    }  
+                                }/>
+                            </Label>
                         {(this.state.loading) ? <Spinner /> : tableData}
                      
                          
