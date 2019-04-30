@@ -105,31 +105,24 @@ exports.updateAreaAndMachine = async (req, res) => {
                 ]
             }
         });
-        if (req.body.machineUpdated) {
-            const updatedCommonArea = await CommonAreaDetail.find({ where: { commonAreaDetailId: commonAreaDetailId } }).then(commonAreaDetail => {
-                return commonAreaDetail.updateAttributes(body);
-            })
-        }
-        else {
-            const updatedCommonArea = await CommonAreaDetail.find({ where: { commonAreaDetailId: commonAreaDetailId } }).then(commonAreaDetail => {
-                commonAreaDetail.updateAttributes(body);
-            })
-            const areaMachine = await AreaMachine.findAll({ where: { isActive: true, commonAreaDetailId: commonAreaDetailId } });
-            const areaMachineMasterId = areaMachine.map(areaMachine => {
-                commonAreaDetailIds.push(areaMachine.areaMachineMasterId)
-            });
-            const deleteAreaMachine = await AreaMachine.destroy({ where: { areaMachineMasterId: { [Op.in]: commonAreaDetailIds } } });
 
-            const result = req.body.machines.forEach(function (element) {
-                element.commonAreaDetailId = commonAreaDetailId
-                console.log(element.commonAreaDetailId)
-            });
-            const updatedAreaMachine = await AreaMachine.bulkCreate(req.body.machines, { returning: true }, {
-                fields: ["machineDetailId", "commonAreaDetailId"],
-            });
-            res.json({ message: 'Updated Successfully' });
-        }
+        const updatedCommonArea = await CommonAreaDetail.find({ where: { commonAreaDetailId: commonAreaDetailId } }).then(commonAreaDetail => {
+            commonAreaDetail.updateAttributes(body);
+        })
+        const areaMachine = await AreaMachine.findAll({ where: { isActive: true, commonAreaDetailId: commonAreaDetailId } });
+        const areaMachineMasterId = areaMachine.map(areaMachine => {
+            commonAreaDetailIds.push(areaMachine.areaMachineMasterId)
+        });
+        const deleteAreaMachine = await AreaMachine.destroy({ where: { areaMachineMasterId: { [Op.in]: commonAreaDetailIds } } });
 
+        const result = req.body.machines.forEach(function (element) {
+            element.commonAreaDetailId = commonAreaDetailId
+            console.log(element.commonAreaDetailId)
+        });
+        const updatedAreaMachine = await AreaMachine.bulkCreate(req.body.machines, { returning: true }, {
+            fields: ["machineDetailId", "commonAreaDetailId"],
+        });
+        res.json({ message: 'Updated Successfully' });
     } catch (error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message });
     }
