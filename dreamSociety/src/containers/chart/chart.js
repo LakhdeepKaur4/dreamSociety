@@ -9,16 +9,16 @@ class Chart extends Component {
 
 render(){
 return(
-<div class="container">
-  <div class="row">
-    <div class="col-sm">
+<div className="container">
+  <div className="row">
+    <div className="col-sm">
  <FlatPieChart/>
     </div>
-    <div class="col-sm">
+    <div className="col-sm">
 	<UserPieChart/>
      
     </div>
-    <div class="col-sm">
+    <div className="col-sm">
 	<InventoryPieChart/>
      
     </div>
