@@ -131,8 +131,11 @@ import RfIdDetail from './containers/rfIdMaster/rfIdDetails';
 
 import MachineIdMaster from './containers/machineIdMaster/machineIdMaster';
 import DisplayMachineIdMaster from './containers/machineIdMaster/displayMachineIdMaster';
-import Dashboard from './components/dashboard/dashboard';
+
 import ChangePasswordOwner from './components/changePassword/changePasswordOwner';
+import ViewStatusOwner from './containers/viewStatus/viewStatusOwner';
+import ComplaintOwnerDetails from './containers/registerComplaintOwner/complaintOwnerDetails';
+import ComplaintTenantDetails from './containers/registerComplaint.js/complaintTenantDetails';
 
 class App extends Component {
   render() {
@@ -263,7 +266,10 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail}/>
             <PrivateRoute path='/superDashboard/machineIdMaster' component ={MachineIdMaster}/>
             <PrivateRoute path='/superDashboard/displayMachineIdMaster' component={DisplayMachineIdMaster}/>
-            <PrivateRoute path='/superDashboard/dashboard' component={Dashboard}/>
+          
+            <PrivateRoute path='/ownerDashboard/viewStatusOwner' component={ViewStatusOwner}/>
+            <PrivateRoute path='/ownerDashboard/complaintOwnerDetails' component={ComplaintOwnerDetails}/>
+            <PrivateRoute path='/ownerDashboard/complaintTenantDetails' component={ComplaintTenantDetails}/>
           </Switch>
         </div>
         
