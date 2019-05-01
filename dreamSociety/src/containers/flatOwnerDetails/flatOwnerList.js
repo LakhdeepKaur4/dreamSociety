@@ -83,10 +83,10 @@ class FlatOwnerList extends Component {
                     errors:''
                 }
             }, function () {
-                console.log(selectOption.value)
+                
             });
         }
-        console.log(this.state)
+        
 }
     componentDidMount() {
         this.props.getRfId();
@@ -117,7 +117,6 @@ class FlatOwnerList extends Component {
     }
     editRFID = () => {
         if(!!document.getElementById('isRfidChecked').checked){
-            console.log('is checked')
         this.setState({rfidId: '' , defaultRFID:false, editRFID:true})
         
         
@@ -139,9 +138,10 @@ class FlatOwnerList extends Component {
         }
     }
 
-    toggle = (ownerId, firstName,lastName, dob, gender, contact, email,Aadhaar,permanentAddress,rfidId,rfid) => {
+    toggle = (ownerId,profilePic, firstName,lastName, dob, gender, contact, email,Aadhaar,permanentAddress,rfidId,rfid) => {
         this.setState({
             ownerId,
+            profilePic,
             firstName,
             lastName,
             dob,
@@ -231,8 +231,9 @@ class FlatOwnerList extends Component {
         }
         return [];
     }
-    viewMember(id) {
+    viewMember(id,towerId) {
         localStorage.setItem('ownerId', id)
+        localStorage.setItem('towerId',towerId)
         this.props.history.push('/superDashBoard/flatMemberList')
 
     }
@@ -282,8 +283,8 @@ class FlatOwnerList extends Component {
         localStorage.setItem('ownerId',ownerId)
         this.props.history.push('/superDashboard/viewOwnerFlats')
     }
-    renderList = ({ owners }) => {
-        if (owners) {
+    renderList = ({ owners  }) => {
+        if (owners && owners.getOwners) {
             return owners.getOwners.sort((item1,item2)=>{
                 let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal?cmpValue: -cmpValue;}).filter(this.searchFilter(this.state.search)).map((items, index) => {
@@ -317,14 +318,12 @@ class FlatOwnerList extends Component {
                         </img></td>
                         <td style={{ textAlign: "center", width: '10px',textTransform: 'capitalize'  }}  >{items.firstName+' '+items.lastName}</td>
                         <td style={{ textAlign: "center" }}>{items.contact}</td>
-                        {/* <td style={{ textAlign: "center" }}>{items.correspondenceAddress}</td> */}
                         <td style={{ textAlign: "center" }}>{items.permanentAddress}</td>
-                        <td><button className="btn btn-success mr-2" onClick={this.viewMember.bind(this, items.ownerId)}>View Member</button></td>
-                        {/* <td><button className="btn btn-success mr-2" onClick={this.viewSlots.bind(this,items.flat_detail_masters.map(flat=>flat.flatDetailId))} >View Parking</button></td> */}
+                        <td><button className="btn btn-success mr-2" onClick={this.viewMember.bind(this, items.ownerId,items.tower_master.towerId)}>View Member</button></td>
                         <td><button className="btn btn-success mr-2" onClick={this.addFlat.bind(this,items.ownerId)}>View Flats</button></td>
                         <td style={{ textAlign: "center" }}>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, 
-                                items.firstName, items.lastName,items.dob, items.gender, items.contact, items.email,
+                                items.picture,items.firstName, items.lastName,items.dob, items.gender, items.contact, items.email,
                                 items.adhaarCardNo, items.permanentAddress,items.rfid_master.rfidId,items.rfid_master.rfid,)}>Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.ownerId)} >Delete</button>
                         </td>
@@ -617,7 +616,7 @@ class FlatOwnerList extends Component {
         } 
 
         RfID=({ownerRf})=>{
-            if(ownerRf){
+            if(ownerRf && ownerRf.rfids){
                 return (
                    ownerRf.rfids.map((item)=>{
                        return ({ ...item, label:item.rfid, value:item.rfidId})
@@ -706,7 +705,7 @@ class FlatOwnerList extends Component {
                                 <ModalBody>
                                 <FormGroup>
                             <Label>Upload Profile Pic</Label>                               
-                                <Input accept='image/*' style={{display:'inline-block'}}type="file" name ="profilePic" onChange={this.FileChange} />
+                                <Input accept='image/*' style={{display:'inline-block'}} type="file" name ="profilePic" onChange={this.FileChange} value={this.state.profilePic}/>
                                 <div>
                                  <img src={this.state.profilePicture} height='100px' width='100px' />
                                  </div>

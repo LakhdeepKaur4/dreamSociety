@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { addServiceType, getServiceDetail,getServiceType } from '../../../actionCreators/serviceMasterAction';
-import { Button } from 'reactstrap';
+
 import DefaultSelect from '../../../constants/defaultSelect';
 import Spinner from '../../../components/spinner/spinner';
-
+import { Col, Row, Button } from 'reactstrap';
 
 import UI from '../../../components/newUI/vendorDashboardInside';
 
@@ -134,19 +134,23 @@ class ServiceMaster extends Component {
     render() {
         let form;
         form=<div>
-             <div>
+             <div><Row md={12}>
+            <Col md={6}>
                             <label>Service Type</label>
                             <input type="text" placeholder="Service Type" className="form-control" name="serviceName" maxLength={30}  onKeyPress={this.OnKeyPressUserhandler} onChange={this.handleChange} ></input>
                             <span className="error">{this.state.errors.serviceName}</span>
                             <span className="error">{this.state.message}</span>
-                        </div>
-                        <div>
+                   </Col>     
+            <Col md={6}>
+                  
                             <label>Service Details</label>
                             <select className="form-control" name="serviceDetailId" defaultValue='no-value'  onChange={this.handleChange} >
                             <DefaultSelect/>
                                 {this.getDropdown(this.props.serviceMasterReducer)}
                             </select>
                             <span className="error">{this.state.errors.serviceDetailId}</span>
+                            </Col>
+            </Row>
                         </div>
                         <div className="mt-4">
                             <Button type="submit" color="success" className="mr-2" value="submit">Submit</Button>

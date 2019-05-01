@@ -304,7 +304,8 @@ console.log(assetTypeId, assetId,assets,assetType, description)
                                     <Input  style={{'textTransform': 'capitalize' }} maxLength={30} type="text" id="AssetName" name="assetType" onChange={this.onChangeHandler} value={this.state.assetType} />
                                     <div className="error">{this.state.errors.assetType}</div>
                                     <Label htmlFor="description">Description</Label>
-                                    <Input  style={{'textTransform': 'capitalize' }} maxLength={1000} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description} />
+                                    <textarea type="text" style={{ 'textTransform': 'capitalize' ,'height':"100px"}} maxLength={3000} id="AssetName" placeholder="Enter Description..." onChange={this.onChangeHandler} className="form-control" value={this.state.description} height='25%' name='description' />
+                                    {/* <textarea  style={{'textTransform': 'capitalize' }} maxLength={1000} type="text" id="AssetName" name="description" onChange={this.onChangeHandler} value={this.state.description} /> */}
                                     <span className="error">{this.state.errors.description}</span>
                                 </FormGroup>
                            

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {viewMember, deleteTenantMember, deleteSelectedTenantMember,editTenantMember,
-    addNewTenantDetail,rfid} from '../../actionCreators/tenantMasterAction';
+    addNewTenantDetail,rfid,validOnChangeContact,validOnChangeEmail,getFlats} from '../../actionCreators/tenantMasterAction';
 import { connect } from 'react-redux';
 import UI from '../../components/newUI/superAdminDashboard';
 import { getRelation } from './../../actionCreators/relationMasterAction';
@@ -8,7 +8,9 @@ import Select from 'react-select';
 import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader, Row, Col } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 import SearchFilter from '../../components/searchFilter/searchFilter';
+import { numberValidation, maxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler, memberMaxDate } from '../../validation/validation';
 import Spinner from '../../components/spinner/spinner';
+import ModalBox from '../../components/modal/modal';
 
 class TenantMemberDetail extends Component {
     constructor(props){
@@ -18,7 +20,7 @@ class TenantMemberDetail extends Component {
             isDisabled:true,
             addTenantMember:false,
             editTenantMember: false,
-            memberName:'',
+            firstName:'',
             memberId:'',
             Male:'Male',
             Female:'Female',
@@ -33,12 +35,21 @@ class TenantMemberDetail extends Component {
             loadingAfterEdit:false,
             errors:{},
             search:'',
-            filterName:'memberName',
+            filterName:'firstName',
             rfid:'',
             rfidId:'',
             defaultRFID:true,
             editRFID:false,
-            defRFID:''
+            defRFID:'',
+            aadhaarNumber:'',
+            email:'',
+            contact:'',
+            emailChangeErr:'',
+            validChangeContactErr:'',
+            lastName:'',
+            flatDetailId:'',
+            successMessage:'',
+            memberModal:false
         }
     }
 
@@ -61,7 +72,8 @@ class TenantMemberDetail extends Component {
         let id  = localStorage.getItem('tenantId');
         this.setState({tenantId: id})
         this.props.viewMember(id).then(() => this.setState({loading: false,editTenantMember:false,addTenantMember:false}))
-        console.log(id)
+        console.log(id);
+        this.props.getFlats(id).then(() => this.setState({loading: false,editTenantMember:false,addTenantMember:false}))
     }
 
     logout = () => {
@@ -75,14 +87,14 @@ class TenantMemberDetail extends Component {
         return this.props.history.push('/superDashBoard/tenantDetails')
     }
 
-    edit = (member, dob, gen, relationName, relationId, memberId, rfidId, rfid) => {
-        console.log(member, dob, gen, relationName, relationId, memberId, rfidId, rfid)
-        this.setState({memberName:member, memberDob:dob, gender:gen, relationName, relationId,memberId, rfidId, rfid,defRFID:rfidId, editTenantMember: !this.state.editTenantMember})
+    edit = (fmember, lmember, dob, gen, memEmail,memContact,memAadhaar, relationName, relationId, memberId, rfidId, rfid, flatId) => {
+        console.log(fmember, lmember, dob, gen, memEmail,memContact,memAadhaar, relationName, relationId, memberId, rfidId, rfid, flatId)
+        this.setState({firstName:fmember, lastName:lmember, memberDob:dob, gender:gen, email:memEmail, contact: memContact, aadhaarNumber: memAadhaar, relationName, relationId,memberId, rfidId, rfid,defRFID:rfidId,flatDetailId:flatId, editTenantMember: !this.state.editTenantMember})
     }
 
     getRelationList = ({ relationResult }) => {
         console.log(this.state)
-        if (relationResult) {
+        if (relationResult && relationResult.relation) {
             return relationResult.relation.map((item) => {
                 return (
                     { ...item, name:"relation", label: item.relationName, value: item.relationId }
@@ -97,7 +109,7 @@ class TenantMemberDetail extends Component {
         return function(x){
             console.log(x)
             if(x){
-                return x.memberName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                return x.firstName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.memberDob.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.gender.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.relation_master.relationName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
@@ -140,14 +152,15 @@ class TenantMemberDetail extends Component {
                             }  
                              }}/></td>
                             <td>{i + 1}</td>
-                            <td>{item.memberName}</td>
+                            <td>{item.firstName}{' '}{item.lastName}</td>
                             <td>{item.memberDob}</td>
                             <td>{item.gender}</td>
                             <td>{item.relation_master ? item.relation_master.relationName : ''}</td>
                             <td>{item.rfid_master ? item.rfid_master.rfid:''}</td>
                             <td>
-                                <Button className="mr-2" color="success" onClick={this.edit.bind(this,item.memberName,item.memberDob,
-                                    item.gender, item.relation_master.relationName, item.relationId, item.memberId,item.rfidId, item.rfid_master ? item.rfid_master.rfid:'')}>Edit</Button>
+                                <Button className="mr-2" color="success" onClick={this.edit.bind(this,item.firstName, item.lastName, item.memberDob,
+                                    item.gender, item.email, item.contact, item.aadhaarNumber, item.relation_master.relationName, item.relationId, item.memberId,item.rfid_master ? item.rfid_master.rfidId:'', item.rfid_master ? item.rfid_master.rfid:'',
+                                    item.flatDetailId)}>Edit</Button>
                                 <Button color="danger" onClick={this.deleteMemberSelected.bind(this, item.memberId)}>Delete</Button>
                             </td>
                         </tr>
@@ -194,20 +207,37 @@ class TenantMemberDetail extends Component {
     }
 
     toggleTenantMemberForm(){
-        this.setState({addTenantMember: !this.state.addTenantMember, errors:{}})
+        this.setState({addTenantMember: !this.state.addTenantMember,state:'', errors:{}})
     }
 
     toggleEditTenant(){
-        this.setState({editTenantMember: !this.state.editTenantMember, errors:{}, editRFID:false, defaultRFID:true, rfidId:''})
+        this.setState({editTenantMember: !this.state.editTenantMember,emailChangeErr:'', validChangeContactErr:'', errors:{}, editRFID:false, defaultRFID:true, rfidId:''})
     }
 
     changeHandler = (e) => {
-        this.setState({[e.target.name]:e.target.value.trim()})
+        console.log(this.state)
+
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(), errors });
+        }
+        else {
+            this.setState({[e.target.name]:e.target.value.trim(),message:''});
+        }
     }
 
     addNewMemberChange = (e) => {
-        this.setState({[e.target.name]:e.target.value.trim()})
         console.log(this.state)
+
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(), errors });
+        }
+        else {
+            this.setState({[e.target.name]:e.target.value.trim(),message:''});
+        }
     }
 
     maxDate = () => {
@@ -251,22 +281,28 @@ class TenantMemberDetail extends Component {
     updateTenantMember = (e) => {
         e.preventDefault();
         
-        let { memberName, memberDob, gender, relationId, memberId,rfidId } = this.state;
-        console.log(memberName, memberDob, gender, relationId, memberId)
+        let { firstName, lastName, memberDob, gender,contact,email, aadhaarNumber, relationId, memberId,rfidId,flatDetailId } = this.state;
+        console.log(firstName, memberDob, gender, relationId, memberId)
         let errors = {};
-        if(memberName === '') errors.memberName = `Member Name can't be empty.`;
-
+        if(firstName === '') errors.firstName = `First Name can't be empty.`;
+        if(lastName === '') errors.lastName = `Last Name can't be empty.`;
         if(memberDob === '') errors.memberDob = `Date of Birth can't be empty.`;
         if(gender === '') errors.gender = `Please select any gender.`;
         if(!relationId) errors.relationId = `Select relation with tenant.`;
         if(!!document.getElementById('isRfidChecked').checked){
             if(rfidId === '') errors.rfidId = `Please select RFID.`
         }
+        if(contact){
+            if(contact.length !== 10) errors.contact= `Contact should be of 10 digits.`;
+        }
+        if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar number can't be empty.`;
+        else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar number should be of 12 digits.`;
+        if(!flatDetailId) errors.flatDetailId = `Please select Flat.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
-        if(isValid){
+        if(isValid && this.state.emailChangeErr === '' && this.state.validChangeContactErr === ''){
             this.setState({loadingAfterEdit:true})
-            this.props.editTenantMember(memberName, memberDob, gender, relationId, memberId,rfidId)
+            this.props.editTenantMember(firstName, lastName, memberDob, gender, email, contact, aadhaarNumber, relationId, memberId,rfidId,flatDetailId)
             .then(() => {
                 this.loadDetailAfterEdit()
             })
@@ -278,26 +314,35 @@ class TenantMemberDetail extends Component {
         
     }
 
-    addNewTenantMember(member, dob, gen, relId, tenId,rfIdId){
-        console.log(member, dob, gen, relId, tenId,rfIdId);
+    addNewTenantMember(fname, lname, dob, gen,memEmail,memContact, memAadhaar, relId, tenId,rfIdId, flatId){
+        console.log(fname, lname, dob, gen,memEmail,memContact, memAadhaar, relId, tenId,rfIdId, flatId);
         
-        let {memberName, memberDob, gender, relationId, tenantId,rfidId} = this.state;
+        let {firstName, lastName, memberDob, gender, email, contact, aadhaarNumber, relationId, tenantId,rfidId, flatDetailId} = this.state;
         
-        this.setState({memberName:member, memberDob:dob, gender:gen, relationId:relId, tenantId:tenId,rfidId:rfIdId})
+        this.setState({firstName:fname, lastName:lname, memberDob:dob, gender:gen, email: memEmail, contact: memContact , aadhaarNumber: memAadhaar,
+             relationId:relId, tenantId:tenId,rfidId:rfIdId, flatDetailId:flatId})
         let errors = {};
-        if(memberName === '') errors.memberName = `Member Name can't be empty.`;
+        if(firstName === '') errors.firstName = `Member Name can't be empty.`;
 
         if(memberDob === '') errors.memberDob = `Date of Birth can't be empty.`;
         if(gender === '') errors.gender = `Please select any gender.`;
         if(!relationId) errors.relationId = `Select relation with tenant.`;
-        if(!rfidId) errors.rfidId = `Please select RFID.`
+        if(!rfidId) errors.rfidId = `Please select RFID.`;
+        if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar number can't be empty.`;
+        else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar number should be of 12 digits.`;
+        if(contact){
+            if(contact.length !== 10) errors.contact= `Contact should be of 10 digit.`;
+        }
+        if(!flatDetailId) errors.flatDetailId = `Please select Flat.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
-        if(isValid){
+        if(isValid && this.state.emailChangeErr === '' && this.state.validChangeContactErr === ''){
             this.setState({loadingAfterAdd:true})
-            this.props.addNewTenantDetail({memberName, memberDob, gender, relationId, tenantId, rfidId})
-            .then(() => {
-                this.loadDetailAfterAdd()
+            this.props.addNewTenantDetail({firstName, lastName, memberDob, gender, email, contact,aadhaarNumber, relationId, tenantId, rfidId, flatDetailId})
+            .then((res) => {res
+                console.log(res)
+                this.loadDetailAfterAdd();
+                this.setState({successMessage: res.payload.message})
             })
             .catch(err => {
                 err;
@@ -309,6 +354,7 @@ class TenantMemberDetail extends Component {
 
     loadDetailAfterAdd = () => {
         this.props.viewMember(this.state.tenantId).then(() => this.setState({loadingAfterAdd:false,addTenantMember:false}))
+        .then(() => this.setState({memberModal:true}))
     }
 
     loadDetailAfterEdit = () => {
@@ -358,6 +404,67 @@ class TenantMemberDetail extends Component {
         }
     }
 
+    emailChange = (e) => {
+        console.log(this.state)
+        this.setState({email:e.target.value,emailChangeErr:''})
+        if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
+            this.setState({[e.target.name]:e.target.value,message:''});
+            console.log(this.state)
+            this.setState({emailValidError: '',message:''})
+        }
+        else{ this.setState({emailValidError: 'Invalid Email.'})}
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            console.log(this.state.email)
+            this.setState({ [e.target.name]: e.target.value, errors,message:'' });
+        }
+        else {
+            this.setState({email:e.target.value,message:''});
+        } 
+        this.props.validOnChangeEmail(e.target.value)
+        .then(res => console.log(res))
+        .catch(err => {
+            err;
+            this.setState({emailChangeErr: err.response.data.message})
+        });
+    }
+
+    contactChange = (e) => {
+        this.setState({[e.target.name]:e.target.value,message:'',validChangeContactErr:''})
+        console.log(this.state);
+         
+
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(), errors,message:'' });
+        }
+        else {
+            this.setState({[e.target.name]:e.target.value.trim()});
+            this.props.validOnChangeContact(e.target.value)
+            .then(res => console.log(res))
+            .catch(err => {
+                err;
+                console.log(err.response.data.message)
+                this.setState({validChangeContactErr: err.response.data.message})
+            })
+        }
+    }
+
+    flatInputs = ({getTenantFlats}) => {
+        if(getTenantFlats && getTenantFlats.flats){
+            console.log(getTenantFlats);
+            return getTenantFlats.flats.map(item => {
+                return <option key={item.flatDetailId} value={item.flatDetailId}>{item.flatNo}</option>
+            })
+        }
+    }
+
+    toggleTenantMemberModal = () => {
+        this.setState({memberModal:!this.state.memberModal})
+    }
+
     render(){
         let tableData = <Table className="table table-bordered">
         <thead>
@@ -366,7 +473,7 @@ class TenantMemberDetail extends Component {
                 <th>#</th>
                 <th style={{cursor: 'pointer'}} onClick={()=>{
                                         this.setState((state)=>{return {sortVal:!state.sortVal,
-                                        filterName:'memberName'}});
+                                        filterName:'firstName'}});
                                     }}>Member Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Date of Birth</th>
                 <th>Gender</th>
@@ -381,9 +488,15 @@ class TenantMemberDetail extends Component {
     </Table>
     let addForm = <div>
         <FormGroup>
-            <Label>Member Name</Label>
-            <Input name="memberName" onChange={this.addNewMemberChange} placeholder="Member Name" />
-            {!this.state.memberName ? <span className="error">{this.state.errors.memberName}</span> : ''}
+            <Label>First Name</Label>
+            <Input name="firstName" onChange={this.addNewMemberChange} onKeyPress={fNameKeyPress} placeholder="First Name" />
+            {!this.state.firstName ? <span className="error">{this.state.errors.firstName}</span> : ''}
+        </FormGroup>
+        <FormGroup>
+            <Label>Last Name</Label>
+            <Input name="lastName" onChange={this.addNewMemberChange}  onKeyPress={fNameKeyPress} 
+            placeholder="Last Name" />
+            {!this.state.lastName ? <span className="error">{this.state.errors.lastName}</span> : ''}
         </FormGroup>
         <FormGroup>
             <Label>Date of Birth</Label>
@@ -411,6 +524,31 @@ class TenantMemberDetail extends Component {
             </div>
         </FormGroup>
         <FormGroup>
+            <Label>Email</Label>
+            <Input value={this.state.email} name="email" placeholder="Email" onChange={this.emailChange} onKeyPress={emailValid} />
+            {this.state.messageEmailErr ? <span className='error'>{this.state.messageEmailErr}</span> : ''}
+            {<span className="error">{this.state.emailChangeErr}</span>}
+        </FormGroup>
+        <FormGroup>
+            <Label>Contact</Label>
+            <Input placeholder="Contact"
+            onKeyPress={numberValidation}
+            maxLength="10"
+                name = 'contact' onChange={this.contactChange} 
+            className="input"  />
+            <div>{<span className="error">{this.state.validChangeContactErr}</span>}</div><br/>
+            {<span className="error">{this.state.errors.contact}</span>}
+        </FormGroup>
+        <FormGroup>
+            <Label>Aadhaar Number</Label>
+            <Input placeholder="Aadhaar number" onChange={this.addNewMemberChange}
+            name="aadhaarNumber" onKeyPress={numberValidation} type="text"
+            maxLength="12" />
+            {<span className="error">
+                {this.state.errors.aadhaarNumber}
+            </span>}
+        </FormGroup>
+        <FormGroup>
             <Row md={12}>
                 <Col md={6}>
                     <Label>Relation with Tenant</Label>
@@ -429,18 +567,32 @@ class TenantMemberDetail extends Component {
             </Row>
         </FormGroup>
         <FormGroup>
+            <Label>Flats</Label>
+            <Input type="select" name="flatDetailId" onChange={this.addNewMemberChange} defaultValue="no-value" >
+                <DefaultSelect />
+                {this.flatInputs(this.props.tenantReducer)}
+            </Input>
+            <span className="error">{this.state.errors.flatDetailId}</span>
+        </FormGroup>
+        <FormGroup>
             <Button className="mr-2" color="primary" onClick={this.addNewTenantMember.bind(this,
-                this.state.memberName, this.state.memberDob, this.state.gender, this.state.relationId,
-                this.state.tenantId,this.state.rfidId)}>Save</Button>
+                this.state.firstName,this.state.lastName, this.state.memberDob, this.state.gender,this.state.email,
+                this.state.contact, this.state.aadhaarNumber, this.state.relationId,
+                this.state.tenantId,this.state.rfidId, this.state.flatDetailId)}>Save</Button>
             <Button color="danger" onClick={this.toggleTenantMemberForm.bind(this)}>Cancel</Button> 
         </FormGroup>
         </div>
 
         let editForm = <div>
             <FormGroup>
-                <Label>Member Name</Label>
-                <Input name="memberName" value={this.state.memberName} maxLength="70" onChange={this.changeHandler} />
-                {!this.state.memberName ? <span className="error">{this.state.errors.memberName}</span> : ''}
+                <Label>First Name</Label>
+                <Input name="firstName" value={this.state.firstName} maxLength="70" onChange={this.changeHandler} />
+                {!this.state.firstName ? <span className="error">{this.state.errors.firstName}</span> : ''}
+            </FormGroup>
+            <FormGroup>
+                <Label>Last Name</Label>
+                <Input name="lastName" value={this.state.lastName} maxLength="70" onChange={this.changeHandler} />
+                {!this.state.lastName ? <span className="error">{this.state.errors.lastName}</span> : ''}
             </FormGroup>
             <FormGroup>
                 <Label>Date of Birth</Label>
@@ -464,6 +616,32 @@ class TenantMemberDetail extends Component {
                 <span><Input name="gender" onChange={this.changeHandler} type="radio"
                         value={this.state.Other} checked={this.state.Other===this.state.gender ? true : false}/></span>
                 {!this.state.gender ? <span className="error">{this.state.errors.gender}</span> : ''}
+            </FormGroup>
+            <FormGroup>
+                <Label>Email</Label>
+                <Input value={this.state.email} placeholder="Email" name="email" value={this.state.email} onChange={this.emailChange} onKeyPress={emailValid} />
+                {<span className="error">{this.state.emailChangeErr}</span>}
+                <span><br/></span>
+                {<span className="error">{this.state.errors.email}</span>}
+            </FormGroup>
+            <FormGroup>
+                <Label>Contact</Label>
+                <Input value={this.state.contact}
+                onKeyPress={numberValidation}
+                maxLength="10"
+                    name = 'contact' onChange={this.contactChange} 
+                className="input" placeholder="Contact"  />
+                <div>{<span className="error">{this.state.validChangeContactErr}</span>}</div><br/>
+                {<span className="error">{this.state.errors.contact}</span>}
+            </FormGroup>
+            <FormGroup>
+                <Label>Aadhaar Number</Label>
+                <Input placeholder="Aadhaar number" onChange={this.changeHandler}
+                name="aadhaarNumber" onKeyPress={numberValidation} type="text"
+                maxLength="12" value={this.state.aadhaarNumber} />
+                {<span className="error">
+                    {this.state.errors.aadhaarNumber}
+                </span>}
             </FormGroup>
             <FormGroup>
                 <Label>Relation with Tenant</Label>
@@ -496,6 +674,14 @@ class TenantMemberDetail extends Component {
                         onChange={this.rfidChange.bind(this, 'rfidId')} />
                     {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
                 </FormGroup> : ''}
+            <FormGroup>
+                <Label>Flats</Label>
+                <Input type="select" name="flatDetailId" value={this.state.flatDetailId} onChange={this.addNewMemberChange} >
+                    <DefaultSelect />
+                    {this.flatInputs(this.props.tenantReducer)}
+                </Input>
+                <span className="error">{this.state.errors.flatDetailId}</span>
+            </FormGroup>
             <FormGroup>
                 <Button className="mr-2" color="primary" onClick={this.updateTenantMember}>Save</Button>
                 <Button color="danger" onClick={this.toggleEditTenant.bind(this)}>Cancel</Button> 
@@ -542,6 +728,12 @@ class TenantMemberDetail extends Component {
                             {!this.state.loadingAfterEdit ? editForm : <Spinner />}
                         </ModalBody>
                     </Modal>
+                    <ModalBox 
+                        title="Member Registered"
+                        openModal={this.state.memberModal}
+                        toggle={this.toggleTenantMemberModal.bind(this)}>
+                        <div style={{color:'green',fontSize:'20px', fontWeight:'bold', fontStyle:'italic', textAlign:'center'}}>{this.state.successMessage}</div>
+                    </ModalBox>
                     {!this.state.loading ? tableData : <Spinner />}
                 </div>
             </UI>
@@ -557,5 +749,5 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { viewMember, getRelation, deleteTenantMember,
-     deleteSelectedTenantMember, editTenantMember, addNewTenantDetail,rfid})(TenantMemberDetail);
+export default connect(mapStateToProps, { viewMember, getRelation, deleteTenantMember,getFlats,
+     deleteSelectedTenantMember, editTenantMember, addNewTenantDetail,validOnChangeContact,validOnChangeEmail,rfid})(TenantMemberDetail);

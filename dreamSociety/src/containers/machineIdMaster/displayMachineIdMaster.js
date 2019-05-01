@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Table,Modal,ModalBody,ModalHeader,FormGroup,Input} from 'reactstrap';
+import { Button, Table,Modal,ModalBody,ModalHeader,FormGroup,Input,Label} from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 
-import { Label } from 'semantic-ui-react';
+
 import {viewMachine,updateMachine,deleteMachine,deleteMultipleMachine} from '../../actionCreators/machineIdMasterAction';
 
 
@@ -57,7 +57,13 @@ class DisplayMachineIdMaster extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-
+    keyPress=(event)=>{
+        const pattern = /[a-zA-Z 0-9 _]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
     push = () => {
         this.props.history.push('/superDashboard/machineIdMaster')
     }
@@ -266,7 +272,7 @@ class DisplayMachineIdMaster extends Component {
        
         <FormGroup>
  <label> Machine Id</label>
- <Input type="text" name="machineActualId" value={this.state.machineActualId} onChange={this.onChange}
+ <Input type="text" name="machineActualId" value={this.state.machineActualId} onChange={this.onChange}   onKeyPress={this.keyPress}
          maxLength={50} required
  />
                     <span className="error">{this.state.errors.machineActualId}</span>
@@ -295,16 +301,18 @@ class DisplayMachineIdMaster extends Component {
                          </div>
                          <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
                          {deleteSelectedButton}
-                         <label><b> Select All</b><input
-                          type="checkbox" id="allSelect" className="ml-2" onChange={(e) => {
-                             if(e.target.checked) {
-                                 this.selectAll();
-                             }
-                             else if(!e.target.checked){
-                                 this.unSelectAll();
-                             } 
-                         }  
-                     }/></label>
+                         <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                                id="allSelect"
+                                type="checkbox" onChange={(e) => {
+                                        if(e.target.checked) {
+                                            this.selectAll();
+                                        }
+                                        else if(!e.target.checked){
+                                            this.unSelectAll();
+                                        } 
+                                    }  
+                                }/>
+                            </Label>
                         {(this.state.loading) ? <Spinner /> : tableData}
                      
                          

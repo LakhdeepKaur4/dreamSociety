@@ -53,7 +53,8 @@ class Login extends Component {
                 localStorage.setItem('cityName',loginData.payload.data.society.city_master.cityName)
                 localStorage.setItem('locationName',loginData.payload.data.society.location_master.locationName)
                 localStorage.setItem('userId',loginData.payload.data.user.userId)
-                console.log(loginData.payload.data.society)
+                localStorage.setItem('role',loginData.payload.data.user.roles[0].roleName)
+                console.log(loginData.payload.data.user.roles[0].roleName)
                 console.log(loginData.payload.data.society.country_master.countryName)
                         switch(loginData.payload.data.user.roles[0].roleName) {
                             case 'SUPER ADMIN':

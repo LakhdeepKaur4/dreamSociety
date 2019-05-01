@@ -5,6 +5,7 @@ import $ from 'jquery';
 import './common.css';
 import ReactDOM from 'react-dom';
 
+
 class Demo extends Component {
     componentDidMount() {
         ReactDOM.findDOMNode(this).scrollIntoView();
@@ -133,11 +134,11 @@ class Demo extends Component {
                 </nav>
                 {/* <div className="wrapper"  style={{'backgroundImage':`url('assets/society.jpg')`}}> */}
         
-                <div className="wrapper"  style={{backgroundImage: `url('assets/society.jpg')`}}>
-               
+                <div className="wrapper"   >
+                
                     <nav id="sidebar" className="bg-dark inactive">
                         <div id="sidebar-content">
-
+                  
                             {/* <Menu.Item id="masterdrop" className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="caret square down" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}>Masters</div></Menu.Item> */}
                             <Menu.Item id="sidebarMasterCollapse" className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="caret square down" /><div className='col ml-2 pb-3 border border-white border-left-0 border-right-0 border-top-0' style={{ fontSize: "0.8rem" }}>Masters</div></Menu.Item>
 
@@ -241,6 +242,7 @@ class Demo extends Component {
                     </nav>
                     <div id="body" className="container">
                         <div className="mt-4 mb-4">
+                       
                             {this.props.children}
                         </div>
                     </div>

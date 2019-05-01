@@ -7,6 +7,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {userLogout} from '../../actionCreators/loginAction';
 import UI from '../../components/newUI/superAdminDashboard';
+import Chart from '../../containers/chart/chart';
 
  class Dashboard extends Component {
   constructor(props) {
@@ -70,7 +71,10 @@ import UI from '../../components/newUI/superAdminDashboard';
         </div>
       </nav> */}
       <UI onClick={this.logout} change={this.changePassword} changeDashboard={this.changeDashboard}>
-        
+      <div>
+      <Chart/>
+      </div>
+     
       </UI>
       {/* <div style={{ margin: '48px auto' }}>
         <Sidebar.Pushable as={Segment} attached="bottom">

@@ -8,13 +8,10 @@
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://mydreamsociety.herokuapp.com/';
 
-
-
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-export  const UR = 'https://dreamsociety.herokuapp.com';
-
+export  const UR = 'https://dreamsociety.herokuapp.com/'
 
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
@@ -220,6 +217,7 @@ export const GET_FLAT_DETAIL_VIA_TOWERID='GET_FLAT_DETAIL_VIA_TOWERID';
 export const EDIT_FLATS='EDIT_FLATS';
 export const GET_RFID='GET_RFID';
 export const CHECK_EMAIL='CHECK_EMAIL';
+export const CHECK_CONTACT = 'CHECK_CONTACT';
 export const DELETE_FLATS='DELETE_FLATS'
 export const GET_TOTAL_ITEMS='GET_TOTAL_ITEMS';
 export const GET_FLAT_OWNER='get_flat_owner';

@@ -50,6 +50,10 @@ handleChange = (event) => {
     }
 }
 
+changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+}
+
 push=()=>{
     this.props.history.push('/superDashboard/displayCommonAreaMaster')
 }
@@ -80,7 +84,15 @@ onSubmit = (e) => {
     console.log("commonArea",commonArea)
 }
 
+logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
 
+close=()=>{
+    return this.props.history.replace('/superDashBoard')
+}
 
 render() {
     let form;

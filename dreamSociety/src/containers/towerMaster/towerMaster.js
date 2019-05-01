@@ -84,6 +84,7 @@ class TowerMaster extends Component {
         // const isValid = this.validate();
         if (isValid) {
             this.setState({loading: true})
+        console.log(this.state)
           
                 this.props.AddTower(towerName,floorId,floors).then(()=> this.props.history.push('/superDashboard/display-tower')
             
@@ -91,7 +92,6 @@ class TowerMaster extends Component {
             
                 )
         }
-           
     }
     logout=()=>{
         localStorage.removeItem('token');

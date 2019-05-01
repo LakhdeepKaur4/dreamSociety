@@ -233,7 +233,7 @@ class TenantDetail extends Component {
                                     item.tower_master ? item.tower_master.towerId: '',
                                     item.floor_master ? item.floor_master.floorId: '',
                                     item.flat_detail_master ? item.flat_detail_master.flatDetailId:'', item.tenantId,
-                                    item.rfidId, item.rfid_master ? item.rfid_master.rfid:'')}>View</Button>
+                                    item.rfid_master ? item.rfid_master.rfIdid:'', item.rfid_master ? item.rfid_master.rfid:'')}>View</Button>
                             </td>
                             <td>
                                 <Button color="success" onClick={this.viewFlats.bind(this, item.tenantId)}>View</Button>
@@ -247,7 +247,7 @@ class TenantDetail extends Component {
                                     item.tower_master ? item.tower_master.towerId: '',
                                     item.floor_master ? item.floor_master.floorId: '',
                                     item.flat_detail_master ? item.flat_detail_master.flatDetailId :'', item.tenantId,
-                                    item.rfidId, item.rfid_master ? item.rfid_master.rfid:'')} className="mr-2">Edit</Button>
+                                    item.rfid_master ? item.rfid_master.rfIdid:'', item.rfid_master ? item.rfid_master.rfid:'')} className="mr-2">Edit</Button>
                                 <Button color="danger" onClick={this.delete.bind(this, item.tenantId)}>Delete</Button>
                             </td>
                         </tr>
@@ -842,7 +842,7 @@ class TenantDetail extends Component {
     
 
     flatInputs = ({getTenantFlats}) => {
-        if(getTenantFlats){
+        if(getTenantFlats && getTenantFlats.flats){
             console.log(getTenantFlats)
             return getTenantFlats.flats.map((item) => {
                 return (
@@ -1196,7 +1196,7 @@ class TenantDetail extends Component {
                         <Label>RFID</Label>
                         <Input value={this.state.rfid} onChange={this.onChange} readOnly />
                     </Col> : ''}
-                    {this.state.defaultRFID ? <Col md={6}>
+                    {this.state.defaultRFID ? <Col md={6} style={{paddingTop:'34px'}}>
                         <span style={{fontWeight:'bold'}}>Do you want to edit your RFID?</span><Input type="checkbox" onChange={this.editRFID} name="isRfidChecked" id="isRfidChecked" className="ml-3" />
                     </Col> : 
                     <Col md={12} style={{textAlign:'center'}}>

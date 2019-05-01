@@ -22,6 +22,7 @@ class DisplayCommonAreaMachine  extends Component {
             commonAreaId:'',
             commonArea: '',
             machineDetailId:[],
+            machines:[],
             machineActualId:'',
             errors:{},  
             loading:true,
@@ -30,7 +31,8 @@ class DisplayCommonAreaMachine  extends Component {
             editCommonAreaModal: false,
             ids:[],
             search: '',
-            isDisabled:true
+            isDisabled:true,
+            selectedFloor:[]
            
         }
 
@@ -66,10 +68,29 @@ handleChange = (event) => {
     }
 }
 
-edit (commonAreaDetailId,commonAreaId,commonArea) {console.log(commonAreaId,commonArea)
+logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
+
+close=()=>{
+    return this.props.history.replace('/superDashBoard')
+}
+
+changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+}
+
+edit (commonAreaDetailId,commonAreaId,commonArea,machine) {
+    console.log(commonAreaDetailId,commonAreaId,commonArea,machine);
+    this.setState({
+        machines:machine
+      })
+  const selectedFloor=machine.map(item=>item.machineDetailId)  
     this.setState({
 
-        commonAreaDetailId,commonAreaId,commonArea, editCommonAreaModal: !this.state.editCommonAreaModal
+        commonAreaDetailId,commonAreaId,selectedFloor, editCommonAreaModal: !this.state.editCommonAreaModal
     });
 
 }
@@ -85,8 +106,8 @@ searchOnChange = (e) => {
 }
         
 updateAreas() {
-    const {commonAreaDetailId,commonAreaId,machineDetailId} = this.state;  
-        this.props.updateMachineAreas(commonAreaDetailId,commonAreaId,machineDetailId)
+    const {commonAreaDetailId,commonAreaId,machines} = this.state;  
+        this.props.updateMachineAreas(commonAreaDetailId,commonAreaId,machines)
         .then(() => this.refreshData())
         .catch(err=>{
             this.setState({modalLoading:false,message: err.response.data.message, loading: false})
@@ -99,10 +120,11 @@ updateAreas() {
                 }       
             this.setState({ modalLoading: true
        })       
+       console.log(commonAreaId)
     }
     
 
-deleteArea(commonAreaDetailId){console.log(commonAreaDetailId)
+deleteArea(commonAreaDetailId){
     this.setState({loading:true})
     let {isActive } =this.state;  
     this.props.deleteCommonAreaMachine(commonAreaDetailId,isActive)
@@ -152,12 +174,13 @@ unSelectAll = () =>{
 machineChangeHandler=(name,selectOption)=>{
     console.log(selectOption)
     this.setState({
-        [name]: selectOption.map((item)=>{return item.machineDetailId})
+        [name]: selectOption.map((item)=>{return item.machineDetailId}),
+        machines:selectOption.map((item)=>{return {machineDetailId:item.machineDetailId}})
     })
 }
-    
+     
 
-getCommonArea= ({ getAreas }) => {console.log(getAreas)
+getCommonArea= ({ getAreas }) => {
     if (getAreas &&  getAreas.commonAreas) {
         return getAreas.commonAreas.map((item) => {
             return (
@@ -169,10 +192,9 @@ getCommonArea= ({ getAreas }) => {console.log(getAreas)
     }
 
 } 
-getMachine= ({getMachines}) => {console.log(getMachines)
+getMachine= ({getMachines}) => {
     if(getMachines && getMachines.machines){
       return getMachines.machines.map((item)=>{  
-          console.log(item.machineDetailId)
          return (   {...item,label:item.machineActualId,value:item.machineDetailId}          
         )
     })
@@ -191,12 +213,13 @@ logout=()=>{
 }
 
 
-renderList = ({ getMachineAreas }) => {console.log(getMachineAreas)
-    if (getMachineAreas && getMachineAreas.commonAreas) {
-        return getMachineAreas.commonAreas.sort((item1,item2)=>{
+renderList = ({ getMachineAreas }) => { console.log(getMachineAreas)
+    if (getMachineAreas && getMachineAreas.commonAreaDetail) {
+        return getMachineAreas.commonAreaDetail.sort((item1,item2)=>{
             var cmprVal = (item1.common_area_master[this.state.filterName].localeCompare(item2.common_area_master[this.state.filterName]))
             return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).map((item,index)=>{
+                console.log(item.Machine)
             return (
             <tr key={item.commonAreaDetailId}>
               <td><input type="checkbox" name="ids" className="SelectAll" value={item.commonAreaDetailId}
@@ -222,9 +245,9 @@ renderList = ({ getMachineAreas }) => {console.log(getMachineAreas)
                              }}/></td>
              <td>{index+1}</td>
              <td>{item.common_area_master?item.common_area_master.commonArea:''}</td>
-             <td>{item.machine_detail_master?item.machine_detail_master.machineActualId:''}</td>
+             <td>{item.Machine.map((item)=>{return item.machineActualId}).join(" , ")}</td>
              <td>
-                <Button color="success" className="mr-2" onClick={this.edit.bind(this,item.commonAreaDetailId,item.common_area_master.commonAreaId,item.common_area_master?item.common_area_master.commonArea:'')} >Edit</Button>
+                <Button color="success" className="mr-2" onClick={this.edit.bind(this,item.commonAreaDetailId,item.commonAreaId,item.common_area_master?item.common_area_master.commonArea:'',item.Machine)} >Edit</Button>
                 <Button color="danger" onClick={this.deleteArea.bind(this, item.commonAreaDetailId)}>Delete</Button>
              </td>
              </tr>

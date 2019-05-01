@@ -179,6 +179,7 @@ class ShowDeactiveListDetails extends Component{
                              </td>
                         <td>{index+1}</td>
                         <td>{item.fullName}</td>
+                        <td>{item.email}</td>
                         {/* <td>{item.code}</td>
                         <td>{item.currency}</td>
                         <td>{item.phoneCode}</td> */}
@@ -306,7 +307,7 @@ class ShowDeactiveListDetails extends Component{
                                 filterName:'fullName'}});
                         }}> Nonactive Members
                          <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
-               
+                        <th>Member Email</th>
                          <th>Action</th>
                
 
