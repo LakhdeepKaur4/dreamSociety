@@ -1065,7 +1065,7 @@ exports.addTenantMembers = async (req, res, next) => {
                 mailToOwner(ownerId, member.email, member.memberId, member.userName);
             });
             return res.status(httpStatus.CREATED).json({
-                message: 'Member created successfully'
+                message: 'Member created successfully. Please check email and contact to your flat owner for account activation.'
             });
         })
         .catch(err => {
