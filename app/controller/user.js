@@ -2314,15 +2314,74 @@ exports.deactivateUsers = async (req, res, next) => {
 							await UserRoles.update(update, { where: { userRoleId: { [Op.in]: userRoleIds } } });
 						}
 						await UserRfid.update(update, { where: { userId: userId } });
-						const ownerFlatDetail = await OwnerFlatDetail.findAll({ where: { isActive: true, ownerId: userId } })
-						if (ownerFlatDetail) {
-							await OwnerFlatDetail.update(update, { where: { ownerId: userId } });
-							// ownerFlatDetail.map(flats => ownerFlats.push(flats.flatDetail));
-							// console.log("owner flats -->", ownerFlats);
-							// const tenantFlatDetail = await TenantFlatDetail.findAll({ where: { isActive: true, flatDetailId: { [Op.in]: ownerFlats } } });
-							// tenantFlatDetail.map(tenant => tenantIds.push(tenant.tenantId));
-							// await Tenant.update(update, { where: { tenantId: { [Op.in]: tenantIds } } });
-						}
+						// const ownerFlatDetail = await OwnerFlatDetail.findAll({ where: { isActive: true, ownerId: userId } })
+						// if (ownerFlatDetail) {
+						// 	await OwnerFlatDetail.update(update, { where: { ownerId: userId } });
+
+						// 	// ownerFlatDetail.map(flats => ownerFlats.push(flats.flatDetail));
+						// 	// console.log("owner flats -->", ownerFlats);
+						// 	// const tenantFlatDetail = await TenantFlatDetail.findAll({ where: { isActive: true, flatDetailId: { [Op.in]: ownerFlats } } });
+						// 	// tenantFlatDetail.map(tenant => tenantIds.push(tenant.tenantId));
+						// 	// await Tenant.update(update, { where: { tenantId: { [Op.in]: tenantIds } } });
+						// }
+						await OwnerFlatDetail.findAll({
+							where: {
+								ownerId: userId,
+								isActive: true
+							}
+						}).then(entries => {
+							return entries.forEach(async function (entry) {
+								// Deactivate Tenant Here
+								let tenants = await TenantFlatDetail.findAll({
+									where: {
+										isActive: true,
+										flatDetailId: entry.flatDetailId
+									}
+								});
+								if (tenants) {
+									// tenants.forEach(tenant => tenant.updateAttributes(update))
+									tenants.forEach(async tenant => {
+										let tenantToDeactivate = await Tenant.findOne({ where: { isActive: true, tenantId: tenant.tenantId } });
+										let user1 = await User.findOne({ where: { isActive: true, userId: tenant.tenantId } });
+										let rfId = await UserRfId.findOne({ where: { isActive: true, userId: tenant.tenantId } });
+										let role = await UserRoles.findOne({ where: { isActive: true, userId: tenant.tenantId } });
+										let tenantMembers = await TenantMembersDetail.findAll({ where: { isActive: true, tenantId: tenant.tenantId } });
+										tenantMembers.forEach(async tenantMember => {
+											let userMember = await User.findOne({ where: { isActive: true, userId: tenantMember.memberId } });
+											let memberRfId = await UserRfId.findOne({ where: { isActive: true, userId: tenantMember.memberId } });
+											let memberRole = await UserRoles.findOne({ where: { isActive: true, userId: tenantMember.memberId } });
+											if (userMember) {
+												userMember.updateAttributes({ isActive: false });
+											}
+											if (memberRfId) {
+												memberRfId.updateAttributes({ isActive: false });
+											}
+											if (memberRole) {
+												memberRole.updateAttributes({ isActive: false });
+											}
+											tenantMember.updateAttributes({ isActive: false });
+										})
+										if (tenantToDeactivate) {
+											tenantToDeactivate.updateAttributes({ isActive: false });
+										}
+										if (user1) {
+											user1.updateAttributes({ isActive: false });
+										}
+										if (rfId) {
+											rfId.updateAttributes({ isActive: false });
+										}
+										if (role) {
+											role.updateAttributes({ isActive: false });
+										}
+										if (tenant) {
+											tenant.updateAttributes({ isActive: false });
+										}
+									}
+									)
+								}
+								return entry.updateAttributes(update);
+							})
+						});
 					}
 					const ownerMember = await OwnerMembersDetail.findAll({ where: { isActive: true, ownerId: userId } });
 					ownerMember.map(members => { userIds.push(members.memberId) });
