@@ -33,7 +33,7 @@ this.setState({
 			// theme: "dark2",
 			animationEnabled: false,
 			title: {
-				text: "Flat Pie Chart"
+				text: "Flat Details"
 			},
 			data: [{
 				type: "pie",

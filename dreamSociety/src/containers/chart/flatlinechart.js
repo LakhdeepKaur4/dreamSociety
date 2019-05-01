@@ -32,7 +32,7 @@ this.setState({
 			// exportEnabled: true,
 			animationEnabled: true,
 			title: {
-				text: "Flat Line Chart "
+				text: "Flat Details "
 			},
 			data: [{
 			

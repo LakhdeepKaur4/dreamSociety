@@ -57,7 +57,13 @@ class DisplayMachineIdMaster extends Component {
             this.setState({ [event.target.name]: event.target.value });
         }
     }
-
+    keyPress=(event)=>{
+        const pattern = /[a-zA-Z 0-9 _]/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
+        }
+    }
     push = () => {
         this.props.history.push('/superDashboard/machineIdMaster')
     }
@@ -266,7 +272,7 @@ class DisplayMachineIdMaster extends Component {
        
         <FormGroup>
  <label> Machine Id</label>
- <Input type="text" name="machineActualId" value={this.state.machineActualId} onChange={this.onChange}
+ <Input type="text" name="machineActualId" value={this.state.machineActualId} onChange={this.onChange}   onKeyPress={this.keyPress}
          maxLength={50} required
  />
                     <span className="error">{this.state.errors.machineActualId}</span>

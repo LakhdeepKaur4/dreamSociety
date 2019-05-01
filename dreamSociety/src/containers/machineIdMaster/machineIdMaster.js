@@ -42,6 +42,15 @@ class MachineIdMaster extends Component {
        return this.props.history.push('/superDashBoard/displayMachineIdMaster');
    }   
 
+   keyPress=(event)=>{
+    const pattern = /[a-zA-Z 0-9 _]/;
+    let inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        event.preventDefault();
+    }
+}
+
+
    submit = (e) => {
        e.preventDefault()
        let errors = {};
@@ -85,7 +94,7 @@ class MachineIdMaster extends Component {
       
             <FormGroup>
                 <Label> Machine Id</Label>
-                <Input type="text" className="form-control" placeholder="Machine Id" name="machineActualId" onChange={this.onChange}  onKeyPress={this.onkeyPresshandle} maxLength ={30} />
+                <Input type="text" className="form-control" placeholder="Machine Id" name="machineActualId" onChange={this.onChange}  onKeyPress={this.keyPress} maxLength ={30} />
                 <span className="error">{this.state.errors.machineActualId}</span>
                 <span className="error">{this.state.message}</span>
 
