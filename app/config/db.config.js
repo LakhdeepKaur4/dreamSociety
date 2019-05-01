@@ -210,6 +210,7 @@ db.complaint.belongsTo(db.service, { foreignKey: 'serviceId' });
 db.complaint.belongsTo(db.vendor, { foreignKey: 'vendorId' });
 db.complaint.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.complaint.belongsTo(db.complaintStatus, { foreignKey: 'complaintStatusId' });
+db.complaint.belongsTo(db.user, { foreignKey: 'userId' });
 db.machine.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.machine.belongsTo(db.machineDetail, { foreignKey: 'machineDetailId' });
 db.electricityConsumer.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });

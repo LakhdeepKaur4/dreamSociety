@@ -5,7 +5,26 @@ const Complaint = db.complaint;
 const ComplaintStatus = db.complaintStatus;
 const Service = db.Service;
 const FlatDetail = db.flatDetail;
+const Vendor = db.vendor;
 
+
+let encrypt = (text) => {
+    let key = config.secret;
+    let algorithm = 'aes-128-cbc';
+    let cipher = crypto.createCipher(algorithm, key);
+    let encryptedText = cipher.update(text, 'utf8', 'hex');
+    encryptedText += cipher.final('hex');
+    return encryptedText;
+}
+
+let decrypt = (text) => {
+    let key = config.secret;
+    let algorithm = 'aes-128-cbc';
+    let decipher = crypto.createDecipher(algorithm, key);
+    let decryptedText = decipher.update(text, 'hex', 'utf8');
+    decryptedText += decipher.final('utf8');
+    return decryptedText;
+}
 
 exports.create = (req, res, next) => {
     const complaintBody = req.body;
@@ -13,6 +32,7 @@ exports.create = (req, res, next) => {
     console.log('Complaint ===>', complaintBody);
 
     complaintBody.complaintStatusId = 1;
+    complaintBody.userId = req.userId;
 
     if (complaintBody !== null) {
         Complaint.create(complaintBody)
@@ -75,7 +95,8 @@ exports.getByUserId = (req, res, next) => {
         include: [
             { model: ComplaintStatus },
             { model: FlatDetail, where: { isActive: true } },
-            { model: Service, where: { isActive: true } }
+            { model: Service, where: { isActive: true } },
+            { model: Vendor, where: { isActive: true }, attributes: ['vendorId','firstName','lastName'] }
         ]
     })
         .then(complaints => {
