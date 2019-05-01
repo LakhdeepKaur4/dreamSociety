@@ -1473,14 +1473,7 @@ exports.deleteSelected = async (req, res, next) => {
       member.updateAttributes(update);
     })
 
-    let flatDetails = await OwnerFlatDetail.update(update, {
-      where: {
-        isActive: true,
-        ownerId: {
-          [Op.in]: deleteSelected
-        }
-      }
-    });
+    
 
     let flats = await OwnerFlatDetail.findAll({
       where: {
@@ -1536,6 +1529,15 @@ exports.deleteSelected = async (req, res, next) => {
         }
       })
     }
+
+    let flatDetails = await OwnerFlatDetail.update(update, {
+      where: {
+        isActive: true,
+        ownerId: {
+          [Op.in]: deleteSelected
+        }
+      }
+    });
 
     if (updatedOwners && updatedOwnersMembers && flatDetails) {
       return res.status(httpStatus.OK).json({
