@@ -1258,9 +1258,6 @@ exports.delete = async (req, res, next) => {
       })
     }
 
-
-
-
     const flatDetails = await OwnerFlatDetail.findAll({
       where: {
         ownerId: id,
