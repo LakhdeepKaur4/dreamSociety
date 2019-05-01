@@ -1630,8 +1630,10 @@ exports.deleteMember = async (req, res, next) => {
       userId:ownerMemberId
     }
   });
-  console.log("user_rf_id ====>", urfId)
-  urfId.updateAttributes(update);
+  console.log("user_rf_id ====>", urfId);
+  if(urfId){
+    urfId.updateAttributes(update);
+  }
   updatedOwnerMembersDetail.updateAttributes(update);
 
   if (updatedOwnerMembersDetail) {
@@ -1682,13 +1684,17 @@ exports.deleteSelectedMembers = async (req, res, next) => {
           }
         });
         // console.log("user_rf_id ====>", urfId)
-        await urfId.updateAttributes(update);
+        if(urfId){
+          await urfId.updateAttributes(update);
+        }
         let role = await UserRoles.findOne({
           where: {
             userId: member.memberId
           }
         });
-        await role.updateAttributes(update);
+        if(role){
+          await role.updateAttributes(update);
+        }
         await member.updateAttributes(update);
     })
       return res.status(httpStatus.OK).json({

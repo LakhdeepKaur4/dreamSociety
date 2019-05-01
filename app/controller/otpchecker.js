@@ -404,7 +404,8 @@ exports.checkOtp = async (req, res, next) => {
                 });
                 console.log("employee role", roles)
                 // user.setRoles(roles);
-                UserRoles.create({ userId: user.userId, roleId: roles.id });
+                let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
+                role.updateAttributes({isActive:true});
                 user.updateAttributes({ isActive: true });
             }
 
@@ -463,7 +464,8 @@ exports.checkOtp = async (req, res, next) => {
                 });
                 console.log("employee role", roles)
                 // user.setRoles(roles);
-                UserRoles.create({ userId: user.userId, roleId: roles.id });
+                let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
+                role.updateAttributes({isActive:true});
                 user.updateAttributes({ isActive: true });
             }
             return res.status(200).json(
@@ -515,7 +517,8 @@ exports.checkOtp = async (req, res, next) => {
                 });
                 console.log("employee role", roles)
                 // user.setRoles(roles);
-                UserRoles.create({ userId: user.userId, roleId: roles.id });
+                let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
+                role.updateAttributes({isActive:true});
                 user.updateAttributes({ isActive: true });
             }
 
@@ -574,7 +577,8 @@ exports.checkOtp = async (req, res, next) => {
                 });
                 console.log("employee role", roles)
                 // user.setRoles(roles);
-                await UserRoles.create({ userId: user.userId, roleId: roles.id });
+                let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
+                role.updateAttributes({isActive:true});
                 user.updateAttributes({ isActive: true });
             }
 

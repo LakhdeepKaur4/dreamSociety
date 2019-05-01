@@ -470,7 +470,7 @@ module.exports = function (app) {
 
 	app.put('/api/owner/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], owner.deleteSelected);
 
-	app.put('/api/ownerMember/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], owner.deleteSelectedMembers);
+	app.put('/api/ownerMember/delete/deleteSelected',  owner.deleteSelectedMembers);
 
 	app.put('/api/owner/ownerMember/update/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.updateMember);
 
