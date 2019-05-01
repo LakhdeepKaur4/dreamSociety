@@ -580,6 +580,8 @@ module.exports = function (app) {
 
 	app.get('/api/complaintRegister', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.get);
 
+	app.get('/api/userComplaints', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.getByUserId);
+
 	app.get('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.get);
 
 	app.post('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.create);
