@@ -995,6 +995,7 @@ exports.deleteTenantMember = async (req, res, next) => {
 
 exports.addTenantMembers = async (req, res, next) => {
     const member = req.body;
+    const flatIds = [];
     member.userId = req.userId;
 
     let randomNumber;
