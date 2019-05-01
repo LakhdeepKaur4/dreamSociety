@@ -141,6 +141,8 @@ import FlatLineChart from './containers/chart/flatlinechart';
 import InventoryLineChart from './containers/chart/inventoryLineChart';
 import InventoryPieChart from './containers/chart/inventoryPieChart';
 import Chart from './containers/chart/chart';
+import ProgressStatus from './containers/progressStatus/progressStatus';
+
 class App extends Component {
   render() {
     return (
@@ -276,7 +278,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/inventoryLineChart' component={InventoryLineChart}/>
             <PrivateRoute path='/superDashboard/inventoryPieChart' component={InventoryPieChart}/>
             <PrivateRoute path ='/superDashboard/charts' component ={Chart}/>
-
+            <PrivateRoute path='/superDashboard/progressStatus' component={ProgressStatus}/>
 
             <PrivateRoute path='/superDashboard/dashboard' component={Dashboard}/>
           </Switch>
