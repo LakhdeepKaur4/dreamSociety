@@ -980,13 +980,10 @@ exports.deleteTenantMember = async (req, res, next) => {
                 User.update({ isActive: false }, { where: { userId: member.memberId } });
                 UserRoles.update({ isActive: false }, { where: { userId: member.memberId } });
                 UserRFID.update({ isActive: false }, { where: { userId: member.memberId } });
+                return res.status(httpStatus.OK).json({
+                    message: "Member deleted successfully"
+                });
             })
-
-        if (updatedMember) {
-            return res.status(httpStatus.OK).json({
-                message: "Member deleted successfully"
-            });
-        }
     } catch (error) {
         console.log("error ===>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
