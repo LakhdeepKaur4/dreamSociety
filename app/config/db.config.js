@@ -88,6 +88,8 @@ db.otp.belongsTo(db.employee, { foreignKey: 'employeeId' });
 db.otp.belongsTo(db.vendor, { foreignKey: 'vendorId' });
 db.otp.belongsTo(db.individualVendor, { foreignKey: 'individualVendorId' });
 db.otp.belongsTo(db.ownerMembersDetail, { foreignKey: 'memberId'});
+db.otp.belongsTo(db.tenantMembersDetail, { foreignKey: 'tenantMemberId'});
+
 // db.role.belongsToMany(db.user, { through: 'user_roles', foreignKey: 'roleId', otherKey: 'userId' });
 // db.user.belongsToMany(db.role, { through: 'user_roles', foreignKey: 'userId', otherKey: 'roleId' });
 db.society.belongsTo(db.city, { foreignKey: 'cityId' });
@@ -210,6 +212,7 @@ db.complaint.belongsTo(db.service, { foreignKey: 'serviceId' });
 db.complaint.belongsTo(db.vendor, { foreignKey: 'vendorId' });
 db.complaint.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.complaint.belongsTo(db.complaintStatus, { foreignKey: 'complaintStatusId' });
+db.complaint.belongsTo(db.user, { foreignKey: 'userId' });
 db.machine.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.machine.belongsTo(db.machineDetail, { foreignKey: 'machineDetailId' });
 db.electricityConsumer.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });

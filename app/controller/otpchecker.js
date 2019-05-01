@@ -21,6 +21,7 @@ const Employee = db.employee;
 const Vendor = db.vendor;
 const IndividualVendor = db.individualVendor;
 const OwnerMembersDetail = db.ownerMembersDetail;
+const TenantMembersDetail = db.tenantMembersDetail;
 
 const User = db.user;
 const Otp = db.otp;
@@ -226,11 +227,12 @@ exports.checkOtp = async (req, res, next) => {
             console.log("user==>", user);
             if (user) {
                 let roles = await Role.findOne({
-                    where: { id: 6 }
+                    where: { id: 3 }
                 });
                 console.log("employee role", roles)
                 // user.setRoles(roles);
-                UserRoles.create({ userId: user.userId, roleId: roles.id });
+                let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
+                role.updateAttributes({isActive:true});
                 user.updateAttributes({ isActive: true });
             }
             return res.status(200).json(
@@ -283,11 +285,12 @@ exports.checkOtp = async (req, res, next) => {
             console.log("user==>", user);
             if (user) {
                 let roles = await Role.findOne({
-                    where: { id: 6 }
+                    where: { id: 3 }
                 });
                 console.log("employee role", roles)
                 // user.setRoles(roles);
-                UserRoles.create({ userId: user.userId, roleId: roles.id });
+                let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
+                role.updateAttributes({isActive:true});
                 user.updateAttributes({ isActive: true });
             }
             return res.status(200).json(
@@ -344,11 +347,12 @@ exports.checkOtp = async (req, res, next) => {
             console.log("user==>", user);
             if (user) {
                 let roles = await Role.findOne({
-                    where: { id: 6 }
+                    where: { id: 5 }
                 });
                 console.log("employee role", roles)
                 // user.setRoles(roles);
-                UserRoles.create({ userId: user.userId, roleId: roles.id });
+                let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
+                role.updateAttributes({isActive:true});
                 user.updateAttributes({ isActive: true });
             }
             return res.status(200).json(
@@ -400,7 +404,8 @@ exports.checkOtp = async (req, res, next) => {
                 });
                 console.log("employee role", roles)
                 // user.setRoles(roles);
-                UserRoles.create({ userId: user.userId, roleId: roles.id });
+                let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
+                role.updateAttributes({isActive:true});
                 user.updateAttributes({ isActive: true });
             }
 
@@ -459,7 +464,8 @@ exports.checkOtp = async (req, res, next) => {
                 });
                 console.log("employee role", roles)
                 // user.setRoles(roles);
-                UserRoles.create({ userId: user.userId, roleId: roles.id });
+                let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
+                role.updateAttributes({isActive:true});
                 user.updateAttributes({ isActive: true });
             }
             return res.status(200).json(
@@ -507,11 +513,12 @@ exports.checkOtp = async (req, res, next) => {
 
             if (user) {
                 let roles = await Role.findOne({
-                    where: { id: 6 }
+                    where: { id: 4 }
                 });
                 console.log("employee role", roles)
                 // user.setRoles(roles);
-                UserRoles.create({ userId: user.userId, roleId: roles.id });
+                let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
+                role.updateAttributes({isActive:true});
                 user.updateAttributes({ isActive: true });
             }
 
@@ -524,5 +531,71 @@ exports.checkOtp = async (req, res, next) => {
                 });
         }
     }
+
+
+
+
+    
+
+    if (req.query.tenantMemberId) {
+
+        let tenantMemberId = decrypt1(key, req.query.tenantMemberId);
+        console.log(tenantMemberId);
+        let tenantMember = await TenantMembersDetail.findOne({ where: { memberId: tenantMemberId, isActive: false } });
+        if (tenantMember === undefined || tenantMember === null) {
+            return res.status(403).json(
+                {
+                    otpVerified: false,
+                    message: 'Tenant does not exist or have already been activated.'
+                });
+        }
+        let otpToCheck = parseInt(req.body.otp);
+        let tenantKey = tenantMember.memberId;
+        let findOtp = await Otp.findOne({ where: { otpvalue: otpToCheck, tenantMemberId: tenantKey } });
+        if (findOtp === null || findOtp === undefined) {
+            return res.status(200).json(
+                {
+                    otpVerified: false,
+                    message: 'Otp is invalid or expired.Please contact admin.'
+                });
+        }
+        let updatedTenant = await tenantMember.updateAttributes({ isActive: true });
+        console.log(updatedTenant);
+        if (updatedTenant) {
+            mailToUser(updatedTenant);
+
+            // set user
+            let userName = decrypt1(key, updatedTenant.userName);
+            // set users
+            let user = await User.findOne({
+                where: { userName: encrypt1(key, userName) }
+            });
+
+            if (user) {
+                let roles = await Role.findOne({
+                    where: { id: 4 }
+                });
+                console.log("employee role", roles)
+                // user.setRoles(roles);
+                let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
+                role.updateAttributes({isActive:true});
+                user.updateAttributes({ isActive: true });
+            }
+
+            // set roles
+
+            return res.status(200).json(
+                {
+                    otpVerified: true,
+                    message: 'TenantMember successfully activated.Check your email for your username and password'
+                });
+        }
+    }
+
+
+
+
+
+
 
 }

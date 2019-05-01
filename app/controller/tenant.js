@@ -125,7 +125,7 @@ let mailToUser = (email, id) => {
                         }
                     ],
                     "Subject": "Activation link",
-                    "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://mydreamsociety.com/login/tokenVerification?tenantId=${tenantId}&token=${token}">click here</a>`
+                    "HTMLPart": `<b>Your verification link has been sent to your owner</b>`
                 }
             ]
         })
@@ -164,7 +164,7 @@ let mailToOwner = async (ownerId, email, id, userName) => {
                         }
                     ],
                     "Subject": "Tenant tried to register in Dream Society",
-                    "HTMLPart": `${userName1} is registering in Dream society`
+                    "HTMLPart": `${userName1} is registering in Dream society <b>Click on the given link to verify your tenant</b> <a href="http://192.168.1.16:3000/login/tokenVerification?ownerId=${ownerId}&tenantId=${tenantId}">click here</a>`
                     //   "HTMLPart": `your username is: ${userName} and password is: ${password}. `
                 }
             ]
