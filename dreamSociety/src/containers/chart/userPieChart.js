@@ -45,7 +45,7 @@ this.setState({
 			// exportEnabled: true,
 			animationEnabled: true,
 			title: {
-				text: "User Pie Chart"
+				text: "User Details"
 			},
 			data: [{
 			
