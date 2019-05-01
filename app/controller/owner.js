@@ -37,6 +37,8 @@ const FlatParkingDetails = db.flatParking;
 const Floor = db.floor;
 const TenantFlatDetail = db.tenantFlatDetail;
 const UserRfId = db.userRfid;
+const Tenant = db.tenant;
+const TenantMembersDetail = db.tenantMembersDetail;
 
 function encrypt(key, data) {
   var cipher = crypto.createCipher("aes-128-cbc", key);
@@ -436,7 +438,8 @@ exports.create1 = async (req, res, next) => {
         console.log("owner role==>", roles);
         UserRoles.create({
           userId: user.userId,
-          roleId: roles.id
+          roleId: roles.id,
+          isActive:false
         });
         const message = mailToUser1(email, member.memberId);
 
@@ -485,7 +488,8 @@ exports.create1 = async (req, res, next) => {
     console.log("owner role==>", roles);
     UserRoles.create({
       userId: user.userId,
-      roleId: roles.id
+      roleId: roles.id,
+      isActive:false
     });
     const message = mailToUser(req.body.email, ownerId);
     return res.status(httpStatus.CREATED).json({
@@ -1242,7 +1246,9 @@ exports.delete = async (req, res, next) => {
       }
     });
     console.log("user_rf_id ====>", urfId)
-    urfId.updateAttributes(update);
+    if(urfId){
+      urfId.updateAttributes(update);
+    }
 
     console.log("show yourself", updatedUser);
     if (updatedUser) {
@@ -1277,7 +1283,44 @@ exports.delete = async (req, res, next) => {
         });
         if (tenants) {
           // tenants.forEach(tenant => tenant.updateAttributes(update))
-          tenants.forEach(tenant => tenant.destroy())
+          tenants.forEach( async tenant => {
+            let tenantToDeactivate = await Tenant.findOne({where:{isActive:true,tenantId:tenant.tenantId}});
+            let user1 = await User.findOne({where:{isActive:true,userId:tenant.tenantId}});
+            let rfId = await UserRfId.findOne({where:{isActive:true,userId:tenant.tenantId}});
+            let role = await UserRoles.findOne({where:{isActive:true,userId:tenant.tenantId}});
+            let tenantMembers = await TenantMembersDetail.findAll({where:{isActive:true,tenantId:tenant.tenantId}});
+            tenantMembers.forEach(async tenantMember => {
+              let userMember = await User.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+              let memberRfId = await UserRfId.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+              let memberRole = await UserRoles.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+              if(userMember){
+                userMember.updateAttributes({isActive:false});
+              }
+              if(memberRfId){
+                memberRfId.updateAttributes({isActive:false});
+              }
+              if(memberRole){
+                memberRole.updateAttributes({isActive:false});
+              }
+              tenantMember.updateAttributes({isActive:false});
+            })
+            if(tenantToDeactivate){
+              tenantToDeactivate.updateAttributes({isActive:false});
+            }
+            if(user1){
+              user1.updateAttributes({isActive:false});
+            }
+            if(rfId){
+              rfId.updateAttributes({isActive:false});
+            }
+            if(role){
+              role.updateAttributes({isActive:false});         
+            }
+            if(tenant){
+              tenant.updateAttributes({isActive:false});
+            }
+          }
+          )
         }
         return entry.updateAttributes(update);
       })
@@ -1408,7 +1451,7 @@ exports.deleteSelected = async (req, res, next) => {
       });
       let role = await UserRoles.findOne({
         where: {
-          userId: memberUser.userId
+          userId: member.memberId
         }
       });
       let urfId = await UserRfId.findOne({
@@ -1417,10 +1460,16 @@ exports.deleteSelected = async (req, res, next) => {
           userId:member.memberId
         }
       });
-      console.log("user_rf_id ====>", urfId)
-      urfId.updateAttributes(update);
-      role.updateAttributes(update);
-      memberUser.updateAttributes(update);
+      console.log("user_rf_id ====>", urfId);
+      if(urfId){
+        urfId.updateAttributes(update);
+      }
+      if(role){
+        role.updateAttributes(update);
+      }
+      if(memberUser){
+        memberUser.updateAttributes(update);
+      }
       member.updateAttributes(update);
     })
 
@@ -1445,9 +1494,44 @@ exports.deleteSelected = async (req, res, next) => {
       flats.forEach(async flat => {
         let tenants = await TenantFlatDetail.findAll({where:{isActive:true,flatDetailId:flat.flatDetailId}});
         if(tenants){
-          tenants.forEach(tenant => {
-            // tenant.updateAttributes({isActive:false});
-            tenant.destroy();
+          tenants.forEach(async tenant => {
+           
+            let tenantToDeactivate = await Tenant.findOne({where:{isActive:true,tenantId:tenant.tenantId}});
+            let user1 = await User.findOne({where:{isActive:true,userId:tenant.tenantId}});
+            let rfId = await UserRfId.findOne({where:{isActive:true,userId:tenant.tenantId}});
+            let role = await UserRoles.findOne({where:{isActive:true,userId:tenant.tenantId}});
+            let tenantMembers = await TenantMembersDetail.findAll({where:{isActive:true,tenantId:tenant.tenantId}});
+            tenantMembers.forEach(async tenantMember => {
+              let userMember = await User.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+              let memberRfId = await UserRfId.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+              let memberRole = await UserRoles.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+              if(userMember){
+                userMember.updateAttributes({isActive:false});
+              }
+              if(memberRfId){
+                memberRfId.updateAttributes({isActive:false});
+              }
+              if(memberRole){
+                memberRole.updateAttributes({isActive:false});
+              }
+              tenantMember.updateAttributes({isActive:false});
+            })
+            if(tenantToDeactivate){
+              tenantToDeactivate.updateAttributes({isActive:false});
+            }
+            if(user1){
+              user1.updateAttributes({isActive:false});
+            }
+            if(rfId){
+              rfId.updateAttributes({isActive:false});
+            }
+            if(role){
+              role.updateAttributes({isActive:false});         
+            }
+            if(tenant){
+              tenant.updateAttributes({isActive:false});
+            }
+           
           })
         }
       })
@@ -1942,6 +2026,7 @@ exports.getflats = async (req, res, next) => {
         }]
       }]
 
+      
     });
     if (flat) {
       console.log("asdf");
@@ -2008,7 +2093,44 @@ exports.deleteFlat = async (req, res, next) => {
     });
     let tenants = await TenantFlatDetail.findAll({where:{isActive:true,flatDetailId:flatDetailId}});
     if(tenants){
-      tenants.forEach(tenant => tenant.destroy())
+      tenants.forEach(async tenant =>{
+        let tenantToDeactivate = await Tenant.findOne({where:{isActive:true,tenantId:tenant.tenantId}});
+        let user1 = await User.findOne({where:{isActive:true,userId:tenant.tenantId}});
+        let rfId = await UserRfId.findOne({where:{isActive:true,userId:tenant.tenantId}});
+        let role = await UserRoles.findOne({where:{isActive:true,userId:tenant.tenantId}});
+        let tenantMembers = await TenantMembersDetail.findAll({where:{isActive:true,tenantId:tenant.tenantId}});
+        tenantMembers.forEach(async tenantMember => {
+          let userMember = await User.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+          let memberRfId = await UserRfId.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+          let memberRole = await UserRoles.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+          if(userMember){
+            userMember.updateAttributes({isActive:false});
+          }
+          if(memberRfId){
+            memberRfId.updateAttributes({isActive:false});
+          }
+          if(memberRole){
+            memberRole.updateAttributes({isActive:false});
+          }
+          tenantMember.updateAttributes({isActive:false});
+        })
+        if(tenantToDeactivate){
+          tenantToDeactivate.updateAttributes({isActive:false});
+        }
+        if(user1){
+          user1.updateAttributes({isActive:false});
+        }
+        if(rfId){
+          rfId.updateAttributes({isActive:false});
+        }
+        if(role){
+          role.updateAttributes({isActive:false});         
+        }
+        if(tenant){
+          tenant.updateAttributes({isActive:false});
+        }
+      }     
+      )
     }
     if (result) {
       res.status(httpStatus.OK).json({
@@ -2045,7 +2167,45 @@ exports.editFlat = async (req,res,next) => {
       deleteFlat.updateAttributes({isActive:false});
       let tenants = await TenantFlatDetail.findAll({where:{isActive:true,flatDetailId:previousFlatId}});
       
-      tenants.forEach(tenant => tenant.destroy());
+      tenants.forEach( async tenant =>{
+        let tenantToDeactivate = await Tenant.findOne({where:{isActive:true,tenantId:tenant.tenantId}});
+        let user1 = await User.findOne({where:{isActive:true,userId:tenant.tenantId}});
+        let rfId = await UserRfId.findOne({where:{isActive:true,userId:tenant.tenantId}});
+        let role = await UserRoles.findOne({where:{isActive:true,userId:tenant.tenantId}});
+        let tenantMembers = await TenantMembersDetail.findAll({where:{isActive:true,tenantId:tenant.tenantId}});
+        tenantMembers.forEach(async tenantMember => {
+          let userMember = await User.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+          let memberRfId = await UserRfId.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+          let memberRole = await UserRoles.findOne({where:{isActive:true,userId:tenantMember.memberId}});
+          if(userMember){
+            userMember.updateAttributes({isActive:false});
+          }
+          if(memberRfId){
+            memberRfId.updateAttributes({isActive:false});
+          }
+          if(memberRole){
+            memberRole.updateAttributes({isActive:false});
+          }
+          tenantMember.updateAttributes({isActive:false});
+        })
+        if(tenantToDeactivate){
+          tenantToDeactivate.updateAttributes({isActive:false});
+        }
+        if(user1){
+          user1.updateAttributes({isActive:false});
+        }
+        if(rfId){
+          rfId.updateAttributes({isActive:false});
+        }
+        if(role){
+          role.updateAttributes({isActive:false});         
+        }
+        if(tenant){
+          tenant.updateAttributes({isActive:false});
+        }
+      }     
+
+      );
       
       let checkprev = await OwnerFlatDetail.findOne({where:{isActive:false,ownerId:ownerId,flatDetailId:newFlatId}});
       if(checkprev){
