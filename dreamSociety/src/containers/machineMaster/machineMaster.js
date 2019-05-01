@@ -58,7 +58,6 @@ class MachineMaster extends Component {
 
 
 
-
 logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user-type');

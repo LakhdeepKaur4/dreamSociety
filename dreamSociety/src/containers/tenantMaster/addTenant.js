@@ -251,7 +251,9 @@ class AddTenant extends Component{
         .catch(err => {
             err;
             console.log(err.response.data)
-            this.setState({validChangeContactErr: err.response.data.message})
+            if(err.response.data.message){
+                this.setState({validChangeContactErr: err.response.data.message});
+            }
         }) 
     }
 
@@ -431,7 +433,10 @@ class AddTenant extends Component{
         .then(res => console.log(res))
         .catch(err => {
             err;
-            this.setState({emailChangeErr: err.response.data.message})
+            if(err.response.data.message){
+                this.setState({emailChangeErr: err.response.data.message})
+            }
+            
         });
     }
 
@@ -791,78 +796,87 @@ class AddTenant extends Component{
         for (let i = 0; i < this.state.noOfMembers; i++) {
             
             userDatas.push(<FormGroup key={i}>
-                <Row form>
-                    <Col md={4}>
-                        <Label>First Name</Label>
-                        <Input placeholder="First Name"
-                        onKeyPress={fNameKeyPress}
-                         name = {`firstName${i}`} onChange={this.memberDetailChange} 
-                        className="input"  />
-                    </Col>
-                    <Col md={4}>
-                        <Label>Last Name</Label>
-                        <Input placeholder="Last Name"
-                        onKeyPress={fNameKeyPress}
-                         name = {`lastName${i}`} onChange={this.memberDetailChange} 
-                        className="input"  />
-                    </Col>
-                    <Col md={4}>
-                        <Label>Email</Label>
-                        <Input placeholder="Email"
-                        onKeyPress={emailValid}
-                         name = {`email${i}`} onChange={this.emailChange}
-                         maxLength="70" 
-                        className="input"  />
-                        {<span className="error">{this.state.emailValidError}</span>}
-                    </Col>
-                    <Col md={4}>
-                        <Label>Contact</Label>
-                        <Input placeholder="Contact"
-                        onKeyPress={numberValidation}
-                        maxLength="10"
-                         name = {`contact${i}`} onChange={this.contactChange} 
-                        className="input"  />
-                        <div>{<span className="error">{this.state.validChangeContactErr}</span>}</div>
-                    </Col>
-                    <Col md={4}>
-                        <Label>Relation With Tenant</Label>
-                        <Select name={`relationId${i}`} options={this.getRelationList(this.props.relationList)} 
-                          onChange={this.relationHandler.bind(this,'relationId'+i )} placeholder={<DefaultSelect/>}  />
-                    </Col>
-                    <Col md={4}>
-                        <Label>Date of Birth</Label>
-                        <Input type="date"  max={memberMaxDate()}  name={`memberDob${i}`} onChange={this.memberDetailChange} />
-                    </Col>
-                    <Col md={12} style={{marginTop:'20px', marginBottom:'20px'}}>
-                        <Label>Gender:</Label>
-                        <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
-                        <span><Input name={`gender${i}`} onChange={this.memberDetailChange}
-                                        type="radio" value="Female" /></span>
-                        
-                        
-                        <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
-                        <span><Input name={`gender${i}`} onChange={this.memberDetailChange}
-                                        type="radio" value="Female"/></span>
-                        
-                        
-                        <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
-                        <span><Input type="radio" onKeyPress={OnKeyPressUserhandler}
-                                    name = {`memberName${i}`} onChange={this.memberDetailChange} 
-                                    className="input"/></span>
-                    </Col>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={4}>
+                            <Label>First Name</Label>
+                            <Input placeholder="First Name"
+                            onKeyPress={fNameKeyPress}
+                            name = {`firstName${i}`} onChange={this.memberDetailChange} 
+                            className="input"  />
+                        </Col>
+                        <Col md={4}>
+                            <Label>Last Name</Label>
+                            <Input placeholder="Last Name"
+                            onKeyPress={fNameKeyPress}
+                            name = {`lastName${i}`} onChange={this.memberDetailChange} 
+                            className="input"  />
+                        </Col>
+                        <Col md={4}>
+                            <Label>Email</Label>
+                            <Input placeholder="Email"
+                            onKeyPress={emailValid}
+                            name = {`email${i}`} onChange={this.emailChange}
+                            maxLength="70" 
+                            className="input"  />
+                            {<span className="error">{this.state.emailValidError}</span>}
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={4}>
+                            <Label>Contact</Label>
+                            <Input placeholder="Contact"
+                            onKeyPress={numberValidation}
+                            maxLength="10"
+                            name = {`contact${i}`} onChange={this.contactChange} 
+                            className="input"  />
+                            <div>{<span className="error">{this.state.validChangeContactErr}</span>}</div>
+                        </Col>
+                        <Col md={4}>
+                            <Label>Relation With Tenant</Label>
+                            <Select name={`relationId${i}`} options={this.getRelationList(this.props.relationList)} 
+                            onChange={this.relationHandler.bind(this,'relationId'+i )} placeholder={<DefaultSelect/>}  />
+                        </Col>
+                        <Col md={4}>
+                            <Label>Date of Birth</Label>
+                            <Input type="date"  max={memberMaxDate()}  name={`memberDob${i}`} onChange={this.memberDetailChange} />
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <Col md={12} style={{marginTop:'20px', marginBottom:'20px'}}>
+                    <Label>Gender:</Label>
+                    <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
+                    <span><Input name={`gender${i}`} onChange={this.memberDetailChange}
+                                    type="radio" value="Female" /></span>
                     
-                    <Col md={6}>
-                        <Label>RFID</Label>
-                        <Select name={`rfidId${i}`} placeholder={<DefaultSelect />} 
-                        options={this.rfidOptions(this.props.tenantReducer)}
-                        onChange={this.rfidChange.bind(this, 'rfidId'+i)} />
-                    </Col>
-                    <Col md={6}>
-                        <Label>Aadhaar Number</Label>
-                        <Input type="text" name={`aadhaarNumber${i}`} placeholder="Aadhar Number"
-                         onChange={this.memberDetailChange} onKeyPress={numberValidation} maxLength="12" />
-                    </Col>
-                </Row>
+                    
+                    <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
+                    <span><Input name={`gender${i}`} onChange={this.memberDetailChange}
+                                    type="radio" value="Female"/></span>
+                    
+                    
+                    <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
+                    <span><Input type="radio" onKeyPress={OnKeyPressUserhandler}
+                                name = {`memberName${i}`} onChange={this.memberDetailChange} 
+                                className="input"/></span>
+                </Col>
+                <FormGroup>
+                    <Row md={12}>
+                        <Col md={6}>
+                            <Label>RFID</Label>
+                            <Select name={`rfidId${i}`} placeholder={<DefaultSelect />} 
+                            options={this.rfidOptions(this.props.tenantReducer)}
+                            onChange={this.rfidChange.bind(this, 'rfidId'+i)} />
+                        </Col>
+                        <Col md={6}>
+                            <Label>Aadhaar Number</Label>
+                            <Input type="text" name={`aadhaarNumber${i}`} placeholder="Aadhar Number"
+                                onChange={this.memberDetailChange} onKeyPress={numberValidation} maxLength="12" />
+                        </Col>
+                    </Row>
+                </FormGroup>
             </FormGroup>
 
             );

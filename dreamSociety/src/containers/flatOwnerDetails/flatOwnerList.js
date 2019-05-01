@@ -83,10 +83,10 @@ class FlatOwnerList extends Component {
                     errors:''
                 }
             }, function () {
-                console.log(selectOption.value)
+                
             });
         }
-        console.log(this.state)
+        
 }
     componentDidMount() {
         this.props.getRfId();
@@ -117,7 +117,6 @@ class FlatOwnerList extends Component {
     }
     editRFID = () => {
         if(!!document.getElementById('isRfidChecked').checked){
-            console.log('is checked')
         this.setState({rfidId: '' , defaultRFID:false, editRFID:true})
         
         
