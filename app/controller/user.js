@@ -2064,7 +2064,7 @@ exports.activeUsersByRole = async (req, res, next) => {
 					let middleName = decrypt(employee.middleName);
 					let lastName = decrypt(employee.lastName);
 					let email = decrypt1(key, employee.email);
-					let fullName = firstName + " " + middleName + " " + lastName
+					let fullName = firstName + " " + middleName + " " + lastName;
 					employeesArr['fullName'] = fullName;
 					employeesArr.push({ fullName: fullName, userId: employee.employeeId, type: 'ActiveEmployee', email: email });
 				})
@@ -2186,6 +2186,8 @@ exports.rolesToAssign = async (req, res, next) => {
 exports.activateUsers = async (req, res, next) => {
 	try {
 		console.log(req.body);
+		const userRoleIds = [];
+		const userIds = [];
 		const userId = req.body.userId;
 		const type = req.body.type;
 		const update = { isActive: true };
@@ -2193,29 +2195,72 @@ exports.activateUsers = async (req, res, next) => {
 			case "DeactiveTenant":
 				const tenant = await Tenant.findOne({ where: { tenantId: userId, isActive: false } });
 				if (tenant) {
-					await Tenant.update(update, { where: { tenantId: userId } });
-					res.status(httpStatus.OK).json({ message: "Tenant deactivated successfully" });
+					await Tenant.update(update, { where: { tenant: userId } });
+					const user = await User.findOne({ where: { userId: userId, isActive: false } });
+					if (user) {
+						await User.update(update, { where: { userId: userId } });
+						const userRoles = await UserRoles.findAll({ where: { isActive: false, userId: userId } });
+						userRoles.map(users => { userRoleIds.push(users.userRoleId) });
+						await UserRoles.update(update, { where: { userRoleId: { [Op.in]: userRoleIds } } });
+						await UserRfid.update(update, { where: { userId: userId } });
+						await TenantFlatDetail.update(update, { where: { tenantId: userId } });
+					}
+					const tenantMember = await TenantMembersDetail.findAll({ where: { isActive: false, tenantId: userId } });
+					tenantMember.map(members => { userIds.push(members.memberId) });
+					if (tenantMember.length > 0) {
+						await TenantMembersDetail.update(update, { where: { memberId: { [Op.in]: userIds } } });
+						await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
+						await UserRoles.update(update, { where: { userId: { [Op.in]: userIds } } });
+					}
+					res.status(httpStatus.OK).json({ message: "Owner activated successfully" });
 				}
 				break;
 			case "DeactiveOwner":
 				const owner = await Owner.findOne({ where: { ownerId: userId, isActive: false } });
-				if (owner) {
+				console.log(owner)
+				if (owner && owner != null) {
+					console.log("inside owner");
 					await Owner.update(update, { where: { ownerId: userId } });
-					res.status(httpStatus.OK).json({ message: "Owner deactivated successfully" });
+					const user = await User.findOne({ where: { userId: userId, isActive: false } });
+					console.log("**********************************************************1")
+					if (user) {
+						await User.update(update, { where: { userId: userId } });
+						console.log("**********************************************************2")
+						const userRoles = await UserRoles.findAll({ where: { isActive: false, userId: userId } });
+						userRoles.map(users => {
+							console.log("inside user role if", users)
+							userRoleIds.push(users.userRoleId)
+						});
+						console.log("userRole ", userRoleIds);
+						console.log("**********************************************************3")
+						const roleid = await UserRoles.update(update, { where: { userRoleId: { [Op.in]: userRoleIds } } });
+						console.log("********role updated**************************************************4", roleid)
+						await UserRfid.update(update, { where: { userId: userId } });
+						console.log("**********************************************************5")
+						await OwnerFlatDetail.update(update, { where: { ownerId: userId } });
+					}
+					const ownerMember = await OwnerMembersDetail.findAll({ where: { isActive: false, ownerId: userId } });
+					ownerMember.map(members => { userIds.push(members.memberId) });
+					if (ownerMember.length > 0) {
+						await OwnerMembersDetail.update(update, { where: { memberId: { [Op.in]: userIds } } });
+						await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
+						await UserRoles.update(update, { where: { userId: { [Op.in]: userIds } } });
+					}
+					res.status(httpStatus.OK).json({ message: "Owner activated successfully" });
 				}
 				break;
 			case "DeactiveVendor":
 				const vendor = await Vendor.findOne({ where: { vendorId: userId, isActive: false } });
 				if (vendor) {
 					await Vendor.update(update, { where: { vendorId: userId } });
-					res.status(httpStatus.OK).json({ message: "Vendor deactivated successfully" });
+					res.status(httpStatus.OK).json({ message: "Vendor activated successfully" });
 				}
 				break;
 			case "DeactiveEmployee":
 				const employee = await Employee.findOne({ where: { employeeId: userId, isActive: false } });
 				if (employee) {
 					await Employee.update(update, { where: { employeeId: userId } });
-					res.status(httpStatus.OK).json({ message: "Employee deactivated successfully" });
+					res.status(httpStatus.OK).json({ message: "Employee activated successfully" });
 				}
 				break;
 			default:
@@ -2240,27 +2285,30 @@ exports.deactivateUsers = async (req, res, next) => {
 		switch (type) {
 			case "ActiveOwner":
 				const owner = await Owner.findOne({ where: { ownerId: userId, isActive: true } });
+				console.log(owner)
 				if (owner && owner != null) {
 					console.log("inside owner");
 					await Owner.update(update, { where: { ownerId: userId } });
 					const user = await User.findOne({ where: { userId: userId, isActive: true } });
-					console.log("**********************************************************1")
-					if (user) {
+					if (user && user != null) {
 						await User.update(update, { where: { userId: userId } });
-						console.log("**********************************************************2")
-						const userRoles = await User.findAll({ where: { isActive: true, userId: userId } });
+						const userRoles = await UserRoles.findAll({ where: { isActive: true, userId: userId } });
 						userRoles.map(users => { userRoleIds.push(users.userRoleId) });
-						console.log("**********************************************************3")
-						await UserRoles.update(update, { where: { userId: { [Op.in]: userRoleIds } } });
-						console.log("**********************************************************4")
+						console.log("user ki role id ", userRoleIds);
+						console.log(userRoles)
+						if (UserRoles && userRoles != null) {
+							const roleid = await UserRoles.update(update, { where: { userRoleId: { [Op.in]: userRoleIds } } });
+							console.log(roleid)
+						}
 						await UserRfid.update(update, { where: { userId: userId } });
 						console.log("**********************************************************5")
 						await OwnerFlatDetail.update(update, { where: { ownerId: userId } });
 					}
 					const ownerMember = await OwnerMembersDetail.findAll({ where: { isActive: true, ownerId: userId } });
 					ownerMember.map(members => { userIds.push(members.memberId) });
+					console.log(userIds);
 					if (ownerMember.length > 0) {
-						await OwnerMembersDetail.update(update, { where: { ownerId: { [Op.in]: userIds } } });
+						const member = await OwnerMembersDetail.update(update, { where: { memberId: { [Op.in]: userIds } } });
 						await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
 						await UserRoles.update(update, { where: { userId: { [Op.in]: userIds } } });
 					}
@@ -2276,7 +2324,7 @@ exports.deactivateUsers = async (req, res, next) => {
 						await User.update(update, { where: { userId: userId } });
 						const userRoles = await User.findAll({ where: { isActive: true, userId: userId } });
 						userRoles.map(users => { userRoleIds.push(users.userRoleId) });
-						await UserRoles.update(update, { where: { userId: { [Op.in]: userRoleIds } } });
+						await UserRoles.update(update, { where: { userRoleId: { [Op.in]: userRoleIds } } });
 						await UserRfid.update(update, { where: { userId: userId } });
 						await TenantFlatDetail.update(update, { where: { tenantId: userId } });
 					}
@@ -2646,15 +2694,15 @@ exports.checkContact = (req, res, next) => {
 
 // alert(getAge("8-17-1981"));
 
-exports.ageWiseCount = async(req,res,next) =>{
-	try{
-		let children =[];
+exports.ageWiseCount = async (req, res, next) => {
+	try {
+		let children = [];
 		let adult = [];
-        
-		
-	}catch(error){
+
+
+	} catch (error) {
 		console.log('Error ===>', error);
-		res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);	
+		res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
 	}
 }
 

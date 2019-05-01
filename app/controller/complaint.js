@@ -65,3 +65,32 @@ exports.get = (req, res, next) => {
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
+
+exports.getByUserId = (req, res, next) => {
+    Complaint.findAll({
+        where: {
+            isActive: true,
+            userId: req.userId
+        },
+        include: [
+            { model: ComplaintStatus },
+            { model: FlatDetail, where: { isActive: true } },
+            { model: Service, where: { isActive: true } }
+        ]
+    })
+        .then(complaints => {
+            if (complaints.length !== 0) {
+                res.status(httpStatus.OK).json({
+                    complaints: complaints
+                })
+            } else {
+                res.status(httpStatus.NO_CONTENT).json({
+                    message: 'No Data Found'
+                })
+            }
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}

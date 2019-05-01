@@ -68,7 +68,7 @@ decrypt = (text) => {
 }
 
 constraintCheck = (property, object) => {
-    if ((property in object) && object[property] !== undefined && object[property] !== '' && object[property] !== null) {
+    if ((property in object) && object[property] !== undefined && object[property] !== null) {
         return true;
     } else {
         return false;
@@ -980,13 +980,10 @@ exports.deleteTenantMember = async (req, res, next) => {
                 User.update({ isActive: false }, { where: { userId: member.memberId } });
                 UserRoles.update({ isActive: false }, { where: { userId: member.memberId } });
                 UserRFID.update({ isActive: false }, { where: { userId: member.memberId } });
+                return res.status(httpStatus.OK).json({
+                    message: "Member deleted successfully"
+                });
             })
-
-        if (updatedMember) {
-            return res.status(httpStatus.OK).json({
-                message: "Member deleted successfully"
-            });
-        }
     } catch (error) {
         console.log("error ===>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -995,6 +992,7 @@ exports.deleteTenantMember = async (req, res, next) => {
 
 exports.addTenantMembers = async (req, res, next) => {
     const member = req.body;
+    const flatIds = [];
     member.userId = req.userId;
 
     let randomNumber;
@@ -1021,6 +1019,7 @@ exports.addTenantMembers = async (req, res, next) => {
     member.gender = encrypt(member.gender);
     member.password = password;
     member.memberId = randomNumber;
+    member.isActive = false;
 
     TenantMembersDetail.create(member)
         .then(async memberCreated => {
@@ -1066,7 +1065,7 @@ exports.addTenantMembers = async (req, res, next) => {
                 mailToOwner(ownerId, member.email, member.memberId, member.userName);
             });
             return res.status(httpStatus.CREATED).json({
-                message: 'Member created successfully'
+                message: 'Member created successfully. Please check email and contact to your flat owner for account activation.'
             });
         })
         .catch(err => {
