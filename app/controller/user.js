@@ -2650,7 +2650,7 @@ exports.ageWiseCount = async(req,res,next) =>{
 	try{
 		let children =[];
 		let adult = [];
-
+        
 		
 	}catch(error){
 		console.log('Error ===>', error);
