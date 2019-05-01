@@ -1022,6 +1022,7 @@ exports.addTenantMembers = async (req, res, next) => {
     member.gender = encrypt(member.gender);
     member.password = password;
     member.memberId = randomNumber;
+    member.isActive = false;
 
     TenantMembersDetail.create(member)
         .then(async memberCreated => {
