@@ -2186,6 +2186,7 @@ exports.rolesToAssign = async (req, res, next) => {
 exports.activateUsers = async (req, res, next) => {
 	try {
 		console.log(req.body);
+		const userRoleIds =[];
 		const userId = req.body.userId;
 		const type = req.body.type;
 		const update = { isActive: true };
@@ -2197,7 +2198,7 @@ exports.activateUsers = async (req, res, next) => {
 				const user = await User.findOne({ where: { userId: userId, isActive: false } });
 				if (user) {
 					await User.update(update, { where: { userId: userId } });
-					const userRoles = await User.findAll({ where: { isActive: false, userId: userId } });
+					const userRoles = await UserRoles.findAll({ where: { isActive: false, userId: userId } });
 					userRoles.map(users => { userRoleIds.push(users.userRoleId) });
 					await UserRoles.update(update, { where: { userId: { [Op.in]: userRoleIds } } });
 					await UserRfid.update(update, { where: { userId: userId } });
@@ -2206,7 +2207,7 @@ exports.activateUsers = async (req, res, next) => {
 				const tenantMember = await TenantMembersDetail.findAll({ where: { isActive: false, tenantId: userId } });
 				tenantMember.map(members => { userIds.push(members.memberId) });
 				if (tenantMember.length > 0) {
-					await TenantMembersDetail.update(update, { where: { tenantId: { [Op.in]: userIds } } });
+					await TenantMembersDetail.update(update, { where: { memberId: { [Op.in]: userIds } } });
 					await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
 					await UserRoles.update(update, { where: { userId: { [Op.in]: userIds } } });
 				}
@@ -2215,6 +2216,7 @@ exports.activateUsers = async (req, res, next) => {
 				break;
 			case "DeactiveOwner":
 			const owner = await Owner.findOne({ where: { ownerId: userId, isActive: false } });
+			console.log(owner)
 			if (owner && owner != null) {
 				console.log("inside owner");
 				await Owner.update(update, { where: { ownerId: userId } });
@@ -2223,7 +2225,7 @@ exports.activateUsers = async (req, res, next) => {
 				if (user) {
 					await User.update(update, { where: { userId: userId } });
 					console.log("**********************************************************2")
-					const userRoles = await User.findAll({ where: { isActive: false, userId: userId } });
+					const userRoles = await UserRoles.findAll({ where: { isActive: false, userId: userId } });
 					userRoles.map(users => { userRoleIds.push(users.userRoleId) });
 					console.log("**********************************************************3")
 					await UserRoles.update(update, { where: { userId: { [Op.in]: userRoleIds } } });
@@ -2235,7 +2237,7 @@ exports.activateUsers = async (req, res, next) => {
 				const ownerMember = await OwnerMembersDetail.findAll({ where: { isActive: false, ownerId: userId } });
 				ownerMember.map(members => { userIds.push(members.memberId) });
 				if (ownerMember.length > 0) {
-					await OwnerMembersDetail.update(update, { where: { ownerId: { [Op.in]: userIds } } });
+					await OwnerMembersDetail.update(update, { where: { memberId: { [Op.in]: userIds } } });
 					await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
 					await UserRoles.update(update, { where: { userId: { [Op.in]: userIds } } });
 				}
@@ -2278,6 +2280,7 @@ exports.deactivateUsers = async (req, res, next) => {
 		switch (type) {
 			case "ActiveOwner":
 				const owner = await Owner.findOne({ where: { ownerId: userId, isActive: true } });
+				console.log(owner)
 				if (owner && owner != null) {
 					console.log("inside owner");
 					await Owner.update(update, { where: { ownerId: userId } });
@@ -2286,8 +2289,9 @@ exports.deactivateUsers = async (req, res, next) => {
 					if (user) {
 						await User.update(update, { where: { userId: userId } });
 						console.log("**********************************************************2")
-						const userRoles = await User.findAll({ where: { isActive: true, userId: userId } });
+						const userRoles = await UserRoles.findAll({ where: { isActive: true, userId: userId } });
 						userRoles.map(users => { userRoleIds.push(users.userRoleId) });
+						console.log(userRoleIds);
 						console.log("**********************************************************3")
 						await UserRoles.update(update, { where: { userId: { [Op.in]: userRoleIds } } });
 						console.log("**********************************************************4")
@@ -2297,8 +2301,9 @@ exports.deactivateUsers = async (req, res, next) => {
 					}
 					const ownerMember = await OwnerMembersDetail.findAll({ where: { isActive: true, ownerId: userId } });
 					ownerMember.map(members => { userIds.push(members.memberId) });
+					console.log(userIds);
 					if (ownerMember.length > 0) {
-						await OwnerMembersDetail.update(update, { where: { ownerId: { [Op.in]: userIds } } });
+						const member = await OwnerMembersDetail.update(update, { where: { memberId: { [Op.in]: userIds } } });
 						await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
 						await UserRoles.update(update, { where: { userId: { [Op.in]: userIds } } });
 					}
