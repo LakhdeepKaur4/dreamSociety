@@ -2491,7 +2491,7 @@ exports.flatByUserId = (req, res, next) => {
 							OwnerFlatDetail.findAll({
 								where: {
 									isActive: true,
-									owner: owner.ownerId
+									ownerId: owner.ownerId
 								}
 							})
 								.then(flats => {
