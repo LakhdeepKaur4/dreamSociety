@@ -68,7 +68,7 @@ decrypt = (text) => {
 }
 
 constraintCheck = (property, object) => {
-    if ((property in object) && object[property] !== undefined && object[property] !== '' && object[property] !== null) {
+    if ((property in object) && object[property] !== undefined && object[property] !== null) {
         return true;
     } else {
         return false;
