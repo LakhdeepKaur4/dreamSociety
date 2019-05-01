@@ -18,6 +18,7 @@ class CommonAreaMachine  extends Component {
             commonAreaId:'',
             commonArea: '',
             machineDetailId:[],
+            machines:[],
             machineActualId:'',
             errors:{},
             loading:true,
@@ -50,9 +51,9 @@ handleChange = (event) => {
 }
 
 
-onSubmit = (e) => {console.log(commonAreaId,machineDetailId)
+onSubmit = (e) => {console.log(commonAreaId,machineDetailId,machines)
     e.preventDefault();
-    const {commonAreaId,machineDetailId} = this.state
+    const {commonAreaId,machineDetailId,machines} = this.state
     
     let errors = {};
     if(this.state.commonAreaId===''){
@@ -66,7 +67,7 @@ onSubmit = (e) => {console.log(commonAreaId,machineDetailId)
     const isValid = Object.keys(errors).length === 0
     if(isValid){           
         this.setState({loading:true});
-        this.props.addCommonAreaMachine(commonAreaId,machineDetailId)
+        this.props.addCommonAreaMachine(commonAreaId,machineDetailId,machines)
         .then(()=>
         this.props.history.push('/superDashboard/displayCommonAreaMachineMaster'))
         .catch(err=>{
@@ -95,7 +96,7 @@ getCommonArea= ({ getAreas }) => {
 
 } 
 
-getMachine= ({getMachines}) => {
+getMachine= ({getMachines}) => {console.log(getMachines)
     if(getMachines && getMachines.machines){
       return getMachines.machines.map((item)=>{  
           console.log(item.machineDetailId)
@@ -104,15 +105,30 @@ getMachine= ({getMachines}) => {
     })
 }
 }
+logout=()=>{
+    localStorage.removeItem('token');
+    localStorage.removeItem('user-type');
+    return this.props.history.replace('/') 
+}
+
 
 push=()=>{
 this.props.history.push('/superDashboard/displayCommonAreaMachineMaster')
 }
 
+close=()=>{
+    return this.props.history.replace('/superDashBoard')
+}
+
+changePassword=()=>{ 
+    return this.props.history.replace('/superDashboard/changePassword')
+}
+
 machineChangeHandler=(name,selectOption)=>{
     console.log(selectOption)
     this.setState({
-        [name]: selectOption.map((item)=>{return item.machineDetailId})
+        [name]: selectOption.map((item)=>{return item.machineDetailId}),
+        machines:selectOption.map((item)=>{return {machineDetailId:item.machineDetailId}})
     })
 }
     

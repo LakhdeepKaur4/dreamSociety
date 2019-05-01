@@ -198,6 +198,7 @@ class flatDetailMaster extends Component{
     close=()=>{
         return this.props.history.replace('/superDashBoard')
     }
+    
     onParkingChangeHandler=(event)=>{
         this.setState({
             parkingId:event.target.value

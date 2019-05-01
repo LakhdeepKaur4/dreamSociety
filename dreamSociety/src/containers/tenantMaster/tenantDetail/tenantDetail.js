@@ -842,7 +842,7 @@ class TenantDetail extends Component {
     
 
     flatInputs = ({getTenantFlats}) => {
-        if(getTenantFlats){
+        if(getTenantFlats && getTenantFlats.flats){
             console.log(getTenantFlats)
             return getTenantFlats.flats.map((item) => {
                 return (

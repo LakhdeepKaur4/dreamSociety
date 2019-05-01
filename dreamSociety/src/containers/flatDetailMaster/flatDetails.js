@@ -13,8 +13,10 @@ import DefaultSelect from '../../constants/defaultSelect';
 
 
 class flatDetails extends Component {
+constructor(props){
+    super(props)
 
-    state = {
+    this.state = {
         filterName: 'flatNo',
         flatDetailId: '',
         flatNo: '',
@@ -39,6 +41,8 @@ class flatDetails extends Component {
 
     }
 
+}
+   
 
 
 
@@ -226,7 +230,9 @@ class flatDetails extends Component {
         if (details && details.flatDetail) {
           
             return details.flatDetail.sort((item1, item2) => {
-                var cmprVal = (item1.flatNo && item2.flatNo) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
+                var items1=item1.flat_detail_master
+                var items2=item2.flat_detail_master
+                var cmprVal = (items1 && items2) ? (items1[this.state.filterName].localeCompare(items2[this.state.filterName])) : ''
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
               
