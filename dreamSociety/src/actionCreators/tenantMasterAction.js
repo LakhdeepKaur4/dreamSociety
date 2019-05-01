@@ -127,8 +127,8 @@ export function deleteSelectedTenantMember(ids){
     }
 }
 
-export function editTenantMember(firstName, lastName, memberDob, gender, email, contact, aadhaarNumber, relationId, memberId,rfidId){
-    const request = axios.put(`${URN}/tenant/members/` + memberId , {firstName, lastName, memberDob, gender, email, contact, aadhaarNumber, relationId, memberId,rfidId}, 
+export function editTenantMember(firstName, lastName, memberDob, gender, email, contact, aadhaarNumber, relationId, memberId,rfidId, flatDetailId){
+    const request = axios.put(`${URN}/tenant/members/` + memberId , {firstName, lastName, memberDob, gender, email, contact, aadhaarNumber, relationId, memberId,rfidId,flatDetailId}, 
     {headers: authHeader()})
     .then(response => response.data);
 
@@ -141,7 +141,7 @@ export function editTenantMember(firstName, lastName, memberDob, gender, email, 
 export function addNewTenantDetail(values){
     console.log(values)
     const request = axios.post(`${URN}/tenant/members`, values, {headers: authHeader()})
-    .then((response) => console.log(response.data))
+    .then((response) => response.data)
 
     return {
         type: ADD_NEW_TENANT,
