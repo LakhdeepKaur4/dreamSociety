@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {viewMember, deleteTenantMember, deleteSelectedTenantMember,editTenantMember,
-    addNewTenantDetail,rfid,validOnChangeContact,validOnChangeEmail} from '../../actionCreators/tenantMasterAction';
+    addNewTenantDetail,rfid,validOnChangeContact,validOnChangeEmail,getFlats} from '../../actionCreators/tenantMasterAction';
 import { connect } from 'react-redux';
 import UI from '../../components/newUI/superAdminDashboard';
 import { getRelation } from './../../actionCreators/relationMasterAction';
@@ -10,6 +10,7 @@ import DefaultSelect from '../../constants/defaultSelect';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { numberValidation, maxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler, memberMaxDate } from '../../validation/validation';
 import Spinner from '../../components/spinner/spinner';
+import ModalBox from '../../components/modal/modal';
 
 class TenantMemberDetail extends Component {
     constructor(props){
@@ -45,7 +46,10 @@ class TenantMemberDetail extends Component {
             contact:'',
             emailChangeErr:'',
             validChangeContactErr:'',
-            lastName:''
+            lastName:'',
+            flatDetailId:'',
+            successMessage:'',
+            memberModal:false
         }
     }
 
@@ -68,7 +72,8 @@ class TenantMemberDetail extends Component {
         let id  = localStorage.getItem('tenantId');
         this.setState({tenantId: id})
         this.props.viewMember(id).then(() => this.setState({loading: false,editTenantMember:false,addTenantMember:false}))
-        console.log(id)
+        console.log(id);
+        this.props.getFlats(id).then(() => this.setState({loading: false,editTenantMember:false,addTenantMember:false}))
     }
 
     logout = () => {
@@ -82,9 +87,9 @@ class TenantMemberDetail extends Component {
         return this.props.history.push('/superDashBoard/tenantDetails')
     }
 
-    edit = (fmember, lmember, dob, gen, memEmail,memContact,memAadhaar, relationName, relationId, memberId, rfidId, rfid) => {
-        console.log(fmember, lmember, dob, gen, memEmail,memContact,memAadhaar, relationName, relationId, memberId, rfidId, rfid)
-        this.setState({firstName:fmember, lastName:lmember, memberDob:dob, gender:gen, email:memEmail, contact: memContact, aadhaarNumber: memAadhaar, relationName, relationId,memberId, rfidId, rfid,defRFID:rfidId, editTenantMember: !this.state.editTenantMember})
+    edit = (fmember, lmember, dob, gen, memEmail,memContact,memAadhaar, relationName, relationId, memberId, rfidId, rfid, flatId) => {
+        console.log(fmember, lmember, dob, gen, memEmail,memContact,memAadhaar, relationName, relationId, memberId, rfidId, rfid, flatId)
+        this.setState({firstName:fmember, lastName:lmember, memberDob:dob, gender:gen, email:memEmail, contact: memContact, aadhaarNumber: memAadhaar, relationName, relationId,memberId, rfidId, rfid,defRFID:rfidId,flatDetailId:flatId, editTenantMember: !this.state.editTenantMember})
     }
 
     getRelationList = ({ relationResult }) => {
@@ -154,7 +159,8 @@ class TenantMemberDetail extends Component {
                             <td>{item.rfid_master ? item.rfid_master.rfid:''}</td>
                             <td>
                                 <Button className="mr-2" color="success" onClick={this.edit.bind(this,item.firstName, item.lastName, item.memberDob,
-                                    item.gender, item.email, item.contact, item.aadhaarNumber, item.relation_master.relationName, item.relationId, item.memberId,item.rfid_master ? item.rfid_master.rfidId:'', item.rfid_master ? item.rfid_master.rfid:'')}>Edit</Button>
+                                    item.gender, item.email, item.contact, item.aadhaarNumber, item.relation_master.relationName, item.relationId, item.memberId,item.rfid_master ? item.rfid_master.rfidId:'', item.rfid_master ? item.rfid_master.rfid:'',
+                                    item.flatDetailId)}>Edit</Button>
                                 <Button color="danger" onClick={this.deleteMemberSelected.bind(this, item.memberId)}>Delete</Button>
                             </td>
                         </tr>
@@ -275,7 +281,7 @@ class TenantMemberDetail extends Component {
     updateTenantMember = (e) => {
         e.preventDefault();
         
-        let { firstName, lastName, memberDob, gender,contact,email, aadhaarNumber, relationId, memberId,rfidId } = this.state;
+        let { firstName, lastName, memberDob, gender,contact,email, aadhaarNumber, relationId, memberId,rfidId,flatDetailId } = this.state;
         console.log(firstName, memberDob, gender, relationId, memberId)
         let errors = {};
         if(firstName === '') errors.firstName = `First Name can't be empty.`;
@@ -291,11 +297,12 @@ class TenantMemberDetail extends Component {
         }
         if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar number can't be empty.`;
         else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar number should be of 12 digits.`;
+        if(!flatDetailId) errors.flatDetailId = `Please select Flat.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.emailChangeErr === '' && this.state.validChangeContactErr === ''){
             this.setState({loadingAfterEdit:true})
-            this.props.editTenantMember(firstName, lastName, memberDob, gender, email, contact, aadhaarNumber, relationId, memberId,rfidId)
+            this.props.editTenantMember(firstName, lastName, memberDob, gender, email, contact, aadhaarNumber, relationId, memberId,rfidId,flatDetailId)
             .then(() => {
                 this.loadDetailAfterEdit()
             })
@@ -307,13 +314,13 @@ class TenantMemberDetail extends Component {
         
     }
 
-    addNewTenantMember(fname, lname, dob, gen,memEmail,memContact, memAadhaar, relId, tenId,rfIdId){
-        console.log(fname, lname, dob, gen,memEmail,memContact, memAadhaar, relId, tenId,rfIdId);
+    addNewTenantMember(fname, lname, dob, gen,memEmail,memContact, memAadhaar, relId, tenId,rfIdId, flatId){
+        console.log(fname, lname, dob, gen,memEmail,memContact, memAadhaar, relId, tenId,rfIdId, flatId);
         
-        let {firstName, lastName, memberDob, gender, email, contact, aadhaarNumber, relationId, tenantId,rfidId} = this.state;
+        let {firstName, lastName, memberDob, gender, email, contact, aadhaarNumber, relationId, tenantId,rfidId, flatDetailId} = this.state;
         
         this.setState({firstName:fname, lastName:lname, memberDob:dob, gender:gen, email: memEmail, contact: memContact , aadhaarNumber: memAadhaar,
-             relationId:relId, tenantId:tenId,rfidId:rfIdId})
+             relationId:relId, tenantId:tenId,rfidId:rfIdId, flatDetailId:flatId})
         let errors = {};
         if(firstName === '') errors.firstName = `Member Name can't be empty.`;
 
@@ -326,13 +333,16 @@ class TenantMemberDetail extends Component {
         if(contact){
             if(contact.length !== 10) errors.contact= `Contact should be of 10 digit.`;
         }
+        if(!flatDetailId) errors.flatDetailId = `Please select Flat.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.emailChangeErr === '' && this.state.validChangeContactErr === ''){
             this.setState({loadingAfterAdd:true})
-            this.props.addNewTenantDetail({firstName, lastName, memberDob, gender, email, contact,aadhaarNumber, relationId, tenantId, rfidId})
-            .then(() => {
-                this.loadDetailAfterAdd()
+            this.props.addNewTenantDetail({firstName, lastName, memberDob, gender, email, contact,aadhaarNumber, relationId, tenantId, rfidId, flatDetailId})
+            .then((res) => {res
+                console.log(res)
+                this.loadDetailAfterAdd();
+                this.setState({successMessage: res.payload.message})
             })
             .catch(err => {
                 err;
@@ -344,6 +354,7 @@ class TenantMemberDetail extends Component {
 
     loadDetailAfterAdd = () => {
         this.props.viewMember(this.state.tenantId).then(() => this.setState({loadingAfterAdd:false,addTenantMember:false}))
+        .then(() => this.setState({memberModal:true}))
     }
 
     loadDetailAfterEdit = () => {
@@ -439,6 +450,19 @@ class TenantMemberDetail extends Component {
                 this.setState({validChangeContactErr: err.response.data.message})
             })
         }
+    }
+
+    flatInputs = ({getTenantFlats}) => {
+        if(getTenantFlats && getTenantFlats.flats){
+            console.log(getTenantFlats);
+            return getTenantFlats.flats.map(item => {
+                return <option key={item.flatDetailId} value={item.flatDetailId}>{item.flatNo}</option>
+            })
+        }
+    }
+
+    toggleTenantMemberModal = () => {
+        this.setState({memberModal:!this.state.memberModal})
     }
 
     render(){
@@ -543,10 +567,18 @@ class TenantMemberDetail extends Component {
             </Row>
         </FormGroup>
         <FormGroup>
+            <Label>Flats</Label>
+            <Input type="select" name="flatDetailId" onChange={this.addNewMemberChange} defaultValue="no-value" >
+                <DefaultSelect />
+                {this.flatInputs(this.props.tenantReducer)}
+            </Input>
+            <span className="error">{this.state.errors.flatDetailId}</span>
+        </FormGroup>
+        <FormGroup>
             <Button className="mr-2" color="primary" onClick={this.addNewTenantMember.bind(this,
                 this.state.firstName,this.state.lastName, this.state.memberDob, this.state.gender,this.state.email,
                 this.state.contact, this.state.aadhaarNumber, this.state.relationId,
-                this.state.tenantId,this.state.rfidId)}>Save</Button>
+                this.state.tenantId,this.state.rfidId, this.state.flatDetailId)}>Save</Button>
             <Button color="danger" onClick={this.toggleTenantMemberForm.bind(this)}>Cancel</Button> 
         </FormGroup>
         </div>
@@ -643,6 +675,14 @@ class TenantMemberDetail extends Component {
                     {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
                 </FormGroup> : ''}
             <FormGroup>
+                <Label>Flats</Label>
+                <Input type="select" name="flatDetailId" value={this.state.flatDetailId} onChange={this.addNewMemberChange} >
+                    <DefaultSelect />
+                    {this.flatInputs(this.props.tenantReducer)}
+                </Input>
+                <span className="error">{this.state.errors.flatDetailId}</span>
+            </FormGroup>
+            <FormGroup>
                 <Button className="mr-2" color="primary" onClick={this.updateTenantMember}>Save</Button>
                 <Button color="danger" onClick={this.toggleEditTenant.bind(this)}>Cancel</Button> 
             </FormGroup>
@@ -688,6 +728,12 @@ class TenantMemberDetail extends Component {
                             {!this.state.loadingAfterEdit ? editForm : <Spinner />}
                         </ModalBody>
                     </Modal>
+                    <ModalBox 
+                        title="Member Registered"
+                        openModal={this.state.memberModal}
+                        toggle={this.toggleTenantMemberModal.bind(this)}>
+                        <div style={{color:'green',fontSize:'20px', fontWeight:'bold', fontStyle:'italic', textAlign:'center'}}>{this.state.successMessage}</div>
+                    </ModalBox>
                     {!this.state.loading ? tableData : <Spinner />}
                 </div>
             </UI>
@@ -703,5 +749,5 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { viewMember, getRelation, deleteTenantMember,
+export default connect(mapStateToProps, { viewMember, getRelation, deleteTenantMember,getFlats,
      deleteSelectedTenantMember, editTenantMember, addNewTenantDetail,validOnChangeContact,validOnChangeEmail,rfid})(TenantMemberDetail);
