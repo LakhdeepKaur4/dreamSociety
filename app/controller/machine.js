@@ -126,6 +126,12 @@ exports.update = (req, res, next) => {
                 })
                     .then(machine => {
                         if (machine !== null) {
+                            if (body.machineId !== undefined) {
+                                delete body.machineId;
+                            }
+                            if (body.flatDetailId !== undefined && (body.flatDetailId === '' || body.flatDetailId === null)) {
+                                delete body.flatDetailId;
+                            }
                             machine.updateAttributes(body);
                             res.status(httpStatus.CREATED).json({
                                 message: 'Machine updated successfully'

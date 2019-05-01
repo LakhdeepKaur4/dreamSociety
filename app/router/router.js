@@ -657,4 +657,5 @@ module.exports = function (app) {
 	app.put('/api/commonAreaDetail/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.deleteSelected);
 
 	app.put('/api/commonAreaDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.delete);
+
 }
