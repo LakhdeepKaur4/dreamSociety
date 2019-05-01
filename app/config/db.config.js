@@ -171,6 +171,7 @@ db.tenantMembersDetail.belongsTo(db.tenant, { foreignKey: 'tenantId' });
 // db.tenant.belongsTo(db.owner, { as: 'Owner3', foreignKey: 'ownerId3' });
 db.tenantMembersDetail.belongsTo(db.relation, { foreignKey: 'relationId' });
 db.tenantMembersDetail.belongsTo(db.user, { foreignKey: 'userId' });
+db.tenantMembersDetail.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 // db.tenantMembersDetail.belongsTo(db.rfid, { foreignKey: 'rfidId' });
 db.tenant.belongsTo(db.user, { foreignKey: 'userId' });
 db.tenant.belongsTo(db.society, { foreignKey: 'societyId' });
