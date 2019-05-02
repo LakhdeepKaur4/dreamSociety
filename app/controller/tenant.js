@@ -511,19 +511,19 @@ exports.createEncrypted = async (req, res, next) => {
                             })
                             membersArr.map(item => {
                                 TenantMembersDetail.create(item)
-                                .then(async member => {
-                                    const owners = await OwnerFlatDetail.findAll({
-                                        where: {
-                                            isActive: true,
-                                            flatDetailId: tenant.flatDetailId
-                                        },
-                                        attributes: ['ownerId']
-                                    })
-                                    owners.map(item => {
-                                        ownerId = item.ownerId;
-                                        mailToOwner1(ownerId, member.email, member.memberId, member.userName);
+                                    .then(async member => {
+                                        const owners = await OwnerFlatDetail.findAll({
+                                            where: {
+                                                isActive: true,
+                                                flatDetailId: tenant.flatDetailId
+                                            },
+                                            attributes: ['ownerId']
+                                        })
+                                        owners.map(item => {
+                                            ownerId = item.ownerId;
+                                            mailToOwner1(ownerId, member.email, member.memberId, member.userName);
+                                        });
                                     });
-                                });
                                 User.create({
                                     userId: item.memberId,
                                     firstName: encrypt(item.firstName),
@@ -704,7 +704,9 @@ exports.getDecrypted = (req, res, next) => {
                             tenant.email = decrypt(tenant.email);
                             tenant.contact = decrypt(tenant.contact);
                             tenant.aadhaarNumber = decrypt(tenant.aadhaarNumber);
-                            tenant.picture = decrypt(tenant.picture);
+                            if (tenant.picture !== null) {
+                                tenant.picture = decrypt(tenant.picture);
+                            }
                             tenant.permanentAddress = decrypt(tenant.permanentAddress);
                             tenant.correspondenceAddress = decrypt(tenant.correspondenceAddress);
                             tenant.gender = decrypt(tenant.gender);
@@ -891,7 +893,17 @@ exports.updateEncrypted = async (req, res, next) => {
                 }
             })
                 .then(tenant => {
-                    UserRFID.update({ rfidId: update.rfidId }, { where: { userId: tenant.tenantId, isActive: true } });
+                    UserRFID.findOne( { where: { userId: tenant.tenantId, isActive: true } })
+                    .then(tenantRfid => {
+                        if (tenantRfid !== null) {
+                            tenantRfid.updateAttributes({ rfidId: update.rfidId })
+                        } else {
+                            UserRFID.create({
+                                userId: tenant.tenantId,
+                                rfidId: update.rfidId
+                            })
+                        }
+                    })
                     User.update(updates, { where: { userName: tenant.userName, isActive: true } });
                     return tenant.updateAttributes(updates);
                 })
@@ -941,7 +953,8 @@ exports.getTenantMembers = async (req, res, next) => {
                     },
                     order: [['createdAt', 'DESC']],
                     include: [
-                        { model: Relation }
+                        { model: Relation },
+                        { model: FlatDetail }
                     ]
                 })
                     .then(async member => {
@@ -1092,7 +1105,7 @@ exports.addTenantMembers = async (req, res, next) => {
             flats.map(item => {
                 flatIds.push(item.flatDetailId);
             })
-            
+
             const owners = await OwnerFlatDetail.findAll({
                 where: {
                     isActive: true,
@@ -1153,7 +1166,17 @@ exports.editTenantMembers = async (req, res, next) => {
         .then(member => {
             member.updateAttributes(update);
             User.update(update, { where: { userId: id } })
-            UserRFID.update({ rfidId: update.rfidId }, { where: { userId: id } });
+            UserRFID.findOne({ where: { userId: id } })
+            .then(memberRfid => {
+                if (memberRfid !== null) {
+                    memberRfid.updateAttributes({ rfidId: update.rfidId }) 
+                } else {
+                    UserRFID.create({
+                        userId: member.memberId,
+                        rfidId: update.rfidId
+                    })
+                }
+            })
             return res.status(httpStatus.CREATED).json({
                 message: 'Member updated successfully',
             })
