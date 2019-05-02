@@ -423,11 +423,20 @@ exports.create1 = async (req, res, next) => {
           email: encrypt1(key, email),
           isActive: false
         });
-
-        let userRfId = await UserRfId.create({
-          userId:user.userId,
-          rfidId:member.memberRfId
-        })
+        if(member.merberRfId !== null && member.memberRfId !== undefined && member.memberRfId !== ''){
+          let userRfId = await UserRfId.create({
+            userId:user.userId,
+            rfidId:member.memberRfId
+          })
+        }
+        // else {
+        //   member.memberRfId = null;
+        //   let userRfId = await UserRfId.create({
+        //     userId:user.userId,
+        //     rfidId:member.memberRfId
+        //   })
+        // }
+        
         let roles = await Role.findOne({
           where: {
             id: 3
@@ -1904,6 +1913,9 @@ exports.addMember = async (req, res, next) => {
     req.body.memberContact = encrypt(key, req.body.memberContact);
     req.body.gender = encrypt(key, req.body.gender);
     req.body.password = password;
+    if(req.body.memberRfId === ""){
+      req.body.memberRfId = null
+    }
     let fields = req.body;
     fields.userId = req.userId;
 
@@ -1932,11 +1944,11 @@ exports.addMember = async (req, res, next) => {
         email: encrypt1(key, email),
         isActive: false
       });
-
+    
       let userRfId = await UserRfId.create({
         userId:user.userId,
         rfidId:member.memberRfId
-      })
+      }) 
       let roles = await Role.findOne({
         where: {
           id: 3
