@@ -5,7 +5,7 @@ import { getServiceType } from '../../../actionCreators/serviceMasterAction';
 import { addVendorMaster, getRateType,getVendorMaster } from '../../../actionCreators/vendorMasterAction';
 import { Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import Select from 'react-select';
-import UI from '../../../components/newUI/vendorDashboardInside';
+import UI from '../../../components/newUI/superAdminDashboard';
 import {getCountry,getState,getCity, getLocation} from '../../../actionCreators/societyMasterAction';
 import DefaultSelect from '../../../constants/defaultSelect';
 import Spinner from '../../../components/spinner/spinner';

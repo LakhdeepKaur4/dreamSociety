@@ -7,7 +7,7 @@ import DefaultSelect from '../../../constants/defaultSelect';
 import Spinner from '../../../components/spinner/spinner';
 import { Col, Row, Button } from 'reactstrap';
 
-import UI from '../../../components/newUI/vendorDashboardInside';
+import UI from '../../../components/newUI/superAdminDashboard';
 
 
 
