@@ -1804,7 +1804,9 @@ exports.updateMember = async (req, res, next) => {
           userId: id
         }
       });
-    uRfId.updateAttributes({rfidId:req.body.memberRfId});
+      if(uRfId){
+        uRfId.updateAttributes({rfidId:req.body.memberRfId});
+      }
     };
     attrArr.forEach(attr => {
       if (

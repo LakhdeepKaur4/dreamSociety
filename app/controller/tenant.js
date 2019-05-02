@@ -164,7 +164,49 @@ let mailToOwner = async (ownerId, email, id, userName) => {
                         }
                     ],
                     "Subject": "Tenant tried to register in Dream Society",
-                    "HTMLPart": `${userName1} is registering in Dream society <b>Click on the given link to verify your tenant</b> <a href="http://192.168.1.16:3000/login/tokenVerification?ownerId=${ownerId}&tenantId=${tenantId}">click here</a>`
+                    "HTMLPart": `${userName1} is registering in Dream society <b>Click on the given link to verify your tenant</b> <a href="http://192.168.1.16:3000/login/tenantVerification?ownerId=${ownerId}&tenantId=${tenantId}">click here</a>`
+                    //   "HTMLPart": `your username is: ${userName} and password is: ${password}. `
+                }
+            ]
+        })
+    request
+        .then((result) => {
+            console.log(result.body)
+            // console.log(`http://192.168.1.105:3000/submitotp?userId=${encryptedId}token=${encryptedToken}`);
+        })
+        .catch((err) => {
+            console.log(err.statusCode)
+        })
+}
+
+
+
+let mailToOwner1 = async (ownerId, email, id, userName) => {
+    // let email = decrypt1(key,owner.email);
+    // let password = owner.password;
+    let key = config.secret;
+    const owner = await Owner.findOne({ where: { isActive: true, ownerId: ownerId } });
+    let email1 = decrypt1(key, owner.email)
+    mailToUser(decrypt1(key, email), id);
+    ownerId = encrypt(ownerId.toString());
+    tenantId = encrypt(id.toString());
+    let userName1 = decrypt(userName);
+    const request = mailjet.post("send", { 'version': 'v3.1' })
+        .request({
+            "Messages": [
+                {
+                    "From": {
+                        "Email": "rohit.khandelwal@greatwits.com",
+                        "Name": "Greatwits"
+                    },
+                    "To": [
+                        {
+                            "Email": email1,
+                            "Name": 'Atin' + ' ' + 'Tanwar'
+                        }
+                    ],
+                    "Subject": "Tenant tried to register in Dream Society",
+                    "HTMLPart": `${userName1} is registering in Dream society <b>Click on the given link to verify your tenant</b> <a href="http://192.168.1.16:3000/login/tenantVerification?ownerId=${ownerId}&tenantMemberId=${tenantId}">click here</a>`
                     //   "HTMLPart": `your username is: ${userName} and password is: ${password}. `
                 }
             ]
@@ -479,7 +521,7 @@ exports.createEncrypted = async (req, res, next) => {
                                     })
                                     owners.map(item => {
                                         ownerId = item.ownerId;
-                                        mailToOwner(ownerId, member.email, member.memberId, member.userName);
+                                        mailToOwner1(ownerId, member.email, member.memberId, member.userName);
                                     });
                                 });
                                 User.create({
@@ -1062,7 +1104,7 @@ exports.addTenantMembers = async (req, res, next) => {
             })
             owners.map(item => {
                 ownerId = item.ownerId;
-                mailToOwner(ownerId, member.email, member.memberId, member.userName);
+                mailToOwner1(ownerId, member.email, member.memberId, member.userName);
             });
             return res.status(httpStatus.CREATED).json({
                 message: 'Member created successfully. Please check email and contact to your flat owner for account activation.'

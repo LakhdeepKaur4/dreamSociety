@@ -538,6 +538,7 @@ exports.checkOtp = async (req, res, next) => {
     
 
     if (req.query.tenantMemberId) {
+        console.log("here i am . wow!!!!!=====================================>",req.query.tenantMemberId);
 
         let tenantMemberId = decrypt1(key, req.query.tenantMemberId);
         console.log(tenantMemberId);
@@ -572,6 +573,7 @@ exports.checkOtp = async (req, res, next) => {
             });
 
             if (user) {
+                user.updateAttributes({ isActive: true });
                 let roles = await Role.findOne({
                     where: { id: 4 }
                 });
@@ -579,7 +581,7 @@ exports.checkOtp = async (req, res, next) => {
                 // user.setRoles(roles);
                 let role = await UserRoles.findOne({where:{ userId: user.userId, roleId: roles.id }});
                 role.updateAttributes({isActive:true});
-                user.updateAttributes({ isActive: true });
+                // user.updateAttributes({ isActive: true });
             }
 
             // set roles
