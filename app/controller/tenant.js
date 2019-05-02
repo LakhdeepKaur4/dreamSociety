@@ -444,7 +444,8 @@ exports.createEncrypted = async (req, res, next) => {
                         if (tenant.flatDetailId !== null && tenant.flatDetailId !== undefined && tenant.flatDetailId !== '') {
                             TenantFlatDetail.create({
                                 flatDetailId: tenant.flatDetailId,
-                                tenantId: entry.tenantId
+                                tenantId: entry.tenantId,
+                                isActive: false
                             })
                         }
 
@@ -539,8 +540,8 @@ exports.createEncrypted = async (req, res, next) => {
                                 })
                                     .then(user => {
                                         // user.setRoles(roles);
-                                        UserRoles.create({ userId: user.userId, roleId: roles.id });
-                                        UserRFID.create({ userId: user.userId, rfidId: item.rfidId });
+                                        UserRoles.create({ userId: user.userId, roleId: roles.id, isActive: false });
+                                        UserRFID.create({ userId: user.userId, rfidId: item.rfidId, isActive: false });
                                     })
                             })
                         }
@@ -893,17 +894,17 @@ exports.updateEncrypted = async (req, res, next) => {
                 }
             })
                 .then(tenant => {
-                    UserRFID.findOne( { where: { userId: tenant.tenantId, isActive: true } })
-                    .then(tenantRfid => {
-                        if (tenantRfid !== null) {
-                            tenantRfid.updateAttributes({ rfidId: update.rfidId })
-                        } else {
-                            UserRFID.create({
-                                userId: tenant.tenantId,
-                                rfidId: update.rfidId
-                            })
-                        }
-                    })
+                    UserRFID.findOne({ where: { userId: tenant.tenantId, isActive: true } })
+                        .then(tenantRfid => {
+                            if (tenantRfid !== null) {
+                                tenantRfid.updateAttributes({ rfidId: update.rfidId })
+                            } else {
+                                UserRFID.create({
+                                    userId: tenant.tenantId,
+                                    rfidId: update.rfidId
+                                })
+                            }
+                        })
                     User.update(updates, { where: { userName: tenant.userName, isActive: true } });
                     return tenant.updateAttributes(updates);
                 })
@@ -1136,11 +1137,15 @@ exports.editTenantMembers = async (req, res, next) => {
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json('Id is missing');
     }
 
+    console.log('ID ===>', id);
+
     const update = req.body;
 
     if (!update) {
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json('Please try again');
     }
+
+    console.log('Body ===>', update);
 
     member = await TenantMembersDetail.findOne({ where: { memberId: id } });
 
@@ -1165,18 +1170,18 @@ exports.editTenantMembers = async (req, res, next) => {
     })
         .then(member => {
             member.updateAttributes(update);
-            User.update(update, { where: { userId: id } })
-            UserRFID.findOne({ where: { userId: id } })
-            .then(memberRfid => {
-                if (memberRfid !== null) {
-                    memberRfid.updateAttributes({ rfidId: update.rfidId }) 
-                } else {
-                    UserRFID.create({
-                        userId: member.memberId,
-                        rfidId: update.rfidId
-                    })
-                }
-            })
+            User.update(update, { where: { userId: member.memberId } })
+            UserRFID.findOne({ where: { userId: member.memberId, isActive: true } })
+                .then(memberRfid => {
+                    if (memberRfid !== null) {
+                        memberRfid.updateAttributes({ rfidId: update.rfidId })
+                    } else {
+                        UserRFID.create({
+                            userId: member.memberId,
+                            rfidId: update.rfidId
+                        })
+                    }
+                })
             return res.status(httpStatus.CREATED).json({
                 message: 'Member updated successfully',
             })
