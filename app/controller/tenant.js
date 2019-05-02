@@ -511,19 +511,19 @@ exports.createEncrypted = async (req, res, next) => {
                             })
                             membersArr.map(item => {
                                 TenantMembersDetail.create(item)
-                                .then(async member => {
-                                    const owners = await OwnerFlatDetail.findAll({
-                                        where: {
-                                            isActive: true,
-                                            flatDetailId: tenant.flatDetailId
-                                        },
-                                        attributes: ['ownerId']
-                                    })
-                                    owners.map(item => {
-                                        ownerId = item.ownerId;
-                                        mailToOwner1(ownerId, member.email, member.memberId, member.userName);
+                                    .then(async member => {
+                                        const owners = await OwnerFlatDetail.findAll({
+                                            where: {
+                                                isActive: true,
+                                                flatDetailId: tenant.flatDetailId
+                                            },
+                                            attributes: ['ownerId']
+                                        })
+                                        owners.map(item => {
+                                            ownerId = item.ownerId;
+                                            mailToOwner1(ownerId, member.email, member.memberId, member.userName);
+                                        });
                                     });
-                                });
                                 User.create({
                                     userId: item.memberId,
                                     firstName: encrypt(item.firstName),
@@ -943,7 +943,8 @@ exports.getTenantMembers = async (req, res, next) => {
                     },
                     order: [['createdAt', 'DESC']],
                     include: [
-                        { model: Relation }
+                        { model: Relation },
+                        { model: FlatDetail }
                     ]
                 })
                     .then(async member => {
@@ -1094,7 +1095,7 @@ exports.addTenantMembers = async (req, res, next) => {
             flats.map(item => {
                 flatIds.push(item.flatDetailId);
             })
-            
+
             const owners = await OwnerFlatDetail.findAll({
                 where: {
                     isActive: true,
