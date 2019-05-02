@@ -62,7 +62,7 @@ class MaintenanceSubMasterForm extends Component{
     }
 
     fetchMaintenanceType({maintenanceType}){
-        if(maintenanceType){
+        if(maintenanceType && maintenanceType.maintenance){
            return maintenanceType.maintenance.map((item) => {
                return (
                    <option key={item.maintenanceId} value={item.maintenanceId}>{item.category}</option>
