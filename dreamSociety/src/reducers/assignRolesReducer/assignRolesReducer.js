@@ -1,5 +1,5 @@
 import {ASSIGN_ROLES, ASSIGN_OWNER, ASSIGN_CHANGES, ASSIGN_POST, ASSIGN_DISPLAY} from  './../../actions/index';
-export default function(state={},action){
+export default function(state=[],action){
   
     switch(action.type){
     case ASSIGN_ROLES:

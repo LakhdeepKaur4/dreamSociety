@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import {userflatDetails,postRegister,serviceDetails} from '../../actionCreators/registerComplainAction';
 import UI from '../../components/newUI/tenantDashboard';
-import {Form, Button,  FormGroup,  Input, Label,Row, Col } from 'reactstrap';
+import {Form, Button,  FormGroup,  Input, Label,Row, Col, Modal,ModalBody,ModalHeader } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
 
@@ -23,6 +23,7 @@ class RegisterComplaint extends Component{
             description:'',
             errors: {},
             message:'',
+            modal:false,
             menuVisible: false,
          }
     }
@@ -37,6 +38,17 @@ class RegisterComplaint extends Component{
          this.props.userflatDetails().then(() => this.setState({loading: false}));
          this.props.serviceDetails().then(() => this.setState({loading: false}));
         
+    }
+
+    
+   toggles = () => {
+    this.setState({ modal: !this.state.modal })
+    }
+
+    toggle = () => { 
+        this.setState({
+            modal: !this.state.modal
+        })
     }
 
     service({item}){
@@ -117,10 +129,17 @@ class RegisterComplaint extends Component{
         if(isValid){
                     this.setState({loading:true})
                     this.props.postRegister(this.state)
-                    .then(()=>{this.setState({loading: false})})
-                    .catch(err=>{
-                        this.setState({message: err.response.data.message, loading: false})
+                    .then((msg)=>{ msg;
+                        console.log(msg)
+                        this.setState({message : msg.payload.message, loading: false 
+                        })
+                        this.toggle()
                     })
+                    .catch(err=>{err;
+                        console.log(err);
+                        this.setState({message : err.response.data.message, loading: false})
+                    })
+                
                     
                  
                     }
@@ -261,6 +280,12 @@ class RegisterComplaint extends Component{
                         {!this.state.loading ? formData : <Spinner />}
 
                     </Form>
+                    <Modal isOpen={this.state.modal} toggle={this.toggles} >
+                    <ModalHeader toggle={this.toggle}>Message</ModalHeader>
+                    <ModalBody>
+                        <h1 style={{display:"block",background: 'black'}}>{this.state.message}</h1> 
+                    </ModalBody>
+                    </Modal>
                 </UI>
             </div>
         )

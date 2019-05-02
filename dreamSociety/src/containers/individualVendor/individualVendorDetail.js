@@ -332,7 +332,7 @@ class IndividualVendorDetail extends Component {
     }
 
     rateTypeDetail({ rate }) {
-        if (rate) {
+        if (rate && rate.rate) {
             console.log(rate)
 
             return (
