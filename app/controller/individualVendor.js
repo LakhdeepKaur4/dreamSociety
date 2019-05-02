@@ -275,7 +275,7 @@ exports.create = async (req, res, next) => {
                         })
                             .then(user => {
                                 // user.setRoles(roles);
-                                UserRoles.create({ userId: user.userId, roleId: roles.id });
+                                UserRoles.create({ userId: user.userId, roleId: roles.id, isActive: false });
                             })
                         if (vendor.profilePicture) {
                             await saveToDisc(vendor.fileName1, vendor.fileExt1, vendor.profilePicture, (err, res) => {
