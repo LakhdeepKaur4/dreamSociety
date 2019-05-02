@@ -893,7 +893,17 @@ exports.updateEncrypted = async (req, res, next) => {
                 }
             })
                 .then(tenant => {
-                    UserRFID.update({ rfidId: update.rfidId }, { where: { userId: tenant.tenantId, isActive: true } });
+                    UserRFID.findOne( { where: { userId: tenant.tenantId, isActive: true } })
+                    .then(tenantRfid => {
+                        if (tenantRfid !== null) {
+                            tenantRfid.updateAttributes({ rfidId: update.rfidId })
+                        } else {
+                            UserRFID.create({
+                                userId: tenant.tenantId,
+                                rfidId: update.rfidId
+                            })
+                        }
+                    })
                     User.update(updates, { where: { userName: tenant.userName, isActive: true } });
                     return tenant.updateAttributes(updates);
                 })
@@ -1156,7 +1166,17 @@ exports.editTenantMembers = async (req, res, next) => {
         .then(member => {
             member.updateAttributes(update);
             User.update(update, { where: { userId: id } })
-            UserRFID.update({ rfidId: update.rfidId }, { where: { userId: id } });
+            UserRFID.findOne({ where: { userId: id } })
+            .then(memberRfid => {
+                if (memberRfid !== null) {
+                    memberRfid.updateAttributes({ rfidId: update.rfidId }) 
+                } else {
+                    UserRFID.create({
+                        userId: member.memberId,
+                        rfidId: update.rfidId
+                    })
+                }
+            })
             return res.status(httpStatus.CREATED).json({
                 message: 'Member updated successfully',
             })
