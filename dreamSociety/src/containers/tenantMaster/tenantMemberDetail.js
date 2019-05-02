@@ -112,7 +112,7 @@ class TenantMemberDetail extends Component {
         return function(x){
             console.log(x)
             if(x){
-                return x.firstName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                return  (x.firstName + ' ' + x.lastName).toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.memberDob.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.gender.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.relation_master.relationName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
