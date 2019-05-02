@@ -49,7 +49,7 @@ let mailToUser = (email, tenantId) => {
                         }
                     ],
                     "Subject": "Activation link",
-                    "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://192.168.1.16:3000/login/tokenVerification?tenantId=${tenantId}&token=${token}">click here</a>`
+                    "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://mydreamsociety.com/login/tokenVerification?tenantId=${tenantId}&token=${token}">click here</a>`
                 }
             ]
         })
@@ -85,7 +85,7 @@ let mailToUser1 = (email, tenantMemberId) => {
                         }
                     ],
                     "Subject": "Activation link",
-                    "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://192.168.1.16:3000/login/tokenVerification?tenantMemberId=${tenantMemberId}&token=${token}">click here</a>`
+                    "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://mydreamsociety.com/login/tokenVerification?tenantMemberId=${tenantMemberId}&token=${token}">click here</a>`
                 }
             ]
         })
