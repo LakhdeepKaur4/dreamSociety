@@ -12,6 +12,7 @@ export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:808
 // export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://dreamsociety.herokuapp.com/';
 // export  const UR = 'https://dreamsociety.herokuapp.com/'
+// export  const UR = 'https://dreamsociety.herokuapp.com/';
 
 
 export const USER_LOGIN='user_login';

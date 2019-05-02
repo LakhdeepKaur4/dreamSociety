@@ -112,9 +112,11 @@ class TenantMemberDetail extends Component {
         return function(x){
             console.log(x)
             if(x){
-                return x.firstName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                return  (x.firstName + ' ' + x.lastName).toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.memberDob.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.gender.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                x.email.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                x.contact.toString().indexOf(search.toString()) !== -1 ||
                 x.relation_master.relationName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 !search;
             }
@@ -158,6 +160,8 @@ class TenantMemberDetail extends Component {
                             <td>{item.firstName}{' '}{item.lastName}</td>
                             <td>{item.memberDob}</td>
                             <td>{item.gender}</td>
+                            <td>{item.email}</td>
+                            <td>{item.contact}</td>
                             <td>{item.relation_master ? item.relation_master.relationName : ''}</td>
                             <td>{item.flat_detail_master ? item.flat_detail_master.flatNo : ''}</td>
                             <td>{item.rfid_master ? item.rfid_master.rfid:''}</td>
@@ -491,6 +495,8 @@ class TenantMemberDetail extends Component {
                                     }}>Member Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Date of Birth</th>
                 <th>Gender</th>
+                <th>Email</th>
+                <th>Contact</th>
                 <th>Relation with Tenant</th>
                 <th>Flat</th>
                 <th>RFID</th>

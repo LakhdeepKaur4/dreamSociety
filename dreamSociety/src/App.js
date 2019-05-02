@@ -144,6 +144,7 @@ import FlatLineChart from './containers/chart/flatlinechart';
 import InventoryLineChart from './containers/chart/inventoryLineChart';
 import InventoryPieChart from './containers/chart/inventoryPieChart';
 import Chart from './containers/chart/chart';
+import ChangePasswordVendor from './components/changePassword/changePasswordVendor';
 
 class App extends Component {
   render() {
@@ -239,6 +240,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/changePassword' component={ChangePassword} />
             <TenantPrivateRoute path='/tenantDashboard/changePasswordTenant' component={ChangePasswordTenant} />
             <OwnerPrivateRoute path='/ownerDashboard/changePasswordOwner' component={ChangePasswordOwner} />
+            <VendorPrivateRoute path='/vendorDashboard/changePasswordVendor' component={ChangePasswordVendor} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
             <PrivateRoute path='/superDashboard/displayEmployee2' component={DisplayEmployeeMaster2} />
             <PrivateRoute path='/superDashboard/inventoryList' component={InventoryList} />

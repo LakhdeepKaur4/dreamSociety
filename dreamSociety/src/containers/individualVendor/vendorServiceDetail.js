@@ -89,7 +89,7 @@ class VendorServiceDetail extends Component {
     }
 
     getDropDown1 = ({rate}) => {
-        if (rate) {
+        if (rate && rate.rate) {
             return rate.rate.map((item) => {
                 return (
                     <option key={item.rateId} value={item.rateId}>
@@ -167,7 +167,7 @@ updateServices = () => {
 
     renderList = ({ getServiceVendor }) => {  
 
-        if (getServiceVendor ) {
+        if (getServiceVendor && getServiceVendor.vendor ) {
             console.log(getServiceVendor)
             let item=getServiceVendor.vendor
              

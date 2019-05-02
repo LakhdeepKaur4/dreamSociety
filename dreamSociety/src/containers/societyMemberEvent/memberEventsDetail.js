@@ -244,6 +244,10 @@ class MemberEventsDetail extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
+    changePassword=()=>{ 
+        return this.props.history.replace('/superDashboard/changePassword')
+    }
+
     render() {
         let tableData;
         tableData = <div style={{ backgroundColor: 'lightgray' }}>
@@ -283,7 +287,7 @@ class MemberEventsDetail extends Component {
         return (
             <div>
 
-                <UI onClick={this.logout}>
+                <UI onClick={this.logout} change={this.changePassword}>
                     <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
