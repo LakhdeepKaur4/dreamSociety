@@ -37,7 +37,7 @@ import stateMasterDetails from './containers/stateMaster/stateMasterDetails';
 import PersonDetails from './containers/personDetails/personDetails';
 import ServiceMaster from './containers/vendorMangement/serviceMaster/serviceMaster';
 import DisplayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
-
+import vendorMaster from './containers/vendorMangement/vendorMaster/vendorMaster';
 import DisplayVendorMaster from './containers/vendorMangement/vendorMaster/displayVendorMaster';
 import DisplayVendorServices from './containers/vendorMangement/vendorMaster/displayVendorServices';
 
@@ -184,7 +184,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/add_parking/new' component={Parking} />
             <PrivateRoute path='/superDashboard/ServiceMaster' component={ServiceMaster} />
             <PrivateRoute path='/superDashboard/personDetails' component={PersonDetails} />
-       
+            <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster}/>
             <PrivateRoute path='/superDashboard/displayVendorMaster' component={DisplayVendorMaster}/>
             <PrivateRoute path='/superDashboard/displayVendorServices' component={DisplayVendorServices}/>
             <PrivateRoute path='/superDashboard/DisplayServices' component={DisplayServices} />

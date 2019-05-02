@@ -112,7 +112,7 @@ class TenantMemberDetail extends Component {
         return function(x){
             console.log(x)
             if(x){
-                return x.firstName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                return  (x.firstName + ' ' + x.lastName).toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.memberDob.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.gender.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.relation_master.relationName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
@@ -123,7 +123,7 @@ class TenantMemberDetail extends Component {
 
     fetchMemberDetails = ({getMemberDetail}) => {
         console.log(getMemberDetail)
-        if(getMemberDetail){
+        if(getMemberDetail && getMemberDetail.members){
             return getMemberDetail.members.sort((item1,item2)=>{
                 if(item1 && item2){
                     var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
@@ -331,13 +331,11 @@ class TenantMemberDetail extends Component {
         if(memberDob === '') errors.memberDob = `Date of Birth can't be empty.`;
         if(gender === '') errors.gender = `Please select any gender.`;
         if(!relationId) errors.relationId = `Select relation with tenant.`;
-        if(!rfidId) errors.rfidId = `Please select RFID.`;
         if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar number can't be empty.`;
         else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar number should be of 12 digits.`;
         if(contact){
             if(contact.length !== 10) errors.contact= `Contact should be of 10 digit.`;
         }
-        if(!flatDetailId) errors.flatDetailId = `Please select Flat.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.emailChangeErr === '' && this.state.validChangeContactErr === ''){
@@ -579,7 +577,6 @@ class TenantMemberDetail extends Component {
                     <Select name='rfidId' placeholder={<DefaultSelect />} 
                         options={this.rfidOptions(this.props.tenantReducer)}
                         onChange={this.rfidChange.bind(this, 'rfidId')} />
-                    {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
                 </Col>
             </Row>
         </FormGroup>
@@ -589,7 +586,6 @@ class TenantMemberDetail extends Component {
                 <DefaultSelect />
                 {this.flatInputs(this.props.tenantReducer)}
             </Input>
-            <span className="error">{this.state.errors.flatDetailId}</span>
         </FormGroup>
         <FormGroup>
             <Button className="mr-2" color="primary" onClick={this.addNewTenantMember.bind(this,
