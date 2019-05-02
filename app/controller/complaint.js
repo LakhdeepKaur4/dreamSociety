@@ -1,9 +1,11 @@
 const db = require('../config/db.config.js');
+const config = require('../config/config.js');
 const httpStatus = require('http-status');
+const crypto = require('crypto');
 
 const Complaint = db.complaint;
 const ComplaintStatus = db.complaintStatus;
-const Service = db.Service;
+const Service = db.service;
 const FlatDetail = db.flatDetail;
 const Vendor = db.vendor;
 
@@ -87,6 +89,7 @@ exports.get = (req, res, next) => {
 }
 
 exports.getByUserId = (req, res, next) => {
+    const complaintsSend = [];
     Complaint.findAll({
         where: {
             isActive: true,
@@ -96,14 +99,42 @@ exports.getByUserId = (req, res, next) => {
             { model: ComplaintStatus },
             { model: FlatDetail, where: { isActive: true } },
             { model: Service, where: { isActive: true } },
-            { model: Vendor, where: { isActive: true }, attributes: ['vendorId','firstName','lastName'] }
+            // { model: Vendor, where: { isActive: true }, attributes: ['vendorId','firstName','lastName'] }
         ]
     })
         .then(complaints => {
             if (complaints.length !== 0) {
-                res.status(httpStatus.OK).json({
-                    complaints: complaints
+                complaints.map(async item => {
+                    if (item.vendorId !== null) {
+                        await Vendor.findOne({
+                            where: {
+                                isActive: true,
+                                vendorId: item.vendorId
+                            }
+                        })
+                            .then(vendor => {
+                                vendor.firstName = decrypt(vendor.firstName);
+                                vendor.lastName = decrypt(vendor.lastName);
+                                vendor.contact = decrypt(vendor.contact);
+                                item = item.toJSON();
+                                item.vendor_master = {
+                                    vendorId: vendor.vendorId,
+                                    firstName: vendor.firstName,
+                                    lastName: vendor.lastName,
+                                    contact: vendor.contact
+                                }
+                                complaintsSend.push(item);
+                            })
+                    }
+                    else {
+                        complaintsSend.push(item);
+                    }
                 })
+                setTimeout(() => {
+                    res.status(httpStatus.OK).json({
+                        complaints: complaintsSend
+                    })
+                }, 1000);
             } else {
                 res.status(httpStatus.NO_CONTENT).json({
                     message: 'No Data Found'
