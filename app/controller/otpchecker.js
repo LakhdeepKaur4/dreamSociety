@@ -502,10 +502,10 @@ exports.checkOtp = async (req, res, next) => {
                 });
         }
         let updatedTenant = await tenant.updateAttributes({ isActive: true });
-        let x = await TenantFlatDetail.findAll({where:{tenantId:updatedTenant.tenantId,isActive:false}});
-        x.forEach(tenantFlat => tenantFlat.updateAttributes({isActive:true}));
-        let y = await UserRfId.findOne({where:{isActive:false,userId:updatedTenant.tenantId}});
-        y.updateAttributes({isActive:true});
+        // let x = await TenantFlatDetail.findAll({where:{tenantId:updatedTenant.tenantId,isActive:false}});
+        // x.forEach(tenantFlat => tenantFlat.updateAttributes({isActive:true}));
+        // let y = await UserRfId.findOne({where:{isActive:false,userId:updatedTenant.tenantId}});
+        // y.updateAttributes({isActive:true});
         
         console.log(updatedTenant);
         if (updatedTenant) {
@@ -569,8 +569,8 @@ exports.checkOtp = async (req, res, next) => {
         }
         let updatedTenant = await tenantMember.updateAttributes({ isActive: true });
 
-        let y = await UserRfId.findOne({where:{isActive:false,userId:updatedTenant.memberId}});
-        y.updateAttributes({isActive:true});
+        // let y = await UserRfId.findOne({where:{isActive:false,userId:updatedTenant.memberId}});
+        // y.updateAttributes({isActive:true});
         console.log(updatedTenant);
         if (updatedTenant) {
             mailToUser(updatedTenant);
