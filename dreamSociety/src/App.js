@@ -274,9 +274,9 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/machineIdMaster' component ={MachineIdMaster}/>
             <PrivateRoute path='/superDashboard/displayMachineIdMaster' component={DisplayMachineIdMaster}/>
           
-            <PrivateRoute path='/ownerDashboard/viewStatusOwner' component={ViewStatusOwner}/>
-            <PrivateRoute path='/ownerDashboard/complaintOwnerDetails' component={ComplaintOwnerDetails}/>
-            <PrivateRoute path='/ownerDashboard/complaintTenantDetails' component={ComplaintTenantDetails}/>
+            <OwnerPrivateRoute path='/ownerDashboard/viewStatusOwner' component={ViewStatusOwner}/>
+            <OwnerPrivateRoute path='/ownerDashboard/complaintOwnerDetails' component={ComplaintOwnerDetails}/>
+            <TenantPrivateRoute path='/tenantDashboard/complaintTenantDetails' component={ComplaintTenantDetails}/>
             <PrivateRoute  path ='/superDashboard/flatPieChart' component ={FlatPieChart}/>
             <PrivateRoute path='/superDashboard/flatLineChart' component={FlatLineChart}/>
             <PrivateRoute path='/superDashboard/inventoryLineChart' component={InventoryLineChart}/>
@@ -284,7 +284,7 @@ class App extends Component {
             <PrivateRoute path ='/superDashboard/charts' component ={Chart}/>
 
 
-            <PrivateRoute path='/superDashboard/dashboard' component={Dashboard}/>
+            
           </Switch>
         </div>
         

@@ -180,7 +180,7 @@ class DesignationMasterDetail extends Component {
 
 
     renderDesignation = ({ designationResult }) => {
-        if (designationResult) {
+        if (designationResult && designationResult.designation) {
 
             return designationResult.designation.sort((item1, item2) => {
                 var cmprVal = (item1.designationName && item2.designationName) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''

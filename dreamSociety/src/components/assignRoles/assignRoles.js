@@ -95,7 +95,7 @@ class AssignRoles extends Component{
 
     roleDetail=({getRoles})=>{
         console.log(getRoles)
-        if(getRoles){
+        if(getRoles && getRoles.role){
            return(
             getRoles.role.map((item) =>{
                    return(
@@ -131,15 +131,18 @@ class AssignRoles extends Component{
        
            return(
             getChanges.map((item) =>{
-                   return(
-                       <option key={item.roleName} value={item.id}>
-                        {item.roleName}
-                       </option>
-                   )
+                   if(item){
+                    return(
+                        <option key={item.roleName} value={item.id}>
+                         {item.roleName}
+                        </option>
+                    )
+                   }
                })
            )
 
         }
+        else return [];
     }
 
     logout=()=>{
