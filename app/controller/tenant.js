@@ -1136,11 +1136,15 @@ exports.editTenantMembers = async (req, res, next) => {
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json('Id is missing');
     }
 
+    console.log('ID ===>',id);
+
     const update = req.body;
 
     if (!update) {
         return res.status(httpStatus.UNPROCESSABLE_ENTITY).json('Please try again');
     }
+
+    console.log('Body ===>', update);
 
     member = await TenantMembersDetail.findOne({ where: { memberId: id } });
 
