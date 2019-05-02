@@ -72,7 +72,9 @@ class TenantMemberDetail extends Component {
     refreshData = () => {
         let id  = localStorage.getItem('tenantId');
         this.setState({tenantId: id})
-        this.props.viewMember(id).then(() => this.setState({loading: false}));
+        this.props.viewMember(id).then(() => this.setState({loading: false})).catch((err) => {err;
+            this.setState({loading: false})
+        });
         console.log(id);
         this.props.getRelation()
         this.props.rfid()
