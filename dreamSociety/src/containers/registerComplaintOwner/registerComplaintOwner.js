@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {getServiceType} from '../../actionCreators/serviceMasterAction';
-import {userflatDetails} from '../../actionCreators/registerComplainAction';
+
+import {userflatDetails,postRegister,serviceDetails} from '../../actionCreators/registerComplainAction';
 import UI from '../../components/newUI/ownerDashboard';
-import {Form, Button,  FormGroup,  Input, Label,Row, Col } from 'reactstrap';
+import {Form, Button,  FormGroup,  Input, Label,Row, Col,Modal,ModalBody,ModalHeader } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
 
@@ -23,6 +23,7 @@ class RegisterComplaint extends Component{
             description:'',
             errors: {},
             message:'',
+            modal:false,
            
 
             menuVisible: false,
@@ -35,10 +36,22 @@ class RegisterComplaint extends Component{
     }
 
     refreshData=()=>{
-         this.props.getServiceType().then(() => this.setState({loading: false}));
-         this.props.userflatDetails().then(() => this.setState({loading: false}));
-        
+         
+        this.props.userflatDetails().then(() => this.setState({loading: false}));
+        this.props.serviceDetails().then(() => this.setState({loading: false}));
+       
+   }
+
+   toggles = () => {
+    this.setState({ modal: !this.state.modal })
     }
+
+    toggle = () => { 
+        this.setState({
+            modal: !this.state.modal
+        })
+    }
+    
 
     service({item}){
         if(item){
@@ -56,7 +69,7 @@ class RegisterComplaint extends Component{
     }
 
     userflatDetails({userFlat}){
-        if(userFlat){
+        if(userFlat &&  userFlat.flats){
             console.log(userFlat)
             return( 
                 userFlat.flats.map((item) =>{ 
@@ -107,6 +120,25 @@ class RegisterComplaint extends Component{
    
         this.setState({ errors });
         console.log("submited===========================", this.state);
+
+        const isValid = Object.keys(errors).length === 0;
+
+        if(isValid){
+                    this.setState({loading:true})
+                    this.props.postRegister(this.state)
+                    .then((msg)=>{ msg;
+                        console.log(msg)
+                        this.setState({message : msg.payload.message, loading: false 
+                        })
+                        this.toggle()
+                    })
+                    .catch(err=>{err;
+                        console.log(err);
+                        this.setState({message : err.response.data.message, loading: false})
+                    })
+                
+                 
+                    }
     }
 
     logout = () => {
@@ -117,7 +149,7 @@ class RegisterComplaint extends Component{
 
     changePassword=()=>{ 
         console.log("password")
-        return this.props.history.replace('/tenantDashboard/changePasswordTenant')
+        return this.props.history.replace('/ownerDashboard/changePasswordOwner')
     }
 
     close = () => {
@@ -146,26 +178,32 @@ class RegisterComplaint extends Component{
         let formData=<div>
              
              <FormGroup>
+                 
+             <Row md={12}>
+                <Col md={6}>
                 <Label>Flat no</Label>
                 <Input type="select" defaultValue='no-value' name="flatDetailId"  onChange={this.onChange} >
                     <DefaultSelect />
                     {this.userflatDetails(this.props.registerComplaintReducer)}
                 </Input >
                 <span className='error'>{this.state.errors.flatDetailId}</span>
-            </FormGroup>
-         
-
-             <FormGroup>
+                </Col>
+                <Col md={6}>
                 <Label>Service Type</Label>
                 <Input type="select" defaultValue='no-value' name="serviceId"  onChange={this.onChange}>
                     <DefaultSelect />
-                    {this.service(this.props.displayServiceMasterReducer)}
+                    {this.service(this.props.registerComplaintReducer)}
                 </Input >
                 <span className='error'>{this.state.errors.serviceId}</span>
+                </Col>
+                </Row>
             </FormGroup>
+
 
                  
             <FormGroup>
+            <Row md={12}>
+                <Col md={6}>
                 <Label>Priority</Label>
                 <Input type="select" defaultValue='no-value' name="priority"  onChange={this.onChange}>
                     <DefaultSelect />
@@ -174,52 +212,43 @@ class RegisterComplaint extends Component{
                     <option>Low</option>
                 </Input >
                 <span className='error'>{this.state.errors.priority}</span>
-            </FormGroup>
-
-                 
-            <FormGroup>
+                </Col>
+                
+                <Col md={6}>
                 <Label>Date</Label>
                 <Input type="date" min={this.minDate()} name="date"  onChange={this.onChange}>
                     <DefaultSelect />
                     {/* {this.service(this.props.displayServiceMasterReducer)} */}
                 </Input >
                 <span className='error'>{this.state.errors.date}</span>
+                </Col>
+                </Row>
             </FormGroup>
 
             
-            <Row form>
-                
-                <Col md={12}>
-                <FormGroup>
+            <FormGroup>
+            <Row md={12}>
+                <Col md={4}>
                     <Label>Slot Time 1</Label>
                     <Input type="time"  name="slotTime1" onChange={this.onChange} >
                     <span className='error'>{this.state.errors.startTime1}</span>
                     </Input>
-                </FormGroup>
                 </Col>
-                </Row>
-
-                <Row form>
                 
-                <Col md={12}>
-                <FormGroup>
+                <Col md={4}>
                     <Label>Slot Time 2</Label>
                     <Input type="time"  name="slotTime12" onChange={this.onChange} >
                     </Input>
-                </FormGroup>
                 </Col>
-                </Row>
-
-                <Row form>
-                
-                <Col md={12}>
-                <FormGroup>
+               
+                <Col md={4}>
                     <Label>Slot Time 3</Label>
                     <Input type="time"  name="slotTime3" onChange={this.onChange} >
                     </Input>
-                </FormGroup>
                 </Col>
-                </Row>
+            </Row>
+            </FormGroup>
+               
 
 
 
@@ -246,6 +275,12 @@ class RegisterComplaint extends Component{
                         {!this.state.loading ? formData : <Spinner />}
 
                     </Form>
+                    <Modal isOpen={this.state.modal} toggle={this.toggles} >
+                    <ModalHeader toggle={this.toggle}>Message</ModalHeader>
+                    <ModalBody>
+                        <h1 style={{display:"block",background: 'black'}}>{this.state.message}</h1> 
+                    </ModalBody>
+                    </Modal>
                 </UI>
             </div>
         )
@@ -253,9 +288,9 @@ class RegisterComplaint extends Component{
 }
 
 function mapStateToProps(state) {
-
+          console.log(state)
     return {
-        displayServiceMasterReducer :state.displayServiceMasterReducer,
+  
         registerComplaintReducer : state.registerComplaintReducer
     }
 
@@ -263,7 +298,7 @@ function mapStateToProps(state) {
 
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getServiceType,userflatDetails }, dispatch);
+    return bindActionCreators({ userflatDetails,postRegister,serviceDetails }, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(RegisterComplaint));

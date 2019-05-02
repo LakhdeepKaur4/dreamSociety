@@ -663,9 +663,9 @@ class IndividualVendor extends Component{
             errors.endTime= "cant be empty"
         }
 
-        else if(this.state.profilePicture ==='') {
-            errors.profilePicture= "cant be empty"
-        }
+        // else if(this.state.profilePicture ==='') {
+        //     errors.profilePicture= "cant be empty"
+        // }
 
         else if(this.state.documentOne ==='') {
             errors.documentOne= "cant be empty"
@@ -963,7 +963,7 @@ class IndividualVendor extends Component{
                 <FormGroup>
                 <Label>Upload Your Picture</Label>
                     <Input type="file" name="profilePicture" accept="image/*" onChange={this.FileChange} />
-                    <span className="error">{this.state.errors.profilePicture}</span>     
+                    {/* <span className="error">{this.state.errors.profilePicture}</span>      */}
                 </FormGroup>
 
                 <FormGroup>

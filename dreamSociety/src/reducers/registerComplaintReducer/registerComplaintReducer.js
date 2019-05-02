@@ -1,4 +1,4 @@
-import {REGISTER_COMPLAINT, USER_FLAT_DETAILS,POST_REGISTER_COMPLAINT,SERVICE_DETAILS} from  './../../actions/index';
+import {REGISTER_COMPLAINT, USER_FLAT_DETAILS,POST_REGISTER_COMPLAINT,SERVICE_DETAILS, GET_REGISTER_DETAIL} from  './../../actions/index';
 export default function(state={},action){
   
     switch(action.type){
@@ -13,6 +13,9 @@ export default function(state={},action){
 
     case SERVICE_DETAILS:
     return {...state, item: action.payload}
+
+    case GET_REGISTER_DETAIL:
+    return {...state, getComplaints: action.payload}
 
     default:
     return state;
