@@ -1165,14 +1165,14 @@ exports.editTenantMembers = async (req, res, next) => {
     })
         .then(member => {
             member.updateAttributes(update);
-            User.update(update, { where: { userId: id } })
-            UserRFID.findOne({ where: { userId: id, isActive: true } })
+            User.update(update, { where: { userId: member.memberId } })
+            UserRFID.findOne({ where: { userId: member.memberId, isActive: true } })
             .then(memberRfid => {
                 if (memberRfid !== null) {
                     memberRfid.updateAttributes({ rfidId: update.rfidId }) 
                 } else {
                     UserRFID.create({
-                        userId: id,
+                        userId: member.memberId,
                         rfidId: update.rfidId
                     })
                 }
