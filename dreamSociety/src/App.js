@@ -37,7 +37,7 @@ import stateMasterDetails from './containers/stateMaster/stateMasterDetails';
 import PersonDetails from './containers/personDetails/personDetails';
 import ServiceMaster from './containers/vendorMangement/serviceMaster/serviceMaster';
 import DisplayServices from './containers/vendorMangement/serviceMaster/displayServiceMaster';
-
+import vendorMaster from './containers/vendorMangement/vendorMaster/vendorMaster';
 import DisplayVendorMaster from './containers/vendorMangement/vendorMaster/displayVendorMaster';
 import DisplayVendorServices from './containers/vendorMangement/vendorMaster/displayVendorServices';
 
