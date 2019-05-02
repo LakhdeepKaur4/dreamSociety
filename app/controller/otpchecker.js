@@ -569,11 +569,13 @@ exports.checkOtp = async (req, res, next) => {
             let userName = decrypt1(key, updatedTenant.userName);
             // set users
             let user = await User.findOne({
-                where: { userName: encrypt1(key, userName) }
+                where: { userName: encrypt1(key, userName),isActive:false }
             });
 
             if (user) {
-                user.updateAttributes({ isActive: true });
+                console.log("reaching here",user)
+               const test = user.updateAttributes({ isActive: true });
+               console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$",test)
                 let roles = await Role.findOne({
                     where: { id: 4 }
                 });
