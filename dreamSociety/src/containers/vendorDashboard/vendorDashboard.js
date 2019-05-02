@@ -31,7 +31,7 @@ export default class Dashboard extends Component {
     return this.props.history.replace('/') 
 }
 changePassword=()=>{ 
-  return this.props.history.replace('/superDashboard/changePassword')
+  return this.props.history.replace('/vendorDashboard/changePasswordVendor')
 }
 
 

@@ -58,7 +58,10 @@ class DisplaySocietyEventBooking extends Component {
 
 
     refreshData() {
-        this.props.getSocietyEvents().then(()=> this.setState({loading:false, modalLoading: false, editEventModal:false}));
+        this.props.getSocietyEvents().then(()=> this.setState({loading:false, modalLoading: false, editEventModal:false})).catch((err)=>{
+            err;
+            this.setState({loading:false, modalLoading: false, editEventModal:false})
+        });
         this.props.ViewEvent();
         this.props.GetEventOrganiser();
     }   
@@ -70,7 +73,7 @@ class DisplaySocietyEventBooking extends Component {
         }}
 
     editEvent(societyEventBookId,eventId,eventName,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description,breakfast,lunch,eveningSnacks,dinner,dJ,drinks){
-       console.log("breakfast,lunch,eveningSnacks,dinner,dJ,drinks",breakfast,lunch,eveningSnacks,dinner,dJ,drinks)
+      
         this.setState({
             societyEventBookId,eventId,eventName,firstName,startDate,endDate,startTime,endTime,perPersonCharge,childAbove,charges,description,breakfast,lunch,eveningSnacks,dinner,dJ,drinks
             ,editEventModal: !this.state.editEventModal})
@@ -443,12 +446,7 @@ render() {
                                     <span aria-hidden="true">&times;</span>
                             </div> 
                             
-                    <Modal isOpen={this.state.editEventModal} toggle={this.toggleEditEventModal.bind(this)} >
-                        <ModalHeader toggle={this.toggleEditEventModal.bind(this)}>Edit a Event</ModalHeader>
-                        <ModalBody>
-                           {!this.state.modalLoading?modalData:<Spinner/>}
-                        </ModalBody>
-                    </Modal>
+                   
                     <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Society Event Booking Details</h3>
                     <Button color="primary" type="button" onClick={this.push}>Book Society Event</Button></div>
                     
@@ -469,6 +467,12 @@ render() {
                         } }/>
                     </Label>
                     {!this.state.loading ? tableData : <Spinner />}
+                    <Modal isOpen={this.state.editEventModal} toggle={this.toggleEditEventModal.bind(this)} >
+                        <ModalHeader toggle={this.toggleEditEventModal.bind(this)}>Edit a Event</ModalHeader>
+                        <ModalBody>
+                           {!this.state.modalLoading?modalData:<Spinner/>}
+                        </ModalBody>
+                    </Modal>
                 </div>
                
             </UI>

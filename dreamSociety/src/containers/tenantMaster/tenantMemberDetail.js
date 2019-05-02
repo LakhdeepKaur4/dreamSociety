@@ -49,15 +49,16 @@ class TenantMemberDetail extends Component {
             lastName:'',
             flatDetailId:'',
             successMessage:'',
-            memberModal:false
+            memberModal:false,
+            flatNo:'',
+            defaultFlat:true,
+            editFlat:false,
+            defFlat:''
         }
     }
 
     componentDidMount(){
         this.refreshData()
-        
-        this.props.getRelation();
-        this.props.rfid();
     }
 
     searchOnChange = (e) => {
@@ -71,9 +72,13 @@ class TenantMemberDetail extends Component {
     refreshData = () => {
         let id  = localStorage.getItem('tenantId');
         this.setState({tenantId: id})
-        this.props.viewMember(id).then(() => this.setState({loading: false,editTenantMember:false,addTenantMember:false}))
+        this.props.viewMember(id).then(() => this.setState({loading: false})).catch((err) => {err;
+            this.setState({loading: false})
+        });
         console.log(id);
-        this.props.getFlats(id).then(() => this.setState({loading: false,editTenantMember:false,addTenantMember:false}))
+        this.props.getRelation()
+        this.props.rfid()
+        this.props.getFlats(id)
     }
 
     logout = () => {
@@ -87,9 +92,9 @@ class TenantMemberDetail extends Component {
         return this.props.history.push('/superDashBoard/tenantDetails')
     }
 
-    edit = (fmember, lmember, dob, gen, memEmail,memContact,memAadhaar, relationName, relationId, memberId, rfidId, rfid, flatId) => {
-        console.log(fmember, lmember, dob, gen, memEmail,memContact,memAadhaar, relationName, relationId, memberId, rfidId, rfid, flatId)
-        this.setState({firstName:fmember, lastName:lmember, memberDob:dob, gender:gen, email:memEmail, contact: memContact, aadhaarNumber: memAadhaar, relationName, relationId,memberId, rfidId, rfid,defRFID:rfidId,flatDetailId:flatId, editTenantMember: !this.state.editTenantMember})
+    edit = (fmember, lmember, dob, gen, memEmail,memContact,memAadhaar, relationName, relationId, memberId, rfidId, rfid, flatId, flatNo) => {
+        console.log(fmember, lmember, dob, gen, memEmail,memContact,memAadhaar, relationName, relationId, memberId, rfidId, rfid, flatId, flatNo)
+        this.setState({firstName:fmember, lastName:lmember, memberDob:dob, gender:gen, email:memEmail, contact: memContact, aadhaarNumber: memAadhaar, relationName, relationId,memberId, rfidId, rfid,defRFID:rfidId,flatDetailId:flatId,defFlat:flatId,flatNo, editTenantMember: !this.state.editTenantMember})
     }
 
     getRelationList = ({ relationResult }) => {
@@ -109,9 +114,11 @@ class TenantMemberDetail extends Component {
         return function(x){
             console.log(x)
             if(x){
-                return x.firstName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                return  (x.firstName + ' ' + x.lastName).toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.memberDob.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 x.gender.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
+                x.email.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
+                x.contact.toString().indexOf(search.toString()) !== -1 ||
                 x.relation_master.relationName.toLowerCase().indexOf(search.toLowerCase())  !== -1 ||
                 !search;
             }
@@ -120,7 +127,7 @@ class TenantMemberDetail extends Component {
 
     fetchMemberDetails = ({getMemberDetail}) => {
         console.log(getMemberDetail)
-        if(getMemberDetail){
+        if(getMemberDetail && getMemberDetail.members){
             return getMemberDetail.members.sort((item1,item2)=>{
                 if(item1 && item2){
                     var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
@@ -155,12 +162,15 @@ class TenantMemberDetail extends Component {
                             <td>{item.firstName}{' '}{item.lastName}</td>
                             <td>{item.memberDob}</td>
                             <td>{item.gender}</td>
+                            <td>{item.email}</td>
+                            <td>{item.contact}</td>
                             <td>{item.relation_master ? item.relation_master.relationName : ''}</td>
+                            <td>{item.flat_detail_master ? item.flat_detail_master.flatNo : ''}</td>
                             <td>{item.rfid_master ? item.rfid_master.rfid:''}</td>
                             <td>
                                 <Button className="mr-2" color="success" onClick={this.edit.bind(this,item.firstName, item.lastName, item.memberDob,
                                     item.gender, item.email, item.contact, item.aadhaarNumber, item.relation_master.relationName, item.relationId, item.memberId,item.rfid_master ? item.rfid_master.rfidId:'', item.rfid_master ? item.rfid_master.rfid:'',
-                                    item.flatDetailId)}>Edit</Button>
+                                    item.flatDetailId, item.flat_detail_master ? item.flat_detail_master.flatNo : '')}>Edit</Button>
                                 <Button color="danger" onClick={this.deleteMemberSelected.bind(this, item.memberId)}>Delete</Button>
                             </td>
                         </tr>
@@ -211,7 +221,7 @@ class TenantMemberDetail extends Component {
     }
 
     toggleEditTenant(){
-        this.setState({editTenantMember: !this.state.editTenantMember,emailChangeErr:'', validChangeContactErr:'', errors:{}, editRFID:false, defaultRFID:true, rfidId:''})
+        this.setState({editTenantMember: !this.state.editTenantMember,emailChangeErr:'', validChangeContactErr:'', errors:{}, editRFID:false, defaultRFID:true, rfidId:'', editFlat:false, defaultFlat:true, flatDetailId:''})
     }
 
     changeHandler = (e) => {
@@ -258,7 +268,7 @@ class TenantMemberDetail extends Component {
 
     getRelationOption = ({relationResult}) => {
         console.log(relationResult)
-        if(relationResult){
+        if(relationResult && relationResult.relation){
             return relationResult.relation.map((item) => {
                 return (
                     <option value={item.relationId} key={item.relationId}>{item.relationName}</option>
@@ -297,7 +307,7 @@ class TenantMemberDetail extends Component {
         }
         if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar number can't be empty.`;
         else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar number should be of 12 digits.`;
-        if(!flatDetailId) errors.flatDetailId = `Please select Flat.`;
+        if(flatDetailId === '') errors.flatDetailId = `Please select Flat.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.emailChangeErr === '' && this.state.validChangeContactErr === ''){
@@ -327,13 +337,11 @@ class TenantMemberDetail extends Component {
         if(memberDob === '') errors.memberDob = `Date of Birth can't be empty.`;
         if(gender === '') errors.gender = `Please select any gender.`;
         if(!relationId) errors.relationId = `Select relation with tenant.`;
-        if(!rfidId) errors.rfidId = `Please select RFID.`;
         if(aadhaarNumber === '') errors.aadhaarNumber=`Aadhaar number can't be empty.`;
         else if(aadhaarNumber.length !== 12) errors.aadhaarNumber=`Aadhaar number should be of 12 digits.`;
         if(contact){
             if(contact.length !== 10) errors.contact= `Contact should be of 10 digit.`;
         }
-        if(!flatDetailId) errors.flatDetailId = `Please select Flat.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid && this.state.emailChangeErr === '' && this.state.validChangeContactErr === ''){
@@ -358,7 +366,7 @@ class TenantMemberDetail extends Component {
     }
 
     loadDetailAfterEdit = () => {
-        this.props.viewMember(this.state.tenantId).then(() => this.setState({loadingAfterEdit:false,editTenantMember:false, editRFID:false, defaultRFID:true, rfidId:''}))
+        this.props.viewMember(this.state.tenantId).then(() => this.setState({loadingAfterEdit:false,editTenantMember:false, editRFID:false, defaultRFID:true, rfidId:'', editFlat:false, defaultFlat:true, flatDetailId:''}))
     }
 
     changePassword=()=>{ 
@@ -391,7 +399,8 @@ class TenantMemberDetail extends Component {
             });
         }
         console.log(this.state)
-}
+    }
+
     editRFID = () => {
         if(!!document.getElementById('isRfidChecked').checked){
             console.log('is checked')
@@ -399,14 +408,25 @@ class TenantMemberDetail extends Component {
         
         
         }
-    else{
-            this.setState({rfidId:this.state.defRFID, defaultRFID:true, editRFID:false})
+        else{
+                this.setState({rfidId:this.state.defRFID, defaultRFID:true, editRFID:false})
+            }
         }
-    }
+    
+    editFlat = () => {
+        if(!!document.getElementById('isFlatChecked').checked){
+            console.log('is checked')
+        this.setState({flatDetailId: '' , defaultFlat:false, editFlat:true});
+        }
+        else{
+                this.setState({flatDetailId:this.state.defFlat, defaultFlat:true, editFlat:false})
+            }
+        }
+    
 
     emailChange = (e) => {
         console.log(this.state)
-        this.setState({email:e.target.value,emailChangeErr:''})
+        this.setState({[e.target.name]:e.target.value,emailChangeErr:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value,message:''});
             console.log(this.state)
@@ -420,7 +440,7 @@ class TenantMemberDetail extends Component {
             this.setState({ [e.target.name]: e.target.value, errors,message:'' });
         }
         else {
-            this.setState({email:e.target.value,message:''});
+            this.setState({[e.target.name]:e.target.value,message:''});
         } 
         this.props.validOnChangeEmail(e.target.value)
         .then(res => console.log(res))
@@ -477,7 +497,10 @@ class TenantMemberDetail extends Component {
                                     }}>Member Name<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Date of Birth</th>
                 <th>Gender</th>
+                <th>Email</th>
+                <th>Contact</th>
                 <th>Relation with Tenant</th>
+                <th>Flat</th>
                 <th>RFID</th>
                 <th>Actions</th>
             </tr>
@@ -525,7 +548,7 @@ class TenantMemberDetail extends Component {
         </FormGroup>
         <FormGroup>
             <Label>Email</Label>
-            <Input value={this.state.email} name="email" placeholder="Email" onChange={this.emailChange} onKeyPress={emailValid} />
+            <Input name="email" placeholder="Email" onChange={this.emailChange} onKeyPress={emailValid} />
             {this.state.messageEmailErr ? <span className='error'>{this.state.messageEmailErr}</span> : ''}
             {<span className="error">{this.state.emailChangeErr}</span>}
         </FormGroup>
@@ -562,7 +585,6 @@ class TenantMemberDetail extends Component {
                     <Select name='rfidId' placeholder={<DefaultSelect />} 
                         options={this.rfidOptions(this.props.tenantReducer)}
                         onChange={this.rfidChange.bind(this, 'rfidId')} />
-                    {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
                 </Col>
             </Row>
         </FormGroup>
@@ -572,7 +594,6 @@ class TenantMemberDetail extends Component {
                 <DefaultSelect />
                 {this.flatInputs(this.props.tenantReducer)}
             </Input>
-            <span className="error">{this.state.errors.flatDetailId}</span>
         </FormGroup>
         <FormGroup>
             <Button className="mr-2" color="primary" onClick={this.addNewTenantMember.bind(this,
@@ -675,13 +696,28 @@ class TenantMemberDetail extends Component {
                     {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
                 </FormGroup> : ''}
             <FormGroup>
-                <Label>Flats</Label>
+                <Row md={12}>
+                {this.state.defaultFlat ? 
+                    <Col md={6}>
+                        <Label>Flat</Label>
+                        <Input value={this.state.flatNo} onChange={this.onChange} readOnly />
+                    </Col> : ''}
+                    {this.state.defaultFlat ? <Col md={6} style={{padding:'34px'}}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your Flat?</span><Input type="checkbox" onChange={this.editFlat} name="isFlatChecked" id="isFlatChecked" className="ml-3" />
+                    </Col> : 
+                    <Col md={12} style={{textAlign:'center'}}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your Flat?</span><Input type="checkbox" onChange={this.editFlat} name="isFlatChecked" id="isFlatChecked" className="ml-3" />
+                    </Col>}
+                </Row>
+            </FormGroup>
+            {this.state.editFlat ? <FormGroup>
+                <Label>Flat</Label>
                 <Input type="select" name="flatDetailId" value={this.state.flatDetailId} onChange={this.addNewMemberChange} >
-                    <DefaultSelect />
+                    <option>--Select--</option>
                     {this.flatInputs(this.props.tenantReducer)}
                 </Input>
                 <span className="error">{this.state.errors.flatDetailId}</span>
-            </FormGroup>
+            </FormGroup> : ''}
             <FormGroup>
                 <Button className="mr-2" color="primary" onClick={this.updateTenantMember}>Save</Button>
                 <Button color="danger" onClick={this.toggleEditTenant.bind(this)}>Cancel</Button> 

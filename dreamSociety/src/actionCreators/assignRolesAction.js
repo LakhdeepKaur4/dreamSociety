@@ -6,6 +6,9 @@ import { authHeader } from '../helper/authHeader';
 export const assignRole=()=>{
     const request = axios.get(`${URN}/role/assign` , {headers:authHeader()})
      .then(response => response.data)
+     .catch((err)=>{
+         return err;
+     })
   
      return{
  

@@ -260,7 +260,7 @@ class vendorMaster extends Component {
     }
 
     getRate = ({ rate }) => {
-        if (rate) {
+        if (rate && rate.rate) {
             return rate.rate.map((item) => {
                 return (
                     <option key={item.rateId} value={item.rateId}>

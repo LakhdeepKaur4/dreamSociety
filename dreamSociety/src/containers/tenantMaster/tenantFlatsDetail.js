@@ -37,11 +37,13 @@ class TenantFlatsDetail extends Component{
         let id  = localStorage.getItem('tenantId1');
         this.setState({tenantId: id})
         if(id){
-            this.props.getFlats(id).then(() => this.setState({loading: false}))
+            this.props.getFlats(id).then(() => this.setState({loading: false})).catch((err) => {err;
+                this.setState({loading: false})
+            });
         }
         else this.setState({loading:false})
         console.log(id)
-        this.props.viewTower().then(() => this.setState({loading:false}));
+        this.props.viewTower()
     }
 
     toggleFlat(){

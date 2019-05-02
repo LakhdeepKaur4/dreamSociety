@@ -109,7 +109,7 @@ class MaintenanceSubMasterDetails extends Component{
     
 
     fetchMaintenanceDetails({sizeDetails}) {
-        if(sizeDetails){
+        if(sizeDetails && sizeDetails.maintenanceType){
             return sizeDetails.maintenanceType.sort((item1,item2)=>{
                 var cmprVal = (item1.maintenance_master[this.state.filterName].localeCompare(item2.maintenance_master[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
@@ -183,7 +183,7 @@ class MaintenanceSubMasterDetails extends Component{
     }
 
     fetchMaintenanceType({maintenanceType}){
-        if(maintenanceType){
+        if(maintenanceType && maintenanceType.maintenance){
            return maintenanceType.maintenance.map((item) => {
                return (
                    <option key={item.maintenanceId} value={item.maintenanceId}>{item.category}</option>

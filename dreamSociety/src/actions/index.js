@@ -12,6 +12,7 @@ export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:808
 // export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://dreamsociety.herokuapp.com/';
 // export  const UR = 'https://dreamsociety.herokuapp.com/'
+// export  const UR = 'https://dreamsociety.herokuapp.com/';
 
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
@@ -321,3 +322,5 @@ export const  UPDATE_MACHINE_ID ='UPDATE_MACHINE_ID';
 export const  DELETE_MACHINE_ID ='DELETE_MACHINE_ID';
 export const DELETE_MULTIPLE_MACHINE_ID = 'DELETE_MULTIPLE_MACHINE_ID';
 export const GET_OWNER_RF="GET_OWNER_RF";
+
+export const GET_REGISTER_DETAIL='GET_REGISTER_DETAIL';
