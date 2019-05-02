@@ -492,7 +492,7 @@ module.exports = function (app) {
 
 	app.post('/api/tenant', [authJwt.verifyToken, authJwt.isAdminRole], tenant.createEncrypted);
 
-	app.get('/api/tenant', [authJwt.verifyToken, authJwt.isAdminRole], tenant.getDecrypted);
+	app.get('/api/tenant', [authJwt.verifyToken, isAdminRole], tenant.getDecrypted);
 
 	app.post('/api/tenant/addFlat', [authJwt.verifyToken, isAdminRole], tenant.addFlats);
 

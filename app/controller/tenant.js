@@ -704,7 +704,9 @@ exports.getDecrypted = (req, res, next) => {
                             tenant.email = decrypt(tenant.email);
                             tenant.contact = decrypt(tenant.contact);
                             tenant.aadhaarNumber = decrypt(tenant.aadhaarNumber);
-                            tenant.picture = decrypt(tenant.picture);
+                            if (tenant.picture !== null) {
+                                tenant.picture = decrypt(tenant.picture);
+                            }
                             tenant.permanentAddress = decrypt(tenant.permanentAddress);
                             tenant.correspondenceAddress = decrypt(tenant.correspondenceAddress);
                             tenant.gender = decrypt(tenant.gender);
