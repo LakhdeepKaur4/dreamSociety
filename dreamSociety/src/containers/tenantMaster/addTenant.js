@@ -413,7 +413,7 @@ class AddTenant extends Component{
 
     emailChange = (e) => {
         console.log(this.state)
-        this.setState({email:e.target.value, messageEmailErr:'',emailChangeErr:''})
+        this.setState({[e.target.name]:e.target.value, messageEmailErr:'',emailChangeErr:''})
         if(e.target.value.match(/^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/)){
             this.setState({[e.target.name]:e.target.value,message:''});
             console.log(this.state)
@@ -427,7 +427,7 @@ class AddTenant extends Component{
             this.setState({ [e.target.name]: e.target.value, errors,message:'' });
         }
         else {
-            this.setState({email:e.target.value,message:''});
+            this.setState({[e.target.name]:e.target.value,message:''});
         } 
         this.props.validOnChangeEmail(e.target.value)
         .then(res => console.log(res))
