@@ -6,7 +6,7 @@ import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader, 
 import DefaultSelect from '../../../constants/defaultSelect';
 import { DocURN,PicURN } from '../../../actions/index';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
-import UI from '../../../components/newUI/vendorDashboardInside';
+import UI from '../../../components/newUI/superAdminDashboard';
 import Spinner from '../../../components/spinner/spinner';
 import GoogleDocsViewer from 'react-google-docs-viewer';
 import Select from 'react-select';

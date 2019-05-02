@@ -8,7 +8,7 @@ import { Button, Modal, FormGroup, ModalBody, ModalHeader,Table, Input, Label } 
 
 import DefaultSelect from '../../../constants/defaultSelect';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
-import UI from '../../../components/newUI/vendorDashboardInside';
+import UI from '../../../components/newUI/superAdminDashboard';
 import Spinner from '../../../components/spinner/spinner';
 
 
