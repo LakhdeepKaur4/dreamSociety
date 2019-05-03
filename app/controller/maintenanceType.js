@@ -12,34 +12,25 @@ exports.create = async (req, res, next) => {
         console.log("creating maintenance");
         let body = req.body;
         body.userId = req.userId;
-        console.log(req.body)
-        console.log(parseFloat(req.body.rate))
 
-        // const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: body.maintenanceId, rate: body.rate, sizeId: body.sizeId } });
-        const alreadyExist = await MaintenanceType.findOne({
+        const maintenanceTypes = await MaintenanceType.findAll({
             where: {
-                [Op.and]: [
-                    { isActive: true },
-                    { maintenanceId: body.maintenanceId },
-                    { sizeId: body.sizeId },
-                ]
+                isActive: true
             }
         })
-
-        if (alreadyExist !== null) {
-            if (alreadyExist.rate === parseFloat(body.rate)) {
-                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                    message: 'Maintenance Type already exist'
-                })
-            }
-        } else {
-            const maintenanceType = await MaintenanceType.create(body);
-            if (maintenanceType) {
-                return res.status(httpStatus.CREATED).json({
-                    message: "Maintenance Type successfully created",
-                    maintenanceType
-                });
-            }
+        let error = maintenanceTypes.some(maintenance => {
+            if (maintenance.maintenanceId == req.body.maintenanceId && maintenance.sizeId == req.body.sizeId)
+                return true;
+        });
+        if (error) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Maintainance Name already Exists" })
+        }
+        const maintenance = await MaintenanceType.create(body);
+        if (maintenance) {
+            return res.status(httpStatus.CREATED).json({
+                message: "Maintenance successfully created",
+                maintenance
+            });
         }
     } catch (error) {
         console.log("error==>", error);
@@ -85,7 +76,9 @@ exports.update = async (req, res, next) => {
         const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: update.maintenanceId, sizeId: update.sizeId, maintenanceTypeId: { [Op.ne]: id } } });
 
         if (alreadyExist !== null) {
-            if (alreadyExist.rate === parseFloat(update.rate)) {
+            console.log(alreadyExist.rate)
+            console.log(update.rate)
+            if (alreadyExist.rate != update.rate) {
                 res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
                     message: 'Maintenance Type already exist'
                 })
@@ -106,6 +99,7 @@ exports.update = async (req, res, next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
+
 
 exports.delete = async (req, res, next) => {
     try {

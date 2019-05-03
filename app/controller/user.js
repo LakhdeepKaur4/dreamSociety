@@ -966,8 +966,6 @@ exports.signupEncrypted = async (req, res, next) => {
 			}
 		}
 
-
-
 		if (userBody['userName'] !== undefined) {
 			userUserNameErr = await User.findOne({
 				where: {
@@ -1412,6 +1410,7 @@ exports.signinDecrypted = async (req, res, next) => {
 			message: "Password cannot be empty"
 		})
 	}
+	console.log("userName",encrypt(req.body.userName))
 	User.findOne({
 		nested: true,
 		where: {
@@ -1429,8 +1428,7 @@ exports.signinDecrypted = async (req, res, next) => {
 		}
 		]
 	}).then(user => {
-
-
+		console.log("user--->",user)
 		if (user === null) {
 			console.log("------user-------");
 			return res.status(httpStatus.OK).send({
@@ -3159,22 +3157,19 @@ exports.checkContact = (req, res, next) => {
 		})
 }
 
-
 exports.releaseUsersResources = async (req, res, next) => {
 	try {
-		console.log("^^^#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 		const userId = req.body.userId;
-		const userIds = [];
-		console.log("here in userid--", userId)
+		console.log(userId)
 		const type = req.body.type;
 		const update = { isActive: false };
 		switch (type) {
-			case "DeactiveOwner":
+			case "ActiveOwner":
 				const owner = await Owner.findOne({ where: { ownerId: userId, isActive: false } });
 				console.log(owner)
 				if (owner && owner != null) {
 					await Owner.update(update, { where: { ownerId: userId } });
-					const userrfid = await UserRfid.update(update, { where: { userId: userId } });
+					await UserRfid.update(update, { where: { userId: userId } });
 					await OwnerFlatDetail.findAll({
 						where: {
 							ownerId: userId,
@@ -3230,7 +3225,7 @@ exports.releaseUsersResources = async (req, res, next) => {
 						await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
 					}
 
-					const tenant = await Tenant.findOne({ where: { tenantId: userId, isActive: false } });
+					const tenant = await Tenant.findOne({ where: { ownerId: userId, isActive: false } });
 					if (tenant) {
 						await Tenant.update(update, { where: { ownerId: userId } });
 						await UserRfid.update(update, { where: { userId: userId } });
@@ -3242,23 +3237,23 @@ exports.releaseUsersResources = async (req, res, next) => {
 							await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
 						}
 					}
-					res.status(httpStatus.OK).json({ message: "Owner flats released successfully" });
+					res.status(httpStatus.OK).json({ message: "Owner flats released successfully", owner, tenant });
 				}
 				break;
-			case "DeactiveTenant":
+			case "ActiveTenant":
 				const tenant = await Tenant.findOne({ where: { tenantId: userId, isActive: false } });
 				if (tenant) {
 					await Tenant.update(update, { where: { tenantId: userId } });
-					await UserRfid.update(update, { where: { userId: userId } });
-					await TenantFlatDetail.update(update, { where: { tenantId: userId } });
-
+						await UserRfid.update(update, { where: { userId: userId } });
+						await TenantFlatDetail.update(update, { where: { tenantId: userId } });
+					
 					const tenantMember = await TenantMembersDetail.findAll({ where: { isActive: true, tenantId: userId } });
 					tenantMember.map(members => { userIds.push(members.memberId) });
 					if (tenantMember.length > 0) {
 						await TenantMembersDetail.update(update, { where: { tenantId: { [Op.in]: userIds } } });
 						await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
 					}
-					res.status(httpStatus.OK).json({ message: "Tenant flats released successfully" });
+					res.status(httpStatus.OK).json({ message: "Tenant flats released successfully",owner,tenant });
 				}
 				break;
 
@@ -3268,6 +3263,7 @@ exports.releaseUsersResources = async (req, res, next) => {
 		res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
 	}
 }
+
 // function getAge(DOB) {
 //     var today = new Date();
 //     var birthDate = new Date(DOB);

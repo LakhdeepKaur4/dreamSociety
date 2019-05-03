@@ -385,7 +385,7 @@ exports.get = (req, res, next) => {
                 item.currentAddress = decrypt(item.currentAddress);
                 item.rate = decrypt(item.rate);
                 if (item.profilePicture !== null) {
-                    item.profilePicture = decrypt(item.profilePicture);   
+                    item.profilePicture = decrypt(item.profilePicture);
                 }
                 item.documentOne = decrypt(item.documentOne);
                 item.documentOne = item.documentOne.replace('../../', '');
@@ -412,7 +412,7 @@ exports.getById = (req, res, next) => {
 
     IndividualVendor.findOne(
         {
-            where: { individualVendorId: id , isActive: true },
+            where: { individualVendorId: id, isActive: true },
             // order: [['createdAt', 'DESC']],
             include: [
                 {
@@ -735,7 +735,3 @@ exports.deleteSelected = async (req, res, next) => {
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
-
-
-
-

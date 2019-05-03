@@ -488,6 +488,7 @@ exports.createEncrypted = async (req, res, next) => {
 
                                 item.memberId = randomNumber;
                                 let memberUserName = item.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
+                                console.log("tenant member userNAme ",memberUserName)
                                 const password = passwordGenerator.generate({
                                     length: 10,
                                     numbers: true
@@ -522,11 +523,11 @@ exports.createEncrypted = async (req, res, next) => {
                                     });
                                 User.create({
                                     userId: item.memberId,
-                                    firstName: encrypt(item.firstName),
-                                    lastName: encrypt(item.lastName),
-                                    userName: encrypt(item.userName),
-                                    contact: encrypt(item.contact),
-                                    email: encrypt(item.email),
+                                    firstName: item.firstName,
+                                    lastName: item.lastName,
+                                    userName: item.userName,
+                                    contact: item.contact,
+                                    email: item.email,
                                     password: bcrypt.hashSync(item.password, 8),
                                     // familyMember: encrypt(tenant.noOfMembers.toString()),
                                     // parking: encrypt('...'),

@@ -204,7 +204,7 @@ exports.deleteSelected = async (req, res, next) => {
         }
         const updatedEmployee = await Employee.update(update, { where: { employeeId: { [Op.in]: deleteSelected } } })
         if (updatedEmployee) {
-            User.update({ isActive: false }, { where: { userId: { [Op.in]: deleteSelected } } });
+            User.update({ isActive: false }, { where: { userId: { [Op.in]: deleteSelected}}});
             UserRoles.update({ isActive: false }, { where: { userId: { [Op.in]: deleteSelected } } });
             return res.status(httpStatus.OK).json({
                 message: "Employees deleted successfully",
