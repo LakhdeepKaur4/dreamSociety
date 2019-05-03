@@ -3,16 +3,16 @@ export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com
 export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
-// export  const URN = 'https://mydreamsociety.herokuapp.com/api';
+// export  const URN = 'http://localhost:8083/api';
+// export  const PicURN = 'http://localhost::8083/';
+// export  const DocURN = 'http://localhost::8083/';
+// export  const UR = 'http://localhost::8083/';
+
+// export  const URN = 'http://mydreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const UR = 'https://mydreamsociety.herokuapp.com/';
+// export  const UR = 'https://mydreamsociety.herokuapp.com/'
 
-// export  const URN = 'https://dreamsociety.herokuapp.com/api';
-// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
-// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-// export  const UR = 'https://dreamsociety.herokuapp.com/'
-// export  const UR = 'https://dreamsociety.herokuapp.com/';
 
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
