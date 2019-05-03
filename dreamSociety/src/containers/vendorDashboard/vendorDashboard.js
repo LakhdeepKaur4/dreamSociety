@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './vendorDashboard.css';
-
-
+// import './superDashboard.css';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {userLogout} from '../../actionCreators/loginAction';
 import UI from '../../components/newUI/vendorDashboard';
 
-
-export default class Dashboard extends Component {
+ class VendorDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = { menuVisible: false, editUserModal: false, };
@@ -20,20 +19,21 @@ export default class Dashboard extends Component {
     });
   }
 
+  logout=()=>{
+    this.props.userLogout();   
+  }
+
+  changePassword=()=>{
+       console.log("password");   
+      return this.props.history.replace('/vendorDashboard/changePasswordVendor')
+    }
+
   editUser() {
     this.setState({
       editUserModal: !this.state.editUserModal
     });
   }
-  logout=()=>{
-    localStorage.removeItem('token');
-    localStorage.removeItem('user-type');
-    return this.props.history.replace('/') 
-}
-changePassword=()=>{ 
-  return this.props.history.replace('/vendorDashboard/changePasswordVendor')
-}
-
+  
 
   render() {
     return (<div>
@@ -53,7 +53,7 @@ changePassword=()=>{
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="#">About Us</Link>
-            </li>
+            </li> 
             <li className="nav-item">
               <Link className="nav-link" to="#">Contact Us</Link>
             </li>
@@ -63,23 +63,33 @@ changePassword=()=>{
               onClick={this.editUser}>Logout</button>
           </form>
         </div>
-      </nav>
-      <div style={{ marginTop: '48px' }}>
+      </nav> */}
+      <UI onClick={this.logout} change={this.changePassword}>
+        
+      </UI>
+      {/* <div style={{ margin: '48px auto' }}>
         <Sidebar.Pushable as={Segment} attached="bottom">
           <Sidebar width='thin' as={Menu} animation="uncover" visible={this.state.menuVisible} icon="labeled" vertical inverted>
-            <Menu.Item><Icon name="user" /><Link to="/superDashboard/serviceMaster">Service Master</Link></Menu.Item>
-            <Menu.Item><Icon name="user" /><Link to="/superDashboard/vendorMaster">Vendor Master</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashboard/registration">Super Admin Register</Link></Menu.Item>
+            <Menu.Item><Icon name="user" />Admin Register</Menu.Item>
+            <Menu.Item><Icon name="user" />Society Member Owner Register</Menu.Item>
+            <Menu.Item><Icon name="user" />Society Member Tenant Register</Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashboard/societyManagement">Society Management</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/vendorDashboard">Vendor</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashboard/add_parking/new">Parking Master</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashboard/towermaster">Tower Master</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashboard/event">Event Master</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashboard/flatmaster">Flat Master</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashboard/sizemaster">Size Master</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashboard/cityMaster">City Master</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashBoard/assetsMaster">Assets Master</Link></Menu.Item>
+            <Menu.Item><Icon name="user" /><Link to="/superDashBoard/assetsTypeSubMaster">Assets Type Sub Master</Link></Menu.Item>
           </Sidebar>
           <Sidebar.Pusher dimmed={this.state.menuVisible}>
             <Segment basic style={{ backgroundImage: `url(${Logo})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', height: '600px' }}>
               {/* <Header as="h3">Application Content</Header> */}
-              {/* <Image src='//unsplash.it/800/480' /> */}
-            {/* </Segment>
-          </Sidebar.Pusher>
-        </Sidebar.Pushable> */}
-      {/* </div> */}
+      {/* <Image src='//unsplash.it/800/480' /> */}
 
-      <UI onClick={this.logout} change={this.changePassword}></UI>
 
     </div>
     );
@@ -87,3 +97,8 @@ changePassword=()=>{
 }
 
 
+function mapDispatchToProps(dispatch){
+  return bindActionCreators({userLogout},dispatch);
+  }
+
+  export default (connect(null,mapDispatchToProps)(VendorDashboard))
