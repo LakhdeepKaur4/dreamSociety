@@ -15,7 +15,7 @@ import OwnerDashboard from './containers/ownerDashboard/ownerDashboard';
 import SuperDashboard from './containers/superDashboard/superDashboard';
 import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
 import EmployeeDashboard from './components/newUI/employeeDashboard';
-import VendorDashboard from './components/newUI/vendorDashboard';
+import VendorDashboard from './containers/vendorDashboard/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
 import EmployeeMaster from './containers/employeeMaster/employeeMaster';
 import DisplayEmployeeMaster from './containers/employeeMaster/displayEmployeeMaster';
@@ -133,7 +133,7 @@ import MachineIdMaster from './containers/machineIdMaster/machineIdMaster';
 import DisplayMachineIdMaster from './containers/machineIdMaster/displayMachineIdMaster';
 
 import ChangePasswordOwner from './components/changePassword/changePasswordOwner';
-import ViewStatusOwner from './containers/viewStatus/viewStatusOwner';
+
 import ComplaintOwnerDetails from './containers/registerComplaintOwner/complaintOwnerDetails';
 import ComplaintTenantDetails from './containers/registerComplaint.js/complaintTenantDetails';
 import {OwnerPrivateRoute} from './components/ownerPrivateRoute/ownerPrivateRoute';
@@ -145,6 +145,7 @@ import InventoryLineChart from './containers/chart/inventoryLineChart';
 import InventoryPieChart from './containers/chart/inventoryPieChart';
 import Chart from './containers/chart/chart';
 import ChangePasswordVendor from './components/changePassword/changePasswordVendor';
+
 
 class App extends Component {
   render() {
@@ -162,7 +163,7 @@ class App extends Component {
             <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
             <OwnerPrivateRoute path='/ownerDashboard' exact component={OwnerDashboard} />
             <TenantPrivateRoute path='/tenantDashboard' exact component={TenantDashboard} />
-            <VendorPrivateRoute path='/vendorDashboard' component={VendorDashboard} />
+            <VendorPrivateRoute path='/vendorDashboard' exact component={VendorDashboard} />
             <PrivateRoute path='/employeeDashboard' component={EmployeeDashboard} />
             <PrivateRoute path='/superDashboard/registration' component={Registration} />
             <PrivateRoute path='/superDashboard/user_details' component={UserDetails} />
@@ -277,7 +278,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/machineIdMaster' component ={MachineIdMaster}/>
             <PrivateRoute path='/superDashboard/displayMachineIdMaster' component={DisplayMachineIdMaster}/>
           
-            <OwnerPrivateRoute path='/ownerDashboard/viewStatusOwner' component={ViewStatusOwner}/>
+            
             <OwnerPrivateRoute path='/ownerDashboard/complaintOwnerDetails' component={ComplaintOwnerDetails}/>
             <TenantPrivateRoute path='/tenantDashboard/complaintTenantDetails' component={ComplaintTenantDetails}/>
             <PrivateRoute  path ='/superDashboard/flatPieChart' component ={FlatPieChart}/>
