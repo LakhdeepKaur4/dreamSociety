@@ -3175,7 +3175,6 @@ exports.releaseUsersResources = async (req, res, next) => {
 				if (owner && owner != null) {
 					await Owner.update(update, { where: { ownerId: userId } });
 					const userrfid = await UserRfid.update(update, { where: { userId: userId } });
-					console.log("ch8748787485   ",userrfid)
 					await OwnerFlatDetail.findAll({
 						where: {
 							ownerId: userId,
