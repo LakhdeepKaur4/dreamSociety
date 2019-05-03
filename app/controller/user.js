@@ -905,7 +905,7 @@ exports.signupEncrypted = async (req, res, next) => {
 	let userEmailErr;
 	let userUserNameErr;
 	const roleName = [];
-	
+
 	if (rolesBody) {
 		roleName.push(rolesBody);
 	}
@@ -936,7 +936,7 @@ exports.signupEncrypted = async (req, res, next) => {
 
 		if ((userBody['firstName'] !== undefined) && (userBody['lastName'] !== undefined) && (userBody['contact'] !== undefined)) {
 			create = {
-				userId:userBody.userId,
+				userId: userBody.userId,
 				firstName: encrypt(userBody.firstName),
 				lastName: encrypt(userBody.lastName),
 				userName: encrypt(userBody.userName),
@@ -951,7 +951,7 @@ exports.signupEncrypted = async (req, res, next) => {
 			}
 		} else {
 			create = {
-				userId:userBody.userId,
+				userId: userBody.userId,
 				// firstName: encrypt(userBody.firstName),
 				// lastName: encrypt(userBody.lastName),
 				userName: encrypt(userBody.userName),
@@ -3165,7 +3165,7 @@ exports.releaseUsersResources = async (req, res, next) => {
 		console.log("^^^#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 		const userId = req.body.userId;
 		const userIds = [];
-		console.log("here in userid--",userId)
+		console.log("here in userid--", userId)
 		const type = req.body.type;
 		const update = { isActive: false };
 		switch (type) {
@@ -3249,9 +3249,9 @@ exports.releaseUsersResources = async (req, res, next) => {
 				const tenant = await Tenant.findOne({ where: { tenantId: userId, isActive: false } });
 				if (tenant) {
 					await Tenant.update(update, { where: { tenantId: userId } });
-						await UserRfid.update(update, { where: { userId: userId } });
-						await TenantFlatDetail.update(update, { where: { tenantId: userId } });
-					
+					await UserRfid.update(update, { where: { userId: userId } });
+					await TenantFlatDetail.update(update, { where: { tenantId: userId } });
+
 					const tenantMember = await TenantMembersDetail.findAll({ where: { isActive: true, tenantId: userId } });
 					tenantMember.map(members => { userIds.push(members.memberId) });
 					if (tenantMember.length > 0) {
