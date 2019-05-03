@@ -347,7 +347,7 @@ class AddTenant extends Component{
             else if(panCardNumber.length !== 10) errors.panCardNumber = `Pan Card number should be of 10 digit.`;
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
-            if (isValid && this.state.emailChangeErr === '' && this.state.validChangeContactErr === '') {
+            if (isValid && this.state.emailChangeErr === '' && this.state.validChangeContactErr === '' && this.state.emailValidError === '') {
                 this.setState({ step: this.state.step + 1 })
             }
         }
@@ -383,7 +383,7 @@ class AddTenant extends Component{
             }
             const isValid = Object.keys(errors).length === 0
             this.setState({ errors });
-            if (isValid && this.state.emailChangeErr === '' && this.state.validChangeContactErr === '') {
+            if (isValid && this.state.emailChangeErr === '' && this.state.validChangeContactErr === '' && this.state.emailValidError === '') {
                 this.setState({ step: this.state.step + 1 })
             }
         }
@@ -819,7 +819,7 @@ class AddTenant extends Component{
                             name = {`email${i}`} onChange={this.emailChange}
                             maxLength="70" 
                             className="input"  />
-                            {<span className="error">{this.state.emailValidError}</span>}
+                            
                         </Col>
                     </Row>
                 </FormGroup>
@@ -1006,6 +1006,7 @@ class AddTenant extends Component{
                         <div style={{textAlign:'right'}}><span className="error">{this.state.errors.memberContactError}</span></div>
                         <div style={{textAlign:'right'}}>{<span className="error">{this.state.emailChangeErr}</span>}</div>
                         <div style={{textAlign:'right'}}>{<span className="error">{this.state.validChangeContactErr}</span>}</div>
+                        <div style={{textAlign:'right'}}>{<span className="error">{this.state.emailValidError}</span>}</div>
                         <FormGroup>
                             <Label>Number of Member</Label>
                             <Input onKeyPress={numberValidation} placeholder="number of member"
