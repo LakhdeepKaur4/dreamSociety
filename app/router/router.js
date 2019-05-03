@@ -56,6 +56,8 @@ module.exports = function (app) {
 
 	app.get('/', userController.start);
 
+	app.put('/api/release/resources', [authJwt.verifyToken, authJwt.isAdminRole], userController.releaseUsersResources);
+
 	app.get('/test', [authJwt.isSuperAdminRole], userController.test);
 
 	app.post('/api/auth/signup', [verifySignUp.checkRolesExisted], userController.signupEncrypted);
@@ -83,6 +85,8 @@ module.exports = function (app) {
 	app.get('/api/user/role', [authJwt.verifyToken, authJwt.isAdminRole], userController.role);
 
 	app.get('/api/user/role/assign', [authJwt.verifyToken, authJwt.isAdminRole], userController.rolesToAssign);
+
+	app.put('/api/user/release/flats', [authJwt.verifyToken, authJwt.isAdminRole], userController.releaseUsersResources);
 
 	app.get('/api/user/deactive/:id', [authJwt.verifyToken, authJwt.isAdminRole], userController.deactiveUsersByRole);
 
