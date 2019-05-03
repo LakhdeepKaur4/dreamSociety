@@ -14,7 +14,6 @@ export  const UR = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://dreamsociety.herokuapp.com/'
 // export  const UR = 'https://dreamsociety.herokuapp.com/';
 
-
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
@@ -117,7 +116,7 @@ export const DELETE_LOCATION='delete_location';
 export const DELETE_DETAILS='delete-details';
 export const ADD_INVENTORY='add_inventory';
 export const GET_INVENTORY='get_inventory';
-export const UPDATE_INVENTORY='update_inventory';    
+export const UPDATE_INVENTORY='update_inventory';
 export const REMOVE_INVENTORY='REMOVE_INVENTORY';
 export const PlaceHolder='--Select--';
 export const ADD_MAINTENANCE ='add_maintenance';

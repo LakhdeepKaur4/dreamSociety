@@ -98,7 +98,7 @@ class RFIdDetails extends Component {
                 }
         }
     renderList = ({ rfList }) => {
-        if(rfList){
+        if(rfList && rfList.RFIDs){
             return rfList.RFIDs.map((items,index)=>{
                 return (
 
