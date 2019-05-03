@@ -3,10 +3,10 @@ export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com
 export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
-// export  const URN = 'http://198.168.1.101:8081/api';
-// export  const PicURN = 'http://198.168.1.101:8081/';
-// export  const DocURN = 'http://198.168.1.101:8081/';
-// export  const UR = 'http://198.168.1.101:8081/';
+// export  const URN = 'http://localhost:8083/api';
+// export  const PicURN = 'http://localhost::8083/';
+// export  const DocURN = 'http://localhost::8083/';
+// export  const UR = 'http://localhost::8083/';
 
 // export  const URN = 'http://mydreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
