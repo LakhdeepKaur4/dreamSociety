@@ -3162,7 +3162,7 @@ exports.checkContact = (req, res, next) => {
 
 exports.releaseUsersResources = async (req, res, next) => {
 	try {
-		console.log("^^^#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+		console.log("^^^#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 		const userId = req.body.userId;
 		const userIds = [];
 		console.log("here in userid--",userId)
@@ -3174,7 +3174,8 @@ exports.releaseUsersResources = async (req, res, next) => {
 				console.log(owner)
 				if (owner && owner != null) {
 					await Owner.update(update, { where: { ownerId: userId } });
-					await UserRfid.update(update, { where: { userId: userId } });
+					const userrfid = await UserRfid.update(update, { where: { userId: userId } });
+					console.log("ch8748787485   ",userrfid)
 					await OwnerFlatDetail.findAll({
 						where: {
 							ownerId: userId,
@@ -3230,7 +3231,7 @@ exports.releaseUsersResources = async (req, res, next) => {
 						await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
 					}
 
-					const tenant = await Tenant.findOne({ where: { ownerId: userId, isActive: false } });
+					const tenant = await Tenant.findOne({ where: { tenantId: userId, isActive: false } });
 					if (tenant) {
 						await Tenant.update(update, { where: { ownerId: userId } });
 						await UserRfid.update(update, { where: { userId: userId } });
@@ -3242,7 +3243,7 @@ exports.releaseUsersResources = async (req, res, next) => {
 							await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
 						}
 					}
-					res.status(httpStatus.OK).json({ message: "Owner flats released successfully", owner, tenant });
+					res.status(httpStatus.OK).json({ message: "Owner flats released successfully" });
 				}
 				break;
 			case "DeactiveTenant":
@@ -3258,7 +3259,7 @@ exports.releaseUsersResources = async (req, res, next) => {
 						await TenantMembersDetail.update(update, { where: { tenantId: { [Op.in]: userIds } } });
 						await UserRfid.update(update, { where: { userId: { [Op.in]: userIds } } });
 					}
-					res.status(httpStatus.OK).json({ message: "Tenant flats released successfully",owner,tenant });
+					res.status(httpStatus.OK).json({ message: "Tenant flats released successfully" });
 				}
 				break;
 
