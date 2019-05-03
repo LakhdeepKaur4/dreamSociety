@@ -73,7 +73,7 @@ module.exports = function (app) {
 	app.get('/api/user/search', userController.search);
 
 	// app.get('/api/user/test', [authJwt.verifyToken], userController.userContent);
-		app.put('/api/release/resources', [authJwt.verifyToken, authJwt.isAdminRole], userController.releaseUsersResources);
+	app.put('/api/release/resources', [authJwt.verifyToken, authJwt.isAdminRole], userController.releaseUsersResources);
 
 	app.post('/api/check/email', [authJwt.verifyToken, authJwt.isAdminRole], userController.checkEmail);
 

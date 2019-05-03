@@ -3164,6 +3164,7 @@ exports.releaseUsersResources = async (req, res, next) => {
 	try {
 		console.log("^^^#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 		const userId = req.body.userId;
+		const userIds = [];
 		console.log("here in userid--",userId)
 		const type = req.body.type;
 		const update = { isActive: false };
