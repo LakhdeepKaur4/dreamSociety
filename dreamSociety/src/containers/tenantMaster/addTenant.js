@@ -849,7 +849,7 @@ class AddTenant extends Component{
                     <Label>Gender:</Label>
                     <Label htmlFor="Gender1" style={{paddingRight:'35px',paddingLeft:'20px'}}>Male</Label>
                     <span><Input name={`gender${i}`} onChange={this.memberDetailChange}
-                                    type="radio" value="Female" /></span>
+                                    type="radio" value="Male" /></span>
                     
                     
                     <Label htmlFor="Gender2" style={{paddingRight:'35px',paddingLeft:'20px'}}>Female</Label>
@@ -860,7 +860,7 @@ class AddTenant extends Component{
                     <Label htmlFor="Gender3" style={{paddingRight:'35px',paddingLeft:'20px'}}>Other</Label>
                     <span><Input type="radio" onKeyPress={OnKeyPressUserhandler}
                                 name = {`memberName${i}`} onChange={this.memberDetailChange} 
-                                className="input"/></span>
+                                className="input"  value="Other"/></span>
                 </Col>
                 <FormGroup>
                     <Row md={12}>
