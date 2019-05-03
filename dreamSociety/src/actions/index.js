@@ -8,7 +8,7 @@ export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:808
 // export  const DocURN = 'http://198.168.1.101:8081/';
 // export  const UR = 'http://198.168.1.101:8081/';
 
-// export  const URN = 'https://mydreamsociety.herokuapp.com/api';
+// export  const URN = 'http://mydreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://mydreamsociety.herokuapp.com/'
