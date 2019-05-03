@@ -3168,7 +3168,7 @@ exports.releaseUsersResources = async (req, res, next) => {
 		const type = req.body.type;
 		const update = { isActive: false };
 		switch (type) {
-			case "ActiveOwner":
+			case "DeactiveOwner":
 				const owner = await Owner.findOne({ where: { ownerId: userId, isActive: false } });
 				console.log(owner)
 				if (owner && owner != null) {
@@ -3244,7 +3244,7 @@ exports.releaseUsersResources = async (req, res, next) => {
 					res.status(httpStatus.OK).json({ message: "Owner flats released successfully", owner, tenant });
 				}
 				break;
-			case "ActiveTenant":
+			case "DeactiveTenant":
 				const tenant = await Tenant.findOne({ where: { tenantId: userId, isActive: false } });
 				if (tenant) {
 					await Tenant.update(update, { where: { tenantId: userId } });
