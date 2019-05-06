@@ -673,7 +673,7 @@ module.exports = function (app) {
 	app.get('/api/filterOnNotNull/fingerPrint',[authJwt.verifyToken],fingerPrintController.notNullFingerPrintData);
 
 	app.get('/api/filter/flats/fingerPrint',[authJwt.verifyToken],fingerPrintController.filterOnflats);
-	
-	app.get('/api/vendorComplaints', [authJwt.verifyToken, authJwt.isVendor], vendorComplaintsController.getAreaAndMachine);
+
+	app.get('/api/vendorComplaints', [authJwt.verifyToken], vendorComplaintsController.getAreaAndMachine);
 
 }
