@@ -66,10 +66,21 @@ exports.getFingerPrintData = async (req, res, next) => {
 exports.nullFingerPrintData = async (req, res, next) => {
     try {
         const fingerprintData = await FingerprintData.findAll({ where: { isActive: true, fingerprintData: { [Op.eq]: null } }, include: [{ model: User, as: 'user', attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'], include: [Role] }] });
-        return res.status(httpStatus.CREATED).json({
-            message: "Finger Print Content Page",
-            fingerprintData
-        });
+        if (fingerprintData.userId = ! null) {
+            fingerprintData.map(user => {
+                user.user.firstName = decrypt(user.user.firstName);
+                user.user.lastName = decrypt(user.user.lastName);
+                user.user.userName = decrypt(user.user.userName);
+                user.user.contact = decrypt(user.user.contact);
+                user.user.email = decrypt(user.user.email);
+            })
+        }
+        if (fingerprintData) {
+            return res.status(httpStatus.CREATED).json({
+                message: "Finger Print Content Page",
+                fingerprintData
+            });
+        }
     } catch (error) {
         console.log("error==>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
