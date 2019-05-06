@@ -82,13 +82,14 @@ db.commonAreaDetail = require('../model/commonAreaDetail.model')(sequelize, Sequ
 db.areaMachine = require('../model/AreaMachine.model')(sequelize, Sequelize);
 db.userRfid = require('../model/userRfid.model')(sequelize, Sequelize);
 
+
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
 db.otp.belongsTo(db.tenant, { foreignKey: 'tenantId' });
 db.otp.belongsTo(db.employee, { foreignKey: 'employeeId' });
 db.otp.belongsTo(db.vendor, { foreignKey: 'vendorId' });
 db.otp.belongsTo(db.individualVendor, { foreignKey: 'individualVendorId' });
-db.otp.belongsTo(db.ownerMembersDetail, { foreignKey: 'memberId'});
-db.otp.belongsTo(db.tenantMembersDetail, { foreignKey: 'tenantMemberId'});
+db.otp.belongsTo(db.ownerMembersDetail, { foreignKey: 'memberId' });
+db.otp.belongsTo(db.tenantMembersDetail, { foreignKey: 'tenantMemberId' });
 
 // db.role.belongsToMany(db.user, { through: 'user_roles', foreignKey: 'roleId', otherKey: 'userId' });
 // db.user.belongsToMany(db.role, { through: 'user_roles', foreignKey: 'userId', otherKey: 'roleId' });
@@ -227,5 +228,6 @@ db.machineDetail.belongsToMany(db.commonAreaDetail, { as: 'CommonArea', through:
 db.commonAreaDetail.belongsTo(db.commonArea, { foreignKey: 'commonAreaId' });
 db.userRfid.belongsTo(db.user, { foreignKey: 'userId' });
 db.userRfid.belongsTo(db.rfid, { foreignKey: 'rfidId' });
+db.fingerprintData.belongsTo(db.user, { foreignKey: 'userId',as:'user' })
 
 module.exports = db;

@@ -52,6 +52,7 @@ module.exports = function (app) {
 	const commonAreaController = require('../controller/commonArea');
 	const electricityConsumerController = require('../controller/electricityConsumer');
 	const commonAreaDetailController = require('../controller/commonAreaDetail');
+	const fingerPrintController = require('../controller/fingerprint');
 
 
 	app.get('/', userController.start);
@@ -659,5 +660,17 @@ module.exports = function (app) {
 	app.put('/api/commonAreaDetail/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.deleteSelected);
 
 	app.put('/api/commonAreaDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.delete);
+
+	app.post('/api/fingerPrint',[authJwt.verifyToken],fingerPrintController.addFingerPrintData);
+
+	app.get('/api/fingerPrint',[authJwt.verifyToken],fingerPrintController.getFingerPrintData);
+
+	app.put('/api/fingerPrint/:id',[authJwt.verifyToken],fingerPrintController.updateFingerPrintData);
+
+	app.get('/api/filterOnNull/fingerPrint',[authJwt.verifyToken],fingerPrintController.nullFingerPrintData);
+
+	app.get('/api/filterOnNotNull/fingerPrint',[authJwt.verifyToken],fingerPrintController.notNullFingerPrintData);
+
+	app.get('/api/filter/flats/fingerPrint',[authJwt.verifyToken],fingerPrintController.filterOnflats);
 
 }
