@@ -49,7 +49,7 @@ setInterval(async function () {
     }
 }, 10000009);
 
-encrypt = (text) => {
+let encrypt = (text) => {
     let key = config.secret;
     let algorithm = 'aes-128-cbc';
     let cipher = crypto.createCipher(algorithm, key);
@@ -58,7 +58,7 @@ encrypt = (text) => {
     return encryptedText;
 }
 
-decrypt = (text) => {
+let decrypt = (text) => {
     let key = config.secret;
     let algorithm = 'aes-128-cbc';
     let decipher = crypto.createDecipher(algorithm, key);

@@ -676,6 +676,6 @@ module.exports = function (app) {
 
 	app.get('/api/filterOnNotNullflats/fingerPrint/:type',[authJwt.verifyToken],fingerPrintController.notNullFilterOnflats);
 
-	app.get('/api/vendorComplaints', [authJwt.verifyToken], vendorComplaintsController.getById);
+	app.get('/api/vendorComplaints', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.getById);
 
 }
