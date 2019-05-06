@@ -88,7 +88,7 @@ class FlatOwnerList extends Component {
         }
         
 }
-    componentDidMount() {
+    refreshData(){
         this.props.getRfId();
         this.props.getOwnerList();
         this.props.detailSociety();
@@ -99,6 +99,11 @@ class FlatOwnerList extends Component {
         this.props.getLocation()
         this.props.getFlatDetails()
             .then(() => this.setState({ loading: false }))
+    }
+
+    componentDidMount() {
+        this.refreshData();
+      
     }
     logout = () => {
         localStorage.removeItem('token');
@@ -324,7 +329,7 @@ class FlatOwnerList extends Component {
                         <td style={{ textAlign: "center" }}>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, 
                                 items.picture,items.firstName, items.lastName,items.dob, items.gender, items.contact, items.email,
-                                items.adhaarCardNo, items.permanentAddress,items.rfid_master.rfidId,items.rfid_master.rfid,)}>Edit</button>
+                                items.adhaarCardNo, items.permanentAddress,items.rfid_master.rfidId,items.rfid_master.rfid)}>Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.ownerId)} >Delete</button>
                         </td>
                     </tr>
