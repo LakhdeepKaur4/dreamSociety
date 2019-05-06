@@ -131,8 +131,7 @@ exports.nullFilterOnflats = async (req, res, next) => {
                     model: User, as: 'user',
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
                     include: [{
-                        model: Role,
-                        where: { id: 3 }
+                        model: Role
                     }]
                 }]
             });
@@ -162,7 +161,6 @@ exports.nullFilterOnflats = async (req, res, next) => {
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
                     include: [{
                         model: Role,
-                        where: { id: 3 }
                     }]
                 }]
             });
@@ -191,8 +189,7 @@ exports.nullFilterOnflats = async (req, res, next) => {
                     model: User, as: 'user',
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
                     include: [{
-                        model: Role,
-                        where: { id: 3 }
+                        model: Role
                     }]
                 }]
             });
@@ -221,8 +218,7 @@ exports.nullFilterOnflats = async (req, res, next) => {
                     model: User, as: 'user',
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
                     include: [{
-                        model: Role,
-                        where: { id: 3 }
+                        model: Role
                     }]
                 }]
             });
@@ -247,71 +243,17 @@ exports.nullFilterOnflats = async (req, res, next) => {
     }
 }
 
-// exports.filterOnflats = async (req, res, next) => {
-//     try {
-//         let ownerIds = [];
-//         const filterArray = [
-//             "roles"
-//         ];
-//         const fingerprintData = await FingerprintData.findAll({
-//             where: { isActive: true, fingerprintData: null },
-//             include: [{
-//                 model: User, as: 'user',
-//                 attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
-//                 include: [{
-//                     model: Role,
-//                     where: { id: 3 }
-//                 }]
-//             }]
-//         });
-
-//         function filterObj(source, whiteList) {
-//             const res = {};
-//             // iterate over each keys of source
-//             Object.keys(source).forEach((key) => {
-//                 // if whiteList contains the current key, add this key to res
-//                 if (whiteList.indexOf(key) !== -1) {
-//                     res[key] = source[key];
-//                 }
-//             });
-//             console.log("in here function",res)
-//             return res;
-//         }
-//         console.log("hercgsdchgf873847",JSON.stringify(filterObj(fingerprintData, filterArray)));
-
-//         return res.status(httpStatus.CREATED).json({
-//             message: "Finger Print Content Page",
-//             fingerprintData
-//         });
-//         // const owner = await OwnerFlatDetail.findAll({where:{isActive:true}});
-//         // owner.map(owner => {
-//         //     ownerIds.push(owner.ownerId);
-//         // })
-//         // const tenant = await TenantFlatDetail.findAll({where:{isActive:true}});
-//         // tenant.map(tenant => {
-//         //     tenantIds.push(tenant.tenantId);
-//         // })
-//         // console.log(ownerIds);
-//         // console.log(tenantIds);
-
-//     } catch (error) {
-//         console.log("error==>", error);
-//         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-//     }
-// }
-
 
 exports.updateFingerPrintData = async (req, res, next) => {
     try {
         const update = req.body;
         const userId = req.params.userId;
-        console.log(fingerprintId)
+        console.log(userId)
         const fingerprintData = await FingerprintData.update(update, { where: { userId: userId } });
         console.log(fingerprintData[0])
         if (fingerprintData[0] != 0) {
             return res.status(httpStatus.CREATED).json({
-                message: "Finger Print successfully added",
-                fingerprintData
+                message: "Finger Print successfully added"
             });
         } else {
             return res.status(httpStatus.CREATED).json({
@@ -344,8 +286,7 @@ exports.notNullFilterOnflats = async (req, res, next) => {
                     model: User, as: 'user',
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
                     include: [{
-                        model: Role,
-                        where: { id: 3 }
+                        model: Role
                     }]
                 }]
             });
@@ -374,8 +315,7 @@ exports.notNullFilterOnflats = async (req, res, next) => {
                     model: User, as: 'user',
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
                     include: [{
-                        model: Role,
-                        where: { id: 3 }
+                        model: Role
                     }]
                 }]
             });
@@ -404,8 +344,7 @@ exports.notNullFilterOnflats = async (req, res, next) => {
                     model: User, as: 'user',
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
                     include: [{
-                        model: Role,
-                        where: { id: 3 }
+                        model: Role
                     }]
                 }]
             });
@@ -434,8 +373,7 @@ exports.notNullFilterOnflats = async (req, res, next) => {
                     model: User, as: 'user',
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
                     include: [{
-                        model: Role,
-                        where: { id: 3 }
+                        model: Role
                     }]
                 }]
             });
