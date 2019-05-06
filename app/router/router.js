@@ -52,6 +52,7 @@ module.exports = function (app) {
 	const commonAreaController = require('../controller/commonArea');
 	const electricityConsumerController = require('../controller/electricityConsumer');
 	const commonAreaDetailController = require('../controller/commonAreaDetail');
+	const vendorComplaintsController = require('../controller/vendorComplaints');
 
 
 	app.get('/', userController.start);
@@ -659,5 +660,7 @@ module.exports = function (app) {
 	app.put('/api/commonAreaDetail/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.deleteSelected);
 
 	app.put('/api/commonAreaDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.delete);
+
+	app.get('/api/vendorComplaints', [authJwt.verifyToken, authJwt.isVendor], vendorComplaintsController.getAreaAndMachine);
 
 }
