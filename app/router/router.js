@@ -584,6 +584,8 @@ module.exports = function (app) {
 
 	app.get('/api/userComplaints', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.getByUserId);
 
+	app.post('/api/userCancelled', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.cancelRequestByUser);
+
 	app.get('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.get);
 
 	app.post('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.create);
