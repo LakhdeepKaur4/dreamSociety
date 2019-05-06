@@ -488,7 +488,7 @@ exports.createEncrypted = async (req, res, next) => {
 
                                 item.memberId = randomNumber;
                                 let memberUserName = item.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
-                                console.log("tenant member userNAme ",memberUserName)
+                                console.log("tenant member userNAme ", memberUserName)
                                 const password = passwordGenerator.generate({
                                     length: 10,
                                     numbers: true
@@ -901,7 +901,8 @@ exports.updateEncrypted = async (req, res, next) => {
                                 })
                             }
                         })
-                    User.update(updates, { where: { userName: tenant.userName, isActive: true } });
+                    updates.userId = tenant.tenantId;
+                    User.update(updates, { where: { userId: tenant.tenantId, isActive: true } });
                     return tenant.updateAttributes(updates);
                 })
                 .then(tenant => {

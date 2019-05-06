@@ -81,6 +81,7 @@ db.electricityConsumer = require('../model/electricityConsumer.model')(sequelize
 db.commonAreaDetail = require('../model/commonAreaDetail.model')(sequelize, Sequelize);
 db.areaMachine = require('../model/AreaMachine.model')(sequelize, Sequelize);
 db.userRfid = require('../model/userRfid.model')(sequelize, Sequelize);
+db.vendorComplaints = require('../model/vendorComplaints.model')(sequelize, Sequelize);
 
 
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
@@ -229,5 +230,7 @@ db.commonAreaDetail.belongsTo(db.commonArea, { foreignKey: 'commonAreaId' });
 db.userRfid.belongsTo(db.user, { foreignKey: 'userId' });
 db.userRfid.belongsTo(db.rfid, { foreignKey: 'rfidId' });
 db.fingerprintData.belongsTo(db.user, { foreignKey: 'userId',as:'user' })
+db.vendor.belongsToMany(db.complaint, { through: 'vendor_complaints_master', foreignKey: 'vendorId' });
+db.complaint.belongsToMany(db.vendor, { through: 'vendor_complaints_master', foreignKey: 'complaintId' });
 
 module.exports = db;

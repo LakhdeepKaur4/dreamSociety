@@ -53,6 +53,7 @@ module.exports = function (app) {
 	const electricityConsumerController = require('../controller/electricityConsumer');
 	const commonAreaDetailController = require('../controller/commonAreaDetail');
 	const fingerPrintController = require('../controller/fingerprint');
+	const vendorComplaintsController = require('../controller/vendorComplaints');
 
 
 	app.get('/', userController.start);
@@ -672,5 +673,7 @@ module.exports = function (app) {
 	app.get('/api/filterOnNotNull/fingerPrint',[authJwt.verifyToken],fingerPrintController.notNullFingerPrintData);
 
 	app.get('/api/filter/flats/fingerPrint',[authJwt.verifyToken],fingerPrintController.filterOnflats);
+	
+	app.get('/api/vendorComplaints', [authJwt.verifyToken, authJwt.isVendor], vendorComplaintsController.getAreaAndMachine);
 
 }
