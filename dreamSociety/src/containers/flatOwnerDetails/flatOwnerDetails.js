@@ -594,7 +594,7 @@ OnKeyPresshandlerEmail=(event)=> {
         this.state.cityName + ' , ' + this.state.stateName + ',' + this.state.countryName+' '+this.state.pin })
     }
     getParking=({ slots })=>{
-this.setState({totalParking:slots?slots.slots.count:'total slot unavailable',parkingName:slots?slots.slots.rows[0].parking_master.parkingName:'parking is unavailable'})
+this.setState({totalParking:slots.slots?slots.slots.count:'total slot unavailable',parkingName:slots.slots.rows[0].parking_master?slots.slots.rows[0].parking_master.parkingName:'parking is unavailable'})
     }
 
     rfIdChangeHandler=(selectOption)=>{
