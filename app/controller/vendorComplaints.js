@@ -7,6 +7,7 @@ const Op = db.Sequelize.Op;
 
 const VendorComplaints = db.vendorComplaints;
 const Complaint = db.complaint;
+const ComplaintStatus = db.complaintStatus;
 const FlatDetail = db.flatDetail;
 const Tower = db.tower;
 const Floor = db.floor;
@@ -53,22 +54,25 @@ exports.getById = (req, res, next) => {
                     isActive: true
                 },
                 include: [
-                    { model: FlatDetail, where: { isActive: true }, include: [
-                        { model: Tower, where: { isActive: true } },
-                        { model: Floor, where: { isActive: true } },
-                        { model: User, where: { isActive: true }, attributes: ['firstName', 'lastName','contact'] }
-                    ] },
+                    { model: ComplaintStatus },
+                    {
+                        model: FlatDetail, where: { isActive: true }, include: [
+                            { model: Tower, where: { isActive: true } },
+                            { model: Floor, where: { isActive: true } },
+                            { model: User, where: { isActive: true }, attributes: ['firstName', 'lastName', 'contact'] }
+                        ]
+                    },
                 ]
             })
-            .then(complaints => {
-                complaints.map(item => {
-                    item.flat_detail_master.user_master.firstName = decrypt(item.flat_detail_master.user_master.firstName);
-                    item.flat_detail_master.user_master.lastName = decrypt(item.flat_detail_master.user_master.lastName);
-                    item.flat_detail_master.user_master.contact = decrypt(item.flat_detail_master.user_master.contact);
+                .then(complaints => {
+                    complaints.map(item => {
+                        item.flat_detail_master.user_master.firstName = decrypt(item.flat_detail_master.user_master.firstName);
+                        item.flat_detail_master.user_master.lastName = decrypt(item.flat_detail_master.user_master.lastName);
+                        item.flat_detail_master.user_master.contact = decrypt(item.flat_detail_master.user_master.contact);
+                    })
+                    res.status(httpStatus.OK).json({
+                        complaints
+                    })
                 })
-                res.status(httpStatus.OK).json({
-                    complaints 
-                })
-            })
         })
 }
