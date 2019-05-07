@@ -1,12 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
-    const MaintenanceType = sequelize.define('maintenance_type_master', {
-        maintenanceTypeId: {
+    const VendorComplaints = sequelize.define('vendor_complaints_master', {
+        vendorComplaintId: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
             primaryKey: true
-        },
-        rate: {
-            type: Sequelize.STRING
         },
         isActive: {
             type: Sequelize.BOOLEAN,
@@ -24,5 +21,5 @@ module.exports = (sequelize, Sequelize) => {
             freezeTableName: true
         });
 
-    return MaintenanceType;
+    return VendorComplaints;
 }

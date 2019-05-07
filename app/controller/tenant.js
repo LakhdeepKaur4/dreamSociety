@@ -49,7 +49,7 @@ setInterval(async function () {
     }
 }, 10000009);
 
-encrypt = (text) => {
+let encrypt = (text) => {
     let key = config.secret;
     let algorithm = 'aes-128-cbc';
     let cipher = crypto.createCipher(algorithm, key);
@@ -58,7 +58,7 @@ encrypt = (text) => {
     return encryptedText;
 }
 
-decrypt = (text) => {
+let decrypt = (text) => {
     let key = config.secret;
     let algorithm = 'aes-128-cbc';
     let decipher = crypto.createDecipher(algorithm, key);
@@ -301,13 +301,8 @@ exports.delete = async (req, res, next) => {
             return tenant.updateAttributes(update)
         })
         if (updatedTenant) {
-            User.update({ isActive: false }, { where: { userName: tenant.userName } })
-                .then(user => {
-                    User.find({ where: { userName: tenant.userName } })
-                        .then(user => {
-                            UserRoles.update({ isActive: false }, { where: { userId: user.userId, roleId: 4 } });
-                        })
-                })
+            User.update({ isActive: false }, { where: { userId: id } })
+            UserRoles.update({ isActive: false }, { where: { userId: id, roleId: 4 } });
             UserRFID.update({ isActive: false }, { where: { userId: id } });
             TenantFlatDetail.findAll({ where: { tenantId: id } })
                 .then(flats => {
@@ -445,7 +440,7 @@ exports.createEncrypted = async (req, res, next) => {
                             TenantFlatDetail.create({
                                 flatDetailId: tenant.flatDetailId,
                                 tenantId: entry.tenantId,
-                                isActive: false
+                                // isActive: false
                             })
                         }
 
@@ -471,7 +466,7 @@ exports.createEncrypted = async (req, res, next) => {
                             .then(user => {
                                 // user.setRoles(roles);
                                 UserRoles.create({ userId: user.userId, roleId: roles.id, isActive: false });
-                                UserRFID.create({ userId: tenant.tenantId, rfidId: tenant.rfidId, isActive: false });
+                                UserRFID.create({ userId: tenant.tenantId, rfidId: tenant.rfidId, isActive: true });
                             })
                         if (tenant.profilePicture) {
                             await saveToDisc(tenant.fileName, tenant.fileExt, tenant.profilePicture, (err, res) => {
@@ -493,6 +488,7 @@ exports.createEncrypted = async (req, res, next) => {
 
                                 item.memberId = randomNumber;
                                 let memberUserName = item.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
+                                console.log("tenant member userNAme ", memberUserName)
                                 const password = passwordGenerator.generate({
                                     length: 10,
                                     numbers: true
@@ -527,11 +523,11 @@ exports.createEncrypted = async (req, res, next) => {
                                     });
                                 User.create({
                                     userId: item.memberId,
-                                    firstName: encrypt(item.firstName),
-                                    lastName: encrypt(item.lastName),
-                                    userName: encrypt(item.userName),
-                                    contact: encrypt(item.contact),
-                                    email: encrypt(item.email),
+                                    firstName: item.firstName,
+                                    lastName: item.lastName,
+                                    userName: item.userName,
+                                    contact: item.contact,
+                                    email: item.email,
                                     password: bcrypt.hashSync(item.password, 8),
                                     // familyMember: encrypt(tenant.noOfMembers.toString()),
                                     // parking: encrypt('...'),
@@ -541,7 +537,7 @@ exports.createEncrypted = async (req, res, next) => {
                                     .then(user => {
                                         // user.setRoles(roles);
                                         UserRoles.create({ userId: user.userId, roleId: roles.id, isActive: false });
-                                        UserRFID.create({ userId: user.userId, rfidId: item.rfidId, isActive: false });
+                                        UserRFID.create({ userId: user.userId, rfidId: item.rfidId, isActive: true });
                                     })
                             })
                         }
@@ -905,7 +901,8 @@ exports.updateEncrypted = async (req, res, next) => {
                                 })
                             }
                         })
-                    User.update(updates, { where: { userName: tenant.userName, isActive: true } });
+                    updates.userId = tenant.tenantId;
+                    User.update(updates, { where: { userId: tenant.tenantId, isActive: true } });
                     return tenant.updateAttributes(updates);
                 })
                 .then(tenant => {
@@ -1091,7 +1088,7 @@ exports.addTenantMembers = async (req, res, next) => {
                     UserRFID.create({
                         userId: member.userId,
                         rfidId: member.rfidId,
-                        isActive: false
+                        // isActive: false
                     })
                 })
 
