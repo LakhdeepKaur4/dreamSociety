@@ -367,11 +367,12 @@ exports.create1 = async (req, res, next) => {
         member.memberUserName = encrypt(key,member.memberUserName);
         member.memberEmail = encrypt(key,member.memberEmail);
         member.memberContact = encrypt(key,member.memberContact);
-        member.memberFirstName = encrypt(key, member.memberFirstName);
-       
-          member.memberLastName = encrypt(key, member.memberLastName);
-    
+        member.memberFirstName = encrypt(key, member.memberFirstName);       
+        member.memberLastName = encrypt(key, member.memberLastName);
         member.gender = encrypt(key, member.gender);
+        if(member.memberRfId === ""){
+          member.memberRfId = null;
+        }
         memberNewArray.push(member);
       });
       console.log("hello", memberNewArray);
@@ -379,7 +380,7 @@ exports.create1 = async (req, res, next) => {
         memberNewArray, {
           returning: true
         }, {
-          fields: ["memberId","memberFirstName", "memberLastName","memberUserName","memberEmail","memberContact","password", "memberDob", "gender", "relationId","memberRfId" ]
+          fields: ["memberId","memberFirstName", "memberLastName","memberUserName","memberEmail","memberContact","password", "memberDob", "gender", "relationId","memberRfId","flatDetailId" ]
           // updateOnDuplicate: ["name"]
         }
       );
@@ -423,12 +424,12 @@ exports.create1 = async (req, res, next) => {
           email: encrypt1(key, email),
           isActive: false
         });
-        if(member.merberRfId !== null && member.memberRfId !== undefined && member.memberRfId !== ''){
+       
           let userRfId = await UserRfId.create({
             userId:user.userId,
             rfidId:member.memberRfId
           })
-        }
+        
         // else {
         //   member.memberRfId = null;
         //   let userRfId = await UserRfId.create({
@@ -1573,7 +1574,8 @@ exports.getMembers = async (req, res, next) => {
       include: [{
         model: Relation,
         attributes: ["relationId", "relationName"]
-      }]
+      },
+      { model: FlatDetail }]
     });
 
     ownerMembers.map(ownerMember => {
@@ -1775,7 +1777,7 @@ exports.updateMember = async (req, res, next) => {
       "memberContact",
       "gender"
     ];
-    let ids = ["relationId","memberRfId"];
+    let ids = ["relationId","memberRfId","flatDetailId"];
     let others = ["memberDob"];
 
     console.log("updating ownerMember");
@@ -2268,3 +2270,13 @@ exports.rfidCount = async (req, res, next) => {
       res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
   }
 }
+
+// exports.flatsForMembers = async (req,res,next) => {
+//   try{
+//     let flats = await OwnerFlatDetail.findAll({
+//       where:{isActive:true,ownerId:req.body.ownerId}
+//     })
+//   } catch (error) {
+//     res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+//   }
+// }
