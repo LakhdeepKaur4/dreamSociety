@@ -1,7 +1,7 @@
 import { URN } from '../../actions/index';
 import React,{ Component } from 'react';
 import { connect } from 'react-redux';
-import { showActiveList,deactivateMember,showDeactiveList,activateMember,deleteSelectedDeactivatedMember } from '../../actionCreators/activeDeactive';
+import { releaseResource,showActiveList,deactivateMember,showDeactiveList,activateMember,deleteSelectedDeactivatedMember } from '../../actionCreators/activeDeactive';
 import { authHeader } from '../../helper/authHeader';
 import { bindActionCreators } from 'redux';
 import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Input } from 'reactstrap';
@@ -131,7 +131,13 @@ class ShowDeactiveListDetails extends Component{
 
         console.log(this.state)
     }
+    userDeactivate(userId,type){
+        console.log(userId,type)
+        this.setState({loading:true});
+        this.props.releaseResource(userId,type).then(() => this.refreshData())
+        .then(() => this.setState({isActive: false}))
 
+    }
     deleteUser(userId,type){
         console.log(userId,type)
         this.setState({loading:true});
@@ -185,7 +191,7 @@ class ShowDeactiveListDetails extends Component{
                         <td>{item.phoneCode}</td> */}
 
                         <td>
-                            {/* <Button color="success" size="sm" className="mr-2"onClick={this.editCountry.bind(this, item.fullName)}>Deactivate</Button> */}
+                            <Button color="danger" size="sm" className="mr-2"onClick={this.userDeactivate.bind(this, item.userId ,item.type)}>Delete</Button>
                             <Button color="success" size="sm" onClick={this.deleteUser.bind(this, item.userId ,item.type)} >Activate</Button>
                         </td>
                     </tr>
@@ -437,7 +443,8 @@ function mapDispatchToProps(dispatch){
         deactivateMember,
         showDeactiveList,
         activateMember,
-        deleteSelectedDeactivatedMember
+        deleteSelectedDeactivatedMember,
+        releaseResource
         // updateCountry,
         // deleteCountry,
         // deleteSelectedCountryDetail

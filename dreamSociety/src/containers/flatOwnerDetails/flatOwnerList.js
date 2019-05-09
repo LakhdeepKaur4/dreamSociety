@@ -139,6 +139,8 @@ class FlatOwnerList extends Component {
     }
 
     toggle = (ownerId,profilePic, firstName,lastName, dob, gender, contact, email,Aadhaar,permanentAddress,rfidId,rfid) => {
+        console.log('jkdfjkdlfjdkljk')
+        console.log(ownerId,profilePic, firstName,lastName, dob, gender, contact, email,Aadhaar,permanentAddress,rfidId,rfid)
         this.setState({
             ownerId,
             profilePic,
@@ -161,6 +163,7 @@ class FlatOwnerList extends Component {
             this.props.removeOwner(ownerId)
                 .then(() => {
                     this.props.getOwnerList()
+                    .then(()=>this.props.getRfId())
                         .then(() => this.setState({ loading: false }))
                 })
         }
@@ -212,7 +215,7 @@ class FlatOwnerList extends Component {
         });
         if (window.confirm('Are You Sure ?')) {
             this.props.multipleDelete(ids)
-                .then(() => this.props.getOwnerList().then(() => this.setState({ loading: false })))
+                .then(() => this.props.getOwnerList().then(()=>this.props.getRfId()).then(() => this.setState({ loading: false })))
                 .catch(err => err.response.data.message);
         }
         else {
@@ -323,7 +326,7 @@ class FlatOwnerList extends Component {
                         <td><button className="btn btn-success mr-2" onClick={this.addFlat.bind(this,items.ownerId)}>View Flats</button></td>
                         <td style={{ textAlign: "center" }}>
                             <button className="btn btn-success mr-2" onClick={this.toggle.bind(this, items.ownerId, 
-                                items.picture,items.firstName, items.lastName,items.dob, items.gender, items.contact, items.email,
+                                PicURN + items.picture,items.firstName, items.lastName,items.dob, items.gender, items.contact, items.email,
                                 items.adhaarCardNo, items.permanentAddress,items.rfid_master.rfidId,items.rfid_master.rfid,)}>Edit</button>
                             <button className="btn btn-danger" onClick={this.delete.bind(this, items.ownerId)} >Delete</button>
                         </td>
@@ -505,7 +508,7 @@ class FlatOwnerList extends Component {
                 fileName,
                 rfidId
                 )
-                .then(() => this.props.getOwnerList().then(() => this.setState({ loading: false })))
+                .then(() => this.props.getOwnerList().then(()=>this.props.getRfId()).then(() => this.setState({ loading: false })))
                 .catch(err => {
                     this.setState({ messageError: err.response.data.message, modal: !this.state.modal })
                     this.setState({ modal: !this.state.modal })
@@ -705,9 +708,9 @@ class FlatOwnerList extends Component {
                                 <ModalBody>
                                 <FormGroup>
                             <Label>Upload Profile Pic</Label>                               
-                                <Input accept='image/*' style={{display:'inline-block'}} type="file" name ="profilePic" onChange={this.FileChange} value={this.state.profilePic}/>
+                                <Input accept='image/*' style={{display:'inline-block'}} type="file" name ="profilePic" onChange={this.FileChange} />
                                 <div>
-                                 <img src={this.state.profilePicture} height='100px' width='100px' />
+                                 <img src={this.state.profilePic} height='100px' width='100px' />
                                  </div>
                             </FormGroup>
                                 <FormGroup>
