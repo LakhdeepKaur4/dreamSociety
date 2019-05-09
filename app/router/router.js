@@ -64,7 +64,7 @@ module.exports = function (app) {
 
 	app.post('/api/auth/signin', userController.signinDecrypted);
 
-	app.get('/api/user', userController.getUserDecrypted);
+	app.get('/api/user', [authJwt.verifyToken, authJwt.isAdminRole], userController.getUserDecrypted);
 
 	app.get('/api/rolesAssigned', [authJwt.verifyToken, authJwt.isAdminRole], userController.getUserRoleDecrypted);
 

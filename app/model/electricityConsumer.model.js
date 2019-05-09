@@ -11,14 +11,20 @@ module.exports = (sequelize, Sequelize) => {
     endDate: {
       type: Sequelize.DATEONLY,
     },
-    Usage:{
+    lastReading: {
+      type: Sequelize.INTEGER,
+    },
+    CurrentReading: {
+      type: Sequelize.INTEGER,
+    },
+    UnitConsumption: {
       type: Sequelize.INTEGER,
     },
     isActive: {
       type: Sequelize.BOOLEAN,
       defaultValue: true
     },
-    totalConsumption:{
+    totalConsumption: {
       type: Sequelize.FLOAT,
     }
   });
