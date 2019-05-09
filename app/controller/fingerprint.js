@@ -396,3 +396,25 @@ exports.notNullFilterOnflats = async (req, res, next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
+
+exports.getRoles = async (req, res, next) => {
+	try {
+		console.log("req.session===>",req.userId);
+		const role = await Role.findAll({
+            where:{
+                id: {
+                    [Op.notIn]:[1,2]
+                }
+            },
+			attributes: ['id', 'roleName']
+        });
+        console.log(role)
+		if (role) {
+			res.status(200).json(role);
+		}
+	} catch (error) {
+		res.status(500).json({
+			message: error.message
+		})
+	}
+}
