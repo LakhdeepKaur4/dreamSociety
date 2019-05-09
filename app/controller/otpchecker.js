@@ -506,7 +506,6 @@ exports.checkOtp = async (req, res, next) => {
         // x.forEach(tenantFlat => tenantFlat.updateAttributes({isActive:true}));
         // let y = await UserRfId.findOne({where:{isActive:false,userId:updatedTenant.tenantId}});
         // y.updateAttributes({isActive:true});
-
         console.log(updatedTenant);
         if (updatedTenant) {
             mailToUser(updatedTenant);
