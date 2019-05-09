@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 
 import {userflatDetails,postRegister,serviceDetails} from '../../actionCreators/registerComplainAction';
 import UI from '../../components/newUI/tenantDashboard';
-import {Form, Button,  FormGroup,  Input, Label,Row, Col, Modal,ModalBody,ModalHeader } from 'reactstrap';
+import {Form, Button,  FormGroup,  Input, Label,Row, Col,Modal,ModalBody,ModalHeader } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
 
@@ -24,6 +24,8 @@ class RegisterComplaint extends Component{
             errors: {},
             message:'',
             modal:false,
+           
+
             menuVisible: false,
          }
     }
@@ -35,12 +37,11 @@ class RegisterComplaint extends Component{
 
     refreshData=()=>{
          
-         this.props.userflatDetails().then(() => this.setState({loading: false}));
-         this.props.serviceDetails().then(() => this.setState({loading: false}));
-        
-    }
+        this.props.userflatDetails().then(() => this.setState({loading: false}));
+        this.props.serviceDetails().then(() => this.setState({loading: false}));
+       
+   }
 
-    
    toggles = () => {
     this.setState({ modal: !this.state.modal })
     }
@@ -50,10 +51,10 @@ class RegisterComplaint extends Component{
             modal: !this.state.modal
         })
     }
+    
 
     service({item}){
         if(item){
-            console.log(item)
            return( 
             item.map((item) =>{ 
                    return(
@@ -109,10 +110,6 @@ class RegisterComplaint extends Component{
             errors.priority = "cant be empty";
         }
 
-        else if(this.state.date ==='') {
-            errors.date = "cant be empty";
-        }
-
         else if(this.state.slotTime1 ==='') {
             errors.slotTime1 = "cant be empty";
         }
@@ -123,7 +120,7 @@ class RegisterComplaint extends Component{
    
         this.setState({ errors });
         console.log("submited===========================", this.state);
-        //postRegister
+
         const isValid = Object.keys(errors).length === 0;
 
         if(isValid){
@@ -140,7 +137,6 @@ class RegisterComplaint extends Component{
                         this.setState({message : err.response.data.message, loading: false})
                     })
                 
-                    
                  
                     }
     }
@@ -153,7 +149,7 @@ class RegisterComplaint extends Component{
 
     changePassword=()=>{ 
         console.log("password")
-        return this.props.history.replace('/tenantDashboard/changePasswordTenant')
+        return this.props.history.replace('/tenantDashboard/changePasswordtenant')
     }
 
     close = () => {
@@ -182,26 +178,32 @@ class RegisterComplaint extends Component{
         let formData=<div>
              
              <FormGroup>
+                 
+             <Row md={12}>
+                <Col md={6}>
                 <Label>Flat no</Label>
                 <Input type="select" defaultValue='no-value' name="flatDetailId"  onChange={this.onChange} >
                     <DefaultSelect />
                     {this.userflatDetails(this.props.registerComplaintReducer)}
                 </Input >
                 <span className='error'>{this.state.errors.flatDetailId}</span>
-            </FormGroup>
-         
-
-             <FormGroup>
+                </Col>
+                <Col md={6}>
                 <Label>Service Type</Label>
                 <Input type="select" defaultValue='no-value' name="serviceId"  onChange={this.onChange}>
                     <DefaultSelect />
                     {this.service(this.props.registerComplaintReducer)}
                 </Input >
                 <span className='error'>{this.state.errors.serviceId}</span>
+                </Col>
+                </Row>
             </FormGroup>
+
 
                  
             <FormGroup>
+            <Row md={12}>
+                <Col md={6}>
                 <Label>Priority</Label>
                 <Input type="select" defaultValue='no-value' name="priority"  onChange={this.onChange}>
                     <DefaultSelect />
@@ -210,50 +212,43 @@ class RegisterComplaint extends Component{
                     <option>Low</option>
                 </Input >
                 <span className='error'>{this.state.errors.priority}</span>
-            </FormGroup>
-
-                 
-            <FormGroup>
+                </Col>
+                
+                <Col md={6}>
                 <Label>Date</Label>
                 <Input type="date" min={this.minDate()} name="date"  onChange={this.onChange}>
+                    <DefaultSelect />
+                    {/* {this.service(this.props.displayServiceMasterReducer)} */}
                 </Input >
                 <span className='error'>{this.state.errors.date}</span>
+                </Col>
+                </Row>
             </FormGroup>
 
             
-            <Row form>
-                
-                <Col md={12}>
-                <FormGroup>
+            <FormGroup>
+            <Row md={12}>
+                <Col md={4}>
                     <Label>Slot Time 1</Label>
                     <Input type="time"  name="slotTime1" onChange={this.onChange} >
                     <span className='error'>{this.state.errors.startTime1}</span>
                     </Input>
-                </FormGroup>
                 </Col>
-                </Row>
-
-                <Row form>
                 
-                <Col md={12}>
-                <FormGroup>
+                <Col md={4}>
                     <Label>Slot Time 2</Label>
                     <Input type="time"  name="slotTime12" onChange={this.onChange} >
                     </Input>
-                </FormGroup>
                 </Col>
-                </Row>
-
-                <Row form>
-                
-                <Col md={12}>
-                <FormGroup>
+               
+                <Col md={4}>
                     <Label>Slot Time 3</Label>
                     <Input type="time"  name="slotTime3" onChange={this.onChange} >
                     </Input>
-                </FormGroup>
                 </Col>
-                </Row>
+            </Row>
+            </FormGroup>
+               
 
 
 
@@ -293,9 +288,9 @@ class RegisterComplaint extends Component{
 }
 
 function mapStateToProps(state) {
-
+          console.log(state)
     return {
-       
+  
         registerComplaintReducer : state.registerComplaintReducer
     }
 
