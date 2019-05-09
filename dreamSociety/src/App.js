@@ -123,8 +123,8 @@ import TenantVerification from './components/tenantVerification/tenantVerificati
 import CommonAreaMaster from './containers/commonAreaMaster/commonAreaMaster';
 import DisplayCommonArea from './containers/commonAreaMaster/displayCommonAreaMaster';
 import CommonAreaMachine from './containers/commonAreaMachineMaster/commonAreaMachineMaster';
-import DisplayCommonAreaMachine from './containers/commonAreaMachineMaster/displayCommonAreaMachine';
-     
+import DisplayCommonAreaMachine from './containers/commonAreaMachineMaster/displayCommonAreaMachine';  
+import AddElectricityExpense from './containers/electricityExpense/addElectricityExpense';
 
 import RFID from './containers/rfIdMaster/rfIdMaster';
 import RfIdDetail from './containers/rfIdMaster/rfIdDetails';
@@ -272,7 +272,8 @@ class App extends Component {
             <Route path='/superDashboard/commonAreaMaster' component={CommonAreaMaster}/>
             <Route path='/superDashboard/DisplayCommonAreaMaster' component={DisplayCommonArea}/>
             <Route path='/superDashboard/CommonAreaMachineMaster' component={CommonAreaMachine}/>
-            <Route path='/superDashboard/DisplayCommonAreaMachineMaster' component={DisplayCommonAreaMachine}/>
+            <Route path='/superDashboard/electricityExpenseMaster' component={AddElectricityExpense}/>
+
             <PrivateRoute path='/superDashboard/rfId' component={RFID}/>
             <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail}/>
             <PrivateRoute path='/superDashboard/machineIdMaster' component ={MachineIdMaster}/>
