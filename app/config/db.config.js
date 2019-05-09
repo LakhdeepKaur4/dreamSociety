@@ -223,7 +223,6 @@ db.complaint.belongsTo(db.user, { foreignKey: 'userId' });
 db.machine.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.machine.belongsTo(db.machineDetail, { foreignKey: 'machineDetailId' });
 db.electricityConsumer.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
-db.electricityConsumer.belongsTo(db.maintenanceType, { foreignKey: 'maintenanceTypeId' });
 db.commonArea.belongsTo(db.user, { foreignKey: 'userId' });
 db.commonAreaDetail.belongsTo(db.user, { foreignKey: 'userId' });
 db.commonAreaDetail.belongsToMany(db.machineDetail, { as: 'Machine', through: 'area_machine_master', foreignKey: 'commonAreaDetailId' });

@@ -9,6 +9,7 @@ const TenantFlatDetail = db.tenantFlatDetail;
 const OwnerMembersDetail = db.ownerMembersDetail;
 const TenantMembersDetail = db.ownerMembersDetail;
 const User = db.user;
+const FlatDetail = db.flatDetail;
 
 
 const Role = db.role;
@@ -113,13 +114,14 @@ exports.notNullFingerPrintData = async (req, res, next) => {
 
 exports.nullFilterOnflats = async (req, res, next) => {
     try {
-        const type = req.params.type;
+        const id = req.params.id;
+        console.log("ID ***", id)
         let ownerIds = [];
-        let ownerMemberIds =[];
+        let ownerMemberIds = [];
         let tenantIds = [];
-        let tenantMemberIds =[];
-     
-        if (type == 'owner') {
+        let tenantMemberIds = [];
+
+        if (id == 3) {
             const owner = await OwnerFlatDetail.findAll({ where: { isActive: true } });
             owner.map(owner => {
                 ownerIds.push(owner.ownerId);
@@ -148,8 +150,8 @@ exports.nullFilterOnflats = async (req, res, next) => {
                 fingerprintData
             });
         }
-        if (type == 'ownerMember') {
-            const owner = await OwnerMembersDetail.findAll({ where: { isActive: true } });
+        if (id == 7) {
+            const owner = await OwnerMembersDetail.findAll({ where: { isActive: true }});
             owner.map(owner => {
                 ownerMemberIds.push(owner.ownerId);
             })
@@ -177,10 +179,14 @@ exports.nullFilterOnflats = async (req, res, next) => {
                 fingerprintData
             });
         }
-        if (type == 'tenant') {
-            const tenant = await TenantFlatDetail.findAll({ where: { isActive: true } });
+        if (id == 4) {
+            console.log(":");
+
+            const tenant = await TenantFlatDetail.findAll({
+                where: { isActive: true }
+            });
             tenant.map(tenant => {
-                ownerIds.push(tenant.tenantId);
+                tenantIds.push(tenant.tenantId);
             })
             const fingerprintData = await FingerprintData.findAll({
                 where: { isActive: true, fingerprintData: null, userId: { [Op.in]: tenantIds } },
@@ -206,7 +212,7 @@ exports.nullFilterOnflats = async (req, res, next) => {
                 fingerprintData
             });
         }
-        if (type == 'tenantMember') {
+        if (id == 8) {
             const tenantMember = await TenantMembersDetail.findAll({ where: { isActive: true } });
             tenantMember.map(tenant => {
                 tenantMemberIds.push(tenant.tenantId);
@@ -235,11 +241,23 @@ exports.nullFilterOnflats = async (req, res, next) => {
                 fingerprintData
             });
         }
-        
+
     } catch (error) {
         console.log("error==>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
+}
+
+exports.test = async(req,res,next) =>{
+    const id = req.params.id;
+    const tenantIds = [];
+    const fingerprintData = await FingerprintData.findAll({
+        where: { isActive: true, fingerprintData: null}
+    });
+    fingerprintData.map(user => {
+        tenantIds.push(user.userId);
+    })
+    res.json(fingerprintData);
 }
 
 
@@ -270,17 +288,17 @@ exports.notNullFilterOnflats = async (req, res, next) => {
         const type = req.params.type;
         console.log(type)
         let ownerIds = [];
-        let ownerMemberIds =[];
+        let ownerMemberIds = [];
         let tenantIds = [];
-        let tenantMemberIds =[];
-     
+        let tenantMemberIds = [];
+
         if (type == 'owner') {
             const owner = await OwnerFlatDetail.findAll({ where: { isActive: true } });
             owner.map(owner => {
                 ownerIds.push(owner.ownerId);
             })
             const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true, fingerprintData: {[Op.ne]:null}, userId: { [Op.in]: ownerIds } },
+                where: { isActive: true, fingerprintData: { [Op.ne]: null }, userId: { [Op.in]: ownerIds } },
                 include: [{
                     model: User, as: 'user',
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
@@ -309,7 +327,7 @@ exports.notNullFilterOnflats = async (req, res, next) => {
                 ownerMemberIds.push(owner.ownerId);
             })
             const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true, fingerprintData: {[Op.ne]:null}, userId: { [Op.in]: ownerMemberIds } },
+                where: { isActive: true, fingerprintData: { [Op.ne]: null }, userId: { [Op.in]: ownerMemberIds } },
                 include: [{
                     model: User, as: 'user',
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
@@ -338,7 +356,7 @@ exports.notNullFilterOnflats = async (req, res, next) => {
                 ownerIds.push(tenant.tenantId);
             })
             const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true,fingerprintData: {[Op.ne]:null}, userId: { [Op.in]: tenantIds } },
+                where: { isActive: true, fingerprintData: { [Op.ne]: null }, userId: { [Op.in]: tenantIds } },
                 include: [{
                     model: User, as: 'user',
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
@@ -367,7 +385,7 @@ exports.notNullFilterOnflats = async (req, res, next) => {
                 tenantMemberIds.push(tenant.tenantId);
             })
             const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true, fingerprintData: {[Op.ne]:null}, userId: { [Op.in]: tenantMemberIds } },
+                where: { isActive: true, fingerprintData: { [Op.ne]: null }, userId: { [Op.in]: tenantMemberIds } },
                 include: [{
                     model: User, as: 'user',
                     attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
@@ -390,7 +408,7 @@ exports.notNullFilterOnflats = async (req, res, next) => {
                 fingerprintData
             });
         }
-        
+
     } catch (error) {
         console.log("error==>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -398,23 +416,22 @@ exports.notNullFilterOnflats = async (req, res, next) => {
 }
 
 exports.getRoles = async (req, res, next) => {
-	try {
-		console.log("req.session===>",req.userId);
-		const role = await Role.findAll({
-            where:{
+    try {
+        const role = await Role.findAll({
+            where: {
                 id: {
-                    [Op.notIn]:[1,2]
+                    [Op.notIn]: [1, 2]
                 }
             },
-			attributes: ['id', 'roleName']
+            attributes: ['id', 'roleName']
         });
         console.log(role)
-		if (role) {
-			res.status(200).json(role);
-		}
-	} catch (error) {
-		res.status(500).json({
-			message: error.message
-		})
-	}
+        if (role) {
+            res.status(200).json(role);
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
 }

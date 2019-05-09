@@ -664,6 +664,8 @@ module.exports = function (app) {
 
 	app.put('/api/commonAreaDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.delete);
 
+	app.get('/api/fingerPrint/test', [authJwt.verifyToken], fingerPrintController.test);
+
 	app.get('/api/fingerPrint/roles', [authJwt.verifyToken], fingerPrintController.getRoles);
 
 	app.post('/api/fingerPrint', [authJwt.verifyToken], fingerPrintController.addFingerPrintData);
@@ -676,9 +678,9 @@ module.exports = function (app) {
 
 	app.get('/api/filterOnNotNull/fingerPrint', [authJwt.verifyToken], fingerPrintController.notNullFingerPrintData);
 
-	app.get('/api/filterOnNull/flats/fingerPrint/:type', [authJwt.verifyToken], fingerPrintController.nullFilterOnflats);
+	app.get('/api/filterOnNull/flats/fingerPrint/:id', [authJwt.verifyToken], fingerPrintController.nullFilterOnflats);
 
-	app.get('/api/filterOnNotNull/flats/fingerPrint/:type', [authJwt.verifyToken], fingerPrintController.notNullFilterOnflats);
+	app.get('/api/filterOnNotNull/flats/fingerPrint/:id', [authJwt.verifyToken], fingerPrintController.notNullFilterOnflats);
 
 	app.get('/api/vendorComplaints', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.getById);
 

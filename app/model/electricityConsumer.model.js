@@ -14,10 +14,10 @@ module.exports = (sequelize, Sequelize) => {
     lastReading: {
       type: Sequelize.INTEGER,
     },
-    CurrentReading: {
+    currentReading: {
       type: Sequelize.INTEGER,
     },
-    UnitConsumption: {
+    unitConsumed: {
       type: Sequelize.INTEGER,
     },
     isActive: {
