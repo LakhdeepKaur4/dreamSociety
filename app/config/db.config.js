@@ -160,12 +160,8 @@ db.owner.hasMany(db.ownerMembersDetail, { foreignKey: 'ownerId' });
 db.ownerMembersDetail.belongsTo(db.relation, { foreignKey: 'relationId' });
 db.ownerMembersDetail.belongsTo(db.user, { foreignKey: 'userId' });
 db.ownerMembersDetail.belongsTo(db.rfid, { foreignKey: 'memberRfId' });
-<<<<<<< HEAD
-db.ownerMembersDetail.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
-=======
 db.ownerMembersDetail.belongsTo(db.flatDetail, { foreignKey: 'flatDetaiilId' });
 
->>>>>>> 84977f4109b00b10f3be6e7cf78a146d6420998f
 db.owner.belongsTo(db.user, { foreignKey: 'userId' });
 db.rfid.belongsTo(db.user, { foreignKey: 'userId' });
 db.machine.belongsTo(db.user, { foreignKey: 'userId' });
