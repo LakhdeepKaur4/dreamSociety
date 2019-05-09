@@ -4,12 +4,14 @@ const httpStatus = require('http-status');
 var crypto = require('crypto');
 
 const FingerprintData = db.fingerprintData;
-const OwnerFlatDetail = db.ownerFlatDetail;
-const TenantFlatDetail = db.tenantFlatDetail;
+const Owner = db.owner;
+const Tenant = db.tenant;
 const OwnerMembersDetail = db.ownerMembersDetail;
-const TenantMembersDetail = db.ownerMembersDetail;
+const TenantMembersDetail = db.tenantMembersDetail;;
 const User = db.user;
 const FlatDetail = db.flatDetail;
+const Tower = db.tower;
+const Floor = db.floor;
 
 
 const Role = db.role;
@@ -122,123 +124,129 @@ exports.nullFilterOnflats = async (req, res, next) => {
         let tenantMemberIds = [];
 
         if (id == 3) {
-            const owner = await OwnerFlatDetail.findAll({ where: { isActive: true } });
-            owner.map(owner => {
-                ownerIds.push(owner.ownerId);
-            })
             const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true, fingerprintData: null, userId: { [Op.in]: ownerIds } },
-                include: [{
-                    model: User, as: 'user',
-                    attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
-                    include: [{
-                        model: Role
-                    }]
-                }]
+                where: { isActive: true, fingerprintData: null }
             });
-            if (fingerprintData.userId = ! null) {
-                fingerprintData.map(user => {
-                    user.user.firstName = decrypt(user.user.firstName);
-                    user.user.lastName = decrypt(user.user.lastName);
-                    user.user.userName = decrypt(user.user.userName);
-                    user.user.contact = decrypt(user.user.contact);
-                    user.user.email = decrypt(user.user.email);
-                })
-            }
+            fingerprintData.map(user => {
+                ownerIds.push(user.userId);
+            })
+            const owner = await Owner.findAll({
+                where: { isActive: true, ownerId: { [Op.in]: ownerIds } },
+                attributes: ['ownerId', 'firstName', 'lastName', 'userName', 'contact', 'email'],
+                include: [{ model: FlatDetail, include: [Tower, Floor] }]
+            });
+            // if (fingerprintData.userId = ! null) {
+            owner.map(owner => {
+                owner.firstName = decrypt(owner.firstName);
+                owner.lastName = decrypt(owner.lastName);
+                owner.userName = decrypt(owner.userName);
+                owner.contact = decrypt(owner.contact);
+                owner.email = decrypt(owner.email);
+            })
             return res.status(httpStatus.CREATED).json({
                 message: "Finger Print Content Page",
-                fingerprintData
-            });
-        }
-        if (id == 7) {
-            const owner = await OwnerMembersDetail.findAll({ where: { isActive: true }});
-            owner.map(owner => {
-                ownerMemberIds.push(owner.ownerId);
-            })
-            const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true, fingerprintData: null, userId: { [Op.in]: ownerMemberIds } },
-                include: [{
-                    model: User, as: 'user',
-                    attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
-                    include: [{
-                        model: Role,
-                    }]
-                }]
-            });
-            if (fingerprintData.userId = ! null) {
-                fingerprintData.map(user => {
-                    user.user.firstName = decrypt(user.user.firstName);
-                    user.user.lastName = decrypt(user.user.lastName);
-                    user.user.userName = decrypt(user.user.userName);
-                    user.user.contact = decrypt(user.user.contact);
-                    user.user.email = decrypt(user.user.email);
-                })
-            }
-            return res.status(httpStatus.CREATED).json({
-                message: "Finger Print Content Page",
-                fingerprintData
+                owner
             });
         }
         if (id == 4) {
-            console.log(":");
-
-            const tenant = await TenantFlatDetail.findAll({
-                where: { isActive: true }
-            });
-            tenant.map(tenant => {
-                tenantIds.push(tenant.tenantId);
-            })
             const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true, fingerprintData: null, userId: { [Op.in]: tenantIds } },
-                include: [{
-                    model: User, as: 'user',
-                    attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
-                    include: [{
-                        model: Role
-                    }]
-                }]
+                where: { isActive: true, fingerprintData: null }
             });
-            if (fingerprintData.userId = ! null) {
-                fingerprintData.map(user => {
-                    user.user.firstName = decrypt(user.user.firstName);
-                    user.user.lastName = decrypt(user.user.lastName);
-                    user.user.userName = decrypt(user.user.userName);
-                    user.user.contact = decrypt(user.user.contact);
-                    user.user.email = decrypt(user.user.email);
-                })
-            }
+            fingerprintData.map(user => {
+                tenantIds.push(user.userId);
+            })
+            const tenant = await Tenant.findAll({
+                where: { isActive: true, tenantId: { [Op.in]: tenantIds } },
+                attributes: ['tenantId', 'firstName', 'lastName', 'userName', 'contact', 'email'],
+                include: [{ model: FlatDetail, include: [Tower, Floor] }]
+            });
+            // if (fingerprintData.userId = ! null) {
+            tenant.map(tenant => {
+                tenant.firstName = decrypt(tenant.firstName);
+                tenant.lastName = decrypt(tenant.lastName);
+                tenant.userName = decrypt(tenant.userName);
+                tenant.contact = decrypt(tenant.contact);
+                tenant.email = decrypt(tenant.email);
+            })
             return res.status(httpStatus.CREATED).json({
                 message: "Finger Print Content Page",
-                fingerprintData
+                tenant
+            });
+        }
+        if (id == 5) {
+            const fingerprintData = await FingerprintData.findAll({
+                where: { isActive: true, fingerprintData: null }
+            });
+            fingerprintData.map(user => {
+                vendorIds.push(user.userId);
+            })
+            const ownerMember = await OwnerMembersDetail.findAll({
+                where: { isActive: true, memberId: { [Op.in]: ownerMemberIds } },
+                attributes: ['ownerId', 'memberFirstName', 'memberLastName', 'memberUserName', 'memberContact', 'memberEmail'],
+                include: [{ model: FlatDetail, include: [Tower, Floor] }]
+            });
+            // if (fingerprintData.userId = ! null) {
+            ownerMember.map(ownerMember => {
+                ownerMember.memberFirstName = decrypt(ownerMember.memberFirstName);
+                ownerMember.memberLastName = decrypt(ownerMember.memberLastName);
+                ownerMember.memberUserName = decrypt(ownerMember.memberUserName);
+                ownerMember.memberContact = decrypt(ownerMember.memberContact);
+                ownerMember.memberEmail = decrypt(ownerMember.memberEmail);
+            })
+            return res.status(httpStatus.CREATED).json({
+                message: "Finger Print Content Page",
+                ownerMember
+            });
+        }
+        if (id == 7) {
+            const fingerprintData = await FingerprintData.findAll({
+                where: { isActive: true, fingerprintData: null }
+            });
+            fingerprintData.map(user => {
+                ownerMemberIds.push(user.userId);
+            })
+            const ownerMember = await OwnerMembersDetail.findAll({
+                where: { isActive: true, memberId: { [Op.in]: ownerMemberIds } },
+                attributes: ['ownerId', 'memberFirstName', 'memberLastName', 'memberUserName', 'memberContact', 'memberEmail'],
+                include: [{ model: FlatDetail, include: [Tower, Floor] }]
+            });
+            // if (fingerprintData.userId = ! null) {
+            ownerMember.map(ownerMember => {
+                ownerMember.memberFirstName = decrypt(ownerMember.memberFirstName);
+                ownerMember.memberLastName = decrypt(ownerMember.memberLastName);
+                ownerMember.memberUserName = decrypt(ownerMember.memberUserName);
+                ownerMember.memberContact = decrypt(ownerMember.memberContact);
+                ownerMember.memberEmail = decrypt(ownerMember.memberEmail);
+            })
+            return res.status(httpStatus.CREATED).json({
+                message: "Finger Print Content Page",
+                ownerMember
             });
         }
         if (id == 8) {
-            const tenantMember = await TenantMembersDetail.findAll({ where: { isActive: true } });
-            tenantMember.map(tenant => {
-                tenantMemberIds.push(tenant.tenantId);
-            })
+            console.log("&&&&#@#@#@#*@#*@#*@#@(#   in 8")
             const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true, fingerprintData: null, userId: { [Op.in]: tenantMemberIds } },
-                include: [{
-                    model: User, as: 'user',
-                    attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
-                    include: [{
-                        model: Role
-                    }]
-                }]
+                where: { isActive: true, fingerprintData: null }
             });
-            if (fingerprintData.userId = ! null) {
-                fingerprintData.map(user => {
-                    user.user.firstName = decrypt(user.user.firstName);
-                    user.user.lastName = decrypt(user.user.lastName);
-                    user.user.userName = decrypt(user.user.userName);
-                    user.user.contact = decrypt(user.user.contact);
-                    user.user.email = decrypt(user.user.email);
-                })
-            }
+            fingerprintData.map(user => {
+                tenantMemberIds.push(user.userId);
+            })
+            const tenantMember = await TenantMembersDetail.findAll({
+                where: { isActive: true, memberId: { [Op.in]: tenantMemberIds } },
+                attributes: ['tenantId', 'firstName', 'lastName', 'userName', 'contact', 'email'],
+                include: [{ model: FlatDetail, include: [Tower, Floor] }]
+            });
+            // if (fingerprintData.userId = ! null) {
+            tenantMember.map(tenantMember => {
+                tenantMember.firstName = decrypt(tenantMember.firstName);
+                tenantMember.lastName = decrypt(tenantMember.lastName);
+                tenantMember.userName = decrypt(tenantMember.userName);
+                tenantMember.contact = decrypt(tenantMember.contact);
+                tenantMember.email = decrypt(tenantMember.email);
+            })
             return res.status(httpStatus.CREATED).json({
                 message: "Finger Print Content Page",
-                fingerprintData
+                tenantMember
             });
         }
 
@@ -248,19 +256,173 @@ exports.nullFilterOnflats = async (req, res, next) => {
     }
 }
 
-exports.test = async(req,res,next) =>{
+exports.notNullFilterOnflats = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        console.log("ID ***", id)
+        let ownerIds = [];
+        let ownerMemberIds = [];
+        let tenantIds = [];
+        let tenantMemberIds = [];
+
+        if (id == 3) {
+            const fingerprintData = await FingerprintData.findAll({
+                where: { isActive: true, fingerprintData: { [Op.ne]: null } }
+            });
+            fingerprintData.map(user => {
+                ownerIds.push(user.userId);
+            })
+            const owner = await Owner.findAll({
+                where: { isActive: true, ownerId: { [Op.in]: ownerIds } },
+                attributes: ['ownerId', 'firstName', 'lastName', 'userName', 'contact', 'email'],
+                include: [{ model: FlatDetail, include: [Tower, Floor] }]
+            });
+            // if (fingerprintData.userId = ! null) {
+            owner.map(owner => {
+                owner.firstName = decrypt(owner.firstName);
+                owner.lastName = decrypt(owner.lastName);
+                owner.userName = decrypt(owner.userName);
+                owner.contact = decrypt(owner.contact);
+                owner.email = decrypt(owner.email);
+            })
+            return res.status(httpStatus.CREATED).json({
+                message: "Finger Print Content Page",
+                owner
+            });
+        }
+        if (id == 4) {
+            const fingerprintData = await FingerprintData.findAll({
+                where: { isActive: true, fingerprintData: { [Op.ne]: null } }
+            });
+            fingerprintData.map(user => {
+                tenantIds.push(user.userId);
+            })
+            const tenant = await Tenant.findAll({
+                where: { isActive: true, tenantId: { [Op.in]: tenantIds } },
+                attributes: ['tenantId', 'firstName', 'lastName', 'userName', 'contact', 'email'],
+                include: [{ model: FlatDetail, include: [Tower, Floor] }]
+            });
+            // if (fingerprintData.userId = ! null) {
+            tenant.map(tenant => {
+                tenant.firstName = decrypt(tenant.firstName);
+                tenant.lastName = decrypt(tenant.lastName);
+                tenant.userName = decrypt(tenant.userName);
+                tenant.contact = decrypt(tenant.contact);
+                tenant.email = decrypt(tenant.email);
+            })
+            return res.status(httpStatus.CREATED).json({
+                message: "Finger Print Content Page",
+                tenant
+            });
+        }
+        if (id == 5) {
+            const fingerprintData = await FingerprintData.findAll({
+                where: { isActive: true, fingerprintData: { [Op.ne]: null } }
+            });
+            fingerprintData.map(user => {
+                vendorIds.push(user.userId);
+            })
+            const ownerMember = await OwnerMembersDetail.findAll({
+                where: { isActive: true, memberId: { [Op.in]: ownerMemberIds } },
+                attributes: ['ownerId', 'memberFirstName', 'memberLastName', 'memberUserName', 'memberContact', 'memberEmail'],
+                include: [{ model: FlatDetail, include: [Tower, Floor] }]
+            });
+            // if (fingerprintData.userId = ! null) {
+            ownerMember.map(ownerMember => {
+                ownerMember.memberFirstName = decrypt(ownerMember.memberFirstName);
+                ownerMember.memberLastName = decrypt(ownerMember.memberLastName);
+                ownerMember.memberUserName = decrypt(ownerMember.memberUserName);
+                ownerMember.memberContact = decrypt(ownerMember.memberContact);
+                ownerMember.memberEmail = decrypt(ownerMember.memberEmail);
+            })
+            return res.status(httpStatus.CREATED).json({
+                message: "Finger Print Content Page",
+                ownerMember
+            });
+        }
+        if (id == 7) {
+            const fingerprintData = await FingerprintData.findAll({
+                where: { isActive: true, fingerprintData: { [Op.ne]: null } }
+            });
+            fingerprintData.map(user => {
+                ownerMemberIds.push(user.userId);
+            })
+            const ownerMember = await OwnerMembersDetail.findAll({
+                where: { isActive: true, memberId: { [Op.in]: ownerMemberIds } },
+                attributes: ['ownerId', 'memberFirstName', 'memberLastName', 'memberUserName', 'memberContact', 'memberEmail'],
+                include: [{ model: FlatDetail, include: [Tower, Floor] }]
+            });
+            // if (fingerprintData.userId = ! null) {
+            ownerMember.map(ownerMember => {
+                ownerMember.memberFirstName = decrypt(ownerMember.memberFirstName);
+                ownerMember.memberLastName = decrypt(ownerMember.memberLastName);
+                ownerMember.memberUserName = decrypt(ownerMember.memberUserName);
+                ownerMember.memberContact = decrypt(ownerMember.memberContact);
+                ownerMember.memberEmail = decrypt(ownerMember.memberEmail);
+            })
+            return res.status(httpStatus.CREATED).json({
+                message: "Finger Print Content Page",
+                ownerMember
+            });
+        }
+        if (id == 8) {
+            const fingerprintData = await FingerprintData.findAll({
+                where: { isActive: true, fingerprintData: { [Op.ne]: null } }
+            });
+            fingerprintData.map(user => {
+                tenantMemberIds.push(user.userId);
+            })
+            const tenantMember = await TenantMembersDetail.findAll({
+                where: { isActive: true, memberId: { [Op.in]: tenantMemberIds } },
+                attributes: ['tenantId', 'firstName', 'lastName', 'userName', 'contact', 'email'],
+                include: [{ model: FlatDetail, include: [Tower, Floor] }]
+            });
+            // if (fingerprintData.userId = ! null) {
+            tenantMember.map(tenantMember => {
+                tenantMember.firstName = decrypt(tenantMember.firstName);
+                tenantMember.lastName = decrypt(tenantMember.lastName);
+                tenantMember.userName = decrypt(tenantMember.userName);
+                tenantMember.contact = decrypt(tenantMember.contact);
+                tenantMember.email = decrypt(tenantMember.email);
+            })
+            return res.status(httpStatus.CREATED).json({
+                message: "Finger Print Content Page",
+                tenantMember
+            });
+        }
+
+    } catch (error) {
+        console.log("error==>", error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.test = async (req, res, next) => {
     const id = req.params.id;
     const tenantIds = [];
     const fingerprintData = await FingerprintData.findAll({
-        where: { isActive: true, fingerprintData: null}
+        where: { isActive: true, fingerprintData: null }
     });
     fingerprintData.map(user => {
         tenantIds.push(user.userId);
     })
-    res.json(fingerprintData);
+    const tenant = await Tenant.findAll({
+        where: { isActive: true, tenantId: { [Op.in]: tenantIds } },
+        attributes: ['tenantId', 'firstName', 'lastName', 'userName', 'contact', 'email'],
+        include: [{ model: FlatDetail, include: [Tower, Floor] }]
+    });
+    // if (fingerprintData.userId = ! null) {
+    tenant.map(tenant => {
+        tenant.firstName = decrypt(tenant.firstName);
+        tenant.lastName = decrypt(tenant.lastName);
+        tenant.userName = decrypt(tenant.userName);
+        tenant.contact = decrypt(tenant.contact);
+        tenant.email = decrypt(tenant.email);
+    })
+    // }
+
+    res.json(tenant);
 }
-
-
 exports.updateFingerPrintData = async (req, res, next) => {
     try {
         const update = req.body;
@@ -277,138 +439,6 @@ exports.updateFingerPrintData = async (req, res, next) => {
                 message: "Please try again.Something went wrong",
             });
         }
-    } catch (error) {
-        console.log("error==>", error);
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
-    }
-}
-
-exports.notNullFilterOnflats = async (req, res, next) => {
-    try {
-        const type = req.params.type;
-        console.log(type)
-        let ownerIds = [];
-        let ownerMemberIds = [];
-        let tenantIds = [];
-        let tenantMemberIds = [];
-
-        if (type == 'owner') {
-            const owner = await OwnerFlatDetail.findAll({ where: { isActive: true } });
-            owner.map(owner => {
-                ownerIds.push(owner.ownerId);
-            })
-            const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true, fingerprintData: { [Op.ne]: null }, userId: { [Op.in]: ownerIds } },
-                include: [{
-                    model: User, as: 'user',
-                    attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
-                    include: [{
-                        model: Role
-                    }]
-                }]
-            });
-            if (fingerprintData.userId = ! null) {
-                fingerprintData.map(user => {
-                    user.user.firstName = decrypt(user.user.firstName);
-                    user.user.lastName = decrypt(user.user.lastName);
-                    user.user.userName = decrypt(user.user.userName);
-                    user.user.contact = decrypt(user.user.contact);
-                    user.user.email = decrypt(user.user.email);
-                })
-            }
-            return res.status(httpStatus.CREATED).json({
-                message: "Finger Print Content Page",
-                fingerprintData
-            });
-        }
-        if (type == 'ownerMember') {
-            const owner = await OwnerMembersDetail.findAll({ where: { isActive: true } });
-            owner.map(owner => {
-                ownerMemberIds.push(owner.ownerId);
-            })
-            const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true, fingerprintData: { [Op.ne]: null }, userId: { [Op.in]: ownerMemberIds } },
-                include: [{
-                    model: User, as: 'user',
-                    attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
-                    include: [{
-                        model: Role
-                    }]
-                }]
-            });
-            if (fingerprintData.userId = ! null) {
-                fingerprintData.map(user => {
-                    user.user.firstName = decrypt(user.user.firstName);
-                    user.user.lastName = decrypt(user.user.lastName);
-                    user.user.userName = decrypt(user.user.userName);
-                    user.user.contact = decrypt(user.user.contact);
-                    user.user.email = decrypt(user.user.email);
-                })
-            }
-            return res.status(httpStatus.CREATED).json({
-                message: "Finger Print Content Page",
-                fingerprintData
-            });
-        }
-        if (type == 'tenant') {
-            const tenant = await TenantFlatDetail.findAll({ where: { isActive: true } });
-            tenant.map(tenant => {
-                ownerIds.push(tenant.tenantId);
-            })
-            const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true, fingerprintData: { [Op.ne]: null }, userId: { [Op.in]: tenantIds } },
-                include: [{
-                    model: User, as: 'user',
-                    attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
-                    include: [{
-                        model: Role
-                    }]
-                }]
-            });
-            if (fingerprintData.userId = ! null) {
-                fingerprintData.map(user => {
-                    user.user.firstName = decrypt(user.user.firstName);
-                    user.user.lastName = decrypt(user.user.lastName);
-                    user.user.userName = decrypt(user.user.userName);
-                    user.user.contact = decrypt(user.user.contact);
-                    user.user.email = decrypt(user.user.email);
-                })
-            }
-            return res.status(httpStatus.CREATED).json({
-                message: "Finger Print Content Page",
-                fingerprintData
-            });
-        }
-        if (type == 'tenantMember') {
-            const tenantMember = await TenantMembersDetail.findAll({ where: { isActive: true } });
-            tenantMember.map(tenant => {
-                tenantMemberIds.push(tenant.tenantId);
-            })
-            const fingerprintData = await FingerprintData.findAll({
-                where: { isActive: true, fingerprintData: { [Op.ne]: null }, userId: { [Op.in]: tenantMemberIds } },
-                include: [{
-                    model: User, as: 'user',
-                    attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'],
-                    include: [{
-                        model: Role
-                    }]
-                }]
-            });
-            if (fingerprintData.userId = ! null) {
-                fingerprintData.map(user => {
-                    user.user.firstName = decrypt(user.user.firstName);
-                    user.user.lastName = decrypt(user.user.lastName);
-                    user.user.userName = decrypt(user.user.userName);
-                    user.user.contact = decrypt(user.user.contact);
-                    user.user.email = decrypt(user.user.email);
-                })
-            }
-            return res.status(httpStatus.CREATED).json({
-                message: "Finger Print Content Page",
-                fingerprintData
-            });
-        }
-
     } catch (error) {
         console.log("error==>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
