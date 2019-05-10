@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import UI from '../../components/newUI/superAdminDashboard';
 import { bindActionCreators } from 'redux';
 import Spinner from '../../components/spinner/spinner';
-import { Col, Row, Form ,Button,FormGroup} from 'reactstrap';
+import { Col, Row, Form, Button, FormGroup } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 
 import { getTowerName } from '../../actionCreators/flatDetailMasterAction';
@@ -118,33 +118,33 @@ class AddElectricityExpense extends Component {
         form = <div>
             <div>
                 <Row md={12}>
-                        <Col md={3}>
-                            <label>Tower Name</label>
-                            <select required className="form-control" defaultValue='no-value' name="towerId" onChange={this.onChange}>
-                                <DefaultSelect />
-                                {this.getDropdownForTower(this.props.flatDetailMasterReducer)}
-                            </select>
-                        </Col>
-                        <Col md={3}>
-                            <label>Floor</label>
-                            <select className="form-control" defaultValue='no-value' name="floorId" onChange={this.floorChangeHandler}>
-                                <DefaultSelect />
-                                {this.getFloorData(this.props.electricityExpenseReducer)}
-                            </select>
-                        </Col>
-                        <Col md={3}>
-                            <label>Flats</label>
-                            <select className="form-control" defaultValue='no-value' name="flatDetailId">
-                                <DefaultSelect />
-                                {this.getFlatData(this.props.electricityExpenseReducer)}
-                            </select>
-                        </Col>
-                        <Col md={3}>
-                            <label>Last Reading</label>
-                            <input className="form-control" placeholder="Last Reading" type="text" name="lastReading" maxLength={6} value={this.state.lastReading} ></input>
-                        </Col>
+                    <Col md={3}>
+                        <label>Tower Name</label>
+                        <select required className="form-control" defaultValue='no-value' name="towerId" onChange={this.onChange}>
+                            <DefaultSelect />
+                            {this.getDropdownForTower(this.props.flatDetailMasterReducer)}
+                        </select>
+                    </Col>
+                    <Col md={3}>
+                        <label>Floor</label>
+                        <select className="form-control" defaultValue='no-value' name="floorId" onChange={this.floorChangeHandler}>
+                            <DefaultSelect />
+                            {this.getFloorData(this.props.electricityExpenseReducer)}
+                        </select>
+                    </Col>
+                    <Col md={3}>
+                        <label>Flats</label>
+                        <select className="form-control" defaultValue='no-value' name="flatDetailId">
+                            <DefaultSelect />
+                            {this.getFlatData(this.props.electricityExpenseReducer)}
+                        </select>
+                    </Col>
+                    <Col md={3}>
+                        <label>Last Reading</label>
+                        <input className="form-control" placeholder="Last Reading" type="text" name="lastReading" maxLength={6} value={this.state.lastReading} ></input>
+                    </Col>
                 </Row>
-                
+
             </div>
             <FormGroup>
                 <Button className="btn btn-success mt-2">Add Flat</Button>
