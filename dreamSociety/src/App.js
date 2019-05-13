@@ -10,7 +10,7 @@ import Parking from './containers/parking/parking';
 import UserDetails from './containers/userDetails/userDetails';
 import Demo from './containers/demo';
 import Registration from './containers/userRegistration/userRegistration';
-import AdminDashboard from './components/newUI/adminDashboard';
+import AdminDashboard from './containers/adminDashboard/adminDashboard';
 import OwnerDashboard from './containers/ownerDashboard/ownerDashboard';
 import SuperDashboard from './containers/superDashboard/superDashboard';
 import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
@@ -137,17 +137,17 @@ import ChangePasswordOwner from './components/changePassword/changePasswordOwner
 
 import ComplaintOwnerDetails from './containers/registerComplaintOwner/complaintOwnerDetails';
 import ComplaintTenantDetails from './containers/registerComplaint.js/complaintTenantDetails';
-import { OwnerPrivateRoute } from './components/ownerPrivateRoute/ownerPrivateRoute';
-import { TenantPrivateRoute } from './components/tenantPrivateRoute/tenantPrivateRoute';
-import { VendorPrivateRoute } from './components/vendorPrivateRoute/vendorPrivateRoute';
-import FlatPieChart from './containers/chart/flatpiechart';
+import {OwnerPrivateRoute} from './components/ownerPrivateRoute/ownerPrivateRoute';
+import {TenantPrivateRoute} from './components/tenantPrivateRoute/tenantPrivateRoute';
+import {VendorPrivateRoute} from './components/vendorPrivateRoute/vendorPrivateRoute';
+import {AdminPrivateRoute} from './components/adminPrivateRoute/adminPrivateRoute';
+import  FlatPieChart from './containers/chart/flatpiechart';
 import FlatLineChart from './containers/chart/flatlinechart';
 import InventoryLineChart from './containers/chart/inventoryLineChart';
 import InventoryPieChart from './containers/chart/inventoryPieChart';
 import Chart from './containers/chart/chart';
 import ChangePasswordVendor from './components/changePassword/changePasswordVendor';
 import MonthlyElectricityExpense from './containers/monthlyElectricityExpense/monthlyElectricityExpense';
-
 
 class App extends Component {
   render() {
@@ -162,7 +162,7 @@ class App extends Component {
             <Route path='/resetPassword' component={resetPassword} />
             <Route path='/login' exact component={Login} />
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
-            <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
+            <AdminPrivateRoute path='/adminDashboard' exact component={AdminDashboard} />
             <OwnerPrivateRoute path='/ownerDashboard' exact component={OwnerDashboard} />
             <TenantPrivateRoute path='/tenantDashboard' exact component={TenantDashboard} />
             <VendorPrivateRoute path='/vendorDashboard' exact component={VendorDashboard} />
@@ -277,6 +277,15 @@ class App extends Component {
             <Route path='/superDashboard/electricityExpenseMaster' component={AddElectricityExpense} />
             <Route path='/superDashboard/electricityExpenseDetail' component={GetElectricityExpense} />
             <Route path='/superDashboard/monthlyElectricityExpenseDetail' component={MonthlyElectricityExpense} />
+            
+            <OwnerPrivateRoute path='/ownerDashboard/complaintOwnerDetails' component={ComplaintOwnerDetails}/>
+            <TenantPrivateRoute path='/tenantDashboard/complaintTenantDetails' component={ComplaintTenantDetails}/>
+            <PrivateRoute  path ='/superDashboard/flatPieChart' component ={FlatPieChart}/>
+            <PrivateRoute path='/superDashboard/flatLineChart' component={FlatLineChart}/>
+            <PrivateRoute path='/superDashboard/inventoryLineChart' component={InventoryLineChart}/>
+            <PrivateRoute path='/superDashboard/inventoryPieChart' component={InventoryPieChart}/>
+            <PrivateRoute path ='/superDashboard/charts' component ={Chart}/>
+            <AdminPrivateRoute path='/adminDashboard/changePasswordAdmin' component={ChangePasswordOwner} />
             
             <PrivateRoute path='/superDashboard/rfId' component={RFID} />
             <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail} />

@@ -95,6 +95,7 @@ class MonthlyElectricityExpense extends Component {
         }
     }
 
+
     floorChangeHandler = (e) => {
 
         this.setState({
@@ -127,11 +128,10 @@ class MonthlyElectricityExpense extends Component {
                 <Row md={12}>
                     <Col md={4}>
                         <label>Tower Name</label>
-                        <input id="towerId"  list="browsers" />
-                            <datalist required className="form-control" id="towerId" name="towerId" onChange={this.towerChangeHandler}>
-                                
-                                {this.getDropdownForTower(this.props.flatDetailMasterReducer)}
-                            </datalist>
+                        <select required className="form-control" defaultValue='no-value' name="towerId" onChange={this.towerChangeHandler}>
+                            <DefaultSelect />
+                            {this.getDropdownForTower(this.props.flatDetailMasterReducer)}
+                        </select>
                     </Col>
                     <Col md={4}>
                         <label>Floor</label>

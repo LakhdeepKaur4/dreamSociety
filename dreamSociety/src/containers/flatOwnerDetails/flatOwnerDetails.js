@@ -366,7 +366,8 @@ OnKeyPresshandlerEmail=(event)=> {
                     gender:this.state['gender'+i],
                     memberRfId:this.state['memberRfId'+i],
                     memberContact:this.state['memberContact'+i],
-                    memberEmail:this.state['memberEmail'+i]
+                    memberEmail:this.state['memberEmail'+i],
+                    flatDetailId:this.state.flatDetailIds
                 }
                 this.state.member.push(data)
             }

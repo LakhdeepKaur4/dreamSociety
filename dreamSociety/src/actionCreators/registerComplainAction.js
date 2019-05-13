@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URN, REGISTER_COMPLAINT , USER_FLAT_DETAILS,POST_REGISTER_COMPLAINT,SERVICE_DETAILS,GET_REGISTER_DETAIL} from '../actions/index'
+import { URN, REGISTER_COMPLAINT , USER_FLAT_DETAILS,POST_REGISTER_COMPLAINT,SERVICE_DETAILS,GET_REGISTER_DETAIL, COMPLAINT_CANCELLED} from '../actions/index'
 import { authHeader } from '../helper/authHeader';
 
 
@@ -69,6 +69,19 @@ export const registerComplaint=(values)=>{
     return{
 
        type:GET_REGISTER_DETAIL,
+       payload: request 
+   }
+ }
+
+ export const userCancelled=(complaintId)=>{
+     var data={
+        complaintId: complaintId,
+     }
+    const request= axios.post(`${URN}/userCancelled` ,data, {headers:authHeader()})
+    .then(response=>response.data)
+    return{
+
+       type:COMPLAINT_CANCELLED,
        payload: request 
    }
  }
