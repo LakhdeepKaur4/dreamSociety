@@ -77,6 +77,6 @@ exports.getById = (req, res, next) => {
         })
 }
 
-exports.rejectComplaint = (req,res,next) => {
-    
+exports.rejectComplaint = (req, res, next) => {
+
 }
