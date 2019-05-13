@@ -7,7 +7,7 @@ import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 
 let user;
-class ChangePassword extends Component{
+class ChangePasswordVendor extends Component{
 
     constructor(props){
         super(props);
@@ -191,4 +191,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ changePassword }, dispatch);
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(ChangePassword));
+export default (connect(mapStateToProps, mapDispatchToProps)(ChangePasswordVendor));

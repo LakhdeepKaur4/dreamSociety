@@ -3,18 +3,20 @@
 // export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 // export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
-// export  const URN = 'https://mydreamsociety.herokuapp.com/api';
+
+
+// export  const URN = 'http://mydreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://mydreamsociety.herokuapp.com/';
 
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 export  const DocURN = 'https://dreamsociety.herokuapp.com/';
 export  const UR = 'https://dreamsociety.herokuapp.com/'
+export  const URN = 'https://dreamsociety.herokuapp.com/api';
 
 
-export const USER_LOGIN='user_login';
+
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
 export const DELETE_USER='delete_user';
@@ -324,3 +326,7 @@ export const DELETE_MULTIPLE_MACHINE_ID = 'DELETE_MULTIPLE_MACHINE_ID';
 export const GET_OWNER_RF="GET_OWNER_RF";
 
 export const GET_REGISTER_DETAIL='GET_REGISTER_DETAIL';
+export const RELEASE_RESOURCE='RELEASE_RESOURCE';
+export const USER_LOGIN='USER_LOGIN';
+export const GET_COMPLAINTS='GET_COMPLAINTS';
+export const REJECT_COMPLAINT='REJECT_COMPLAINT';

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { getServiceType, getServiceDetail,deleteSelectedService,deleteService,updateServices } from '../../../actionCreators/serviceMasterAction';
+import { getComplaints,rejectComplaint } from '../../../actionCreators/viewComplaintsAction';
+import { getServiceType, getServiceDetail,deleteSelectedService,updateServices } from '../../../actionCreators/serviceMasterAction';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table, Col, Row } from 'reactstrap';
@@ -7,22 +8,30 @@ import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/superAdminDashboard';
 import Spinner from '../../../components/spinner/spinner';
 import DefaultSelect from '../../../constants/defaultSelect';
+import { ItemMeta } from 'semantic-ui-react';
 
 class ViewComplaints extends Component {
 
     state = {
-            filterName:"serviceName",
-                    
+            filterName:"slotTime1",
+            complaintId:'',
+            slotTime1:'',
+            slotTime2:'',
+            slotTime3:'',
+            date:'',
+            flatDetailId:'',        
             isActive: false,
             ids:[], 
             menuVisible: false,
-            editServiceModal: false,
+            editModal: false,
             isDisabled:true, 
             search: '',
             errors:{},
             loading:true,
             modalLoading: false,
-            message:''
+            message:'',
+            accept:''
+        
 
     }
 
@@ -46,14 +55,13 @@ class ViewComplaints extends Component {
 
 
     refreshData() {
-        this.props.getServiceType().then(()=> this.setState({loading:false, modalLoading: false, editServiceModal:false}));
-        this.props.getServiceDetail().then(()=> this.setState({loading:false}));
+        this.props.getComplaints().then(()=> this.setState({loading:false, modalLoading: false, editModal:false}));
     }   
 
-    deleteService(serviceId){
+    rejectComplaint(complaintId){
         this.setState({loading:true})
         let {isActive } =this.state;  
-        this.props.deleteService(serviceId,isActive)
+        this.props.rejectComplaint(complaintId,isActive)
             .then(() => this.refreshData())
             this.setState({isActive:false})
     }
@@ -69,8 +77,8 @@ class ViewComplaints extends Component {
   
     searchFilter(search) {
         return function (x) {
-            return x.serviceName.toLowerCase().includes(search.toLowerCase()) ||
-            x.service_detail_master.service_detail.toLowerCase().includes(search.toLowerCase()) || !search;
+            console.log(x)
+            return x.complaintId.toString().includes(search.toLowerCase()) || !search;
         }
     }
 
@@ -80,14 +88,14 @@ class ViewComplaints extends Component {
 
     toggleEditServiceModal() {
         this.setState({
-            editServiceModal: !this.state.editServiceModal, message:''
+            editModal: !this.state.editModal, message:''
         });
     }
 
-    openComplain() {
+    openComplaint( slotTime1,slotTime2,slotTime3) {
         this.setState({
-
-              editServiceModal: !this.state.editServiceModal
+            slotTime1,slotTime2,slotTime3,
+              editModal: !this.state.editModal
         });
 
     }
@@ -108,10 +116,10 @@ class ViewComplaints extends Component {
                 this.setState({modalLoading:false,message: err.response.data.message, loading: false})
                 })
                 if(this.state.message === ''){
-                    this.setState({editServiceModal: true})
+                    this.setState({editModal: true})
                 }
                 else {
-                    this.setState({editServiceModal: false})
+                    this.setState({editModal: false})
                 }       
             this.setState({ modalLoading: true
        })
@@ -119,44 +127,28 @@ class ViewComplaints extends Component {
         }         
     }
 
-  
-
-
-    getDropdown1 = ({ detail }) => {
-        if (detail &&  detail.service) {
-            return detail.service.map((item) => {
-                return (
-                    <option key={item.serviceDetailId} value={item.serviceDetailId}>
-                        {item.service_detail}</option>
-                )
-
-            })
-
-
-
-        }
-    }
+    
 
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
     }
 
-    renderList = ({ item }) => {
-        if (item) {
+    renderList = ({ complaints }) => {console.log(complaints)
+        if (complaints) {
             
-            return item.sort((item1,item2)=>{
+            return complaints.complaints.sort((item1,item2)=>{
                 var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
                 return this.state.sortVal ? cmprVal : -cmprVal;
                 }).filter(this.searchFilter(this.state.search)).map((item,index) => {
                 return (
                     
-                    <tr key={item.serviceId}>
-                          <td><input type="checkbox" name="ids" className="SelectAll" value={item.serviceId}
+                    <tr key={item.complaintId}>
+                          <td><input type="checkbox" name="ids" className="SelectAll" value={item.complaintId}
                          onChange={(e) => {
-                            const {serviceId} = item
+                            const {complaintId} = item
                             if(!e.target.checked){
                                 document.getElementById('allSelect').checked=false;
-                                let indexOfId = this.state.ids.indexOf(serviceId);
+                                let indexOfId = this.state.ids.indexOf(complaintId);
                                 if(indexOfId > -1){
                                     this.state.ids.splice(indexOfId, 1);
                                 }
@@ -165,7 +157,7 @@ class ViewComplaints extends Component {
                                 }
                             }
                             else {
-                                this.setState({ids: [...this.state.ids, serviceId]});
+                                this.setState({ids: [...this.state.ids, complaintId]});
                                 if(this.state.ids.length >= 0){
                                     this.setState({isDisabled: false})
                                 }
@@ -173,18 +165,23 @@ class ViewComplaints extends Component {
                                 
                              }}/></td>
                         <td>{index+1}</td>
-                        {/* <td>{item.serviceName}</td>
-                        <td>{item.service_detail_master?item.service_detail_master.service_detail:''}</td>                                                 */}
+                        <td>{"Flat No- " + item.flat_detail_master.flatNo+" , " +  item.flat_detail_master.floor_master.floorName + " floor, " + " " + item.flat_detail_master.tower_master.towerName}</td>
+                        <td>{item.description}</td> 
+                        <td>{item.flat_detail_master.user_master.firstName + " " + item.flat_detail_master.user_master.lastName + " , " + item.flat_detail_master.user_master.contact}</td>                                          
                         <td>
-                            <Button color="success" className="mr-2" onClick={this.openComplain.bind(this,)}>Send</Button>
+                        <Button color="success" className="mr-2" name="accept" >Accept</Button>
+                        <Button color="danger" className="mr-2" onClick={this.rejectComplaint} >Reject</Button>
+                        </td>
+                        <td>{item.complaint_status_master.statusType}</td>
+                        <td>
+                            <Button color="success" className="mr-2"  onClick={this.openComplaint.bind(this,item.slotTime1, item.slotTime2,item.slotTime3)}>Send</Button>
                         
-                            {/* <Button color="danger" onClick={this.deleteService.bind(this, item.serviceId)}>Delete</Button> */}
                         </td>
                         
                     </tr>
                     
 
-                )
+                )         
             })
         }
     }
@@ -252,9 +249,12 @@ class ViewComplaints extends Component {
                 <th style={{width:'4%'}}>#</th>
                 <th onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
-                                filterName:'serviceName'}});
+                                filterName:'slotTime1'}});
                         }}>Flat Details <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Description</th>
+                <th>Complainee</th>
+                <th style={{width:'19%'}}>Complaint Status</th>
+                <th>Current Status</th>
                 <th>Send Confirmation</th>
                 
              
@@ -262,31 +262,36 @@ class ViewComplaints extends Component {
         </thead>
 
         <tbody>
-            {this.renderList(this.props.displayServiceMasterReducer)}
+            {this.renderList(this.props.viewComplaintsReducer)}    
         </tbody>
     </Table>
 
 
         let modalData =<div>
                              <FormGroup>
-                             <Row md={12}>
-                             <Col md={6}>
-                                <Label for="serviceName">Service Type</Label>
-                                <Input type="text" value={this.state.serviceName} name="serviceName" onKeyPress={this.OnKeyPressUserhandler} maxLength={20} onChange={this.onHandleChange}  />
-                                <span className="error">{this.state.errors.serviceName}</span>
-                                <span className="error">{this.state.message}</span>
-                                </Col>     
-                                <Col md={6}>
-                                <Label for="service_detail">Service Details</Label>
-                                <Input type="select" name="serviceDetailId" value={this.state.serviceDetailId} onChange={this.onHandleChange}> 
-                                    <DefaultSelect/>
-                                    {this.getDropdown1(this.props.serviceMasterReducer)}
-                                </Input>
-                             
-                                </Col>
-                                </Row>
-                            </FormGroup>                    
+                                 <Row>
 
+                                     <Col md={3}>
+                             <Input type ="radio" value="slotTime1"/>
+                          <Label> {this.state.slotTime1}</Label>
+
+                          </Col>
+
+                          <Col md={3}>
+                             <Input type ="radio" value="slotTime1"/>
+                             <Label> Slot2</Label>
+
+                             </Col>
+                             <Col md={1}>
+                             <Input type ="radio" value="slotTime1"/>  
+                             <Label> Slot3</Label>
+
+                              </Col>
+
+                             </Row>
+                             </FormGroup>  
+                             
+                   
                         <FormGroup>
                             <Button color="primary" className="mr-2" onClick={this.updateServices.bind(this)}>Save </Button>
                             <Button color="danger" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button>
@@ -304,7 +309,7 @@ class ViewComplaints extends Component {
                     <span aria-hidden="true">&times;</span>
                      </div>
 
-                    <Modal isOpen={this.state.editServiceModal} toggle={this.toggleEditServiceModal.bind(this)} >
+                    <Modal isOpen={this.state.editModal} toggle={this.toggleEditServiceModal.bind(this)} >
                         <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Edit a Service</ModalHeader>
                         <ModalBody>
                            {!this.state.modalLoading?modalData:<Spinner/>}
@@ -345,14 +350,14 @@ class ViewComplaints extends Component {
 
 function mapStateToProps(state) {
     return {
-        displayServiceMasterReducer: state.displayServiceMasterReducer,
-        serviceMasterReducer: state.serviceMasterReducer
+        viewComplaintsReducer:state.viewComplaintsReducer
+        
 
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getServiceType, getServiceDetail,deleteSelectedService,deleteService,updateServices}, dispatch);
+    return bindActionCreators({ getComplaints,rejectComplaint}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewComplaints);      

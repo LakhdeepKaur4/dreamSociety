@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { authHeader } from '../helper/authHeader';
-import{URN,DEACTIVATE_MEMBER,GET_DEACTIVE_LIST,GET_ROLES1,DEACTIVATE_MULTIPLE_MEMBER,DELETE_MULTIPLE_MEMBER1, DELETE_SELECTED_USERS,GET_ACTIVE_LIST} from '../actions/index';
+import{URN,DEACTIVATE_MEMBER,GET_DEACTIVE_LIST,GET_ROLES1,DEACTIVATE_MULTIPLE_MEMBER,DELETE_MULTIPLE_MEMBER1, DELETE_SELECTED_USERS,GET_ACTIVE_LIST,RELEASE_RESOURCE} from '../actions/index';
 
 export function getRoles(){
     const request = axios.get(`${URN}/user/role/activate`, {headers:authHeader()})
@@ -76,6 +76,16 @@ export function deleteSelectedDeactivatedMember(ids,type){
 
     return {
         type: DELETE_MULTIPLE_MEMBER1,
+        payload:request
+    }
+}
+
+export function releaseResource(userId,type){
+    console.log(userId,type)
+    const request= axios.put(`${URN}/release/resources`,{userId,type},{headers:authHeader()})
+    .then((response =>response.data))
+    return{
+        type:RELEASE_RESOURCE,
         payload:request
     }
 

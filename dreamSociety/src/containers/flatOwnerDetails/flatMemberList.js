@@ -27,7 +27,7 @@ class FlatMemberList extends Component {
             relationId: '',
             memberId: '',
             formModal: false,
-            ownerId: '',
+            ownerId: '', 
             errors: {},
             Male:'male',
             Female:'female',
@@ -76,7 +76,7 @@ class FlatMemberList extends Component {
     }
     deleteMember(memberid) {
         this.props.deleteMember(memberid)
-        .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
+        .then(() => this.props.getOwnerMember(id).then(()=>this.props.getRfId()).then(() => this.setState({ loading: false })))
             .catch(err => err.response.data.message);
     }
     selectAll = () => {
@@ -110,7 +110,7 @@ class FlatMemberList extends Component {
         });
         if (window.confirm('Are You Sure ?')) {
             this.props.deleteMultipleMember(ids)
-                .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
+                .then(() => this.props.getOwnerMember(id).then(()=>this.props.getRfId()).then(() => this.setState({ loading: false })))
                 .catch(err => err.response.data.message);
         }
         else {
@@ -176,7 +176,7 @@ class FlatMemberList extends Component {
         })
     }
     getRelationList = ({ relationResult }) => {
-        if (relationResult) {
+        if (relationResult && relationResult.relation) {
             return relationResult.relation.map((item) => {
                 return (
                     { ...item, label: item.relationName, value: item.relationId }
@@ -211,7 +211,9 @@ class FlatMemberList extends Component {
         if(isValid){
             this.setState({ loading: true })
             this.props.memberUpdate(memberFirstName,memberLastName, gender, memberDob, relationId, memberId,rfidId,memberContact,memberEmail)
-            .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
+            .then(() => this.props.getOwnerMember(id)
+            .then(()=>this.props.getRfId())
+            .then(() => this.setState({ loading: false })))
             this.setState({ modal: !this.state.modal })
         }        
        
