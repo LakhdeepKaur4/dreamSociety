@@ -878,6 +878,8 @@ class FlatOwnerList extends Component {
     }
 }
 function mapStateToProps(state) {
+
+    console.log(state)
     return {
         societyName: state.societyReducer,
         Owner: state.FlatOwnerReducer,

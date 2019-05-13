@@ -135,7 +135,7 @@ class ChangePasswordAdmin extends Component{
                 <Input  type="password" name="oldPassword"  type={this.state.type} placeholder="old password" onChange={this.passwordOnChange} maxLength={128} minLength={6} ></Input> 
                 <span className="oldPassword" onClick={this.showHide}>{this.state.type === 'password' ? hide: show}</span>
                 <span className="error">{this.state.errors.oldPassword}</span>
-                <span className="error">{this.state.message}</span>   
+                <span className="error">{this.state.message}</span>  
           </FormGroup>
 
 

@@ -17,6 +17,8 @@ export  const URN = 'https://dreamsociety.herokuapp.com/api';
 
 
 
+    
+export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
 export const DELETE_USER='delete_user';
@@ -324,9 +326,19 @@ export const  UPDATE_MACHINE_ID ='UPDATE_MACHINE_ID';
 export const  DELETE_MACHINE_ID ='DELETE_MACHINE_ID';
 export const DELETE_MULTIPLE_MACHINE_ID = 'DELETE_MULTIPLE_MACHINE_ID';
 export const GET_OWNER_RF="GET_OWNER_RF";
+export const ADD_ELECTRICITY_EXPENSE = "ADD_ELECTRICITY_EXPENSE";
+export const GET_ELECTRICITY_EXPENSE= "GET_ELECTRICITY_EXPENSE";
+
 
 export const GET_REGISTER_DETAIL='GET_REGISTER_DETAIL';
 export const RELEASE_RESOURCE='RELEASE_RESOURCE';
-export const USER_LOGIN='USER_LOGIN';
+// export const USER_LOGIN='USER_LOGIN';
 export const GET_COMPLAINTS='GET_COMPLAINTS';
 export const REJECT_COMPLAINT='REJECT_COMPLAINT';
+
+export const COMPLAINT_CANCELLED='COMPLAINT_CANCELLED';
+
+//***************************************** */
+export const GET_FLOOR_OF_TOWER = 'GET_FLOOR_OF_TOWER';
+
+
