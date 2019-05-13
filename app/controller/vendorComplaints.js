@@ -65,10 +65,23 @@ exports.getById = (req, res, next) => {
                 ]
             })
                 .then(complaints => {
+                    const slotArr = []; 
                     complaints.map(item => {
+                        slotArr.splice(0,slotArr.length);
                         item.flat_detail_master.user_master.firstName = decrypt(item.flat_detail_master.user_master.firstName);
                         item.flat_detail_master.user_master.lastName = decrypt(item.flat_detail_master.user_master.lastName);
                         item.flat_detail_master.user_master.contact = decrypt(item.flat_detail_master.user_master.contact);
+                        item = item.toJSON();
+                        if (item.slotTime1 !== '') {
+                            slotArr.push(item.slotTime1)
+                        }
+                        if (item.slotTime2 !== '') {
+                            slotArr.push(item.slotTime2)
+                        }
+                        if (item.slotTime3 !== '') {
+                            slotArr.push(item.slotTime3)
+                        }
+                        item.slots = slotArr;
                     })
                     res.status(httpStatus.OK).json({
                         complaints
