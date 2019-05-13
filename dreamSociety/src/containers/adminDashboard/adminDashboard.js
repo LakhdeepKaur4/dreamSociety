@@ -17,16 +17,14 @@ class AdminDashboard extends Component {
         return (
             <div>
              <UI onClick={this.logout} change={this.changePassword} changeDashboard={this.changeDashboard}>
-      <div>
-
-      </div>
      
       </UI>
-
-            </div>
-        );
-    }
-}
+      </div>
+     
+   
+        )
+ 
+    }}
 function mapDispatchToProps(dispatch){
     return bindActionCreators({userLogout},dispatch);
     }

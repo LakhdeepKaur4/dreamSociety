@@ -1,28 +1,28 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Table, Form, Input, Label,FormGroup } from 'reactstrap';
+import { Button, Table, Form, Input, Label, FormGroup } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
 import Select from 'react-select';
 import { PlaceHolder } from '../../actions/index';
-import {getAllFloor,addAnotherFlats} from '../../actionCreators/flatOwnerAction';
+import { getAllFloor, addAnotherFlats } from '../../actionCreators/flatOwnerAction';
 import { viewTower } from '../../actionCreators/towerMasterAction';
-import {Link} from 'react-router-dom';
-import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
+import { Link } from 'react-router-dom';
+import { getFlatDetails } from '../../actionCreators/flatDetailMasterAction';
 class AddFlats extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            towerId:'',
-            floorId:'',
-            flatDetailIds:'',
+            towerId: '',
+            floorId: '',
+            flatDetailIds: '',
             loading: false,
             errors: {},
         }
     }
-    componentDidMount(){
+    componentDidMount() {
         this.props.viewTower();
         this.props.getFlatDetails();
     }
@@ -39,75 +39,75 @@ class AddFlats extends Component {
     }
 
     towerChangeHandler = (name, selectOption) => {
-        
+
         this.setState(function (prevState, props) {
             return {
                 [name]: selectOption.value,
-                towerName:selectOption.label
+                towerName: selectOption.label
             }
         }, function () {
         });
         this.props.getAllFloor(selectOption.towerId);
     }
-    getFloor=({floor})=>{
-        if(floor){
-            return floor.tower.Floors.map((item)=>{
-                      
-                return {...item ,label: item.floorName, value: item.floorId }
+    getFloor = ({ floor }) => {
+        if (floor) {
+            return floor.tower.Floors.map((item) => {
+
+                return { ...item, label: item.floorName, value: item.floorId }
             })
         }
         else {
             return []
-        }}
-        floorChangeHandler=(name,selectOption)=>{
-            this.setState({
-                [name]: selectOption.value,
-                floorName:selectOption.label
-            })
-    
         }
-        getFlats=({floor})=>{
-            if(floor){
-              return  floor.flatDetail.filter((flatRecord)=>{
-                    return flatRecord.floorId===this.state.floorId
-                }).map((selectFlat)=>{
-                    return {...selectFlat, label:selectFlat.flatNo,value:selectFlat.flatDetailId}
-                });
-            }
-            else {
-                return []
-              }
+    }
+    floorChangeHandler = (name, selectOption) => {
+        this.setState({
+            [name]: selectOption.value,
+            floorName: selectOption.label
+        })
+
+    }
+    getFlats = ({ floor }) => {
+        if (floor) {
+            return floor.flatDetail.filter((flatRecord) => {
+                return flatRecord.floorId === this.state.floorId
+            }).map((selectFlat) => {
+                return { ...selectFlat, label: selectFlat.flatNo, value: selectFlat.flatDetailId }
+            });
         }
-        flatChangeHandler=(name,selectOption)=>{
-            let flatName=selectOption.label
-            this.setState({
-                [name]: selectOption.value,
-                currentAddress:this.state.flat+flatName+','+this.state.floorName+','+this.state.towerName+','+this.state.currentAddress+' '+this.state.pinCode
-            })
+        else {
+            return []
         }
-        
- onSubmit=(e)=>{
-    e.preventDefault();
-    let errors = {};
-    if(this.state.towerId===''){
-        errors.towerId="Tower can't be empty"
     }
-    else if(this.state.floorId===''){
-        errors.floorId="floor can't be empty"
+    flatChangeHandler = (name, selectOption) => {
+        let flatName = selectOption.label
+        this.setState({
+            [name]: selectOption.value,
+            currentAddress: this.state.flat + flatName + ',' + this.state.floorName + ',' + this.state.towerName + ',' + this.state.currentAddress + ' ' + this.state.pinCode
+        })
     }
-    else if(this.state.flatDetailIds==='')
-    {
-        errors.flatDetailIds="flat can't be empty"
-    }
-    this.setState({errors});
-    const isValid=Object.keys(errors).length === 0;
-    let ownerId=localStorage.getItem('ownerId')
-    if(isValid){
-        this.props.addAnotherFlats(ownerId,this.state.flatDetailIds)
-        .then(() => this.props.history.push('/superDashboard/viewOwnerFlats'))
-    }
-   
+
+    onSubmit = (e) => {
+        e.preventDefault();
+        let errors = {};
+        if (this.state.towerId === '') {
+            errors.towerId = "Tower can't be empty"
         }
+        else if (this.state.floorId === '') {
+            errors.floorId = "floor can't be empty"
+        }
+        else if (this.state.flatDetailIds === '') {
+            errors.flatDetailIds = "flat can't be empty"
+        }
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0;
+        let ownerId = localStorage.getItem('ownerId')
+        if (isValid) {
+            this.props.addAnotherFlats(ownerId, this.state.flatDetailIds)
+                .then(() => this.props.history.push('/superDashboard/viewOwnerFlats'))
+        }
+
+    }
     render() {
         let formData;
         formData =
@@ -139,8 +139,8 @@ class AddFlats extends Component {
                 </FormGroup >
                 <Button className="btn btn-success" >Add Flat</Button>
                 <Link to='/superDashBoard/viewOwnerFlats'>
-                <Button color="danger" id="addAssets" >Cancel</Button>
-            </Link>
+                    <Button color="danger" id="addAssets" >Cancel</Button>
+                </Link>
             </div>
         return (
             <div>
@@ -161,11 +161,11 @@ class AddFlats extends Component {
 }
 function mapStateToProps(state) {
     return {
-        towerFloor:state.FlatOwnerReducer,
+        towerFloor: state.FlatOwnerReducer,
         towerList: state.TowerDetails,
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({getAllFloor,viewTower,addAnotherFlats,getFlatDetails}, dispatch)
+    return bindActionCreators({ getAllFloor, viewTower, addAnotherFlats, getFlatDetails }, dispatch)
 }
-export default connect(mapStateToProps,mapDispatchToProps)(AddFlats);
+export default connect(mapStateToProps, mapDispatchToProps)(AddFlats);
