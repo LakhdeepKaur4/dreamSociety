@@ -135,3 +135,25 @@ exports.acceptComplaint = (req, res, next) => {
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
+
+exports.selectSlot = (req, res, next) => {
+    const body = req.body;
+    console.log('Slot selected ===>', body);
+
+    Complaint.findOne({
+        where: {
+            complaintId: body.complaintId,
+            isActive: true,
+            isAccepted: true
+        }
+    })
+        .then(complaint => {
+            complaint.updateAttributes({ selectedSlot: body.slot, complaintStatusId: 3 });
+            res.status(httpStatus.CREATED).json({
+                message: 'Complaint in progress now'
+            })
+        })
+        .catch(err => {
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
