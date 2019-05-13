@@ -370,7 +370,7 @@ exports.create1 = async (req, res, next) => {
         member.memberFirstName = encrypt(key, member.memberFirstName);       
         member.memberLastName = encrypt(key, member.memberLastName);
         member.gender = encrypt(key, member.gender);
-        member.flatDetailId = 2;
+        member.userId = req.userId;
         if(member.memberRfId === ""){
           member.memberRfId = null;
         }

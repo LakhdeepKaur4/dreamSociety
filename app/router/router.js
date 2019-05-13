@@ -62,7 +62,7 @@ module.exports = function (app) {
 
 	app.post('/api/auth/signup', [verifySignUp.checkRolesExisted], userController.signupEncrypted);
 
-	app.post('/api/auth/signin', userController.signinDecrypted);
+	app.post('/api/auth/signin',[authJwt.verifyToken, authJwt.isAdminRole], userController.signinDecrypted);
 
 	app.get('/api/user', [authJwt.verifyToken, authJwt.isAdminRole], userController.getUserDecrypted);
 
@@ -72,7 +72,7 @@ module.exports = function (app) {
 
 	app.get('/api/person', [authJwt.verifyToken, authJwt.isAdminRole], userController.getPersonDecrypted);
 
-	app.get('/api/user/search', userController.search);
+	app.get('/api/user/search',[authJwt.verifyToken, authJwt.isAdminRole], userController.search);
 
 	// app.get('/api/user/test', [authJwt.verifyToken], userController.userContent);
 
@@ -456,17 +456,17 @@ module.exports = function (app) {
 
 	app.put('/api/societyMemberEvent/:id', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEvent.update);
 
-	app.post('/api/owner', [authJwt.verifyToken, authJwt.isAdminRole], owner.create1);
+	app.post('/api/owner', [authJwt.verifyToken, authJwt.isAdminRole],  owner.create1);
 
 	app.post('/api/owner/ownerMember/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.addMember);
 
-	app.get('/api/owner', owner.get2);
+	app.get('/api/owner',[authJwt.verifyToken, authJwt.isAdminRole],  owner.get2);
 
 	app.put('/api/owner/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.update2);
 
 	app.get('/api/owner/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.getFlatNo);
 
-	app.get('/api/owner/ownerMember/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.getMembers);
+	app.get('/api/owner/ownerMember/:id',  owner.getMembers);
 
 	app.get('/api/owner/getFlatDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.getFlatDetail);
 
