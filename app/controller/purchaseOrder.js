@@ -1,29 +1,73 @@
 const db = require("../config/db.config.js");
 const config = require("../config/config.js");
 const httpStatus = require("http-status");
-var passwordGenerator = require("generate-password");
-const key = config.secret;
+
 const fs = require("fs");
-const http = require('http');
-const crypto = require("crypto");
 const Op = db.Sequelize.Op;
 const path = require("path");
-const shortId = require("short-id");
-const nodeMailer = require('nodemailer');
-const smtpTransport = require('nodemailer-smtp-transport');
-const jwt = require('jsonwebtoken');
-const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921aa', '68afe5aeee2b5f9bbabf2489f2e8ade2');
-const bcrypt = require('bcryptjs');
-const randomInt = require('random-int');
-const RfId = db.rfid;
 const Vendor = db.vendor;
+const PurchaseOrder = db.purchaseOrder;
+const PurchaseOrderDetails = db.purchaseOrderDetails;
+const pdf = require('html-pdf');
+const pdfTemplate = require('../../public/documents/pdftemplate');
 
 
-exports.create1 = async (req, res, next) => {
+exports.create = async (req, res, next) => {
     try{
-        
+        let purchaseOrder = await PurchaseOrder.create({
+            vendorId:req.body.vendorId,
+            issuedBy:req.body.issuedBy,
+            expDateOfDelievery:req.body.expectedDateOfDelievery
+        });
+        let purchaseOrderAssets = await PurchaseOrderDetails.bulkCreate(
+            req.body.purchaseOrderAssetsArray, {
+                returning: true
+              }, {
+                fields: ["purchaseOrderDetailId","purchaseOrderType", "rate","quantity","amount","serviceStartDate","serviceEndDate", "issuedBy", "expDateOfDelievery", "relationId","memberRfId","flatDetailId","purchaseOrderId" ]
+                // updateOnDuplicate: ["name"]
+              }
+        );
+        let update = {
+            purchaseOrderId:purchaseOrder.purchaseOrderId
+        }
+        purchaseOrderAssets.forEach(x => x.updateAttributes(update));
+
+
+
+
+        let purchaseOrderService = await PurchaseOrderDetails.bulkCreate(
+            req.body.purchaseOrderServiceArray, {
+                returning: true
+              }, {
+                fields: ["purchaseOrderDetailId","purchaseOrderType", "rate","quantity","amount","serviceStartDate","serviceEndDate", "issuedBy", "expDateOfDelievery", "relationId","memberRfId","flatDetailId","purchaseOrderId" ]
+                // updateOnDuplicate: ["name"]
+              }
+        );
+        purchaseOrderService.forEach(x => x.updateAttributes(update));
+
+        pdf.create(pdfTemplate(purchaseOrderAssets.purchaseOrderService,purchaseOrder.issuedBy,purchaseOrder.expDateOfDelievery),{}).toFile('result.pdf',() => {
+            if(err){
+                res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+            }
+        })
+
+
+
     } catch(error){
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
 
+    }
+}
+
+exports.get = async (req,res,next) => {
+    try{
+        let purchaseOrder = PurchaseOrder.findAll({where:{isActive:true},include:[{model:Vendor}]});
+        return res.status(httpStatus.CREATED).json({
+            message: "Purchase Order",
+            purchaseOrder: purchaseOrder
+          });
+
+    } catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }

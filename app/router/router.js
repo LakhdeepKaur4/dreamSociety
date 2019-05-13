@@ -54,6 +54,7 @@ module.exports = function (app) {
 	const commonAreaDetailController = require('../controller/commonAreaDetail');
 	const fingerPrintController = require('../controller/fingerprint');
 	const vendorComplaintsController = require('../controller/vendorComplaints');
+	const purchaseOrderController = require('../controller/purchaseOrder');
 
 
 	app.get('/', userController.start);
@@ -684,4 +685,7 @@ module.exports = function (app) {
 
 	app.get('/api/vendorComplaints', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.getById);
 
+	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.create);
+
+	app.get('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.get);
 }

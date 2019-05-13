@@ -82,6 +82,12 @@ db.commonAreaDetail = require('../model/commonAreaDetail.model')(sequelize, Sequ
 db.areaMachine = require('../model/AreaMachine.model')(sequelize, Sequelize);
 db.userRfid = require('../model/userRfid.model')(sequelize, Sequelize);
 db.vendorComplaints = require('../model/vendorComplaints.model')(sequelize, Sequelize);
+db.vendorComplaints = require('../model/vendorComplaints.model')(sequelize, Sequelize);
+db.purchaseOrder = require('../model/purchaseOrder.model')(sequelize, Sequelize);
+db.purchaseOrderDetails = require('../model/purchaseOrderDetails.model')(sequelize, Sequelize);
+
+
+
 
 
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
@@ -237,5 +243,7 @@ db.fingerprintData.belongsTo(db.user, { foreignKey: 'userId',as:'user' })
 db.vendor.belongsToMany(db.complaint, { through: 'vendor_complaints_master', foreignKey: 'vendorId' });
 db.vendor.belongsTo(db.rfid, { foreignKey: 'rfidId' });
 db.complaint.belongsToMany(db.vendor, { through: 'vendor_complaints_master', foreignKey: 'complaintId' });
+db.purchaseOrder.belongsTo(db.vendor, { foreignKey: 'vendorId' });
+db.purchaseOrderDetails.belongsTo(db.purchaseOrder, {foreignKey: 'purchaseOrderId'}); 
 
 module.exports = db;
