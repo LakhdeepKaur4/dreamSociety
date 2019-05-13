@@ -11,6 +11,8 @@ import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from './../../constants/defaultSelect';
 import _ from 'underscore';
 import Select from 'react-select';
+import { PlaceHolder } from '../../actions/index';
+import {getRfId} from '../../actionCreators/rfIdAction';
 
 
 class IndividualVendor extends Component{
@@ -72,6 +74,7 @@ class IndividualVendor extends Component{
             message:'',
             messageContactErr:'',
             messageEmailErr:'',
+            rfidId:'',
            
         }
     }
@@ -88,6 +91,7 @@ class IndividualVendor extends Component{
          this.props.getLocation().then(() => this.setState({loading: false}));
          this.props.getServiceType().then(() => this.setState({loading: false}));
          this.props.getRateType().then(() => this.setState({loading: false}));
+         this.props.getRfId().then(() => this.setState({loading: false}));
     }
 
 
@@ -663,6 +667,10 @@ class IndividualVendor extends Component{
             errors.endTime= "cant be empty"
         }
 
+        // else if(this.state.rfidId ==='') {
+        //     errors.rfidId= "cant be empty"
+        // }
+
         // else if(this.state.profilePicture ==='') {
         //     errors.profilePicture= "cant be empty"
         // }
@@ -699,6 +707,23 @@ class IndividualVendor extends Component{
      
     dashbordPage=()=>{
         this.props.history.push('/superDashboard/individualVendorDetail');
+    }
+
+    rfidData=({ownerRf})=>{
+        if(ownerRf && ownerRf.rfids){
+            return (
+               ownerRf.rfids.map((item)=>{
+                   return ({ ...item, label:item.rfid, value:item.rfidId})
+               })
+            )
+        }
+    }
+
+    rfIdChangeHandler=(selectOption)=>{
+        this.setState({
+            rfidId:selectOption.rfidId
+        })
+
     }
 
     render(){
@@ -961,6 +986,11 @@ class IndividualVendor extends Component{
                 </Row>
 
                 <FormGroup>
+                    <Label>RF ID</Label>
+                    <Select placeholder={PlaceHolder} options={this.rfidData(this.props.rfId)} name='rfidId' onChange={this.rfIdChangeHandler.bind(this)}/>
+                </FormGroup>
+
+                <FormGroup>
                 <Label>Upload Your Picture</Label>
                     <Input type="file" name="profilePicture" accept="image/*" onChange={this.FileChange} />
                     {/* <span className="error">{this.state.errors.profilePicture}</span>      */}
@@ -1004,18 +1034,19 @@ class IndividualVendor extends Component{
 }
 
 function mapStateToProps(state) {
- 
+   console.log(state)
  return {
     IndividualVendorReducer: state.IndividualVendorReducer,
     societyReducer : state.societyReducer,
     displayServiceMasterReducer :state.displayServiceMasterReducer,
-    vendorMasterReducer : state.vendorMasterReducer
+    vendorMasterReducer : state.vendorMasterReducer,
+    rfId:state.RFIdReducer
  }
 
 }
 
 function mapDispatchToProps(dispatch) {
- return bindActionCreators({addVendor, getCountry,getState,getCity, getLocation, getServiceType, getRateType }, dispatch);
+ return bindActionCreators({addVendor, getCountry,getState,getCity, getLocation, getServiceType, getRateType, getRfId }, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(IndividualVendor));

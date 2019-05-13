@@ -13,6 +13,8 @@ import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 import GoogleDocsViewer from 'react-google-docs-viewer';
 import Select from 'react-select';
+import { PlaceHolder } from '../../actions/index';
+import {getRfId} from '../../actionCreators/rfIdAction';
 
 
 class IndividualVendorDetail extends Component {
@@ -81,7 +83,10 @@ class IndividualVendorDetail extends Component {
         rateId: '',
         rate:'',
         userCurrent: false,
-        emailError: false
+        emailError: false,
+        rfidId:'',
+        rfid:''
+        
     }
 
     componentDidMount() {
@@ -117,13 +122,28 @@ class IndividualVendorDetail extends Component {
         this.props.getCity().then(() => this.setState({ loading: false }))
         this.props.getServiceType().then(() => this.setState({ loading: false }))
         this.props.getRateType().then(() => this.setState({ loading: false }))
+        this.props.getRfId().then(() => this.setState({ loading: false }))
     }
 
-    editUser(individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email, documentOne, documentTwo, rate, profilePicture, countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2) {
+    onChange=(e) =>{
+        
+        this.setState({message:'' })
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(), errors,message:'' });
+        }
+        else {
+            this.setState({[e.target.name]:e.target.value.trim(),message:'',messageContactErr:''});
+        }
+    }
+
+
+    editUser(individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email,rfid, documentOne, documentTwo, rate, profilePicture, countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2,rfidId) {
 
         this.setState({
-            individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email, documentOne, documentTwo, rate, profilePicture
-            , countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2, editVendorModal: !this.state.editVendorModal,
+            individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email,rfid, documentOne, documentTwo, rate, profilePicture
+            , countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2,rfidId, editVendorModal: !this.state.editVendorModal,
             readOnlyPermanent: permanentAddress, readOnlyCurrent: currentAddress, readOnlyCountryId: countryId,
             readOnlyStateId: stateId, readOnlyCityId: cityId, readOnlyLocationId: locationId,
         })
@@ -210,7 +230,7 @@ class IndividualVendorDetail extends Component {
             return x.firstName.toLowerCase().includes(search.toLowerCase()) ||
                 x.lastName.toLowerCase().includes(search.toLowerCase()) ||
                 x.contact.toLowerCase().includes(search.toLowerCase()) ||
-                x.email.toLowerCase().includes(search.toLowerCase()) || !search;
+                x.rfid_master.rfid.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
 
@@ -268,8 +288,8 @@ class IndividualVendorDetail extends Component {
 
         let errors = {};
 
-        const { individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email, documentOne, documentTwo, rate, profilePicture, countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2, fileName1, fileName2, fileName3 } = this.state
-        console.log(individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email, documentOne, documentTwo, rate, profilePicture, countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2, fileName1, fileName2, fileName3)
+        const { individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email, documentOne, documentTwo, rate, profilePicture, countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2, rfidId, fileName1, fileName2, fileName3 } = this.state
+        console.log(individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email, documentOne, documentTwo, rate, profilePicture, countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2,rfidId, fileName1, fileName2, fileName3)
         if (this.state.firstName === '') {
             errors.firstName = "First Name can't be empty"
         }
@@ -390,6 +410,7 @@ class IndividualVendorDetail extends Component {
                         <td>{vendors.permanentAddress}</td>
                         <td>{vendors.contact}</td>
                         <td>{vendors.email}</td>
+                        <td>{vendors.rfid_master ? vendors.rfid_master.rfid : ''}</td>
                         {/* <td><button className="btn btn-light" onClick={this.openModal.bind(this, vendors.documentOne)}>View Document</button></td>
                         <td><button className="btn btn-light" onClick={this.Modal.bind(this, vendors.documentTwo)}>View Document </button></td> */}
                         <td><button className="btn btn-light" onClick={this.openModal.bind(this, vendors.documentOne)}>View Document</button></td>
@@ -398,7 +419,7 @@ class IndividualVendorDetail extends Component {
                         <td> <img style={{ maxWidth: "100%", height: "auto", width: "auto\9" }} src={PicURN + vendors.profilePicture} alt="Profile Pic"></img></td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewServices.bind(this, vendors.individualVendorId)}>View Services</button></td>
                         <td>
-                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, vendors.individualVendorId, vendors.firstName, vendors.lastName, vendors.currentAddress, vendors.permanentAddress, vendors.contact, vendors.email, vendors.documentOne, vendors.documentTwo, vendors.rate, PicURN + vendors.profilePicture, vendors.country_master ? vendors.country_master.countryId : '', vendors.state_master ? vendors.state_master.stateId : '', vendors.city_master ? vendors.city_master.cityId : '', vendors.location_master ? vendors.location_master.locationId : '', vendors.serviceId, vendors.rateId, vendors.startTime, vendors.endTime, vendors.startTime1, vendors.endTime1, vendors.startTime2, vendors.endTime2)}>Edit</Button>
+                            <Button color="success" className="mr-2" onClick={this.editUser.bind(this, vendors.individualVendorId, vendors.firstName, vendors.lastName, vendors.currentAddress, vendors.permanentAddress, vendors.contact, vendors.email,vendors.rfid_master ? vendors.rfid_master.rfid : '', vendors.documentOne, vendors.documentTwo, vendors.rate, PicURN + vendors.profilePicture, vendors.country_master ? vendors.country_master.countryId : '', vendors.state_master ? vendors.state_master.stateId : '', vendors.city_master ? vendors.city_master.cityId : '', vendors.location_master ? vendors.location_master.locationId : '', vendors.serviceId, vendors.rateId, vendors.startTime, vendors.endTime, vendors.startTime1, vendors.endTime1, vendors.startTime2, vendors.endTime2,vendors.rfid_master ?vendors.rfid_master.rfidId : '')}>Edit</Button>
 
                             <Button color="danger" onClick={this.delete.bind(this, vendors.individualVendorId)} >Delete</Button>
                         </td>
@@ -840,6 +861,34 @@ class IndividualVendorDetail extends Component {
         }
     }
 
+    // rfidData=({ownerRf})=>{
+    //     if(ownerRf && ownerRf.rfids){
+    //         return (
+    //            ownerRf.rfids.map((item)=>{
+    //                return ({ ...item, label:item.rfid, value:item.rfidId})
+    //            })
+    //         )
+    //     }
+    // }
+
+    rfidData({ ownerRf }) {
+        console.log(ownerRf)
+        if(ownerRf && ownerRf.rfids){
+            return (
+                ownerRf.rfids.map((item)=>{
+                    return (
+                        <option key={item.rfidId} value={item.rfidId}>
+                            {item.rfid}
+                        </option>
+                    )
+                })
+            )
+
+        }
+    }
+
+    
+
 
     render() {
 
@@ -864,6 +913,7 @@ class IndividualVendorDetail extends Component {
                         <th style={{ textAlign: "center", width: "16%" }}>Permanent Address</th>
                         <th>Contact</th>
                         <th>Email</th>
+                        <th>RFID</th>
                         <th>Document 1</th>
                         <th>Document 2</th>
                         <th>Profile Picture</th>
@@ -1145,6 +1195,13 @@ class IndividualVendorDetail extends Component {
                 </Col>
             </Row>
             <FormGroup>
+                <Label>RFID</Label>
+                <Input type="select" name="rfidId" onChange={this.rfIdChangeHandler} value={this.state.rfidId} >
+                    <DefaultSelect />
+                    {this.rfidData(this.props.rfId)}
+                </Input>
+            </FormGroup>
+            <FormGroup>
                 <Label> Document One</Label>
                 <GoogleDocsViewer
                     width="400px"
@@ -1256,11 +1313,12 @@ function mapStateToProps(state) {
         IndividualVendorReducer: state.IndividualVendorReducer,
         societyReducer: state.societyReducer,
         displayServiceMasterReducer: state.displayServiceMasterReducer,
-        vendorMasterReducer: state.vendorMasterReducer
+        vendorMasterReducer: state.vendorMasterReducer,
+        rfId:state.RFIdReducer
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getIndividualVendor, getCountry, getState, getCity, getLocation, getServiceType, getRateType, deleteIndividualVendor, deleteSelectVendor, updateIndividualVendor }, dispatch)
+    return bindActionCreators({ getIndividualVendor, getCountry, getState, getCity, getLocation, getServiceType, getRateType, deleteIndividualVendor, deleteSelectVendor, updateIndividualVendor, getRfId }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(IndividualVendorDetail);
