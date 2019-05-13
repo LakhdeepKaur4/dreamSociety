@@ -456,7 +456,7 @@ module.exports = function (app) {
 
 	app.put('/api/societyMemberEvent/:id', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEvent.update);
 
-	app.post('/api/owner', [authJwt.verifyToken, authJwt.isAdminRole], owner.create1);
+	app.post('/api/owner',  owner.create1);
 
 	app.post('/api/owner/ownerMember/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.addMember);
 
@@ -466,7 +466,7 @@ module.exports = function (app) {
 
 	app.get('/api/owner/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.getFlatNo);
 
-	app.get('/api/owner/ownerMember/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.getMembers);
+	app.get('/api/owner/ownerMember/:id',  owner.getMembers);
 
 	app.get('/api/owner/getFlatDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.getFlatDetail);
 

@@ -160,7 +160,7 @@ db.owner.hasMany(db.ownerMembersDetail, { foreignKey: 'ownerId' });
 db.ownerMembersDetail.belongsTo(db.relation, { foreignKey: 'relationId' });
 db.ownerMembersDetail.belongsTo(db.user, { foreignKey: 'userId' });
 db.ownerMembersDetail.belongsTo(db.rfid, { foreignKey: 'memberRfId' });
-db.ownerMembersDetail.belongsTo(db.flatDetail, { foreignKey: 'flatDetaiilId' });
+db.ownerMembersDetail.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 
 db.owner.belongsTo(db.user, { foreignKey: 'userId' });
 db.rfid.belongsTo(db.user, { foreignKey: 'userId' });
@@ -236,6 +236,7 @@ db.userRfid.belongsTo(db.user, { foreignKey: 'userId' });
 db.userRfid.belongsTo(db.rfid, { foreignKey: 'rfidId' });
 db.fingerprintData.belongsTo(db.user, { foreignKey: 'userId',as:'user' })
 db.vendor.belongsToMany(db.complaint, { through: 'vendor_complaints_master', foreignKey: 'vendorId' });
+db.vendor.belongsTo(db.rfid, { foreignKey: 'rfidId' });
 db.complaint.belongsToMany(db.vendor, { through: 'vendor_complaints_master', foreignKey: 'complaintId' });
 
 module.exports = db;
