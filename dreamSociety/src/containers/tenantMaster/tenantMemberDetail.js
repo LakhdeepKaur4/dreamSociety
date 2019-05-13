@@ -8,7 +8,7 @@ import Select from 'react-select';
 import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader, Row, Col } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import { numberValidation, maxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler, memberMaxDate } from '../../validation/validation';
+import { numberValidation, emailValid, fNameKeyPress } from '../../validation/validation';
 import Spinner from '../../components/spinner/spinner';
 import ModalBox from '../../components/modal/modal';
 

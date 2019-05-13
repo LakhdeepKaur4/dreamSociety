@@ -1,6 +1,6 @@
 import { authHeader } from '../helper/authHeader';
 import axios from 'axios';
-import { URN, GET_FLOOR_OF_TOWER, ADD_ELECTRICITY_EXPENSE } from '../actions';
+import { URN, GET_FLOOR_OF_TOWER,GET_ELECTRICITY_EXPENSE, ADD_ELECTRICITY_EXPENSE } from '../actions';
 
 export function getfloorsOfTowers(towerId) {
     console.log("towerId",towerId);
@@ -23,4 +23,14 @@ export function addElectricityExpense(values) {
     }
 }
 
+
+export function getElectricityExpense() {
+    const request = axios.get(`${URN}/electricityConsumer`, { headers: authHeader() })
+    .then(response => response.data)
+    .catch(error => error)
+    return {
+        type: GET_ELECTRICITY_EXPENSE,
+        payload: request
+    }
+}
 

@@ -4,10 +4,10 @@
 // export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
 
-export  const URN = 'http://dreamsociety.herokuapp.com/api';
-export  const PicURN = 'http://dreamsociety.herokuapp.com/';
-export  const DocURN = 'http://dreamsociety.herokuapp.com/';
-export  const UR = 'http://dreamsociety.herokuapp.com/';
+export  const URN = 'http://192.168.1.103:8081/api';
+export  const PicURN = 'http://192.168.1.103:8081/';
+export  const DocURN = 'http://192.168.1.103:8081/';
+export  const UR = 'http://192.168.1.103:8081/';
 
 // export  const URN = 'http://mydreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
@@ -324,6 +324,7 @@ export const  DELETE_MACHINE_ID ='DELETE_MACHINE_ID';
 export const DELETE_MULTIPLE_MACHINE_ID = 'DELETE_MULTIPLE_MACHINE_ID';
 export const GET_OWNER_RF="GET_OWNER_RF";
 export const ADD_ELECTRICITY_EXPENSE = "ADD_ELECTRICITY_EXPENSE";
+export const GET_ELECTRICITY_EXPENSE= "GET_ELECTRICITY_EXPENSE";
 
 
 export const GET_REGISTER_DETAIL='GET_REGISTER_DETAIL';
