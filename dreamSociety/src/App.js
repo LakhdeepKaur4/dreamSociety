@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { BrowserRouter , Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 // import ScrollToTop from 'react-router-scroll-top';
 // =====Components============//
-import  {PrivateRoute}  from './components/privateRoute/privateRoute';
+import { PrivateRoute } from './components/privateRoute/privateRoute';
 // ========Containers =========//
 import Login from './containers/login/login';
 import Parking from './containers/parking/parking';
@@ -10,7 +10,7 @@ import Parking from './containers/parking/parking';
 import UserDetails from './containers/userDetails/userDetails';
 import Demo from './containers/demo';
 import Registration from './containers/userRegistration/userRegistration';
-import AdminDashboard from './components/newUI/adminDashboard';
+import AdminDashboard from './containers/adminDashboard/adminDashboard';
 import OwnerDashboard from './containers/ownerDashboard/ownerDashboard';
 import SuperDashboard from './containers/superDashboard/superDashboard';
 import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
@@ -97,7 +97,7 @@ import TokenVerification from './components/tokenVerification/tokenVerification'
 import AccountVerificationTenant from './components/accountVerificationTenant/accountVerificationTenant';
 import InventoryList from './containers/inventory/inventoryList'
 import ShowList from './containers/activeDeactiveList/activeDeactiveList';
-import ShowActiveListDetails from  './containers/activeDeactiveList/activeDeactiveListDetails';
+import ShowActiveListDetails from './containers/activeDeactiveList/activeDeactiveListDetails';
 import SWhowDeactiveListDetails from './containers/activeDeactiveList/deactivateActiveListDeatils';
 
 import AssignRoles from './components/assignRoles/assignRoles';
@@ -124,7 +124,8 @@ import CommonAreaMaster from './containers/commonAreaMaster/commonAreaMaster';
 import DisplayCommonArea from './containers/commonAreaMaster/displayCommonAreaMaster';
 import CommonAreaMachine from './containers/commonAreaMachineMaster/commonAreaMachineMaster';
 import DisplayCommonAreaMachine from './containers/commonAreaMachineMaster/displayCommonAreaMachine';
-     
+import AddElectricityExpense from './containers/electricityExpense/addElectricityExpense';
+import GetElectricityExpense from './containers/electricityExpense/getElectricityExpense';
 
 import RFID from './containers/rfIdMaster/rfIdMaster';
 import RfIdDetail from './containers/rfIdMaster/rfIdDetails';
@@ -139,28 +140,30 @@ import ComplaintTenantDetails from './containers/registerComplaint.js/complaintT
 import {OwnerPrivateRoute} from './components/ownerPrivateRoute/ownerPrivateRoute';
 import {TenantPrivateRoute} from './components/tenantPrivateRoute/tenantPrivateRoute';
 import {VendorPrivateRoute} from './components/vendorPrivateRoute/vendorPrivateRoute';
+import {AdminPrivateRoute} from './components/adminPrivateRoute/adminPrivateRoute';
 import  FlatPieChart from './containers/chart/flatpiechart';
 import FlatLineChart from './containers/chart/flatlinechart';
 import InventoryLineChart from './containers/chart/inventoryLineChart';
 import InventoryPieChart from './containers/chart/inventoryPieChart';
 import Chart from './containers/chart/chart';
 import ChangePasswordVendor from './components/changePassword/changePasswordVendor';
-
+import ChangePasswordAdmin from './components/changePassword/changePasswordAdmin';
+import PurchaseOrder from './containers/purchaseOrder/purchaseOrder';
 
 class App extends Component {
   render() {
     return (
       <BrowserRouter onUpdate={() => window.scrollTo(0, 0)}>
-        
+
         <div>
           <Switch>
             <Route path="/" exact component={Login} />
             <Route path='/login' exact component={Login} />
-            <Route path='/forgetPassword' component= {forgetPassword}/>
-            <Route path='/resetPassword' component= {resetPassword}/>
+            <Route path='/forgetPassword' component={forgetPassword} />
+            <Route path='/resetPassword' component={resetPassword} />
             <Route path='/login' exact component={Login} />
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
-            <PrivateRoute path='/adminDashboard' component={AdminDashboard} />
+            <AdminPrivateRoute path='/adminDashboard' exact component={AdminDashboard} />
             <OwnerPrivateRoute path='/ownerDashboard' exact component={OwnerDashboard} />
             <TenantPrivateRoute path='/tenantDashboard' exact component={TenantDashboard} />
             <VendorPrivateRoute path='/vendorDashboard' exact component={VendorDashboard} />
@@ -180,14 +183,14 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/statemaster' exact component={stateMaster} />
             <PrivateRoute path='/superDashboard/statemaster/statemasterdetails' exact component={stateMasterDetails} />
             <PrivateRoute path='/superDashboard/societyManagement' component={SocietyManagement} />
-            <PrivateRoute path ='/superDashboard/societyManagementDetail' component={SocietyManagementDetail}/>
+            <PrivateRoute path='/superDashboard/societyManagementDetail' component={SocietyManagementDetail} />
             <PrivateRoute path='/superDashboard/display-event' component={DisplayEventMaster} />
             <PrivateRoute path='/superDashboard/add_parking/new' component={Parking} />
             <PrivateRoute path='/superDashboard/ServiceMaster' component={ServiceMaster} />
             <PrivateRoute path='/superDashboard/personDetails' component={PersonDetails} />
-            <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster}/>
-            <PrivateRoute path='/superDashboard/displayVendorMaster' component={DisplayVendorMaster}/>
-            <PrivateRoute path='/superDashboard/displayVendorServices' component={DisplayVendorServices}/>
+            <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster} />
+            <PrivateRoute path='/superDashboard/displayVendorMaster' component={DisplayVendorMaster} />
+            <PrivateRoute path='/superDashboard/displayVendorServices' component={DisplayVendorServices} />
             <PrivateRoute path='/superDashboard/DisplayServices' component={DisplayServices} />
             <PrivateRoute path='/superDashBoard/displayPerson' exact component={displayPersonDetails} />
             <PrivateRoute path='/superDashBoard/demo' component={Demo} />
@@ -196,19 +199,19 @@ class App extends Component {
             <PrivateRoute path='/superDashBoard/assetsTypeSubMaster' exact component={AssetsTypeSubList} />
             <PrivateRoute path='/superDashBoard/assetsTypeSubMaster/assetsTypeSubList' component={AssetsTypeSubMaster} />
             <PrivateRoute path='/superdashboard/flatDetailMaster' component={flatDetailMaster} />
-            <PrivateRoute path='/superdashboard/flatDetails' component={flatDetails} />   
+            <PrivateRoute path='/superdashboard/flatDetails' component={flatDetails} />
             <PrivateRoute path='/superDashboard/cityMaster' component={CityMaster} />
             <PrivateRoute path='/superDashboard/cityMasterDetail' component={CityMasterDetail} />
-            <PrivateRoute path='/superDashboard/locationMaster' component={locationMaster}/>
-            <PrivateRoute path='/superDashboard/displayLocation' component={DisplayLocation}/>
-            <PrivateRoute path='/superDashboard/maintenanceMaster' component={MaintenanceMaster}/>
-            <PrivateRoute path='/superDashboard/maintenanceMasterDetail' component={MaintenanceMasterDetail}/>
-            <PrivateRoute path='/superDashboard/inventoryDetails' component={InventoryDetails}/>
-            <PrivateRoute path='/superDashboard/inventory' component={Inventory}/>
-            <PrivateRoute  path ='/superDashboard/employeeType' component ={EmployeeTypeMaster}/>
-            <PrivateRoute path='/superDashboard/displayEmployeeType' component ={DisplayEmployeeTypeMaster}/>
-            <PrivateRoute path='/superDashboard/employee' component ={EmployeeMaster}/>
-            <PrivateRoute path ='/superDashboard/displayEmployee' component={DisplayEmployeeMaster}/>
+            <PrivateRoute path='/superDashboard/locationMaster' component={locationMaster} />
+            <PrivateRoute path='/superDashboard/displayLocation' component={DisplayLocation} />
+            <PrivateRoute path='/superDashboard/maintenanceMaster' component={MaintenanceMaster} />
+            <PrivateRoute path='/superDashboard/maintenanceMasterDetail' component={MaintenanceMasterDetail} />
+            <PrivateRoute path='/superDashboard/inventoryDetails' component={InventoryDetails} />
+            <PrivateRoute path='/superDashboard/inventory' component={Inventory} />
+            <PrivateRoute path='/superDashboard/employeeType' component={EmployeeTypeMaster} />
+            <PrivateRoute path='/superDashboard/displayEmployeeType' component={DisplayEmployeeTypeMaster} />
+            <PrivateRoute path='/superDashboard/employee' component={EmployeeMaster} />
+            <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
             <PrivateRoute path='/superDashboard/MaintenanceSubMasterForm' component={MaintenanceSubMasterForm} />
             <PrivateRoute path='/superDashboard/MaintenanceSubMasterDetails' component={MaintenanceSubMasterDetails} />
             <PrivateRoute path='/superDashboard/designationMaster' component={DesignationMaster} />
@@ -216,8 +219,8 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/societyComponent' component={SocietyComponent} />
             <PrivateRoute path='/superDashboard/relationshipMaster' component={RelationshipMaster} />
             <PrivateRoute path='/superDashboard/relationshipMasterDetail' component={RelationshipMasterDetail} />
-         
-        
+
+
             <PrivateRoute path='/superDashboard/societyMemberEvents' component={SocietyMemberEvents} />
             <PrivateRoute path='/superDashboard/memberEventsDetail' component={MemberEventsDetail} />
             <PrivateRoute path='/superDashboard/memberEventsBooking' component={MemberEventsBooking} />
@@ -245,39 +248,35 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
             <PrivateRoute path='/superDashboard/displayEmployee2' component={DisplayEmployeeMaster2} />
             <PrivateRoute path='/superDashboard/inventoryList' component={InventoryList} />
-             <PrivateRoute path='/superDashboard/showList'exact component={ShowList} />
+            <PrivateRoute path='/superDashboard/showList' exact component={ShowList} />
             <PrivateRoute path='/superDashboard/showList/showListDetails' component={ShowActiveListDetails} />
             <PrivateRoute path='/superDashboard/showList/showListDetails2' component={SWhowDeactiveListDetails} />
             <PrivateRoute path='/superDashboard/assignRoles' component={AssignRoles} />
             <PrivateRoute path='/superDashboard/individualVendor' component={IndividualVendor} />
             <PrivateRoute path='/superDashboard/individualVendorDetail' component={IndividualVendorDetail} />
             <PrivateRoute path='/superDashboard/vendorServiceDetail' component={VendorServiceDetail} />
-           
-            <PrivateRoute path='/superDashboard/SocietyEventBooking' component={SocietyEventBooking}/>
-            <PrivateRoute path='/superDashboard/DisplaySocietyEventBooking' component={DisplaySocietyEventBooking}/>
-       
+
+            <PrivateRoute path='/superDashboard/SocietyEventBooking' component={SocietyEventBooking} />
+            <PrivateRoute path='/superDashboard/DisplaySocietyEventBooking' component={DisplaySocietyEventBooking} />
+
             <PrivateRoute path='/superDashBoard/viewTenantDetail' component={ViewTenantDetail} />
             <PrivateRoute path='/superDashboard/assignRolesDetail' component={AssignRolesDetail} />
             <TenantPrivateRoute path='/tenantDashboard/registerComplaint' component={RegisterComplaint} />
             <OwnerPrivateRoute path='/ownerDashboard/registerComplaintOwner' component={RegisterComplaintOwner} />
-             <PrivateRoute path ='/superDashboard/machineMaster' component ={MachineMaster}/>
-              <PrivateRoute path ='/superDashBoard/viewMachineMaster' component={ViewMachinMaster}/>
+            <PrivateRoute path='/superDashboard/machineMaster' component={MachineMaster} />
+            <PrivateRoute path='/superDashBoard/viewMachineMaster' component={ViewMachinMaster} />
             <PrivateRoute path='/superDashboard/viewOwnerFlats' component={ViewOwnerFlats} />
-            <PrivateRoute path="/superDashboard/addOwnerFlat" component={AddOwnerFlat}/>
-            <PrivateRoute path='/superDashboard/parkingSlotList' component={ParkingSlotList}/>
+            <PrivateRoute path="/superDashboard/addOwnerFlat" component={AddOwnerFlat} />
+            <PrivateRoute path='/superDashboard/parkingSlotList' component={ParkingSlotList} />
             <PrivateRoute path='/superDashBoard/tenantFlatsDetail' component={TenantFlatsDetail} />
-            <Route path='/submitotp' component= {submitOTP}/>
-            <Route path='/token' component= {token}/>
+            <Route path='/submitotp' component={submitOTP} />
+            <Route path='/token' component={token} />
             <Route path='/login/tenantVerification' exact component={TenantVerification} />
-            <Route path='/superDashboard/commonAreaMaster' component={CommonAreaMaster}/>
-            <Route path='/superDashboard/DisplayCommonAreaMaster' component={DisplayCommonArea}/>
-            <Route path='/superDashboard/CommonAreaMachineMaster' component={CommonAreaMachine}/>
-            <Route path='/superDashboard/DisplayCommonAreaMachineMaster' component={DisplayCommonAreaMachine}/>
-            <PrivateRoute path='/superDashboard/rfId' component={RFID}/>
-            <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail}/>
-            <PrivateRoute path='/superDashboard/machineIdMaster' component ={MachineIdMaster}/>
-            <PrivateRoute path='/superDashboard/displayMachineIdMaster' component={DisplayMachineIdMaster}/>
-          
+            <Route path='/superDashboard/commonAreaMaster' component={CommonAreaMaster} />
+            <Route path='/superDashboard/DisplayCommonAreaMaster' component={DisplayCommonArea} />
+            <Route path='/superDashboard/CommonAreaMachineMaster' component={CommonAreaMachine} />
+            <Route path='/superDashboard/electricityExpenseMaster' component={AddElectricityExpense} />
+            <Route path='/superDashboard/electricityExpenseDetail' component={GetElectricityExpense} />
             
             <OwnerPrivateRoute path='/ownerDashboard/complaintOwnerDetails' component={ComplaintOwnerDetails}/>
             <TenantPrivateRoute path='/tenantDashboard/complaintTenantDetails' component={ComplaintTenantDetails}/>
@@ -286,12 +285,28 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/inventoryLineChart' component={InventoryLineChart}/>
             <PrivateRoute path='/superDashboard/inventoryPieChart' component={InventoryPieChart}/>
             <PrivateRoute path ='/superDashboard/charts' component ={Chart}/>
-     
-
+            <AdminPrivateRoute path='/adminDashboard/changePasswordAdmin' component={ChangePasswordOwner} />
+            <PrivateRoute path ='/superDashboard/purchaseOrder' component={PurchaseOrder}/>
             
+            <PrivateRoute path='/superDashboard/rfId' component={RFID} />
+            <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail} />
+            <PrivateRoute path='/superDashboard/machineIdMaster' component={MachineIdMaster} />
+            <PrivateRoute path='/superDashboard/displayMachineIdMaster' component={DisplayMachineIdMaster} />
+
+
+            <OwnerPrivateRoute path='/ownerDashboard/complaintOwnerDetails' component={ComplaintOwnerDetails} />
+            <TenantPrivateRoute path='/tenantDashboard/complaintTenantDetails' component={ComplaintTenantDetails} />
+            <PrivateRoute path='/superDashboard/flatPieChart' component={FlatPieChart} />
+            <PrivateRoute path='/superDashboard/flatLineChart' component={FlatLineChart} />
+            <PrivateRoute path='/superDashboard/inventoryLineChart' component={InventoryLineChart} />
+            <PrivateRoute path='/superDashboard/inventoryPieChart' component={InventoryPieChart} />
+            <PrivateRoute path='/superDashboard/charts' component={Chart} />
+
+
+
           </Switch>
         </div>
-        
+
       </BrowserRouter>
     );
   }

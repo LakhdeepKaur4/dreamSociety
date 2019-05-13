@@ -2,8 +2,6 @@ import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
 import {URN, GET_TOWER_NAME,GET_FLAT_TYPE,ADD_FLAT_DETAILS,GET_FLAT_DETAILS,DELETE_FLAT,DELETE_FLAT_DETAIL_IDS,UPDATE_FLAT_DETAILS,GET_FLOOR_DATA,GET_FLAT_PARKING,GET_PARKING_SLOT,GET_SLOTS} from '../actions/index';
 
-
-
 export  function getTowerName(){
     const request  = fetch(`${URN}/tower`,  {headers:authHeader()},{method: 'GET'})
     .then(response => response.json())
@@ -14,7 +12,7 @@ export  function getTowerName(){
     }
 
 export function getFlatType(){
-    const request =fetch(`${URN}/flat`,{headers:authHeader()},{method:'GET'})
+    const request = fetch(`${URN}/flat`,{headers:authHeader()},{method:'GET'})
     .then(response =>response.json())
     return{
         type:GET_FLAT_TYPE,

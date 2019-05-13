@@ -27,8 +27,6 @@ class flatDetailMaster extends Component{
         }
     }
 
-
- 
     handleChange = (event) => {
         this.setState({message:'' })
         if (!!this.state.errors[event.target.name]) {
@@ -122,7 +120,6 @@ class flatDetailMaster extends Component{
 
             this.setState({
                 state: {
-                   
                     flatNo:'',
                     flatId:'',
                     floorId:'',
@@ -365,7 +362,6 @@ class flatDetailMaster extends Component{
 function mapStateToProps(state){
    
     return{
-
     flatDetailMasterReducer : state.flatDetailMasterReducer
             }
 }

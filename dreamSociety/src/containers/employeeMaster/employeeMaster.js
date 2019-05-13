@@ -8,9 +8,8 @@ import {AddEmployee} from '../../actionCreators/employeeMasterAction';
 import {getEmployee,getEmployeeType,getEmployeeWorkType} from  '../../actionCreators/employeeTypeMasterAction';
 import {bindActionCreators} from 'redux';
 import DefaultSelect from '../../constants/defaultSelect'
-import _ from 'underscore';
 import './employeeMaster.css';
-import { Form, FormGroup, Input, Label, Button, Row, Col } from 'reactstrap';
+import {  FormGroup, Input, Label, Button, Row, Col } from 'reactstrap';
 
 class EmployeeMaster extends Component{
 
