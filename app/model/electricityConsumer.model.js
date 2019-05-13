@@ -14,8 +14,11 @@ module.exports = (sequelize, Sequelize) => {
     lastReading: {
       type: Sequelize.STRING,
     },
-    amountDue: {
+    amount: {
       type: Sequelize.INTEGER,
+    },
+    amountDue: {
+      type: Sequelize.BOOLEAN,
     },
     entryDate: {
       type: Sequelize.DATEONLY,
