@@ -79,21 +79,49 @@ exports.getById = (req, res, next) => {
 
 exports.rejectComplaint = (req, res, next) => {
     const id = req.body.complaintId;
-    console.log('Complaint ID ===>',id);
+    console.log('Complaint ID ===>', id);
 
     VendorComplaints.findOne({
         where: {
             complaintId: id
         }
     })
-    .then(complaint => {
-        complaint.updateAttributes({isActive:false});
+        .then(complaint => {
+            complaint.updateAttributes({ isActive: false });
 
-        res.status(httpStatus.OK).json({
-            message: 'Complaint rejected successfully'
+            res.status(httpStatus.OK).json({
+                message: 'Complaint rejected successfully'
+            })
         })
+        .catch(err => {
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+exports.acceptComplaint = (req, res, next) => {
+    const id = req.body.complaintId;
+    console.log('Complaint ID ===>', id);
+
+    Complaint.findOne({
+        where: {
+            complaintId: id,
+            isActive: true,
+            isAccepted: false
+        }
     })
-    .catch(err => {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-    })
+        .then(complaint => {
+            if (complaint !== null) {
+                complaint.updateAttributes({ isAccepted: true, vendorId: req.userId });
+                res.status(httpStatus.OK).json({
+                    message: 'Complaint accepted by vendor.'
+                })
+            } else {
+                res.status(httpStatus.OK).json({
+                    message: "Please refresh complaint may be already have been in accepted state or doesn't exist anymore."
+                })
+            }
+        })
+        .catch(err => {
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
 }

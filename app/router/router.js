@@ -688,4 +688,6 @@ module.exports = function (app) {
 
 	app.put('/api/vendorComplaints/reject', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.rejectComplaint);
 
+	app.put('/api/vendorComplaints/accept', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.acceptComplaint);
+
 }
