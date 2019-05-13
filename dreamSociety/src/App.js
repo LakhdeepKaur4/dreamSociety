@@ -146,6 +146,7 @@ import InventoryLineChart from './containers/chart/inventoryLineChart';
 import InventoryPieChart from './containers/chart/inventoryPieChart';
 import Chart from './containers/chart/chart';
 import ChangePasswordVendor from './components/changePassword/changePasswordVendor';
+import MonthlyElectricityExpense from './containers/monthlyElectricityExpense/monthlyElectricityExpense';
 
 
 class App extends Component {
@@ -275,6 +276,7 @@ class App extends Component {
             <Route path='/superDashboard/CommonAreaMachineMaster' component={CommonAreaMachine} />
             <Route path='/superDashboard/electricityExpenseMaster' component={AddElectricityExpense} />
             <Route path='/superDashboard/electricityExpenseDetail' component={GetElectricityExpense} />
+            <Route path='/superDashboard/monthlyElectricityExpenseDetail' component={MonthlyElectricityExpense} />
             
             <PrivateRoute path='/superDashboard/rfId' component={RFID} />
             <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail} />
