@@ -15,15 +15,19 @@ exports.create = async (req, res, next) => {
 
         const maintenanceTypes = await MaintenanceType.findAll({
             where: {
-                isActive: true
+                isActive: true,
+                startDate:body.startDate,
+                endDate:body.endDate
             }
         })
-        let error = maintenanceTypes.some(maintenance => {
-            if (maintenance.maintenanceId == req.body.maintenanceId && maintenance.sizeId == req.body.sizeId)
-                return true;
-        });
-        if (error) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Maintainance Name already Exists" })
+        if(maintenanceType){
+            let error = maintenanceTypes.some(maintenance => {
+                if (maintenance.maintenanceId == req.body.maintenanceId && maintenance.sizeId == req.body.sizeId)
+                    return true;
+            });
+            if (error) {
+                return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Maintainance Name already Exists" })
+            }
         }
         const maintenance = await MaintenanceType.create(body);
         if (maintenance) {
@@ -62,7 +66,7 @@ exports.get = async (req, res, next) => {
 
 exports.update = async (req, res, next) => {
     try {
-        console.log("maintenannce>")
+        console.log("maintenannce>>")
         const id = req.params.id;
         console.log("id==>", id)
         if (!id) {
@@ -73,7 +77,7 @@ exports.update = async (req, res, next) => {
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
-        const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: update.maintenanceId, sizeId: update.sizeId, maintenanceTypeId: { [Op.ne]: id } } });
+        const alreadyExist = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: update.maintenanceId, sizeId: update.sizeId, startDate:update.startDate,endDate:update.endDate,maintenanceTypeId: { [Op.ne]: id } } });
 
         if (alreadyExist !== null) {
             console.log(alreadyExist.rate)

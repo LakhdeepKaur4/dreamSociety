@@ -14,6 +14,9 @@ module.exports = (sequelize, Sequelize) => {
     lastReading: {
       type: Sequelize.INTEGER,
     },
+    lastAmountDue: {
+      type: Sequelize.INTEGER,
+    },
     currentReading: {
       type: Sequelize.INTEGER,
     },

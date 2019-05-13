@@ -3,12 +3,19 @@ const config = require('../config/config.js');
 const httpStatus = require('http-status');
 
 const ElectricityConsumer = db.electricityConsumer;
+const FlatDetail = db.flatDetail;
+const Tower = db.tower;
+const Floor = db.floor;
+const MaintenanceType = db.maintenanceType;
 
 exports.create = async (req, res, next) => {
     try {
         console.log("creating event");
         let body = req.body;
         body.userId = req.userId;
+        const maintenanceType = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: 98 } });
+        const rate = maintenanceType.rate
+        body.totalConsumption = body.unitConsumed * rate;
         const electricityConsumer = await ElectricityConsumer.create(body);
         return res.status(httpStatus.CREATED).json({
             message: "Electricity Consumer successfully created",
@@ -24,10 +31,11 @@ exports.get = async (req, res, next) => {
     try {
         const electricityConsumer = await ElectricityConsumer.findAll({
             where: { isActive: true },
+            include: [{ model: FlatDetail, include: [Tower, Floor] }],
             order: [['createdAt', 'DESC']],
         });
         if (electricityConsumer) {
-            return res.status(httpStatus.CREATED).json({
+            return res.status(httpStatus.OK).json({
                 message: "Electricity Consumer Content Page",
                 electricityConsumer: electricityConsumer
             });
