@@ -25,6 +25,8 @@ const Op = db.Sequelize.Op;
 const Otp = db.otp;
 const Role = db.role;
 const UserRoles = db.userRole;
+const UserRFID = db.userRfid;
+const RFID = db.rfid;
 
 encrypt = (text) => {
     let key = config.secret;
@@ -276,6 +278,7 @@ exports.create = async (req, res, next) => {
                             .then(user => {
                                 // user.setRoles(roles);
                                 UserRoles.create({ userId: user.userId, roleId: roles.id, isActive: false });
+                                UserRFID.create({ userId: user.userId, rfidId: vendor.rfidId, isActive: true });
                             })
                         if (vendor.profilePicture) {
                             await saveToDisc(vendor.fileName1, vendor.fileExt1, vendor.profilePicture, (err, res) => {
@@ -371,11 +374,20 @@ exports.get = (req, res, next) => {
                 {
                     model: RateType,
                     attributes: ['rateId', 'rateType']
-                },
+                }
             ]
         })
         .then(vendor => {
-            vendor.map(item => {
+            vendor.map(async item => {
+                const rfid = await UserRFID.findOne({
+                    where: {
+                        userId: item.individualVendorId,
+                        isActive: true
+                    },
+                    include: [
+                        { model: RFID, where: { isActive: true }, attributes: ['rfidId', 'rfid'] }
+                    ]
+                });
                 item.firstName = decrypt(item.firstName);
                 item.lastName = decrypt(item.lastName);
                 item.userName = decrypt(item.userName);
@@ -392,14 +404,28 @@ exports.get = (req, res, next) => {
                 item.documentTwo = decrypt(item.documentTwo);
                 item.documentTwo = item.documentTwo.replace('../../', '');
 
+                item = item.toJSON();
+
+                if (rfid !== null) {
+                    item.rfid_master = {
+                        rfidId: rfid.rfid_master.rfidId,
+                        rfid: rfid.rfid_master.rfid
+                    }
+                }
+                else {
+                    item.rfid_master = rfid;
+                }
+
                 vendorArr.push(item);
             })
             return vendorArr;
         })
-        .then(vendors => {
-            res.status(httpStatus.OK).json({
-                vendors: vendors
-            })
+        .then(() => {
+            setTimeout(() => {
+                res.status(httpStatus.OK).json({
+                    vendors: vendorArr
+                }) 
+            }, 1000);
         })
         .catch(err => {
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
@@ -441,7 +467,16 @@ exports.getById = (req, res, next) => {
                 },
             ]
         })
-        .then(vendor => {
+        .then(async vendor => {
+            const rfid = await UserRFID.findOne({
+                where: {
+                    userId: item.individualVendorId,
+                    isActive: true
+                },
+                include: [
+                    { model: RFID, where: { isActive: true }, attributes: ['rfidId', 'rfid'] }
+                ]
+            });
             vendor.firstName = decrypt(vendor.firstName);
             vendor.lastName = decrypt(vendor.lastName);
             vendor.userName = decrypt(vendor.userName);
@@ -455,6 +490,18 @@ exports.getById = (req, res, next) => {
             }
             vendor.documentOne = decrypt(vendor.documentOne);
             vendor.documentTwo = decrypt(vendor.documentTwo);
+
+            vendor = vendor.toJSON();
+
+            if (rfid !== null) {
+                vendor.rfid_master = {
+                    rfidId: rfid.rfid_master.rfidId,
+                    rfid: rfid.rfid_master.rfid
+                }
+            }
+            else {
+                vendor.rfid_master = rfid;
+            }
 
             return vendor;
         })
@@ -665,6 +712,17 @@ exports.update = async (req, res, next) => {
                 }
             })
                 .then(vendor => {
+                    UserRFID.findOne({ where: { userId: id, isActive: true } })
+                        .then(vendorRfid => {
+                            if (vendorRfid !== null) {
+                                vendorRfid.updateAttributes({ rfidId: update.rfidId })
+                            } else {
+                                UserRFID.create({
+                                    userId: id,
+                                    rfidId: update.rfidId
+                                })
+                            }
+                        })
                     User.update(updates, { where: { userName: vendor.userName, isActive: true } });
                     return vendor.updateAttributes(updates);
                 })
@@ -699,6 +757,7 @@ exports.delete = async (req, res, next) => {
         const updatedVendor = await IndividualVendor.find({ where: { individualVendorId: id } }).then(individualVendor => {
             User.update({ isActive: false }, { where: { userId: id } });
             UserRoles.update({ isActive: false }, { where: { userId: id } });
+            UserRFID.update({ isActive: false }, { where: { userId: id } });
             return individualVendor.updateAttributes(update)
         })
         if (updatedVendor) {
@@ -725,6 +784,7 @@ exports.deleteSelected = async (req, res, next) => {
         const updatedVendor = await IndividualVendor.update(update, { where: { individualVendorId: { [Op.in]: deleteSelected } } })
         User.update({ isActive: false }, { where: { userId: { [Op.in]: deleteSelected } } });
         UserRoles.update({ isActive: false }, { where: { userId: { [Op.in]: deleteSelected } } });
+        UserRFID.update({ isActive: false }, { where: { userId: { [Op.in]: deleteSelected } } });
         if (updatedVendor) {
             return res.status(httpStatus.OK).json({
                 message: "Vendors deleted successfully",
