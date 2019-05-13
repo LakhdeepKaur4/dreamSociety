@@ -35,6 +35,7 @@ exports.getById = (req, res, next) => {
     const id = req.userId;
     console.log('Vendor ID ===>', id);
     const complaintIds = [];
+    const complaintsArr = [];
 
     VendorComplaints.findAll({
         where: {
@@ -71,7 +72,7 @@ exports.getById = (req, res, next) => {
                         item.flat_detail_master.user_master.firstName = decrypt(item.flat_detail_master.user_master.firstName);
                         item.flat_detail_master.user_master.lastName = decrypt(item.flat_detail_master.user_master.lastName);
                         item.flat_detail_master.user_master.contact = decrypt(item.flat_detail_master.user_master.contact);
-                        item = item.toJSON();
+                        
                         if (item.slotTime1 !== '') {
                             slotArr.push(item.slotTime1)
                         }
@@ -81,10 +82,13 @@ exports.getById = (req, res, next) => {
                         if (item.slotTime3 !== '') {
                             slotArr.push(item.slotTime3)
                         }
-                        item.slots = slotArr;
+                        item = item.toJSON();
+                        item.slots = slotArr
+                        // console.log(slotArr);
+                        complaintsArr.push(item);
                     })
                     res.status(httpStatus.OK).json({
-                        complaints
+                        complaints: complaintsArr
                     })
                 })
         })
