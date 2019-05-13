@@ -88,6 +88,16 @@ exports.rejectComplaint = (req, res, next) => {
     })
         .then(complaint => {
             complaint.updateAttributes({ isActive: false });
+            Complaint.findOne({
+                where: {
+                    complaintId: id,
+                    isActive: true,
+                    isAccepted: true
+                }
+            })
+                .then(complaint => {
+                    complaint.updateAttributes({ vendorId: null, isAccepted: false, complaintStatusId: 1 });
+                })
 
             res.status(httpStatus.OK).json({
                 message: 'Complaint rejected successfully'
@@ -111,7 +121,7 @@ exports.acceptComplaint = (req, res, next) => {
     })
         .then(complaint => {
             if (complaint !== null) {
-                complaint.updateAttributes({ isAccepted: true, vendorId: req.userId });
+                complaint.updateAttributes({ isAccepted: true, vendorId: req.userId, complaintStatusId: 6 });
                 res.status(httpStatus.OK).json({
                     message: 'Complaint accepted by vendor.'
                 })
