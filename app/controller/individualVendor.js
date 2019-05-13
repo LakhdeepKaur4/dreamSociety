@@ -435,6 +435,7 @@ exports.get = (req, res, next) => {
 exports.getById = (req, res, next) => {
     const id = req.params.id;
     console.log('Id ===>', id);
+    let vendorSend;
 
     IndividualVendor.findOne(
         {
@@ -470,7 +471,7 @@ exports.getById = (req, res, next) => {
         .then(async vendor => {
             const rfid = await UserRFID.findOne({
                 where: {
-                    userId: item.individualVendorId,
+                    userId: vendor.individualVendorId,
                     isActive: true
                 },
                 include: [
