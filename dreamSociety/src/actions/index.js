@@ -4,10 +4,10 @@
 // export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
 
-export  const URN = 'http://192.168.1.103:8081/api';
-export  const PicURN = 'http://192.168.1.103:8081/';
-export  const DocURN = 'http://192.168.1.103:8081/';
-export  const UR = 'http://192.168.1.103:8081/';
+// export  const URN = 'http://192.168.1.103:8081/api';
+// export  const PicURN = 'http://192.168.1.103:8081/';
+// export  const DocURN = 'http://192.168.1.103:8081/';
+// export  const UR = 'http://192.168.1.103:8081/';
 
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
 export  const PicURN = 'https://dreamsociety.herokuapp.com/';
