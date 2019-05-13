@@ -20,7 +20,7 @@ exports.create = async (req, res, next) => {
                 endDate:body.endDate
             }
         })
-        if(maintenanceType){
+        if(maintenanceTypes){
             let error = maintenanceTypes.some(maintenance => {
                 if (maintenance.maintenanceId == req.body.maintenanceId && maintenance.sizeId == req.body.sizeId)
                     return true;
@@ -38,6 +38,30 @@ exports.create = async (req, res, next) => {
         }
     } catch (error) {
         console.log("error==>", error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.getMaintenanceForElectricity = async (req, res, next) => {
+    try {
+        const maintenanceType = await MaintenanceType.findAll({
+            where: { isActive: true ,
+            maintenanceId:98
+            },
+            order: [['createdAt', 'DESC']],
+            include: [
+                { model: Size },
+                { model: Maintenance }
+            ]
+        });
+        if (maintenanceType) {
+            return res.status(httpStatus.CREATED).json({
+                message: "Maintenance Type Content Page",
+                maintenanceType: maintenanceType
+            });
+        }
+    } catch (error) {
+        console.log("error==>", error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
@@ -103,7 +127,6 @@ exports.update = async (req, res, next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
-
 
 exports.delete = async (req, res, next) => {
     try {

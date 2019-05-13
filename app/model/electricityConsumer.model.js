@@ -12,10 +12,19 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATEONLY,
     },
     lastReading: {
+      type: Sequelize.STRING,
+    },
+    amountDue: {
       type: Sequelize.INTEGER,
     },
-    lastAmountDue: {
-      type: Sequelize.INTEGER,
+    entryDate: {
+      type: Sequelize.DATEONLY,
+    },
+    lastReadingDate: {
+      type: Sequelize.DATEONLY,
+    },
+    sanctionedLoad: {
+      type: Sequelize.FLOAT,
     },
     currentReading: {
       type: Sequelize.INTEGER,
