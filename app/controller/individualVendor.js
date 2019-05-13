@@ -424,7 +424,7 @@ exports.get = (req, res, next) => {
             setTimeout(() => {
                 res.status(httpStatus.OK).json({
                     vendors: vendorArr
-                }) 
+                })
             }, 1000);
         })
         .catch(err => {
@@ -553,12 +553,12 @@ exports.update = async (req, res, next) => {
         const vendor = await IndividualVendor.find({ where: { individualVendorId: id } });
 
         if (update['email'] !== undefined) {
-            vendorEmailErr = await IndividualVendor.findOne({ where: { email: encrypt(update.email), individualVendorId: { [Op.ne]: id } } });
+            vendorEmailErr = await IndividualVendor.findOne({ where: { email: encrypt(update.email), isActive: true, individualVendorId: { [Op.ne]: id } } });
         } else {
             vendorEmailErr = null;
         }
         if (update['contact'] !== undefined) {
-            vendorContactErr = await IndividualVendor.findOne({ where: { contact: encrypt(update.contact), individualVendorId: { [Op.ne]: id } } });
+            vendorContactErr = await IndividualVendor.findOne({ where: { contact: encrypt(update.contact), isActive: true, individualVendorId: { [Op.ne]: id } } });
         } else {
             vendorContactErr = null;
         }
