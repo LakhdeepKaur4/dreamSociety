@@ -426,10 +426,10 @@ exports.create1 = async (req, res, next) => {
           isActive: false
         });
         // if (member.merberRfId !== null && member.memberRfId !== undefined && member.memberRfId !== '') {
-          let userRfId = await UserRfId.create({
-            userId: user.userId,
-            rfidId: member.memberRfId
-          })
+        let userRfId = await UserRfId.create({
+          userId: user.userId,
+          rfidId: member.memberRfId
+        })
         // }
         // else {
         //   member.memberRfId = null;

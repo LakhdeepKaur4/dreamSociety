@@ -64,7 +64,7 @@ module.exports = function (app) {
 
 	app.post('/api/auth/signin',[authJwt.verifyToken, authJwt.isAdminRole], userController.signinDecrypted);
 
-	app.get('/api/user',[authJwt.verifyToken, authJwt.isAdminRole], userController.getUserDecrypted);
+	app.get('/api/user', [authJwt.verifyToken, authJwt.isAdminRole], userController.getUserDecrypted);
 
 	app.get('/api/rolesAssigned', [authJwt.verifyToken, authJwt.isAdminRole], userController.getUserRoleDecrypted);
 
@@ -472,7 +472,7 @@ module.exports = function (app) {
 
 	app.put('/api/owner/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], owner.deleteSelected);
 
-	app.put('/api/ownerMember/delete/deleteSelected',  owner.deleteSelectedMembers);
+	app.put('/api/ownerMember/delete/deleteSelected', owner.deleteSelectedMembers);
 
 	app.put('/api/owner/ownerMember/update/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.updateMember);
 
@@ -552,7 +552,7 @@ module.exports = function (app) {
 
 	app.post('/api/ownerActivation', otpChecker.checkOtp);
 
-	app.post('/api/checkToken', checkToken.checkToken);	
+	app.post('/api/checkToken', checkToken.checkToken);
 
 	app.post('/api/createEventBooking', [authJwt.verifyToken, authJwt.isAdminRole], eventBooking.create);
 
@@ -664,19 +664,23 @@ module.exports = function (app) {
 
 	app.put('/api/commonAreaDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.delete);
 
-	app.post('/api/fingerPrint',[authJwt.verifyToken],fingerPrintController.addFingerPrintData);
+	app.get('/api/fingerPrint/test', [authJwt.verifyToken], fingerPrintController.test);
 
-	app.get('/api/fingerPrint',[authJwt.verifyToken],fingerPrintController.getFingerPrintData);
+	app.get('/api/fingerPrint/roles', [authJwt.verifyToken], fingerPrintController.getRoles);
 
-	app.put('/api/fingerPrint/:userId',[authJwt.verifyToken],fingerPrintController.updateFingerPrintData);
+	app.post('/api/fingerPrint', [authJwt.verifyToken], fingerPrintController.addFingerPrintData);
 
-	app.get('/api/filterOnNull/fingerPrint',[authJwt.verifyToken],fingerPrintController.nullFingerPrintData);
+	app.get('/api/fingerPrint', [authJwt.verifyToken], fingerPrintController.getFingerPrintData);
 
-	app.get('/api/filterOnNotNull/fingerPrint',[authJwt.verifyToken],fingerPrintController.notNullFingerPrintData);
+	app.put('/api/fingerPrint/:userId', [authJwt.verifyToken], fingerPrintController.updateFingerPrintData);
 
-	app.get('/api/filterOnNull/flats/fingerPrint/:type',[authJwt.verifyToken],fingerPrintController.nullFilterOnflats);
+	app.get('/api/filterOnNull/fingerPrint', [authJwt.verifyToken], fingerPrintController.nullFingerPrintData);
 
-	app.get('/api/filterOnNotNull/flats/fingerPrint/:type',[authJwt.verifyToken],fingerPrintController.notNullFilterOnflats);
+	app.get('/api/filterOnNotNull/fingerPrint', [authJwt.verifyToken], fingerPrintController.notNullFingerPrintData);
+
+	app.get('/api/filterOnNull/flats/fingerPrint/:id', [authJwt.verifyToken], fingerPrintController.nullFilterOnflats);
+
+	app.get('/api/filterOnNotNull/flats/fingerPrint/:id', [authJwt.verifyToken], fingerPrintController.notNullFilterOnflats);
 
 	app.get('/api/vendorComplaints', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.getById);
 
