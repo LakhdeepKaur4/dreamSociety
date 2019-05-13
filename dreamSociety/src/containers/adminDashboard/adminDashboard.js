@@ -1,16 +1,34 @@
 import React, { Component } from 'react';
-import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {userLogout} from '../../actionCreators/loginAction';
+import UI from '../../components/newUI/adminDashboard';
 
 class AdminDashboard extends Component {
+    logout=()=>{
+        console.log('hiiii')
+        this.props.userLogout();   
+      }
+      changePassword=()=>{
+          
+        return this.props.history.replace('/adminDashboard/changePasswordAdmin')
+      }
     render() {
         return (
             <div>
-                <h1>AdminDashboard</h1>
-                <Link to="" >Registration</Link>
+             <UI onClick={this.logout} change={this.changePassword} changeDashboard={this.changeDashboard}>
+      <div>
+
+      </div>
+     
+      </UI>
 
             </div>
         );
     }
 }
+function mapDispatchToProps(dispatch){
+    return bindActionCreators({userLogout},dispatch);
+    }
 
-export default AdminDashboard;
+export default connect(null, mapDispatchToProps)(AdminDashboard);

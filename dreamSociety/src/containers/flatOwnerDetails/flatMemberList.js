@@ -9,6 +9,8 @@ import { getOwnerMember, deleteMember, deleteMultipleMember, memberUpdate, addNe
 import UI from '../../components/newUI/superAdminDashboard';
 import { Row,Col,Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
 import {getRfId} from '../../actionCreators/rfIdAction';
+import DefaultSelect from '../../constants/defaultSelect';
+import {getOwnerFlats} from '../../actionCreators/flatOwnerAction';
 
 var id;
 var towerId;
@@ -35,7 +37,8 @@ class FlatMemberList extends Component {
             relationName:'',
             rfidId:'',
             memberEmail:'',
-            memberContact:''
+            memberContact:'',
+            flatDetailId:''
         }
 
     }
@@ -49,6 +52,7 @@ class FlatMemberList extends Component {
         towerId = localStorage.getItem('towerId');
     }
     componentDidMount() {
+        this.props.getOwnerFlats(id)
         this.props.getRfId()
         this.props.getRelation();
         this.props.getOwnerMember(id)
@@ -250,7 +254,7 @@ class FlatMemberList extends Component {
         return this.props.history.replace('/superDashBoard/flatOwnerList')
     }
     addMember = () => {
-        const { memberFirstName,memberLastName, memberDob, gender, relationId,rfidId,memberContact,memberEmail } = this.state
+        const { memberFirstName,memberLastName, memberDob, gender, relationId,rfidId,memberContact,memberEmail,flatDetailId} = this.state
         let errors = {};
         if (this.state.memberName === '') {
             errors.memberName = "Member Name can't be empty"
@@ -269,7 +273,7 @@ class FlatMemberList extends Component {
         if (isValid) {
             this.setState({ loading: true })
             this.setState({ formModal: !this.state.formModal })
-            this.props.addNewMember(memberFirstName,memberLastName, memberDob, gender, relationId, id,rfidId,towerId,memberContact,memberEmail)
+            this.props.addNewMember(memberFirstName,memberLastName, memberDob, gender, relationId, id,rfidId,towerId,memberContact,memberEmail,flatDetailId)
                 .then(() => this.props.getOwnerMember(id).then(() => this.setState({ loading: false })))
         }
     }
@@ -284,6 +288,36 @@ class FlatMemberList extends Component {
           
         return this.props.history.replace('/superDashboard/changePassword')
       }
+      flatChangeHandler=(flatNo, flatDetailId ,selectOption)=>{
+        console.log(flatNo, flatDetailId ,selectOption)
+        console.log(this.state.flatDetailId)
+        this.setState({
+            flatNo: selectOption.flatNo,
+            flatDetailId: selectOption.flatDetailId,
+            message:'',
+            correspondenceAddress: ('Flat Number : ' + selectOption.flatNo  + ' , ' + this.state.correspondenceAddress) + 
+            ' , ' +this.state.societyName + ' , ' +this.state.societyLocation + ' , ' + this.state.societyCity +
+            ' , ' + this.state.societyState + ' , ' + this.state.societyCountry
+        })
+        this.props.getFlatDetailViaTowerId(selectOption.towerId);
+    }
+
+    flatInputs=({flats})=>{
+        console.log(flats)
+        if (flats) {
+            return flats.flats.flat_detail_masters.map((item) => {
+                return (
+                    <option key={item.flatDetailId} value={item.flatDetailId}>{item.flatNo}</option>
+                )
+            })
+        }
+    }
+    onFlatChange=(e)=>{
+       
+        this.setState({
+            flatDetailId:e.target.value
+        })
+    }
     render() {
         let tableData;
         tableData = <Table className="table table-bordered">
@@ -453,9 +487,17 @@ class FlatMemberList extends Component {
                                 onKeyPress={this.OnKeyPresshandlerEmail} />
                              </Col>
                              </Row>
+                             <FormGroup>
+            <Label>Flats</Label>
+            <Input type="select" name="flatDetailId" onChange={this.onFlatChange} defaultValue="no-value" >
+                <DefaultSelect />
+                {this.flatInputs(this.props.OwnerMemberList)}
+            </Input>
+        </FormGroup>
                                         <Button color="primary mr-2" onClick={this.addMember}>Add Member</Button>
                                         <Button color="danger" onClick={this.toggles1}>Cancel</Button>
                                     </FormGroup>
+
                                 </ModalBody>
                             </Modal>
 
@@ -474,6 +516,6 @@ function mapStateToProps(state) {
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getOwnerMember, deleteMember, deleteMultipleMember, getRelation, memberUpdate, addNewMember,getRfId }, dispatch)
+    return bindActionCreators({ getOwnerMember, deleteMember, deleteMultipleMember, getRelation, memberUpdate, addNewMember,getRfId,getOwnerFlats }, dispatch)
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FlatMemberList);
