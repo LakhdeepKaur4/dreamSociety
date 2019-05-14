@@ -7,6 +7,7 @@ const FlatDetail = db.flatDetail;
 const Tower = db.tower;
 const Floor = db.floor;
 const MaintenanceType = db.maintenanceType;
+const Op = db.Sequelize.Op;
 
 exports.create = async (req, res, next) => {
     try {
@@ -78,16 +79,19 @@ exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
         console.log("id==>", id);
+        const update = req.body;
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
-        const exists = await ElectricityConsumer.findOne({
-            where: { isActive: true, flatDetailId: body.flatDetailId, electricityConsumerId: { [Op.ne]: id } }
-        });
-        if (exists) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Already Exists" });
-        }
-        const update = req.body;
+        // console.log("****")
+        // const exists = await ElectricityConsumer.findOne({
+        //     where: { isActive: true, flatDetailId: update.flatDetailId, electricityConsumerId: { [Op.ne]: id } }
+        // });
+        // console.log(exists)
+        // if (exists) {
+        //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Already Exists" });
+        // }
+      
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
@@ -101,6 +105,7 @@ exports.update = async (req, res, next) => {
             });
         }
     } catch (error) {
+        console.log(error)
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
@@ -163,7 +168,7 @@ exports.calculateMonthlyCharges = async (req, res, next) => {
         const amountDue = body.amountDue === true ? monthlyCharges = charges + body.amount : monthlyCharges = charges - body.amount;
         if (monthlyCharges) {
             return res.status(httpStatus.OK).json(
-                {monthlyCharges}
+                { monthlyCharges }
             );
         }
     } catch (error) {
