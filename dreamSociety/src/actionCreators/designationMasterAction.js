@@ -44,11 +44,9 @@ export const deleteDesignation=(designationId)=>{
  
    
      return{
- 
          type:DELETE_DESIGNATION,
          payload: request 
      }
- 
  }
 
 

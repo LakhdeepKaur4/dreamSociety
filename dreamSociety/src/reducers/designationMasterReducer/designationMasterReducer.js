@@ -8,10 +8,6 @@ export default function(state={},action){
 
     case GET_DESIGNATION:
     return {...state, designationResult: action.payload}
-
-
-
-
     default:
         return state;
     }
