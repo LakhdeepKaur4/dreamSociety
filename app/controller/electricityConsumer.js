@@ -46,6 +46,28 @@ exports.get = async (req, res, next) => {
     }
 }
 
+exports.getByFlatNo = async (req, res, next) => {
+    try {
+        console.log("***********************")
+        const flatDetailId= req.params.id;
+        const electricityConsumer = await ElectricityConsumer.findOne({
+            where: { isActive: true ,flatDetailId:flatDetailId},
+            include: [{ model: FlatDetail, include: [Tower, Floor] }],
+            order: [['createdAt', 'DESC']],
+        });
+        console.log("###",electricityConsumer)
+        if (electricityConsumer) {
+            return res.status(httpStatus.OK).json({
+                message: "Electricity Consumer Content Page",
+                electricityConsumer: electricityConsumer
+            });
+        }
+    } catch (error) {
+        console.log("error==>", error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
 exports.update = async (req, res, next) => {
     try {
         const id = req.params.id;
