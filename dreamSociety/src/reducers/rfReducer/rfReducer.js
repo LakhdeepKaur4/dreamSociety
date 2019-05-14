@@ -5,8 +5,10 @@ export default function(state={},action){
         return {...state,addRF:action.payload}
         case GET_RF:
         return {...state,rfList:action.payload}
+
         case GET_OWNER_RF:
-        return {...state,ownerRf:action.payload}
+        return {...state, ownerRf:action.payload}
+
         default:
         return state;
     }

@@ -142,9 +142,9 @@ export function memberUpdate(memberFirstName,memberLastName,gender,memberDob,rel
     }
 }
 
-export function addNewMember(memberFirstName,memberLastName,memberDob,gender,relationId,id,memberRfId,towerId,memberContact,memberEmail){
-    console.log(memberFirstName,memberLastName,memberDob,gender,relationId,id,towerId)
-    const request=axios.post(`${URN}/owner/ownerMember/${id}`,{memberFirstName,memberLastName,memberDob,gender,relationId,memberRfId,towerId,memberContact,memberEmail},{headers:authHeader()})
+export function addNewMember(memberFirstName,memberLastName,memberDob,gender,relationId,id,memberRfId,towerId,memberContact,memberEmail,flatDetailId){
+    console.log(memberFirstName,memberLastName,memberDob,gender,relationId,id,towerId,flatDetailId)
+    const request=axios.post(`${URN}/owner/ownerMember/${id}`,{memberFirstName,memberLastName,memberDob,gender,relationId,memberRfId,towerId,memberContact,memberEmail,flatDetailId},{headers:authHeader()})
     .then(response=>response.data)
     return {
         type:ADD_NEW_MEMBER,

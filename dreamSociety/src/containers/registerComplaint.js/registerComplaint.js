@@ -75,7 +75,7 @@ class RegisterComplaint extends Component{
                 userFlat.flats.map((item) =>{ 
                     return(
                         <option key={item.flatDetailId} value={item.flatDetailId}>
-                         {"Flatno-"+item.flatNo+", "+item.tower_master.towerName+", "+item.floor_master.floorName+" floor"}
+                         {"Flatno-"+item.flatNo+", "+item.floor_master.floorName+" floor"+", "+item.tower_master.towerName}
                         </option>
                     )
                 })
@@ -248,11 +248,8 @@ class RegisterComplaint extends Component{
                 </Col>
             </Row>
             </FormGroup>
-               
 
-
-
-
+            
             <FormGroup>
                 <Label>Description</Label>
                 <Input type="textarea"  name="description" maxLength={500} onChange={this.onChange}>
