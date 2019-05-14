@@ -695,6 +695,8 @@ module.exports = function (app) {
 
 	app.put('/api/vendorComplaints/selectTime', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.selectSlot);
 
+	app.put('/api/vendorComplaints/complete', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.completedComplaint);
+
 	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.create);
 
 	app.get('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.get);
