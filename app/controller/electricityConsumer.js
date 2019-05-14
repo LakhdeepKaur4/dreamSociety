@@ -13,7 +13,7 @@ exports.create = async (req, res, next) => {
         console.log("creating event");
         let body = req.body;
         const exists = await ElectricityConsumer.findOne({
-            where: { isActive: true, towerId: body.towerId, floorId: body.floorId, flatDetailId: body.flatDetailId }
+            where: { isActive: true,flatDetailId: body.flatDetailId }
         });
         if (exists) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Already Exists" });
