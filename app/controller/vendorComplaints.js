@@ -35,6 +35,7 @@ exports.getById = (req, res, next) => {
     const id = req.userId;
     console.log('Vendor ID ===>', id);
     const complaintIds = [];
+    const complaintsArr = [];
 
     VendorComplaints.findAll({
         where: {
@@ -65,15 +66,34 @@ exports.getById = (req, res, next) => {
                 ]
             })
                 .then(complaints => {
+                    const slotArr = [];
                     complaints.map(item => {
+                        slotArr.splice(0, slotArr.length);
                         item.flat_detail_master.user_master.firstName = decrypt(item.flat_detail_master.user_master.firstName);
                         item.flat_detail_master.user_master.lastName = decrypt(item.flat_detail_master.user_master.lastName);
                         item.flat_detail_master.user_master.contact = decrypt(item.flat_detail_master.user_master.contact);
+
+                        if (item.slotTime1 !== '') {
+                            slotArr.push(item.slotTime1)
+                        }
+                        if (item.slotTime2 !== '') {
+                            slotArr.push(item.slotTime2)
+                        }
+                        if (item.slotTime3 !== '') {
+                            slotArr.push(item.slotTime3)
+                        }
+                        item = item.toJSON();
+                        item.slots = slotArr
+                        // console.log(slotArr);
+                        complaintsArr.push(item);
                     })
                     res.status(httpStatus.OK).json({
-                        complaints
+                        complaints: complaintsArr
                     })
                 })
+        })
+        .catch(err => {
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
 
@@ -88,6 +108,16 @@ exports.rejectComplaint = (req, res, next) => {
     })
         .then(complaint => {
             complaint.updateAttributes({ isActive: false });
+            Complaint.findOne({
+                where: {
+                    complaintId: id,
+                    isActive: true,
+                    isAccepted: true
+                }
+            })
+                .then(complaint => {
+                    complaint.updateAttributes({ vendorId: null, isAccepted: false, complaintStatusId: 1 });
+                })
 
             res.status(httpStatus.OK).json({
                 message: 'Complaint rejected successfully'
@@ -111,7 +141,7 @@ exports.acceptComplaint = (req, res, next) => {
     })
         .then(complaint => {
             if (complaint !== null) {
-                complaint.updateAttributes({ isAccepted: true, vendorId: req.userId });
+                complaint.updateAttributes({ isAccepted: true, vendorId: req.userId, complaintStatusId: 6 });
                 res.status(httpStatus.OK).json({
                     message: 'Complaint accepted by vendor.'
                 })
@@ -120,6 +150,50 @@ exports.acceptComplaint = (req, res, next) => {
                     message: "Please refresh complaint may be already have been in accepted state or doesn't exist anymore."
                 })
             }
+        })
+        .catch(err => {
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+exports.selectSlot = (req, res, next) => {
+    const body = req.body;
+    console.log('Slot selected ===>', body);
+
+    Complaint.findOne({
+        where: {
+            complaintId: body.complaintId,
+            isActive: true,
+            isAccepted: true
+        }
+    })
+        .then(complaint => {
+            complaint.updateAttributes({ selectedSlot: body.updatedSlots, complaintStatusId: 3 });
+            res.status(httpStatus.CREATED).json({
+                message: 'Complaint in progress now'
+            })
+        })
+        .catch(err => {
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+exports.completedComplaint = (req, res, next) => {
+    const id = req.body.complaintId;
+    console.log('Complaint ID ===>', id);
+
+    Complaint.findOne({
+        where: {
+            complaintId: id,
+            isActive: true,
+            isAccepted: true
+        }
+    })
+        .then(complaint => {
+            complaint.updateAttributes({ complaintStatusId: 4 });
+            res.status(httpStatus.OK).json({
+                message: 'Complaint status changed to completed'
+            })
         })
         .catch(err => {
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
