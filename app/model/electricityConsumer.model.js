@@ -23,6 +23,9 @@ module.exports = (sequelize, Sequelize) => {
     amountDue: {
       type: Sequelize.BOOLEAN,
     },
+    mdi: {
+      type: Sequelize.INTEGER,
+    },
     entryDate: {
       type: Sequelize.DATEONLY,
     },

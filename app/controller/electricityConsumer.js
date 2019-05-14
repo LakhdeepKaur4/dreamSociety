@@ -48,14 +48,14 @@ exports.get = async (req, res, next) => {
 
 exports.getByFlatNo = async (req, res, next) => {
     try {
-        console.log("***********************")
-        const flatDetailId= req.params.id;
+        console.log("***********************");
+        const flatDetailId = req.params.id;
         const electricityConsumer = await ElectricityConsumer.findOne({
-            where: { isActive: true ,flatDetailId:flatDetailId},
+            where: { isActive: true, flatDetailId: flatDetailId },
             include: [{ model: FlatDetail, include: [Tower, Floor] }],
             order: [['createdAt', 'DESC']],
         });
-        console.log("###",electricityConsumer)
+        console.log("###", electricityConsumer)
         if (electricityConsumer) {
             return res.status(httpStatus.OK).json({
                 message: "Electricity Consumer Content Page",
@@ -132,6 +132,28 @@ exports.deleteSelected = async (req, res, next) => {
             return res.status(httpStatus.OK).json({
                 message: "Electricity Consumer deleted successfully",
             });
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.calculateMonthlyCharges = async (req, res, next) => {
+    try {
+        const body = req.body;
+        let monthlyCharges;
+        if (!body.unitConsumed && !body.mdi && body.sanctionedLoad && body.rate && body.rent && body.amountDue) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
+        }
+        const numberToBeMultiply = (body.sanctionedLoad < body.mdi) ? body.mdi : body.sanctionedLoad;
+        console.log("%%%5 ", numberToBeMultiply)
+        const charges = body.unitConsumed * body.rate + body.rent * numberToBeMultiply;
+        const amountDue = body.amountDue === 1 ?monthlyCharges = charges + body.amount :  monthlyCharges = charges - body.amount;
+        if (monthlyCharges) {
+            return res.status(httpStatus.OK).json(
+                monthlyCharges
+            );
         }
     } catch (error) {
         console.log(error)
