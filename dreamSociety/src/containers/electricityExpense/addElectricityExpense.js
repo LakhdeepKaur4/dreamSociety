@@ -6,7 +6,7 @@ import Spinner from '../../components/spinner/spinner';
 import { Col, Row, Form, Button, FormGroup } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 import { getTowerName } from '../../actionCreators/flatDetailMasterAction';
-import { getfloorsOfTowers, addElectricityExpense } from '../../actionCreators/electricityExpense';
+import { getfloorsOfTowers, addElectricityExpense, getRateForElectricityExpense } from '../../actionCreators/electricityExpense';
 import { numberValidation, memberMaxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler } from '../../validation/validation';
 
 class AddElectricityExpense extends Component {
@@ -17,16 +17,24 @@ class AddElectricityExpense extends Component {
             floorId: '',
             flatId: '',
             lastReading: '',
-            lastAmountDue:'',
+            sign: '',
+            amountdue: true,
+            amount: '',
+            sanctionedLoad: '',
+            lastReadingDate: '',
+            rate: '',
             // unitConsumed: '',
             // currentReading: '',
             // startDate: '',
             // endDate: ''
         }
     }
+
+
     componentDidMount() {
         this.props.getTowerName();
-        console.log(this.props.getTowerName)
+        this.props.getRateForElectricityExpense();
+        // console.log(this.props.getTowerName)
     }
 
     logout = () => {
@@ -51,6 +59,19 @@ class AddElectricityExpense extends Component {
         return this.props.history.push('/superDashboard/electricityExpenseDetail');
     }
 
+    onSignChange = (event) => {
+        this.setState({ sign: event.target.value });
+        if (this.state.sign == '+') {
+            this.setState({
+                amountDue: false
+            })
+        } else {
+            this.setState({
+                amountDue: true
+            })
+        }
+    }
+
     getDropdownForTower = ({ name }) => {
         console.log("tower ?", name)
         if (name) {
@@ -58,6 +79,19 @@ class AddElectricityExpense extends Component {
                 return (
                     <option key={item.towerId} value={item.towerId} >
                         {item.towerName}
+                    </option>
+                )
+            })
+        }
+    }
+
+    getDropdownForRate = ({ rate }) => {
+        // console.log("dropdown of rate ", rate)
+        if (rate) {
+            return rate.maintenanceType.map((item) => {
+                return (
+                    <option key={item.maintenanceTypeId} value={item.rate} >
+                        {item.rate}
                     </option>
                 )
             })
@@ -84,8 +118,8 @@ class AddElectricityExpense extends Component {
         if (floorDetails && floorDetails.flatDetail) {
             console.log(floorDetails)
             return floorDetails.flatDetail.filter((flatRecord) => {
-                console.log("***flatREcord ", flatRecord.floorId)
-                console.log("***flatREcord ", this.state.floorId)
+                // console.log("***flatREcord ", flatRecord.floorId)
+                // console.log("***flatREcord ", this.state.floorId)
                 return flatRecord.floorId == this.state.floorId
             }).map((items) => {
                 return (
@@ -94,19 +128,6 @@ class AddElectricityExpense extends Component {
                     </option>
                 )
             })
-        }
-    }
-
-    getFlats = ({ floor }) => {
-        if (floor) {
-            return floor.flatDetail.filter((flatRecord) => {
-                return flatRecord.floorId === this.state.floorId
-            }).map((selectFlat) => {
-                return { ...selectFlat, label: selectFlat.flatNo, value: selectFlat.flatDetailId }
-            });
-        }
-        else {
-            return []
         }
     }
 
@@ -130,12 +151,12 @@ class AddElectricityExpense extends Component {
             this.setState({ [e.target.name]: e.target.value });
         }
     }
-    
+
 
     submit = (e) => {
         e.preventDefault();
-        let { towerId, floorId, flatDetailId, lastReading, currentReading, unitConsumed, startDate, endDate,lastAmountDue } = this.state;
-        let data = { towerId, floorId, flatDetailId, lastReading, currentReading, unitConsumed, startDate, endDate ,lastAmountDue };
+        let { towerId, floorId, flatDetailId, lastReading, amount, sign, rate, lastReadingDate, sanctionedLoad, amountDue } = this.state;
+        let data = { towerId, floorId, flatDetailId, lastReading, amount, sign, rate, lastReadingDate, sanctionedLoad, amountDue };
         console.log(data);
         this.props.addElectricityExpense(data).then(() => { this.props.history.push('/superDashboard/electricityExpenseDetail') });
     }
@@ -152,12 +173,12 @@ class AddElectricityExpense extends Component {
     }
 
     endDateChange = (e) => {
-        var start = document.getElementById('start');
-        var end = document.getElementById('end');
+        // var start = document.getElementById('start');
+        // var end = document.getElementById('end');
 
-        if (end.value) {
-            start.max = end.value;
-        }
+        // if (end.value) {
+        //     start.max = end.value;
+        // }
 
         this.setState({ [e.target.name]: e.target.value });
     }
@@ -198,7 +219,7 @@ class AddElectricityExpense extends Component {
             </FormGroup>
             <FormGroup>
                 <Row md={12}>
-                    <Col md={4}>
+                    <Col md={5}>
                         <label>Last Reading</label>
                         <input className="form-control" placeholder="Last Reading"
                             type="text" name="lastReading"
@@ -206,35 +227,45 @@ class AddElectricityExpense extends Component {
                             onChange={this.rateChange}
                             value={this.state.lastReading} ></input>
                     </Col>
-                    <Col md={4}>
-                        <label>Last Amount Due</label>
-                        <input className="form-control"
-                            placeholder="Last Amount Due"
-                            type="text" name="lastAmountDue"
-                            maxLength="10"
-                            // onChange={this.rateChange}
-                            // value={this.state.currentReading} 
-                            />
+                    <Col md={3}>
+                        <label><br /></label>
+                        <select required className="form-control" defaultValue='no-value' name="sign" onChange={this.onSignChange}>
+                            <DefaultSelect />
+                            <option value="+">+</option>
+                            <option value="-">-</option>
+                            {/* {this.getDropdownForTower(this.props.flatDetailMasterReducer)} */}
+                        </select>
                     </Col>
                     <Col md={4}>
-                        <label>Last Amount Due</label>
+                        <label>Amount</label>
                         <input className="form-control"
-                            placeholder="Last Amount Due"
-                            type="text" name="lastAmountDue"
+                            placeholder="Amount"
+                            type="text" name="amount"
                             maxLength="10"
-                            onChange={this.flatChangeHandler}
-                            // value={this.state.currentReading} 
-                            />
+                            onChange={this.rateChange}
+                        // value={this.state.currentReading} 
+                        />
+                    </Col>
+                    <Col md={4}>
+                        <label>Rate Per Unit</label>
+                        <select required className="form-control" defaultValue='no-value' name="rate" onChange={this.flatChangeHandler}>
+                            <DefaultSelect />
+                            {this.getDropdownForRate(this.props.electricityExpenseReducer)}
+                        </select>
                     </Col>
                     <Col md={4}>
                         <label>Sanctioned Load</label>
                         <input className="form-control"
-                            placeholder="Current Reading"
-                            type="text" name="currentReading"
+                            placeholder="Sanctioned Load"
+                            type="text" name="sanctionedLoad"
                             maxLength="16"
                             onChange={this.flatChangeHandler}
-                            // value={this.state.currentReading} 
-                            />
+                        // value={this.state.currentReading}
+                        />
+                    </Col>
+                    <Col md={4}>
+                        <label>Last Reading Date</label>
+                        <input className="form-control" type="date" name="lastReadingDate" id="end" onChange={this.endDateChange} />
                     </Col>
                     {/* <Col md={4}>
                         <label>Unit Consumed</label>
@@ -248,18 +279,18 @@ class AddElectricityExpense extends Component {
                     </Col> */}
                 </Row>
             </FormGroup>
-            <FormGroup>
-                <Row md={12}>
+            {/* <FormGroup>
+                <Row md={12}> }
                     <Col md={6}>
                         <label>Start Date</label>
                         <input min={memberMaxDate()} className="form-control" type="date" name="startDate" id="start" onChange={this.startDateChange} />
                     </Col>
                     <Col md={6}>
-                        <label>End Date</label>
+                        <label>Last Reading Date</label>
                         <input className="form-control" type="date" name="endDate" id="end" onChange={this.endDateChange} />
                     </Col>
-                </Row>
-            </FormGroup>
+                 </Row>
+            </FormGroup> */}
             <FormGroup>
                 <Button className="btn btn-success mr-2">Add Expense</Button>
                 <Button className="btn btn-danger" onClick={this.cancel}>Cancel</Button>
@@ -289,7 +320,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getTowerName, getfloorsOfTowers, addElectricityExpense }, dispatch);
+    return bindActionCreators({ getTowerName, getfloorsOfTowers, getRateForElectricityExpense, addElectricityExpense }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddElectricityExpense);

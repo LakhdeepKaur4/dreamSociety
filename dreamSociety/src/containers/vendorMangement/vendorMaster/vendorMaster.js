@@ -9,7 +9,8 @@ import UI from '../../../components/newUI/superAdminDashboard';
 import {getCountry,getState,getCity, getLocation} from '../../../actionCreators/societyMasterAction';
 import DefaultSelect from '../../../constants/defaultSelect';
 import Spinner from '../../../components/spinner/spinner';
-
+import { PlaceHolder } from '../../../actions/index';
+import {getRfId} from '../../../actionCreators/rfIdAction';
 
 class vendorMaster extends Component {
     constructor(props) {
@@ -68,7 +69,8 @@ class vendorMaster extends Component {
             editCurrent:true,
             pin:'',
             pin1:'',
-            emailError:false
+            emailError:false,
+            rfidId:''
             
         }
         this.handleChange = this.handleChange.bind(this);
@@ -227,6 +229,7 @@ class vendorMaster extends Component {
     }
     
     refreshData=()=>{
+        this.props.getRfId();
         this.props.getVendorMaster();
         this.props.getServiceType();
         this.props.getRateType();
@@ -300,6 +303,9 @@ class vendorMaster extends Component {
             else if(this.state.email===''){
                 errors.email="Email can't be empty"                
             }
+            else if(this.state.rfidId===''){
+                errors.rfidId="Email can't be empty"                
+            }
             else if(this.state.serviceId1.serviceId===''){
                 errors.serviceId1="Service Id1 can't be empty"
             }      
@@ -345,6 +351,7 @@ class vendorMaster extends Component {
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
         formData.append('documentOne',this.state.documentOne,this.state.documentOne.name)
         formData.append('documentTwo',this.state.documentTwo,this.state.documentTwo.name)     
+        formData.append('rfidId',this.state.rfidId)
         this.props.addVendorMaster(formData).then(()=>this.push()) 
         .catch((err)=>{
             this.setState({message: err.response.data.message, loading: false})
@@ -683,6 +690,23 @@ class vendorMaster extends Component {
         }
     }
 
+    RfID=({ownerRf})=>{console.log(ownerRf)
+        if(ownerRf && ownerRf.rfids){
+            return (
+               ownerRf.rfids.map((item)=>{
+                   return ({ ...item, label:item.rfid, value:item.rfidId})
+               })
+            )
+        }
+    }
+
+    rfIdChangeHandler=(selectOption)=>{
+        this.setState({
+            rfidId:selectOption.rfidId
+        })
+
+    }
+
     render() {
       let  formData =<div>
         <FormGroup>
@@ -802,14 +826,14 @@ class vendorMaster extends Component {
     </FormGroup>
     </FormGroup>
         <Row form>
-            <Col md={6}>
+            <Col md={4}>
             <FormGroup>
                 <Label>Contact Number</Label>
                 <Input type="text" placeholder="Contact Number" name="contact" maxLength={10} onKeyPress={this.OnKeyPresshandlerPhone} value={this.state.contact} onChange={this.handleChange} />
                 <span className="error">{this.state.errors.contact}</span>
             </FormGroup>
             </Col>
-            <Col md={6}>
+            <Col md={4}>
             <FormGroup>
                 <Label>Email</Label>
                 <Input type="email" placeholder="Email" name="email" maxLength={80}  value={this.state.email} onKeyPress={this.OnKeyPresshandlerEmail} onBlur={this.OnKeyPresshandlerEmail} onChange={this.handleChange}/>
@@ -817,6 +841,11 @@ class vendorMaster extends Component {
                 <span className="error">{this.state.message}</span>
                 <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
             </FormGroup>
+            </Col>
+            <Col md={4}>
+            <Label>RF ID</Label>
+            <Select placeholder={PlaceHolder} options={this.RfID(this.props.rfId)} name='rfidId' onChange={this.rfIdChangeHandler.bind(this)}/>
+            <span className="error">{this.state.errors.rfidId}</span>
             </Col>
         </Row>
         <Row form>
@@ -983,13 +1012,14 @@ function mapStateToProps(state) {
     return {
         displayServiceMasterReducer: state.displayServiceMasterReducer,
         vendorMasterReducer: state.vendorMasterReducer,
-        societyReducer: state.societyReducer
+        societyReducer: state.societyReducer,
+        rfId:state.RFIdReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
 
-    return bindActionCreators({ getServiceType, addVendorMaster, getRateType ,getVendorMaster,
+    return bindActionCreators({ getServiceType, addVendorMaster, getRateType ,getVendorMaster,getRfId,
         getCountry,getState,getCity, getLocation}, dispatch);
 }
 

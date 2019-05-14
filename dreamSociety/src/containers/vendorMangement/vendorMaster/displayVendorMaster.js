@@ -11,17 +11,21 @@ import Spinner from '../../../components/spinner/spinner';
 import GoogleDocsViewer from 'react-google-docs-viewer';
 import Select from 'react-select';
 import { getCountry, getState, getCity, getLocation } from '../../../actionCreators/societyMasterAction';
-
+import { PlaceHolder } from '../../../actions/index';
+import {getRfId} from '../../../actionCreators/rfIdAction';
 
 class DisplayVendorMaster extends Component {
 
     state = {
             filterName:"firstName",
+            defaultRFID:true,
             vendorId:'',
             firstName: '',
             lastName:'',
             contact: '',
             email:'',
+            rfidId:'',
+            rfid:'',
             currentAddress: '',
             permanentAddress: '',
             documentOne: null,
@@ -97,6 +101,7 @@ class DisplayVendorMaster extends Component {
     }
 
     refreshData() {
+        this.props.getRfId();
         this.props.getVendorMaster().then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false}));
         this.props.getCountry().then(() => {}).catch(() => this.setState({ loading: false }));
         this.props.getState().then(() => {}).catch(() => this.setState({ loading: false }));
@@ -108,13 +113,24 @@ class DisplayVendorMaster extends Component {
             currentLocationId:''})
     }
 
-    editUser(vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,documentOne,documentTwo,picture){
+    editUser(vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,rfid,rfidId,documentOne,documentTwo,picture){
         
     this.setState({
-            vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,documentOne,documentTwo,picture
+            vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,rfid,documentOne,documentTwo,picture
             ,editVendorModal: !this.state.editVendorModal,
             readOnlyPermanent: permanentAddress, readOnlyCurrent: currentAddress})
             
+    }
+
+    editRFID = () => {
+        if(!!document.getElementById('isRfidChecked').checked){
+        this.setState({rfidId: '' , defaultRFID:false, editRFID:true})
+        
+        
+        }
+    else{
+            this.setState({rfidId:this.state.defRFID, defaultRFID:true, editRFID:false})
+        }
     }
 
     toggleEditVendorModal() {
@@ -263,6 +279,8 @@ class DisplayVendorMaster extends Component {
         formData.append('lastName',this.state.lastName)
         formData.append('contact',this.state.contact)
         formData.append('email',this.state.email)
+        formData.append('rfid',this.state.rfid)
+        formData.append('rfidId',this.state.rfidId)
         formData.append('currentAddress',this.state.currentAddress)
         formData.append('permanentAddress',this.state.permanentAddress)
         formData.append('profilePicture',this.state.profilePicture,this.state.profilePicture.name)
@@ -286,7 +304,7 @@ class DisplayVendorMaster extends Component {
    }
 
 
-    renderList = ({ vendors }) => {
+    renderList = ({ vendors }) => {console.log(vendors)
  
         if (vendors && vendors.vendor ) {
             return vendors.vendor.sort((item1,item2)=>{
@@ -325,12 +343,13 @@ class DisplayVendorMaster extends Component {
                         <td>{vendors.permanentAddress}</td>
                         <td>{vendors.contact}</td>
                         <td>{vendors.email}</td>
+                        <td>{vendors.rfid_master.rfid}</td>
                         <td><button className="btn btn-light" onClick={this.openModal.bind(this, vendors.documentOne)}>View Document</button></td>
                         <td><button className="btn btn-light" onClick={this.Modal.bind(this, vendors.documentTwo)}>View Document </button></td>
                         <td><img style={{maxWidth: "100%",height: "auto",width: "auto\9"}} src={PicURN+ vendors.picture}></img></td>
                         <td><button className="btn btn-success mr-2" onClick={this.viewServices.bind(this,vendors.vendorId)}>View Services</button></td>                   
                         <td>
-                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorId, vendors.firstName,vendors.lastName,vendors.currentAddress,vendors.permanentAddress,vendors.contact,vendors.email,vendors.documentOne,vendors.documentTwo, PicURN+vendors.picture)}>Edit</Button> 
+                             <Button color="success" className="mr-2"onClick={this.editUser.bind(this,vendors.vendorId, vendors.firstName,vendors.lastName,vendors.currentAddress,vendors.permanentAddress,vendors.contact,vendors.email,vendors.rfid_master.rfid,vendors.rfid_master.rfidId,vendors.documentOne,vendors.documentTwo, PicURN+vendors.picture)}>Edit</Button> 
                 
                             <Button color="danger"onClick={this.delete.bind(this,vendors.vendorId)} >Delete</Button>
                         </td>
@@ -742,6 +761,31 @@ class DisplayVendorMaster extends Component {
         }
     }
 
+    RfID=({ownerRf})=>{console.log(ownerRf)
+        if(ownerRf && ownerRf.rfids){
+            return (
+               ownerRf.rfids.map((item)=>{
+                   return ({ ...item, label:item.rfid, value:item.rfidId})
+               })
+            )
+        }
+    }
+
+    rfidChange = (name,selectOption) => {
+        
+        if(name && selectOption){
+            this.setState(function (prevState, props) {
+                return {
+                    [name]: selectOption.value,
+                    errors:''
+                }
+            }, function () {
+                
+            });
+        }
+        
+}
+
     render() { 
             let tableData;
             tableData=
@@ -759,6 +803,7 @@ class DisplayVendorMaster extends Component {
                 <th style={{ textAlign: "center", width: "16%" }}>Permanent Address</th>
                 <th>Contact</th>
                 <th>Email</th>
+                <th>RF ID</th>
                 <th>Document 1</th>
                 <th>Document 2</th>
                 <th>Profile Picture</th>
@@ -791,6 +836,33 @@ class DisplayVendorMaster extends Component {
                         </Col>
                         </Row>
                     </FormGroup>
+                    <FormGroup>
+                <Row md={12}>
+                {this.state.defaultRFID ? 
+                    <Col md={6}>
+                        <Label>RFID</Label>
+                        <Input value={this.state.rfid} onChange={this.onChange} readOnly />
+                    </Col> : ''}
+                    {this.state.defaultRFID ? <Col md={6}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your RFID?</span><Input type="checkbox" onChange={this.editRFID} name="isRfidChecked" id="isRfidChecked" className="ml-3" />
+                    </Col> : 
+                    <Col md={12} style={{textAlign:'center'}}>
+                        <span style={{fontWeight:'bold'}}>Do you want to edit your RFID?</span><Input type="checkbox" onChange={this.editRFID} name="isRfidChecked" id="isRfidChecked" className="ml-3" />
+                    </Col>}
+                </Row>
+            </FormGroup>
+            {this.state.editRFID ? 
+                <FormGroup>
+                    <Row>
+                        <Col md={4}>
+                    <Label>RFID</Label>
+                    <Select name='rfidId' placeholder={<DefaultSelect />} 
+                        options={this.RfID(this.props.rfId)}
+                        onChange={this.rfidChange.bind(this, 'rfidId')} />
+                    {!this.state.rfidId ? <span className="error">{this.state.errors.rfidId}</span>:''}
+                    </Col>
+                    </Row>
+                </FormGroup> : ''}
                     <FormGroup>
                 <Row md={12}>
                     {!this.state.editPermanent ? <Col md={6}>
@@ -876,7 +948,7 @@ class DisplayVendorMaster extends Component {
                             <Input type="checkbox" name="isCurrentChecked" id="isCurrentChecked" onChange={this.currentAddressIsChecked} className="ml-3" />
                         </Col>}
 
-                    </Row>
+                    </Row> 
             </FormGroup>
             
             {this.state.userCurrent ? 
@@ -929,22 +1001,24 @@ class DisplayVendorMaster extends Component {
                 </div>:''}
                     <FormGroup>
                         <Row md={12}>
-                        <Col md={6}>
+                        <Col md={4}>
                         <Label>Contact</Label>
                         <Input name="contact" value={this.state.contact} onKeyPress={this.OnKeyPresshandlerPhone}  maxLength={10} onChange={this.onHandleChange}>
                         </Input>
                         <span className="error">{this.state.errors.contact}</span>
                         <span className="error">{this.state.message}</span>
                         </Col>     
-                        <Col md={6}>
+                        <Col md={4}>
                         <Label>Email</Label>
                         <Input type="email" name="email" value={this.state.email}  maxLength={80} onKeyPress={this.OnKeyPresshandlerEmail} onBlur={this.OnKeyPresshandlerEmail} onChange={this.onHandleChange}>
                         </Input>
                         <span className="error">{this.state.errors.email}</span>
                         <span style={{display:this.state.emailError?'block':'none',color:'red'}}>email is not valid</span>
                         </Col>
+                   
                         </Row>
                     </FormGroup>
+                    
                     <FormGroup>
                         <Label> Document One</Label>
                         <GoogleDocsViewer
@@ -975,7 +1049,7 @@ class DisplayVendorMaster extends Component {
                         <Input type="file" name="profilePicture" accept="image/*" onChange={this.selectImages} required /> 
                         
                     </FormGroup>
-                  
+
                     <FormGroup>
                             <Button color="primary" className="mr-2" onClick={this.updateVendor}>Save </Button>
                             <Button color="danger" onClick={this.toggleEditVendorModal.bind(this)}>Cancel</Button>
@@ -1053,13 +1127,14 @@ class DisplayVendorMaster extends Component {
 function mapStateToProps(state) {
     return {
         vendorMasterReducer: state.vendorMasterReducer,
-        societyReducer: state.societyReducer
+        societyReducer: state.societyReducer,
+        rfId:state.RFIdReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ getVendorMaster,deleteVendor,updateVendor,deleteSelectedVendor,
-    getCountry, getState, getCity, getLocation}, dispatch);
+    getCountry, getState, getCity, getLocation,getRfId}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayVendorMaster);
