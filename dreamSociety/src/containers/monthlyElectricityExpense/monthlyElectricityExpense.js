@@ -7,6 +7,7 @@ import { Col, Row, Form, Button, FormGroup } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 import { getTowerName } from '../../actionCreators/flatDetailMasterAction';
 import { getfloorsOfTowers, addElectricityExpense } from '../../actionCreators/electricityExpense';
+import { getExpenseDetail, calculateCharges } from '../../actionCreators/monthlyElectricityExpense';
 import { numberValidation, memberMaxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler } from '../../validation/validation';
 
 class MonthlyElectricityExpense extends Component {
@@ -19,11 +20,15 @@ class MonthlyElectricityExpense extends Component {
             lastAmountDue:'',
             rate:'',
             rent:'',
-            sanctionLoad:'',
+            sanctionedLoad:'',
             mdi:'',
             startDate:'',
             endDate:'',
-            totalConsumption:''
+            unitConsumed:'',
+            monthlyCharges:'',
+            electricityConsumerId:'',
+            amount:'',
+            amountDue:null,
         }
     }
 
@@ -77,6 +82,12 @@ class MonthlyElectricityExpense extends Component {
         }
     }
 
+    // componentDidUpdate(){
+    //     if(getExpenseDetail){
+    //         console.log(this.props.monthlyElectricityExpenseReducer.getExpenseDetail)
+    //     }
+    // }
+
 
     getFlatData = ({ floorDetails }) => {
         console.log(floorDetails)
@@ -110,11 +121,22 @@ class MonthlyElectricityExpense extends Component {
             [e.target.name]: e.target.value
         });
         console.log(this.state.flatDetailId);
+        this.props.getExpenseDetail(e.target.value)
+        .then(() => this.getAllDetail(this.props.monthlyElectricityExpenseReducer))
     }
 
+
     rateChange = (e) => {
+        console.log(this.state.unitConsumed)
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)) {
             this.setState({ [e.target.name]: e.target.value });
+            console.log(this.state.unitConsumed)
+        }
+    }
+
+    currentReadingChange = (e) => {
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)) {
+            this.setState({ currentReading: e.target.value, unitConsumed:(e.target.value - this.state.lastReading) });
         }
     }
 
@@ -127,7 +149,48 @@ class MonthlyElectricityExpense extends Component {
         console.log(this.state);
     }
 
+    getAllDetail({getExpenseDetail}){
+        if(getExpenseDetail && getExpenseDetail.electricityConsumer){
+            console.log(getExpenseDetail)
+            let data = getExpenseDetail.electricityConsumer;
+            console.log(data);
+            this.setState({sanctionedLoad:data.sanctionedLoad, lastReading:data.lastReading, amount:data.amount, amountDue:data.amountDue,
+            rate:data.rate})
+        }
+    }
+
+    // componentDidUpdate(){
+    //     if(this.props.monthlyElectricityExpenseReducer.getExpenseDetail && this.props.monthlyElectricityExpenseReducer.getExpenseDetail.electricityConsumer){
+    //         console.log(this.props.monthlyElectricityExpenseReducer.getExpenseDetail)
+    //         let data = this.props.monthlyElectricityExpenseReducer.getExpenseDetail.electricityConsumer;
+    //         console.log(data);
+    //         let { electricityConsumerId, amount, amountDue, lastReading } = data;
+    //     }
+    // }
+
+    getAllExpenseDetail = (getExpenseDetail) => {
+        console.log(getExpenseDetail)
+        if(getExpenseDetail){
+            console.log(getExpenseDetail)
+        }
+    }
+
+    calcCharges = () => {
+        let { unitConsumed, sanctionedLoad, amountDue, amount, mdi, rate, rent } = this.state;
+        let data = { unitConsumed, sanctionedLoad, amountDue, amount, mdi, rate, rent };
+        this.props.calculateCharges(data)
+        .then(() => this.getMonthlyCharges(this.props.monthlyElectricityExpenseReducer))
+    }
+
+    getMonthlyCharges = ({getCharges}) => {
+        if(getCharges && getCharges.monthlyCharges){
+            console.log(getCharges);
+            this.setState({monthlyCharges:getCharges.monthlyCharges})
+        }
+    }
+
     render(){
+        
         let form;
         form = <div>
             <FormGroup>
@@ -162,8 +225,9 @@ class MonthlyElectricityExpense extends Component {
                         <input className="form-control" placeholder="Last Reading"
                             type="text" name="lastReading"
                             maxLength="16"
-                            onChange={this.rateChange}
-                            value={this.state.lastReading} ></input>
+                            onChange={this.flatChangeHandler}
+                            readOnly
+                            value={this.state.lastReading}/>
                     </Col>
                     <Col md={4}>
                         <label>Current Reading</label>
@@ -171,17 +235,19 @@ class MonthlyElectricityExpense extends Component {
                             placeholder="Last Amount Due"
                             type="text" name="currentReading"
                             maxLength="10"
-                            onChange={this.flatChangeHandler}
+                            onChange={this.currentReadingChange}
                             // value={this.state.currentReading} 
                             />
                     </Col>
                     <Col md={4}>
-                        <label>Last Amount Due</label>
+                        <label>Unit Consumed</label>
                         <input className="form-control"
-                            placeholder="Last Amount Due"
-                            type="text" name="lastAmountDue"
-                            maxLength="10" onChange={this.flatChangeHandler}
-                            // onChange={this.rateChange}
+                            placeholder="Unit Consumed"
+                            type="text" name="unitConsumed"
+                            maxLength="16"
+                            readOnly
+                            value={(this.state.currentReading && this.state.lastReading) ? (this.state.currentReading - this.state.lastReading):''}
+                            onChange={this.rateChange}
                             // value={this.state.currentReading} 
                             />
                     </Col>
@@ -189,32 +255,46 @@ class MonthlyElectricityExpense extends Component {
             </FormGroup>
             <FormGroup>
                 <Row md={12}>
-                    <Col md={4}>
-                        <label>Total Consumtion</label>
+                    <Col md={3}>
+                        <label>Last Amount Due</label>
                         <input className="form-control"
-                            placeholder="Total Consumtion"
-                            type="text" name="totalConsumption"
-                            maxLength="16"
-                            onChange={this.flatChangeHandler}
+                            placeholder="Last Amount Due"
+                            readOnly
+                            type="text" name="lastAmountDue"
+                            maxLength="10" onChange={this.flatChangeHandler}
+                            value={(this.state.amountDue == true ? '-' : this.state.amountDue == false ? '+':'') + this.state.amount}
+                            />
+                    </Col>
+                    <Col md={3}>
+                        <label>Rate</label>
+                        <input className="form-control"
+                            placeholder="Rate"
+                            type="text" name="rate"
+                            readOnly
+                            value={this.state.rate}
+                            maxLength="10" onChange={this.flatChangeHandler}
+                            // onChange={this.rateChange}
                             // value={this.state.currentReading} 
                             />
                     </Col>
-                    <Col md={4}>
+                    <Col md={3}>
                         <label>Rent</label>
                         <input className="form-control"
                             placeholder="Rent"
                             type="text" name="rent"
                             maxLength="16"
                             onChange={this.flatChangeHandler}
-                            // value={this.state.currentReading} 
+                            value={this.state.rent} 
                             />
                     </Col>
-                    <Col md={4}>
+                    <Col md={3}>
                         <label>Sanctioned Load</label>
                         <input className="form-control"
                             placeholder="Sanctioned Load"
-                            type="text" name="sanctionLoad"
+                            type="text" name="sanctionedLoad"
                             maxLength="16"
+                            readOnly
+                            value={this.state.sanctionedLoad}
                             onChange={this.flatChangeHandler}
                             // value={this.state.currentReading} 
                             />
@@ -223,21 +303,40 @@ class MonthlyElectricityExpense extends Component {
             </FormGroup>
             <FormGroup>
                 <Row md={12}>
-                    <Col md={4}>
+                    <Col md={5}>
                         <label>MDI</label>
                         <input className="form-control"
                             placeholder="MDI"
                             type="text" name="mdi"
                             maxLength="16"
                             onChange={this.flatChangeHandler}
-                            // value={this.state.currentReading} 
+                            value={this.state.mdi} 
                             />
                     </Col>
                     <Col md={4}>
+                        <label>Monthly Charges</label>
+                        <input className="form-control"
+                            placeholder="Monthly Charges"
+                            type="text" name="monthlyCharges"
+                            maxLength="16"
+                            readOnly
+                            value={this.state.monthlyCharges}
+                            onChange={this.rateChange}
+                            // value={this.state.currentReading} 
+                            />
+                    </Col>
+                    <Col md={3} style={{textAlign:'center'}}>
+                        <Button color="primary" style={{marginTop:'28px'}} onClick={this.calcCharges}>Calculate Charges</Button>
+                    </Col>
+                </Row>
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={6}>
                         <label>Start Date</label>
                         <input min={memberMaxDate()} className="form-control" type="date" name="startDate" id="start" onChange={this.startDateChange} />
                     </Col>
-                    <Col md={4}>
+                    <Col md={6}>
                         <label>End Date</label>
                         <input className="form-control" type="date" name="endDate" id="end" onChange={this.endDateChange} />
                     </Col>
@@ -265,14 +364,16 @@ class MonthlyElectricityExpense extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log(state)
     return {
         flatDetailMasterReducer: state.flatDetailMasterReducer,
-        electricityExpenseReducer: state.electricityExpenseReducer
+        electricityExpenseReducer: state.electricityExpenseReducer,
+        monthlyElectricityExpenseReducer: state.monthlyElectricityExpenseReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getTowerName, getfloorsOfTowers, addElectricityExpense }, dispatch);
+    return bindActionCreators({ getTowerName, getfloorsOfTowers, addElectricityExpense, getExpenseDetail, calculateCharges }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MonthlyElectricityExpense);
