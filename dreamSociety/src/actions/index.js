@@ -331,6 +331,7 @@ export const GET_REGISTER_DETAIL='GET_REGISTER_DETAIL';
 export const RELEASE_RESOURCE='RELEASE_RESOURCE';
 
 export const COMPLAINT_CANCELLED='COMPLAINT_CANCELLED';
+export const COMPLAINT_FEEDBACK='COMPLAINT_FEEDBACK';
 
 //***************************************** */
 export const GET_FLOOR_OF_TOWER = 'GET_FLOOR_OF_TOWER';
