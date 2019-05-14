@@ -1,11 +1,12 @@
 const db = require("../config/db.config.js");
 const config = require("../config/config.js");
 const httpStatus = require("http-status");
-
-
+const crypto = require('crypto');
+var passwordGenerator = require('generate-password');
+const Nexmo = require("nexmo");
 const fs = require("fs");
 const key = config.secret;
-
+const jwt = require('jsonwebtoken');
 const Op = db.Sequelize.Op;
 const path = require("path");
 const Vendor = db.vendor;
@@ -47,7 +48,7 @@ let mailToUser = (email, vendorId,purchaseOrder) => {
             "Name": 'Atin' + ' ' + 'Tanwar'
           }],
           "Subject": "Purchase Order",
-          "HTMLPart": `<b>Click on the given link to download your purchase order</b> <a href="http://mydreamsociety.com/login/tokenVerification?vendorId=${vendorId}&token=${token}&pdfDocument=purchaseOrder${purchaseOrder}">click here</a>`
+          "HTMLPart": `<b>Click on the given link to download your purchase order</b> <a href="http://mydreamsociety.com/downloadPdf?vendorId=${vendorId}&pdfDocument=purchaseOrder${purchaseOrder}">click here</a>`
         }]
       })
     request.then((result) => {
@@ -61,19 +62,25 @@ let mailToUser = (email, vendorId,purchaseOrder) => {
 
 exports.create = async (req, res, next) => {
     try{
+        let purchaseOrderService = [];
+        let purchaseOrderAssets = []
+
         let purchaseOrder = await PurchaseOrder.create({
             vendorId:req.body.vendorId,
             issuedBy:req.body.issuedBy,
             expDateOfDelievery:req.body.expectedDateOfDelievery
         });
-        let purchaseOrderAssets = await PurchaseOrderDetails.bulkCreate(
-            req.body.purchaseOrderAssetsArray, {
-                returning: true
-              }, {
-                fields: ["purchaseOrderDetailId","purchaseOrderType","purchaseOrderName", "rate","quantity","amount","serviceStartDate","serviceEndDate", "issuedBy", "expDateOfDelievery","purchaseOrderId" ]
-                // updateOnDuplicate: ["name"]
-              }
-        );
+        if(req.body.purchaseOrderAssetsArray) {
+             purchaseOrderAssets = await PurchaseOrderDetails.bulkCreate(
+                req.body.purchaseOrderAssetsArray, {
+                    returning: true
+                  }, {
+                    fields: ["purchaseOrderDetailId","purchaseOrderType","purchaseOrderName", "rate","quantity","amount","serviceStartDate","serviceEndDate", "issuedBy", "expDateOfDelievery","purchaseOrderId" ]
+                    // updateOnDuplicate: ["name"]
+                  }
+            );
+        }
+       
         let update = {
             purchaseOrderId:purchaseOrder.purchaseOrderId
         }
@@ -81,19 +88,21 @@ exports.create = async (req, res, next) => {
 
 
 
-
-        let purchaseOrderService = await PurchaseOrderDetails.bulkCreate(
-            req.body.purchaseOrderServiceArray, {
-                returning: true
-              }, {
-                fields: ["purchaseOrderDetailId","purchaseOrderType", "rate","quantity","amount","serviceStartDate","serviceEndDate", "issuedBy", "expDateOfDelievery","purchaseOrderId" ]
-                // updateOnDuplicate: ["name"]
-              }
-        );
+        if(req.body.purchaseOrderServiceArray){
+             purchaseOrderService = await PurchaseOrderDetails.bulkCreate(
+                req.body.purchaseOrderServiceArray, {
+                    returning: true
+                  }, {
+                    fields: ["purchaseOrderDetailId","purchaseOrderType", "rate","quantity","amount","serviceStartDate","serviceEndDate", "issuedBy", "expDateOfDelievery","purchaseOrderId" ]
+                    // updateOnDuplicate: ["name"]
+                  }
+            );
+        }
+        
         purchaseOrderService.forEach(x => x.updateAttributes(update));
         console.log("purchaseOrder =====> ", pdf)
 
-        await pdf.create(pdfTemplate(purchaseOrderAssets,purchaseOrderService,purchaseOrder.issuedBy,purchaseOrder.expDateOfDelievery),{format: 'Letter'}).toFile(`./public/purchaseOrderPdfs/purchaseOrder${purchaseOrder.purchaseOrderId}.pdf`,(err,res) => {
+        await pdf.create(pdfTemplate(purchaseOrderAssets,purchaseOrderService,purchaseOrder.issuedBy,purchaseOrder.expDateOfDelievery),{format: 'Letter'}).toFile(`./public/purchaseOrderPdfs/purchaseOrder${purchaseOrder.purchaseOrderId}.pdf`, (err,res) => {
             if(err){
                console.log("err ======>",err);
             }
@@ -102,8 +111,12 @@ exports.create = async (req, res, next) => {
             }
 
         });
-        let vendor = Vendor.findOne({where:{isActive:true,vendorId:req.body.vendorId}})
-        mailToUser(decrypt(key,vendor.email),vendor.vendorId,purchaseOrder.purchaseOrderId);
+        let vendor = await Vendor.findOne({where:{isActive:true,vendorId:req.body.vendorId}})
+        if(vendor){
+            console.log("vendor=======>",decrypt(key,vendor.firstName));
+            mailToUser(decrypt(key,vendor.email),vendor.vendorId,purchaseOrder.purchaseOrderId);
+        }
+        
         console.log("dgsfhgsahjgfjah ===============>");
         return res.status(httpStatus.CREATED).json({
             message: "Purchase Order registered",
@@ -182,14 +195,19 @@ exports.deleteSelected = async(req,res,next) => {
 
 exports.updatePurchaseOrder = async(req,res,next) => {
     try{
-        let purchaseOrder = req.params.id;
-        if(!purchaseOrder){
+        let id = req.params.id;
+        if(!id){
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
         };
+        console.log("id", id);
         let update = req.body;
-        let porder = await PurchaseOrder.findOne({where:{isActive:true,purchaseOrderId:id}});
+        console.log("update", update);
+        let porder = await PurchaseOrder.find({where:{isActive:true,purchaseOrderId:id}});
+        console.log("porder",porder);
+
         porder.updateAttributes(update);
         let purchaseOrderAssets = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:id,purchaseOrderType:"Assets"}});
+        console.log("purchaseOrderAssets======>",purchaseOrderAssets);
         let purchaseOrderService = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:id,purchaseOrderType:"Service"}});
         await pdf.create(pdfTemplate(purchaseOrderAssets,purchaseOrderService,porder.issuedBy,porder.expDateOfDelievery),{format: 'Letter'}).toFile(`./public/purchaseOrderPdfs/purchaseOrder${porder.purchaseOrderId}.pdf`,(err,res) => {
             if(err){
@@ -200,6 +218,11 @@ exports.updatePurchaseOrder = async(req,res,next) => {
             }
 
         });
+        let vendor = await Vendor.findOne({where:{isActive:true,vendorId:porder.vendorId}})
+        if(vendor){
+            console.log("vendor=======>",decrypt(key,vendor.firstName));
+            mailToUser(decrypt(key,vendor.email),vendor.vendorId,porder.purchaseOrderId);
+        }
         if(porder){
             return res.status(httpStatus.OK).json({
                 message: "PurchaseOrders updated successfully",
@@ -213,8 +236,85 @@ exports.updatePurchaseOrder = async(req,res,next) => {
 
 exports.updatePurchaseOrderDetails = async(req,res,next) => {
     try{
+        let purchaseDetailId = req.params.id;
+        let id;
+        let update = req.body;
+        let x = await PurchaseOrderDetails.findOne({where:{isActive:true,purchaseOrderDetailId:purchaseDetailId}});
+        x.updateAttributes(update);
+        id = x.purchaseOrderId
+        let porder = await PurchaseOrder.find({where:{isActive:true,purchaseOrderId:id}});
+        console.log("porder",porder);
+
+
+        let purchaseOrderAssets = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:id,purchaseOrderType:"Assets"}});
+        console.log("purchaseOrderAssets======>",purchaseOrderAssets);
+        let purchaseOrderService = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:id,purchaseOrderType:"Service"}});
+        await pdf.create(pdfTemplate(purchaseOrderAssets,purchaseOrderService,porder.issuedBy,porder.expDateOfDelievery),{format: 'Letter'}).toFile(`./public/purchaseOrderPdfs/purchaseOrder${porder.purchaseOrderId}.pdf`,(err,res) => {
+            if(err){
+               console.log("err ======>",err);
+            }
+            else if(res){
+                console.log("res =======>", res);
+            }
+
+        });
+        let vendor = await Vendor.findOne({where:{isActive:true,vendorId:porder.vendorId}})
+        if(vendor){
+            console.log("vendor=======>",decrypt(key,vendor.firstName));
+            mailToUser(decrypt(key,vendor.email),vendor.vendorId,porder.purchaseOrderId);
+        }
+        if(porder){
+            return res.status(httpStatus.OK).json({
+                message: "PurchaseOrderDetails updated successfully",
+              });
+        }
+
 
     } catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.downloadPDF = async(req,res,next) => {
+    try{
+        let pdfId = req.query.pdfDocument;
+        if(!pdfId){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
+
+        }
+        return res.download(`./public/purchaseOrderPdfs/${pdfId}.pdf`,'purchaseOrder.pdf', function(err){
+            if(err){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "File not found" });
+            }
+            else {
+                return res.status(httpStatus.OK).json({
+                    message: "PurchaseOrder downloaded successfully",
+                  });
+            }
+        })
+    } catch(error) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+
+exports.downloadPdfClient = async(req,res,next) => {
+    try{
+        let id = req.params.id;
+        if(!id){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
+        }
+        res.download(`./public/purchaseOrderPdfs/purchaseOrder${id}.pdf`,'purchaseOrder.pdf', function(err){
+            if(err){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "File not found" });
+            }
+            else {
+                return res.status(httpStatus.OK).json({
+                    message: "PurchaseOrder downloaded successfully",
+                  });
+            }
+        })
+    } catch(error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
