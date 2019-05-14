@@ -1,4 +1,4 @@
-import {REGISTER_COMPLAINT, USER_FLAT_DETAILS,POST_REGISTER_COMPLAINT,SERVICE_DETAILS, GET_REGISTER_DETAIL,COMPLAINT_CANCELLED} from  './../../actions/index';
+import {REGISTER_COMPLAINT, USER_FLAT_DETAILS,POST_REGISTER_COMPLAINT,SERVICE_DETAILS, GET_REGISTER_DETAIL,COMPLAINT_CANCELLED,COMPLAINT_FEEDBACK} from  './../../actions/index';
 export default function(state={},action){
   
     switch(action.type){
@@ -19,6 +19,9 @@ export default function(state={},action){
 
     case COMPLAINT_CANCELLED:
     return {...state, cancelComplaints: action.payload}
+
+    case COMPLAINT_FEEDBACK:
+    return {...state, complaintsFeedback: action.payload}
     
 
     default:

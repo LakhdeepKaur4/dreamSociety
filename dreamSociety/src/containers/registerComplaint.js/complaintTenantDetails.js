@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import {getRegisterDetail, userCancelled} from '../../actionCreators/registerComplainAction';
+import {getRegisterDetail, userCancelled, complaintFeedback} from '../../actionCreators/registerComplainAction';
 import UI from '../../components/newUI/tenantDashboard';
 import {Table,Button, Input,FormGroup, Modal, ModalBody, ModalHeader,Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter';
@@ -21,7 +21,13 @@ class ComplaintTenantDetails extends Component{
                loading: true,
                isDisabled: true,
                modal: false,
-               rating: 1
+               modalLoading:false,
+               feedback:'',
+               rating:0,
+               status:'',
+               complaintId:'',
+               message:'',
+               errors:{}
            }
        }
 
@@ -31,7 +37,7 @@ class ComplaintTenantDetails extends Component{
     }
 
     refreshData=()=>{
-        this.props.getRegisterDetail().then(() => this.setState({ loading: false }))
+        this.props.getRegisterDetail().then(() => this.setState({ loading: false,modalLoading: false, modal: false }))
     }
 
     searchOnChange = (e) => {
@@ -60,6 +66,45 @@ class ComplaintTenantDetails extends Component{
         return this.props.history.replace('/tenantDashboard')
     }
 
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar = [];
+        for (var i = 0; i < selectMultiple.length; i++) {
+            ar.push(parseInt(selectMultiple[i].value));
+            selectMultiple[i].checked = true;
+        }
+        this.setState({ ids: ar });
+        if (ar.length > 0) {
+            this.setState({ isDisabled: false });
+        }
+    }
+
+    unSelectAll = () => {
+
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for (var i = 0; i < unSelectMultiple.length; i++) {
+            unSelectMultiple[i].checked = false
+        }
+
+        this.setState({ ids: [...allIds] });
+        if (allIds.length === 0) {
+            this.setState({ isDisabled: true });
+        }
+
+    }
+
+    deleteSelected = (ids) => {
+        this.setState({ loading: true, isDisabled: true });
+
+       
+        this.props.deleteSelectCity(ids)
+            .then(() => this.refreshData())
+            .catch(err => err.response.data.message);
+        
+ }
+
+
     
     renderComplaint = ({ getComplaints }) => {
 
@@ -72,18 +117,40 @@ class ComplaintTenantDetails extends Component{
            
                 return (
                     <tr key={item.complaintId}  >
+                     <td><input type="checkbox" className="SelectAll" name="ids" value={item.complaintId}
+                            onChange={(e, i) => {
+                                const { complaintId } = item
+                                if (!e.target.checked) {
+                                    document.getElementById('allSelect').checked = false;
+                                    this.setState({ isChecked: false });
+                                    let indexOfId = this.state.ids.indexOf(complaintId);
+                                    if (indexOfId > -1) {
+                                        this.state.ids.splice(indexOfId, 1)
+                                    }
+                                    if (this.state.ids.length === 0) {
+                                        this.setState({ isDisabled: true });
+                                    }
+                                }
+                                else {
+                                    this.setState({ ids: [...this.state.ids, complaintId] });
+                                    if (this.state.ids.length >= 0) {
+                                        this.setState({ isDisabled: false })
+                                    }
+                                }
+
+                            }} /></td>
                         <td>{index + 1}</td>
                         <td>{item.service_master ? item.service_master.serviceName: ''}</td>
                         <td>{item.date.split('T')[0]}</td>
-                        {/* <td></td> */}
                         <td>{item.vendor_master ? item.vendor_master.firstName : ''}</td>
                         <td>{item.vendor_master ? item.vendor_master.contact : ''}</td>
+                        <td>{item.selectedSlot}</td>
                         <td><strong>{item.complaint_status_master ? item.complaint_status_master.statusType : ''}</strong></td>
-                        {/* <Button color="danger" onClick={this.deleteCityName.bind(this, item.cityId)} >Delete</Button> */}
-                        <td><Button color="danger" disabled={(item.complaint_status_master.statusType==='CANCELLED')} onClick={this.cancelComplaints.bind(this, item.complaintId)} >Cancel</Button></td>
-                        <td><Button color="success" disabled={!!(item.complaint_status_master.statusType==='REGISTERED' || item.complaint_status_master.statusType==='INPROGRESS'
-                         || item.complaint_status_master.statusType==='CANCELLED')}>Feedback</Button></td>
-                         {/* <td><Button color="success" onClick={this.toggle}>Feedback</Button></td> */}
+                        
+                        <td><Button color="danger" disabled={(item.complaint_status_master.statusType==='CANCELED' || item.complaint_status_master.statusType==='COMPLETED')} onClick={this.cancelComplaints.bind(this, item.complaintId)} >Cancel</Button></td>
+                        <td><Button color="success" disabled={!!(item.complaint_status_master.statusType==='REGISTERED' || item.complaint_status_master.statusType==='IN PROGRESS' || item.complaint_status_master.statusType==='ACCEPTED'
+                         || item.complaint_status_master.statusType==='CANCELED')}  onClick={this.toggle.bind(this, item.complaintId)}>Feedback</Button></td>
+                         
                     </tr>
 
                 )
@@ -93,12 +160,11 @@ class ComplaintTenantDetails extends Component{
     }
 
     cancelComplaints = (complaintId) => {
-        this.setState({ loading: true })
+       this.setState({loading: true})
         this.props.userCancelled(complaintId)
         .then(() => this.refreshData())
-        this.setState({ loading: false })
+        .catch(()=> this.setState({loading: false}))
             
-      
     }
 
     toggleModal = () => {
@@ -106,24 +172,64 @@ class ComplaintTenantDetails extends Component{
     }
 
     
-    toggle = () => {
+    toggle = (complaintId) => {
 
         this.setState({
-            
+            complaintId,
             modal: !this.state.modal
         })
     }
 
-    ratingChanged = (newRating) => {
-        console.log(newRating)
+    onChange = (e) => {
+        console.log(e.target.value)
+        this.setState({message:'' })
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value.trim('') });
+        }
+    }
+
+    ratingChanged = (rating) => {
+       console.log(rating)
+       this.setState({rating})
+       
       }
+
+
+      submitFeedback = () => {
+         
+        
+        const { complaintId, rating, status, feedback } = this.state
+        console.log(complaintId, rating, status, feedback);
+
+        let errors = {};
+
+        // if (this.state.rating === '') { errors.rating = " rating can't be empty" }
+        // this.setState({ errors })
+
+        const isValid = Object.keys(errors).length === 0
+
+        if (isValid ) {
+           
+
+            this.props.complaintFeedback(complaintId, rating, status, feedback)
+                .then(() => this.refreshData())
+                this.setState({ modalLoading: true })      
+
+        }
+    }
 
     render(){
         let tableData;
         tableData = <div style={{ backgroundColor: 'lightgray' }}>
             <Table className="table table-bordered">
                 <thead>
-                    <tr  >
+                    <tr>
+                    <th style={{width:'4%'}}></th>
                         <th>#</th>
                         <th  onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
@@ -133,6 +239,7 @@ class ComplaintTenantDetails extends Component{
                         {/* <th>Selected Time</th> */}
                         <th>Vendor name</th>
                         <th>Contact no</th>
+                        <th>Selected Slot</th>
                         <th>View Status</th>
                         <th>Action</th>
                         <th>Feedback Details</th>
@@ -144,7 +251,15 @@ class ComplaintTenantDetails extends Component{
             </Table></div>
 
 let modalData=<div>
-           
+         
+             <FormGroup>
+             <Label>Status</Label>
+             <Input type="select" defaultValue='no-value' name="status"  onChange={this.onChange}>
+                    <DefaultSelect />
+                    <option>Completed</option>
+                    <option>Reopen</option>
+                </Input >
+             </FormGroup>
              <div>
              <h5 style={{marginBottom: '0px'}}>Rating</h5>
              <ReactStars
@@ -152,15 +267,16 @@ let modalData=<div>
                 count={5}
                 onChange={this.ratingChanged}
                 size={24}
-                color2={'#ffd700'} />
+                color2={'#ffd700'}
+                value={this.state.rating} />
             </div>
              <FormGroup>
                 <Label>Feedback</Label>
-                <Input type="textarea"  name="feedback"  maxLength={500} />
+                <Input type="textarea"  name="feedback"  maxLength={500} onChange={this.onChange}/>
              </FormGroup>
 
              <FormGroup>
-                    <Button color="primary mr-2">Send</Button>
+                    <Button color="primary mr-2" onClick={this.submitFeedback} >Send</Button>
             </FormGroup>
 
 </div>
@@ -183,6 +299,18 @@ let modalData=<div>
                         </Modal>
                 <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
+                <Button color="danger" className="mb-3" onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled} >Delete Selected</Button>
+                <Label htmlFor="allSelect" style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}>Select All<input className="ml-2"
+                    id="allSelect"
+                    type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            }
+                        }
+                    }/></Label>
                    {(this.state.loading) ? <Spinner /> : tableData}
                 </div>
                 </UI>
@@ -202,7 +330,7 @@ return {
 
 }
 function mapDispatchToProps(dispatch) {
-return bindActionCreators({ getRegisterDetail, userCancelled }, dispatch);
+return bindActionCreators({ getRegisterDetail, userCancelled ,complaintFeedback }, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(ComplaintTenantDetails));
