@@ -1,4 +1,5 @@
-module.exports = ({ name, price1, price2, receiptId }) => {
+module.exports = (assets,services,issuedBy,expDateOfDelievery) => {
+   console.log("Atin Tanwar ===============>")
     const today = new Date();
 return `
     <!doctype html>
@@ -80,50 +81,76 @@ return `
           </style>
        </head>
        <body>
+       
           <div class="invoice-box">
-             <table cellpadding="0" cellspacing="0">
+          <h1>Purchase Order</h1>
+             <table cellpadding="0" cellspacing="0" style="width:100%">
                 <tr class="top">
                    <td colspan="2">
                       <table>
                          <tr>
-                            <td class="title"><img  src="https://i2.wp.com/cleverlogos.co/wp-content/uploads/2018/05/reciepthound_1.jpg?fit=800%2C600&ssl=1"
-                               style="width:100%; max-width:156px;"></td>
                             <td>
-                               Datum: ${`${today.getDate()}. ${today.getMonth() + 1}. ${today.getFullYear()}.`}
+                               Date: ${`${today.getDate()}. ${today.getMonth() + 1}. ${today.getFullYear()}`}
                             </td>
                          </tr>
                       </table>
                    </td>
                 </tr>
-                <tr class="information">
-                   <td colspan="2">
-                      <table>
-                         <tr>
-                            <td>
-                               Customer name: ${name}
+                <tr class="information" style="width:100%">
+                   <td colspan="4">
+                      <table style="width:100%">
+                         <tr style="width:100%">
+                            <td style="width:250px">
+                               Issued By: ${issuedBy}
                             </td>
-                            <td>
-                               Receipt number: ${receiptId}
+                            <td  style="width:550px">
+                               Expected Date Of Delievery: ${expDateOfDelievery}
                             </td>
                          </tr>
                       </table>
                    </td>
                 </tr>
                 <tr class="heading">
-                   <td>Bought items:</td>
-                   <td>Price</td>
+                   <td>Assets Ordered</td>
+                   <td>Asset</td>
+                   <td>Rate</td>
+                   <td>Quantity</td>
+                   <td>Amount</td>
                 </tr>
-                <tr class="item">
-                   <td>First item:</td>
-                   <td>${price1}$</td>
+                ${assets.map((item,i) => {
+                  return `<tr class="item">
+                  <td>${i+1}</td>
+                  <td>${item.purchaseOrderName}</td>
+                  <td>$${item.rate}</td>
+                  <td>${item.quantity}</td>
+                  <td>$${item.amount}</td>
+               </tr>` 
+                })}
+                </table>
+                <table style="width:100%;margin-top:100px">
+                <tr class="heading">
+                   <td>Services Ordered</td>
+                   <td>Service</td>
+                   <td>Rate</td>
+                   <td>Quantity</td>
+                   <td>Amount</td>
+                   <td>Service Start Date</td>
+                   <td>Service End Date</td>
                 </tr>
-                <tr class="item">
-                   <td>Second item:</td>
-                   <td>${price2}$</td>
-                </tr>
+                ${services.map((item,i) => {
+                  return `<tr class="item">
+                  <td>${i+1}</td>
+                  <td>${item.purchaseOrderName}</td>
+                  <td>$${item.rate}</td>
+                  <td>${item.quantity}</td>
+                  <td>$${item.amount}</td>
+                  <td>${item.serviceStartDate}</td>
+                  <td>${item.serviceEndDate}</td>
+               </tr>` 
+                })}
              </table>
              <br />
-             <h1 class="justify-center">Total price: ${parseInt(price1) + parseInt(price2)}$</h1>
+             <h1 class="justify-center">Total price:$</h1>
           </div>
        </body>
     </html>

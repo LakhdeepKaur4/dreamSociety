@@ -54,6 +54,7 @@ module.exports = function (app) {
 	const commonAreaDetailController = require('../controller/commonAreaDetail');
 	const fingerPrintController = require('../controller/fingerprint');
 	const vendorComplaintsController = require('../controller/vendorComplaints');
+	const purchaseOrderController = require('../controller/purchaseOrder');
 
 
 	app.get('/', userController.start);
@@ -584,6 +585,8 @@ module.exports = function (app) {
 
 	app.get('/api/complaintRegister', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.get);
 
+	app.post('/api/complaintRegister/feedback', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.feedback);
+
 	app.get('/api/userComplaints', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.getByUserId);
 
 	app.post('/api/userCancelled', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.cancelRequestByUser);
@@ -689,5 +692,15 @@ module.exports = function (app) {
 	app.get('/api/vendorComplaints', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.getById);
 
 	app.put('/api/vendorComplaints/reject', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.rejectComplaint);
+
+	app.put('/api/vendorComplaints/accept', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.acceptComplaint);
+
+	app.put('/api/vendorComplaints/selectTime', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.selectSlot);
+
+	app.put('/api/vendorComplaints/complete', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.completedComplaint);
+
+	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.create);
+
+	app.get('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.get);
 
 }
