@@ -9,6 +9,7 @@ import DropdownComponent from '../../components/reusableComponents/dropdown';
 import ButtonComponent from '../../components/reusableComponents/button';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
+import SearchFilter from '../../components/searchFilter/searchFilter';
 
 class GetElectricityExpense extends Component {
     constructor(props) {
@@ -18,6 +19,7 @@ class GetElectricityExpense extends Component {
             editData: {
                 isActive: false
             },
+            filterName: 'flatNo',
             modalLoading: false,
             modal: false,
             isDisabled: true,
@@ -35,7 +37,7 @@ class GetElectricityExpense extends Component {
             defaultSign: true,
             editSign: false,
             amountDueInput: null,
-            search:''
+            search: ''
         }
     }
 
@@ -79,7 +81,7 @@ class GetElectricityExpense extends Component {
             amountDueInput: amountDue,
             editModal: true
         });
-        console.log(amountDue,this.state.amountDueInput)
+        console.log(amountDue, this.state.amountDueInput)
     }
 
     deleteSelected(ids) {
@@ -131,17 +133,24 @@ class GetElectricityExpense extends Component {
         let { electricityConsumerId, rate, amount, sanctionedLoad, lastReading, lastReadingDate, amountDue } = this.state;
         console.log(electricityConsumerId, rate, amount, sanctionedLoad, lastReading, lastReadingDate, amountDue)
         this.props.updateElectricityExpense(electricityConsumerId, rate, amount, sanctionedLoad, lastReading, lastReadingDate, amountDue)
-        .then(() => {
-            this.refreshData()
-            this.setState({editModal:false, editSign:false,defaultSign:true})
-        });
+            .then(() => {
+                this.refreshData()
+                this.setState({ editModal: false, editSign: false, defaultSign: true })
+            });
 
     }
 
     getExpenseDetail = ({ expenseDetail }) => {
         console.log("&%$%%$$%$%$%% ", expenseDetail);
         if (expenseDetail && expenseDetail.electricityConsumer) {
-            return expenseDetail.electricityConsumer.map(item => {
+            // return expenseDetail.electricityConsumer
+            return expenseDetail.electricityConsumer.sort((item1, item2) => {
+                var items1=item1.flat_detail_master
+                var items2=item2.flat_detail_master
+                var cmprVal = (items1 && items2) ? (items1[this.state.filterName].localeCompare(items2[this.state.filterName])) : ''
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            })
+            .filter(this.searchFilter(this.state.search)).map((item, index) => {
                 console.log(item.amountDue)
                 return (
                     <tr key={item.electricityConsumerId}>
@@ -166,6 +175,7 @@ class GetElectricityExpense extends Component {
                                 }
 
                             }} /></td>
+                        <td>{index + 1}</td>
                         <td>{item.flat_detail_master.tower_master ? item.flat_detail_master.tower_master.towerName : ''}</td>
                         <td>{item.flat_detail_master.floor_master ? item.flat_detail_master.floor_master.floorName : ''}</td>
                         <td>{item.flat_detail_master ? item.flat_detail_master.flatNo : ''}</td>
@@ -229,11 +239,12 @@ class GetElectricityExpense extends Component {
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
     }
-
     searchFilter = (search) => {
         return function (x) {
 
-            return x.floorName.toLowerCase().includes(search.toLowerCase())
+            return x.flat_detail_master.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
+                x.flat_detail_master.floor_master.floorName.toLowerCase().includes(search.toLowerCase()) ||
+                x.flat_detail_master.flatNo.toLowerCase().includes(search.toLowerCase())
                 || !search;
         }
     }
@@ -253,10 +264,18 @@ class GetElectricityExpense extends Component {
         let tableData = <Table className="table">
             <thead>
                 <tr>
-                    <th></th>
+                    <th style={{ width: '4%' }}></th>
+                    <th style={{ width: '4%' }}>#</th>
                     <th>Tower</th>
                     <th>Floor</th>
-                    <th>Flat No</th>
+                    <th onClick={() => {
+                        this.setState((state) => {
+                            return {
+                                sortVal: !state.sortVal,
+                                filterName: 'flatNo'
+                            }
+                        });
+                    }}>Flat No<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th>Last Reading</th>
                     <th>Amount</th>
                     <th>Last Reading Date</th>
@@ -279,6 +298,7 @@ class GetElectricityExpense extends Component {
                         <h3 align="center"> Electricity Expense Detail</h3>
                         <Button color="primary" onClick={this.addExpense} > Add Expense</Button>
                     </div>
+                    <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
                     <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
                         onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
                     <Label htmlFor="allSelect" style={{ alignContent: 'baseline', marginLeft: "10px", fontWeight: "700" }}>Select All<input className="ml-2"
