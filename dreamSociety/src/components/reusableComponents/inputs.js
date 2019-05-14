@@ -1,14 +1,15 @@
 import React from 'react';
 import { FormGroup, Input, Button, Label } from 'reactstrap';
 
-const Input = props => {
+const InputField = props => {
     return (
         <FormGroup>
             <Label>{props.label}</Label>
-            <Input name={props.name} type={props.type} onChange={props.inputChange} />
+            <Input disabled={props.disabled} placeholder={props.placeholder} name={props.name} type={props.type} onChange={props.inputChange} onKeyPress={props.onKeyPress} value={props.value
+            } />
         </FormGroup>
     );
 }
 
 
-export default Input;
+export default InputField;

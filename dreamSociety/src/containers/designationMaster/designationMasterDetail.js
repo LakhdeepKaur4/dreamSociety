@@ -17,7 +17,6 @@ class DesignationMasterDetail extends Component {
             editDesignationData: {
                 designationName: '',
                 designationId: '',
-
                 isActive: false,
 
             },
@@ -44,7 +43,6 @@ class DesignationMasterDetail extends Component {
 
     refreshData() {
         this.props.getDesignation().then(() => this.setState({ loading: false, modalLoading: false, modal: false }))
-
     }
 
     onChangeHandler = (event) => {
@@ -66,8 +64,6 @@ class DesignationMasterDetail extends Component {
         this.setState({
             designationId,
             designationName,
-
-
             modal: !this.state.modal
         })
     }
@@ -76,7 +72,6 @@ class DesignationMasterDetail extends Component {
 
 
     toggleModal = () => {
-
         this.setState({ modal: !this.state.modal, message: '', })
     }
 
@@ -144,8 +139,6 @@ class DesignationMasterDetail extends Component {
         this.props.deleteSelectDesignation(ids)
             .then(() => this.refreshData())
             .catch(err => err.response.data.message);
-
-
     }
 
 
@@ -283,7 +276,6 @@ class DesignationMasterDetail extends Component {
                 </thead>
                 <tbody>
                     {this.renderDesignation(this.props.DesignationMasterReducer)}
-
                 </tbody>
             </Table></div>
         let deleteSelectButton = <Button color="danger" disabled={this.state.isDisabled} className="mb-3"

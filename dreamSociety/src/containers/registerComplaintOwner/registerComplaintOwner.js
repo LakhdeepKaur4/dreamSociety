@@ -55,6 +55,7 @@ class RegisterComplaint extends Component{
 
     service({item}){
         if(item){
+            console.log(item,"details============")
            return( 
             item.map((item) =>{ 
                    return(
@@ -70,7 +71,6 @@ class RegisterComplaint extends Component{
 
     userflatDetails({userFlat}){
         if(userFlat &&  userFlat.flats){
-            console.log(userFlat)
             return( 
                 userFlat.flats.map((item) =>{ 
                     return(
