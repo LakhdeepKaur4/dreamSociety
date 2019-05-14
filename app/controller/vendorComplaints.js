@@ -103,7 +103,8 @@ exports.rejectComplaint = (req, res, next) => {
 
     VendorComplaints.findOne({
         where: {
-            complaintId: id
+            complaintId: id,
+            isActive: true
         }
     })
         .then(complaint => {

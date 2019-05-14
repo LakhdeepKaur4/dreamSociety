@@ -264,8 +264,10 @@ exports.notNullFilterOnflats = async (req, res, next) => {
         let ownerMemberIds = [];
         let tenantIds = [];
         let tenantMemberIds = [];
+        let vendorIds = [];
 
         if (id == 3) {
+            console.log("inside")
             const fingerprintData = await FingerprintData.findAll({
                 where: { isActive: true, fingerprintData: { [Op.ne]: null } }
             });

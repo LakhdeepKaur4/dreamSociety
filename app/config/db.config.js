@@ -230,6 +230,8 @@ db.complaint.belongsTo(db.user, { foreignKey: 'userId' });
 db.machine.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
 db.machine.belongsTo(db.machineDetail, { foreignKey: 'machineDetailId' });
 db.electricityConsumer.belongsTo(db.flatDetail, { foreignKey: 'flatDetailId' });
+// db.electricityConsumer.belongsTo(db.maintenanceType, { foreignKey: 'rate', targetKey: 'maintenanceTypeId' });
+// db.maintenanceType.hasOne(db.electricityConsumer, { foreignKey: 'rate', sourceKey: 'maintenanceTypeId' });
 db.commonArea.belongsTo(db.user, { foreignKey: 'userId' });
 db.commonAreaDetail.belongsTo(db.user, { foreignKey: 'userId' });
 db.commonAreaDetail.belongsToMany(db.machineDetail, { as: 'Machine', through: 'area_machine_master', foreignKey: 'commonAreaDetailId' });
@@ -240,7 +242,7 @@ db.machineDetail.belongsToMany(db.commonAreaDetail, { as: 'CommonArea', through:
 db.commonAreaDetail.belongsTo(db.commonArea, { foreignKey: 'commonAreaId' });
 db.userRfid.belongsTo(db.user, { foreignKey: 'userId' });
 db.userRfid.belongsTo(db.rfid, { foreignKey: 'rfidId' });
-db.fingerprintData.belongsTo(db.user, { foreignKey: 'userId',as:'user' })
+db.fingerprintData.belongsTo(db.user, { foreignKey: 'userId', as: 'user' })
 db.vendor.belongsToMany(db.complaint, { through: 'vendor_complaints_master', foreignKey: 'vendorId' });
 db.vendor.belongsTo(db.rfid, { foreignKey: 'rfidId' });
 db.complaint.belongsToMany(db.vendor, { through: 'vendor_complaints_master', foreignKey: 'complaintId' });

@@ -17,8 +17,14 @@ module.exports = (sequelize, Sequelize) => {
     amount: {
       type: Sequelize.INTEGER,
     },
+    rate: {
+      type: Sequelize.INTEGER,
+    },
     amountDue: {
       type: Sequelize.BOOLEAN,
+    },
+    mdi: {
+      type: Sequelize.INTEGER,
     },
     entryDate: {
       type: Sequelize.DATEONLY,
@@ -39,7 +45,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.BOOLEAN,
       defaultValue: true
     },
-    totalConsumption: {
+    monthlyCharge: {
       type: Sequelize.FLOAT,
     }
   });
