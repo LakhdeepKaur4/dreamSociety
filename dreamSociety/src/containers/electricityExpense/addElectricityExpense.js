@@ -24,13 +24,13 @@ class AddElectricityExpense extends Component {
             lastReadingDate: '',
             rate: '',
             errors: {},
+            message:''
             // unitConsumed: '',
             // currentReading: '',
             // startDate: '',
             // endDate: ''
         }
     }
-
 
     componentDidMount() {
         this.props.getTowerName();
@@ -208,9 +208,10 @@ class AddElectricityExpense extends Component {
             let data = { towerId, floorId, flatDetailId, lastReading, amount, sign, rate, lastReadingDate, sanctionedLoad, amountDue };
             console.log(data);
             this.props.addElectricityExpense(data).then(() => { this.props.history.push('/superDashboard/electricityExpenseDetail') })
-                .catch((err) => {
-                    console.log(err.response.data);
-                })
+            .catch(error=>{
+                console.log(error.response.data);
+                this.setState({message:error.response.data.message,loading:false});
+            })
         }
     }
 
@@ -245,6 +246,9 @@ class AddElectricityExpense extends Component {
         form = <div>
             <FormGroup>
                 <Row md={12}>
+                <Col md={4}><span className="error">{this.state.message}</span></Col>
+                </Row>
+                <Row md={12}>
                     <Col md={4}>
                         <label>Tower Name</label>
                         <select required className="form-control" defaultValue='no-value' name="towerId" onChange={this.towerChangeHandler}>
@@ -252,7 +256,6 @@ class AddElectricityExpense extends Component {
                             {this.getDropdownForTower(this.props.flatDetailMasterReducer)}
                         </select>
                         <span className="error">{this.state.errors.towerId}</span>
-                        {/* <span className="error">{this.state.message}</span> */}
                     </Col>
                     <Col md={4}>
                         <label>Floor</label>

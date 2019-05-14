@@ -37,7 +37,8 @@ class GetElectricityExpense extends Component {
             defaultSign: true,
             editSign: false,
             amountDueInput: null,
-            search: ''
+            search: '',
+            message: ''
         }
     }
 
@@ -136,7 +137,10 @@ class GetElectricityExpense extends Component {
             .then(() => {
                 this.refreshData()
                 this.setState({ editModal: false, editSign: false, defaultSign: true })
-            });
+            }).catch(err => {
+                console.log(err.response.data.message)
+                this.setState({ modalLoading: false, message: err.response.data.message })
+            })
 
     }
 
@@ -145,57 +149,57 @@ class GetElectricityExpense extends Component {
         if (expenseDetail && expenseDetail.electricityConsumer) {
             // return expenseDetail.electricityConsumer
             return expenseDetail.electricityConsumer.sort((item1, item2) => {
-                var items1=item1.flat_detail_master
-                var items2=item2.flat_detail_master
+                var items1 = item1.flat_detail_master
+                var items2 = item2.flat_detail_master
                 var cmprVal = (items1 && items2) ? (items1[this.state.filterName].localeCompare(items2[this.state.filterName])) : ''
                 return this.state.sortVal ? cmprVal : -cmprVal;
             })
-            .filter(this.searchFilter(this.state.search)).map((item, index) => {
-                console.log(item.amountDue)
-                return (
-                    <tr key={item.electricityConsumerId}>
-                        <td><input type="checkbox" name="ids" className="SelectAll" value={item.electricityConsumerId}
-                            onChange={(e) => {
-                                const { electricityConsumerId } = item
-                                if (!e.target.checked) {
-                                    document.getElementById('allSelect').checked = false;
-                                    let indexOfId = this.state.ids.indexOf(electricityConsumerId);
-                                    if (indexOfId > -1) {
-                                        this.state.ids.splice(indexOfId, 1);
+                .filter(this.searchFilter(this.state.search)).map((item, index) => {
+                    console.log(item.amountDue)
+                    return (
+                        <tr key={item.electricityConsumerId}>
+                            <td><input type="checkbox" name="ids" className="SelectAll" value={item.electricityConsumerId}
+                                onChange={(e) => {
+                                    const { electricityConsumerId } = item
+                                    if (!e.target.checked) {
+                                        document.getElementById('allSelect').checked = false;
+                                        let indexOfId = this.state.ids.indexOf(electricityConsumerId);
+                                        if (indexOfId > -1) {
+                                            this.state.ids.splice(indexOfId, 1);
+                                        }
+                                        if (this.state.ids.length === 0) {
+                                            this.setState({ isDisabled: true });
+                                        }
                                     }
-                                    if (this.state.ids.length === 0) {
-                                        this.setState({ isDisabled: true });
+                                    else {
+                                        this.setState({ ids: [...this.state.ids, electricityConsumerId] });
+                                        if (this.state.ids.length >= 0) {
+                                            this.setState({ isDisabled: false })
+                                        }
                                     }
-                                }
-                                else {
-                                    this.setState({ ids: [...this.state.ids, electricityConsumerId] });
-                                    if (this.state.ids.length >= 0) {
-                                        this.setState({ isDisabled: false })
-                                    }
-                                }
 
-                            }} /></td>
-                        <td>{index + 1}</td>
-                        <td>{item.flat_detail_master.tower_master ? item.flat_detail_master.tower_master.towerName : ''}</td>
-                        <td>{item.flat_detail_master.floor_master ? item.flat_detail_master.floor_master.floorName : ''}</td>
-                        <td>{item.flat_detail_master ? item.flat_detail_master.flatNo : ''}</td>
-                        <td>{item.lastReading}</td>
-                        <td>{item.amountDue == true ? '-' + item.amount : '+' + item.amount}</td>
-                        <td>{item.lastReadingDate}</td>
-                        <td>{item.rate}</td>
-                        <td>{item.sanctionedLoad}</td>
-                        {/* <td>{item.currentReading ? item.currentReading : <Input name="currentReading" id={`currentReading` + item} onChange={this.onChange.bind(this, item)} />}</td> */}
-                        {/* <td>{item.unitConsumed  ? item.unitConsumed : (item.currentReading - item.lastReading)}</td> */}
-                        {/* <td>{item.totalConsumption}</td> */}
-                        {/* <td>{item.startDate}</td> */}
-                        {/* <td>{item.endDate}</td> */}
-                        <td>
-                            <Button color="success" className="mr-2" onClick={this.edit.bind(this, item.electricityConsumerId, item.lastReading, item.rate, item.amount, item.lastReadingDate, item.sanctionedLoad, item.amountDue)}>Edit</Button>
-                            <Button color="danger" className="danger" onClick={this.delete.bind(this, item.electricityConsumerId)}>Delete</Button>
-                        </td>
-                    </tr>
-                )
-            })
+                                }} /></td>
+                            <td>{index + 1}</td>
+                            <td>{item.flat_detail_master.tower_master ? item.flat_detail_master.tower_master.towerName : ''}</td>
+                            <td>{item.flat_detail_master.floor_master ? item.flat_detail_master.floor_master.floorName : ''}</td>
+                            <td>{item.flat_detail_master ? item.flat_detail_master.flatNo : ''}</td>
+                            <td>{item.lastReading}</td>
+                            <td>{item.amountDue == true ? '-' + item.amount : '+' + item.amount}</td>
+                            <td>{item.lastReadingDate}</td>
+                            <td>{item.rate}</td>
+                            <td>{item.sanctionedLoad}</td>
+                            {/* <td>{item.currentReading ? item.currentReading : <Input name="currentReading" id={`currentReading` + item} onChange={this.onChange.bind(this, item)} />}</td> */}
+                            {/* <td>{item.unitConsumed  ? item.unitConsumed : (item.currentReading - item.lastReading)}</td> */}
+                            {/* <td>{item.totalConsumption}</td> */}
+                            {/* <td>{item.startDate}</td> */}
+                            {/* <td>{item.endDate}</td> */}
+                            <td>
+                                <Button color="success" className="mr-2" onClick={this.edit.bind(this, item.electricityConsumerId, item.lastReading, item.rate, item.amount, item.lastReadingDate, item.sanctionedLoad, item.amountDue)}>Edit</Button>
+                                <Button color="danger" className="danger" onClick={this.delete.bind(this, item.electricityConsumerId)}>Delete</Button>
+                            </td>
+                        </tr>
+                    )
+                })
         }
     }
 
@@ -319,6 +323,7 @@ class GetElectricityExpense extends Component {
                         toggle={this.toggleModal.bind(this)}
                         title="Edit Electricity Expense"
                     >
+                        <span className="error">{this.state.message}</span>
                         <InputField
                             label="Last Reading"
                             placeholder="Last Reading"
