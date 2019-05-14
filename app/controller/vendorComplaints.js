@@ -165,7 +165,7 @@ exports.selectSlot = (req, res, next) => {
         }
     })
         .then(complaint => {
-            complaint.updateAttributes({ selectedSlot: body.slot, complaintStatusId: 3 });
+            complaint.updateAttributes({ selectedSlot: body.updatedSlots, complaintStatusId: 3 });
             res.status(httpStatus.CREATED).json({
                 message: 'Complaint in progress now'
             })
