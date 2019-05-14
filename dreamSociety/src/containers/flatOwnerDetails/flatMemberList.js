@@ -29,7 +29,7 @@ class FlatMemberList extends Component {
             relationId: '',
             memberId: '',
             formModal: false,
-            ownerId: '',
+            ownerId: '', 
             errors: {},
             Male:'male',
             Female:'female',

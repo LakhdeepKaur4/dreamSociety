@@ -88,7 +88,7 @@ class FlatOwnerList extends Component {
         }
         
 }
-    componentDidMount() {
+    refreshData(){
         this.props.getRfId();
         this.props.getOwnerList();
         this.props.detailSociety();
@@ -99,6 +99,11 @@ class FlatOwnerList extends Component {
         this.props.getLocation()
         this.props.getFlatDetails()
             .then(() => this.setState({ loading: false }))
+    }
+
+    componentDidMount() {
+        this.refreshData();
+      
     }
     logout = () => {
         localStorage.removeItem('token');

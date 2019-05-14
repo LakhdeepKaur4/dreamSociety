@@ -22,7 +22,8 @@ class MonthlyElectricityExpense extends Component {
             sanctionLoad:'',
             mdi:'',
             startDate:'',
-            endDate:''
+            endDate:'',
+            totalConsumption:''
         }
     }
 
@@ -121,6 +122,11 @@ class MonthlyElectricityExpense extends Component {
         return this.props.history.push('/superDashBoard');
     }
 
+    submit = (e) => {
+        e.preventDefault();
+        console.log(this.state);
+    }
+
     render(){
         let form;
         form = <div>
@@ -141,7 +147,7 @@ class MonthlyElectricityExpense extends Component {
                         </select>
                     </Col>
                     <Col md={4}>
-                        <label>Flats</label>
+                        <label>Flat</label>
                         <select className="form-control" defaultValue='no-value' name="flatDetailId" onChange={this.flatChangeHandler}>
                             <DefaultSelect />
                             {this.getFlatData(this.props.electricityExpenseReducer)}
@@ -160,16 +166,6 @@ class MonthlyElectricityExpense extends Component {
                             value={this.state.lastReading} ></input>
                     </Col>
                     <Col md={4}>
-                        <label>Last Amount Due</label>
-                        <input className="form-control"
-                            placeholder="Last Amount Due"
-                            type="text" name="lastAmountDue"
-                            maxLength="10"
-                            // onChange={this.rateChange}
-                            // value={this.state.currentReading} 
-                            />
-                    </Col>
-                    <Col md={4}>
                         <label>Current Reading</label>
                         <input className="form-control"
                             placeholder="Last Amount Due"
@@ -180,34 +176,68 @@ class MonthlyElectricityExpense extends Component {
                             />
                     </Col>
                     <Col md={4}>
-                        <label>Sanctioned Load</label>
+                        <label>Last Amount Due</label>
                         <input className="form-control"
-                            placeholder="Current Reading"
-                            type="text" name="currentReading"
+                            placeholder="Last Amount Due"
+                            type="text" name="lastAmountDue"
+                            maxLength="10" onChange={this.flatChangeHandler}
+                            // onChange={this.rateChange}
+                            // value={this.state.currentReading} 
+                            />
+                    </Col>
+                </Row>
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={4}>
+                        <label>Total Consumtion</label>
+                        <input className="form-control"
+                            placeholder="Total Consumtion"
+                            type="text" name="totalConsumption"
                             maxLength="16"
                             onChange={this.flatChangeHandler}
                             // value={this.state.currentReading} 
                             />
                     </Col>
-                    {/* <Col md={4}>
-                        <label>Unit Consumed</label>
+                    <Col md={4}>
+                        <label>Rent</label>
                         <input className="form-control"
-                            placeholder="Unit Consumed"
-                            type="text"
-                            name="unitConsumed"
+                            placeholder="Rent"
+                            type="text" name="rent"
                             maxLength="16"
-                            onChange={this.rateChange}
-                            value={this.state.unitConsumed} />
-                    </Col> */}
+                            onChange={this.flatChangeHandler}
+                            // value={this.state.currentReading} 
+                            />
+                    </Col>
+                    <Col md={4}>
+                        <label>Sanctioned Load</label>
+                        <input className="form-control"
+                            placeholder="Sanctioned Load"
+                            type="text" name="sanctionLoad"
+                            maxLength="16"
+                            onChange={this.flatChangeHandler}
+                            // value={this.state.currentReading} 
+                            />
+                    </Col>
                 </Row>
             </FormGroup>
             <FormGroup>
                 <Row md={12}>
-                    <Col md={6}>
+                    <Col md={4}>
+                        <label>MDI</label>
+                        <input className="form-control"
+                            placeholder="MDI"
+                            type="text" name="mdi"
+                            maxLength="16"
+                            onChange={this.flatChangeHandler}
+                            // value={this.state.currentReading} 
+                            />
+                    </Col>
+                    <Col md={4}>
                         <label>Start Date</label>
                         <input min={memberMaxDate()} className="form-control" type="date" name="startDate" id="start" onChange={this.startDateChange} />
                     </Col>
-                    <Col md={6}>
+                    <Col md={4}>
                         <label>End Date</label>
                         <input className="form-control" type="date" name="endDate" id="end" onChange={this.endDateChange} />
                     </Col>
@@ -220,12 +250,12 @@ class MonthlyElectricityExpense extends Component {
         </div>
         return (
             <UI onClick={this.logout} change={this.changePassword}>
-                <Form method="POST">
+                <Form method="POST" onSubmit = {this.submit}>
                     <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                         <span aria-hidden="true">&times;</span>
                     </div>
                     <div>
-                        <h3 style={{ textAlign: 'center', marginBottom: '15px' }}>Add Electricity Expense</h3>
+                        <h3 style={{ textAlign: 'center', marginBottom: '15px' }}>Add Monthly Electricity Expense</h3>
                     </div>
                     {form}
                 </Form>
