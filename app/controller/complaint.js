@@ -12,6 +12,7 @@ const FlatDetail = db.flatDetail;
 const Vendor = db.vendor;
 const VendorComplaints = db.vendorComplaints;
 const VendorService = db.vendorService;
+const Feedback = db.feedback;
 
 
 let encrypt = (text) => {
@@ -186,24 +187,41 @@ exports.getByUserId = (req, res, next) => {
         })
 }
 
-exports.cancelRequestByUser = (req,res,next) => {
+exports.cancelRequestByUser = (req, res, next) => {
     const complaintId = req.body.complaintId;
     console.log('Complaint ID ===>', complaintId);
 
-    Complaint.update({complaintStatusId: 5},{where: {complaintId: complaintId, isActive: true}})
-    .then(complaintCancelled => {
-        if (complaintCancelled[0] === 1) {
+    Complaint.update({ complaintStatusId: 5 }, { where: { complaintId: complaintId, isActive: true } })
+        .then(complaintCancelled => {
+            if (complaintCancelled[0] === 1) {
+                res.status(httpStatus.CREATED).json({
+                    message: 'Complaint cancelled successfully'
+                })
+            } else {
+                res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
+                    message: 'Complaint not cancelled'
+                })
+            }
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+exports.feedback = (req, res, next) => {
+    const feedback = req.body;
+    feedback.userId = req.userId;
+    console.log('Feedback ===>', feedback);
+
+    Feedback.create(feedback)
+        .then(feedbackCreated => {
             res.status(httpStatus.CREATED).json({
-                message: 'Complaint cancelled successfully'
+                message: 'Feedback submitted successfully'
             })
-        } else {
-            res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
-                message: 'Complaint not cancelled'
-            })
-        }
-    })
-    .catch(err => {
-        console.log('Error ===>', err);
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-    })
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
 }
