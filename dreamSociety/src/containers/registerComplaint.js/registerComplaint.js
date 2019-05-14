@@ -237,7 +237,7 @@ class RegisterComplaint extends Component{
                 
                 <Col md={4}>
                     <Label>Slot Time 2</Label>
-                    <Input type="time"  name="slotTime12" onChange={this.onChange} >
+                    <Input type="time"  name="slotTime2" onChange={this.onChange} >
                     </Input>
                 </Col>
                

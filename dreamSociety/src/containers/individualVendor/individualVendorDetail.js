@@ -289,7 +289,7 @@ class IndividualVendorDetail extends Component {
         let errors = {};
 
         const { individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email, documentOne, documentTwo, rate, profilePicture, countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2, rfidId, fileName1, fileName2, fileName3 } = this.state
-        console.log(individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email, documentOne, documentTwo, rate, profilePicture, countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2,rfidId, fileName1, fileName2, fileName3)
+        console.log(individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email, documentOne, documentTwo, rate, profilePicture, countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2, rfidId, fileName1, fileName2, fileName3)
         if (this.state.firstName === '') {
             errors.firstName = "First Name can't be empty"
         }
@@ -317,7 +317,7 @@ class IndividualVendorDetail extends Component {
         if (isValid && this.state.message === '') {
 
 
-            this.props.updateIndividualVendor(individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email, documentOne, documentTwo, rate, profilePicture, countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2, rfidId, fileName1, fileName2, fileName3)
+            this.props.updateIndividualVendor(individualVendorId, firstName, lastName, currentAddress, permanentAddress, contact, email, documentOne, documentTwo, rate, profilePicture, countryId, stateId, cityId, locationId, serviceId, rateId, startTime, endTime, startTime1, endTime1, startTime2, endTime2,rfidId, fileName1, fileName2, fileName3)
                 .then(() => this.refreshData())
                 .catch(err => {
                     this.setState({ modalLoading: false, message: err.response.data.message, loading: false })

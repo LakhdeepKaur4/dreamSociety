@@ -5,7 +5,7 @@ const InputField = props => {
     return (
         <FormGroup>
             <Label>{props.label}</Label>
-            <Input disabled={props.disabled} placeholder={props.placeholder} name={props.name} type={props.type} onChange={props.inputChange} value={props.value
+            <Input disabled={props.disabled} placeholder={props.placeholder} name={props.name} type={props.type} onChange={props.inputChange} onKeyPress={props.onKeyPress} value={props.value
             } />
         </FormGroup>
     );

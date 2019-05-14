@@ -40,12 +40,7 @@ constructor(props){
         slotId:'',
 
     }
-
 }
-   
-
-
-
 
     componentWillMount() {
         this.refreshData();
@@ -73,7 +68,6 @@ constructor(props){
 
 
     edit(flatDetailId, flatNo, flatType, floorName, towerName, flatId, floorId, towerId,parkingId) {
-
         this.setState({
             flatDetailId, flatNo, flatType, floorName, towerName, flatId, floorId, towerId, editFlatModal: !this.state.editFlatModal,parkingId
         })
@@ -131,7 +125,6 @@ constructor(props){
             }
             this.setState({
                 modalLoading: true,
-
             })
         }
     }
@@ -327,9 +320,6 @@ constructor(props){
 
     }
 
-
-
-
     logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
@@ -375,7 +365,6 @@ constructor(props){
                 )
             })
         }
-
     }
 
     render() {
