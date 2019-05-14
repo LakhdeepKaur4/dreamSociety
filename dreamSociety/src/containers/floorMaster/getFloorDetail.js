@@ -24,7 +24,6 @@ class GetFloorDetail extends Component {
             ids: [],
             errors: {},
             filterName: 'floorName',
-
         }
     }
 
@@ -36,13 +35,11 @@ class GetFloorDetail extends Component {
 
     refreshData() {
         this.props.getFloor().then(() => this.setState({ loading: false, modalLoading: false, modal: false }))
-
     }
 
 
     onChangeHandler = (event) => {
         this.setState({ message: '' })
-
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[event.target.name];
@@ -55,12 +52,9 @@ class GetFloorDetail extends Component {
 
 
     toggle = (floorId, floorName) => {
-
         this.setState({
             floorId,
             floorName,
-
-
             modal: !this.state.modal
         })
     }
@@ -69,7 +63,6 @@ class GetFloorDetail extends Component {
 
 
     toggleModal = () => {
-
         this.setState({ modal: !this.state.modal, message: '', })
     }
 
@@ -78,7 +71,6 @@ class GetFloorDetail extends Component {
 
     editfloorName = (e) => {
         e.preventDefault();
-
         const { floorId, floorName } = this.state
 
         let errors = {};
@@ -173,13 +165,10 @@ class GetFloorDetail extends Component {
 
     renderFloor = ({ floor }) => {
         if (floor) {
-
             return floor.floor.sort((item1, item2) => {
                 var cmprVal = (item1.floorName && item2.floorName) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
                 return this.state.sortVal ? cmprVal : -cmprVal;
             }).filter(this.searchFilter(this.state.search)).map((item, index) => {
-
-
                 return (
                     <tr key={item.floorId} >
                         <td><input type="checkbox" name="ids" className="SelectAll" value={item.floorId}
@@ -210,7 +199,6 @@ class GetFloorDetail extends Component {
                         <td>
                             <Button color="success mr-2" onClick={this.toggle.bind(this, item.floorId, item.floorName)} >Edit</Button>
                             <Button color="danger" onClick={this.deleteFloorName.bind(this, item.floorId)} >Delete</Button>
-
                         </td>
                     </tr>
 
