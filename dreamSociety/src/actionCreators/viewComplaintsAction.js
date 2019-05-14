@@ -1,4 +1,4 @@
-import {URN,GET_COMPLAINTS,REJECT_COMPLAINT} from '../actions/index';
+import {URN,GET_COMPLAINTS,REJECT_COMPLAINT,ACCEPT_COMPLAINT,SEND_COMPLAINT,COMPLAINT_COMPLETE} from '../actions/index';
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
 
@@ -12,7 +12,7 @@ export function getComplaints(){
         type:GET_COMPLAINTS,
         payload:request
     }
-}
+}   
 
 export const rejectComplaint=(complaintId)=>{
   
@@ -28,3 +28,50 @@ export const rejectComplaint=(complaintId)=>{
         }
     
     }
+
+    export const acceptComplaint=(complaintId)=>{
+  
+   
+        const request = axios.put(`${URN}/vendorComplaints/accept`,{complaintId}, {headers:authHeader()})
+         .then(response => response.data)
+     
+         // .then(getDetails())
+         return{
+     
+             type:ACCEPT_COMPLAINT,
+             payload: request 
+         }
+     
+     }
+ 
+     export const sendConfirmations=(complaintId,updatedSlots)=>{
+
+   
+        const request = axios.put(`${URN}/vendorComplaints/selectTime`,{complaintId,updatedSlots}, {headers:authHeader()})
+         .then(response => response.data)
+     
+         // .then(getDetails())
+         return{
+     
+             type:SEND_COMPLAINT,
+             payload: request 
+         }
+     
+     }
+
+     
+    export const complaintCompleted=(complaintId)=>{
+  
+   
+        const request = axios.put(`${URN}/vendorComplaints/complete`,{complaintId}, {headers:authHeader()})
+         .then(response => response.data)
+     
+         // .then(getDetails())
+         return{
+     
+             type:COMPLAINT_COMPLETE,
+             payload: request 
+         }
+     
+     }
+ 
