@@ -687,9 +687,9 @@ module.exports = function (app) {
 
 	app.get('/api/vendorComplaints', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.getById);
 
-	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.create);
+	app.post('/api/purchaseOrder',  purchaseOrderController.create);
 
-	app.get('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.get);
+	app.get('/api/purchaseOrder', purchaseOrderController.get);
 	app.put('/api/vendorComplaints/reject', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.rejectComplaint);
 
 	app.put('/api/vendorComplaints/accept', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.acceptComplaint);

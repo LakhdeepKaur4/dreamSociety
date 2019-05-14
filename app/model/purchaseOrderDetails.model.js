@@ -9,6 +9,10 @@ module.exports = (sequelize, Sequelize) => {
                   type:Sequelize.STRING,
                   allowNull:false
             },
+            purchaseOrderName:{
+                  type:Sequelize.STRING,
+                  allowNull:false
+            },
           rate: {
                 type: Sequelize.INTEGER,
                 allowNull: false
