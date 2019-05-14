@@ -163,7 +163,7 @@ exports.calculateMonthlyCharges = async (req, res, next) => {
         const amountDue = body.amountDue === true ? monthlyCharges = charges + body.amount : monthlyCharges = charges - body.amount;
         if (monthlyCharges) {
             return res.status(httpStatus.OK).json(
-                monthlyCharges
+                {monthlyCharges}
             );
         }
     } catch (error) {
