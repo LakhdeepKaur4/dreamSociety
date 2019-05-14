@@ -83,7 +83,7 @@ exports.update = async (req, res, next) => {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
         const exists = await ElectricityConsumer.findOne({
-            where: { isActive: true, towerId: body.towerId, floorId: body.floorId, flatDetailId: body.flatDetailId,electricityConsumerId:{[Op.ne]:electricityConsumerId} }
+            where: { isActive: true, flatDetailId: body.flatDetailId,electricityConsumerId:{[Op.ne]:id} }
         });
         if (exists) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Already Exists" });
