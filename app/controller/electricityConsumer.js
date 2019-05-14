@@ -12,6 +12,12 @@ exports.create = async (req, res, next) => {
     try {
         console.log("creating event");
         let body = req.body;
+        const exists = await ElectricityConsumer.findOne({
+            where: { isActive: true, towerId: body.towerId, floorId: body.floorId, flatDetailId: body.flatDetailId }
+        });
+        if (exists) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Already Exists" });
+        }
         body.userId = req.userId;
         const maintenanceType = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: 98 } });
         const rate = maintenanceType.rate
@@ -75,6 +81,12 @@ exports.update = async (req, res, next) => {
         console.log("id==>", id);
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
+        }
+        const exists = await ElectricityConsumer.findOne({
+            where: { isActive: true, towerId: body.towerId, floorId: body.floorId, flatDetailId: body.flatDetailId,electricityConsumerId:{[Op.ne]:electricityConsumerId} }
+        });
+        if (exists) {
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Already Exists" });
         }
         const update = req.body;
         if (!update) {
@@ -149,7 +161,7 @@ exports.calculateMonthlyCharges = async (req, res, next) => {
         const numberToBeMultiply = (body.sanctionedLoad < body.mdi) ? body.mdi : body.sanctionedLoad;
         console.log("%%%5 ", numberToBeMultiply)
         const charges = body.unitConsumed * body.rate + body.rent * numberToBeMultiply;
-        const amountDue = body.amountDue === 1 ?monthlyCharges = charges + body.amount :  monthlyCharges = charges - body.amount;
+        const amountDue = body.amountDue === 1 ? monthlyCharges = charges + body.amount : monthlyCharges = charges - body.amount;
         if (monthlyCharges) {
             return res.status(httpStatus.OK).json(
                 monthlyCharges
