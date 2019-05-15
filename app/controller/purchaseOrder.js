@@ -293,11 +293,6 @@ exports.downloadPDF = async(req,res,next) => {
             if(err){
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "File not found" });
             }
-            else {
-                return res.status(httpStatus.OK).json({
-                    message: "PurchaseOrder downloaded successfully",
-                  });
-            }
         })
     } catch(error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -311,16 +306,7 @@ exports.downloadPdfClient = async(req,res,next) => {
         if(!id){
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
         }
-        res.download(`./public/purchaseOrderPdfs/purchaseOrder${id}.pdf`,'purchaseOrder.pdf', function(err){
-            if(err){
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "File not found" });
-            }
-            else {
-                return res.status(httpStatus.OK).json({
-                    message: "PurchaseOrder downloaded successfully",
-                  });
-            }
-        })
+        res.sendFile(`./public/purchaseOrderPdfs/purchaseOrder${id}.pdf`);
     } catch(error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }

@@ -711,7 +711,7 @@ module.exports = function (app) {
 
 	app.get('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.get);
 
-	app.get('/api/downloadPdfClient/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.downloadPdfClient);
+	app.get('/api/downloadPdfClient/:id', purchaseOrderController.downloadPdfClient);
 
 	app.put('/api/updatePurchaseOrder/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.updatePurchaseOrder);
 
