@@ -18,7 +18,7 @@ exports.create = async (req, res, next) => {
         });
         if (exists) {
             exists.updateAttributes(body);
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Updated Successfully" });
+            return res.status(httpStatus.OK).json({ message: "Updated Successfully" });
         }
         body.userId = req.userId;
         const maintenanceType = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: 98 } });
