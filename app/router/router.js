@@ -587,6 +587,8 @@ module.exports = function (app) {
 
 	app.post('/api/complaintRegister/feedback', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.feedback);
 
+	app.put('/api/complaintRegister/delete', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.deleteComplaints);
+
 	app.get('/api/userComplaints', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.getByUserId);
 
 	app.post('/api/userCancelled', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], complaint.cancelRequestByUser);
@@ -696,6 +698,10 @@ module.exports = function (app) {
 	app.put('/api/vendorComplaints/reject', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.rejectComplaint);
 
 	app.put('/api/vendorComplaints/accept', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.acceptComplaint);
+
+	app.get('/api/vendorComplaints/feedback/:id', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.getFeedback);
+
+	app.put('/api/vendorComplaints/delete', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.deleteComplaints);
 
 	app.put('/api/vendorComplaints/selectTime', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.selectSlot);
 

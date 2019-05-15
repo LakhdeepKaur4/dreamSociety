@@ -250,5 +250,6 @@ db.purchaseOrder.belongsTo(db.vendor, { foreignKey: 'vendorId' });
 db.purchaseOrderDetails.belongsTo(db.purchaseOrder, {foreignKey: 'purchaseOrderId'}); 
 db.feedback.belongsTo(db.user, { foreignKey: 'userId' });
 db.feedback.belongsTo(db.complaint, { foreignKey: 'complaintId' });
+db.feedback.belongsTo(db.vendor, { foreignKey: 'vendorId' });
 
 module.exports = db;

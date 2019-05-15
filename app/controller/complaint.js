@@ -225,3 +225,29 @@ exports.feedback = (req, res, next) => {
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
+
+exports.deleteComplaints = (req, res, next) => {
+    const ids = req.body.complaintIds;
+    console.log('Comaplaint IDs ===>', ids);
+
+    Complaint.findAll({
+        where: {
+            isActive: true,
+            complaintId: {
+                [Op.in]: ids
+            }
+        }
+    })
+        .then(complaints => {
+            complaints.map(item => {
+                item.updateAttributes({isActive:false})
+            })
+            res.status(httpStatus.OK).json({
+                message: 'Deleted successfully'
+            })
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
