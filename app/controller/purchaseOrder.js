@@ -131,7 +131,14 @@ exports.create = async (req, res, next) => {
 
 exports.get = async (req,res,next) => {
     try{
-        let purchaseOrder = PurchaseOrder.findAll({where:{isActive:true},include:[{model:Vendor}]});
+        let purchaseOrder = await PurchaseOrder.findAll({where:{isActive:true},include:[{model:Vendor}]});
+        purchaseOrder.forEach(x => {
+            x.vendor_master.firstName = decrypt(key,x.vendor_master.firstName);
+            x.vendor_master.lastName = decrypt(key,x.vendor_master.lastName);
+            x.vendor_master.contact = decrypt(key,x.vendor_master.contact);
+            x.vendor_master.email = decrypt(key,x.vendor_master.email);
+        })
+        console.log("purchaseOrder======>", purchaseOrder);
         return res.status(httpStatus.CREATED).json({
             message: "Purchase Order",
             purchaseOrder: purchaseOrder
