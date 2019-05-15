@@ -86,7 +86,7 @@ exports.update = async (req, res, next) => {
         // console.log("****")
         // const exists = await ElectricityConsumer.findOne({
         //     where: { isActive: true, flatDetailId: update.flatDetailId, electricityConsumerId: { [Op.ne]: id } }
-        // });
+        // })
         // console.log(exists)
         // if (exists) {
         //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Already Exists" });
@@ -159,7 +159,7 @@ exports.calculateMonthlyCharges = async (req, res, next) => {
     try {
         const body = req.body;
         let monthlyCharges;
-        if (!body.unitConsumed && !body.mdi && body.sanctionedLoad && body.rate && body.rent && body.amountDue) {
+        if (!body.unitConsumed && !body.mdi && !body.sanctionedLoad && !body.rate && !body.rent && !body.amountDue) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
         const numberToBeMultiply = (body.sanctionedLoad < body.mdi) ? body.mdi : body.sanctionedLoad;
