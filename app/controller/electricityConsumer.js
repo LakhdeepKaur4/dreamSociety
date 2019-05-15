@@ -17,7 +17,7 @@ exports.create = async (req, res, next) => {
             where: { isActive: true, flatDetailId: body.flatDetailId }
         });
         if (exists) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Already Exists" });
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "This Flat Data Already Exists" });
         }
         body.userId = req.userId;
         const maintenanceType = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: 98 } });
