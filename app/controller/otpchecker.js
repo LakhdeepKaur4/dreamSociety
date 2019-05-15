@@ -13,7 +13,7 @@ const nodeMailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
 const jwt = require('jsonwebtoken');
 const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921aa', '68afe5aeee2b5f9bbabf2489f2e8ade2');
-
+const URL = config.activationLink;
 
 const Owner = db.owner;
 const Tenant = db.tenant;

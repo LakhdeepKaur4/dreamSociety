@@ -16,9 +16,8 @@ const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921a
 const bcrypt = require('bcryptjs');
 const randomInt = require('random-int');
 const RfId = db.rfid;
-
 const Owner = db.owner;
-
+const URL = config.activationLink;
 const OwnerMembersDetail = db.ownerMembersDetail;
 const FlatDetail = db.flatDetail;
 const Flat = db.flat;
@@ -132,7 +131,7 @@ let mailToUser1 = (email, memberId) => {
           "Name": 'Atin' + ' ' + 'Tanwar'
         }],
         "Subject": "Activation link",
-        "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://mydreamsociety.com/login/tokenVerification?memberId=${memberId}&token=${token}">click here</a>`
+        "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="${URL}/login/tokenVerification?memberId=${memberId}&token=${token}">click here</a>`
       }]
     })
   request.then((result) => {
@@ -167,7 +166,7 @@ let mailToUser = (email, ownerId) => {
           "Name": 'Atin' + ' ' + 'Tanwar'
         }],
         "Subject": "Activation link",
-        "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://mydreamsociety.com/login/tokenVerification?ownerId=${ownerId}&token=${token}">click here</a>`
+        "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="${URL}/login/tokenVerification?ownerId=${ownerId}&token=${token}">click here</a>`
       }]
     })
   request.then((result) => {

@@ -11,6 +11,7 @@ const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921a
 const randomInt = require('random-int');
 const RfId = db.rfid;
 const UserRfId = db.userRfid;
+const URL = config.activationLink;
 
 const nexmo = new Nexmo(
     {
@@ -353,7 +354,7 @@ let mailToUser = (email, vendorId) => {
                         }
                     ],
                     "Subject": "Activation link",
-                    "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://mydreamsociety.com/login/tokenVerification?vendorId=${vendorId}&token=${token}">click here</a>`
+                    "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="${URL}/login/tokenVerification?vendorId=${vendorId}&token=${token}">click here</a>`
                 }
             ]
         })

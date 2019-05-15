@@ -27,6 +27,7 @@ const Role = db.role;
 const UserRoles = db.userRole;
 const UserRFID = db.userRfid;
 const RFID = db.rfid;
+const URL = config.activationLink;
 
 encrypt = (text) => {
     let key = config.secret;
@@ -129,7 +130,7 @@ let mailToUser = (email, individualVendorId) => {
                         }
                     ],
                     "Subject": "Activation link",
-                    "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="http://mydreamsociety.com/login/tokenVerification?individualVendorId=${individualVendorId}&token=${token}">click here</a>`
+                    "HTMLPart": `<b>Click on the given link to activate your account</b> <a href="${URL}/login/tokenVerification?individualVendorId=${individualVendorId}&token=${token}">click here</a>`
                 }
             ]
         })
