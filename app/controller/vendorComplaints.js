@@ -68,6 +68,7 @@ exports.getById = (req, res, next) => {
                 .then(complaints => {
                     const slotArr = [];
                     complaints.map(item => {
+                        let disable;
                         slotArr.splice(0, slotArr.length);
                         item.flat_detail_master.user_master.firstName = decrypt(item.flat_detail_master.user_master.firstName);
                         item.flat_detail_master.user_master.lastName = decrypt(item.flat_detail_master.user_master.lastName);
@@ -83,8 +84,16 @@ exports.getById = (req, res, next) => {
                             slotArr.push(item.slotTime3)
                         }
                         item = item.toJSON();
-                        item.slots = slotArr
+                        item.slots = slotArr;
                         // console.log(slotArr);
+
+                        if (item.isAccepted === true && item.vendorId !== req.userId) {
+                            disable = true;
+                        }
+                        else {
+                            disable = false;
+                        }
+                        item.disable = disable;
                         complaintsArr.push(item);
                     })
                     res.status(httpStatus.OK).json({
@@ -104,11 +113,13 @@ exports.rejectComplaint = (req, res, next) => {
     VendorComplaints.findOne({
         where: {
             complaintId: id,
+            vendorId: req.userId,
             isActive: true
         }
     })
         .then(complaint => {
-            complaint.updateAttributes({ isActive: false });
+            complaint.destroy();
+            VendorComplaints.update({ isActive: true }, { where: { complaintId: body.complaintId, vendorId: { [Op.ne]: req.userId } } });
             Complaint.findOne({
                 where: {
                     complaintId: id,
@@ -170,6 +181,7 @@ exports.selectSlot = (req, res, next) => {
     })
         .then(complaint => {
             complaint.updateAttributes({ selectedSlot: body.updatedSlots, complaintStatusId: 3 });
+            VendorComplaints.update({ isActive: false }, { where: { complaintId: body.complaintId, vendorId: { [Op.ne]: req.userId } } });
             res.status(httpStatus.CREATED).json({
                 message: 'Complaint in progress now'
             })
