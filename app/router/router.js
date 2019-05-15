@@ -701,19 +701,19 @@ module.exports = function (app) {
 
 	app.put('/api/vendorComplaints/complete', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.completedComplaint);
 
-	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isVendorRole],  purchaseOrderController.create);
+	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isAdminRole],  purchaseOrderController.create);
 
-	app.get('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.get);
+	app.get('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.get);
 
-	app.get('/api/downloadPdfClient/:id', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.downloadPdfClient);
+	app.get('/api/downloadPdfClient/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.downloadPdfClient);
 
-	app.put('/api/updatePurchaseOrder/:id', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.updatePurchaseOrder);
+	app.put('/api/updatePurchaseOrder/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.updatePurchaseOrder);
 
-	app.put('/api/updatePurchaseOrderDetails/:id', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.updatePurchaseOrderDetails);
+	app.put('/api/updatePurchaseOrderDetails/:id', [authJwt.verifyToken, authJwt.isAdminRole],purchaseOrderController.updatePurchaseOrderDetails);
 	
-	app.put('/api/deletePurchaseOrder/:id', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.delete);
+	app.put('/api/deletePurchaseOrder/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.delete);
 
-	app.put('/api/deletePurchaseOrders', [authJwt.verifyToken, authJwt.isVendorRole], purchaseOrderController.deleteSelected);
+	app.put('/api/deletePurchaseOrders', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.deleteSelected);
 
 
 

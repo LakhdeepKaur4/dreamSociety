@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
         rating: {
             type: Sequelize.STRING,
         },
-        rating: {
+        feedback: {
             type: Sequelize.STRING(2000),
         },
         isActive: {
