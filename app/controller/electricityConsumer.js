@@ -16,9 +16,9 @@ exports.create = async (req, res, next) => {
         const exists = await ElectricityConsumer.findOne({
             where: { isActive: true, flatDetailId: body.flatDetailId }
         });
-        if (exists) {
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "This Flat Data Already Exists" });
-        }
+        // if (exists) {
+        //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "This Flat Data Already Exists" });
+        // }
         body.userId = req.userId;
         const maintenanceType = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: 98 } });
         const rate = maintenanceType.rate
@@ -91,7 +91,7 @@ exports.update = async (req, res, next) => {
         // if (exists) {
         //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Already Exists" });
         // }
-      
+
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }

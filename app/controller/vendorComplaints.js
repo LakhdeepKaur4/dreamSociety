@@ -12,6 +12,7 @@ const FlatDetail = db.flatDetail;
 const Tower = db.tower;
 const Floor = db.floor;
 const User = db.user;
+const Feedback = db.feedback;
 
 let encrypt = (text) => {
     let key = config.secret;
@@ -119,7 +120,7 @@ exports.rejectComplaint = (req, res, next) => {
     })
         .then(complaint => {
             complaint.destroy();
-            VendorComplaints.update({ isActive: true }, { where: { complaintId: body.complaintId, vendorId: { [Op.ne]: req.userId } } });
+            VendorComplaints.update({ isActive: true }, { where: { complaintId: id, vendorId: { [Op.ne]: req.userId } } });
             Complaint.findOne({
                 where: {
                     complaintId: id,
@@ -209,6 +210,55 @@ exports.completedComplaint = (req, res, next) => {
             })
         })
         .catch(err => {
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+exports.deleteComplaints = (req, res, next) => {
+    const ids = req.body.complaintIds;
+    console.log('Comaplaint IDs ===>', ids);
+
+    VendorComplaints.findAll({
+        where: {
+            vendorId: req.userId,
+            isActive: true,
+            complaintId: {
+                [Op.in]: ids
+            }
+        }
+    })
+        .then(complaints => {
+            complaints.map(item => {
+                item.destroy();
+            })
+            res.status(httpStatus.OK).json({
+                message: 'Deleted successfully'
+            })
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+exports.getFeedback = (req, res, next) => {
+    const id = req.params.id;
+    console.log('Complaint ID ===>', id);
+
+    Feedback.findOne({
+        where: {
+            complaintId: id,
+            vendorId: req.userId,
+            isActive: true
+        }
+    })
+        .then(feedback => {
+            res.status(httpStatus.OK).json({
+                feedback
+            })
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
