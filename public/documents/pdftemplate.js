@@ -1,4 +1,4 @@
-module.exports = (assets,services,issuedBy,expDateOfDelievery) => {
+module.exports = (assets=[],services=[],issuedBy,expDateOfDelievery) => {
    console.log("Atin Tanwar ===============>")
     const today = new Date();
 return `
@@ -33,9 +33,6 @@ return `
              .invoice-box table td {
              padding: 5px;
              vertical-align: top;
-             }
-             .invoice-box table tr td:nth-child(2) {
-             text-align: right;
              }
              .invoice-box table tr.top table td {
              padding-bottom: 20px;
