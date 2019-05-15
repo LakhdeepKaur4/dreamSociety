@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { getComplaints,rejectComplaint,acceptComplaint,sendConfirmations,complaintCompleted} from '../../../actionCreators/viewComplaintsAction';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table, Col, Row } from 'reactstrap';
+import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table} from 'reactstrap';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/superAdminDashboard';
 import Spinner from '../../../components/spinner/spinner';
 import DefaultSelect from '../../../constants/defaultSelect';
-import { ItemMeta } from 'semantic-ui-react';
+
 
 class ViewComplaints extends Component {
 constructor(){
@@ -32,8 +32,8 @@ constructor(){
             modalLoading: false,
             message:'',
             accept:'',
-            updatedSlots:''
-        
+            updatedSlots:'',
+            disable:''
 
     }
 }
@@ -81,7 +81,7 @@ constructor(){
     searchFilter(search) {
         return function (x) {
 
-            return x.complaintId.toString().includes(search.toLowerCase()) || !search;
+            return x.flat_detail_master.flatNo.toString().includes(search.toLowerCase()) || !search;
         }
     }
 
@@ -132,22 +132,18 @@ constructor(){
                     modalLoading:true
                 })
             }
-                
-            // .catch(err=>{
-            //     this.setState({modalLoading:false,message: err.response.data.message, loading: false})
-            //     })
-            //     if(this.state.message === ''){
-            //         this.setState({editModal: true})
-            //     }
-            //     else {
-            //         this.setState({editModal: false})
-            //     }       
-    //         this.setState({ modalLoading: true
-    //    })
        
     }
 
-    
+       deleteSelected(ids){
+        this.setState({loading:true,
+        isDisabled:true});
+        this.props.deleteSelectedService(ids)
+        .then(() => this.refreshData())
+        .catch(err => err.response.data.message);
+    }
+
+  
 
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
@@ -164,7 +160,27 @@ constructor(){
                 return (
                     
                     <tr key={item.complaintId}>
-                        
+                         <td><input type="checkbox" name="ids" className="SelectAll" value={item.complaintId}
+                         onChange={(e) => {
+                            const {complaintId} = item
+                            if(!e.target.checked){
+                                document.getElementById('allSelect').checked=false;
+                                let indexOfId = this.state.ids.indexOf(complaintId);
+                                if(indexOfId > -1){
+                                    this.state.ids.splice(indexOfId, 1);
+                                }
+                                if(this.state.ids.length === 0){
+                                    this.setState({isDisabled: true});
+                                }
+                            }
+                            else {
+                                this.setState({ids: [...this.state.ids, complaintId]});
+                                if(this.state.ids.length >= 0){
+                                    this.setState({isDisabled: false})
+                                }
+                            }
+                                
+                             }}/></td>
                         <td>{index+1}</td>
                         <td>{"Flat No- " + item.flat_detail_master.flatNo+" , " +  item.flat_detail_master.floor_master.floorName + " floor, " + " " + item.flat_detail_master.tower_master.towerName}</td>
                         <td>{item.description}</td> 
@@ -173,11 +189,11 @@ constructor(){
                       
                         <Button color="primary" className="mr-2" name="accept"  onClick={this.acceptComplaint.bind(this,item.complaintId)}  disabled={!!(item.complaint_status_master.statusType==='ACCEPTED') || !!(item.complaint_status_master.statusType==='COMPLETED')|| !!(item.complaint_status_master.statusType==='CANCELED') ||  !!(item.complaint_status_master.statusType==='IN PROGRESS')}>Accept</Button>
                         <Button color="danger" className="mr-2" onClick={this.rejectComplaint.bind(this,item.complaintId)}  disabled={!!(item.complaint_status_master.statusType==='COMPLETED' ) ||  !!(item.complaint_status_master.statusType==='CANCELED')}>Reject</Button>
-                        <Button color="success" className="mr-2" onClick={this.complaintCompleted.bind(this,item.complaintId)} disabled={!!(item.complaint_status_master.statusType==='COMPLETED') ||  !!(item.complaint_status_master.statusType==='CANCELED')}>Completed</Button>
+                        <Button color="success" className="mr-2" onClick={this.complaintCompleted.bind(this,item.complaintId)} disabled={!!(item.complaint_status_master.statusType==='COMPLETED') ||  !!(item.complaint_status_master.statusType==='CANCELED') || !!(item.complaint_status_master.statusType==='ACCEPTED')}>Completed</Button>
                         </td>
                         <td>{item.complaint_status_master.statusType}</td>
                         <td>
-                            <Button color="success" className="mr-2"  onClick={this.openComplaint.bind(this,item.complaintId,item.slots)} disabled={!!(item.complaint_status_master.statusType==='REGISTERED' ) || !!(item.complaint_status_master.statusType==='COMPLETED') || !!(item.complaint_status_master.statusType==='IN PROGRESS') || !!(item.complaint_status_master.statusType==='CANCELED')}>Send</Button>
+                            <Button color="success" className="mr-2"  onClick={this.openComplaint.bind(this,item.complaintId,item.slots)} disabled={!!(item.complaint_status_master.statusType==='REGISTERED' ) || !!(item.complaint_status_master.statusType==='COMPLETED') || !!(item.complaint_status_master.statusType==='IN PROGRESS') || !!(item.complaint_status_master.statusType==='CANCELED') || !!(item.disable === true)}>Send</Button>
                         
                         
                         </td>
@@ -216,6 +232,33 @@ constructor(){
         return this.props.history.replace('/superDashboard/changePassword')
     }
 
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar =[];
+            for(var i = 0; i < selectMultiple.length; i++){
+                    ar.push(parseInt(selectMultiple[i].value));
+                    selectMultiple[i].checked = true;
+            }
+            this.setState({ids: ar});
+            if(ar.length > 0){
+                this.setState({isDisabled: false});
+            }
+    }
+
+    unSelectAll = () =>{
+        
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for(var i = 0; i < unSelectMultiple.length; i++){
+                unSelectMultiple[i].checked = false
+        }
+        
+        this.setState({ids: [ ...allIds]});
+        if(allIds.length === 0){
+            this.setState({isDisabled: true});
+        }
+        
+    }
   
 
     
@@ -226,7 +269,7 @@ constructor(){
         <Table className="table table-bordered">
         <thead>
             <tr>
-            
+                <th style={{width:'4%'}}></th>
                 <th style={{width:'4%'}}>#</th>
                 <th onClick={()=>{
                              this.setState((state)=>{return {sortVal:!state.sortVal,
@@ -234,7 +277,7 @@ constructor(){
                         }}>Flat Details <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Description</th>
                 <th>Complainee</th>
-                <th style={{width:'19%'}}>Actions</th>
+                <th style={{width:'19%', textAlign:'center'}}>Actions</th>
                 <th style={{width:'11%'}}>Current Status</th>
                 <th>Send Confirmation</th>
                 
@@ -271,7 +314,8 @@ constructor(){
                             <Button color="danger" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button>
                         </FormGroup>
 </div>
-          
+           let deleteSelectedButton = <Button color="danger" className="mb-2"
+           onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>
         return (
 
             <div>
@@ -294,7 +338,20 @@ constructor(){
              
                     <SearchFilter type="text" value={this.state.search}
                         onChange={this.searchOnChange} />
-                 
+                    
+                            {deleteSelectedButton}
+
+                    <Label style={{padding:'10px'}}><b>Select All</b><input className="ml-2"
+                        id="allSelect"
+                        type="checkbox" onChange={(e) => {
+                            if(e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if(!e.target.checked){
+                                this.unSelectAll();
+                            } 
+                        } }/>
+                    </Label>
                           
                    
                            {!this.state.loading ? tableData : <Spinner />}
