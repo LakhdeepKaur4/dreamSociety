@@ -143,7 +143,7 @@ exports.deleteSelected = async (req, res, next) => {
         if (!deleteSelected) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
         }
-        const updatedElectricityConsumer = await updatedElectricityConsumer.update(update, { where: { electricityConsumerId: { [Op.in]: deleteSelected } } })
+        const updatedElectricityConsumer = await ElectricityConsumer.update(update, { where: { electricityConsumerId: { [Op.in]: deleteSelected } } })
         if (updatedElectricityConsumer) {
             return res.status(httpStatus.OK).json({
                 message: "Electricity Consumer deleted successfully",
