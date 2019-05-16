@@ -3,21 +3,22 @@
 // export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 // export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
-
-
 // export  const URN = 'http://mydreamsociety.herokuapp.com/api';
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://mydreamsociety.herokuapp.com/';
 
+// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com/'
+// export  const URN = 'https://dreamsociety.herokuapp.com/api';
+
 export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-export  const UR = 'https://dreamsociety.herokuapp.com/'
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export  const UR =     'https://dreamsociety.herokuapp.com/'
+export  const URN =    'https://dreamsociety.herokuapp.com/api';
 
 
-
-    
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
@@ -338,13 +339,21 @@ export const RELEASE_RESOURCE='RELEASE_RESOURCE';
 // export const USER_LOGIN='USER_LOGIN';
 export const GET_COMPLAINTS='GET_COMPLAINTS';
 export const REJECT_COMPLAINT='REJECT_COMPLAINT';
-
+export const ACCEPT_COMPLAINT='ACCEPT_COMPLAINT';
 export const COMPLAINT_CANCELLED='COMPLAINT_CANCELLED';
+export const SEND_COMPLAINT='SEND_COMPLAINT';
+export const COMPLAINT_COMPLETE='COMPLAINT_COMPLETE';
 export const COMPLAINT_FEEDBACK='COMPLAINT_FEEDBACK';
 export const COMPLAINT_ALL_DELETED='COMPLAINT_ALL_DELETED';
 
 //***************************************** */
 export const GET_FLOOR_OF_TOWER = 'GET_FLOOR_OF_TOWER';
+export const FETCH_EXPENSE_VIA_FLAT='FETCH_EXPENSE_VIA_FLAT';
+export const CALCULATE_ELECTRICITY_EXPENSE='CALCULATE_ELECTRICITY_EXPENSE';
+export const ADD_MONTHLY_ELEC_CHARGES='ADD_MONTHLY_ELEC_CHARGES';
+export const ERR_MESSAGE_ON_POST='ERR_MESSAGE_ON_POST';
+export const GET_ELECT_EXPENSE_DETAIL='GET_ELECT_EXPENSE_DETAIL';
+export const UPDATE_MONTHLY_ELECTRICITY_EXPENSE='UPDATE_MONTHLY_ELECTRICITY_EXPENSE';
 
 
 

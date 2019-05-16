@@ -53,6 +53,7 @@ import RFIdReducer from './rfReducer/rfReducer'
 import commonAreaMachineReducer from './commonAreaMachineReducer/commonAreaMachineReducer';
 import viewComplaintsReducer from './viewComplaintsReducer/viewComplaintsReducer';
 import electricityExpenseReducer from './electricityExpenseMaster/electricityExpenseMasterReducer';
+import monthlyElectricityExpenseReducer from './monthlyElectricityExpenseReducer/monthlyElectricityExpenseReducer';
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -104,6 +105,7 @@ const rootReducer = combineReducers({
     RFIdReducer,
     MachineIdDetails,
     viewComplaintsReducer,
-    electricityExpenseReducer 
+    electricityExpenseReducer,
+    monthlyElectricityExpenseReducer 
 })
 export default rootReducer;

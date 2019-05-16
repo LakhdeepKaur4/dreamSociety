@@ -63,8 +63,8 @@ export function deleteSelectedMaintenanceSubMasterDetail(ids){
     }
 }
 
-export function updateMaintenanceSubMasterDetail(maintenanceTypeId,category, sizeType, rate, maintenanceId, sizeId ){
-    const request = axios.put(`${URN}/maintenanceType/` +maintenanceTypeId, {category, sizeType, rate, maintenanceId, sizeId}, {headers: authHeader()})
+export function updateMaintenanceSubMasterDetail(maintenanceTypeId,category, sizeType, rate, startDate, endDate, maintenanceId, sizeId ){
+    const request = axios.put(`${URN}/maintenanceType/` +maintenanceTypeId, {category, sizeType, rate, startDate, endDate, maintenanceId, sizeId}, {headers: authHeader()})
     .then(() => this.getMaintenanceSubSizeDetails())
     return {
         type: UPDATE_SUB_MAINTENANCE_DETAILS,
