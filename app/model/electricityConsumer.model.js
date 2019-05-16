@@ -5,12 +5,6 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true,
       primaryKey: true
     },
-    startDate: {
-      type: Sequelize.DATEONLY,
-    },
-    endDate: {
-      type: Sequelize.DATEONLY,
-    },
     lastReading: {
       type: Sequelize.STRING,
     },
@@ -18,6 +12,9 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER,
     },
     rate: {
+      type: Sequelize.INTEGER,
+    },
+    rent: {
       type: Sequelize.INTEGER,
     },
     amountDue: {

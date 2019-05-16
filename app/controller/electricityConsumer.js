@@ -13,17 +13,21 @@ exports.create = async (req, res, next) => {
     try {
         console.log("creating event");
         let body = req.body;
+        var nowDate = new Date();
+        var date = nowDate.getFullYear() + '/' + (nowDate.getMonth() + 1) + '/' + nowDate.getDate();
+        body.entryDate = date;
+        console.log(body.entryDate);
         const exists = await ElectricityConsumer.findOne({
             where: { isActive: true, flatDetailId: body.flatDetailId }
         });
         if (exists) {
             exists.updateAttributes(body);
-            return res.status(httpStatus.OK).json({ message: "Updated Successfully" });
+            return res.status(httpStatus.OK).json({ message: "Electricity Consumer successfully created" });
         }
         body.userId = req.userId;
-        const maintenanceType = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: 98 } });
-        const rate = maintenanceType.rate
-        body.totalConsumption = body.unitConsumed * rate;
+        // const maintenanceType = await MaintenanceType.findOne({ where: { isActive: true, maintenanceId: 98 } });
+        // // const rate = maintenanceType.rate
+        // // body.totalConsumption = body.unitConsumed * rate;
         const electricityConsumer = await ElectricityConsumer.create(body);
         return res.status(httpStatus.CREATED).json({
             message: "Electricity Consumer successfully created",
@@ -172,6 +176,24 @@ exports.calculateMonthlyCharges = async (req, res, next) => {
                 { monthlyCharges }
             );
         }
+    } catch (error) {
+        console.log(error)
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.dateFilter = async (req, res, next) => {
+    try {
+        const from = req.params.from;
+        const to = req.params.to;
+        const electricityConsumer = await ElectricityConsumer.findOne({
+            where: {
+                isActive: true, entryDate: { [Op.between]: [from, to] },
+                include: [{ model: FlatDetail, include: [Tower, Floor] }],
+                order: [['createdAt', 'DESC']],
+            }
+        });
+        return res.status(httpStatus.OK).json({ electricityConsumer });
     } catch (error) {
         console.log(error)
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);

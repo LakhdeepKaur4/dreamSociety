@@ -651,6 +651,8 @@ module.exports = function (app) {
 
 	app.post('/api/electricityConsumer', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.create);
 
+	// app.get('/api/electricityConsumer/:startDate/:endDate', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.dateFilter);
+
 	app.get('/api/electricityConsumer/flat/:id', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.getByFlatNo);
 
 	app.put('/api/electricityConsumer/calculate/charges', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.calculateMonthlyCharges);
