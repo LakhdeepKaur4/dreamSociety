@@ -223,18 +223,66 @@ exports.feedback = (req, res, next) => {
                         isActive: true
                     }
                 })
-                .then(complaint => {
-                    complaint = complaint.toJSON();
-                    delete complaint.complaintId;
-                    delete complaint.createdAt;
-                    delete complaint.updatedAt;
-                    delete complaint.vendorId;
-                    delete complaint.selectedSlot;
-                    complaint.isAccepted = false;
-                    complaint.complaintStatusId = 1;
-                    complaint.userId = req.userId;
-                    Complaint.create(complaint);
-                })
+                    .then(complaint => {
+                        complaint = complaint.toJSON();
+                        delete complaint.complaintId;
+                        delete complaint.createdAt;
+                        delete complaint.updatedAt;
+                        delete complaint.vendorId;
+                        delete complaint.selectedSlot;
+                        complaint.isAccepted = false;
+                        complaint.complaintStatusId = 1;
+                        complaint.userId = req.userId;
+                        Complaint.create(complaint)
+                            .then(complaintCreated => {
+                                if (complaintCreated !== null) {
+                                    delete feedback.complaintId;
+                                    delete feedback.vendorId;
+                                    delete feedback.userId;
+                                    delete feedback.rating;
+                                    delete feedback.status;
+                                    delete feedback.feedback;
+                                    Complaint.update({ feedback }, { where: { complaintId: complaintCreated.complaintId } });
+                                    VendorService.findAll({
+                                        where: {
+                                            serviceId: complaintCreated.serviceId,
+                                            isActive: true
+                                        },
+                                        attributes: ['vendorId']
+                                    })
+                                        .then(vendorIdsRes => {
+                                            if (vendorIdsRes.length !== 0) {
+                                                vendorIdsRes.map(item => {
+                                                    vendorIds.push(item.vendorId);
+                                                })
+                                                Vendor.findAll({
+                                                    where: {
+                                                        vendorId: {
+                                                            [Op.in]: vendorIds
+                                                        },
+                                                        isActive: true
+                                                    },
+                                                    attributes: ['vendorId']
+                                                })
+                                                    .then(vendorIdsRec => {
+                                                        if (vendorIdsRec.length !== 0) {
+                                                            vendorIdsRec.map(item => {
+                                                                VendorComplaints.create({
+                                                                    vendorId: item.vendorId,
+                                                                    complaintId: complaintCreated.complaintId
+                                                                })
+                                                            })
+                                                        }
+                                                    })
+                                            }
+
+                                        })
+                                    res.status(httpStatus.CREATED).json({
+                                        message: 'Compalint registered successfully'
+                                    })
+                                }
+                            })
+                    })
             }
             res.status(httpStatus.CREATED).json({
                 message: 'Feedback submitted successfully'
@@ -260,7 +308,7 @@ exports.deleteComplaints = (req, res, next) => {
     })
         .then(complaints => {
             complaints.map(item => {
-                item.updateAttributes({isActive:false})
+                item.updateAttributes({ isActive: false })
             })
             res.status(httpStatus.OK).json({
                 message: 'Deleted successfully'
