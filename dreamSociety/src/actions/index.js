@@ -341,8 +341,10 @@ export const REJECT_COMPLAINT='REJECT_COMPLAINT';
 
 export const COMPLAINT_CANCELLED='COMPLAINT_CANCELLED';
 export const COMPLAINT_FEEDBACK='COMPLAINT_FEEDBACK';
+export const COMPLAINT_ALL_DELETED='COMPLAINT_ALL_DELETED';
 
 //***************************************** */
 export const GET_FLOOR_OF_TOWER = 'GET_FLOOR_OF_TOWER';
+
 
 

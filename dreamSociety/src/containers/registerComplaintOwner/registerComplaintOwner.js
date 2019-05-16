@@ -9,13 +9,14 @@ import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
 
 
-class RegisterComplaint extends Component{
+class RegisterComplaintOwner extends Component{
     
     constructor(props) {
         super(props);
         this.state = {
             flatDetailId:'',
             serviceId:'',
+            priority:'',
             date:'',
             slotTime1:'',
             slotTime2:'',
@@ -24,6 +25,8 @@ class RegisterComplaint extends Component{
             errors: {},
             message:'',
             modal:false,
+            loading: true,
+            
            
 
             menuVisible: false,
@@ -106,9 +109,14 @@ class RegisterComplaint extends Component{
             errors.serviceId = "cant be empty";
         }
 
-        else if(this.state.priority==='') {
+        else if(this.state.priority ==='') {
             errors.priority = "cant be empty";
         }
+
+        else if(this.state.date ==='') {
+            errors.date = "cant be empty";
+        }
+
 
         else if(this.state.slotTime1 ==='') {
             errors.slotTime1 = "cant be empty";
@@ -231,13 +239,13 @@ class RegisterComplaint extends Component{
                 <Col md={4}>
                     <Label>Slot Time 1</Label>
                     <Input type="time"  name="slotTime1" onChange={this.onChange} >
-                    <span className='error'>{this.state.errors.startTime1}</span>
                     </Input>
+                    <span className='error'>{this.state.errors.slotTime1}</span>
                 </Col>
                 
                 <Col md={4}>
                     <Label>Slot Time 2</Label>
-                    <Input type="time"  name="slotTime12" onChange={this.onChange} >
+                    <Input type="time"  name="slotTime2" onChange={this.onChange} >
                     </Input>
                 </Col>
                
@@ -257,7 +265,7 @@ class RegisterComplaint extends Component{
                 <Label>Description</Label>
                 <Input type="textarea"  name="description" maxLength={500} onChange={this.onChange}>
                 </Input >
-                {/* <span className='error'>{this.state.errors.description}</span> */}
+                <span className='error'>{this.state.errors.description}</span>
             </FormGroup>
 
             <FormGroup>
@@ -301,4 +309,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ userflatDetails,postRegister,serviceDetails }, dispatch);
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(RegisterComplaint));
+export default (connect(mapStateToProps, mapDispatchToProps)(RegisterComplaintOwner));
