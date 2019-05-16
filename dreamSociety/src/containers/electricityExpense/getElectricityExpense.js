@@ -389,7 +389,7 @@ class GetElectricityExpense extends Component {
                             value={this.state.amount}
                         />
                         <FormGroup>
-                            <ButtonComponent color="success"
+                            <ButtonComponent color="primary"
                                 className='mr-2'
                                 buttonClicked={this.update}
                                 title='Save' />

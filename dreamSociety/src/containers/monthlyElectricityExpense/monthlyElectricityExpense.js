@@ -7,8 +7,8 @@ import { Col, Row, Form, Button, FormGroup } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 import { getTowerName } from '../../actionCreators/flatDetailMasterAction';
 import { getfloorsOfTowers, addElectricityExpense } from '../../actionCreators/electricityExpense';
-import { getExpenseDetail, calculateCharges } from '../../actionCreators/monthlyElectricityExpense';
-import { numberValidation, memberMaxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler } from '../../validation/validation';
+import { getExpenseDetail, calculateCharges, addMonthlyElecCharges } from '../../actionCreators/monthlyElectricityExpense';
+import { memberMaxDate } from '../../validation/validation';
 
 class MonthlyElectricityExpense extends Component {
     constructor(props){
@@ -22,18 +22,23 @@ class MonthlyElectricityExpense extends Component {
             rent:'',
             sanctionedLoad:'',
             mdi:'',
-            startDate:'',
-            endDate:'',
+            // startDate:'',
+            // endDate:'',
             unitConsumed:'',
+            lastReading:'',
+            currentReading:'',
             monthlyCharges:'',
             electricityConsumerId:'',
             amount:'',
             amountDue:null,
+            loading:true,
+            errors:{},
+            errMessage:''
         }
     }
 
     componentDidMount() {
-        this.props.getTowerName();
+        this.props.getTowerName().then(() => this.setState({loading:false}));
         console.log(this.props.getTowerName)
     }
 
@@ -47,12 +52,21 @@ class MonthlyElectricityExpense extends Component {
         return this.props.history.replace('/superDashboard/changePassword');
     }
 
-    towerChangeHandler = (event) => {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
+    towerChangeHandler = (e) => {
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({
+                [e.target.name]: e.target.value,
+                errors,errMessage:''
+            });
+            
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value.trim(),errMessage:'' })
+        }
         console.log(this.state.towerId);
-        this.props.getfloorsOfTowers(event.target.value)
+        this.props.getfloorsOfTowers(e.target.value)
     }
 
     getDropdownForTower = ({ name }) => {
@@ -88,6 +102,40 @@ class MonthlyElectricityExpense extends Component {
     //     }
     // }
 
+    startDateChange = (e) => {
+        var start = document.getElementById('start');
+        var end = document.getElementById('end');
+
+        if (start.value) {
+            end.min = start.value;
+        }
+        if (!!this.state.errors[e.target.name]){
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors,subMaintenanceErr:'' });
+        }
+        else{
+            this.setState({[e.target.name]:e.target.value,subMaintenanceErr:''});
+        }
+    }
+
+    endDateChange = (e) => {
+        var start = document.getElementById('start');
+        var end = document.getElementById('end');
+
+        if (end.value) {
+            start.max = end.value;
+        }
+
+        if (!!this.state.errors[e.target.name]){
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors,subMaintenanceErr:'' });
+        }
+        else{
+            this.setState({[e.target.name]:e.target.value,subMaintenanceErr:''});
+        }
+    }
 
     getFlatData = ({ floorDetails }) => {
         console.log(floorDetails)
@@ -110,33 +158,64 @@ class MonthlyElectricityExpense extends Component {
 
     floorChangeHandler = (e) => {
 
-        this.setState({
-            [e.target.name]: e.target.value
-        })
-        console.log(this.state.floorId);
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({
+                [e.target.name]: e.target.value,
+                errors,
+                errMessage:''
+            });
+            
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value ,errMessage:''})
+        }
     }
 
     flatChangeHandler = (e) => {
-        this.setState({
-            [e.target.name]: e.target.value
-        });
-        console.log(this.state.flatDetailId);
+        
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({
+                [e.target.name]: e.target.value,
+                errors,errMessage:''
+            });
+            
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value.trim(),errMessage:'' })
+        }
         this.props.getExpenseDetail(e.target.value)
-        .then(() => this.getAllDetail(this.props.monthlyElectricityExpenseReducer))
+            .then(() => this.getAllDetail(this.props.monthlyElectricityExpenseReducer));
     }
 
 
     rateChange = (e) => {
-        console.log(this.state.unitConsumed)
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)) {
-            this.setState({ [e.target.name]: e.target.value });
-            console.log(this.state.unitConsumed)
+            this.setState({ [e.target.name]: e.target.value,errMessage:''});
+            console.log(this.state);
+        }
+        if(!!this.state.errors[e.target.name]){
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({
+                errors,errMessage:''
+            });
         }
     }
 
     currentReadingChange = (e) => {
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)) {
-            this.setState({ currentReading: e.target.value, unitConsumed:(e.target.value - this.state.lastReading) });
+            this.setState({ currentReading: e.target.value, unitConsumed:(e.target.value - this.state.lastReading),errMessage:'' });
+        }
+        if(!!this.state.errors[e.target.name]){
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({
+                errors,errMessage:''
+            });
         }
     }
 
@@ -146,7 +225,35 @@ class MonthlyElectricityExpense extends Component {
 
     submit = (e) => {
         e.preventDefault();
+        let errors = {};
         console.log(this.state);
+        let { towerId, floorId, flatDetailId, lastReading, currentReading, unitConsumed, lastAmountDue, rate, rent, sanctionedLoad,
+            mdi,amountDue, amount, monthlyCharges,electricityConsumerId } = this.state;
+        if(!towerId) errors.towerId = `Select tower.`;
+        if(!floorId) errors.floorId = `Select floor.`;
+        if(!flatDetailId) errors.flatDetailId=`Select flat.`;
+        if(currentReading === '') errors.currentReading = `Current reading can't be empty.`;
+        if(rent === '') errors.rent = `Rent can't be empty.`;
+        if(mdi === '') errors.mdi = `MDI can't be empty.`;
+        // if(!document.getElementById('monthlyCharges').value) errors.monthlyCharges = `Please calculate monthly charges.`
+
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0;
+
+        if (isValid) {
+            let data = {
+                towerId, floorId, flatDetailId, lastReading, currentReading, unitConsumed, lastAmountDue, rate, rent, sanctionedLoad,
+            mdi,amountDue, amount, monthlyCharge:monthlyCharges,electricityConsumerId
+            }
+            this.setState({loading:true});
+            this.props.addMonthlyElecCharges(data)
+            .then(() => this.props.history.push('/superDashboard/monthlyElectricityExpenseDetail'))
+            .catch(err => {
+                err;
+                console.log(err.response)
+                this.setState({errMessage:err.response.data.message, loading:false});
+            })
+        }
     }
 
     getAllDetail({getExpenseDetail}){
@@ -190,7 +297,8 @@ class MonthlyElectricityExpense extends Component {
     }
 
     render(){
-        
+        let { towerId, floorId, flatDetailId, lastReading, currentReading, unitConsumed, lastAmountDue, rate, rent, sanctionedLoad,
+        mdi,amountDue, amount, monthlyCharges,startDate, endDate, errors } = this.state;
         let form;
         form = <div>
             <FormGroup>
@@ -201,6 +309,7 @@ class MonthlyElectricityExpense extends Component {
                             <DefaultSelect />
                             {this.getDropdownForTower(this.props.flatDetailMasterReducer)}
                         </select>
+                        <span className="error">{errors.towerId}</span>
                     </Col>
                     <Col md={4}>
                         <label>Floor</label>
@@ -208,6 +317,7 @@ class MonthlyElectricityExpense extends Component {
                             <DefaultSelect />
                             {this.getFloorData(this.props.electricityExpenseReducer)}
                         </select>
+                        <span className="error">{errors.floorId}</span>
                     </Col>
                     <Col md={4}>
                         <label>Flat</label>
@@ -215,6 +325,7 @@ class MonthlyElectricityExpense extends Component {
                             <DefaultSelect />
                             {this.getFlatData(this.props.electricityExpenseReducer)}
                         </select>
+                        <span className="error">{errors.flatDetailId}</span>
                     </Col>
                 </Row>
             </FormGroup>
@@ -225,19 +336,21 @@ class MonthlyElectricityExpense extends Component {
                         <input className="form-control" placeholder="Last Reading"
                             type="text" name="lastReading"
                             maxLength="16"
-                            onChange={this.flatChangeHandler}
+                            onChange={this.rateChange}
                             readOnly
-                            value={this.state.lastReading}/>
+                            value={lastReading}/>
                     </Col>
                     <Col md={4}>
                         <label>Current Reading</label>
                         <input className="form-control"
-                            placeholder="Last Amount Due"
+                            placeholder="Current Reading"
                             type="text" name="currentReading"
                             maxLength="10"
+                            value={currentReading}
                             onChange={this.currentReadingChange}
                             // value={this.state.currentReading} 
                             />
+                        <span className="error">{errors.currentReading}</span>
                     </Col>
                     <Col md={4}>
                         <label>Unit Consumed</label>
@@ -246,9 +359,8 @@ class MonthlyElectricityExpense extends Component {
                             type="text" name="unitConsumed"
                             maxLength="16"
                             readOnly
-                            value={(this.state.currentReading && this.state.lastReading) ? (this.state.currentReading - this.state.lastReading):''}
+                            value={(currentReading && !!lastReading) ? (currentReading - lastReading):''}
                             onChange={this.rateChange}
-                            // value={this.state.currentReading} 
                             />
                     </Col>
                 </Row>
@@ -261,8 +373,8 @@ class MonthlyElectricityExpense extends Component {
                             placeholder="Last Amount Due"
                             readOnly
                             type="text" name="lastAmountDue"
-                            maxLength="10" onChange={this.flatChangeHandler}
-                            value={(this.state.amountDue == true ? '-' : this.state.amountDue == false ? '+':'') + this.state.amount}
+                            maxLength="10" onChange={this.rateChange}
+                            value={(amountDue == true ? '-' : amountDue == false ? '+':'') + amount}
                             />
                     </Col>
                     <Col md={3}>
@@ -272,9 +384,7 @@ class MonthlyElectricityExpense extends Component {
                             type="text" name="rate"
                             readOnly
                             value={this.state.rate}
-                            maxLength="10" onChange={this.flatChangeHandler}
-                            // onChange={this.rateChange}
-                            // value={this.state.currentReading} 
+                            maxLength="10" onChange={this.rateChange}
                             />
                     </Col>
                     <Col md={3}>
@@ -283,9 +393,10 @@ class MonthlyElectricityExpense extends Component {
                             placeholder="Rent"
                             type="text" name="rent"
                             maxLength="16"
-                            onChange={this.flatChangeHandler}
+                            onChange={this.rateChange}
                             value={this.state.rent} 
                             />
+                        <span className="error">{errors.rent}</span>
                     </Col>
                     <Col md={3}>
                         <label>Sanctioned Load</label>
@@ -294,9 +405,8 @@ class MonthlyElectricityExpense extends Component {
                             type="text" name="sanctionedLoad"
                             maxLength="16"
                             readOnly
-                            value={this.state.sanctionedLoad}
-                            onChange={this.flatChangeHandler}
-                            // value={this.state.currentReading} 
+                            value={sanctionedLoad}
+                            onChange={this.rateChange}
                             />
                     </Col>
                 </Row>
@@ -309,9 +419,10 @@ class MonthlyElectricityExpense extends Component {
                             placeholder="MDI"
                             type="text" name="mdi"
                             maxLength="16"
-                            onChange={this.flatChangeHandler}
-                            value={this.state.mdi} 
+                            onChange={this.rateChange}
+                            value={mdi} 
                             />
+                        <span className="error">{errors.mdi}</span>
                     </Col>
                     <Col md={4}>
                         <label>Monthly Charges</label>
@@ -320,28 +431,32 @@ class MonthlyElectricityExpense extends Component {
                             type="text" name="monthlyCharges"
                             maxLength="16"
                             readOnly
-                            value={this.state.monthlyCharges}
+                            id="monthlyCharges"
+                            value={monthlyCharges}
                             onChange={this.rateChange}
-                            // value={this.state.currentReading} 
                             />
+                        <span className="error">{errors.monthlyCharges}</span>
                     </Col>
                     <Col md={3} style={{textAlign:'center'}}>
-                        <Button color="primary" style={{marginTop:'28px'}} onClick={this.calcCharges}>Calculate Charges</Button>
+                        <Button disabled={(!towerId || !floorId || !flatDetailId || !lastReading || !currentReading || !unitConsumed || !amount || !rate || !rent || !sanctionedLoad ||
+                        !mdi)} color="primary" style={{marginTop:'28px'}} onClick={this.calcCharges}>Calculate Charges</Button>
                     </Col>
                 </Row>
             </FormGroup>
-            <FormGroup>
+            {/* <FormGroup>
                 <Row md={12}>
                     <Col md={6}>
                         <label>Start Date</label>
                         <input min={memberMaxDate()} className="form-control" type="date" name="startDate" id="start" onChange={this.startDateChange} />
+                        <span className="error">{errors.startDate}</span>
                     </Col>
                     <Col md={6}>
                         <label>End Date</label>
-                        <input className="form-control" type="date" name="endDate" id="end" onChange={this.endDateChange} />
+                        <input disabled={!startDate} className="form-control" type="date" name="endDate" id="end" onChange={this.endDateChange} />
+                        <span className="error">{errors.startDate}</span>
                     </Col>
                 </Row>
-            </FormGroup>
+            </FormGroup> */}
             <FormGroup>
                 <Button className="btn btn-success mr-2">Add Expense</Button>
                 <Button className="btn btn-danger">Cancel</Button>
@@ -356,7 +471,8 @@ class MonthlyElectricityExpense extends Component {
                     <div>
                         <h3 style={{ textAlign: 'center', marginBottom: '15px' }}>Add Monthly Electricity Expense</h3>
                     </div>
-                    {form}
+                    <div className="error">{this.state.errMessage}</div>
+                    {!this.state.loading ? form: <Spinner/>}
                 </Form>
             </UI>
         )
@@ -373,7 +489,8 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getTowerName, getfloorsOfTowers, addElectricityExpense, getExpenseDetail, calculateCharges }, dispatch);
+    return bindActionCreators({ getTowerName, getfloorsOfTowers, addElectricityExpense, getExpenseDetail,
+         calculateCharges,addMonthlyElecCharges }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MonthlyElectricityExpense);

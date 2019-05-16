@@ -127,6 +127,7 @@ import DisplayCommonAreaMachine from './containers/commonAreaMachineMaster/displ
 import AddElectricityExpense from './containers/electricityExpense/addElectricityExpense';
 import GetElectricityExpense from './containers/electricityExpense/getElectricityExpense';
 import MonthlyElectricityExpense from './containers/monthlyElectricityExpense/monthlyElectricityExpense';
+import MonthlyElectricityExpenseDetail from './containers/monthlyElectricityExpense/monthlyElectricityExpenseDetail';
 
 import RFID from './containers/rfIdMaster/rfIdMaster';
 import RfIdDetail from './containers/rfIdMaster/rfIdDetails';
@@ -284,7 +285,8 @@ class App extends Component {
             <Route path='/superDashboard/CommonAreaMachineMaster' component={CommonAreaMachine} />
             <Route path='/superDashboard/electricityExpenseMaster' component={AddElectricityExpense} />
             <Route path='/superDashboard/electricityExpenseDetail' component={GetElectricityExpense} />
-            <Route path='/superDashboard/monthlyElectricityExpenseDetail' component={MonthlyElectricityExpense} />
+            <Route path='/superDashboard/addMonthlyElectricityExpenseDetail' component={MonthlyElectricityExpense} />
+            <Route path='/superDashboard/monthlyElectricityExpenseDetail' component={MonthlyElectricityExpenseDetail} />
             
             <OwnerPrivateRoute path='/ownerDashboard/complaintOwnerDetails' component={ComplaintOwnerDetails}/>
             <TenantPrivateRoute path='/tenantDashboard/complaintTenantDetails' component={ComplaintTenantDetails}/>
