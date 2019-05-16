@@ -7,7 +7,7 @@ import { Col, Row, Form, Button, FormGroup } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 import { getTowerName } from '../../actionCreators/flatDetailMasterAction';
 import { getfloorsOfTowers, addElectricityExpense, getRateForElectricityExpense } from '../../actionCreators/electricityExpense';
-import { numberValidation, memberMaxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler } from '../../validation/validation';
+import { memberMaxDate } from '../../validation/validation';
 
 class AddElectricityExpense extends Component {
     constructor(props) {
@@ -24,7 +24,7 @@ class AddElectricityExpense extends Component {
             lastReadingDate: '',
             rate: '',
             errors: {},
-            message:''
+            message: ''
             // unitConsumed: '',
             // currentReading: '',
             // startDate: '',
@@ -166,7 +166,7 @@ class AddElectricityExpense extends Component {
         }
         if (this.state.lastReading === '') {
             errors.lastReading = `Last Reading can't be empty.`
-        } 
+        }
         // else if (this.state.lastReading.length !== 16) {
         //     errors.lastReading = `Last Reading can't be more than 16.`
         // }
@@ -178,7 +178,7 @@ class AddElectricityExpense extends Component {
         // }
         if (this.state.sanctionedLoad === '') {
             errors.sanctionedLoad = `Sanctioned Load can't be empty.`
-        } 
+        }
         // else if (this.state.sanctionedLoad.length !== 16) {
         //     errors.sanctionedLoad = `Sanctioned Load can't be more than 16.`
         // }
@@ -187,9 +187,9 @@ class AddElectricityExpense extends Component {
         if (isValid) {
             let data = { towerId, floorId, flatDetailId, lastReading, amount, sign, rate, lastReadingDate, sanctionedLoad, amountDue };
             this.props.addElectricityExpense(data).then(() => { this.props.history.push('/superDashboard/electricityExpenseDetail') })
-            .catch(error=>{
-                this.setState({message:error.response.data.message,loading:false});
-            })
+                .catch(error => {
+                    this.setState({ message: error.response.data.message, loading: false });
+                })
         }
     }
 
@@ -223,7 +223,7 @@ class AddElectricityExpense extends Component {
         form = <div>
             <FormGroup>
                 <Row md={12}>
-                <Col md={4}><span className="error">{this.state.message}</span></Col>
+                    <Col md={4}><span className="error">{this.state.message}</span></Col>
                 </Row>
                 <Row md={12}>
                     <Col md={4}>
@@ -261,14 +261,14 @@ class AddElectricityExpense extends Component {
                             maxLength="16"
                             onChange={this.rateChange}
                             value={this.state.lastReading} ></input>
-                            <span className="error">{this.state.errors.lastReading}</span>
+                        <span className="error">{this.state.errors.lastReading}</span>
                     </Col>
                     <Col md={3}>
                         <label><br /></label>
                         <select required className="form-control" defaultValue='no-value' name="sign" onChange={this.onSignChange}>
                             <DefaultSelect />
                             <option value="false" >+</option>
-                            <option  value="true">-</option>
+                            <option value="true">-</option>
                             {/* {this.getDropdownForTower(this.props.flatDetailMasterReducer)} */}
                         </select>
                         <span className="error">{this.state.errors.sign}</span>
@@ -283,8 +283,12 @@ class AddElectricityExpense extends Component {
                             onKeyPress={this.onKeyPressHandler}
                         // value={this.state.currentReading} 
                         />
-                          <span className="error">{this.state.errors.amount}</span>
+                        <span className="error">{this.state.errors.amount}</span>
                     </Col>
+                </Row>
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
                     <Col md={4}>
                         <label>Rate Per Unit</label>
                         <select required className="form-control" defaultValue='no-value' name="rate" onChange={this.flatChangeHandler}>
@@ -299,15 +303,16 @@ class AddElectricityExpense extends Component {
                             placeholder="Sanctioned Load"
                             type="text" name="sanctionedLoad"
                             maxLength="16"
-                            onChange={this.flatChangeHandler}
-                            onKeyPress={this.onKeyPressHandler}
+                            onChange={this.rateChange}
+                            value={this.state.sanctionedLoad}
+                            // onKeyPress={this.onKeyPressHandler}
                         // value={this.state.currentReading}
                         />
-                          <span className="error">{this.state.errors.sanctionedLoad}</span>
+                        <span className="error">{this.state.errors.sanctionedLoad}</span>
                     </Col>
                     <Col md={4}>
                         <label>Last Reading Date</label>
-                        <input className="form-control" type="date" name="lastReadingDate" id="end" onChange={this.endDateChange} />
+                        <input className="form-control" max={memberMaxDate()} type="date" name="lastReadingDate" id="end" onChange={this.endDateChange} />
                         <span className="error">{this.state.errors.lastReadingDate}</span>
                     </Col>
                     {/* <Col md={4}>
@@ -330,7 +335,8 @@ class AddElectricityExpense extends Component {
                     </Col>
                     <Col md={6}>
                         <label>Last Reading Date</label>
-                        <input className="form-control" type="date" name="endDate" id="end" onChange={this.endDateChange} />
+                        <input className="form-control" type="date" name="end
+                        " id="end" onChange={this.endDateChange} />
                     </Col>
                  </Row>
             </FormGroup> */}
