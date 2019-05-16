@@ -149,7 +149,7 @@ exports.get = async (req,res,next) => {
                 message: "Purchase Order",
                 purchaseOrder: purchaseNew
               });
-        },1000);
+        },5000);
 
     } catch(error){
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
