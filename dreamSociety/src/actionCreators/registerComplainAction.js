@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URN, REGISTER_COMPLAINT , USER_FLAT_DETAILS,POST_REGISTER_COMPLAINT,SERVICE_DETAILS,GET_REGISTER_DETAIL, COMPLAINT_CANCELLED,COMPLAINT_FEEDBACK} from '../actions/index'
+import { URN, REGISTER_COMPLAINT , USER_FLAT_DETAILS,POST_REGISTER_COMPLAINT,SERVICE_DETAILS,GET_REGISTER_DETAIL, COMPLAINT_CANCELLED,COMPLAINT_FEEDBACK, COMPLAINT_ALL_DELETED} from '../actions/index'
 import { authHeader } from '../helper/authHeader';
 
 
@@ -87,15 +87,30 @@ export const registerComplaint=(values)=>{
  }
 
  
- export const complaintFeedback=(complaintId, rating, status, feedback)=>{
+ export const complaintFeedback=(complaintId, date, slotTime1,slotTime2,slotTime3, rating, status, feedback, vendorId)=>{
    var data ={
-    complaintId, rating, status, feedback
+    complaintId,date, slotTime1,slotTime2,slotTime3, rating, status, feedback, vendorId
    }
    const request= axios.post(`${URN}/complaintRegister/feedback` ,data, {headers:authHeader()})
-   .then(response=>response.data)
+//    .then(response=>response.data)
    return{
 
       type:COMPLAINT_FEEDBACK,
       payload: request 
   }
 }
+
+
+  export const complaintAllDeleted=(complaintIds)=> {
+      
+    const request = axios.put(`${URN}/complaintRegister/delete` ,{complaintIds} , {headers:authHeader()})
+    .then(response => response.data)
+ 
+    return{
+        type:COMPLAINT_ALL_DELETED,
+        payload: request 
+    }
+  } 
+
+
+   

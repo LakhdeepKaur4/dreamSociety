@@ -7,7 +7,7 @@ import { Col, Row, Form, Button, FormGroup } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 import { getTowerName } from '../../actionCreators/flatDetailMasterAction';
 import { getfloorsOfTowers, addElectricityExpense, getRateForElectricityExpense } from '../../actionCreators/electricityExpense';
-import { numberValidation, memberMaxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler } from '../../validation/validation';
+import { memberMaxDate } from '../../validation/validation';
 
 class AddElectricityExpense extends Component {
     constructor(props) {
@@ -18,13 +18,13 @@ class AddElectricityExpense extends Component {
             flatId: '',
             lastReading: '',
             sign: '',
-            amountdue: true,
+            amountDue: true,
             amount: '',
             sanctionedLoad: '',
             lastReadingDate: '',
             rate: '',
             errors: {},
-            message:''
+            message: ''
             // unitConsumed: '',
             // currentReading: '',
             // startDate: '',
@@ -35,7 +35,6 @@ class AddElectricityExpense extends Component {
     componentDidMount() {
         this.props.getTowerName();
         this.props.getRateForElectricityExpense();
-        // console.log(this.props.getTowerName)
     }
 
     logout = () => {
@@ -48,7 +47,6 @@ class AddElectricityExpense extends Component {
         this.setState({
             [event.target.name]: event.target.value
         })
-        console.log(this.state.towerId);
         this.props.getfloorsOfTowers(event.target.value)
     }
 
@@ -62,15 +60,7 @@ class AddElectricityExpense extends Component {
 
     onSignChange = (event) => {
         this.setState({ sign: event.target.value });
-        if (this.state.sign == '+') {
-            this.setState({
-                amountDue: false
-            })
-        } else {
-            this.setState({
-                amountDue: true
-            })
-        }
+        this.setState({ amountDue: event.target.value });
     }
 
     onKeyPressHandler = (event) => {
@@ -82,7 +72,6 @@ class AddElectricityExpense extends Component {
     }
 
     getDropdownForTower = ({ name }) => {
-        console.log("tower ?", name)
         if (name) {
             return name.map((item) => {
                 return (
@@ -95,8 +84,7 @@ class AddElectricityExpense extends Component {
     }
 
     getDropdownForRate = ({ rate }) => {
-        // console.log("dropdown of rate ", rate)
-        if (rate) {
+        if (rate && rate.maintenanceType) {
             return rate.maintenanceType.map((item) => {
                 return (
                     <option key={item.maintenanceTypeId} value={item.rate} >
@@ -108,9 +96,7 @@ class AddElectricityExpense extends Component {
     }
 
     getFloorData = ({ floorDetails }) => {
-        console.log(floorDetails)
         if (floorDetails && floorDetails.tower && floorDetails.tower.Floors) {
-            console.log(floorDetails)
             return floorDetails.tower.Floors.map((items) => {
                 return (
                     <option key={items.floorId} value={items.floorId}>
@@ -123,12 +109,8 @@ class AddElectricityExpense extends Component {
 
 
     getFlatData = ({ floorDetails }) => {
-        console.log(floorDetails)
         if (floorDetails && floorDetails.flatDetail) {
-            console.log(floorDetails)
             return floorDetails.flatDetail.filter((flatRecord) => {
-                // console.log("***flatREcord ", flatRecord.floorId)
-                // console.log("***flatREcord ", this.state.floorId)
                 return flatRecord.floorId == this.state.floorId
             }).map((items) => {
                 return (
@@ -145,14 +127,12 @@ class AddElectricityExpense extends Component {
         this.setState({
             [e.target.name]: e.target.value
         })
-        console.log(this.state.floorId);
     }
 
     flatChangeHandler = (e) => {
         this.setState({
             [e.target.name]: e.target.value
         });
-        console.log(this.state.flatDetailId);
     }
 
     rateChange = (e) => {
@@ -186,7 +166,7 @@ class AddElectricityExpense extends Component {
         }
         if (this.state.lastReading === '') {
             errors.lastReading = `Last Reading can't be empty.`
-        } 
+        }
         // else if (this.state.lastReading.length !== 16) {
         //     errors.lastReading = `Last Reading can't be more than 16.`
         // }
@@ -198,7 +178,7 @@ class AddElectricityExpense extends Component {
         // }
         if (this.state.sanctionedLoad === '') {
             errors.sanctionedLoad = `Sanctioned Load can't be empty.`
-        } 
+        }
         // else if (this.state.sanctionedLoad.length !== 16) {
         //     errors.sanctionedLoad = `Sanctioned Load can't be more than 16.`
         // }
@@ -206,12 +186,10 @@ class AddElectricityExpense extends Component {
         const isValid = Object.keys(errors).length === 0;
         if (isValid) {
             let data = { towerId, floorId, flatDetailId, lastReading, amount, sign, rate, lastReadingDate, sanctionedLoad, amountDue };
-            console.log(data);
             this.props.addElectricityExpense(data).then(() => { this.props.history.push('/superDashboard/electricityExpenseDetail') })
-            .catch(error=>{
-                console.log(error.response.data);
-                this.setState({message:error.response.data.message,loading:false});
-            })
+                .catch(error => {
+                    this.setState({ message: error.response.data.message, loading: false });
+                })
         }
     }
 
@@ -236,7 +214,6 @@ class AddElectricityExpense extends Component {
     }
 
     close = () => {
-        console.log('close form')
         return this.props.history.push('/superDashBoard');
     }
 
@@ -246,7 +223,7 @@ class AddElectricityExpense extends Component {
         form = <div>
             <FormGroup>
                 <Row md={12}>
-                <Col md={4}><span className="error">{this.state.message}</span></Col>
+                    <Col md={4}><span className="error">{this.state.message}</span></Col>
                 </Row>
                 <Row md={12}>
                     <Col md={4}>
@@ -284,14 +261,14 @@ class AddElectricityExpense extends Component {
                             maxLength="16"
                             onChange={this.rateChange}
                             value={this.state.lastReading} ></input>
-                            <span className="error">{this.state.errors.lastReading}</span>
+                        <span className="error">{this.state.errors.lastReading}</span>
                     </Col>
                     <Col md={3}>
                         <label><br /></label>
                         <select required className="form-control" defaultValue='no-value' name="sign" onChange={this.onSignChange}>
                             <DefaultSelect />
-                            <option value="+">+</option>
-                            <option value="-">-</option>
+                            <option value="false" >+</option>
+                            <option value="true">-</option>
                             {/* {this.getDropdownForTower(this.props.flatDetailMasterReducer)} */}
                         </select>
                         <span className="error">{this.state.errors.sign}</span>
@@ -306,8 +283,12 @@ class AddElectricityExpense extends Component {
                             onKeyPress={this.onKeyPressHandler}
                         // value={this.state.currentReading} 
                         />
-                          <span className="error">{this.state.errors.amount}</span>
+                        <span className="error">{this.state.errors.amount}</span>
                     </Col>
+                </Row>
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
                     <Col md={4}>
                         <label>Rate Per Unit</label>
                         <select required className="form-control" defaultValue='no-value' name="rate" onChange={this.flatChangeHandler}>
@@ -322,15 +303,16 @@ class AddElectricityExpense extends Component {
                             placeholder="Sanctioned Load"
                             type="text" name="sanctionedLoad"
                             maxLength="16"
-                            onChange={this.flatChangeHandler}
-                            onKeyPress={this.onKeyPressHandler}
+                            onChange={this.rateChange}
+                            value={this.state.sanctionedLoad}
+                            // onKeyPress={this.onKeyPressHandler}
                         // value={this.state.currentReading}
                         />
-                          <span className="error">{this.state.errors.sanctionedLoad}</span>
+                        <span className="error">{this.state.errors.sanctionedLoad}</span>
                     </Col>
                     <Col md={4}>
                         <label>Last Reading Date</label>
-                        <input className="form-control" type="date" name="lastReadingDate" id="end" onChange={this.endDateChange} />
+                        <input className="form-control" max={memberMaxDate()} type="date" name="lastReadingDate" id="end" onChange={this.endDateChange} />
                         <span className="error">{this.state.errors.lastReadingDate}</span>
                     </Col>
                     {/* <Col md={4}>
@@ -353,12 +335,13 @@ class AddElectricityExpense extends Component {
                     </Col>
                     <Col md={6}>
                         <label>Last Reading Date</label>
-                        <input className="form-control" type="date" name="endDate" id="end" onChange={this.endDateChange} />
+                        <input className="form-control" type="date" name="end
+                        " id="end" onChange={this.endDateChange} />
                     </Col>
                  </Row>
             </FormGroup> */}
             <FormGroup>
-                <Button className="btn btn-success mr-2">Add Expense</Button>
+                <Button className="btn btn-success mr-2">Submit</Button>
                 <Button className="btn btn-danger" onClick={this.cancel}>Cancel</Button>
             </FormGroup>
         </div>

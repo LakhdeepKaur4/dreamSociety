@@ -58,6 +58,7 @@ export const deleteElectricityExpense = (electricityConsumerId) => {
 }
 
 export function deleteSelectedElectricityExpense(ids) {
+    console.log("ids in axios==>",ids);
     const request = axios.put(`${URN}/electricityConsumer/delete/deleteSelected`, { ids }, { headers: authHeader() })
         .then(response => response.data)
         .then(error => error)

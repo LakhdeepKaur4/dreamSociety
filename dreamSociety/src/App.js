@@ -113,7 +113,7 @@ import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
 
 import ChangePasswordTenant from './components/changePassword/changePasswordTenant';
 import RegisterComplaintOwner from './containers/registerComplaintOwner/registerComplaintOwner';
-import RegisterComplaint from './containers/registerComplaint.js/registerComplaint';
+import RegisterComplaintTenant from './containers/registerComplaint.js/registerComplaint';
 import MachineMaster from './containers/machineMaster/machineMaster';
 import ViewMachinMaster from './containers/machineMaster/viewMachineMaster';
 import ParkingSlotList from './containers/flatDetailMaster/slotList';
@@ -126,6 +126,8 @@ import CommonAreaMachine from './containers/commonAreaMachineMaster/commonAreaMa
 import DisplayCommonAreaMachine from './containers/commonAreaMachineMaster/displayCommonAreaMachine';
 import AddElectricityExpense from './containers/electricityExpense/addElectricityExpense';
 import GetElectricityExpense from './containers/electricityExpense/getElectricityExpense';
+import MonthlyElectricityExpense from './containers/monthlyElectricityExpense/monthlyElectricityExpense';
+import MonthlyElectricityExpenseDetail from './containers/monthlyElectricityExpense/monthlyElectricityExpenseDetail';
 
 import RFID from './containers/rfIdMaster/rfIdMaster';
 import RfIdDetail from './containers/rfIdMaster/rfIdDetails';
@@ -269,7 +271,7 @@ class App extends Component {
 
             <PrivateRoute path='/superDashBoard/viewTenantDetail' component={ViewTenantDetail} />
             <PrivateRoute path='/superDashboard/assignRolesDetail' component={AssignRolesDetail} />
-            <TenantPrivateRoute path='/tenantDashboard/registerComplaint' component={RegisterComplaint} />
+            <TenantPrivateRoute path='/tenantDashboard/registerComplaint' component={RegisterComplaintTenant} />
             <OwnerPrivateRoute path='/ownerDashboard/registerComplaintOwner' component={RegisterComplaintOwner} />
             <PrivateRoute path='/superDashboard/machineMaster' component={MachineMaster} />
             <PrivateRoute path='/superDashBoard/viewMachineMaster' component={ViewMachinMaster} />
@@ -285,6 +287,8 @@ class App extends Component {
             <Route path='/superDashboard/CommonAreaMachineMaster' component={CommonAreaMachine} />
             <Route path='/superDashboard/electricityExpenseMaster' component={AddElectricityExpense} />
             <Route path='/superDashboard/electricityExpenseDetail' component={GetElectricityExpense} />
+            <Route path='/superDashboard/addMonthlyElectricityExpenseDetail' component={MonthlyElectricityExpense} />
+            <Route path='/superDashboard/monthlyElectricityExpenseDetail' component={MonthlyElectricityExpenseDetail} />
             
             <OwnerPrivateRoute path='/ownerDashboard/complaintOwnerDetails' component={ComplaintOwnerDetails}/>
             <TenantPrivateRoute path='/tenantDashboard/complaintTenantDetails' component={ComplaintTenantDetails}/>
@@ -294,7 +298,6 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/inventoryPieChart' component={InventoryPieChart}/>
             <PrivateRoute path ='/superDashboard/charts' component ={Chart}/>
             <AdminPrivateRoute path='/adminDashboard/changePasswordAdmin' component={ChangePasswordOwner} />
-            <PrivateRoute path ='/superDashboard/purchaseOrder' component={PurchaseOrder}/>
             
             <PrivateRoute path='/superDashboard/rfId' component={RFID} />
             <PrivateRoute path='/superDashboard/rfIdDetail' component={RfIdDetail} />

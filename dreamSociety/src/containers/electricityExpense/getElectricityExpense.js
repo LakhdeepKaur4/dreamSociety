@@ -24,7 +24,7 @@ class GetElectricityExpense extends Component {
             modal: false,
             isDisabled: true,
             ids: [],
-            loading: false,
+            loading: true,
             currentReading: '',
             lastReading: '',
             rate: '',
@@ -38,7 +38,16 @@ class GetElectricityExpense extends Component {
             editSign: false,
             amountDueInput: null,
             search: '',
-            message: ''
+            message: '',
+            errors: {},
+        }
+    }
+
+    onKeyPressHandler = (event) => {
+        const pattern = /^[0-9 ]+$/;
+        let inputChar = String.fromCharCode(event.charCode);
+        if (!pattern.test(inputChar)) {
+            event.preventDefault();
         }
     }
 
@@ -54,7 +63,7 @@ class GetElectricityExpense extends Component {
     logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user-type');
-        return this.props.history.replace('/')
+        return this.props.history.replace('/');
     }
 
     getDropdownForRate = ({ rate }) => {
@@ -87,8 +96,8 @@ class GetElectricityExpense extends Component {
 
     deleteSelected(ids) {
         this.setState({ loading: true, isDisabled: true });
-        this.props.deleteElectricityExpense(ids)
-            .then(() => this.getExpenseDetail())
+        this.props.deleteSelectedElectricityExpense(ids)
+            .then(() => this.refreshData())
             .catch(err => err.response.data.message);
     }
 
@@ -100,6 +109,7 @@ class GetElectricityExpense extends Component {
             selectMultiple[i].checked = true;
         }
         this.setState({ ids: ar });
+        console.log("ids-->", this.state.ids)
         if (ar.length > 0) {
             this.setState({ isDisabled: false });
         }
@@ -133,19 +143,49 @@ class GetElectricityExpense extends Component {
     update = () => {
         let { electricityConsumerId, rate, amount, sanctionedLoad, lastReading, lastReadingDate, amountDue } = this.state;
         console.log(electricityConsumerId, rate, amount, sanctionedLoad, lastReading, lastReadingDate, amountDue)
-        this.props.updateElectricityExpense(electricityConsumerId, rate, amount, sanctionedLoad, lastReading, lastReadingDate, amountDue)
-            .then(() => {
-                this.refreshData()
-                this.setState({ editModal: false, editSign: false, defaultSign: true })
-            }).catch(err => {
-                console.log(err.response.data.message)
-                this.setState({ modalLoading: false, message: err.response.data.message })
-            })
-
+        let errors = {};
+        // if (this.state.sign === '') {
+        //     errors.sign = `This can't be empty.`
+        // }
+        if (this.state.rate === '') {
+            errors.rate = `Rate can't be empty.`
+        }
+        if (this.state.lastReadingDate === '') {
+            errors.lastReadingDate = `Last Reading Date can't be empty.`
+        }
+        if (this.state.lastReading === '') {
+            errors.lastReading = `Last Reading can't be empty.`
+        }
+        if (this.state.amount === '') {
+            errors.amount = `Amount can't be empty.`
+        }
+        // //  else if (this.state.amount.length !== 10) {
+        // //     errors.amount = `Amount can't be more than 10.`
+        // // }
+        if (this.state.sanctionedLoad === '') {
+            errors.sanctionedLoad = `Sanctioned Load can't be empty.`
+        }
+        // // else if (this.state.sanctionedLoad.length !== 16) {
+        // //     errors.sanctionedLoad = `Sanctioned Load can't be more than 16.`
+        // // }
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0;
+        if (isValid) {
+            this.props.updateElectricityExpense(electricityConsumerId, rate, amount, sanctionedLoad, lastReading, lastReadingDate, amountDue)
+                .then(() => {
+                    this.refreshData()
+                    this.setState({ editModal: false, editSign: false, defaultSign: true })
+                }).catch(err => {
+                    console.log(err.response.data.message)
+                    this.setState({ modalLoading: false, message: err.response.data.message })
+                })
+                this.setState({
+                    modalLoading: true
+                })
+        }
     }
 
     getExpenseDetail = ({ expenseDetail }) => {
-        console.log("&%$%%$$%$%$%% ", expenseDetail);
         if (expenseDetail && expenseDetail.electricityConsumer) {
             // return expenseDetail.electricityConsumer
             return expenseDetail.electricityConsumer.sort((item1, item2) => {
@@ -292,52 +332,27 @@ class GetElectricityExpense extends Component {
                 {this.getExpenseDetail(this.props.electricityExpenseReducer)}
             </tbody>
         </Table>
-        return (
-            <UI onClick={this.logout} change={this.changePassword}>
-                <div className="w3-container w3-margin-top w3-responsive">
-                    <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
-                        <span aria-hidden="true">&times;</span>
-                    </div>
-                    <div className="top-details" >
-                        <h3 align="center"> Electricity Expense Detail</h3>
-                        <Button color="primary" onClick={this.addExpense} > Add Expense</Button>
-                    </div>
-                    <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
-                    <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
-                        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
-                    <Label htmlFor="allSelect" style={{ alignContent: 'baseline', marginLeft: "10px", fontWeight: "700" }}>Select All<input className="ml-2"
-                        id="allSelect"
-                        type="checkbox" onChange={(e) => {
-                            if (e.target.checked) {
-                                this.selectAll();
-                            }
-                            else if (!e.target.checked) {
-                                this.unSelectAll();
-                            }
-                        }
-                        } /></Label>
 
-                    {/* {tableData} */}
-                    <ModalBox
-                        openModal={this.state.editModal}
-                        toggle={this.toggleModal.bind(this)}
-                        title="Edit Electricity Expense"
-                    >
-                        <span className="error">{this.state.message}</span>
-                        <InputField
+        let modalBoxData= <div>
+             <InputField
                             label="Last Reading"
                             placeholder="Last Reading"
                             name="lastReading"
                             type="text"
+                            onKeyPress={this.onKeyPressHandler}
                             inputChange={this.onChangeInput}
                             value={this.state.lastReading}
-                        />
+                            className="error"
+                            error={this.state.errors.lastReading}
+                        ></InputField>
                         <DropdownComponent
                             label="Rate"
                             name="rate"
                             type="select"
                             inputChange={this.onChangeInput}
                             value={this.state.rate}
+                            className="error"
+                            error={this.state.errors.rate}
                         ><DefaultSelect />
                             {this.getDropdownForRate(this.props.electricityExpenseReducer)}
                         </DropdownComponent>
@@ -348,14 +363,19 @@ class GetElectricityExpense extends Component {
                             type="date"
                             inputChange={this.onChangeInput}
                             value={this.state.lastReadingDate}
+                            className="error"
+                            error={this.state.errors.lastReadingDate}
                         />
                         <InputField
                             label="Sanctioned Load"
                             placeholder="Sanctioned Load"
                             name="sanctionedLoad"
                             type="text"
+                            onKeyPress={this.onKeyPressHandler}
                             inputChange={this.onChangeInput}
                             value={this.state.sanctionedLoad}
+                            className="error"
+                            error={this.state.errors.sanctionedLoad}
                         />
 
                         <FormGroup>
@@ -385,11 +405,14 @@ class GetElectricityExpense extends Component {
                             placeholder="Amount"
                             name="amount"
                             type="text"
+                            onKeyPress={this.onKeyPressHandler}
                             inputChange={this.onChangeInput}
                             value={this.state.amount}
+                            className="error"
+                            error={this.state.errors.amount}
                         />
                         <FormGroup>
-                            <ButtonComponent color="success"
+                            <ButtonComponent color="primary"
                                 className='mr-2'
                                 buttonClicked={this.update}
                                 title='Save' />
@@ -398,10 +421,44 @@ class GetElectricityExpense extends Component {
                                 buttonClicked={this.toggleModal.bind(this)}
                                 title='Cancel' />
                         </FormGroup>
-                    </ModalBox>
+        </div>
+        return (
+            <UI onClick={this.logout} change={this.changePassword}>
+                <div className="w3-container w3-margin-top w3-responsive">
+                    <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
+                        <span aria-hidden="true">&times;</span>
+                    </div>
+                    <div className="top-details" >
+                        <h3 align="center"> Electricity Expense Detail</h3>
+                        <Button color="primary" onClick={this.addExpense} > Add Electricity Expense</Button>
+                    </div>
+                    <SearchFilter type="text" value={this.state.search} onChange={this.searchOnChange} />
+                    <Button color="danger" disabled={this.state.isDisabled} className="mb-3"
+                        onClick={this.deleteSelected.bind(this, this.state.ids)}>Delete Selected</Button>
+                    <Label htmlFor="allSelect" style={{ alignContent: 'baseline', marginLeft: "10px", fontWeight: "700" }}>Select All<input className="ml-2"
+                        id="allSelect"
+                        type="checkbox" onChange={(e) => {
+                            if (e.target.checked) {
+                                this.selectAll();
+                            }
+                            else if (!e.target.checked) {
+                                this.unSelectAll();
+                            }
+                        }
+                        } /></Label>
                     {(this.state.loading) ? <Spinner /> : tableData}
+                    {/* {tableData} */}
+                    <ModalBox
+                        openModal={this.state.editModal}
+                        toggle={this.toggleModal.bind(this)}
+                        title="Edit Electricity Expense"
+                    >
+                        {/* <span className="error">{this.state.message}</span> */}
+                        {!this.state.modalLoading ? modalBoxData : <Spinner />}
+                    </ModalBox>
+                    
                 </div>
-            </UI>
+            </UI >
         )
     }
 }

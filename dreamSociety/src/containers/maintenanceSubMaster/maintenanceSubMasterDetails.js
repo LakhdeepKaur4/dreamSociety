@@ -5,11 +5,12 @@ import {getMaintenanceSubSizeDetails,deleteMaintenanceSubMasterDetail,
     updateMaintenanceSubMasterDetail,
     deleteSelectedMaintenanceSubMasterDetail} from '../../actionCreators/maintenanceSubMasterAction'
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
+import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Row, Col } from 'reactstrap';
 import '../../r-css/w3.css';
 import UI from '../../components/newUI/superAdminDashboard';
 import DefaultSelect from '../../constants/defaultSelect';
 import Spinner from '../../components/spinner/spinner';
+import { memberMaxDate } from '../../validation/validation';
 
 
 class MaintenanceSubMasterDetails extends Component{
@@ -30,7 +31,9 @@ class MaintenanceSubMasterDetails extends Component{
             errors:{},
             editSubMaintenanceModal: false,
             modalLoading: false,
-            subMaintenanceErr:''
+            subMaintenanceErr:'',
+            startDate:'',
+            endDate:''
         }
         this.delete = this.delete.bind(this);
         this.edit = this.edit.bind(this)
@@ -65,8 +68,8 @@ class MaintenanceSubMasterDetails extends Component{
         .then(() => this.refreshData())
     }
 
-    edit = (maintenanceTypeId,category, sizeType, rate,maintenanceId,sizeId) => {
-        this.setState({maintenanceTypeId,category, sizeType, rate,maintenanceId,sizeId, editSubMaintenanceModal: !this.state.editSubMaintenanceModal})
+    edit = (maintenanceTypeId,category, sizeType, rate,startDate, endDate, maintenanceId,sizeId) => {
+        this.setState({maintenanceTypeId,category, sizeType, rate,startDate, endDate,maintenanceId,sizeId, editSubMaintenanceModal: !this.state.editSubMaintenanceModal})
     }
 
     modalRefresh = () => {
@@ -76,16 +79,18 @@ class MaintenanceSubMasterDetails extends Component{
 
     update = (e) => {
         e.preventDefault();
-        let {maintenanceTypeId, category, sizeType, rate, maintenanceId, sizeId} = this.state;
+        let {maintenanceTypeId, category, sizeType, rate, maintenanceId, sizeId, startDate, endDate} = this.state;
         let errors = {};
         if(!this.state.rate){
             errors.rate = `Rate can't be empty.`
         }
+        if(this.state.startDate ==='') errors.startDate = `Please select start date.`;
+        if(this.state.endDate ==='') errors.endDate = `Please select end date.`;
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if(isValid){
             this.setState({modalLoading:true})
-            this.props.updateMaintenanceSubMasterDetail(maintenanceTypeId, category, sizeType, rate, maintenanceId, sizeId)
+            this.props.updateMaintenanceSubMasterDetail(maintenanceTypeId, category, sizeType, rate, startDate, endDate, maintenanceId, sizeId)
             .then(() => this.modalRefresh())
             .catch(err => { err
                 this.setState({modalLoading:false, subMaintenanceErr: err.response.data.message})
@@ -98,7 +103,10 @@ class MaintenanceSubMasterDetails extends Component{
             if(x){
                 return x.maintenance_master.category.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
                 x.size_master.sizeType.toLowerCase().indexOf(search.toLowerCase()) !== -1 ||
-                x.rate.toString().indexOf(search) !== -1
+                x.rate.toString().indexOf(search) !== -1 ||
+                x.startDate.toString().indexOf(search) !== -1 ||
+                x.endDate.toString().indexOf(search) !== -1 ||
+                !search;
             }
         }
     }
@@ -145,8 +153,10 @@ class MaintenanceSubMasterDetails extends Component{
                         <td>{maintenanceCategory}</td>
                         <td>{sizeType}</td>
                         <td>{item.rate}</td>
+                        <td>{item.startDate}</td>
+                        <td>{item.endDate}</td>
                         <td>
-                            <Button className="mr-2" color="success" onClick={this.edit.bind(this,item.maintenanceTypeId,maintenanceCategory,sizeType,item.rate,item.maintenanceId,sizeTypeId)}>Edit</Button>
+                            <Button className="mr-2" color="success" onClick={this.edit.bind(this,item.maintenanceTypeId,maintenanceCategory,sizeType,item.rate,item.startDate,item.endDate,item.maintenanceId,sizeTypeId)}>Edit</Button>
                             <Button color="danger" onClick={this.delete.bind(this,item.maintenanceTypeId)}>Delete</Button>
                         </td>
                     </tr>
@@ -237,6 +247,41 @@ class MaintenanceSubMasterDetails extends Component{
         return this.props.history.replace('/superDashboard/changePassword')
      }
 
+     startDateChange = (e) => {
+        var start = document.getElementById('start');
+        var end = document.getElementById('end');
+
+        if (start.value) {
+            end.min = start.value;
+        }
+        if (!!this.state.errors[e.target.name]){
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors,subMaintenanceErr:'' });
+        }
+        else{
+            this.setState({[e.target.name]:e.target.value,subMaintenanceErr:''});
+        }
+    }
+
+    endDateChange = (e) => {
+        var start = document.getElementById('start');
+        var end = document.getElementById('end');
+
+        if (end.value) {
+            start.max = end.value;
+        }
+
+        if (!!this.state.errors[e.target.name]){
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors,subMaintenanceErr:'' });
+        }
+        else{
+            this.setState({[e.target.name]:e.target.value,subMaintenanceErr:''});
+        }
+    }
+
     render(){
         console.log(this.props)
         let tableData = <Table className="table table-bordered">
@@ -250,6 +295,8 @@ class MaintenanceSubMasterDetails extends Component{
                         }}>Maintenance Type<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                 <th>Size</th>
                 <th>Price</th>
+                <th>Start Date</th>
+                <th>End Date</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -286,6 +333,20 @@ class MaintenanceSubMasterDetails extends Component{
                         <Input name="rate" type="text" value={this.state.rate}
                         onChange={this.rateChange} maxLength="16" />
                         {!this.state.rate ? <span className="error">{this.state.errors.rate}</span>: null}
+                    </FormGroup>
+                    <FormGroup>
+                        <Row md={12}>
+                            <Col md={6}>
+                                <label>Start Date</label>
+                                <input min={memberMaxDate()} value={this.state.startDate} className="form-control" type="date" name="startDate" id="start" onChange={this.startDateChange} />
+                                <span className="error">{this.state.errors.startDate}</span>
+                            </Col>
+                            <Col md={6}>
+                                <label>End Date</label>
+                                <input className="form-control" value={this.state.endDate} type="date" name="endDate" id="end" onChange={this.endDateChange} />
+                                <span className="error">{this.state.errors.endDate}</span>
+                            </Col>
+                        </Row>
                     </FormGroup>
                     <FormGroup>
                         <Button type="submit" color="primary" onClick={this.update}>Save</Button>{' '}
