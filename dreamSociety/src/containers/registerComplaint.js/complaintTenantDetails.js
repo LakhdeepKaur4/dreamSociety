@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import {getRegisterDetail, userCancelled, complaintFeedback} from '../../actionCreators/registerComplainAction';
+import {getRegisterDetail, userCancelled, complaintFeedback, complaintAllDeleted} from '../../actionCreators/registerComplainAction';
 import UI from '../../components/newUI/tenantDashboard';
-import {Table,Button, Input,FormGroup, Modal, ModalBody, ModalHeader,Label } from 'reactstrap';
+import {Table,Button, Input,FormGroup, Modal, ModalBody, ModalHeader,Label, Row, Col } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
@@ -26,8 +26,14 @@ class ComplaintTenantDetails extends Component{
                rating:0,
                status:'',
                complaintId:'',
-               message:'',
-               errors:{}
+               vendorId:'',
+               errors:{},
+               ids: [],
+               date:'',
+               slotTime1:'',
+               slotTime2:'',
+               slotTime3:'',
+               message:''
            }
        }
 
@@ -98,7 +104,7 @@ class ComplaintTenantDetails extends Component{
         this.setState({ loading: true, isDisabled: true });
 
        
-        this.props.deleteSelectCity(ids)
+        this.props.complaintAllDeleted(ids)
             .then(() => this.refreshData())
             .catch(err => err.response.data.message);
         
@@ -148,8 +154,8 @@ class ComplaintTenantDetails extends Component{
                         <td><strong>{item.complaint_status_master ? item.complaint_status_master.statusType : ''}</strong></td>
                         
                         <td><Button color="danger" disabled={(item.complaint_status_master.statusType==='CANCELED' || item.complaint_status_master.statusType==='COMPLETED')} onClick={this.cancelComplaints.bind(this, item.complaintId)} >Cancel</Button></td>
-                        <td><Button color="success" disabled={!!(item.complaint_status_master.statusType==='REGISTERED' || item.complaint_status_master.statusType==='IN PROGRESS' || item.complaint_status_master.statusType==='ACCEPTED'
-                         || item.complaint_status_master.statusType==='CANCELED')}  onClick={this.toggle.bind(this, item.complaintId)}>Feedback</Button></td>
+                        <td><Button color="success" disabled={!!(item.complaint_status_master.statusType==='TO DO' || item.complaint_status_master.statusType==='IN PROGRESS' || item.complaint_status_master.statusType==='ACCEPTED'
+                         || item.complaint_status_master.statusType==='CANCELED')}  onClick={this.toggle.bind(this, item.complaintId, item.vendor_master ? item.vendor_master.vendorId : '')}>Feedback</Button></td>
                          
                     </tr>
 
@@ -172,10 +178,11 @@ class ComplaintTenantDetails extends Component{
     }
 
     
-    toggle = (complaintId) => {
+    toggle = (complaintId, vendorId) => {
 
         this.setState({
             complaintId,
+            vendorId,
             modal: !this.state.modal
         })
     }
@@ -193,6 +200,11 @@ class ComplaintTenantDetails extends Component{
         }
     }
 
+    minDate = () => {
+        var d = new Date();
+        return d.toISOString().split('T')[0];
+    }
+
     ratingChanged = (rating) => {
        console.log(rating)
        this.setState({rating})
@@ -203,8 +215,8 @@ class ComplaintTenantDetails extends Component{
       submitFeedback = () => {
          
         
-        const { complaintId, rating, status, feedback } = this.state
-        console.log(complaintId, rating, status, feedback);
+        const { complaintId, date, slotTime1,slotTime2,slotTime3, rating, status, feedback, vendorId } = this.state
+        console.log(complaintId, date, slotTime1,slotTime2,slotTime3, rating, status, feedback, vendorId);
 
         let errors = {};
 
@@ -216,9 +228,15 @@ class ComplaintTenantDetails extends Component{
         if (isValid ) {
            
 
-            this.props.complaintFeedback(complaintId, rating, status, feedback)
+            this.props.complaintFeedback(complaintId, date, slotTime1,slotTime2,slotTime3, rating, status, feedback, vendorId)
+            .then((res)=>{
+                this.setState({
+                    message:res.payload.data.message
+                })
+            })
                 .then(() => this.refreshData())
-                this.setState({ modalLoading: true })      
+                this.setState({ modalLoading: true, rating: 0 }) 
+
 
         }
     }
@@ -260,6 +278,38 @@ let modalData=<div>
                     <option>Reopen</option>
                 </Input >
              </FormGroup>
+              <div style={{display:this.state.status=='Completed'?'none':'block'}}>         
+             <FormGroup>
+             <Label>Date</Label>
+                <Input type="date" min={this.minDate()} name="date"  onChange={this.onChange}>
+                    <DefaultSelect />
+                    {/* {this.service(this.props.displayServiceMasterReducer)} */}
+                </Input >
+                <span className='error'>{this.state.errors.date}</span>
+            </FormGroup>
+
+            <FormGroup>
+            <Row md={12}>
+                <Col md={4}>
+                    <Label>Slot Time 1</Label>
+                    <Input type="time"  name="slotTime1" onChange={this.onChange} >
+                    </Input>
+                </Col>
+                
+                <Col md={4}>
+                    <Label>Slot Time 2</Label>
+                    <Input type="time"  name="slotTime2" onChange={this.onChange} >
+                    </Input>
+                </Col>
+               
+                <Col md={4}>
+                    <Label>Slot Time 3</Label>
+                    <Input type="time"  name="slotTime3" onChange={this.onChange} >
+                    </Input>
+                </Col>
+            </Row>
+            </FormGroup>
+            </div> 
              <div>
              <h5 style={{marginBottom: '0px'}}>Rating</h5>
              <ReactStars
@@ -289,7 +339,7 @@ let modalData=<div>
                             <span aria-hidden="true">&times;</span>
                 </div>
                 <div className="top-details">
-                            <h3>Compaint Details</h3>
+                            <h3>Complaint Details</h3>
                         </div>
                         <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
                             <ModalHeader toggle={this.toggle}>Feedback</ModalHeader>
@@ -330,7 +380,7 @@ return {
 
 }
 function mapDispatchToProps(dispatch) {
-return bindActionCreators({ getRegisterDetail, userCancelled ,complaintFeedback }, dispatch);
+return bindActionCreators({ getRegisterDetail, userCancelled ,complaintFeedback,complaintAllDeleted }, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(ComplaintTenantDetails));

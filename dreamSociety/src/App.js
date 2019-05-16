@@ -113,7 +113,7 @@ import AssignRolesDetail from './components/assignRoles/assignRolesDetail';
 
 import ChangePasswordTenant from './components/changePassword/changePasswordTenant';
 import RegisterComplaintOwner from './containers/registerComplaintOwner/registerComplaintOwner';
-import RegisterComplaint from './containers/registerComplaint.js/registerComplaint';
+import RegisterComplaintTenant from './containers/registerComplaint.js/registerComplaint';
 import MachineMaster from './containers/machineMaster/machineMaster';
 import ViewMachinMaster from './containers/machineMaster/viewMachineMaster';
 import ParkingSlotList from './containers/flatDetailMaster/slotList';
@@ -150,6 +150,7 @@ import InventoryPieChart from './containers/chart/inventoryPieChart';
 import Chart from './containers/chart/chart';
 import ChangePasswordVendor from './components/changePassword/changePasswordVendor';
 import ViewComplaints from './containers/vendorMangement/viewComplaints/viewComplaints';
+import ViewVendorFeedback from './containers/vendorMangement/viewComplaints/viewVendorFeedback';
 
 import ChangePasswordAdmin from './components/changePassword/changePasswordAdmin';
 import PurchaseOrder from './containers/purchaseOrder/purchaseOrder';
@@ -194,6 +195,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/personDetails' component={PersonDetails} />
             <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster}/>
             <VendorPrivateRoute path ='/vendorDashboard/viewComplaints' component ={ViewComplaints}/>
+            <VendorPrivateRoute path ='/vendorDashboard/viewVendorFeedback' component ={ViewVendorFeedback}/>
             <PrivateRoute path='/superDashboard/displayVendorMaster' component={DisplayVendorMaster}/>
             <PrivateRoute path='/superDashboard/displayVendorServices' component={DisplayVendorServices}/>
             <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster} />
@@ -269,7 +271,7 @@ class App extends Component {
 
             <PrivateRoute path='/superDashBoard/viewTenantDetail' component={ViewTenantDetail} />
             <PrivateRoute path='/superDashboard/assignRolesDetail' component={AssignRolesDetail} />
-            <TenantPrivateRoute path='/tenantDashboard/registerComplaint' component={RegisterComplaint} />
+            <TenantPrivateRoute path='/tenantDashboard/registerComplaint' component={RegisterComplaintTenant} />
             <OwnerPrivateRoute path='/ownerDashboard/registerComplaintOwner' component={RegisterComplaintOwner} />
             <PrivateRoute path='/superDashboard/machineMaster' component={MachineMaster} />
             <PrivateRoute path='/superDashBoard/viewMachineMaster' component={ViewMachinMaster} />
