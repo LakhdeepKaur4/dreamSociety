@@ -12,12 +12,10 @@
 
 export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-export  const UR = 'https://dreamsociety.herokuapp.com/'
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export  const UR =     'https://dreamsociety.herokuapp.com/'
+export  const URN =    'https://dreamsociety.herokuapp.com/api';
 
 
-
-    
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';

@@ -18,7 +18,7 @@ class AddElectricityExpense extends Component {
             flatId: '',
             lastReading: '',
             sign: '',
-            amountdue: true,
+            amountDue: true,
             amount: '',
             sanctionedLoad: '',
             lastReadingDate: '',
@@ -35,7 +35,6 @@ class AddElectricityExpense extends Component {
     componentDidMount() {
         this.props.getTowerName();
         this.props.getRateForElectricityExpense();
-        // console.log(this.props.getTowerName)
     }
 
     logout = () => {
@@ -48,7 +47,6 @@ class AddElectricityExpense extends Component {
         this.setState({
             [event.target.name]: event.target.value
         })
-        console.log(this.state.towerId);
         this.props.getfloorsOfTowers(event.target.value)
     }
 
@@ -62,15 +60,7 @@ class AddElectricityExpense extends Component {
 
     onSignChange = (event) => {
         this.setState({ sign: event.target.value });
-        if (this.state.sign == '+') {
-            this.setState({
-                amountDue: false
-            })
-        } else {
-            this.setState({
-                amountDue: true
-            })
-        }
+        this.setState({ amountDue: event.target.value });
     }
 
     onKeyPressHandler = (event) => {
@@ -82,7 +72,6 @@ class AddElectricityExpense extends Component {
     }
 
     getDropdownForTower = ({ name }) => {
-        console.log("tower ?", name)
         if (name) {
             return name.map((item) => {
                 return (
@@ -95,8 +84,7 @@ class AddElectricityExpense extends Component {
     }
 
     getDropdownForRate = ({ rate }) => {
-        // console.log("dropdown of rate ", rate)
-        if (rate) {
+        if (rate && rate.maintenanceType) {
             return rate.maintenanceType.map((item) => {
                 return (
                     <option key={item.maintenanceTypeId} value={item.rate} >
@@ -108,9 +96,7 @@ class AddElectricityExpense extends Component {
     }
 
     getFloorData = ({ floorDetails }) => {
-        console.log(floorDetails)
         if (floorDetails && floorDetails.tower && floorDetails.tower.Floors) {
-            console.log(floorDetails)
             return floorDetails.tower.Floors.map((items) => {
                 return (
                     <option key={items.floorId} value={items.floorId}>
@@ -123,12 +109,8 @@ class AddElectricityExpense extends Component {
 
 
     getFlatData = ({ floorDetails }) => {
-        console.log(floorDetails)
         if (floorDetails && floorDetails.flatDetail) {
-            console.log(floorDetails)
             return floorDetails.flatDetail.filter((flatRecord) => {
-                // console.log("***flatREcord ", flatRecord.floorId)
-                // console.log("***flatREcord ", this.state.floorId)
                 return flatRecord.floorId == this.state.floorId
             }).map((items) => {
                 return (
@@ -145,14 +127,12 @@ class AddElectricityExpense extends Component {
         this.setState({
             [e.target.name]: e.target.value
         })
-        console.log(this.state.floorId);
     }
 
     flatChangeHandler = (e) => {
         this.setState({
             [e.target.name]: e.target.value
         });
-        console.log(this.state.flatDetailId);
     }
 
     rateChange = (e) => {
@@ -206,10 +186,8 @@ class AddElectricityExpense extends Component {
         const isValid = Object.keys(errors).length === 0;
         if (isValid) {
             let data = { towerId, floorId, flatDetailId, lastReading, amount, sign, rate, lastReadingDate, sanctionedLoad, amountDue };
-            console.log(data);
             this.props.addElectricityExpense(data).then(() => { this.props.history.push('/superDashboard/electricityExpenseDetail') })
             .catch(error=>{
-                console.log(error.response.data);
                 this.setState({message:error.response.data.message,loading:false});
             })
         }
@@ -236,7 +214,6 @@ class AddElectricityExpense extends Component {
     }
 
     close = () => {
-        console.log('close form')
         return this.props.history.push('/superDashBoard');
     }
 
@@ -290,8 +267,8 @@ class AddElectricityExpense extends Component {
                         <label><br /></label>
                         <select required className="form-control" defaultValue='no-value' name="sign" onChange={this.onSignChange}>
                             <DefaultSelect />
-                            <option value="+">+</option>
-                            <option value="-">-</option>
+                            <option value="false" >+</option>
+                            <option  value="true">-</option>
                             {/* {this.getDropdownForTower(this.props.flatDetailMasterReducer)} */}
                         </select>
                         <span className="error">{this.state.errors.sign}</span>
@@ -358,7 +335,7 @@ class AddElectricityExpense extends Component {
                  </Row>
             </FormGroup> */}
             <FormGroup>
-                <Button className="btn btn-success mr-2">Add Expense</Button>
+                <Button className="btn btn-success mr-2">Submit</Button>
                 <Button className="btn btn-danger" onClick={this.cancel}>Cancel</Button>
             </FormGroup>
         </div>
