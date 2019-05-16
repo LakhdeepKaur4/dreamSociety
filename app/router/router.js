@@ -711,15 +711,15 @@ module.exports = function (app) {
 
 	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.create);
 
-	app.get('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.get);
+	app.get('/api/purchaseOrder', purchaseOrderController.get);
 
 	app.get('/api/downloadPdfClient/:id', purchaseOrderController.downloadPdfClient);
 
 	app.put('/api/updatePurchaseOrder/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.updatePurchaseOrder);
 
-	app.put('/api/updatePurchaseOrderDetails/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.updatePurchaseOrderDetails);
-
-	app.put('/api/deletePurchaseOrder/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.delete);
+	app.put('/api/updatePurchaseOrderDetails/:id', [authJwt.verifyToken, authJwt.isAdminRole],purchaseOrderController.updatePurchaseOrderDetails);
+	
+	app.put('/api/deletePurchaseOrder/:id',  purchaseOrderController.delete);
 
 	app.put('/api/deletePurchaseOrders', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.deleteSelected);
 

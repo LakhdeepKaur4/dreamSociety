@@ -132,17 +132,24 @@ exports.create = async (req, res, next) => {
 exports.get = async (req,res,next) => {
     try{
         let purchaseOrder = await PurchaseOrder.findAll({where:{isActive:true},include:[{model:Vendor}]});
-        purchaseOrder.forEach(x => {
+        let purchaseNew = [];
+        purchaseOrder.map( async x => {
+            x = x.toJSON();
+            x.assets = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:x.purchaseOrderId,purchaseOrderType:"Assets"}});           
+            x.services = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:x.purchaseOrderId,purchaseOrderType:"Service"}});
             x.vendor_master.firstName = decrypt(key,x.vendor_master.firstName);
             x.vendor_master.lastName = decrypt(key,x.vendor_master.lastName);
             x.vendor_master.contact = decrypt(key,x.vendor_master.contact);
             x.vendor_master.email = decrypt(key,x.vendor_master.email);
-        })
-        console.log("purchaseOrder======>", purchaseOrder);
-        return res.status(httpStatus.CREATED).json({
-            message: "Purchase Order",
-            purchaseOrder: purchaseOrder
-          });
+            purchaseNew.push(x);
+            console.log("purchaseOrder======>", purchaseNew);    
+        });
+        setTimeout(() => {
+            return res.status(httpStatus.CREATED).json({
+                message: "Purchase Order",
+                purchaseOrder: purchaseNew
+              });
+        },5000);
 
     } catch(error){
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -187,7 +194,7 @@ exports.deleteSelected = async(req,res,next) => {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
         }
         const updatedPurchaseOrder = await PurchaseOrder.update(update, { where: { purchaseOrderId: { [Op.in]: deleteSelected } } });
-        const updatedPurchaseOrderDetails = await PurchaseOrderDetails.update({where: { purchaseOrderId: { [Op.in]: deleteSelected } } });
+        const updatedPurchaseOrderDetails = await PurchaseOrderDetails.update(update, {where: { purchaseOrderId: { [Op.in]: deleteSelected } } });
 
         if (updatedPurchaseOrder && updatedPurchaseOrderDetails) {
             return res.status(httpStatus.OK).json({
@@ -306,11 +313,14 @@ exports.downloadPdfClient = async(req,res,next) => {
         if(!id){
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
         }
-        res.download(`./public/purchaseOrderPdfs/purchaseOrder${id}.pdf`,'purchaseOrder.pdf', function(err){
-            if(err){
-            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "File not found" });
-            }
-        })
+        // res.download(`./public/purchaseOrderPdfs/purchaseOrder${id}.pdf`,'purchaseOrder.pdf', function(err){
+        //     if(err){
+        //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "File not found" });
+        //     }
+        // });
+        return res.status(httpStatus.CREATED).json({
+            message: `public\\purchaseOrderPdfs\\purchaseOrder${id}.pdf`
+          });
     } catch(error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
