@@ -306,7 +306,11 @@ exports.downloadPdfClient = async(req,res,next) => {
         if(!id){
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "No id Found" });
         }
-        res.sendFile(`./public/purchaseOrderPdfs/purchaseOrder${id}.pdf`);
+        res.download(`./public/purchaseOrderPdfs/purchaseOrder${id}.pdf`,'purchaseOrder.pdf', function(err){
+            if(err){
+            return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "File not found" });
+            }
+        })
     } catch(error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }

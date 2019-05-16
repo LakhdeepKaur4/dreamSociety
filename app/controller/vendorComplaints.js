@@ -215,7 +215,7 @@ exports.completedComplaint = (req, res, next) => {
 }
 
 exports.deleteComplaints = (req, res, next) => {
-    const ids = req.body.complaintIds;
+    const ids = req.body.ids;
     console.log('Comaplaint IDs ===>', ids);
 
     VendorComplaints.findAll({

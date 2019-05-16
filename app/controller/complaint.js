@@ -216,6 +216,26 @@ exports.feedback = (req, res, next) => {
 
     Feedback.create(feedback)
         .then(feedbackCreated => {
+            if (feedbackCreated.status === 'Reopen') {
+                Complaint.findOne({
+                    where: {
+                        complaintId: feedbackCreated.complaintId,
+                        isActive: true
+                    }
+                })
+                .then(complaint => {
+                    complaint = complaint.toJSON();
+                    delete complaint.complaintId;
+                    delete complaint.createdAt;
+                    delete complaint.updatedAt;
+                    delete complaint.vendorId;
+                    delete complaint.selectedSlot;
+                    complaint.isAccepted = false;
+                    complaint.complaintStatusId = 1;
+                    complaint.userId = req.userId;
+                    Complaint.create(complaint);
+                })
+            }
             res.status(httpStatus.CREATED).json({
                 message: 'Feedback submitted successfully'
             })
