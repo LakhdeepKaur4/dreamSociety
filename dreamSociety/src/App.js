@@ -148,6 +148,7 @@ import InventoryPieChart from './containers/chart/inventoryPieChart';
 import Chart from './containers/chart/chart';
 import ChangePasswordVendor from './components/changePassword/changePasswordVendor';
 import ViewComplaints from './containers/vendorMangement/viewComplaints/viewComplaints';
+import ViewVendorFeedback from './containers/vendorMangement/viewComplaints/viewVendorFeedback';
 
 import ChangePasswordAdmin from './components/changePassword/changePasswordAdmin';
 import PurchaseOrder from './containers/purchaseOrder/purchaseOrder';
@@ -192,6 +193,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/personDetails' component={PersonDetails} />
             <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster}/>
             <VendorPrivateRoute path ='/vendorDashboard/viewComplaints' component ={ViewComplaints}/>
+            <VendorPrivateRoute path ='/vendorDashboard/viewVendorFeedback' component ={ViewVendorFeedback}/>
             <PrivateRoute path='/superDashboard/displayVendorMaster' component={DisplayVendorMaster}/>
             <PrivateRoute path='/superDashboard/displayVendorServices' component={DisplayVendorServices}/>
             <PrivateRoute path='/superDashboard/vendorMaster' component={vendorMaster} />

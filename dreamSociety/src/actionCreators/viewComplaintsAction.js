@@ -1,4 +1,4 @@
-import {URN,GET_COMPLAINTS,REJECT_COMPLAINT,ACCEPT_COMPLAINT,SEND_COMPLAINT,COMPLAINT_COMPLETE} from '../actions/index';
+import {URN,GET_COMPLAINTS,REJECT_COMPLAINT,ACCEPT_COMPLAINT,SEND_COMPLAINT,COMPLAINT_COMPLETE,DELETE_COMPLAINTS,GET_FEEDBACK} from '../actions/index';
 import {authHeader} from '../helper/authHeader';
 import axios from 'axios';
 
@@ -13,6 +13,19 @@ export function getComplaints(){
         payload:request
     }
 }   
+
+
+export function getFeedback(complaintId){
+    console.log(complaintId)
+    const request =axios.get(`${URN}/vendorComplaints/feedback/${complaintId}`,{headers:authHeader()})
+    .then(response => response.data)
+
+    return {
+        type:GET_FEEDBACK,
+        payload:request
+    }
+}   
+
 
 export const rejectComplaint=(complaintId)=>{
   
@@ -74,4 +87,15 @@ export const rejectComplaint=(complaintId)=>{
          }
      
      }
- 
+     
+     export function deleteSelectedComplaints(ids){
+        const request= axios.put(`${URN}/vendorComplaints/delete`,{ids},{headers:authHeader()})
+        .then((response) => response.data)
+        .then(() => this.getComplaints());
+    
+        return{
+            type:DELETE_COMPLAINTS,
+            payload:request
+        }
+    }
+    
