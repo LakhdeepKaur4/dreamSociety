@@ -13,7 +13,6 @@ exports.create = async (req, res, next) => {
     try {
         console.log("creating event");
         let body = req.body;
-        console.log("body-->",body)
         var nowDate = new Date();
         var date = nowDate.getFullYear() + '/' + (nowDate.getMonth() + 1) + '/' + nowDate.getDate();
         body.entryDate = date;
