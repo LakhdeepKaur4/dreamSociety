@@ -9,8 +9,8 @@ import UI from '../../components/newUI/superAdminDashboard';
 
 class ShowActiveListDetails extends Component{
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
        this.state = {
                  ids:[],
                 id:'',
