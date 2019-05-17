@@ -327,7 +327,7 @@ class GetElectricityExpense extends Component {
                                 filterName: 'flatNo'
                             }
                         });
-                    }}  style={{cursor:'pointer'}}>Flat No<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                    }} style={{ cursor: 'pointer' }}>Flat No<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th>Last Reading</th>
                     <th>Amount</th>
                     <th>Last Reading Date</th>
