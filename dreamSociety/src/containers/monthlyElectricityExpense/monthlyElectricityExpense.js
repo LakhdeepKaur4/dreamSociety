@@ -60,12 +60,12 @@ class MonthlyElectricityExpense extends Component {
             delete errors[e.target.name];
             this.setState({
                 [e.target.name]: e.target.value,
-                errors,errMessage:'',floorId:'', flatDetailId:''
+                errors,errMessage:''
             });
             
         }
         else {
-            this.setState({ [e.target.name]: e.target.value.trim(),errMessage:'',floorId:'', flatDetailId:'' })
+            this.setState({ [e.target.name]: e.target.value.trim(),errMessage:'' })
         }
         console.log(this.state.towerId);
         this.props.getfloorsOfTowers(e.target.value)
@@ -166,12 +166,12 @@ class MonthlyElectricityExpense extends Component {
             this.setState({
                 [e.target.name]: e.target.value,
                 errors,
-                errMessage:'',floorId:'', flatDetailId:''
+                errMessage:''
             });
             
         }
         else {
-            this.setState({ [e.target.name]: e.target.value ,errMessage:'',floorId:'', flatDetailId:''})
+            this.setState({ [e.target.name]: e.target.value ,errMessage:''})
         }
     }
 
