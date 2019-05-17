@@ -155,7 +155,7 @@ class ComplaintTenantDetails extends Component{
                         
                         <td><Button color="danger" disabled={(item.complaint_status_master.statusType==='CANCELED' || item.complaint_status_master.statusType==='COMPLETED')} onClick={this.cancelComplaints.bind(this, item.complaintId)} >Cancel</Button></td>
                         <td><Button color="success" disabled={!!(item.complaint_status_master.statusType==='TO DO' || item.complaint_status_master.statusType==='IN PROGRESS' || item.complaint_status_master.statusType==='ACCEPTED'
-                         || item.complaint_status_master.statusType==='CANCELED')}  onClick={this.toggle.bind(this, item.complaintId, item.vendor_master ? item.vendor_master.vendorId : '')}>Feedback</Button></td>
+                         || item.complaint_status_master.statusType==='CANCELED' || item.feedbackDisable === true)}  onClick={this.toggle.bind(this, item.complaintId, item.vendor_master ? item.vendor_master.vendorId : '')}>Feedback</Button></td>
                          
                     </tr>
 

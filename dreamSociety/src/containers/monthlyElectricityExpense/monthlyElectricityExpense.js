@@ -53,17 +53,19 @@ class MonthlyElectricityExpense extends Component {
     }
 
     towerChangeHandler = (e) => {
+        document.getElementById('floorId').value = 'no-value';
+        document.getElementById('flatDetailId').value = 'no-value';
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({
                 [e.target.name]: e.target.value,
-                errors,errMessage:''
+                errors,errMessage:'',floorId:'', flatDetailId:''
             });
             
         }
         else {
-            this.setState({ [e.target.name]: e.target.value.trim(),errMessage:'' })
+            this.setState({ [e.target.name]: e.target.value.trim(),errMessage:'',floorId:'', flatDetailId:'' })
         }
         console.log(this.state.towerId);
         this.props.getfloorsOfTowers(e.target.value)
@@ -157,19 +159,19 @@ class MonthlyElectricityExpense extends Component {
 
 
     floorChangeHandler = (e) => {
-
+        document.getElementById('flatDetailId').value = 'no-value';
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({
                 [e.target.name]: e.target.value,
                 errors,
-                errMessage:''
+                errMessage:'',floorId:'', flatDetailId:''
             });
             
         }
         else {
-            this.setState({ [e.target.name]: e.target.value ,errMessage:''})
+            this.setState({ [e.target.name]: e.target.value ,errMessage:'',floorId:'', flatDetailId:''})
         }
     }
 
@@ -322,7 +324,7 @@ class MonthlyElectricityExpense extends Component {
                 <Row md={12}>
                     <Col md={4}>
                         <label>Tower Name</label>
-                        <select required className="form-control" defaultValue='no-value' name="towerId" onChange={this.towerChangeHandler}>
+                        <select required className="form-control" id="towerId" defaultValue='no-value' name="towerId" onChange={this.towerChangeHandler}>
                             <DefaultSelect />
                             {this.getDropdownForTower(this.props.flatDetailMasterReducer)}
                         </select>
@@ -330,7 +332,7 @@ class MonthlyElectricityExpense extends Component {
                     </Col>
                     <Col md={4}>
                         <label>Floor</label>
-                        <select className="form-control" defaultValue='no-value' name="floorId" onChange={this.floorChangeHandler}>
+                        <select className="form-control" id="floorId" defaultValue='no-value' name="floorId" onChange={this.floorChangeHandler}>
                             <DefaultSelect />
                             {this.getFloorData(this.props.electricityExpenseReducer)}
                         </select>
@@ -338,7 +340,7 @@ class MonthlyElectricityExpense extends Component {
                     </Col>
                     <Col md={4}>
                         <label>Flat</label>
-                        <select className="form-control" defaultValue='no-value' name="flatDetailId" onChange={this.flatChangeHandler}>
+                        <select className="form-control" id="flatDetailId" defaultValue='no-value' name="flatDetailId" onChange={this.flatChangeHandler}>
                             <DefaultSelect />
                             {this.getFlatData(this.props.electricityExpenseReducer)}
                         </select>
