@@ -1,43 +1,50 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import UI from '../../components/newUI/superAdminDashboard';
-import { bindActionCreators } from 'redux';
 import Spinner from '../../components/spinner/spinner';
-import DefaultSelect from '../../constants/defaultSelect';
 import { getTowerName } from '../../actionCreators/flatDetailMasterAction';
-import { numberValidation, memberMaxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler } from '../../validation/validation';
 import ModalBox from '../../components/modal/modal';
 import InputField from '../../components/reusableComponents/inputs';
-import DropdownComponent from '../../components/reusableComponents/dropdown';
 import ButtonComponent from '../../components/reusableComponents/button';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import { getExpenseDetail, getMonthlyElecExpense, calculateCharges, updateElecExpense } from '../../actionCreators/monthlyElectricityExpense';
-import { Table, Row, Col, FormGroup, Input, Button, Label } from 'reactstrap';
+import { getMonthlyElecExpense,calculateCharges, updateElecExpense,filterViaDate } from '../../actionCreators/monthlyElectricityExpense';
+import { deleteElectricityExpense,deleteSelectedElectricityExpense } from '../../actionCreators/electricityExpense';
+import { Table, Row, Col, FormGroup, Label } from 'reactstrap';
+import { memberMaxDate } from '../../validation/validation';
 
 class MonthlyElectricityExpenseDetail extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            towerName: '',
-            floorName: '',
-            flatNo: '',
-            lastReading: '',
-            currentReading: '',
-            monthlyCharge: '',
-            mdi: '',
-            sanctionedLoad: '',
-            rate: '',
-            rent: '',
-            amount: '',
-            amountDue: null,
-            electricityConsumerId: '',
-            towerId: '',
-            floorId: '',
-            flatDetailId: '',
-            editModal: false,
-            unitConsumed: '',
-            errors: '',
-            errMessage: ''
+            towerName:'',
+            floorName:'', 
+            flatNo:'', 
+            lastReading :'', 
+            currentReading:'', 
+            monthlyCharge:'', 
+            mdi:'', 
+            sanctionedLoad:'', 
+            rate:'', 
+            rent:'', 
+            amount:'', 
+            amountDue:null,
+            electricityConsumerId:'',
+            towerId:'',
+            floorId:'', 
+            flatDetailId:'',
+            editModal:false,
+            unitConsumed:'',
+            errors:'',
+            errMessage:'',
+            modalLoading:false,
+            loading:true,
+            ids:[],
+            isDisabled:true,
+            filterName:'flatNo',
+            startDate:'',
+            endDate:'',
+            defaultList:true,
+            filterdList:false
         }
     }
 
@@ -45,8 +52,8 @@ class MonthlyElectricityExpenseDetail extends Component {
         this.refreshData();
     }
 
-    refreshData() {
-        this.props.getMonthlyElecExpense()
+    refreshData(){
+        this.props.getMonthlyElecExpense().then(() => this.setState({loading:false}));
     }
 
     logout = () => {
@@ -67,13 +74,45 @@ class MonthlyElectricityExpenseDetail extends Component {
         this.props.history.push('/superDashboard/addMonthlyElectricityExpenseDetail');
     }
 
-    getElectricityExpense = ({ getMonthlyElectricityExpense }) => {
-        if (getMonthlyElectricityExpense) {
+    getFilterdExpenseList = ({filtered}) => {
+        if(filtered){
+            console.log(filtered);
+        }
+    }
+
+    getElectricityExpense = ({getMonthlyElectricityExpense}) => {
+        if(getMonthlyElectricityExpense && getMonthlyElectricityExpense.electricityConsumer){
             console.log(getMonthlyElectricityExpense && getMonthlyElectricityExpense.electricityConsumer)
-            return getMonthlyElectricityExpense.electricityConsumer.map((item, index) => {
-                if (item && item.flat_detail_master) {
+            return getMonthlyElectricityExpense.electricityConsumer.sort((item1, item2) => {
+                var items1 = item1.flat_detail_master
+                var items2 = item2.flat_detail_master
+                var cmprVal = (items1 && items2) ? (items1[this.state.filterName].localeCompare(items2[this.state.filterName])) : ''
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).map((item,index) => {
+                if(item && item.flat_detail_master){
                     return (
                         <tr key={item.electricityConsumerId}>
+                            <td><input type="checkbox" name="ids" className="SelectAll" value={item.electricityConsumerId}
+                                onChange={(e) => {
+                                    const { electricityConsumerId } = item
+                                    if (!e.target.checked) {
+                                        document.getElementById('allSelect').checked = false;
+                                        let indexOfId = this.state.ids.indexOf(electricityConsumerId);
+                                        if (indexOfId > -1) {
+                                            this.state.ids.splice(indexOfId, 1);
+                                        }
+                                        if (this.state.ids.length === 0) {
+                                            this.setState({ isDisabled: true });
+                                        }
+                                    }
+                                    else {
+                                        this.setState({ ids: [...this.state.ids, electricityConsumerId] });
+                                        if (this.state.ids.length >= 0) {
+                                            this.setState({ isDisabled: false })
+                                        }
+                                    }
+
+                                }} /></td>
                             <td>{index + 1}</td>
                             <td>{item.flat_detail_master.tower_master.towerName}</td>
                             <td>{item.flat_detail_master.floor_master.floorName}</td>
@@ -82,12 +121,12 @@ class MonthlyElectricityExpenseDetail extends Component {
                             <td>{item.currentReading}</td>
                             <td>{item.monthlyCharge}</td>
                             <td>
-                                <ButtonComponent color="success" title="Edit" className="mr-2" buttonClicked={this.edit.bind(this, item.flat_detail_master.tower_master.towerName,
-                                    item.flat_detail_master.floor_master.floorName, item.flat_detail_master.flatNo, item.lastReading, item.currentReading, item.unitConsumed,
-                                    item.monthlyCharge, item.mdi, item.sanctionedLoad, item.rate, item.rent, item.amount, item.amountDue
-                                    , item.electricityConsumerId, item.flat_detail_master.tower_master.towerId, item.flat_detail_master.floor_master.floorId,
-                                    item.flat_detail_master.flatDetailId)} />
-                                <ButtonComponent color="danger" title="Delete" />
+                                <ButtonComponent color="success" title="Edit" className="mr-2" buttonClicked= {this.edit.bind(this, item.flat_detail_master.tower_master.towerName,
+                                   item.flat_detail_master.floor_master.floorName, item.flat_detail_master.flatNo,item.lastReading,item.currentReading, item.unitConsumed,
+                                   item.monthlyCharge, item.mdi, item.sanctionedLoad, item.rate,item.rent, item.amount, item.amountDue
+                                   , item.electricityConsumerId, item.flat_detail_master.tower_master.towerId, item.flat_detail_master.floor_master.floorId,
+                                   item.flat_detail_master.flatDetailId)} />
+                                <ButtonComponent color="danger" title="Delete" buttonClicked={this.delete.bind(this, item.electricityConsumerId)} />
                             </td>
                         </tr>
                     );
@@ -96,51 +135,66 @@ class MonthlyElectricityExpenseDetail extends Component {
         }
     }
 
-    edit = (towerName, floorName, flatNo, lastReading, currentReading, unitConsumed, monthlyCharge, mdi, sanctionedLoad, rate, rent, amount, amountDue, electricityConsumerId, towerId, floorId, flatDetailId) => {
-        console.log(towerName, floorName, flatNo, lastReading, currentReading, unitConsumed, monthlyCharge, mdi, sanctionedLoad, rate, rent, amount, amountDue,
-            electricityConsumerId, towerId, floorId, flatDetailId);
-        this.setState({
-            towerName, floorName, flatNo, lastReading, currentReading, unitConsumed, monthlyCharges: monthlyCharge, mdi, sanctionedLoad, rate, rent, amount, amountDue,
-            electricityConsumerId, towerId, floorId, flatDetailId, editModal: true
-        })
+    delete(electricityConsumerId){
+        this.setState({loading:true, isDisabled:true})
+        this.props.deleteElectricityExpense(electricityConsumerId)
+        .then(() => this.refreshData())
+        .catch(() => this.setState({loading:false}))
+    }
+
+    edit = (towerName, floorName, flatNo, lastReading , currentReading,unitConsumed, monthlyCharge, mdi, sanctionedLoad, rate, rent, amount, amountDue,electricityConsumerId, towerId, floorId, flatDetailId ) => {
+            console.log(towerName, floorName, flatNo, lastReading , currentReading,unitConsumed, monthlyCharge, mdi, sanctionedLoad, rate, rent, amount, amountDue,
+                electricityConsumerId, towerId, floorId, flatDetailId);
+                this.setState({towerName, floorName, flatNo, lastReading , currentReading,unitConsumed, monthlyCharges:monthlyCharge, mdi, sanctionedLoad, rate, rent, amount, amountDue,
+                    electricityConsumerId, towerId, floorId, flatDetailId, editModal:true})
     }
 
     editExpenseModal = () => {
-        this.setState({ editModal: !this.state.editModal })
+        this.setState({editModal:!this.state.editModal, errors:{}})
     }
 
     currentReadingChange = (e) => {
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)) {
-            this.setState({ currentReading: e.target.value, unitConsumed: (e.target.value - this.state.lastReading), errMessage: '' });
+            this.setState({ currentReading: e.target.value, monthlyCharges:''
+            , unitConsumed:(e.target.value - this.state.lastReading),errMessage:'' });
         }
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({
-                errors, errMessage: ''
+                errors,errMessage:'', monthlyCharges:''
             });
         }
     }
 
     rateChange = (e) => {
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)) {
-            this.setState({ [e.target.name]: e.target.value, errMessage: '' });
+            this.setState({ [e.target.name]: e.target.value,errMessage:'', monthlyCharges:''});
             console.log(this.state);
         }
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({
-                errors, errMessage: ''
+                errors,errMessage:'', monthlyCharges:''
             });
         }
     }
 
-    calcCharges = () => {
-        let { unitConsumed, sanctionedLoad, amountDue, amount, mdi, rate, rent } = this.state;
-        let data = { unitConsumed, sanctionedLoad, amountDue, amount, mdi, rate, rent };
-        this.props.calculateCharges(data)
-            .then(() => this.getMonthlyCharges(this.props.monthlyElectricityExpenseReducer))
+    calcCharges = (e) => {
+        e.preventDefault();
+        let errors = {};
+        
+        let { unitConsumed, sanctionedLoad, amountDue, amount, mdi, rate, rent, currentReading, lastReading } = this.state;
+        if(parseInt(currentReading) <= parseInt(lastReading)) errors.currentReading = `Current Reading can't be less than last reading.`;
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0;
+
+        if (isValid) {
+            let data = { unitConsumed, sanctionedLoad, amountDue, amount, mdi, rate, rent };
+            this.props.calculateCharges(data)
+            .then(() => this.getMonthlyCharges(this.props.monthlyElectricityExpenseReducer));
+        }
     }
 
     getMonthlyCharges = ({ getCharges }) => {
@@ -152,32 +206,145 @@ class MonthlyElectricityExpenseDetail extends Component {
 
     update = (e) => {
         e.preventDefault();
+        let errors = {}
         let { towerId, floorId, flatDetailId, lastReading, currentReading, unitConsumed, lastAmountDue, rate, rent, sanctionedLoad,
-            mdi, amountDue, amount, monthlyCharges, errors, towerName, floorName, flatNo, electricityConsumerId } = this.state;
-
-        console.log(towerId, floorId, flatDetailId, lastReading, currentReading, unitConsumed, lastAmountDue, rate, rent, sanctionedLoad,
-            mdi, amountDue, amount, monthlyCharges, errors, towerName, floorName, flatNo, electricityConsumerId);
-
-        let data = {
+            mdi,amountDue, amount, monthlyCharges, towerName, floorName, flatNo,electricityConsumerId } = this.state;
+        
+        let data= {
             towerId, floorId, flatDetailId, lastReading, currentReading, unitConsumed, lastAmountDue, rate, rent, sanctionedLoad,
-            mdi, amountDue, amount, monthlyCharge: monthlyCharges, errors, towerName, floorName, flatNo, electricityConsumerId
+                mdi,amountDue, amount, monthlyCharge:monthlyCharges, towerName, floorName, flatNo,electricityConsumerId
         }
 
-        this.props.updateElecExpense(data)
-            .then(() => this.refreshData());
+        console.log(electricityConsumerId);
+
+        let monthlyCharge = data.monthlyCharge;
+
+        if (currentReading === '') {
+            errors.currentReading = `Current Reading can't be empty.`;
+        }
+        if(parseInt(currentReading) <= parseInt(lastReading)) errors.currentReading = `Current Reading can't be less than last reading.`;
+        if(rent===''){
+            errors.rent = `Rent can't be empty.`;
+        }
+        if(mdi===''){
+            errors.mdi = `MDI can't be empty.`;
+        }
+        if(!monthlyCharges) errors.monthlyCharges = `Please calculate monthly charges.`;
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0;
+        if (isValid) {
+            this.setState({modalLoading:true})
+            this.props.updateElecExpense(electricityConsumerId,towerId, floorId, flatDetailId, lastReading, currentReading, unitConsumed, lastAmountDue, rate, rent, sanctionedLoad,
+                mdi,amountDue, amount, monthlyCharge, towerName, floorName, flatNo)
+            .then(() => this.updatedData())
+            .catch(() => this.setState({loading:false}));
+        }
+    }
+
+    updatedData = () => {
+        this.props.getMonthlyElecExpense().then(() => this.setState({modalLoading:false, editModal:false}))
+    }
+
+    deleteSelected(ids) {
+        this.setState({ loading: true, isDisabled: true });
+        this.props.deleteSelectedElectricityExpense(ids)
+            .then(() => this.refreshData())
+            .catch(err => err);
+    }
+
+    selectAll = () => {
+        let selectMultiple = document.getElementsByClassName('SelectAll');
+        let ar = [];
+        for (var i = 0; i < selectMultiple.length; i++) {
+            ar.push(parseInt(selectMultiple[i].value));
+            selectMultiple[i].checked = true;
+        }
+        this.setState({ ids: ar });
+        console.log("ids-->", this.state.ids)
+        if (ar.length > 0) {
+            this.setState({ isDisabled: false });
+        }
+    }
+
+    unSelectAll = () => {
+
+        let unSelectMultiple = document.getElementsByClassName('SelectAll');
+        let allIds = [];
+        for (var i = 0; i < unSelectMultiple.length; i++) {
+            unSelectMultiple[i].checked = false
+        }
+
+        this.setState({ ids: [...allIds] });
+        if (allIds.length === 0) {
+            this.setState({ isDisabled: true });
+        }
+
+    }
+
+    startDateChange = (e) => {
+        var start = document.getElementById('start');
+        var end = document.getElementById('end');
+
+        if (start.value) {
+            end.min = start.value;
+        }
+        if (!!this.state.errors[e.target.name]){
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors,subMaintenanceErr:'' });
+        }
+        else{
+            this.setState({[e.target.name]:e.target.value,subMaintenanceErr:''});
+        }
+    }
+
+    endDateChange = (e) => {
+        var start = document.getElementById('start');
+        var end = document.getElementById('end');
+
+        if (end.value) {
+            start.max = end.value;
+        }
+
+        if (!!this.state.errors[e.target.name]){
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors,subMaintenanceErr:'' });
+        }
+        else{
+            this.setState({[e.target.name]:e.target.value,subMaintenanceErr:''});
+        }
+    }
+
+    filter = (e) => {
+        e.preventDefault();
+        this.setState({defaultList:false, filterdList:true})
+        let {startDate, endDate} = this.state;
+        this.props.filterViaDate(startDate, endDate)
+    }
+
+    filterdList = () => {
 
     }
 
     render() {
         let { towerId, floorId, flatDetailId, lastReading, currentReading, unitConsumed, lastAmountDue, rate, rent, sanctionedLoad,
-            mdi, amountDue, amount, monthlyCharges, errors, towerName, floorName, flatNo } = this.state;
-        let tableData = <Table>
+            mdi,amountDue, amount, monthlyCharges, errors, towerName, floorName, flatNo, startDate,endDate } = this.state;
+        let tableData = <Table bordered>
             <thead>
                 <tr>
-                    <th>#</th>
+                    <th style={{ width: '4%' }}></th>
+                    <th style={{ width: '4%' }}>#</th>
                     <th>Tower</th>
                     <th>Floor</th>
-                    <th>Flat</th>
+                    <th onClick={() => {
+                        this.setState((state) => {
+                            return {
+                                sortVal: !state.sortVal,
+                                filterName: 'flatNo'
+                            }
+                        });
+                    }} style={{cursor:'pointer'}}>Flat No<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th>Last Reading</th>
                     <th>Current Reading</th>
                     <th>Monthly Electricity Charges</th>
@@ -185,7 +352,8 @@ class MonthlyElectricityExpenseDetail extends Component {
                 </tr>
             </thead>
             <tbody>
-                {this.getElectricityExpense(this.props.monthlyElectricityExpenseReducer)}
+                {this.state.defaultList ? this.getElectricityExpense(this.props.monthlyElectricityExpenseReducer):
+                this.state.filterdList ? this.getFilterdExpenseList(this.props.monthlyElectricityExpenseReducer) : ''}
             </tbody>
         </Table>
 
@@ -230,6 +398,7 @@ class MonthlyElectricityExpenseDetail extends Component {
                             type="text"
                             value={currentReading}
                             inputChange={this.currentReadingChange} />
+                        <span className="error">{errors.currentReading}</span>
                     </Col>
                     <Col md={4}>
                         <InputField label="Unit Consumed"
@@ -263,6 +432,7 @@ class MonthlyElectricityExpenseDetail extends Component {
                             type="text"
                             value={rent}
                             inputChange={this.rateChange} />
+                        <span className="error">{errors.rent}</span>
                     </Col>
                     <Col md={3}>
                         <InputField label="Sanctioned Load"
@@ -280,7 +450,8 @@ class MonthlyElectricityExpenseDetail extends Component {
                             name="mdi"
                             type="text"
                             value={mdi}
-                            disabled={true} />
+                            inputChange={this.rateChange} />
+                        <span className="error">{errors.mdi}</span>
                     </Col>
                     <Col md={4}>
                         <InputField label="Monthly Charges"
@@ -289,6 +460,7 @@ class MonthlyElectricityExpenseDetail extends Component {
                             value={monthlyCharges}
                             disabled={true}
                             inputChange={this.rateChange} />
+                        <span className="error">{errors.monthlyCharges}</span>
                     </Col>
                     <Col md={4}>
                         <ButtonComponent
@@ -308,7 +480,7 @@ class MonthlyElectricityExpenseDetail extends Component {
                     color="primary"
                     buttonClicked={this.update} />
                 <ButtonComponent
-                    title="Save"
+                    title="Cancel"
                     className="mr-2"
                     color="danger"
                     buttonClicked={this.editExpenseModal.bind(this)} />
@@ -324,12 +496,44 @@ class MonthlyElectricityExpenseDetail extends Component {
                         <h3 align="center"> Monthly Electricity Expense Detail</h3>
                         <ButtonComponent title="Add Expense" color="primary" buttonClicked={this.addExpense} />
                     </div>
-                    <ModalBox openModal={this.state.editModal}
-                        toggle={this.editExpenseModal.bind(this)}
-                        title="Monthly Electricity Expense">
-                        {editInputs}
+                    <div style={{display:'flex', justifyContent:'space-between'}}>
+                        <div>
+                            <ButtonComponent color="danger" disabled={this.state.isDisabled} className="mb-3"
+                                    buttonClicked={this.deleteSelected.bind(this, this.state.ids)}  title="Delete Selected" />
+                            <Label htmlFor="allSelect" style={{ alignContent: 'baseline', marginLeft: "10px", fontWeight: "700" }}>Select All<input className="ml-2"
+                                id="allSelect"
+                                type="checkbox" onChange={(e) => {
+                                    if (e.target.checked) {
+                                        this.selectAll();
+                                    }
+                                    else if (!e.target.checked) {
+                                        this.unSelectAll();
+                                    }
+                                }
+                                } /></Label>
+                        </div>
+                        <div>
+                            <SearchFilter />
+                        </div>
+                        <div style={{display:'flex'}}>
+                            <FormGroup className="mr-2" style={{display:'flex'}}>
+                                <label style={{alignSelf:'center', marginRight:'3px'}}>From</label>
+                                <input className="form-control" type="date" name="startDate" id="start" onChange={this.startDateChange} />
+                            </FormGroup>
+                            <FormGroup style={{display:'flex'}}>
+                                <label style={{alignSelf:'center', marginRight:'3px'}}>To</label>
+                                <input disabled={!startDate} className="form-control" type="date" name="endDate" id="end" onChange={this.endDateChange} />
+                            </FormGroup>
+                            <ButtonComponent title="Search" buttonClicked={this.filter} disabled={(!startDate || !endDate)}
+                            color="primary" />
+                        </div>
+                    </div>
+                    <ModalBox openModal = {this.state.editModal}
+                     toggle={this.editExpenseModal.bind(this)}
+                     title="Monthly Electricity Expense">
+                        {!this.state.modalLoading ? editInputs : <Spinner />}
                     </ModalBox>
-                    {tableData}
+                    {!this.state.loading ? tableData : <Spinner />}
                 </div>
             </UI>
         )
@@ -345,4 +549,5 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, { getMonthlyElecExpense, calculateCharges, updateElecExpense })(MonthlyElectricityExpenseDetail);
+export default connect(mapStateToProps, {getMonthlyElecExpense, calculateCharges,updateElecExpense,
+    deleteElectricityExpense,deleteSelectedElectricityExpense, filterViaDate})(MonthlyElectricityExpenseDetail);

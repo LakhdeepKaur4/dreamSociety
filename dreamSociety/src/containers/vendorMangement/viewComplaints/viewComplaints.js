@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getComplaints,rejectComplaint,acceptComplaint,sendConfirmations,complaintCompleted} from '../../../actionCreators/viewComplaintsAction';
+import { getComplaints,rejectComplaint,acceptComplaint,sendConfirmations,complaintCompleted,deleteSelectedComplaints,getFeedback} from '../../../actionCreators/viewComplaintsAction';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table} from 'reactstrap';
@@ -8,7 +8,7 @@ import UI from '../../../components/newUI/superAdminDashboard';
 import Spinner from '../../../components/spinner/spinner';
 import DefaultSelect from '../../../constants/defaultSelect';
 
-
+var Id;
 class ViewComplaints extends Component {
 constructor(){
     super()
@@ -25,6 +25,7 @@ constructor(){
             ids:[], 
             menuVisible: false,
             editModal: false,
+            editModal1:false,
             isDisabled:true, 
             search: '',
             errors:{},
@@ -37,6 +38,7 @@ constructor(){
 
     }
 }
+
 
     componentDidMount() {
         this.refreshData();
@@ -56,9 +58,15 @@ constructor(){
         }
     }
 
+    componentWillMount(){
+        Id=localStorage.getItem('complaintId')
+    }
+    
+
 
     refreshData() {
         this.props.getComplaints().then(()=> this.setState({loading:false, modalLoading: false, editModal:false}));
+        this.props.getFeedback(Id)
     }   
 
     rejectComplaint=(complaintId)=>{
@@ -90,11 +98,18 @@ constructor(){
         this.props.history.push('/superDashboard/ServiceMaster')
     }
 
-    toggleEditServiceModal() {
+    toggleModal() {
         this.setState({
             editModal: !this.state.editModal, message:''
         });
     }
+
+    toggleModal1() {
+        this.setState({
+            editModal1: !this.state.editModal1, message:''
+        });
+    }
+
 
     openComplaint(complaintId,slots) {
         this.setState({
@@ -138,12 +153,21 @@ constructor(){
        deleteSelected(ids){
         this.setState({loading:true,
         isDisabled:true});
-        this.props.deleteSelectedService(ids)
+        this.props.deleteSelectedComplaints(ids)
         .then(() => this.refreshData())
         .catch(err => err.response.data.message);
     }
 
-  
+    
+    viewFeedback(complaintId){
+        localStorage.setItem('complaintId',complaintId);
+        this.setState({
+            complaintId,
+              editModal1: !this.state.editModal1
+        },function(){
+           
+        });
+    }
 
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
@@ -193,17 +217,25 @@ constructor(){
                         </td>
                         <td>{item.complaint_status_master.statusType}</td>
                         <td>
-                            <Button color="success" className="mr-2"  onClick={this.openComplaint.bind(this,item.complaintId,item.slots)} disabled={!!(item.complaint_status_master.statusType==='REGISTERED' ) || !!(item.complaint_status_master.statusType==='COMPLETED') || !!(item.complaint_status_master.statusType==='IN PROGRESS') || !!(item.complaint_status_master.statusType==='CANCELED') || !!(item.disable === true)}>Send</Button>
-                        
-                        
+                            <Button color="success" className="mr-2"  onClick={this.openComplaint.bind(this,item.complaintId,item.slots)} disabled={!!(item.complaint_status_master.statusType==='TO DO' ) || !!(item.complaint_status_master.statusType==='COMPLETED') || !!(item.complaint_status_master.statusType==='IN PROGRESS') || !!(item.complaint_status_master.statusType==='CANCELED') || !!(item.disable === true)}>Send</Button>
                         </td>
-                        
+                        <td>
+                            <Button color="success" className="mr-2" onClick={this.viewFeedback.bind(this,item.complaintId)} >Feedback</Button>          
+                        </td>
                     </tr>
                     
 
                 )         
             })
         }
+    }
+
+
+    renderFeedback=({feedbackResult})=>{
+            if(feedbackResult){
+                console.log(feedbackResult)
+               
+            }
     }
 
     
@@ -280,13 +312,15 @@ constructor(){
                 <th style={{width:'19%', textAlign:'center'}}>Actions</th>
                 <th style={{width:'11%'}}>Current Status</th>
                 <th>Send Confirmation</th>
+                <th>View Feedback</th>
                 
              
             </tr>
         </thead>
 
         <tbody>
-            {this.renderList(this.props.viewComplaintsReducer)}    
+            {this.renderList(this.props.viewComplaintsReducer)}
+            {this.renderFeedback(this.props.viewComplaintsReducer)}    
         </tbody>
     </Table>
 
@@ -311,9 +345,33 @@ constructor(){
                    
                         <FormGroup>
                             <Button color="primary" className="mr-2" onClick={this.sendConfirmation}>Send Confirmation </Button>
-                            <Button color="danger" onClick={this.toggleEditServiceModal.bind(this)}>Cancel</Button>
+                            <Button color="danger" onClick={this.toggleModal.bind(this)}>Cancel</Button>
                         </FormGroup>
 </div>
+
+                let modalData1 =<div>
+                <FormGroup>
+                <Label> Slots</Label>
+                <Input type="select" name ="updatedSlots" defaultValue='no-value' onChange={this.onHandleChange}>        
+                <DefaultSelect/>
+                {this.state.slots?this.state.slots.map((item )=> {
+                    return(
+                    <option key={item} value={item}>{item}</option>
+                    )
+                }):[]}                     
+
+
+                </Input>
+                <span className="error">{this.state.errors.updatedSlots}</span>
+
+                </FormGroup>
+
+
+                <FormGroup>
+                <Button color="danger" onClick={this.toggleModal1.bind(this)}>Cancel</Button>
+                </FormGroup>
+                </div>
+
            let deleteSelectedButton = <Button color="danger" className="mb-2"
            onClick={this.deleteSelected.bind(this, this.state.ids)} disabled={this.state.isDisabled}>Delete Selected</Button>
         return (
@@ -326,8 +384,8 @@ constructor(){
                     <span aria-hidden="true">&times;</span>
                      </div>
 
-                    <Modal isOpen={this.state.editModal} toggle={this.toggleEditServiceModal.bind(this)} >
-                        <ModalHeader toggle={this.toggleEditServiceModal.bind(this)}>Select Slot</ModalHeader>
+                    <Modal isOpen={this.state.editModal} toggle={this.toggleModal.bind(this)} >
+                        <ModalHeader toggle={this.toggleModal.bind(this)}>Select Slot</ModalHeader>
                         <ModalBody>
                            {!this.state.modalLoading?modalData:<Spinner/>}
                         </ModalBody>
@@ -359,6 +417,13 @@ constructor(){
                      
                     
                     </div>
+
+                    <Modal isOpen={this.state.editModal1} toggle={this.toggleModal1.bind(this)} >
+                        <ModalHeader toggle={this.toggleModal1.bind(this)}>Feedback</ModalHeader>
+                        <ModalBody>
+                           {!this.state.modalLoading?modalData1:<Spinner/>}
+                        </ModalBody>
+                    </Modal>
                 </UI>
                
 
@@ -376,7 +441,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getComplaints,rejectComplaint,acceptComplaint,sendConfirmations,complaintCompleted}, dispatch);
+    return bindActionCreators({ getComplaints,rejectComplaint,acceptComplaint,sendConfirmations,complaintCompleted,deleteSelectedComplaints,getFeedback}, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewComplaints);      

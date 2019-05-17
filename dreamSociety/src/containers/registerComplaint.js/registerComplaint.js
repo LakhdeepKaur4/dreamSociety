@@ -9,13 +9,14 @@ import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
 
 
-class RegisterComplaint extends Component{
+class RegisterComplaintTenant extends Component{
     
     constructor(props) {
         super(props);
         this.state = {
             flatDetailId:'',
             serviceId:'',
+            priority:'',
             date:'',
             slotTime1:'',
             slotTime2:'',
@@ -24,6 +25,8 @@ class RegisterComplaint extends Component{
             errors: {},
             message:'',
             modal:false,
+            loading: true,
+            
            
 
             menuVisible: false,
@@ -55,6 +58,7 @@ class RegisterComplaint extends Component{
 
     service({item}){
         if(item){
+            console.log(item,"details============")
            return( 
             item.map((item) =>{ 
                    return(
@@ -70,12 +74,11 @@ class RegisterComplaint extends Component{
 
     userflatDetails({userFlat}){
         if(userFlat &&  userFlat.flats){
-            console.log(userFlat)
             return( 
                 userFlat.flats.map((item) =>{ 
                     return(
                         <option key={item.flatDetailId} value={item.flatDetailId}>
-                         {"Flatno-"+item.flatNo+", "+item.floor_master.floorName+" floor"+", "+item.tower_master.towerName}
+                         {"Flatno-"+item.flatNo+", "+item.tower_master.towerName+", "+item.floor_master.floorName+" floor"}
                         </option>
                     )
                 })
@@ -106,9 +109,14 @@ class RegisterComplaint extends Component{
             errors.serviceId = "cant be empty";
         }
 
-        else if(this.state.priority==='') {
+        else if(this.state.priority ==='') {
             errors.priority = "cant be empty";
         }
+
+        else if(this.state.date ==='') {
+            errors.date = "cant be empty";
+        }
+
 
         else if(this.state.slotTime1 ==='') {
             errors.slotTime1 = "cant be empty";
@@ -149,7 +157,7 @@ class RegisterComplaint extends Component{
 
     changePassword=()=>{ 
         console.log("password")
-        return this.props.history.replace('/tenantDashboard/changePasswordtenant')
+        return this.props.history.replace('/tenantDashboard/changePasswordTenant')
     }
 
     close = () => {
@@ -231,8 +239,8 @@ class RegisterComplaint extends Component{
                 <Col md={4}>
                     <Label>Slot Time 1</Label>
                     <Input type="time"  name="slotTime1" onChange={this.onChange} >
-                    <span className='error'>{this.state.errors.startTime1}</span>
                     </Input>
+                    <span className='error'>{this.state.errors.slotTime1}</span>
                 </Col>
                 
                 <Col md={4}>
@@ -248,13 +256,16 @@ class RegisterComplaint extends Component{
                 </Col>
             </Row>
             </FormGroup>
+               
 
-            
+
+
+
             <FormGroup>
                 <Label>Description</Label>
                 <Input type="textarea"  name="description" maxLength={500} onChange={this.onChange}>
                 </Input >
-                {/* <span className='error'>{this.state.errors.description}</span> */}
+                <span className='error'>{this.state.errors.description}</span>
             </FormGroup>
 
             <FormGroup>
@@ -298,4 +309,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ userflatDetails,postRegister,serviceDetails }, dispatch);
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(RegisterComplaint));
+export default (connect(mapStateToProps, mapDispatchToProps)(RegisterComplaintTenant));

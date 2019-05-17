@@ -194,27 +194,28 @@ class MonthlyElectricityExpense extends Component {
 
     rateChange = (e) => {
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)) {
-            this.setState({ [e.target.name]: e.target.value,errMessage:''});
+            this.setState({ [e.target.name]: e.target.value,errMessage:'', monthlyCharges:''});
             console.log(this.state);
         }
         if(!!this.state.errors[e.target.name]){
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({
-                errors,errMessage:''
+                errors,errMessage:'', monthlyCharges:''
             });
         }
     }
 
     currentReadingChange = (e) => {
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)) {
-            this.setState({ currentReading: e.target.value, unitConsumed:(e.target.value - this.state.lastReading),errMessage:'' });
+            this.setState({ currentReading: e.target.value, monthlyCharges:''
+            , unitConsumed:(e.target.value - this.state.lastReading),errMessage:'' });
         }
         if(!!this.state.errors[e.target.name]){
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({
-                errors,errMessage:''
+                errors,errMessage:'', monthlyCharges:''
             });
         }
     }
@@ -233,8 +234,10 @@ class MonthlyElectricityExpense extends Component {
         if(!floorId) errors.floorId = `Select floor.`;
         if(!flatDetailId) errors.flatDetailId=`Select flat.`;
         if(currentReading === '') errors.currentReading = `Current reading can't be empty.`;
+        if(parseInt(currentReading) <= parseInt(lastReading)) errors.currentReading = `Current Reading can't be less than last reading.`;
         if(rent === '') errors.rent = `Rent can't be empty.`;
         if(mdi === '') errors.mdi = `MDI can't be empty.`;
+        if(!monthlyCharges) errors.monthlyCharges = `Please calculate monthly charges.`
         // if(!document.getElementById('monthlyCharges').value) errors.monthlyCharges = `Please calculate monthly charges.`
 
         this.setState({ errors });
@@ -282,11 +285,20 @@ class MonthlyElectricityExpense extends Component {
         }
     }
 
-    calcCharges = () => {
-        let { unitConsumed, sanctionedLoad, amountDue, amount, mdi, rate, rent } = this.state;
-        let data = { unitConsumed, sanctionedLoad, amountDue, amount, mdi, rate, rent };
-        this.props.calculateCharges(data)
-        .then(() => this.getMonthlyCharges(this.props.monthlyElectricityExpenseReducer))
+    calcCharges = (e) => {
+        e.preventDefault();
+        let errors = {};
+        
+        let { unitConsumed, sanctionedLoad, amountDue, amount, mdi, rate, rent, currentReading, lastReading } = this.state;
+        if(parseInt(currentReading) <= parseInt(lastReading)) errors.currentReading = `Current Reading can't be less than last reading.`;
+        this.setState({ errors });
+        const isValid = Object.keys(errors).length === 0;
+
+        if (isValid) {
+            let data = { unitConsumed, sanctionedLoad, amountDue, amount, mdi, rate, rent };
+            this.props.calculateCharges(data)
+            .then(() => this.getMonthlyCharges(this.props.monthlyElectricityExpenseReducer));
+        }
     }
 
     getMonthlyCharges = ({getCharges}) => {
@@ -294,6 +306,11 @@ class MonthlyElectricityExpense extends Component {
             console.log(getCharges);
             this.setState({monthlyCharges:getCharges.monthlyCharges})
         }
+    }
+
+    routeToDetail = (e) => {
+        e.preventDefault()
+        this.props.history.push('/superDashboard/monthlyElectricityExpenseDetail');
     }
 
     render(){
@@ -459,7 +476,7 @@ class MonthlyElectricityExpense extends Component {
             </FormGroup> */}
             <FormGroup>
                 <Button className="btn btn-success mr-2">Add Expense</Button>
-                <Button className="btn btn-danger">Cancel</Button>
+                <Button className="btn btn-danger" onClick={this.routeToDetail}>Cancel</Button>
             </FormGroup>
         </div>
         return (
