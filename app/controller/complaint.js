@@ -186,17 +186,17 @@ exports.getByUserId = (req, res, next) => {
                     }
                 })
                 Promise.all(promise)
-                .then(result => {
-                    complaintsSend.sort(function (a, b) {
-                        return Number(a.complaintId) - Number(b.complaintId)
-                    });
-                    res.status(httpStatus.OK).json({
-                        complaints: complaintsSend
+                    .then(result => {
+                        complaintsSend.sort(function (a, b) {
+                            return Number(a.complaintId) - Number(b.complaintId)
+                        });
+                        res.status(httpStatus.OK).json({
+                            complaints: complaintsSend
+                        })
                     })
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+                    .catch(err => {
+                        console.log(err)
+                    })
             } else {
                 res.status(httpStatus.NO_CONTENT).json({
                     message: 'No Data Found'

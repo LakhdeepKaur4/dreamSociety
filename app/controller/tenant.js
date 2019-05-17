@@ -695,7 +695,7 @@ exports.getDecrypted = (req, res, next) => {
                                     { model: RFID, where: { isActive: true }, attributes: ['rfidId', 'rfid'] }
                                 ]
                             })
-                            // setTimeout(() => console.log(rfid), 1000);
+                            
                             tenant.firstName = decrypt(tenant.firstName);
                             tenant.lastName = decrypt(tenant.lastName);
                             tenant.userName = decrypt(tenant.userName);
@@ -741,17 +741,6 @@ exports.getDecrypted = (req, res, next) => {
                     .catch(err => {
                         console.log(err)
                     })
-                // setTimeout(() => {
-                //     let tenants = tenantsArr;
-                //     tenants.sort(function (a, b) {
-                //         return Number(a.tenantId) - Number(b.tenantId)
-                //     });
-                //     res.status(httpStatus.OK).json({
-                //         message: "Tenant Content Page",
-                //         tenants
-                //     });
-                // }, 1000);
-                // console.log(tenantsArr);
             } else {
                 res.status(httpStatus.NO_CONTENT).json({
                     message: 'No data available!'
@@ -1028,15 +1017,6 @@ exports.getTenantMembers = async (req, res, next) => {
                 console.log(err);
             })
         })
-    // console.log(tenantMembers)
-
-    // setTimeout(() => {
-    //     let members = membersArr;
-    //     res.status(httpStatus.OK).json({
-    //         message: "Tenant Members Details",
-    //         members
-    //     });
-    // }, 1000);
 }
 
 exports.deleteTenantMember = async (req, res, next) => {

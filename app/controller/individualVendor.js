@@ -379,7 +379,7 @@ exports.get = (req, res, next) => {
             ]
         })
         .then(vendor => {
-            vendor.map(async item => {
+            const promise = vendor.map(async item => {
                 const rfid = await UserRFID.findOne({
                     where: {
                         userId: item.individualVendorId,
@@ -419,14 +419,18 @@ exports.get = (req, res, next) => {
 
                 vendorArr.push(item);
             })
-            return vendorArr;
-        })
-        .then(() => {
-            setTimeout(() => {
-                res.status(httpStatus.OK).json({
-                    vendors: vendorArr
+            Promise.all(promise)
+                .then(result => {
+                    vendorArr.sort(function (a, b) {
+                        return Number(a.individualVendorId) - Number(b.individualVendorId)
+                    });
+                    res.status(httpStatus.OK).json({
+                        vendors: vendorArr
+                    })
                 })
-            }, 1000);
+                .catch(err => {
+                    console.log(err)
+                })
         })
         .catch(err => {
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);

@@ -503,7 +503,7 @@ exports.getDecrypt = async (req, res, next) => {
         })
             .then(async emp => {
                 // console.log(emp);
-                await emp.map(async item => {
+                const promise = await emp.map(async item => {
                     const rfid = await UserRFID.findOne({
                         where: {
                             userId: item.employeeId,
@@ -543,14 +543,21 @@ exports.getDecrypt = async (req, res, next) => {
 
                     employee.push(item);
                 })
-                setTimeout(() => {
-                    if (employee) {
-                        return res.status(httpStatus.OK).json({
-                            message: "Employee Content Page",
-                            employee
-                        });
-                    } 
-                }, 1000);
+                Promise.all(promise)
+                    .then(result => {
+                        if (employee) {
+                            employee.sort(function (a, b) {
+                                return Number(a.employeeId) - Number(b.employeeId)
+                            });
+                            return res.status(httpStatus.OK).json({
+                                message: "Employee Content Page",
+                                employee
+                            });
+                        } 
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
             })
             .catch(err => console.log(err))
     } catch (error) {
