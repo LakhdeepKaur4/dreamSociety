@@ -16,7 +16,7 @@ import search from '../../appImages/search.png';
 import restore from '../../appImages/restore.png';
 
 class MonthlyElectricityExpenseDetail extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             towerName:'',
@@ -53,7 +53,7 @@ class MonthlyElectricityExpenseDetail extends Component {
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.refreshData();
     }
 
@@ -226,7 +226,7 @@ class MonthlyElectricityExpenseDetail extends Component {
             this.setState({ currentReading: e.target.value, monthlyCharges:''
             , unitConsumed:(e.target.value - this.state.lastReading),errMessage:'' });
         }
-        if(!!this.state.errors[e.target.name]){
+        if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({
@@ -240,7 +240,7 @@ class MonthlyElectricityExpenseDetail extends Component {
             this.setState({ [e.target.name]: e.target.value,errMessage:'', monthlyCharges:''});
             console.log(this.state);
         }
-        if(!!this.state.errors[e.target.name]){
+        if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
             this.setState({
@@ -265,10 +265,10 @@ class MonthlyElectricityExpenseDetail extends Component {
         }
     }
 
-    getMonthlyCharges = ({getCharges}) => {
-        if(getCharges && getCharges.monthlyCharges){
+    getMonthlyCharges = ({ getCharges }) => {
+        if (getCharges && getCharges.monthlyCharges) {
             console.log(getCharges);
-            this.setState({monthlyCharges:getCharges.monthlyCharges})
+            this.setState({ monthlyCharges: getCharges.monthlyCharges })
         }
     }
 
@@ -388,7 +388,7 @@ class MonthlyElectricityExpenseDetail extends Component {
         this.refreshData();
     }
 
-    render(){
+    render() {
         let { towerId, floorId, flatDetailId, lastReading, currentReading, unitConsumed, lastAmountDue, rate, rent, sanctionedLoad,
             mdi,amountDue, amount, monthlyCharges, errors, towerName, floorName, flatNo, startDate,endDate } = this.state;
         let tableData = <Table bordered>
@@ -476,7 +476,7 @@ class MonthlyElectricityExpenseDetail extends Component {
                         <InputField label="Last Amount Due"
                             name="lastAmountDue"
                             type="text"
-                            value={(amountDue == true ? '-' : amountDue == false ? '+':'') + amount}
+                            value={(amountDue == true ? '-' : amountDue == false ? '+' : '') + amount}
                             disabled={true} />
                     </Col>
                     <Col md={3}>
@@ -524,12 +524,12 @@ class MonthlyElectricityExpenseDetail extends Component {
                         <span className="error">{errors.monthlyCharges}</span>
                     </Col>
                     <Col md={4}>
-                        <ButtonComponent 
+                        <ButtonComponent
                             title="Calculate Charges"
                             disabled={(!towerId || !floorId || !flatDetailId || !lastReading || !currentReading || !unitConsumed || !amount || !rate || !rent || !sanctionedLoad ||
                                 !mdi)}
                             color="primary"
-                            style={{marginTop:'28px'}}
+                            style={{ marginTop: '28px' }}
                             buttonClicked={this.calcCharges} />
                     </Col>
                 </Row>

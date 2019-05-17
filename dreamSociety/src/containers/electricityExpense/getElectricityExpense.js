@@ -51,6 +51,13 @@ class GetElectricityExpense extends Component {
         }
     }
 
+    rateChange = (e) => {
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)) {
+            this.setState({ [e.target.name]: e.target.value });
+        }
+    }
+
+
     componentDidMount() {
         this.refreshData();
     }
@@ -79,8 +86,9 @@ class GetElectricityExpense extends Component {
         }
     }
 
-    edit = (electricityConsumerId, lastReading, rate, amount, lastReadingDate, sanctionedLoad, amountDue) => {
+    edit = (towerName, floorName, flatNo, electricityConsumerId, lastReading, rate, amount, lastReadingDate, sanctionedLoad, amountDue) => {
         this.setState({
+            towerName, floorName, flatNo,
             electricityConsumerId,
             lastReading,
             rate,
@@ -91,7 +99,6 @@ class GetElectricityExpense extends Component {
             amountDueInput: amountDue,
             editModal: true
         });
-        console.log(amountDue, this.state.amountDueInput)
     }
 
     deleteSelected(ids) {
@@ -179,9 +186,9 @@ class GetElectricityExpense extends Component {
                     console.log(err.response.data.message)
                     this.setState({ modalLoading: false, message: err.response.data.message })
                 })
-                this.setState({
-                    modalLoading: true
-                })
+            this.setState({
+                modalLoading: true
+            })
         }
     }
 
@@ -234,7 +241,8 @@ class GetElectricityExpense extends Component {
                             {/* <td>{item.startDate}</td> */}
                             {/* <td>{item.endDate}</td> */}
                             <td>
-                                <Button color="success" className="mr-2" onClick={this.edit.bind(this, item.electricityConsumerId, item.lastReading, item.rate, item.amount, item.lastReadingDate, item.sanctionedLoad, item.amountDue)}>Edit</Button>
+                                <Button color="success" className="mr-2" onClick={this.edit.bind(this, item.flat_detail_master.tower_master.towerName,
+                                    item.flat_detail_master.floor_master.floorName, item.flat_detail_master.flatNo, item.electricityConsumerId, item.lastReading, item.rate, item.amount, item.lastReadingDate, item.sanctionedLoad, item.amountDue)}>Edit</Button>
                                 <Button color="danger" className="danger" onClick={this.delete.bind(this, item.electricityConsumerId)}>Delete</Button>
                             </td>
                         </tr>
@@ -305,7 +313,7 @@ class GetElectricityExpense extends Component {
     }
 
     render() {
-        let tableData = <Table className="table">
+        let tableData = <Table bordered>
             <thead>
                 <tr>
                     <th style={{ width: '4%' }}></th>
@@ -333,18 +341,49 @@ class GetElectricityExpense extends Component {
             </tbody>
         </Table>
 
-        let modalBoxData= <div>
-             <InputField
+        let modalBoxData = <div>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={4}>
+                        <InputField label="Tower"
+                            name="towerName"
+                            type="text"
+                            value={this.state.towerName}
+                            disabled={true} />
+                    </Col>
+                    <Col md={4}>
+                        <InputField label="Floor"
+                            name="floorName"
+                            type="text"
+                            value={this.state.floorName}
+                            disabled={true} />
+                    </Col>
+                    <Col md={4}>
+                        <InputField label="Flat No."
+                            name="flatNo"
+                            type="text"
+                            value={this.state.flatNo}
+                            disabled={true} />
+                    </Col>
+                </Row>
+            </FormGroup>
+            <FormGroup>
+                <Row md={12}>
+                    <Col md={4}>
+                        <InputField
                             label="Last Reading"
                             placeholder="Last Reading"
                             name="lastReading"
                             type="text"
+                            maxLength="16"
                             onKeyPress={this.onKeyPressHandler}
                             inputChange={this.onChangeInput}
                             value={this.state.lastReading}
                             className="error"
                             error={this.state.errors.lastReading}
                         ></InputField>
+                    </Col>
+                    <Col md={4}>
                         <DropdownComponent
                             label="Rate"
                             name="rate"
@@ -356,6 +395,8 @@ class GetElectricityExpense extends Component {
                         ><DefaultSelect />
                             {this.getDropdownForRate(this.props.electricityExpenseReducer)}
                         </DropdownComponent>
+                    </Col>
+                    <Col md={4}>
                         <InputField
                             label="Last Reading Date"
                             placeholder="Last Reading Date"
@@ -366,61 +407,63 @@ class GetElectricityExpense extends Component {
                             className="error"
                             error={this.state.errors.lastReadingDate}
                         />
-                        <InputField
-                            label="Sanctioned Load"
-                            placeholder="Sanctioned Load"
-                            name="sanctionedLoad"
-                            type="text"
-                            onKeyPress={this.onKeyPressHandler}
-                            inputChange={this.onChangeInput}
-                            value={this.state.sanctionedLoad}
-                            className="error"
-                            error={this.state.errors.sanctionedLoad}
-                        />
+                    </Col>
+                </Row>
+            </FormGroup>
+            <InputField
+                label="Sanctioned Load"
+                placeholder="Sanctioned Load"
+                name="sanctionedLoad"
+                type="text"
+                inputChange={this.rateChange}
+                value={this.state.sanctionedLoad}
+                className="error"
+                error={this.state.errors.sanctionedLoad}
+            />
+            <FormGroup>
+                <Row md={12}>
+                    {this.state.defaultSign ? <Col md={6}>
+                        <Input type="text" id="permanentaddr" disabled maxLength="500" value={this.state.amountDue == true ? '-' : '+'} name="amountDueInput" onChange={this.onChangeInput} />
+                    </Col> : ''}
+                    {this.state.defaultSign ? <Col md={6}>
+                        <span style={{ fontWeight: 'bold' }}>Do you want to edit?</span><Input type="checkbox" onChange={this.sameSign} name="isChecked" id="isChecked" className="ml-3" />
+                    </Col> :
+                        <Col md={12} style={{ textAlign: 'center' }}>
+                            <span style={{ fontWeight: 'bold' }}>Do you want to edit ?</span><Input type="checkbox" onChange={this.sameSign} name="isChecked" id="isChecked" className="ml-3" />
+                        </Col>}
+                </Row>
+            </FormGroup>
+            {this.state.editSign ? <DropdownComponent
+                name="amountDue"
+                type="select"
+                inputChange={this.onChangeSign}
+                defaultValue="no-value"
+            ><DefaultSelect />
+                <option value="false" >+</option>
+                <option value="true" >-</option>
+            </DropdownComponent> : ''}
+            <InputField
+                label="Amount"
+                placeholder="Amount"
+                maxLength="10"
+                name="amount"
+                type="text"
+                onKeyPress={this.onKeyPressHandler}
+                inputChange={this.onChangeInput}
+                value={this.state.amount}
+                className="error"
+                error={this.state.errors.amount}
+            />
+            <FormGroup>
+                <ButtonComponent color="primary"
+                    className='mr-2'
+                    buttonClicked={this.update}
+                    title='Save' />
 
-                        <FormGroup>
-                            <Row md={12}>
-                                {this.state.defaultSign ? <Col md={6}>
-                                    <Input type="text" id="permanentaddr" disabled maxLength="500" value={this.state.amountDue == true ? '-' : '+'} name="amountDueInput" onChange={this.onChangeInput} />
-                                </Col> : ''}
-                                {this.state.defaultSign ? <Col md={6}>
-                                    <span style={{ fontWeight: 'bold' }}>Do you want to edit?</span><Input type="checkbox" onChange={this.sameSign} name="isChecked" id="isChecked" className="ml-3" />
-                                </Col> :
-                                    <Col md={12} style={{ textAlign: 'center' }}>
-                                        <span style={{ fontWeight: 'bold' }}>Do you want to edit ?</span><Input type="checkbox" onChange={this.sameSign} name="isChecked" id="isChecked" className="ml-3" />
-                                    </Col>}
-                            </Row>
-                        </FormGroup>
-                        {this.state.editSign ? <DropdownComponent
-                            name="amountDue"
-                            type="select"
-                            inputChange={this.onChangeSign}
-                            defaultValue="no-value"
-                        ><DefaultSelect />
-                            <option value="false" >+</option>
-                            <option value="true" >-</option>
-                        </DropdownComponent> : ''}
-                        <InputField
-                            label="Amount"
-                            placeholder="Amount"
-                            name="amount"
-                            type="text"
-                            onKeyPress={this.onKeyPressHandler}
-                            inputChange={this.onChangeInput}
-                            value={this.state.amount}
-                            className="error"
-                            error={this.state.errors.amount}
-                        />
-                        <FormGroup>
-                            <ButtonComponent color="primary"
-                                className='mr-2'
-                                buttonClicked={this.update}
-                                title='Save' />
-
-                            <ButtonComponent color="danger"
-                                buttonClicked={this.toggleModal.bind(this)}
-                                title='Cancel' />
-                        </FormGroup>
+                <ButtonComponent color="danger"
+                    buttonClicked={this.toggleModal.bind(this)}
+                    title='Cancel' />
+            </FormGroup>
         </div>
         return (
             <UI onClick={this.logout} change={this.changePassword}>
@@ -456,7 +499,6 @@ class GetElectricityExpense extends Component {
                         {/* <span className="error">{this.state.message}</span> */}
                         {!this.state.modalLoading ? modalBoxData : <Spinner />}
                     </ModalBox>
-                    
                 </div>
             </UI >
         )
@@ -464,7 +506,7 @@ class GetElectricityExpense extends Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log("^^", state);
+
     return {
         flatDetailMasterReducer: state.flatDetailMasterReducer,
         electricityExpenseReducer: state.electricityExpenseReducer
