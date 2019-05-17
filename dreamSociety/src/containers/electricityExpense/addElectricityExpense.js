@@ -145,6 +145,7 @@ class AddElectricityExpense extends Component {
     submit = (e) => {
         e.preventDefault();
         let { towerId, floorId, flatDetailId, lastReading, amount, sign, rate, lastReadingDate, sanctionedLoad, amountDue } = this.state;
+        console.log("flat in submit", this.state.towerId)
         let errors = {};
         if (this.state.towerId === '') {
             errors.towerId = `Tower can't be empty.`;
@@ -152,7 +153,7 @@ class AddElectricityExpense extends Component {
         if (this.state.floorId === '') {
             errors.floorId = `Floor can't be empty.`
         }
-        if (this.state.flatDetailId === '') {
+        if (this.state.flatDetailId === '' || this.state.flatDetailId === undefined) {
             errors.flatDetailId = `Flat can't be empty.`
         }
         if (this.state.sign === '') {
@@ -305,7 +306,7 @@ class AddElectricityExpense extends Component {
                             maxLength="16"
                             onChange={this.rateChange}
                             value={this.state.sanctionedLoad}
-                            // onKeyPress={this.onKeyPressHandler}
+                        // onKeyPress={this.onKeyPressHandler}
                         // value={this.state.currentReading}
                         />
                         <span className="error">{this.state.errors.sanctionedLoad}</span>
