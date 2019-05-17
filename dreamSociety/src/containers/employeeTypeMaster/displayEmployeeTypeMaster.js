@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
 import { bindActionCreators } from 'redux';
-import { getEmployee, getEmployeeType, getEmployeeWorkType, updateEmployee, deleteEmployee, deleteMultipleEmployee } from '../../actionCreators/employeeTypeMasterAction';
+import { getEmployee, getEmployeeType, getEmployeeWorkType, updateEmployee, deleteEmployee, deleteMultipleEmployee } from '../../actions/employeeTypeMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect'

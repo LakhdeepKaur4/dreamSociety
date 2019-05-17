@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { postFloor } from '../../actionCreators/floorAction';
+import { postFloor } from '../../actions/floorAction';
 import { Form, FormGroup, Button, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';

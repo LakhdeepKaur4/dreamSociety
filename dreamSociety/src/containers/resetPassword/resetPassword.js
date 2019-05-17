@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import { FormGroup, Form, Input, Button, Label } from 'reactstrap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { resetPassword,clearMessage } from '../../actionCreators/resetPassword';
+import { resetPassword,clearMessage } from '../../actions/resetPassword';
 
 
 class resetPassword1 extends Component{

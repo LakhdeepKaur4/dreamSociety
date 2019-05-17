@@ -1,4 +1,4 @@
-import {GET_FLOOR,GET_FLOOR_TOWER} from '../../actions';
+import {GET_FLOOR,GET_FLOOR_TOWER} from '../../actionCreators/index';
 
 export default function(state=[],action){
     switch(action.type){

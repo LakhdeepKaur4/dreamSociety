@@ -1,4 +1,4 @@
-import {ADD_TOWER,GET_TOWER} from '../../actions/index';
+import {ADD_TOWER,GET_TOWER} from '../../actionCreators/index';
 // const initialState ={
 //     users:{
 //         id:''

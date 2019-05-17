@@ -4,12 +4,12 @@ import { FormGroup, Input, Table, Label, Button, Modal, Row, Col, ModalBody, Mod
 import DefaultSelect from '../../../constants/defaultSelect';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import { getTenantDetail, deleteTenant,getFlatDetailViaTowerId, deleteSelectedTenant,getOwnerDetailViaFlatId,
-updateTenantDetail,addNewFlatForTenant, getFlats, rfid } from '../../../actionCreators/tenantMasterAction';
+updateTenantDetail,addNewFlatForTenant, getFlats, rfid } from '../../../actions/tenantMasterAction';
 import Select from 'react-select';
-import {getCountry,getState,getCity, getLocation} from '../../../actionCreators/societyMasterAction';
-import {getAllFloor} from '../../../actionCreators/flatOwnerAction';
-import {PicURN} from '../../../actions/index';
-import { viewTower } from '../../../actionCreators/towerMasterAction';
+import {getCountry,getState,getCity, getLocation} from '../../../actions/societyMasterAction';
+import {getAllFloor} from '../../../actions/flatOwnerAction';
+import {PicURN} from '../../../actionCreators/index';
+import { viewTower } from '../../../actions/towerMasterAction';
 import { connect } from 'react-redux';
 import Spinner from '../../../components/spinner/spinner';
 import "./tenantDetail.css"

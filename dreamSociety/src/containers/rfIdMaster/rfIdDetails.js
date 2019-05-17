@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {fetchRf,removeRf,deleteMultipleRf,updateRF} from '../../actionCreators/rfIdAction';
+import {fetchRf,removeRf,deleteMultipleRf,updateRF} from '../../actions/rfIdAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Table,FormGroup,Button,Input,Label,ModalBody,ModalHeader,Modal} from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';

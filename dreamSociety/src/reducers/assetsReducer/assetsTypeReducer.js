@@ -1,4 +1,4 @@
-import {ADD_ASSETS_TYPE,GET_ASSETS_SUB,REMOVE_ASSETS_SUB,UPDATE_ASSETS_SUB,DELETE_MULTIPLE_ASSETS_SUB_LIST} from '../../actions/index';
+import {ADD_ASSETS_TYPE,GET_ASSETS_SUB,REMOVE_ASSETS_SUB,UPDATE_ASSETS_SUB,DELETE_MULTIPLE_ASSETS_SUB_LIST} from '../../actionCreators/index';
 export default function(state={},action){
    
     switch(action.type){

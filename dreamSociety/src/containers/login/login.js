@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './login.css';
 import { connect } from 'react-redux';
-import { login } from '../../actionCreators/loginAction';
+import { login } from '../../actions/loginAction';
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom';
 import { Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input, Button, Label,} from 'reactstrap';

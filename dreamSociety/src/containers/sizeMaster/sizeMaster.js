@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { AddSize } from '../../actionCreators/sizeMasterAction';
+import { AddSize } from '../../actions/sizeMasterAction';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';

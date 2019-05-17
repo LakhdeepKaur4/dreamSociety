@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {getLocation, getLocationName,updateLocation,deleteLocation,deleteSelectedLocation} from '../../actionCreators/locationMasterAction';
+import {getLocation, getLocationName,updateLocation,deleteLocation,deleteSelectedLocation} from '../../actions/locationMasterAction';
 import { bindActionCreators } from 'redux';
 import { Button, Row,Col, Modal, FormGroup, ModalBody,Table, ModalHeader, Input, Label } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
@@ -8,7 +8,7 @@ import SearchFilter from '../../components/searchFilter/searchFilter';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
 import _ from 'underscore';
-import { getCountry, getState, getCity } from './../../actionCreators/societyMasterAction';
+import { getCountry, getState, getCity } from './../../actions/societyMasterAction';
 
 class DisplayLocation extends Component {
     constructor(props) {

@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-import {  AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount,deleteSelectedFlatMasterDetail } from '../../actionCreators/flatMasterAction';
-import {getEventDetails,deleteSelectedEventSpaceMasterDetail,updateEventSpace} from '../../actionCreators/eventSpaceMasterAction';
+import {  AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount } from '../../actions/flatMasterAction';
+import {getEventDetails,deleteSelectedEventSpaceMasterDetail,updateEventSpace} from '../../actions/eventSpaceMasterAction';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { connect } from 'react-redux';
-import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Input } from 'reactstrap';
+import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Label,Input } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
-import { URN } from '../../actions/index'
-import Pagination from "react-js-pagination";
+import { URN } from '../../actionCreators/index'
 
 class eventSpaceMasterDetails extends Component {
    constructor(props){

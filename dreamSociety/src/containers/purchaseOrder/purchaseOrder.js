@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Select from 'react-select';
-import { PlaceHolder } from '../../actions/index';
+import { PlaceHolder } from '../../actionCreators/index';
 import UI from '../../components/newUI/superAdminDashboard';
-import { getVendorMaster} from '../../actionCreators/vendorMasterAction';
+import { getVendorMaster} from '../../actions/vendorMasterAction';
 import { Form,FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader, Row, Col } from 'reactstrap';
-import { fetchAssets} from '../../actionCreators/assetsSubAction';
+import { fetchAssets} from '../../actions/assetsSubAction';
 
 class PurchaseOrder extends Component {
     constructor(){

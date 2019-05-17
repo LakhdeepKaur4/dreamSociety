@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import DefaultSelect from '../../constants/defaultSelect'
 
 import { Table, Input, Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Label } from 'reactstrap';
-import { viewPerson, getFlat, getTower, getRoles, updatePerson, deletePerson, deleteMultiplePerson } from '../../actionCreators/personDetailsMasterAction';
+import { viewPerson, getFlat, getTower, getRoles, updatePerson, deletePerson, deleteMultiplePerson } from '../../actions/personDetailsMasterAction';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
 

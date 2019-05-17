@@ -2,18 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import UI from '../../components/newUI/superAdminDashboard';
-import { PicURN } from '../../actions/index'
+import { PicURN } from '../../actionCreators/index'
 import DefaultSelect from '../../constants/defaultSelect';
 import Select from 'react-select';
 import Spinner from '../../components/spinner/spinner';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import { detailSociety } from '../../actionCreators/societyMasterAction';
-import { viewTower } from '../../actionCreators/towerMasterAction';
-import { getFlatDetails } from '../../actionCreators/flatDetailMasterAction';
-import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
+import { detailSociety } from '../../actions/societyMasterAction';
+import { viewTower } from '../../actions/towerMasterAction';
+import { getFlatDetails } from '../../actions/flatDetailMasterAction';
+import {getCountry,getState,getCity, getLocation} from '../../actions/societyMasterAction';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label,Col, Row } from 'reactstrap';
-import { getOwnerMember, getOwnerList, multipleDelete, removeOwner, updateFlatOwner,getAllFloor } from '../../actionCreators/flatOwnerAction'
-import {getRfId} from '../../actionCreators/rfIdAction';
+import { getOwnerMember, getOwnerList, multipleDelete, removeOwner, updateFlatOwner,getAllFloor } from '../../actions/flatOwnerAction'
+import {getRfId} from '../../actions/rfIdAction';
 
 class FlatOwnerList extends Component {
     constructor(props) {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getAssets, updateAssets, removeAssets,deleteMultipleAssets } from '../../actionCreators/assetsAction';
+import { getAssets, updateAssets, removeAssets,deleteMultipleAssets } from '../../actions/assetsAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Table, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import UI from '../../components/newUI/superAdminDashboard';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {getSlots } from '../../actionCreators/flatDetailMasterAction';
+import {getSlots } from '../../actions/flatDetailMasterAction';
 import {Table,Button } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 var id;

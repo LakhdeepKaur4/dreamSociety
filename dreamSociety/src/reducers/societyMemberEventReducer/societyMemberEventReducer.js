@@ -1,4 +1,4 @@
-import {ADD_MEMBEREVENTS, GET_MEMBEREVENTS } from '../../actions/index';
+import {ADD_MEMBEREVENTS, GET_MEMBEREVENTS } from '../../actionCreators/index';
 export default function(state={},action){
    
     switch(action.type){

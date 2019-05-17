@@ -1,4 +1,4 @@
-import {GET_MACHINE,ADD_MACHINE,GET_MACHINE_ACTUAL_ID} from '../../actions/index'
+import {GET_MACHINE,ADD_MACHINE,GET_MACHINE_ACTUAL_ID} from '../../actionCreators/index'
 
 
 export default  function(state=[],action){

@@ -1,6 +1,4 @@
-
- 
- import {GET_EVENT,GET_EVENT_ORGANISER,ADD_EVENT} from '../../actions';
+import {GET_EVENT,GET_EVENT_ORGANISER,ADD_EVENT} from '../../actionCreators/index';
 
  export default function (state={},action){
   switch(action.type){

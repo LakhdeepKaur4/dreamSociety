@@ -1,13 +1,13 @@
 import React,{ Component } from 'react';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import {getTowerName,getFlatType,addFlatDetails, getfloors,fetchParking,getSlotId} from '../../actionCreators/flatDetailMasterAction';
+import {getTowerName,getFlatType,addFlatDetails, getfloors,fetchParking,getSlotId} from '../../actions/flatDetailMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
-import { Form, Button, FormGroup, Input, Label } from 'reactstrap';
+import { Button } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
 import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes'; 
-import { PlaceHolder } from '../../actions/index';
+import { PlaceHolder } from '../../actionCreators/index';
 
 class flatDetailMaster extends Component{
     constructor(props){

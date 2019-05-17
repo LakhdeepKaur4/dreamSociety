@@ -1,4 +1,4 @@
-import {GET_TOWER,GET_FLAT, GET_ROLES,ADD_PERSON,GET_PERSON} from '../../actions/index'
+import {GET_TOWER,GET_FLAT, GET_ROLES,ADD_PERSON,GET_PERSON} from '../../actionCreators/index'
 
 
 export default  function(state=[],action){

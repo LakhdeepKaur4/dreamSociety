@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {viewMember, deleteTenantMember, deleteSelectedTenantMember,editTenantMember,
-    addNewTenantDetail,rfid,validOnChangeContact,validOnChangeEmail,getFlats} from '../../actionCreators/tenantMasterAction';
+    addNewTenantDetail,rfid,validOnChangeContact,validOnChangeEmail,getFlats} from '../../actions/tenantMasterAction';
 import { connect } from 'react-redux';
 import UI from '../../components/newUI/superAdminDashboard';
-import { getRelation } from './../../actionCreators/relationMasterAction';
+import { getRelation } from './../../actions/relationMasterAction';
 import Select from 'react-select';
 import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader, Row, Col } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';

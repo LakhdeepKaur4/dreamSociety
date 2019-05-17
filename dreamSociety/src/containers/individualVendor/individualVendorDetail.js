@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import { getIndividualVendor, deleteIndividualVendor, deleteSelectVendor, updateIndividualVendor } from './../../actionCreators/individualVendorAction';
-import { getCountry, getState, getCity, getLocation } from '../../actionCreators/societyMasterAction';
-import { getServiceType } from './../../actionCreators/serviceMasterAction';
-import { getRateType } from './../../actionCreators/vendorMasterAction';
+import { getIndividualVendor, deleteIndividualVendor, deleteSelectVendor, updateIndividualVendor } from './../../actions/individualVendorAction';
+import { getCountry, getState, getCity, getLocation } from '../../actions/societyMasterAction';
+import { getServiceType } from './../../actions/serviceMasterAction';
+import { getRateType } from './../../actions/vendorMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader, Row, Col } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
-import { DocURN, PicURN } from '../../actions/index'
+import { DocURN, PicURN } from '../../actionCreators/index'
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 import GoogleDocsViewer from 'react-google-docs-viewer';
 import Select from 'react-select';
-import { PlaceHolder } from '../../actions/index';
-import {getRfId} from '../../actionCreators/rfIdAction';
+import {getRfId} from '../../actions/rfIdAction';
 
 
 class IndividualVendorDetail extends Component {

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 // import './flatMaster.css';
 import { connect } from 'react-redux';
-import { getSizeTypeDetails} from '../../actionCreators/flatMasterAction';
-import {AddEventDetails} from '../../actionCreators/eventSpaceMasterAction';
+import { getSizeTypeDetails} from '../../actions/flatMasterAction';
+import {AddEventDetails} from '../../actions/eventSpaceMasterAction';
 import { bindActionCreators } from 'redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FormGroup, Form, Input, Button, Label } from 'reactstrap';

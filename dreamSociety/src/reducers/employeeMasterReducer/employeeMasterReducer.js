@@ -1,4 +1,4 @@
-import {ADD_EMP,GET_EMP,GET_LOCATION_DETAIL} from '../../actions/index'
+import {ADD_EMP,GET_EMP,GET_LOCATION_DETAIL} from '../../actionCreators/index'
 
   export default function(state={}, action){
       switch(action.type){

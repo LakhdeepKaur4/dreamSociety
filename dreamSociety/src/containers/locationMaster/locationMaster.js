@@ -1,12 +1,12 @@
 import React,{ Component } from 'react';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import {getCountryName,getStateName,getCityName,addLocationDetails, getLocationName,getLocation} from '../../actionCreators/locationMasterAction';
+import {getCountryName,getStateName,getCityName,addLocationDetails, getLocationName,getLocation} from '../../actions/locationMasterAction';
 import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard'; 
 import DefaultSelect from '../../constants/defaultSelect';
 import Spinner from '../../components/spinner/spinner';
-import { Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 
 class locationMaster extends Component{
     constructor(props){

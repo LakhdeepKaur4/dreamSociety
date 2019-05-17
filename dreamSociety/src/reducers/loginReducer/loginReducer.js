@@ -1,4 +1,4 @@
-import {USER_LOGIN} from '../../actions/index'
+import {USER_LOGIN} from '../../actionCreators/index'
 export default function(state={}, action){
     switch(action.type){
         case USER_LOGIN:

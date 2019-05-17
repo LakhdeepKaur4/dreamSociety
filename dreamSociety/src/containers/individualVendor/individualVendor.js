@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {addVendor} from './../../actionCreators/individualVendorAction';
-import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
-import {getServiceType} from './../../actionCreators/serviceMasterAction';
-import {getRateType} from './../../actionCreators/vendorMasterAction';
+import {addVendor} from './../../actions/individualVendorAction';
+import {getCountry,getState,getCity, getLocation} from '../../actions/societyMasterAction';
+import {getServiceType} from './../../actions/serviceMasterAction';
+import {getRateType} from './../../actions/vendorMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form, Button,  FormGroup,  Input, Label, Row, Col } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from './../../constants/defaultSelect';
 import _ from 'underscore';
 import Select from 'react-select';
-import { PlaceHolder } from '../../actions/index';
-import {getRfId} from '../../actionCreators/rfIdAction';
+import { PlaceHolder } from '../../actionCreators/index';
+import {getRfId} from '../../actions/rfIdAction';
 
 
 class IndividualVendor extends Component{

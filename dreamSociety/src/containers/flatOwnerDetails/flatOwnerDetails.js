@@ -2,17 +2,17 @@ import React, { Component } from 'react';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Form,Modal,ModalBody,ModalHeader, FormGroup, Input, Button, Label, Col, Row } from 'reactstrap';
 import Select from 'react-select';
-import { PlaceHolder } from '../../actions/index';
+import { PlaceHolder } from '../../actionCreators/index';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { detailSociety } from '../../actionCreators/societyMasterAction';
-import { viewTower } from '../../actionCreators/towerMasterAction';
-import { getRelation } from './../../actionCreators/relationMasterAction';
-import {getFlatDetails,getSlots} from '../../actionCreators/flatDetailMasterAction';
-import {addFlatOwner,getAllFloor} from '../../actionCreators/flatOwnerAction';
+import { detailSociety } from '../../actions/societyMasterAction';
+import { viewTower } from '../../actions/towerMasterAction';
+import { getRelation } from './../../actions/relationMasterAction';
+import {getFlatDetails,getSlots} from '../../actions/flatDetailMasterAction';
+import {addFlatOwner,getAllFloor} from '../../actions/flatOwnerAction';
 import {Link} from 'react-router-dom';
-import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
-import {getRfId} from '../../actionCreators/rfIdAction';
+import {getCountry,getState,getCity, getLocation} from '../../actions/societyMasterAction';
+import {getRfId} from '../../actions/rfIdAction';
 
 class FlatOwnerDetails extends Component {
     constructor(props) {

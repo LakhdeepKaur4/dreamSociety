@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addAssets } from '../../actionCreators/assetsAction';
+import { addAssets } from '../../actions/assetsAction';
 import './assetsTypeMaster.css';
 import { Link } from 'react-router-dom'
 import UI from '../../components/newUI/superAdminDashboard';

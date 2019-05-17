@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { displaySize,deleteSize,updateSize,deleteMultipleSize} from '../../actionCreators/sizeMasterAction';
+import { displaySize,deleteSize,updateSize,deleteMultipleSize} from '../../actions/sizeMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 

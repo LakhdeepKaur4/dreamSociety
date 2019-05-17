@@ -1,4 +1,4 @@
-import {DELETE_SELECTED_ELECTRICITY_EXPENSE, DELETE_ELECTRICITY_EXPENSE,GET_FLOOR_OF_TOWER,GET_ELECTRICITY_EXPENSE,GET_RATE_FOR_ELECTRICITY } from '../../actions/index';
+import {DELETE_ELECTRICITY_EXPENSE,GET_FLOOR_OF_TOWER,GET_ELECTRICITY_EXPENSE,GET_RATE_FOR_ELECTRICITY } from '../../actionCreators/index';
 
 export default function (state = {}, action) {
     switch(action.type){

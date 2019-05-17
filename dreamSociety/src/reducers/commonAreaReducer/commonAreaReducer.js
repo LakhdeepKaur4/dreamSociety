@@ -1,4 +1,4 @@
-import {ADD_COMMON_AREA,GET_COMMON_AREA,DELETE_AREA_IDS,DELETE_AREA,GET_MACHINES} from '../../actions/index';
+import {ADD_COMMON_AREA,GET_COMMON_AREA,DELETE_AREA_IDS,DELETE_AREA,GET_MACHINES} from '../../actionCreators/index';
 
 export default function(state={}, action) {
 

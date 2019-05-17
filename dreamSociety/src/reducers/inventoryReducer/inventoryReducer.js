@@ -1,4 +1,4 @@
-import {ADD_INVENTORY,GET_INVENTORY,UPDATE_INVENTORY,REMOVE_INVENTORY,GET_INVENTORY_LIST} from '../../actions/index';
+import {ADD_INVENTORY,GET_INVENTORY,UPDATE_INVENTORY,REMOVE_INVENTORY,GET_INVENTORY_LIST} from '../../actionCreators/index';
 
 export default function(state={},action){
     switch(action.type){

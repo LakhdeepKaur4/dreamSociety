@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form,Label,FormGroup,Input,Button} from 'reactstrap';
 import {Link} from 'react-router-dom';
-import {addRF} from '../../actionCreators/rfIdAction';
+import {addRF} from '../../actions/rfIdAction';
 
 
 class RFId extends Component{

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import {userflatDetails,postRegister,serviceDetails} from '../../actionCreators/registerComplainAction';
+import {userflatDetails,postRegister,serviceDetails} from '../../actions/registerComplainAction';
 import UI from '../../components/newUI/ownerDashboard';
 import {Form, Button,  FormGroup,  Input, Label,Row, Col,Modal,ModalBody,ModalHeader } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';

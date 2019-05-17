@@ -1,4 +1,4 @@
-import {ADD_EVENT_BOOKING, GET_EVENT_BOOKING, GET_EVENT_SPACE_NAME } from '../../actions/index';
+import {ADD_EVENT_BOOKING, GET_EVENT_BOOKING, GET_EVENT_SPACE_NAME } from '../../actionCreators/index';
 export default function(state={},action){
    
     switch(action.type){

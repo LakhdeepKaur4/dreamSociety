@@ -1,4 +1,4 @@
-import {FETCH_SOCIETY_DROP,FETCH_SIZEMASTER_DROP,GET_QR} from '../../actions';
+import {FETCH_SOCIETY_DROP,FETCH_SIZEMASTER_DROP,GET_QR} from '../../actionCreators/index';
 export default function(state={},action){
 
     switch(action.type){

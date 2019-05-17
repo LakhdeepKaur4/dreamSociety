@@ -3,9 +3,9 @@ import {connect} from 'react-redux';
 import  UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';
 import Select from 'react-select';
-import {getCountry,getState,getCity, getLocation} from  '../../actionCreators/societyMasterAction';
-import {AddEmployee} from '../../actionCreators/employeeMasterAction';
-import {getEmployee,getEmployeeType,getEmployeeWorkType} from  '../../actionCreators/employeeTypeMasterAction';
+import {getCountry,getState,getCity, getLocation} from  '../../actions/societyMasterAction';
+import {AddEmployee} from '../../actions/employeeMasterAction';
+import {getEmployee,getEmployeeType,getEmployeeWorkType} from  '../../actions/employeeTypeMasterAction';
 import {bindActionCreators} from 'redux';
 import DefaultSelect from '../../constants/defaultSelect'
 import './employeeMaster.css';

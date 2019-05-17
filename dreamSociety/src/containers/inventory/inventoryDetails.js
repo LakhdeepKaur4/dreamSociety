@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getAssets } from '../../actionCreators/assetsAction';
-import { fetchAssets } from '../../actionCreators/assetsSubAction'
-import { getInventory, updateInventory, removeInventory, multipleDelete } from '../../actionCreators/inventoryAction';
+import { getAssets } from '../../actions/assetsAction';
+import { fetchAssets } from '../../actions/assetsSubAction'
+import { getInventory, updateInventory, removeInventory, multipleDelete } from '../../actions/inventoryAction';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'

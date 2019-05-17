@@ -1,4 +1,4 @@
-import {MATCH_USER,CLEAR_MESSAGE} from '../../actions/index';
+import {MATCH_USER,CLEAR_MESSAGE} from '../../actionCreators/index';
 export default function(state=[],action){
 
 

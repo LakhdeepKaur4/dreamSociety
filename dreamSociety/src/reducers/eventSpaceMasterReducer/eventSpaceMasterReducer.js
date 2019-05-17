@@ -1,4 +1,4 @@
-import {FETCH_EVENT_SPACE_DETAILS, DELETE_MULTIPLE_EVENT_SPACE_MASTER_DETAILS,UPDATE_EVENT_SPACE} from '../../actions';
+import {FETCH_EVENT_SPACE_DETAILS, DELETE_MULTIPLE_EVENT_SPACE_MASTER_DETAILS,UPDATE_EVENT_SPACE} from '../../actionCreators/index';
 export default function(state={},action){
 
     switch(action.type){

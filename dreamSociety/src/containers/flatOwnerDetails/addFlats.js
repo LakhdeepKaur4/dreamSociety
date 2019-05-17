@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Table, Form, Input, Label, FormGroup } from 'reactstrap';
+import { Button, Form, Label, FormGroup } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
 import Select from 'react-select';
-import { PlaceHolder } from '../../actions/index';
-import { getAllFloor, addAnotherFlats } from '../../actionCreators/flatOwnerAction';
-import { viewTower } from '../../actionCreators/towerMasterAction';
+import { PlaceHolder } from '../../actionCreators/index';
+import { getAllFloor, addAnotherFlats } from '../../actions/flatOwnerAction';
+import { viewTower } from '../../actions/towerMasterAction';
 import { Link } from 'react-router-dom';
-import { getFlatDetails } from '../../actionCreators/flatDetailMasterAction';
+import { getFlatDetails } from '../../actions/flatDetailMasterAction';
 class AddFlats extends Component {
     constructor(props) {
         super(props);

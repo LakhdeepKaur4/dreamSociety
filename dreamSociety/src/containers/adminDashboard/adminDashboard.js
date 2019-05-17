@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {userLogout} from '../../actionCreators/loginAction';
+import {userLogout} from '../../actions/loginAction';
 import UI from '../../components/newUI/adminDashboard';
 
 class AdminDashboard extends Component {

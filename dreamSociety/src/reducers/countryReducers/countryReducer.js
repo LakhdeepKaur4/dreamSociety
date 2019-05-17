@@ -1,4 +1,4 @@
-import {GET_COUNTRY_DETAILS,UPDATE_COUNTRY,GET_COUNTRY_DETAILS1} from '../../actions/index';
+import {GET_COUNTRY_DETAILS,UPDATE_COUNTRY,GET_COUNTRY_DETAILS1} from '../../actionCreators/index';
 export default function(state={},action){
 
 

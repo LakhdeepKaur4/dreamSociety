@@ -1,4 +1,4 @@
-import {CHANGE_PASSWORD} from  './../../actions/index';
+import {CHANGE_PASSWORD} from  '../../actionCreators/index';
 export default function(state={},action){
   
     switch(action.type){

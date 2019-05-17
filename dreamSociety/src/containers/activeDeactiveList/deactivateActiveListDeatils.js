@@ -1,11 +1,8 @@
-import { URN } from '../../actions/index';
 import React,{ Component } from 'react';
 import { connect } from 'react-redux';
-import { releaseResource,showActiveList,deactivateMember,showDeactiveList,activateMember,deleteSelectedDeactivatedMember } from '../../actionCreators/activeDeactive';
-import { authHeader } from '../../helper/authHeader';
+import { releaseResource,showActiveList,deactivateMember,showDeactiveList,activateMember,deleteSelectedDeactivatedMember } from '../../actions/activeDeactive';
 import { bindActionCreators } from 'redux';
-import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Input } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, Label,Input } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';

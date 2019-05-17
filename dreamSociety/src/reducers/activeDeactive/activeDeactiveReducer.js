@@ -1,4 +1,4 @@
-import {GET_ROLES1,GET_ACTIVE_LIST,GET_DEACTIVE_LIST} from '../../actions/index';
+import {GET_ROLES1,GET_ACTIVE_LIST,GET_DEACTIVE_LIST} from '../../actionCreators/index';
 export default function(state={},action){
     switch(action.type){
         case GET_ROLES1:

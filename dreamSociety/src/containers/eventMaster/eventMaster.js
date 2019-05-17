@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { AddEvent, GetEventOrganiser } from '../../actionCreators/eventMasterAction';
+import { AddEvent, GetEventOrganiser } from '../../actions/eventMasterAction';
 import { bindActionCreators } from 'redux';
 import { Input } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';

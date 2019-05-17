@@ -1,4 +1,4 @@
-import {ADD_RELATION, GET_RELATION} from '../../actions/index';
+import {ADD_RELATION, GET_RELATION} from '../../actionCreators/index';
 export default function(state={},action){
    
     switch(action.type){

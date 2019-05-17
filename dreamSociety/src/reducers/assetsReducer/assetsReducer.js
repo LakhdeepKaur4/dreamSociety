@@ -1,4 +1,4 @@
-import { ADD_ASSETS,GET_ASSETS,UDATE_ASSETS,DELETE_ASSETS } from '../../actions/index';
+import { ADD_ASSETS,GET_ASSETS,UDATE_ASSETS,DELETE_ASSETS } from '../../actionCreators/index';
 export default function(state={},action){    
     switch(action.type){
         case ADD_ASSETS:

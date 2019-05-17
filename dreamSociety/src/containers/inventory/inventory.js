@@ -6,10 +6,10 @@ import UI from '../../components/newUI/superAdminDashboard';
 import { Form,FormGroup, Input, Button, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import {Link} from 'react-router-dom';
-import {getAssets} from '../../actionCreators/assetsAction';
-import {fetchAssets} from '../../actionCreators/assetsSubAction';
-import {addInventory} from '../../actionCreators/inventoryAction';
-import {PlaceHolder} from '../../actions/index'
+import {getAssets} from '../../actions/assetsAction';
+import {fetchAssets} from '../../actions/assetsSubAction';
+import {addInventory} from '../../actions/inventoryAction';
+import {PlaceHolder} from '../../actionCreators/index'
 
 class Inventory extends Component {
     constructor(props) {

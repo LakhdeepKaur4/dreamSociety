@@ -1,5 +1,5 @@
 import {FETCH_DETAILS,FETCH_DROP,ADD_DETAILS,FETCH_SIZE_DROP,GET_ACTIVE_PAGE,GET_COUNT_PAGE,
-    GET_TOTAL_ITEMS} from '../../actions';
+    GET_TOTAL_ITEMS} from '../../actionCreators/index';
 export default function(state={},action){
 
     switch(action.type){

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import {getVendorMaster, getRateType,deleteSelectedVendorServices,deleteVendorServices,updateVendorServices} from '../../../actionCreators/vendorMasterAction'
+import {getVendorMaster, getRateType,deleteSelectedVendorServices,deleteVendorServices,updateVendorServices} from '../../../actions/vendorMasterAction'
 
-import { getServiceType } from '../../../actionCreators/serviceMasterAction';
+import { getServiceType } from '../../../actions/serviceMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader,Table, Input, Label } from 'reactstrap';

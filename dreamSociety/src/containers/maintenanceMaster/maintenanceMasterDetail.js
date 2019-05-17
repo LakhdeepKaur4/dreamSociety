@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getMaintenance, deleteMaintenance, updateMaintenance,deleteSelectMaintenance } from './../../actionCreators/maintenanceMasterAction';
+import { getMaintenance, deleteMaintenance, updateMaintenance,deleteSelectMaintenance } from './../../actions/maintenanceMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';

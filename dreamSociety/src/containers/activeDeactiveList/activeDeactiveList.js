@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { FormGroup, Form, Input, Button, Label } from 'reactstrap';
 // import './countryMaster.css';
 import { connect } from 'react-redux';
-import { getRoles,showActiveList,showDeactiveList } from '../../actionCreators/activeDeactive';
+import { getRoles,showActiveList,showDeactiveList } from '../../actions/activeDeactive';
 import { Link, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import Spinner from '../../components/spinner/spinner';

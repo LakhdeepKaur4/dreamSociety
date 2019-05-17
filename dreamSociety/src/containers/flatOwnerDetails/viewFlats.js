@@ -4,14 +4,14 @@ import { connect } from 'react-redux';
 import { Button, Table,Modal,ModalBody,ModalHeader,FormGroup,Input} from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
-import {getOwnerFlats,deleteOwnerFlats,getAllFloor,editOwnerFlat} from '../../actionCreators/flatOwnerAction';
+import {getOwnerFlats,deleteOwnerFlats,getAllFloor,editOwnerFlat} from '../../actions/flatOwnerAction';
 import { Label } from 'semantic-ui-react';
 import DefaultSelect from './../../constants/defaultSelect';
-import { viewTower } from '../../actionCreators/towerMasterAction';
+import { viewTower } from '../../actions/towerMasterAction';
 import Spinner from '../../components/spinner/spinner';
-import {getFlatDetails} from '../../actionCreators/flatDetailMasterAction';
+import {getFlatDetails} from '../../actions/flatDetailMasterAction';
 import Select from 'react-select';
-import { PlaceHolder } from '../../actions/index';
+import { PlaceHolder } from '../../actionCreators/index';
 let ownerId;
 class ViewFlats extends Component {
 

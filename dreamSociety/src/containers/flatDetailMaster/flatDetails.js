@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { getFlatDetails, getFlatType, getTowerName, deleteSelectedFlat,deleteFlat, updateFlatDetails, getfloors,fetchParking,getSlotId } from '../../actionCreators/flatDetailMasterAction';
+import { getFlatDetails, getFlatType, getTowerName, deleteSelectedFlat,deleteFlat, updateFlatDetails, getfloors,fetchParking,getSlotId } from '../../actions/flatDetailMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Table, Input, Label } from 'reactstrap';
-import axios from 'axios';
-import { authHeader } from '../../helper/authHeader';
-import { URN } from '../../actions/index';
+import { Button, Modal, FormGroup, ModalBody, ModalHeader, Table, Input, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';

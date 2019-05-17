@@ -1,4 +1,4 @@
-import { ADD_USER, GET_USERS, GET_ROLES } from '../../actions';
+import { ADD_USER, GET_USERS, GET_ROLES } from '../../actionCreators/index';
 
 export default function(state=[], action) {
     switch(action.type){

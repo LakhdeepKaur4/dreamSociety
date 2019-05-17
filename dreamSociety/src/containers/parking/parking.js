@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form } from 'reactstrap';
-import { fetchBasement, createParking } from '../../actionCreators/parkingAction';
+import { fetchBasement, createParking } from '../../actions/parkingAction';
 import { connect } from 'react-redux';
 import './parking.css';
 import ParkingForm from './parkingForm';

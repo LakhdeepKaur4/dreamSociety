@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {getCountry,getState,getCity,getLocation,postSociety,getSociety} from '../../actionCreators/societyMasterAction';
+import {getCountry,getState,getCity,getLocation,postSociety,getSociety} from '../../actions/societyMasterAction';
 import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form, Button,  FormGroup,  Input, Label, Row, Col } from 'reactstrap';

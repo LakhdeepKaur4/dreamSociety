@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { getUsers, getRoles, addUser, updateUser, deleteUser, deleteSelectedUsers } from '../../actionCreators/superAdminMasterAction';
+import { getUsers, getRoles, addUser, updateUser, deleteUser, deleteSelectedUsers } from '../../actions/superAdminMasterAction';
 import { bindActionCreators } from 'redux';
-import { viewTower } from '../../actionCreators/towerMasterAction';
+import { viewTower } from '../../actions/towerMasterAction';
 import { connect } from 'react-redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button, Label } from 'reactstrap';

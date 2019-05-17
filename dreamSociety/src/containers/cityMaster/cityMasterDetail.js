@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {  getCity, detailCity, deleteCity, updateCity, deleteSelectCity } from './../../actionCreators/cityMasterAction';
-import { getCountry, getState } from './../../actionCreators/societyMasterAction';
+import {  getCity, detailCity, deleteCity, updateCity, deleteSelectCity } from './../../actions/cityMasterAction';
+import { getCountry, getState } from './../../actions/societyMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';

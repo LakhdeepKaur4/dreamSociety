@@ -1,4 +1,4 @@
-import {GET_SERVICE} from '../../actions/index';
+import {GET_SERVICE} from '../../actionCreators/index';
 
 const initialState={
     item:[]

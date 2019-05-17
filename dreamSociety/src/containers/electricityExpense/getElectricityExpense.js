@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Table, Row, Col, FormGroup, Input, Button, Label } from 'reactstrap'
-import { getElectricityExpense, getRateForElectricityExpense, deleteElectricityExpense, deleteSelectedElectricityExpense, updateElectricityExpense } from '../../actionCreators/electricityExpense';
+import { getElectricityExpense, getRateForElectricityExpense, deleteElectricityExpense, deleteSelectedElectricityExpense, updateElectricityExpense } from '../../actions/electricityExpense';
 import UI from '../../components/newUI/superAdminDashboard';
 import ModalBox from '../../components/modal/modal';
 import InputField from '../../components/reusableComponents/inputs';

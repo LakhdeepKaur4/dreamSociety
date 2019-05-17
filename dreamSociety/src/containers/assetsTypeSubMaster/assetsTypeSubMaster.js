@@ -3,7 +3,7 @@ import './assetsTypeSubMaster.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Link } from 'react-router-dom'
-import { getAssets, addAssetsSubType } from '../../actionCreators/assetsSubAction';
+import { getAssets, addAssetsSubType } from '../../actions/assetsSubAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Form,FormGroup, Input, Button, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';

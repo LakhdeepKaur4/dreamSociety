@@ -4,13 +4,13 @@ import { Form, FormGroup, Input, Button, Label, Col, Row } from 'reactstrap';
 import { connect } from 'react-redux';
 import Select from 'react-select';
 import DefaultSelect from '../../constants/defaultSelect';
-import { detailSociety } from '../../actionCreators/societyMasterAction';
-import { viewTower } from '../../actionCreators/towerMasterAction';
-import {getCountry,getState,getCity, getLocation} from '../../actionCreators/societyMasterAction';
-import { getRelation } from './../../actionCreators/relationMasterAction';
+import { detailSociety } from '../../actions/societyMasterAction';
+import { viewTower } from '../../actions/towerMasterAction';
+import {getCountry,getState,getCity, getLocation} from '../../actions/societyMasterAction';
+import { getRelation } from '../../actions/relationMasterAction';
 import Spinner from '../../components/spinner/spinner';
 import { numberValidation, maxDate, emailValid, panCardValidation, fNameKeyPress, OnKeyPressUserhandler, memberMaxDate } from '../../validation/validation';
-import { getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail, rfid,validOnChangeEmail,validOnChangeContact } from '../../actionCreators/tenantMasterAction';
+import { getOwnerDetailViaFlatId, getFlatDetailViaTowerId, addTenantDetail, rfid,validOnChangeEmail,validOnChangeContact } from '../../actions/tenantMasterAction';
 
 class AddTenant extends Component{
     constructor(props) {

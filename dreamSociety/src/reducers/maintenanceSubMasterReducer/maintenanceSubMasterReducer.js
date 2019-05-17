@@ -1,4 +1,4 @@
-import { GET_SUB_MAINTENANCE,GET_SUB_MAINTENANCE_DETAILS, GET_MAINTENANCE_TYPE } from '../../actions';
+import { GET_SUB_MAINTENANCE,GET_SUB_MAINTENANCE_DETAILS, GET_MAINTENANCE_TYPE } from '../../actionCreators/index';
 
 export default function(state=[], action){
     switch(action.type){

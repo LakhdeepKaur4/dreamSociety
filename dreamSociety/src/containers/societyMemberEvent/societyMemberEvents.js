@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {addSocietyMemberEvents} from '../../actionCreators/societyMemberEventAction';
+import {addSocietyMemberEvents} from '../../actions/societyMemberEventAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';

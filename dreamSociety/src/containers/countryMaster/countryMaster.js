@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { FormGroup, Form, Input, Button, Label } from 'reactstrap';
 import './countryMaster.css';
 import { connect } from 'react-redux';
-import { AddCountry } from '../../actionCreators/countryAction';
+import { AddCountry } from '../../actions/countryAction';
 import { Link, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import Spinner from '../../components/spinner/spinner';

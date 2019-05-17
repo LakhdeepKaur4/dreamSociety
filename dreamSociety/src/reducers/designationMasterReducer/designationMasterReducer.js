@@ -1,4 +1,4 @@
-import {ADD_DESIGNATION, GET_DESIGNATION} from '../../actions/index';
+import {ADD_DESIGNATION, GET_DESIGNATION} from '../../actionCreators/index';
 export default function(state={},action){
    
     switch(action.type){

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {getMaintenanceSubSizeDetails,deleteMaintenanceSubMasterDetail,
     getMaintenanceType,getMaintenanceSubSize,
     updateMaintenanceSubMasterDetail,
-    deleteSelectedMaintenanceSubMasterDetail} from '../../actionCreators/maintenanceSubMasterAction'
+    deleteSelectedMaintenanceSubMasterDetail} from '../../actions/maintenanceSubMasterAction'
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Row, Col } from 'reactstrap';
 import '../../r-css/w3.css';

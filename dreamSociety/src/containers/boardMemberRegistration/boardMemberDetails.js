@@ -5,12 +5,12 @@ import DefaultSelect from '../../constants/defaultSelect';
 import { connect } from 'react-redux';
 import _ from 'underscore';
 import SearchFilter from '../../components/searchFilter/searchFilter';
-import { getCountry, getState, getCity, getLocation } from '../../actionCreators/societyMasterAction';
+import { getCountry, getState, getCity, getLocation } from '../../actions/societyMasterAction';
 import Select from 'react-select';
 import {
     getMemberDetails, getSocietyId, getMemberDesignation, updateSocietyMemberDetails
     , deleteSocietyMemberDetail, deleteMultipleSocietyMemberDetail
-} from '../../actionCreators/boardMemberRegistrationAction';
+} from '../../actions/boardMemberRegistrationAction';
 import Spinner from '../../components/spinner/spinner';
 
 

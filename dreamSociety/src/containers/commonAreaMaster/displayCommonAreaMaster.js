@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {getCommonArea,updateAreas,deleteCommonArea,deleteSelectedCommonArea} from '../../actionCreators/commonAreaAction';
+import {getCommonArea,updateAreas,deleteCommonArea,deleteSelectedCommonArea} from '../../actions/commonAreaAction';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner';

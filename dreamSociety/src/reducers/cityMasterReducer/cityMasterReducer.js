@@ -1,4 +1,4 @@
-import {COUNTRY_DETAIL,STATE_DETAIL, CITY_DETAIL, ADD_CITY, DETAIL_CITY, DELETE_CITY,UPDATE_CITY, DELETE_SELECTEDCITY} from  './../../actions/index';
+import {COUNTRY_DETAIL,STATE_DETAIL, CITY_DETAIL, ADD_CITY, DETAIL_CITY, DELETE_CITY,UPDATE_CITY, DELETE_SELECTEDCITY} from  '../../actionCreators/index';
 export default function(state={},action){
   
     switch(action.type){

@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {Form,Table, Row, Col,Button,  Modal, FormGroup, ModalBody, ModalHeader, Label, Input} from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
-import {getSocietyEvents,updateSocietyEvents,deleteEvents,deleteSelectedEvent} from '../../actionCreators/societyEventBooking';
+import {getSocietyEvents,updateSocietyEvents,deleteEvents,deleteSelectedEvent} from '../../actions/societyEventBooking';
 import Spinner from '../../components/spinner/spinner';
-import {ViewEvent,GetEventOrganiser} from '../../actionCreators/eventMasterAction';
+import {ViewEvent,GetEventOrganiser} from '../../actions/eventMasterAction';
 import DefaultSelect from '../../constants/defaultSelect';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 

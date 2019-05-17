@@ -4,8 +4,8 @@ import { bindActionCreators } from 'redux';
 import {Form, Row, Col,Button, FormGroup, Label, Input} from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import DefaultSelect from '../../constants/defaultSelect';
-import {ViewEvent,GetEventOrganiser} from '../../actionCreators/eventMasterAction';
-import {addSocietyEvents} from '../../actionCreators/societyEventBooking';
+import {ViewEvent,GetEventOrganiser} from '../../actions/eventMasterAction';
+import {addSocietyEvents} from '../../actions/societyEventBooking';
 import Spinner from '../../components/spinner/spinner';
 
 

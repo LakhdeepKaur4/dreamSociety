@@ -6,7 +6,7 @@ import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
 
 
-import {viewMachine,updateMachine,deleteMachine,deleteMultipleMachine} from '../../actionCreators/machineIdMasterAction';
+import {viewMachine,updateMachine,deleteMachine,deleteMultipleMachine} from '../../actions/machineIdMasterAction';
 
 
 import Spinner from '../../components/spinner/spinner';

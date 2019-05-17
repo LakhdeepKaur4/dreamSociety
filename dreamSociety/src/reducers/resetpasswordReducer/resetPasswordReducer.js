@@ -1,4 +1,4 @@
-import {RESET_PASSWORD,CLEAR_MESSAGE} from '../../actions/index';
+import {RESET_PASSWORD,CLEAR_MESSAGE} from '../../actionCreators/index';
 export default function(state=[],action){
 
 

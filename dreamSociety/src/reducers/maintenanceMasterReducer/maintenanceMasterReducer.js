@@ -1,4 +1,4 @@
-import {ADD_MAINTENANCE, GET_MAINTENANCE } from '../../actions/index';
+import {ADD_MAINTENANCE, GET_MAINTENANCE } from '../../actionCreators/index';
 export default function(state={},action){
    
     switch(action.type){

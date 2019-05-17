@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, FormGroup, Button, Input, Label, Row, Col  } from 'reactstrap';
-import { getMaintenanceSubSize,postMaintenanceSubMaster, getMaintenanceType } from '../../actionCreators/maintenanceSubMasterAction';
+import { getMaintenanceSubSize,postMaintenanceSubMaster, getMaintenanceType } from '../../actions/maintenanceSubMasterAction';
 import Spinner from '../../components/spinner/spinner';
 import '../../r-css/w3.css';
 import DefaultSelect from '../../constants/defaultSelect';

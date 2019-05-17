@@ -5,7 +5,7 @@ import './superDashboard.css';
 
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {userLogout} from '../../actionCreators/loginAction';
+import {userLogout} from '../../actions/loginAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import Chart from '../../containers/chart/chart';
 

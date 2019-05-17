@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {getCountry,getState,getCity, addCity,detailCity} from './../../actionCreators/cityMasterAction';
+import {getCountry,getState,getCity, addCity,detailCity} from './../../actions/cityMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import _ from 'underscore';
 import Spinner from '../../components/spinner/spinner'

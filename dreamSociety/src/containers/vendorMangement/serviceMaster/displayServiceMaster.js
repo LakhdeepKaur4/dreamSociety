@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getServiceType, getServiceDetail,deleteSelectedService,deleteService,updateServices } from '../../../actionCreators/serviceMasterAction';
+import { getServiceType, getServiceDetail,deleteSelectedService,deleteService,updateServices } from '../../../actions/serviceMasterAction';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table, Col, Row } from 'reactstrap';

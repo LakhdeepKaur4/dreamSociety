@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import UI from '../../components/newUI/superAdminDashboard';
-import { FormGroup, Input, Table, Label, Button, Modal, Row, Col, ModalBody, ModalHeader } from 'reactstrap';
+import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
-import SearchFilter from '../../components/searchFilter/searchFilter';
 import { connect } from 'react-redux';
 import Spinner from '../../components/spinner/spinner';
-import {addNewFlatForTenant, getFlats,getFlatDetailViaTowerId, editFlats, deleteFlat } from '../../actionCreators/tenantMasterAction';
-import { viewTower } from '../../actionCreators/towerMasterAction';
+import {addNewFlatForTenant, getFlats,getFlatDetailViaTowerId, editFlats, deleteFlat } from '../../actions/tenantMasterAction';
+import { viewTower } from '../../actions/towerMasterAction';
 
 class TenantFlatsDetail extends Component{
     constructor(props){

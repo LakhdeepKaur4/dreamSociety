@@ -4,7 +4,7 @@ import {bindActionCreators}  from 'redux';
 import UI from '../../components/newUI/superAdminDashboard';
 import DefaultSelect from '../../constants/defaultSelect';
 import Spinner from '../../components/spinner/spinner';
-import {AddEmployee,getEmployeeType,getEmployeeWorkType} from '../../actionCreators/employeeTypeMasterAction';
+import {AddEmployee,getEmployeeType,getEmployeeWorkType} from '../../actions/employeeTypeMasterAction';
 class EmployeeTypeMaster extends Component{
     state ={
         serviceType:'',

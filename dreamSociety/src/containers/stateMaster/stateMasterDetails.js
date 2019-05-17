@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getDetails,getCountry,updateDetails,deleteDetails,deleteSelectedStateMasterDetail} from '../../actionCreators/countryAction';
+import { getDetails,getCountry,updateDetails,deleteDetails,deleteSelectedStateMasterDetail} from '../../actions/countryAction';
 
 import { bindActionCreators } from 'redux';
 

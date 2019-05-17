@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ViewEvent, GetEventOrganiser, deleteEvent, updateEvent, deleteMultipleEvents } from '../../actionCreators/eventMasterAction';
+import { ViewEvent, GetEventOrganiser, deleteEvent, updateEvent, deleteMultipleEvents } from '../../actions/eventMasterAction';
 import { bindActionCreators } from 'redux';
 import Spinner from '../../components/spinner/spinner'
 import 'bootstrap/dist/css/bootstrap.min.css';

@@ -5,7 +5,7 @@ import UI from '../components/newUI/loginDashboard';
 // import { URN } from '../actions/index';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { giveToken  } from '../actionCreators/token';
+import { giveToken  } from '../actions/token';
  class token extends Component {
 
     state={

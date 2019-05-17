@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { getMemberEvent, deleteMemberEvent, updateMemberEvent,deleteSelectMemberEvent } from '../../actionCreators/societyMemberEventAction';
+import { getMemberEvent, deleteMemberEvent, updateMemberEvent,deleteSelectMemberEvent } from '../../actions/societyMemberEventAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';

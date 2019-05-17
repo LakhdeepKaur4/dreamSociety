@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import AddTower from '../../actionCreators/towerMasterAction';
+import AddTower from '../../actions/towerMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormGroup, Form, Label, Input, Button } from 'reactstrap';
-import { PlaceHolder } from '../../actions/index';
+import { PlaceHolder } from '../../actionCreators/index';
 import UI from '../../components/newUI/superAdminDashboard';
 import Spinner from '../../components/spinner/spinner'
 import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes'; 
-import {fetchFloor} from '../../actionCreators/floorAction';
+import {fetchFloor} from '../../actions/floorAction';
 
 class TowerMaster extends Component {
 

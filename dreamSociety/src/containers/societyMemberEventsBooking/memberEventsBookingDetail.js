@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { getEventBooking, deleteEventBooking, updateEventBooking, deleteSelectEventBooking } from '../../actionCreators/memberEventsBookingAction';
-import { getMemberEvent } from './../../actionCreators/societyMemberEventAction';
-import {getEventDetails} from './../../actionCreators/eventSpaceMasterAction';
+import { getEventBooking, deleteEventBooking, updateEventBooking, deleteSelectEventBooking } from '../../actions/memberEventsBookingAction';
+import { getMemberEvent } from './../../actions/societyMemberEventAction';
+import {getEventDetails} from './../../actions/eventSpaceMasterAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';

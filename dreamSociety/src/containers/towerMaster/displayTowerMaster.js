@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { viewTower,updateTower,deleteTower,deleteMultipleTower } from '../../actionCreators/towerMasterAction';
+import { viewTower,updateTower,deleteTower,deleteMultipleTower } from '../../actions/towerMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Table,Button, Modal, FormGroup, ModalBody, ModalHeader, ModalFooter, Input, Label } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import UI from '../../components/newUI/superAdminDashboard';
 import './tower.css'
-import { PlaceHolder } from '../../actions/index';
+import { PlaceHolder } from '../../actionCreators/index';
 import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
 import Spinner from '../../components/spinner/spinner';
-import {fetchFloor} from '../../actionCreators/floorAction';
+import {fetchFloor} from '../../actions/floorAction';
 class DisplayTowerMaster extends Component {
 
   state = {

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Table, Input, Modal, Button, FormGroup, ModalBody, ModalHeader, ModalFooter, Label, Row, Col } from 'reactstrap';
+import { Table, Input, Modal, Button, FormGroup, ModalBody, ModalHeader, Label, Row, Col } from 'reactstrap';
 import Select from 'react-select';
-import { getCountry, getState, getCity, getLocation } from './../../actionCreators/societyMasterAction';
-import { ViewEmployee, updateEmployee, deleteEmployee, deleteMultipleEmployee } from '../../actionCreators/employeeMasterAction';
-import { getEmployee, getEmployeeType, getEmployeeWorkType } from '../../actionCreators/employeeTypeMasterAction';
+import { getCountry, getState, getCity, getLocation } from './../../actions/societyMasterAction';
+import { ViewEmployee, updateEmployee, deleteEmployee, deleteMultipleEmployee } from '../../actions/employeeMasterAction';
+import { getEmployee } from '../../actions/employeeTypeMasterAction';
 
 import { bindActionCreators } from 'redux';
-import { UR } from '../../actions';
+import { UR } from '../../actionCreators';
 import Spinner from '../../components/spinner/spinner'
 import UI from '../../components/newUI/superAdminDashboard'
 import SearchFilter from '../../components/searchFilter/searchFilter';

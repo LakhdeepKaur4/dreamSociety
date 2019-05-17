@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import './flatMaster.css';
 import { connect } from 'react-redux';
-import { getCountry, addStates } from '../../actionCreators/countryAction';
+import { getCountry, addStates } from '../../actions/countryAction';
 import { bindActionCreators } from 'redux';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FormGroup, Form, Input, Button, Label } from 'reactstrap';

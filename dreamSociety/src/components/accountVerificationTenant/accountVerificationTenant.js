@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import OtpInput from 'react-otp-input';
 import UI from '../newUI/loginDashboard';
 import axios from 'axios';
-import {URN} from '../../actions/index';
+import {URN} from '../../actionCreators/index';
  
 export default class AccountVerificationTenant extends Component {
   state={

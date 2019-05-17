@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import {assignRole,assignOwner,assignChanges,assignPost} from '../../actionCreators/assignRolesAction';
+import {assignRole,assignOwner,assignChanges,assignPost} from '../../actions/assignRolesAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import {Form, Button,  FormGroup,  Input, Label } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';

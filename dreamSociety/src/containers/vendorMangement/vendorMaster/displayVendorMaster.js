@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { getVendorMaster,deleteVendor,updateVendor,deleteSelectedVendor} from '../../../actionCreators/vendorMasterAction';
+import { getVendorMaster,deleteVendor,updateVendor,deleteSelectedVendor} from '../../../actions/vendorMasterAction';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader, Row, Col } from 'reactstrap';
 import DefaultSelect from '../../../constants/defaultSelect';
-import { DocURN,PicURN } from '../../../actions/index';
+import { DocURN,PicURN } from '../../../actionCreators/index';
 import SearchFilter from '../../../components/searchFilter/searchFilter';
 import UI from '../../../components/newUI/superAdminDashboard';
 import Spinner from '../../../components/spinner/spinner';
 import GoogleDocsViewer from 'react-google-docs-viewer';
 import Select from 'react-select';
-import { getCountry, getState, getCity, getLocation } from '../../../actionCreators/societyMasterAction';
-import { PlaceHolder } from '../../../actions/index';
-import {getRfId} from '../../../actionCreators/rfIdAction';
+import { getCountry, getState, getCity, getLocation } from '../../../actions/societyMasterAction';
+import { PlaceHolder } from '../../../actionCreators/index';
+import {getRfId} from '../../../actions/rfIdAction';
 
 class DisplayVendorMaster extends Component {
 

@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { getDetails, AddDetails, getDrop, getSizeDrop,getPageDetails,noOfCount,
     deleteSelectedFlatMasterDetail,
-    getTotalItems } from '../../actionCreators/flatMasterAction';
-// import {getEventDetails} from '../../actionCreators/eventSpaceMasterAction';
+    getTotalItems } from '../../actions/flatMasterAction';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 import { authHeader } from '../../helper/authHeader';
@@ -12,7 +11,7 @@ import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Label,Input } 
 import SearchFilter from '../../components/searchFilter/searchFilter'
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
-import { URN } from '../../actions/index'
+import { URN } from '../../actionCreators/index'
 import Pagination from "react-js-pagination";   
 
 class flatMasterDetails extends Component {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addServiceType, getServiceDetail,getServiceType } from '../../../actionCreators/serviceMasterAction';
+import { addServiceType, getServiceDetail,getServiceType } from '../../../actions/serviceMasterAction';
 
 import DefaultSelect from '../../../constants/defaultSelect';
 import Spinner from '../../../components/spinner/spinner';

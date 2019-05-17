@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getServiceType } from '../../../actionCreators/serviceMasterAction';
-import { addVendorMaster, getRateType,getVendorMaster } from '../../../actionCreators/vendorMasterAction';
+import { getServiceType } from '../../../actions/serviceMasterAction';
+import { addVendorMaster, getRateType,getVendorMaster } from '../../../actions/vendorMasterAction';
 import { Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import Select from 'react-select';
 import UI from '../../../components/newUI/superAdminDashboard';
-import {getCountry,getState,getCity, getLocation} from '../../../actionCreators/societyMasterAction';
+import {getCountry,getState,getCity, getLocation} from '../../../actions/societyMasterAction';
 import DefaultSelect from '../../../constants/defaultSelect';
 import Spinner from '../../../components/spinner/spinner';
-import { PlaceHolder } from '../../../actions/index';
-import {getRfId} from '../../../actionCreators/rfIdAction';
+import { PlaceHolder } from '../../../actionCreators/index';
+import {getRfId} from '../../../actions/rfIdAction';
 
 class vendorMaster extends Component {
     constructor(props) {

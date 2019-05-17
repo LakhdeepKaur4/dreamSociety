@@ -1,4 +1,4 @@
-import { GET_BOARD_MEMBER_DESIGNATION_DETAIL, GET_BOARD_MEMBER_DETAILS,GET_BOARD_ID } from '../../actions';
+import { GET_BOARD_MEMBER_DESIGNATION_DETAIL, GET_BOARD_MEMBER_DETAILS,GET_BOARD_ID } from '../../actionCreators/index';
 
 export default function(state=[], action) {
     switch(action.type){

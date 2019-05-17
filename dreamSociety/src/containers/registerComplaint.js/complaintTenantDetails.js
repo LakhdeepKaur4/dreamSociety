@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import {getRegisterDetail, userCancelled, complaintFeedback, complaintAllDeleted} from '../../actionCreators/registerComplainAction';
+import {getRegisterDetail, userCancelled, complaintFeedback, complaintAllDeleted} from '../../actions/registerComplainAction';
 import UI from '../../components/newUI/tenantDashboard';
 import {Table,Button, Input,FormGroup, Modal, ModalBody, ModalHeader,Label, Row, Col } from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter';

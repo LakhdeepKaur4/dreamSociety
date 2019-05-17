@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getFloor, deleteFloor, updateFloor, deleteSelectedFloor } from '../../actionCreators/floorAction';
+import { getFloor, deleteFloor, updateFloor, deleteSelectedFloor } from '../../actions/floorAction';
 import { connect } from 'react-redux';
 import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
 import '../../r-css/w3.css';

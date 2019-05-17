@@ -1,15 +1,11 @@
-import { URN } from '../../actions/index';
 import React,{ Component } from 'react';
 import { connect } from 'react-redux';
-import { showActiveList,deactivateMember,deleteSelectedActiveMembers,deleteSelectedCountryDetail } from '../../actionCreators/activeDeactive';
-import { authHeader } from '../../helper/authHeader';
+import { showActiveList,deactivateMember,deleteSelectedActiveMembers } from '../../actionCreators/activeDeactive';
 import { bindActionCreators } from 'redux';
-import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, ModalFooter, Label,Input } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, Label,Input } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
-import { isDate } from 'util';
 
 class ShowActiveListDetails extends Component{
 

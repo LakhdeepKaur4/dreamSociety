@@ -1,4 +1,4 @@
-import {ADD_SIZE,GET_SIZE,DELETE_USERS,UPDATE_SIZE} from '../../actions/index';
+import {ADD_SIZE,GET_SIZE,UPDATE_SIZE} from '../../actionCreators/index';
 
 export default   function(state=[], action) {
 

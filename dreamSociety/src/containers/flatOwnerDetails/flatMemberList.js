@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { PlaceHolder } from '../../actions/index';
+import { PlaceHolder } from '../../actionCreators/index';
 import Select from 'react-select';
-import { getRelation } from './../../actionCreators/relationMasterAction';
+import { getRelation } from './../../actions/relationMasterAction';
 import Spinner from '../../components/spinner/spinner';
-import { getOwnerMember, deleteMember, deleteMultipleMember, memberUpdate, addNewMember } from '../../actionCreators/flatOwnerAction';
+import { getOwnerMember, deleteMember, deleteMultipleMember, memberUpdate, addNewMember } from '../../actions/flatOwnerAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Row,Col,Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
-import {getRfId} from '../../actionCreators/rfIdAction';
+import {getRfId} from '../../actions/rfIdAction';
 import DefaultSelect from '../../constants/defaultSelect';
-import {getOwnerFlats} from '../../actionCreators/flatOwnerAction';
+import {getOwnerFlats} from '../../actions/flatOwnerAction';
 
 var id;
 var towerId;

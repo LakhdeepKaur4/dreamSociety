@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { addEventBooking } from './../../actionCreators/memberEventsBookingAction';
-import { getMemberEvent } from './../../actionCreators/societyMemberEventAction';
-import {getEventDetails} from './../../actionCreators/eventSpaceMasterAction';
+import { addEventBooking } from './../../actions/memberEventsBookingAction';
+import { getMemberEvent } from './../../actions/societyMemberEventAction';
+import {getEventDetails} from './../../actions/eventSpaceMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import _ from 'underscore';
 import Spinner from '../../components/spinner/spinner';

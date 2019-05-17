@@ -5,8 +5,8 @@ import { bindActionCreators } from 'redux';
 import Spinner from '../../components/spinner/spinner';
 import { Col, Row, Form, Button, FormGroup } from 'reactstrap';
 import DefaultSelect from '../../constants/defaultSelect';
-import { getTowerName } from '../../actionCreators/flatDetailMasterAction';
-import { getfloorsOfTowers, addElectricityExpense, getRateForElectricityExpense } from '../../actionCreators/electricityExpense';
+import { getTowerName } from '../../actions/flatDetailMasterAction';
+import { getfloorsOfTowers, addElectricityExpense, getRateForElectricityExpense } from '../../actions/electricityExpense';
 import { memberMaxDate } from '../../validation/validation';
 
 class AddElectricityExpense extends Component {

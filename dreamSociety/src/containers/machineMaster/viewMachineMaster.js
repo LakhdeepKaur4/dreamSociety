@@ -4,16 +4,16 @@ import { connect } from 'react-redux';
 import { Button, Table,Modal,ModalBody,ModalHeader,FormGroup,Input,Label} from 'reactstrap';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
-import {getAllFloor} from '../../actionCreators/flatOwnerAction';
+import {getAllFloor} from '../../actions/flatOwnerAction';
 
 import DefaultSelect from './../../constants/defaultSelect';
-import { viewTower } from '../../actionCreators/towerMasterAction';
+import { viewTower } from '../../actions/towerMasterAction';
 
 
-import {viewMachine,updateMachine,deleteMachine,deleteMultipleMachine,getMachine} from '../../actionCreators/machineMasterAction';
-import {addNewFlatForTenant, getFlats,getFlatDetailViaTowerId, editFlats, deleteFlat } from '../../actionCreators/tenantMasterAction';
+import {viewMachine,updateMachine,deleteMachine,deleteMultipleMachine,getMachine} from '../../actions/machineMasterAction';
+import {addNewFlatForTenant, getFlats,getFlatDetailViaTowerId, editFlats, deleteFlat } from '../../actions/tenantMasterAction';
 import Select from 'react-select';
-import { PlaceHolder } from '../../actions/index';
+import { PlaceHolder } from '../../actionCreators/index';
 
 import Spinner from '../../components/spinner/spinner';
 class ViewMachineMaster extends Component {

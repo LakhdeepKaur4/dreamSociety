@@ -4,9 +4,9 @@ import { bindActionCreators } from 'redux';
 import Spinner from '../../components/spinner/spinner';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Table, Label } from 'reactstrap';
-import { getInventoryList,removeInventory,multipleDelete,updateInventory } from '../../actionCreators/inventoryAction';
-import { getAssets } from '../../actionCreators/assetsAction';
-import { fetchAssets } from '../../actionCreators/assetsSubAction'
+import { getInventoryList,removeInventory,multipleDelete,updateInventory } from '../../actions/inventoryAction';
+import { getAssets } from '../../actions/assetsAction';
+import { fetchAssets } from '../../actions/assetsSubAction'
 import SearchFilter from '../../components/searchFilter/searchFilter'
 var id;
 class InventoryList extends Component {

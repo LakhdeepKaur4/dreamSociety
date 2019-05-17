@@ -1,4 +1,4 @@
-import {ASSIGN_ROLES, ASSIGN_OWNER, ASSIGN_CHANGES, ASSIGN_POST, ASSIGN_DISPLAY} from  './../../actions/index';
+import {ASSIGN_ROLES, ASSIGN_OWNER, ASSIGN_CHANGES, ASSIGN_POST, ASSIGN_DISPLAY} from  '../../actionCreators/index';
 export default function(state=[],action){
   
     switch(action.type){

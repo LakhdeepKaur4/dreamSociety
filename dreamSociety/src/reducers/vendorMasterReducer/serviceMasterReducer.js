@@ -1,4 +1,4 @@
-import {GET_DETAIL,ADD_SERVICE,DELETE_SERVICE_IDS,DELETE_SERVICE,UPDATE_SERVICES} from '../../actions/index';
+import {GET_DETAIL,ADD_SERVICE,DELETE_SERVICE_IDS,DELETE_SERVICE,UPDATE_SERVICES} from '../../actionCreators/index';
 
 export default function(state={}, action) {
 

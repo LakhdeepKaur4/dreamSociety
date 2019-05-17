@@ -1,4 +1,4 @@
-import {ADD_SOCIETY_EVENTS,GET_SOCIETY_EVENTS,UPDATE_SOCIETY_EVENTS,DELETE_SOCIETY_EVENT,DELETE_EVENTS_IDS} from '../../actions/index';
+import {ADD_SOCIETY_EVENTS,GET_SOCIETY_EVENTS,UPDATE_SOCIETY_EVENTS,DELETE_SOCIETY_EVENT,DELETE_EVENTS_IDS} from '../../actionCreators/index';
 
 
 export default function(state={}, action) {

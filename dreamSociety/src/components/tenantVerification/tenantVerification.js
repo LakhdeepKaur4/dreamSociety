@@ -1,7 +1,7 @@
 import React from 'react';
 import UI from '../newUI/loginDashboard';
 import axios from 'axios';
-import {URN} from '../../actions/index';
+import {URN} from '../../actionCreators/index';
 
 class  TenantVerification extends React.Component {
     state={

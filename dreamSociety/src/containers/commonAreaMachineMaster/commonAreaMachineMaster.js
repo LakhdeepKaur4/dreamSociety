@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getCommonArea,getMachines} from '../../actionCreators/commonAreaAction';
+import { getCommonArea,getMachines} from '../../actions/commonAreaAction';
 import { Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import UI from '../../components/newUI/superAdminDashboard';
 import DefaultSelect from '../../constants/defaultSelect';
-import {addCommonAreaMachine} from '../../actionCreators/commonAreaMachineMasterAction';
+import {addCommonAreaMachine} from '../../actions/commonAreaMachineMasterAction';
 import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes'; 
-import { PlaceHolder } from '../../actions/index';
+import { PlaceHolder } from '../../actionCreators/index';
 import Spinner from '../../components/spinner/spinner';
     
 

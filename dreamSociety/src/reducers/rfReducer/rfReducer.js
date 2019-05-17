@@ -1,4 +1,4 @@
-import { ADD_RF,GET_RF,GET_OWNER_RF} from '../../actions/index';
+import { ADD_RF,GET_RF,GET_OWNER_RF} from '../../actionCreators/index';
 export default function(state={},action){    
     switch(action.type){
         case ADD_RF:
