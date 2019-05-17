@@ -4,11 +4,10 @@ import {  assignRoleData } from '../../actionCreators/assignRolesAction';
 import { bindActionCreators } from 'redux';
 import SearchFilter from '../../components/searchFilter/searchFilter';
 import UI from '../../components/newUI/superAdminDashboard';
-import { Table, Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label } from 'reactstrap';
+import { Table, Button } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import _ from 'underscore';
 import DefaultSelect from './../../constants/defaultSelect';
-
 
 class AssignRolesDetail extends Component {
     constructor(props) {

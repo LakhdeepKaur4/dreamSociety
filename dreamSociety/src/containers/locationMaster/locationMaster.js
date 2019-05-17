@@ -6,7 +6,7 @@ import _ from 'underscore';
 import UI from '../../components/newUI/superAdminDashboard'; 
 import DefaultSelect from '../../constants/defaultSelect';
 import Spinner from '../../components/spinner/spinner';
-import { Col, Row, Button, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 
 class locationMaster extends Component{
     constructor(props){
