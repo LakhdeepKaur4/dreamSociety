@@ -383,7 +383,7 @@ class GetElectricityExpense extends Component {
                             error={this.state.errors.lastReading}
                         ></InputField>
                     </Col>
-                    <Col md={3}>
+                    <Col md={2}>
                         <DropdownComponent
                             label="Rate"
                             name="rate"
@@ -396,7 +396,7 @@ class GetElectricityExpense extends Component {
                             {this.getDropdownForRate(this.props.electricityExpenseReducer)}
                         </DropdownComponent>
                     </Col>
-                    <Col md={3}>
+                    <Col md={4}>
                         <InputField
                             label="Last Reading Date"
                             placeholder="Last Reading Date"
