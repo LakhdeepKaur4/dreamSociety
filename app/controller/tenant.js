@@ -667,7 +667,7 @@ exports.getDecrypted = (req, res, next) => {
                     tenantIds.push(item.tenantId);
                 })
                 // console.log(tenantIds);
-                tenantIds.map(item => {
+                const promise =  tenantIds.map(item => {
                     Tenant.findOne({
                         where: {
                             isActive: true,
@@ -727,13 +727,30 @@ exports.getDecrypted = (req, res, next) => {
                             tenantsArr.push(tenant);
                         })
                 })
-                setTimeout(() => {
+                Promise.all(promise)
+                .then(result => {
                     let tenants = tenantsArr;
+                    tenants.sort(function (a, b) {
+                        return Number(a.tenantId) - Number(b.tenantId)
+                    });
                     res.status(httpStatus.OK).json({
                         message: "Tenant Content Page",
                         tenants
                     });
-                }, 1000);
+                })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                // setTimeout(() => {
+                //     let tenants = tenantsArr;
+                //     tenants.sort(function (a, b) {
+                //         return Number(a.tenantId) - Number(b.tenantId)
+                //     });
+                //     res.status(httpStatus.OK).json({
+                //         message: "Tenant Content Page",
+                //         tenants
+                //     });
+                // }, 1000);
                 // console.log(tenantsArr);
             } else {
                 res.status(httpStatus.NO_CONTENT).json({
