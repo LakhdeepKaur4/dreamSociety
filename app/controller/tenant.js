@@ -667,8 +667,8 @@ exports.getDecrypted = (req, res, next) => {
                     tenantIds.push(item.tenantId);
                 })
                 // console.log(tenantIds);
-                const promise =  tenantIds.map(item => {
-                    Tenant.findOne({
+                const promise =  tenantIds.map(async item => {
+                    await Tenant.findOne({
                         where: {
                             isActive: true,
                             tenantId: item
@@ -961,8 +961,8 @@ exports.getTenantMembers = async (req, res, next) => {
             members.map(item => {
                 memberIds.push(item.memberId);
             })
-            const promise = memberIds.map(item => {
-                TenantMembersDetail.findOne({
+            const promise = memberIds.map(async item => {
+                await TenantMembersDetail.findOne({
                     where: {
                         isActive: true,
                         memberId: item
@@ -1016,6 +1016,9 @@ exports.getTenantMembers = async (req, res, next) => {
             Promise.all(promise)
             .then(result => {
                 let members = membersArr;
+                members.sort(function (a, b) {
+                    return Number(a.memberId) - Number(b.memberId)
+                });
                 res.status(httpStatus.OK).json({
                     message: "Tenant Members Details",
                     members
