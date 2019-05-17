@@ -89,18 +89,11 @@ exports.update = async (req, res, next) => {
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
-        // console.log("****")
-        // const exists = await ElectricityConsumer.findOne({
-        //     where: { isActive: true, flatDetailId: update.flatDetailId, electricityConsumerId: { [Op.ne]: id } }
-        // })
-        // console.log(exists)
-        // if (exists) {
-        //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Already Exists" });
-        // }
-
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
+        var date = nowDate.getFullYear() + '/' + (nowDate.getMonth() + 1) + '/' + nowDate.getDate();
+        update.entryDate = date;
         const updatedElectricityConsumer = await ElectricityConsumer.find({ where: { electricityConsumerId: id } }).then(electricity => {
             return electricity.updateAttributes(update)
         })
