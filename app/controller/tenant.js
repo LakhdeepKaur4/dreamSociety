@@ -356,8 +356,8 @@ exports.createEncrypted = async (req, res, next) => {
         let tenantCreated;
         tenant.userId = req.userId;
         uniqueId = generateRandomId();
-        let userName = tenant.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
-        tenant.userName = userName;
+        // let userName = tenant.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
+        // tenant.userName = userName;
         index = tenant.fileName.lastIndexOf('.');
         tenant.fileExt = tenant.fileName.slice(index + 1);
         tenant.fileName = tenant.fileName.slice(0, index);
@@ -416,7 +416,7 @@ exports.createEncrypted = async (req, res, next) => {
                     tenantId: tenant.tenantId,
                     firstName: encrypt(tenant.firstName),
                     lastName: encrypt(tenant.lastName),
-                    userName: encrypt(tenant.userName),
+                    userName: encrypt(tenant.email),
                     dob: tenant.dob,
                     email: encrypt(tenant.email),
                     contact: encrypt(tenant.contact),
@@ -455,7 +455,7 @@ exports.createEncrypted = async (req, res, next) => {
                             userId: tenant.tenantId,
                             firstName: encrypt(tenant.firstName),
                             lastName: encrypt(tenant.lastName),
-                            userName: encrypt(tenant.userName),
+                            userName: encrypt(tenant.email),
                             contact: encrypt(tenant.contact),
                             email: encrypt(tenant.email),
                             password: bcrypt.hashSync(tenant.password, 8),
@@ -488,8 +488,8 @@ exports.createEncrypted = async (req, res, next) => {
                                 randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
 
                                 item.memberId = randomNumber;
-                                let memberUserName = item.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
-                                console.log("tenant member userNAme ", memberUserName)
+                                // let memberUserName = item.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
+                                // console.log("tenant member userNAme ", memberUserName)
                                 const password = passwordGenerator.generate({
                                     length: 10,
                                     numbers: true
@@ -501,7 +501,7 @@ exports.createEncrypted = async (req, res, next) => {
                                 item.firstName = encrypt(item.firstName);
                                 item.lastName = encrypt(item.lastName);
                                 item.aadhaarNumber = encrypt(item.aadhaarNumber);
-                                item.userName = encrypt(memberUserName);
+                                item.userName = encrypt(item.email);
                                 item.gender = encrypt(item.gender);
                                 item.userId = req.userId;
                                 item.tenantId = entry.tenantId;
@@ -526,7 +526,7 @@ exports.createEncrypted = async (req, res, next) => {
                                     userId: item.memberId,
                                     firstName: item.firstName,
                                     lastName: item.lastName,
-                                    userName: item.userName,
+                                    userName: item.email,
                                     contact: item.contact,
                                     email: item.email,
                                     password: bcrypt.hashSync(item.password, 8),
@@ -1058,15 +1058,15 @@ exports.addTenantMembers = async (req, res, next) => {
         randomNumber = randomInt(config.randomNumberMin, config.randomNumberMax);
     }
     let uniqueId = generateRandomId();
-    let userName = member.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
-    member.userName = userName;
+    // let userName = member.firstName.replace(/ /g, '') + 'T' + uniqueId.toString(36);
+    // member.userName = userName;
     const password = passwordGenerator.generate({
         length: 10,
         numbers: true
     });
     member.firstName = encrypt(member.firstName);
     member.lastName = encrypt(member.lastName);
-    member.userName = encrypt(member.userName);
+    member.userName = encrypt(member.email);
     member.email = encrypt(member.email);
     member.contact = encrypt(member.contact);
     member.aadhaarNumber = encrypt(member.aadhaarNumber);
