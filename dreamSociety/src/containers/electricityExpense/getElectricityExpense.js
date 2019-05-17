@@ -313,7 +313,7 @@ class GetElectricityExpense extends Component {
     }
 
     render() {
-        let tableData = <Table>
+        let tableData = <Table bordered>
             <thead>
                 <tr>
                     <th style={{ width: '4%' }}></th>
