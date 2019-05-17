@@ -327,7 +327,7 @@ class GetElectricityExpense extends Component {
                                 filterName: 'flatNo'
                             }
                         });
-                    }}>Flat No<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                    }} style={{ cursor: 'pointer' }}>Flat No<i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th>Last Reading</th>
                     <th>Amount</th>
                     <th>Last Reading Date</th>
@@ -369,7 +369,7 @@ class GetElectricityExpense extends Component {
             </FormGroup>
             <FormGroup>
                 <Row md={12}>
-                    <Col md={4}>
+                    <Col md={3}>
                         <InputField
                             label="Last Reading"
                             placeholder="Last Reading"
@@ -383,7 +383,7 @@ class GetElectricityExpense extends Component {
                             error={this.state.errors.lastReading}
                         ></InputField>
                     </Col>
-                    <Col md={4}>
+                    <Col md={3}>
                         <DropdownComponent
                             label="Rate"
                             name="rate"
@@ -396,7 +396,7 @@ class GetElectricityExpense extends Component {
                             {this.getDropdownForRate(this.props.electricityExpenseReducer)}
                         </DropdownComponent>
                     </Col>
-                    <Col md={4}>
+                    <Col md={3}>
                         <InputField
                             label="Last Reading Date"
                             placeholder="Last Reading Date"
@@ -408,18 +408,21 @@ class GetElectricityExpense extends Component {
                             error={this.state.errors.lastReadingDate}
                         />
                     </Col>
+                    <Col md={3}>
+                        <InputField
+                            label="Sanctioned Load"
+                            placeholder="Sanctioned Load"
+                            name="sanctionedLoad"
+                            type="text"
+                            maxLength="16"
+                            inputChange={this.rateChange}
+                            value={this.state.sanctionedLoad}
+                            className="error"
+                            error={this.state.errors.sanctionedLoad}
+                        />
+                    </Col>
                 </Row>
             </FormGroup>
-            <InputField
-                label="Sanctioned Load"
-                placeholder="Sanctioned Load"
-                name="sanctionedLoad"
-                type="text"
-                inputChange={this.rateChange}
-                value={this.state.sanctionedLoad}
-                className="error"
-                error={this.state.errors.sanctionedLoad}
-            />
             <FormGroup>
                 <Row md={12}>
                     {this.state.defaultSign ? <Col md={6}>
