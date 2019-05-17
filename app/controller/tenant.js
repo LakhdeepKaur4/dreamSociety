@@ -944,7 +944,7 @@ exports.getTenantMembers = async (req, res, next) => {
             members.map(item => {
                 memberIds.push(item.memberId);
             })
-            memberIds.map(item => {
+            const promise = memberIds.map(item => {
                 TenantMembersDetail.findOne({
                     where: {
                         isActive: true,
@@ -996,16 +996,27 @@ exports.getTenantMembers = async (req, res, next) => {
                         membersArr.push(member);
                     })
             })
+            Promise.all(promise)
+            .then(result => {
+                let members = membersArr;
+                res.status(httpStatus.OK).json({
+                    message: "Tenant Members Details",
+                    members
+                });
+            })
+            .catch(err => {
+                console.log(err);
+            })
         })
     // console.log(tenantMembers)
 
-    setTimeout(() => {
-        let members = membersArr;
-        res.status(httpStatus.OK).json({
-            message: "Tenant Members Details",
-            members
-        });
-    }, 1000);
+    // setTimeout(() => {
+    //     let members = membersArr;
+    //     res.status(httpStatus.OK).json({
+    //         message: "Tenant Members Details",
+    //         members
+    //     });
+    // }, 1000);
 }
 
 exports.deleteTenantMember = async (req, res, next) => {
