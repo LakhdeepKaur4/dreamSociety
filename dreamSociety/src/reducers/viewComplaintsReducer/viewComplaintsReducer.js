@@ -1,4 +1,4 @@
-import {GET_COMPLAINTS,REJECT_COMPLAINT,ACCEPT_COMPLAINT,SEND_COMPLAINT,COMPLAINT_COMPLETE} from '../../actions/index';
+import {GET_COMPLAINTS,REJECT_COMPLAINT,ACCEPT_COMPLAINT,SEND_COMPLAINT,COMPLAINT_COMPLETE,GET_FEEDBACK} from '../../actions/index';
 
 export default function(state={}, action) {
 
@@ -17,6 +17,9 @@ export default function(state={}, action) {
 
         case COMPLAINT_COMPLETE:
             return {...state, complaintComplete: action.payload}
+
+        case GET_FEEDBACK:
+            return {...state, feedbackResult: action.payload}
 
             default:
             return state;
