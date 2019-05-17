@@ -11,6 +11,9 @@ import { getMonthlyElecExpense,calculateCharges, updateElecExpense,filterViaDate
 import { deleteElectricityExpense,deleteSelectedElectricityExpense } from '../../actionCreators/electricityExpense';
 import { Table, Row, Col, FormGroup, Label } from 'reactstrap';
 import { memberMaxDate } from '../../validation/validation';
+import SearchImg from '../../components/searchImg/searchImg';
+import search from '../../appImages/search.png';
+import restore from '../../appImages/restore.png';
 
 class MonthlyElectricityExpenseDetail extends Component {
     constructor(props){
@@ -44,12 +47,18 @@ class MonthlyElectricityExpenseDetail extends Component {
             startDate:'',
             endDate:'',
             defaultList:true,
-            filterdList:false
+            filterdList:false,
+            filterLoading:false,
+            search:''
         }
     }
 
     componentDidMount(){
         this.refreshData();
+    }
+
+    searchOnChange = (e) => {
+        this.setState({ search: e.target.value })
     }
 
     refreshData(){
@@ -74,9 +83,68 @@ class MonthlyElectricityExpenseDetail extends Component {
         this.props.history.push('/superDashboard/addMonthlyElectricityExpenseDetail');
     }
 
+    searchFilter = (search) => {
+        return function (x) {
+
+            return x.flat_detail_master.tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
+                x.flat_detail_master.floor_master.floorName.toLowerCase().includes(search.toLowerCase()) ||
+                x.flat_detail_master.flatNo.toLowerCase().includes(search.toLowerCase())
+                || !search;
+        }
+    }
+
     getFilterdExpenseList = ({filtered}) => {
-        if(filtered){
+        if(filtered && filtered.electricityConsumer){
             console.log(filtered);
+            return filtered.electricityConsumer.sort((item1, item2) => {
+                var items1 = item1.flat_detail_master
+                var items2 = item2.flat_detail_master
+                var cmprVal = (items1 && items2) ? (items1[this.state.filterName].localeCompare(items2[this.state.filterName])) : ''
+                return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item, index) => {
+                if(item && item.flat_detail_master){
+                    return (
+                        <tr key={item.electricityConsumerId}>
+                            <td><input type="checkbox" name="ids" className="SelectAll" value={item.electricityConsumerId}
+                                onChange={(e) => {
+                                    const { electricityConsumerId } = item
+                                    if (!e.target.checked) {
+                                        document.getElementById('allSelect').checked = false;
+                                        let indexOfId = this.state.ids.indexOf(electricityConsumerId);
+                                        if (indexOfId > -1) {
+                                            this.state.ids.splice(indexOfId, 1);
+                                        }
+                                        if (this.state.ids.length === 0) {
+                                            this.setState({ isDisabled: true });
+                                        }
+                                    }
+                                    else {
+                                        this.setState({ ids: [...this.state.ids, electricityConsumerId] });
+                                        if (this.state.ids.length >= 0) {
+                                            this.setState({ isDisabled: false })
+                                        }
+                                    }
+    
+                                }} /></td>
+                            <td>{index + 1}</td>
+                            <td>{item.flat_detail_master.tower_master.towerName}</td>
+                            <td>{item.flat_detail_master.floor_master.floorName}</td>
+                            <td>{item.flat_detail_master.flatNo}</td>
+                            <td>{item.lastReading}</td>
+                            <td>{item.currentReading}</td>
+                            <td>{item.monthlyCharge}</td>
+                            <td>
+                                <ButtonComponent color="success" title="Edit" className="mr-2" buttonClicked= {this.edit.bind(this, item.flat_detail_master.tower_master.towerName,
+                                   item.flat_detail_master.floor_master.floorName, item.flat_detail_master.flatNo,item.lastReading,item.currentReading, item.unitConsumed,
+                                   item.monthlyCharge, item.mdi, item.sanctionedLoad, item.rate,item.rent, item.amount, item.amountDue
+                                   , item.electricityConsumerId, item.flat_detail_master.tower_master.towerId, item.flat_detail_master.floor_master.floorId,
+                                   item.flat_detail_master.flatDetailId)} />
+                                <ButtonComponent color="danger" title="Delete" buttonClicked={this.delete.bind(this, item.electricityConsumerId)} />
+                            </td>
+                        </tr>
+                    );
+                }
+            })
         }
     }
 
@@ -88,7 +156,7 @@ class MonthlyElectricityExpenseDetail extends Component {
                 var items2 = item2.flat_detail_master
                 var cmprVal = (items1 && items2) ? (items1[this.state.filterName].localeCompare(items2[this.state.filterName])) : ''
                 return this.state.sortVal ? cmprVal : -cmprVal;
-            }).map((item,index) => {
+            }).filter(this.searchFilter(this.state.search)).map((item,index) => {
                 if(item && item.flat_detail_master){
                     return (
                         <tr key={item.electricityConsumerId}>
@@ -288,14 +356,8 @@ class MonthlyElectricityExpenseDetail extends Component {
         if (start.value) {
             end.min = start.value;
         }
-        if (!!this.state.errors[e.target.name]){
-            let errors = Object.assign({}, this.state.errors);
-            delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value, errors,subMaintenanceErr:'' });
-        }
-        else{
+        
             this.setState({[e.target.name]:e.target.value,subMaintenanceErr:''});
-        }
     }
 
     endDateChange = (e) => {
@@ -305,26 +367,25 @@ class MonthlyElectricityExpenseDetail extends Component {
         if (end.value) {
             start.max = end.value;
         }
-
-        if (!!this.state.errors[e.target.name]){
-            let errors = Object.assign({}, this.state.errors);
-            delete errors[e.target.name];
-            this.setState({ [e.target.name]: e.target.value, errors,subMaintenanceErr:'' });
-        }
-        else{
-            this.setState({[e.target.name]:e.target.value,subMaintenanceErr:''});
-        }
+        this.setState({[e.target.name]:e.target.value,subMaintenanceErr:''});
     }
 
     filter = (e) => {
         e.preventDefault();
-        this.setState({defaultList:false, filterdList:true})
+        var start = document.getElementById('start');
+        start.max = '';
+        this.setState({defaultList:false, filterdList:true,loading:true})
         let {startDate, endDate} = this.state;
         this.props.filterViaDate(startDate, endDate)
+        .then(() => this.setState({loading:false}))
     }
 
-    filterdList = () => {
-
+    default = (e) => {
+        e.preventDefault();
+        var start = document.getElementById('start');
+        start.max = '';
+        this.setState({defaultList:true, filterdList:false, startDate:'', endDate:''});
+        this.refreshData();
     }
 
     render(){
@@ -513,19 +574,19 @@ class MonthlyElectricityExpenseDetail extends Component {
                                 } /></Label>
                         </div>
                         <div>
-                            <SearchFilter />
+                            <SearchFilter value={this.state.search} onChange={this.searchOnChange}/>
                         </div>
                         <div style={{display:'flex'}}>
                             <FormGroup className="mr-2" style={{display:'flex'}}>
                                 <label style={{alignSelf:'center', marginRight:'3px'}}>From</label>
-                                <input className="form-control" type="date" name="startDate" id="start" onChange={this.startDateChange} />
+                                <input className="form-control" type="date" name="startDate" id="start" value={startDate} onChange={this.startDateChange} />
                             </FormGroup>
                             <FormGroup style={{display:'flex'}}>
                                 <label style={{alignSelf:'center', marginRight:'3px'}}>To</label>
-                                <input disabled={!startDate} className="form-control" type="date" name="endDate" id="end" onChange={this.endDateChange} />
+                                <input disabled={!startDate} className="form-control" type="date" name="endDate"  value={endDate} id="end" onChange={this.endDateChange} />
                             </FormGroup>
-                            <ButtonComponent title="Search" buttonClicked={this.filter} disabled={(!startDate || !endDate)}
-                            color="primary" />
+                            <SearchImg MarginLeft="mr-2 ml-1" type="image" style={{border:'1px solid #333', background:'lightgray'}} id="search" src={search} onClick={this.filter} disabled={(!startDate || !endDate)} />
+                            <SearchImg type="image" style={{border:'1px solid #333', background:'lightgray'}} id="default" src={restore} onClick={this.default} disabled={(!startDate || !endDate)} />
                         </div>
                     </div>
                     <ModalBox openModal = {this.state.editModal}
