@@ -667,8 +667,8 @@ exports.getDecrypted = (req, res, next) => {
                     tenantIds.push(item.tenantId);
                 })
                 // console.log(tenantIds);
-                tenantIds.map(item => {
-                    Tenant.findOne({
+                const promise =  tenantIds.map(async item => {
+                    await Tenant.findOne({
                         where: {
                             isActive: true,
                             tenantId: item
@@ -695,7 +695,7 @@ exports.getDecrypted = (req, res, next) => {
                                     { model: RFID, where: { isActive: true }, attributes: ['rfidId', 'rfid'] }
                                 ]
                             })
-                            // setTimeout(() => console.log(rfid), 1000);
+                            
                             tenant.firstName = decrypt(tenant.firstName);
                             tenant.lastName = decrypt(tenant.lastName);
                             tenant.userName = decrypt(tenant.userName);
@@ -727,14 +727,20 @@ exports.getDecrypted = (req, res, next) => {
                             tenantsArr.push(tenant);
                         })
                 })
-                setTimeout(() => {
+                Promise.all(promise)
+                .then(result => {
                     let tenants = tenantsArr;
+                    tenants.sort(function (a, b) {
+                        return Number(a.tenantId) - Number(b.tenantId)
+                    });
                     res.status(httpStatus.OK).json({
                         message: "Tenant Content Page",
                         tenants
                     });
-                }, 1000);
-                // console.log(tenantsArr);
+                })
+                    .catch(err => {
+                        console.log(err)
+                    })
             } else {
                 res.status(httpStatus.NO_CONTENT).json({
                     message: 'No data available!'
@@ -944,8 +950,8 @@ exports.getTenantMembers = async (req, res, next) => {
             members.map(item => {
                 memberIds.push(item.memberId);
             })
-            memberIds.map(item => {
-                TenantMembersDetail.findOne({
+            const promise = memberIds.map(async item => {
+                await TenantMembersDetail.findOne({
                     where: {
                         isActive: true,
                         memberId: item
@@ -996,16 +1002,21 @@ exports.getTenantMembers = async (req, res, next) => {
                         membersArr.push(member);
                     })
             })
+            Promise.all(promise)
+            .then(result => {
+                let members = membersArr;
+                members.sort(function (a, b) {
+                    return Number(a.memberId) - Number(b.memberId)
+                });
+                res.status(httpStatus.OK).json({
+                    message: "Tenant Members Details",
+                    members
+                });
+            })
+            .catch(err => {
+                console.log(err);
+            })
         })
-    // console.log(tenantMembers)
-
-    setTimeout(() => {
-        let members = membersArr;
-        res.status(httpStatus.OK).json({
-            message: "Tenant Members Details",
-            members
-        });
-    }, 1000);
 }
 
 exports.deleteTenantMember = async (req, res, next) => {
