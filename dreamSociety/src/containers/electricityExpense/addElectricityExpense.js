@@ -44,6 +44,8 @@ class AddElectricityExpense extends Component {
     }
 
     towerChangeHandler = (event) => {
+        document.getElementById('floorId').value = 'no-value';
+        document.getElementById('flatDetailId').value = 'no-value';
         this.setState({
             [event.target.name]: event.target.value
         })
@@ -123,7 +125,7 @@ class AddElectricityExpense extends Component {
     }
 
     floorChangeHandler = (e) => {
-
+        document.getElementById('flatDetailId').value = 'no-value';
         this.setState({
             [e.target.name]: e.target.value
         })
@@ -237,7 +239,7 @@ class AddElectricityExpense extends Component {
                     </Col>
                     <Col md={4}>
                         <label>Floor</label>
-                        <select className="form-control" defaultValue='no-value' name="floorId" onChange={this.floorChangeHandler}>
+                        <select className="form-control" id="floorId" defaultValue='no-value' name="floorId" onChange={this.floorChangeHandler}>
                             <DefaultSelect />
                             {this.getFloorData(this.props.electricityExpenseReducer)}
                         </select>
@@ -245,7 +247,7 @@ class AddElectricityExpense extends Component {
                     </Col>
                     <Col md={4}>
                         <label>Flats</label>
-                        <select className="form-control" defaultValue='no-value' name="flatDetailId" onChange={this.flatChangeHandler}>
+                        <select className="form-control" id="flatDetailId" defaultValue='no-value' name="flatDetailId" onChange={this.flatChangeHandler}>
                             <DefaultSelect />
                             {this.getFlatData(this.props.electricityExpenseReducer)}
                         </select>
