@@ -1,6 +1,6 @@
 import React,{ Component } from 'react';
 import { connect } from 'react-redux';
-import { showActiveList,deactivateMember,deleteSelectedActiveMembers } from '../../actionCreators/activeDeactive';
+import { showActiveList,deactivateMember,deleteSelectedActiveMembers } from '../../actions/activeDeactive';
 import { bindActionCreators } from 'redux';
 import { Table, Button, Modal,FormGroup, ModalBody, ModalHeader, Label,Input } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
