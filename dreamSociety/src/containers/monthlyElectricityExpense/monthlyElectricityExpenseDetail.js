@@ -546,7 +546,7 @@ class MonthlyElectricityExpenseDetail extends Component {
             </FormGroup>
         </div>
         return (
-            <UI>
+            <UI onClick={this.logout} change={this.changePassword}>
                 <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                         <span aria-hidden="true">&times;</span>
