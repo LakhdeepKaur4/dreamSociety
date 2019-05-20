@@ -24,7 +24,8 @@ class AddElectricityExpense extends Component {
             lastReadingDate: '',
             rate: '',
             errors: {},
-            message: ''
+            message: '',
+            loading: false
             // unitConsumed: '',
             // currentReading: '',
             // startDate: '',
@@ -33,8 +34,8 @@ class AddElectricityExpense extends Component {
     }
 
     componentDidMount() {
-        this.props.getTowerName();
-        this.props.getRateForElectricityExpense();
+        this.props.getTowerName().then(() => this.setState({ loading: false }));
+        this.props.getRateForElectricityExpense().then(() => this.setState({ loading: false }));
     }
 
     logout = () => {
@@ -188,6 +189,7 @@ class AddElectricityExpense extends Component {
         this.setState({ errors });
         const isValid = Object.keys(errors).length === 0;
         if (isValid) {
+            this.setState({ loading: true })
             let data = { towerId, floorId, flatDetailId, lastReading, amount, sign, rate, lastReadingDate, sanctionedLoad, amountDue };
             this.props.addElectricityExpense(data).then(() => { this.props.history.push('/superDashboard/electricityExpenseDetail') })
                 .catch(error => {
@@ -357,7 +359,7 @@ class AddElectricityExpense extends Component {
                     <div>
                         <h3 style={{ textAlign: 'center', marginBottom: '15px' }}>Add Electricity Expense</h3>
                     </div>
-                    {form}
+                    {!this.state.loading ? form : <Spinner />}
                 </Form>
             </UI>
         )
