@@ -1,5 +1,4 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-
 .wrapper {
     display: flex;
     align-items: stretch;
@@ -9,21 +8,22 @@
     min-height: 100vh;
 }
 
-.error{
+.error {
     color: red;
 }
-.w3-container{
+
+/* .w3-container{
     width: 109%;
     margin-left: 35px;
     
-}
+} */
 
-.w3-margin-top{
+.w3-margin-top {
     background: #f3f3f3 !important;
     padding: 20px !important;
 }
 
-.top-details{
+.top-details {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
@@ -35,7 +35,7 @@ button:disabled {
     cursor: not-allowed;
 }
 
-form{
+form {
     width: 800px;
     padding: 20px 20px;
     border-radius: 20px;
@@ -44,7 +44,7 @@ form{
     position: relative
 }
 
-.modal-content{
+.modal-content {
     width: 700px;
     right: 80px;
 }
@@ -63,7 +63,7 @@ form{
     overflow: auto;
 }
 
-.table{
+.table {
     background: #f3f3f3 !important;
     padding: 20px;
 }
@@ -205,7 +205,6 @@ form{
     cursor: pointer;
 }
 
-
 @media (max-width: 768px) {
     #sidebar.inactive {
         margin-left: -250px;
@@ -244,8 +243,8 @@ form{
         margin-left: 0;
     }
     #body {
-    margin-left: 150px;
-    margin-right: 150px;
+        margin-left: 150px;
+        margin-right: 150px;
     }
 }
 
@@ -255,7 +254,6 @@ form{
     margin-left: 150px;
     margin-right: 150px;
 }
-
 
 body {
     font-family: 'Poppins', sans-serif;
@@ -273,7 +271,6 @@ p {
 a, a:hover, a:focus {
     color: inherit;
     transition: all 0.3s;
-
 }
 
 #sidebar {
@@ -303,32 +300,35 @@ a, a:hover, a:focus {
     font-size: 1.1em;
     display: block;
 }
+
 #sidebar ul li a:hover {
     color: #7386D5;
     background: #fff;
 }
 
-#sidebar ul li.active > a, a[aria-expanded="true"] {
+#sidebar ul li.active>a, a[aria-expanded="true"] {
     color: #fff;
     background: #6d7fcc;
 }
+
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
     background: #6d7fcc;
 }
 
-.btn{
+.btn {
     margin-left: 0px !important;
 }
 
-.TextTransformToCapital{
+.TextTransformToCapital {
     text-transform: uppercase;
 }
 
 /* .modal-backdrop.show{
     opacity: 0;
 } */
+
 /* .pg-viewer-wrapper .loading-container .loading{
  height:0px;
 }
@@ -336,13 +336,16 @@ ul ul a {
     height:0px;
 } */
 
-#sortArrow{
+#sortArrow {
     position: relative;
     margin-left: 40px;
 }
 
 @media screen and (max-width: 768px) {
-    .modal-content{
+    .container {
+        width: 80%;
+    }
+    .modal-content {
         width: 100%;
         right: 0;
     }

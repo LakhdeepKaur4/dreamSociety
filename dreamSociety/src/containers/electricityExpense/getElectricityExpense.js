@@ -75,7 +75,7 @@ class GetElectricityExpense extends Component {
 
     getDropdownForRate = ({ rate }) => {
         // console.log("dropdown of rate ", rate)
-        if (rate) {
+        if (rate && rate.maintenanceType) {
             return rate.maintenanceType.map((item) => {
                 return (
                     <option key={item.maintenanceTypeId} value={item.rate} >
@@ -474,7 +474,7 @@ class GetElectricityExpense extends Component {
                     <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                         <span aria-hidden="true">&times;</span>
                     </div>
-                    <div className="top-details" >
+                    <div className="top-details">
                         <h3 align="center"> Electricity Expense Detail</h3>
                         <Button color="primary" onClick={this.addExpense} > Add Electricity Expense</Button>
                     </div>
