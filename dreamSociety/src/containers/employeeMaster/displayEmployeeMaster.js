@@ -15,6 +15,7 @@ import DefaultSelect from '../../constants/defaultSelect'
 import _ from 'underscore';
 import './employeeMaster.css'
 import GoogleDocsViewer from 'react-google-docs-viewer';
+import {getRfId} from '../../actions/rfIdAction';
 
 class DisplayEmployeeMaster extends Component {
 
@@ -104,7 +105,9 @@ class DisplayEmployeeMaster extends Component {
             employeeWorkType: '',
             employeeType: '',
             doc1: '',
-            doc2: ''
+            doc2: '',
+            rfidId:'',
+            rfid:''
         }
     }
 
@@ -129,6 +132,7 @@ class DisplayEmployeeMaster extends Component {
         this.props.getState().then(() => this.setState({ loading: false, modalLoading: false }))
         this.props.getCity().then(() => this.setState({ loading: false, modalLoading: false }))
         this.props.getLocation().then(() => this.setState({ loading: false, modalLoading: false }))
+        this.props.getRfId().then(() => this.setState({ loading: false,modalLoading: false }))
         this.setState({
             userPermanent: false, editPermanent: false,
             countryId: '', stateId: '', cityId: '', locationId: '',
@@ -182,7 +186,7 @@ class DisplayEmployeeMaster extends Component {
             editEmployeeModal: !this.state.editEmployeeModal, emailServerError: '', contactServerError: '', errors: {}, userPermanent: false, editPermanent: false, countryId: '',
             stateId: '', cityId: '', locationId: '', permanentAddress: this.state.readOnlyPermanent,
             editCurrent: false, userCurrent: false, currentCountryId: '', currentStateId: '', currentCityId: '',
-            currentLocationId: '', sameAsPermanent: false
+            currentLocationId: '', sameAsPermanent: false, rfId:'', rfidId:''
         })
     }
     onPicChange = (event) => {
@@ -254,12 +258,12 @@ class DisplayEmployeeMaster extends Component {
         }
     }
 
-    editEmployee(employeeId, picture, firstName, middleName, lastName, salary, contact, email, currentAddress, permanentAddress, documentOne, documentTwo, startDate, employeeDetailId) {
+    editEmployee(employeeId, picture, firstName, middleName, lastName, salary, contact, email, currentAddress, permanentAddress, documentOne, documentTwo, startDate,  employeeDetailId, rfid, rfidId) {
 
         this.setState({
             editEmployeeData: { employeeId, startDate },
             documentOne, documentTwo, picture, firstName, middleName, lastName, salary, contact, email,
-            currentAddress, permanentAddress, employeeDetailId,
+            currentAddress, permanentAddress, employeeDetailId,rfid, rfidId,
             readOnlyPermanent: permanentAddress, readOnlyCurrent: currentAddress, editEmployeeModal: !this.state.editEmployeeModal
         })
 
@@ -330,6 +334,9 @@ class DisplayEmployeeMaster extends Component {
             data.append('startDate', this.state.editEmployeeData.startDate)
 
             data.append('profilePicture', this.state.profilePicture)
+            data.append('rfid', this.state.rfid)
+            data.append('rfidId', this.state.rfidId)
+
 
             this.props.updateEmployee(this.state.editEmployeeData.employeeId, data).then(() => this.refreshData()).catch(err => {
                 err.response.data.message
@@ -547,11 +554,12 @@ class DisplayEmployeeMaster extends Component {
                             {item.employee_detail_master ? item.employee_detail_master.employee_work_type_master.employeeWorkType : ''}
                                 -{item.employee_detail_master ? item.employee_detail_master.employee_type_master.employeeType : ''}</td>
                             <td>{item.salary}</td>
+                            <td>{item.rfid_master ? item.rfid_master.rfid : ''}</td>
 
-                            <td> <button className="btn btn-success" onClick={this.viewData.bind(this, UR + item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.contact, item.email, item.currentAddress, item.permanentAddress, UR + item.documentOne, UR + item.documentTwo, item.startDate, item.employee_detail_master.serviceType, item.employee_detail_master.employee_work_type_master.employeeWorkType, item.employee_detail_master.employee_type_master.employeeType)}>View</button></td>
+                            <td> <button className="btn btn-success" onClick={this.viewData.bind(this, UR + item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.contact, item.email, item.currentAddress, item.permanentAddress, UR + item.documentOne, UR + item.documentTwo, item.startDate, item.employee_detail_master.serviceType, item.employee_detail_master.employee_work_type_master.employeeWorkType, item.employee_detail_master.employee_type_master.employeeType, item.rfid_master.rfid , item.rfid_master.rfidId)}>View</button></td>
 
                             <td>
-                                <button className="btn btn-success mr-2" onClick={this.editEmployee.bind(this, item.employeeId, UR + item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.contact, item.email, item.currentAddress, item.permanentAddress, UR + item.documentOne, UR + item.documentTwo, item.startDate, item.employee_detail_master.employeeDetailId)} >Edit</button>
+                                <button className="btn btn-success mr-2" onClick={this.editEmployee.bind(this, item.employeeId, UR + item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.contact, item.email, item.currentAddress, item.permanentAddress, UR + item.documentOne, UR + item.documentTwo, item.startDate, item.employee_detail_master.employeeDetailId,  item.rfid_master.rfid, item.rfid_master.rfidId)} >Edit</button>
                                 <button className="btn btn-danger" onClick={this.deleteEmployee.bind(this, item.employeeId)}> Delete</button>
                             </td>
 
@@ -564,19 +572,34 @@ class DisplayEmployeeMaster extends Component {
     }
 
     viewData(picture, firstName, middleName, lastName, salary, contact, email, currentAddress, permanentAddress, doc1, doc2, startDate, serviceType, employeeWorkType,
-        employeeType) {
+        employeeType, rfid, rfidId) {
         console.log(picture, firstName, middleName, lastName, salary, contact, email, currentAddress, permanentAddress, doc1, doc2, startDate, serviceType, employeeWorkType,
-            employeeType)
+            employeeType,rfid, rfidId)
         this.setState({
             picture, firstName, middleName, lastName, salary, contact, email, currentAddress, permanentAddress, doc1, doc2, startDate, serviceType, employeeWorkType,
-            employeeType, displayEmployee: true
+            employeeType,rfid, rfidId, displayEmployee: true
         })
     }
 
     close = () => {
         return this.props.history.replace('/superDashBoard/displayemployee');
     }
+    
+    rfidData=({ ownerRf })=> {
+        console.log(ownerRf)
+        if(ownerRf && ownerRf.rfids){
+            return (
+                ownerRf.rfids.map((item)=>{
+                    return (
+                        <option key={item.rfidId} value={item.rfidId}>
+                            {item.rfid}
+                        </option>
+                    )
+                })
+            )
 
+        }
+    }
 
     getService = ({ getEmployee }) => {
         console.log("abc", getEmployee)
@@ -788,6 +811,13 @@ class DisplayEmployeeMaster extends Component {
         }
     }
 
+    rfIdChangeHandler=(selectOption)=>{
+        this.setState({
+            rfidId:selectOption.rfidId
+        })
+
+    }
+
 
     pinChange1 = (e) => {
         console.log(this.state)
@@ -904,7 +934,7 @@ class DisplayEmployeeMaster extends Component {
 
 
     render() {
-        console.log(this.state.doc1)
+        
         let employeeData = <div>
             <FormGroup>
                 <div style={{ border: '1px solid black', textAlign: 'center', width: '100px', height: '100px', margin: '0 auto' }}>
@@ -985,6 +1015,13 @@ class DisplayEmployeeMaster extends Component {
                     fileUrl={this.state.doc2}
                 />
             </FormGroup>
+            <FormGroup>
+                <Label>RF ID</Label>
+                <Input  name="rfidId" onChange={this.onChange} value={this.state.rfid} readOnly>
+                    <DefaultSelect />
+                    {this.rfidData(this.props.rfId)}
+                </Input>
+            </FormGroup>
         </div>
 
         let tableData;
@@ -1006,8 +1043,8 @@ class DisplayEmployeeMaster extends Component {
                         }} >First Name      <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                         <th> Last Name</th>
                         <th>Service Type</th>
-                        <th> salary</th>
-
+                        <th> Salary</th>
+                        <th>RF ID</th>
                         <th>Employee Detail </th>
                         <th> Actions  </th>
                     </tr>
@@ -1241,6 +1278,14 @@ class DisplayEmployeeMaster extends Component {
                     </FormGroup>
                 </div> : ''}
 
+                <FormGroup>
+                <Label>RF ID</Label>
+                <Input type="select" name="rfidId" onChange={this.rfIdChangeHandler} >
+                    <option value={this.state.rfid}>{this.state.rfid}</option>
+                    {/* <DefaultSelect /> */}
+                    {this.rfidData(this.props.rfId)}
+                </Input>
+               </FormGroup>
 
 
             <FormGroup>
@@ -1295,6 +1340,7 @@ class DisplayEmployeeMaster extends Component {
 
                 />
             </FormGroup>
+
             <Button color="primary" className="mr-2" onClick={this.updateEmployee}>Save</Button>
             <Button color="danger" onClick={this.toggleEditEmployeeModal.bind(this)}>Cancel</Button>
 
@@ -1387,17 +1433,19 @@ class DisplayEmployeeMaster extends Component {
 
 
 function mapStateToProps(state) {
+
     return {
         EmpDetails: state.EmpDetails,
         locationMasterReducer: state.locationMasterReducer,
         societyReducer: state.societyReducer,
-        employeeDetails: state.employeeDetails
+        employeeDetails: state.employeeDetails,
+        rfId:state.RFIdReducer
 
 
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ ViewEmployee, getCountry, getState, getCity, getLocation, updateEmployee, deleteEmployee, deleteMultipleEmployee, getEmployee }, dispatch)
+    return bindActionCreators({ ViewEmployee, getCountry, getState, getCity, getLocation, updateEmployee, deleteEmployee, deleteMultipleEmployee, getEmployee, getRfId }, dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DisplayEmployeeMaster)
