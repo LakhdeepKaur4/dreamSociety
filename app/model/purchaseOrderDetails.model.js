@@ -30,7 +30,7 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false
           },
           serviceStartDate: {
-                type: Sequelize.STRING,
+                type: Sequelize.DATEONLY,
                 allowNull: true
           },
           // aadharCardNumber: {
@@ -38,7 +38,7 @@ module.exports = (sequelize, Sequelize) => {
           //       allowNull: false
           // },
           serviceEndDate: {
-                type: Sequelize.STRING,
+                type: Sequelize.DATEONLY,
                 allowNull: true
           },
           
