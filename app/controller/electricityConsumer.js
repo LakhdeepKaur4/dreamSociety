@@ -180,8 +180,6 @@ exports.dateFilter = async (req, res, next) => {
     try {
         const from = req.params.from;
         const to = req.params.to;
-        console.log("from",req.params.from);
-        console.log("to",req.params.to);
         const electricityConsumer = await ElectricityConsumer.findAll({
             where: {
                 isActive: true, entryDate: { [Op.between]: [from, to] }
