@@ -91,7 +91,7 @@ class InventoryPieChart extends Component {
 		
 		console.log(this.state.count)
 		const options = {
-			exportEnabled: true,
+			// exportEnabled: true,
 
 			animationEnabled: false,
 			title: {
@@ -147,7 +147,8 @@ class InventoryPieChart extends Component {
 
 				/* onRef={ref => this.chart = ref} */
 				/>
-				<InventoryLineChart />
+				{/* <InventoryLineChart /> */}
+
 				{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
 			</div>
 		);

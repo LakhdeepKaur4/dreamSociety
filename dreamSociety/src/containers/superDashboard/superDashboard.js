@@ -70,12 +70,12 @@ import Chart from '../../containers/chart/chart';
           </form>
         </div>
       </nav> */}
-      {/* <UI onClick={this.logout} change={this.changePassword} changeDashboard={this.changeDashboard}> */}
+      <UI onClick={this.logout} change={this.changePassword} changeDashboard={this.changeDashboard}>
       <div>
       <Chart/>
       </div>
      
-      {/* </UI> */}
+      </UI>
       {/* <div style={{ margin: '48px auto' }}>
         <Sidebar.Pushable as={Segment} attached="bottom">
           <Sidebar width='thin' as={Menu} animation="uncover" visible={this.state.menuVisible} icon="labeled" vertical inverted>

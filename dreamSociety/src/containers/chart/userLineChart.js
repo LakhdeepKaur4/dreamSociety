@@ -42,7 +42,7 @@ this.setState({
 		const options = {
 			// theme: "dark2",
 
-			exportEnabled: true,
+			// exportEnabled: true,
 			animationEnabled: true,
 			title: {
 				text: "User Details Bar Graph "
