@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { authHeader } from "../../helper/authHeader";
 import {URN} from '../../actionCreators/index';
+import UserLineChart from './userLineChart'
 import CanvasJSReact from '../../components/canvasjs.react';
-import UserLineChart from './userLineChart';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class UserPieChart extends Component {
@@ -42,7 +42,7 @@ this.setState({
 		const options = {
 			// theme: "dark2",
 
-			exportEnabled: true,
+			// exportEnabled: true,
 			animationEnabled: true,
 			title: {
 				text: "User Details"
@@ -56,7 +56,7 @@ this.setState({
 				showInLegend: "true",
 				legendText: "{label}",
 				indexLabelFontSize: 16,     
-				indexLabel: "{label} - {y}%",
+				// indexLabel: "{label} - {y}%",
 				dataPoints: [
             
             {  y:this.state.totalActiveEmployee  ,label : " Total Active Employee "},
@@ -95,7 +95,7 @@ this.setState({
 			<CanvasJSChart options = {options}
 				/* onRef={ref => this.chart = ref} */
 			/>
-			<UserLineChart/>
+			{/* <UserLineChart/> */}
 			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
 		</div>
 		);
