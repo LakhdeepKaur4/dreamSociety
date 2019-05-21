@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getComplaints, rejectComplaint, acceptComplaint, sendConfirmations, complaintCompleted, deleteSelectedComplaints, getFeedback } from '../../../actions/viewComplaintsAction';
+import { getComplaints, rejectComplaint, acceptComplaint, sendConfirmations, complaintCompleted, deleteSelectedComplaints, getFeedback } from '../../../actionCreators/viewComplaintsAction';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Button, Modal, FormGroup, ModalBody, ModalHeader, Input, Label, Table } from 'reactstrap';

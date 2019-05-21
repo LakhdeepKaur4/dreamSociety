@@ -164,7 +164,7 @@ class ComplaintTenantDetails extends Component{
             })
         }
     }
-
+    
     cancelComplaints = (complaintId) => {
        this.setState({loading: true})
         this.props.userCancelled(complaintId)
