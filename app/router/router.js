@@ -709,15 +709,16 @@ module.exports = function (app) {
 
 	app.put('/api/vendorComplaints/complete', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.completedComplaint);
 
-	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.create);
+	app.post('/api/purchaseOrder',  purchaseOrderController.create);
 
 	app.get('/api/purchaseOrder', purchaseOrderController.get);
 
 	app.get('/api/downloadPdfClient/:id', purchaseOrderController.downloadPdfClient);
 
-	app.put('/api/updatePurchaseOrder/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.updatePurchaseOrder);
+	app.put('/api/updatePurchaseOrder/:id',  purchaseOrderController.update);
 
 	app.put('/api/updatePurchaseOrderDetails/:id', [authJwt.verifyToken, authJwt.isAdminRole],purchaseOrderController.updatePurchaseOrderDetails);
+	
 	
 	app.put('/api/deletePurchaseOrder/:id',  purchaseOrderController.delete);
 
