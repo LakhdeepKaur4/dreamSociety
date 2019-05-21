@@ -29,7 +29,7 @@ this.setState({
 		const options = {
 			// theme: "dark2",
 
-			exportEnabled: true,
+			// exportEnabled: true,
 			animationEnabled: true,
 			title: {
 				text: "Flat Details Bar Graph "

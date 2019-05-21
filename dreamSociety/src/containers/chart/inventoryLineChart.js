@@ -92,7 +92,7 @@ class InventoryLineChart extends Component {
 		
 		console.log(this.state.count)
 		const options = {
-			exportEnabled: true,
+			// exportEnabled: true,
 			
 			animationEnabled: false,
 			title: {
