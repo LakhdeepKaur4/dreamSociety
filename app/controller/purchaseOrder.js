@@ -133,7 +133,7 @@ exports.get = async (req,res,next) => {
     try{
         let purchaseOrder = await PurchaseOrder.findAll({where:{isActive:true},include:[{model:Vendor}]});
         let purchaseNew = [];
-        purchaseOrder.map( async x => {
+        const promise = purchaseOrder.map( async x => {
             x = x.toJSON();
             x.assets = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:x.purchaseOrderId,purchaseOrderType:"Assets"}});           
             x.services = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:x.purchaseOrderId,purchaseOrderType:"Service"}});
@@ -144,12 +144,12 @@ exports.get = async (req,res,next) => {
             purchaseNew.push(x);
             console.log("purchaseOrder======>", purchaseNew);    
         });
-        setTimeout(() => {
+        Promise.all(promise).then(() => {
             return res.status(httpStatus.CREATED).json({
                 message: "Purchase Order",
                 purchaseOrder: purchaseNew
-              });
-        },5000);
+            });
+        })
 
     } catch(error){
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -324,4 +324,78 @@ exports.downloadPdfClient = async(req,res,next) => {
     } catch(error) {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
+}
+
+
+exports.update = async(req,res,next) =>{
+    let purchaseOrderService = [];
+    let purchaseOrderAssets = [];
+    let id = req.params.id;
+    let updatePurchaseOrder = {
+            vendorId:req.body.vendorId,
+            issuedBy:req.body.issuedBy,
+            expDateOfDelievery:req.body.expectedDateOfDelievery
+    }
+    let purchaseOrder = await PurchaseOrder.findOne({
+        where:{isActive:true,purchaseOrderId:id}
+    });
+    purchaseOrder.updateAttributes(updatePurchaseOrder);
+
+    let purchaseOrderAssetsDelete = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:id,purchaseOrderType:"Assets"}});
+    purchaseOrderAssetsDelete.map(x=>x.destroy());
+
+    let purchaseOrderServiceDelete = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:id,purchaseOrderType:"Service"}});
+    purchaseOrderServiceDelete.map(x=>x.destroy());
+
+
+    if(req.body.purchaseOrderAssetsArray) {
+        purchaseOrderAssets = await PurchaseOrderDetails.bulkCreate(
+           req.body.purchaseOrderAssetsArray, {
+               returning: true
+             }, {
+               fields: ["purchaseOrderDetailId","purchaseOrderType","purchaseOrderName", "rate","quantity","amount","serviceStartDate","serviceEndDate", "issuedBy", "expDateOfDelievery","purchaseOrderId" ]
+               // updateOnDuplicate: ["name"]
+             }
+       );
+   }
+  
+   let update = {
+       purchaseOrderId:purchaseOrder.purchaseOrderId
+   }
+   purchaseOrderAssets.forEach(x => x.updateAttributes(update));
+
+
+
+   if(req.body.purchaseOrderServiceArray){
+        purchaseOrderService = await PurchaseOrderDetails.bulkCreate(
+           req.body.purchaseOrderServiceArray, {
+               returning: true
+             }, {
+               fields: ["purchaseOrderDetailId","purchaseOrderType", "rate","quantity","amount","serviceStartDate","serviceEndDate", "issuedBy", "expDateOfDelievery","purchaseOrderId" ]
+               // updateOnDuplicate: ["name"]
+             }
+       );
+   }
+   
+   purchaseOrderService.forEach(x => x.updateAttributes(update));
+
+   await pdf.create(pdfTemplate(purchaseOrderAssets,purchaseOrderService,purchaseOrder.issuedBy,purchaseOrder.expDateOfDelievery),{format: 'Letter'}).toFile(`./public/purchaseOrderPdfs/purchaseOrder${purchaseOrder.purchaseOrderId}.pdf`, (err,res) => {
+    if(err){
+       console.log("err ======>",err);
+    }
+    else if(res){
+        console.log("res =======>", res);
+    }
+
+});
+let vendor = await Vendor.findOne({where:{isActive:true,vendorId:req.body.vendorId}})
+if(vendor){
+    console.log("vendor=======>",decrypt(key,vendor.firstName));
+    mailToUser(decrypt(key,vendor.email),vendor.vendorId,purchaseOrder.purchaseOrderId);
+}
+
+console.log("dgsfhgsahjgfjah ===============>");
+return res.status(httpStatus.CREATED).json({
+    message: "Purchase Order updated",
+});
 }
