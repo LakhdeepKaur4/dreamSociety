@@ -5,7 +5,6 @@ import UserPieChart from './userPieChart';
 import  InventoryPieChart from './inventoryPieChart';
 
 class Chart extends Component {
-  
 
 render(){
 return(

@@ -92,11 +92,11 @@ class InventoryLineChart extends Component {
 		
 		console.log(this.state.count)
 		const options = {
-			// exportEnabled: true,
+			exportEnabled: true,
 			
 			animationEnabled: false,
 			title: {
-				text: "Inventory Details "
+				text: "Inventory Details Bar Graph "
 			},
 			zoomEnabled:true,
 			data: [{
@@ -143,7 +143,7 @@ class InventoryLineChart extends Component {
 		}
 
 		return (
-			<div>
+			<div style={{marginTop:'20px'}}>
 
 				<CanvasJSChart options={options}
 

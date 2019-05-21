@@ -29,21 +29,21 @@ this.setState({
 		const options = {
 			// theme: "dark2",
 
-			// exportEnabled: true,
+			exportEnabled: true,
 			animationEnabled: true,
 			title: {
-				text: "Flat Details "
+				text: "Flat Details Bar Graph "
 			},
 			data: [{
 			
 					type: "column",  
 
 				startAngle: 75,
-				toolTipContent: "<b>{label}</b>: {y}%",
+				toolTipContent: "<b>{label}</b>: {y}",
 				showInLegend: "true",
 				legendText: "{label}",
 				indexLabelFontSize: 16,     
-				indexLabel: "{label} - {y}%",
+				indexLabel: "{label} - {y}",
 				dataPoints: [
 					{ y: this.state.flat, label: "Active Flats" },
 					{ y: this.state.emptyFlats, label: "Empty Flats" },
@@ -67,7 +67,7 @@ this.setState({
 		}
 		
 		return (
-		<div>
+		<div style={{marginTop:'20px'}}>
 			
 			<CanvasJSChart options = {options}
 				/* onRef={ref => this.chart = ref} */

@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { authHeader } from "../../helper/authHeader";
 import { URN } from '../../actionCreators/index';
-
-import CanvasJSReact from '../../components/canvasjs.react';
 import InventoryLineChart from './inventoryLineChart';
+import CanvasJSReact from '../../components/canvasjs.react';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class InventoryPieChart extends Component {
@@ -92,7 +91,7 @@ class InventoryPieChart extends Component {
 		
 		console.log(this.state.count)
 		const options = {
-			// exportEnabled: true,
+			exportEnabled: true,
 
 			animationEnabled: false,
 			title: {
@@ -149,7 +148,6 @@ class InventoryPieChart extends Component {
 				/* onRef={ref => this.chart = ref} */
 				/>
 				<InventoryLineChart />
-
 				{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
 			</div>
 		);

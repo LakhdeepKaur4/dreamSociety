@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { authHeader } from "../../helper/authHeader";
 import {URN} from '../../actionCreators/index';
-
-import CanvasJSReact from '../../components/canvasjs.react';
 import FlatLineChart from './flatlinechart';
+import CanvasJSReact from '../../components/canvasjs.react';
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -29,7 +28,7 @@ this.setState({
 		}
 	render() {
 		const options = {
-			// exportEnabled: true,
+			exportEnabled: true,
 			// theme: "dark2",
 			animationEnabled: false,
 			title: {
@@ -75,7 +74,6 @@ this.setState({
 				/* onRef={ref => this.chart = ref} */
 			/>
 			<FlatLineChart/>
-			
 			
 			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
 		</div>
