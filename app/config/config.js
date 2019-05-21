@@ -9,5 +9,6 @@ module.exports = {
   uploadFolderPath: './public',
   uploadImagePath: (__dirname, 'public/profilePictures/'),
   uploadDocumentPath: (__dirname, 'public/documents/'),
-  activationLink:'https://dreamsocietydev.firebaseapp.com/'
+  // activationLink:'https://dreamsocietydev.firebaseapp.com/'
+  activationLink:'http://mydreamsociety.com'
 };

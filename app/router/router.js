@@ -291,7 +291,7 @@ module.exports = function (app) {
 
 	app.post('/api/vendor', [authJwt.verifyToken, authJwt.isAdminRole], fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), vendorController.create1);
 
-	app.get('/api/vendor',  vendorController.get1);
+	app.get('/api/vendor', vendorController.get1);
 
 	app.put('/api/vendor/:id', [authJwt.verifyToken], fileUploadConfig.fields([{ name: 'profilePicture', maxCount: 1 }, { name: 'documentOne', maxCount: 1 }, { name: 'documentTwo', maxCount: 1 }]), vendorController.update1);
 
@@ -354,7 +354,7 @@ module.exports = function (app) {
 	app.post('/api/maintenance', [authJwt.verifyToken, authJwt.isAdminRole], maintenanceController.create);
 
 	app.get('/api/maintenance', [authJwt.verifyToken, authJwt.isAdminRole], maintenanceController.get);
-	
+
 	app.get('/api/electricity/rate', [authJwt.verifyToken, authJwt.isAdminRole], maintenanceTypeController.getMaintenanceForElectricity);
 
 	app.put('/api/maintenance/:id', [authJwt.verifyToken, authJwt.isAdminRole], maintenanceController.update);
@@ -651,7 +651,7 @@ module.exports = function (app) {
 
 	app.post('/api/electricityConsumer', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.create);
 
-	// app.get('/api/electricityConsumer/:startDate/:endDate', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.dateFilter);
+	app.get('/api/electricityConsumer/date/:from/:to', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.dateFilter);
 
 	app.get('/api/electricityConsumer/flat/:id', [authJwt.verifyToken, authJwt.isAdminRole], electricityConsumerController.getByFlatNo);
 
@@ -709,7 +709,7 @@ module.exports = function (app) {
 
 	app.put('/api/vendorComplaints/complete', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.completedComplaint);
 
-	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isAdminRole],  purchaseOrderController.create);
+	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.create);
 
 	app.get('/api/purchaseOrder', purchaseOrderController.get);
 

@@ -85,21 +85,15 @@ exports.update = async (req, res, next) => {
         const id = req.params.id;
         console.log("id==>", id);
         const update = req.body;
+        console.log("update body", update);
         if (!id) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Id is missing" });
         }
-        // console.log("****")
-        // const exists = await ElectricityConsumer.findOne({
-        //     where: { isActive: true, flatDetailId: update.flatDetailId, electricityConsumerId: { [Op.ne]: id } }
-        // })
-        // console.log(exists)
-        // if (exists) {
-        //     return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Already Exists" });
-        // }
-
         if (!update) {
             return res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ message: "Please try again " });
         }
+        var date = nowDate.getFullYear() + '/' + (nowDate.getMonth() + 1) + '/' + nowDate.getDate();
+        update.entryDate = date;
         const updatedElectricityConsumer = await ElectricityConsumer.find({ where: { electricityConsumerId: id } }).then(electricity => {
             return electricity.updateAttributes(update)
         })
@@ -186,12 +180,12 @@ exports.dateFilter = async (req, res, next) => {
     try {
         const from = req.params.from;
         const to = req.params.to;
-        const electricityConsumer = await ElectricityConsumer.findOne({
+        const electricityConsumer = await ElectricityConsumer.findAll({
             where: {
-                isActive: true, entryDate: { [Op.between]: [from, to] },
-                include: [{ model: FlatDetail, include: [Tower, Floor] }],
-                order: [['createdAt', 'DESC']],
-            }
+                isActive: true, entryDate: { [Op.between]: [from, to] }
+            },
+            include: [{ model: FlatDetail, include: [Tower, Floor] }],
+            order: [['createdAt', 'DESC']],
         });
         return res.status(httpStatus.OK).json({ electricityConsumer });
     } catch (error) {
