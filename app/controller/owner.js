@@ -420,7 +420,7 @@ exports.create1 = async (req, res, next) => {
           lastName: encrypt1(key, lastName),
           userName: encrypt1(key, email),
           password: bcrypt.hashSync(member.password, 8),
-          contact: encrypt1(key, member.memberContact),
+          contact:member.memberContact,
           towerId: owner.towerId,
           email: encrypt1(key, email),
           isActive: false
@@ -476,7 +476,7 @@ exports.create1 = async (req, res, next) => {
       lastName: encrypt1(key, lastName),
       userName: encrypt1(key, email),
       password: bcrypt.hashSync(owner.password, 8),
-      contact: encrypt1(key, owner.contact),
+      contact:owner .contact,
       towerId: owner.towerId,
       email: encrypt1(key, email),
       isActive: false

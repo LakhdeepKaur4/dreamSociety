@@ -507,7 +507,7 @@ exports.create1 = async (req, res, next) => {
             lastName = '...';
         }
 
-
+        
         let vendorUserName = decrypt(key, vendor.userName);
         let email = decrypt(key, vendor.email);
         // set users
@@ -517,7 +517,7 @@ exports.create1 = async (req, res, next) => {
             lastName: encrypt1(key, lastName),
             userName: encrypt1(key, vendorUserName),
             password: bcrypt.hashSync(vendor.password, 8),
-            contact: encrypt1(key, vendor.contact),
+            contact: vendor.contact,
             email: encrypt1(key, email),
             isActive: false
         });
