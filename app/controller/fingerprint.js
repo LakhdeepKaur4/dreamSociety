@@ -427,10 +427,11 @@ exports.test = async (req, res, next) => {
 }
 exports.updateFingerPrintData = async (req, res, next) => {
     try {
+        console.log("updating fingerprint data")
         const update = req.body;
         console.log("updatee ",update);
         const userId = req.params.userId;
-        console.log(userId)
+        console.log("fgdfghdfgdf",userId)
         const fingerprintData = await FingerprintData.update(update, { where: { userId: userId } });
         console.log(fingerprintData[0])
         if (fingerprintData[0] != 0) {
