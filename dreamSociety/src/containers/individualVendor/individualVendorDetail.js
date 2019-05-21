@@ -207,6 +207,13 @@ class IndividualVendorDetail extends Component {
         }
     }
 
+    rfIdChangeHandler=(selectOption)=>{
+        this.setState({
+            rfidId:selectOption.rfidId
+        })
+
+    }
+
     toggleEditVendorModal() {
         this.setState({
             editVendorModal: !this.state.editVendorModal, message: ''
@@ -870,7 +877,7 @@ class IndividualVendorDetail extends Component {
     //     }
     // }
 
-    rfidData({ ownerRf }) {
+    rfidData=({ ownerRf })=> {
         console.log(ownerRf)
         if(ownerRf && ownerRf.rfids){
             return (
@@ -1195,8 +1202,9 @@ class IndividualVendorDetail extends Component {
             </Row>
             <FormGroup>
                 <Label>RFID</Label>
-                <Input type="select" name="rfidId" onChange={this.rfIdChangeHandler} value={this.state.rfidId} >
-                    <DefaultSelect />
+                <Input type="select" name="rfidId" onChange={this.rfIdChangeHandler}  >
+                <option value={this.state.rfid}>{this.state.rfid}</option>
+                    {/* <DefaultSelect /> */}
                     {this.rfidData(this.props.rfId)}
                 </Input>
             </FormGroup>

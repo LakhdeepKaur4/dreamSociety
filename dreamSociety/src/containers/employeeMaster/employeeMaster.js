@@ -10,6 +10,8 @@ import {bindActionCreators} from 'redux';
 import DefaultSelect from '../../constants/defaultSelect'
 import './employeeMaster.css';
 import {  FormGroup, Input, Label, Button, Row, Col } from 'reactstrap';
+import {getRfId} from '../../actions/rfIdAction';
+import { PlaceHolder } from '../../actionCreators/index';
 
 class EmployeeMaster extends Component{
 
@@ -95,6 +97,7 @@ class EmployeeMaster extends Component{
             emailServerError:'',
             userNameServerError:'',
             contactServerError:'',
+            rfidId:'',
 
     }
 
@@ -159,8 +162,28 @@ FileChange=(event)=>{
         this.props.getState().then(() => this.setState({loading:  false})).catch(() => this.setState({loading:false}));
         this.props.getCity().then(() => this.setState({loading:  false})).catch(() => this.setState({loading:false}));
         this.props.getLocation().then(() => this.setState({loading:  false})).catch(() => this.setState({loading:false}));
+        this.props.getRfId().then(() => this.setState({loading: false}));
 
     }
+
+    rfidData=({ownerRf})=>{
+        if(ownerRf && ownerRf.rfids){
+            return (
+               ownerRf.rfids.map((item)=>{
+                   return ({ ...item, label:item.rfid, value:item.rfidId})
+               })
+            )
+        }
+    }
+
+    
+    rfIdChangeHandler=(selectOption)=>{
+        this.setState({
+            rfidId:selectOption.rfidId
+        })
+
+    }
+
 
 
 
@@ -265,7 +288,9 @@ FileChange=(event)=>{
         data.append('locationId2',this.state.locationId)
         data.append('email',this.state.email)
         data.append('contact',this.state.contact)
+        data.append('rfidId',this.state.rfidId)
         data.append('employeeDetailId',this.state.employeeDetailId)
+        // console.log(data);
 
          this.props.AddEmployee(data).then(()=>this.props.history.push('/superDashboard/displayEmployee')).catch(err =>  {
             err.response.data;
@@ -878,6 +903,14 @@ let formData=
                         </div> : ''}
                     </FormGroup>
 
+                    <FormGroup>
+                    <Label>RF ID</Label>
+                    <Select placeholder={PlaceHolder} options={this.rfidData(this.props.rfId)} name='rfidId' onChange={this.rfIdChangeHandler.bind(this)}/>
+                   </FormGroup>
+        {/* <div classNamae="form-group">
+           <label>RF ID</label>
+           <input type="select" placeholder={PlaceHolder} options={this.rfidData(this.props.rfId)} name='rfidId' onChange={this.rfIdChangeHandler.bind(this)}></input>
+        </div> */}
 
         <div className="form-group">
           <label> Employment  Date</label>
@@ -948,11 +981,12 @@ function mapStateToProps(state){
      empDetails:state.empDetails,
      locationMasterReducer : state.locationMasterReducer,
      employeeDetails:state.employeeDetails,
-     societyReducer: state.societyReducer
+     societyReducer: state.societyReducer,
+     rfId:state.RFIdReducer
 
  }
 }
 function mapDispatchToProps(dispatch){
-    return  bindActionCreators({AddEmployee,getCountry,getState,getCity,getLocation,getEmployee,getEmployeeType,getEmployeeWorkType},dispatch)
+    return  bindActionCreators({AddEmployee,getCountry,getState,getCity,getLocation,getEmployee,getEmployeeType,getEmployeeWorkType,getRfId},dispatch)
 }
 export default connect(mapStateToProps,mapDispatchToProps)(EmployeeMaster)
