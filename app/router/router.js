@@ -313,6 +313,8 @@ module.exports = function (app) {
 
 	app.put('/api/assets/:id', [authJwt.verifyToken, authJwt.isAdminRole], assetsController.update);
 
+
+
 	app.put('/api/assets/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], assetsController.deleteSelected);
 
 	app.put('/api/assets/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], assetsController.delete);
@@ -322,6 +324,9 @@ module.exports = function (app) {
 	app.post('/api/assetsType', [authJwt.verifyToken, authJwt.isAdminRole], assetsTypeController.create);
 
 	app.get('/api/assetsType/', [authJwt.verifyToken, authJwt.isAdminRole], assetsTypeController.get);
+
+	app.get('/api/assetsTypeByAssetId/:id',  assetsTypeController.getAssetsTypeById);
+
 
 	app.get('/api/assetsType/:page', [authJwt.verifyToken, authJwt.isAdminRole], assetsTypeController.getAssetsTypeByPageNumber);
 

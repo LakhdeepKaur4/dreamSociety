@@ -15,7 +15,7 @@ const PurchaseOrderDetails = db.purchaseOrderDetails;
 const pdf = require('html-pdf');
 const pdfTemplate = require('../../public/documents/pdftemplate');
 const mailjet = require('node-mailjet').connect('5549b15ca6faa8d83f6a5748002921aa', '68afe5aeee2b5f9bbabf2489f2e8ade2');
-
+const Asset = db.assets;
 
 function decrypt(key, data) {
     var decipher = crypto.createDecipher('aes-128-cbc', key);
