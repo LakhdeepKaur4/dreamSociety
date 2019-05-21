@@ -11,6 +11,7 @@
 .error {
     color: red;
 }
+
 /* .w3-container{
     width: 109%;
     margin-left: 35px;
@@ -206,7 +207,7 @@ form {
 
 @media (max-width: 768px) {
     #sidebar.inactive {
-        margin-left: -250px;
+        margin-left: 0px;
     }
     #sidebar.active {
         margin-left: 0;
@@ -243,15 +244,18 @@ form {
     }
     #body {
         margin-left: 150px;
-        margin-right: 150px;
+        /* margin-right: 100px; */
     }
 }
 
-#body {
-    display: inline-block;
-    height: inherit;
-    /* margin-left: 150px;
-    margin-right: 150px; */
+@media (min-width: 769px) {
+    #body {
+        display: block;
+        height: inherit;
+        align-content: center;
+        margin-left: 200px;
+        /* margin-right: 150px; */
+    }
 }
 
 body {
