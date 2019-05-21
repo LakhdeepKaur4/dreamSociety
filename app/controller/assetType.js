@@ -54,7 +54,7 @@ exports.getAssetsTypeById = async (req,res,next) => {
         // let page = req.params.page;
         // offset = limit * (page - 1);
         const assetsType = await AssetsType.findAll({
-            where: { isActive: true , assetId:req.params.assetId},
+            where: { isActive: true , assetId:req.params.id},
             order: [['createdAt', 'DESC']],
             include: [{ model: Assets, attributes: ['assetId', 'assetName'] }]
         });
