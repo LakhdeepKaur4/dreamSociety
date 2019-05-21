@@ -709,7 +709,7 @@ module.exports = function (app) {
 
 	app.put('/api/vendorComplaints/complete', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.completedComplaint);
 
-	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.create);
+	app.post('/api/purchaseOrder',  purchaseOrderController.create);
 
 	app.get('/api/purchaseOrder', purchaseOrderController.get);
 

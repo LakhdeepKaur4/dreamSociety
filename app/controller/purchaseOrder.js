@@ -145,6 +145,7 @@ exports.get = async (req,res,next) => {
             console.log("purchaseOrder======>", purchaseNew);    
         });
         Promise.all(promise).then(() => {
+            console.log("atin============>")
             return res.status(httpStatus.CREATED).json({
                 message: "Purchase Order",
                 purchaseOrder: purchaseNew

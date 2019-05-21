@@ -9,6 +9,10 @@ module.exports = (sequelize, Sequelize) => {
                   type:Sequelize.STRING,
                   allowNull:false
             },
+            purchaseOrderSubType:{
+                  type:Sequelize.STRING,
+                  allowNull:true
+            },
             purchaseOrderName:{
                   type:Sequelize.STRING,
                   allowNull:false
