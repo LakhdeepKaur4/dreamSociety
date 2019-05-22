@@ -21,6 +21,7 @@ const URL = config.activationLink;
 const OwnerMembersDetail = db.ownerMembersDetail;
 const FlatDetail = db.flatDetail;
 const Flat = db.flat;
+const FingerPrint = db.fingerprintData;
 
 const Tower = db.tower;
 const Society = db.society;
@@ -425,6 +426,11 @@ exports.create1 = async (req, res, next) => {
           email: encrypt1(key, email),
           isActive: false
         });
+
+        let fingerPrintOwnerMember = await FingerPrint.create({
+          userId:user.userId
+        })
+
         // if (member.merberRfId !== null && member.memberRfId !== undefined && member.memberRfId !== '') {
         let userRfId = await UserRfId.create({
           userId: user.userId,
@@ -481,6 +487,10 @@ exports.create1 = async (req, res, next) => {
       email: encrypt1(key, email),
       isActive: false
     });
+
+    let fingerPrintOwner = await FingerPrint.create({
+      userId:user.userId
+    })
 
     let userRfId = await UserRfId.create({
       userId: user.userId,

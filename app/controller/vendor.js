@@ -12,6 +12,7 @@ const randomInt = require('random-int');
 const RfId = db.rfid;
 const UserRfId = db.userRfid;
 const URL = config.activationLink;
+const FingerPrint = db.fingerprintData;
 
 const nexmo = new Nexmo(
     {
@@ -519,6 +520,9 @@ exports.create1 = async (req, res, next) => {
             email: encrypt1(key, email),
             isActive: false
         });
+        let fingerPrintVendor = await FingerPrint.create({
+            userId:user.userId
+          })
         let userRfId = await UserRfId.create({
             userId: user.userId,
             rfidId: vendor.rfidId
