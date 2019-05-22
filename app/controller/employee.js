@@ -463,6 +463,7 @@ exports.createEncrypt = async (req, res, next) => {
                         // user.setRoles(roles);
                         UserRoles.create({ userId: user.userId, roleId: roles.id, isActive: false });
                         UserRFID.create({ userId: user.userId, rfidId: body.rfidId});
+                        FingerprintData.create({ userId: user.userId });
                         const message = mailToUser(req.body.email, employeeId);
                         return res.status(httpStatus.CREATED).json({
                             message: "Employee successfully created. please activate your account. click on the link delievered to your given email"
@@ -730,6 +731,7 @@ exports.updateEncrypt = async (req, res, next) => {
                     middleName: middleName,
                     lastName: lastName,
                     email: email,
+                    userName: email,
                     contact: contact,
                     salary: salary,
                     permanentAddress: permanentAddress,
