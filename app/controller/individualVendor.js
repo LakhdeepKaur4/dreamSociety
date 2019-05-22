@@ -28,6 +28,7 @@ const UserRoles = db.userRole;
 const UserRFID = db.userRfid;
 const RFID = db.rfid;
 const URL = config.activationLink;
+const FingerprintData = db.fingerprintData;
 
 encrypt = (text) => {
     let key = config.secret;

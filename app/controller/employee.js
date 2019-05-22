@@ -25,6 +25,7 @@ const UserRoles = db.userRole;
 const UserRFID = db.userRfid;
 const RFID = db.rfid;
 const URL = config.activationLink;
+const FingerprintData = db.fingerprintData;
 
 let mailToUser = (email, employeeId) => {
     const token = jwt.sign(

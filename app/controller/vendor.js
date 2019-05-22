@@ -318,8 +318,6 @@ exports.deleteSelected = async (req, res, next) => {
         const updatedUserRoles = await UserRoles.update(update, { where: { userId: { [Op.in]: deleteSelected } } });
         const updatedUserRfId = await UserRfId.update(update, { where: { userId: { [Op.in]: deleteSelected } } });
 
-
-
         if (updatedVendor && updatedServices) {
             return res.status(httpStatus.OK).json({
                 message: "Vendors deleted successfully",

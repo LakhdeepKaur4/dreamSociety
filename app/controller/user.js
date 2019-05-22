@@ -32,6 +32,7 @@ const Token = db.tokenVerify;
 const UserRoles = db.userRole;
 const UserRfid = db.userRfid;
 const OwnerMembersDetail = db.ownerMembersDetail;
+const FingerprintData = db.fingerprintData;
 
 const Op = db.Sequelize.Op;
 
@@ -1088,6 +1089,7 @@ exports.signupEncrypted = async (req, res, next) => {
 						roleId = role.id;
 					});
 					UserRoles.create({ userId: user.userId, roleId: roleId });
+					FingerprintData.create({ userId: user.userId });
 				})
 				.then(() => {
 					return res.status(httpStatus.CREATED).json({
