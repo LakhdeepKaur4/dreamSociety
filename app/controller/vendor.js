@@ -517,7 +517,7 @@ exports.create1 = async (req, res, next) => {
             lastName: encrypt1(key, lastName),
             userName: encrypt1(key, vendorUserName),
             password: bcrypt.hashSync(vendor.password, 8),
-            contact: encrypt1(key, vendor.contact),
+            contact: vendor.contact,
             email: encrypt1(key, email),
             isActive: false
         });
@@ -701,6 +701,16 @@ exports.update1 = async (req, res, next) => {
             })
             return vendor.updateAttributes(updAttr);
         })
+        const updatedUser = await User.find({
+            where: {
+              userId: id,
+              isActive: true
+            }
+          });
+          let updatedUser1 = await updatedUser.updateAttributes(updAttr);
+          if(req.body.email!==null && req.body.email!==undefined && req.body.email!==""){
+              updatedUser1 = await updatedUser.updateAttributes({userName:encrypt(key,req.body.email)});
+          }
         if (updatedVendor) {
             updatedVendor.userName = decrypt(key, updatedVendor.userName)
             updatedVendor.firstName = decrypt(key, updatedVendor.firstName)

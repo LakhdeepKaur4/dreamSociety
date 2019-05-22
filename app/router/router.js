@@ -325,7 +325,7 @@ module.exports = function (app) {
 
 	app.get('/api/assetsType/', [authJwt.verifyToken, authJwt.isAdminRole], assetsTypeController.get);
 
-	app.get('/api/assetsTypeByAssetId/:id',  assetsTypeController.getAssetsTypeById);
+	app.get('/api/assetsTypeByAssetId/:id', [authJwt.verifyToken, authJwt.isAdminRole],  assetsTypeController.getAssetsTypeById);
 
 
 	app.get('/api/assetsType/:page', [authJwt.verifyToken, authJwt.isAdminRole], assetsTypeController.getAssetsTypeByPageNumber);
