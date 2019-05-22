@@ -251,6 +251,7 @@ exports.updatePurchaseOrder = async(req,res,next) => {
 
 exports.updatePurchaseOrderDetails = async(req,res,next) => {
     try{
+        console.log("===============>", req.body);
         let purchaseDetailId = req.params.id;
         let id;
         let update = req.body;
