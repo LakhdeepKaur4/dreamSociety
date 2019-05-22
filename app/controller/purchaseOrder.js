@@ -406,7 +406,10 @@ exports.getAssets = async(req,res,next) => {
     try{
         let id = req.params.id;
         let assetsArray = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderType:"Assets",purchaseOrderId:id}});
-    
+        return res.status(httpStatus.CREATED).json({
+            message: "Assets",
+            assets:assetsArray
+        });
     } catch(error){
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }

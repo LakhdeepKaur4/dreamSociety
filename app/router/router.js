@@ -724,6 +724,10 @@ module.exports = function (app) {
 
 	app.put('/api/updatePurchaseOrderDetails/:id', [authJwt.verifyToken, authJwt.isAdminRole],purchaseOrderController.updatePurchaseOrderDetails);
 	
+	app.get('/api/getAssets/:id',purchaseOrderController.getAssets);
+
+	app.get('/api/getServices/:id',purchaseOrderController.getAssets);
+
 	
 	app.put('/api/deletePurchaseOrder/:id',  purchaseOrderController.delete);
 
