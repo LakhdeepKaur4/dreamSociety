@@ -400,3 +400,15 @@ return res.status(httpStatus.CREATED).json({
     message: "Purchase Order updated",
 });
 }
+
+
+exports.getAssets = async(req,res,next) => {
+    try{
+        let id = req.params.id;
+        let assetsArray = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderType:"Assets",purchaseOrderId:id}});
+    
+    } catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+  
+}
