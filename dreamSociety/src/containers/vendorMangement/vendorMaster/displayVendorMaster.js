@@ -102,7 +102,10 @@ class DisplayVendorMaster extends Component {
 
     refreshData() {
         this.props.getRfId();
-        this.props.getVendorMaster().then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false}));
+        this.props.getVendorMaster().then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false})).catch((err)=>{
+            err;
+            this.setState({loading:false, modalLoading: false, editVendorModal:false})
+        });
         this.props.getCountry().then(() => {}).catch(() => this.setState({ loading: false }));
         this.props.getState().then(() => {}).catch(() => this.setState({ loading: false }));
         this.props.getCity().then(() => {}).catch(() => this.setState({ loading: false }));
