@@ -416,3 +416,17 @@ exports.getAssets = async(req,res,next) => {
     }
   
 }
+
+exports.getServices = async(req,res,next) => {
+    try{
+        let id = req.params.id;
+        let serviceArray = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderType:"Service",purchaseOrderId:id}});
+        return res.status(httpStatus.CREATED).json({
+            message: "Services",
+            assets:serviceArray
+        });
+    } catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+  
+}
