@@ -430,3 +430,47 @@ exports.getServices = async(req,res,next) => {
     }
   
 }
+
+
+
+exports.deletePurchaseOrderDetails = async(req,res,next) => {
+    try{
+        console.log("===============>", req.body);
+        let purchaseDetailId = req.params.id;
+        let id;
+        let update = {isActive:false};
+        let x = await PurchaseOrderDetails.findOne({where:{isActive:true,purchaseOrderDetailId:purchaseDetailId}});
+        x.updateAttributes(update);
+        id = x.purchaseOrderId
+        let porder = await PurchaseOrder.find({where:{isActive:true,purchaseOrderId:id}});
+        console.log("porder",porder);
+
+
+        let purchaseOrderAssets = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:id,purchaseOrderType:"Assets"}});
+        console.log("purchaseOrderAssets======>",purchaseOrderAssets);
+        let purchaseOrderService = await PurchaseOrderDetails.findAll({where:{isActive:true,purchaseOrderId:id,purchaseOrderType:"Service"}});
+        await pdf.create(pdfTemplate(purchaseOrderAssets,purchaseOrderService,porder.issuedBy,porder.expDateOfDelievery),{format: 'Letter'}).toFile(`./public/purchaseOrderPdfs/purchaseOrder${porder.purchaseOrderId}.pdf`,(err,res) => {
+            if(err){
+               console.log("err ======>",err);
+            }
+            else if(res){
+                console.log("res =======>", res);
+            }
+
+        });
+        let vendor = await Vendor.findOne({where:{isActive:true,vendorId:porder.vendorId}})
+        if(vendor){
+            console.log("vendor=======>",decrypt(key,vendor.firstName));
+            mailToUser(decrypt(key,vendor.email),vendor.vendorId,porder.purchaseOrderId);
+        }
+        if(porder){
+            return res.status(httpStatus.OK).json({
+                message: "PurchaseOrderDetails updated successfully",
+              });
+        }
+
+
+    } catch(error){
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
