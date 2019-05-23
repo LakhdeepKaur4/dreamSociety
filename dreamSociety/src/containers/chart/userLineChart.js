@@ -45,14 +45,14 @@ this.setState({
 			// exportEnabled: true,
 			animationEnabled: true,
 			title: {
-				text: "User Details "
+				text: "User Details Bar Graph "
 			},
 			data: [{
 			
 					type: "column",  
 
 				startAngle: 75,
-				toolTipContent: "<b>{label}</b>: {y}%",
+				toolTipContent: "<b>{label}</b>: {y}",
 				showInLegend: "true",
 				legendText: "{label}",
 				indexLabelFontSize: 16,     
@@ -90,7 +90,7 @@ this.setState({
 		}
 		
 		return (
-		<div>
+		<div style={{marginTop:'20px'}}>
 			
 			<CanvasJSChart options = {options}
 				/* onRef={ref => this.chart = ref} */

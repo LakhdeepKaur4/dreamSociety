@@ -8,7 +8,6 @@ import { Table, Button } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 import _ from 'underscore';
 
-
 class AssignRolesDetail extends Component {
     constructor(props) {
         super(props);

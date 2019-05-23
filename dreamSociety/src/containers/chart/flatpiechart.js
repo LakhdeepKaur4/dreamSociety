@@ -72,9 +72,9 @@ this.setState({
 			
 			<CanvasJSChart options = {options}
  
-				/* onRef={ref => this.chart = ref} */
+				onRef={ref => this.chart = ref} 
 			/>
-			<FlatLineChart/>
+			{/* <FlatLineChart/> */}
 			
 			
 			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
