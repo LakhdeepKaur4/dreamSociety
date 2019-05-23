@@ -556,10 +556,10 @@ class DisplayEmployeeMaster extends Component {
                             <td>{item.salary}</td>
                             <td>{item.rfid_master ? item.rfid_master.rfid : ''}</td>
 
-                            <td> <button className="btn btn-success" onClick={this.viewData.bind(this, UR + item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.contact, item.email, item.currentAddress, item.permanentAddress, UR + item.documentOne, UR + item.documentTwo, item.startDate, item.employee_detail_master.serviceType, item.employee_detail_master.employee_work_type_master.employeeWorkType, item.employee_detail_master.employee_type_master.employeeType, item.rfid_master.rfid , item.rfid_master.rfidId)}>View</button></td>
+                            <td> <button className="btn btn-success" onClick={this.viewData.bind(this, UR + item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.contact, item.email, item.currentAddress, item.permanentAddress, UR + item.documentOne, UR + item.documentTwo, item.startDate, item.employee_detail_master.serviceType, item.employee_detail_master.employee_work_type_master.employeeWorkType, item.employee_detail_master.employee_type_master.employeeType, item.rfid_master ? item.rfid_master.rfid :'' , item.rfid_master ? item.rfid_master.rfidId: '')}>View</button></td>
 
                             <td>
-                                <button className="btn btn-success mr-2" onClick={this.editEmployee.bind(this, item.employeeId, UR + item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.contact, item.email, item.currentAddress, item.permanentAddress, UR + item.documentOne, UR + item.documentTwo, item.startDate, item.employee_detail_master.employeeDetailId,  item.rfid_master.rfid, item.rfid_master.rfidId)} >Edit</button>
+                                <button className="btn btn-success mr-2" onClick={this.editEmployee.bind(this, item.employeeId, UR + item.picture, item.firstName, item.middleName, item.lastName, item.salary, item.contact, item.email, item.currentAddress, item.permanentAddress, UR + item.documentOne, UR + item.documentTwo, item.startDate, item.employee_detail_master.employeeDetailId,  item.rfid_master ? item.rfid_master.rfid : '', item.rfid_master ? item.rfid_master.rfidId : '')} >Edit</button>
                                 <button className="btn btn-danger" onClick={this.deleteEmployee.bind(this, item.employeeId)}> Delete</button>
                             </td>
 
