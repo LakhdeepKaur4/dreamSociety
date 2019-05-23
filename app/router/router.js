@@ -730,7 +730,10 @@ module.exports = function (app) {
 
 	app.put('/api/deletePurchaseOrders', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.deleteSelected);
 
-	app.put('/api/deletePurchaseOrderDetails', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.deletePurchaseOrderDetails);
+	app.put('/api/deletePurchaseOrderDetails/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.deletePurchaseOrderDetails);
+
+	app.put('/api/deleteSelectedPurchaseOrderDetails', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.deleteSelectedPurchaseOrderDetails);
+
 
 
 
