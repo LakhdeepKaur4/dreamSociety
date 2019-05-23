@@ -724,7 +724,6 @@ module.exports = function (app) {
 	app.get('/api/getAssets/:id',purchaseOrderController.getAssets);
 
 	app.get('/api/getServices/:id',purchaseOrderController.getServices);
-
 	
 	app.put('/api/deletePurchaseOrder/:id',  purchaseOrderController.delete);
 

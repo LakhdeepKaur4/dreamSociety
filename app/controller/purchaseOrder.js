@@ -435,7 +435,7 @@ exports.getServices = async(req,res,next) => {
 
 exports.deletePurchaseOrderDetails = async(req,res,next) => {
     try{
-        console.log("===============>", req.body);
+        console.log("===============>", req.params);
         let purchaseDetailId = req.params.id;
         let id;
         let update = {isActive:false};
@@ -522,3 +522,8 @@ exports.deleteSelectedPurchaseOrderDetails = async(req,res,next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
+
+
+
+
+
