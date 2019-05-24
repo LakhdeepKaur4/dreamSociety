@@ -8,6 +8,7 @@
     "bootstrap": "^4.2.1",
     "chart.js": "^2.8.0",
     "d3.js": "0.0.2-security",
+    "file-saver": "^2.0.2",
     "form-data": "^2.3.3",
     "git": "^0.1.5",
     "jquery": "^3.4.1",
