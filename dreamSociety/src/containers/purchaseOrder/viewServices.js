@@ -192,8 +192,8 @@ toggle() {
 
 renderList = ({ getServiceDetails }) => {
        
-    if (getServiceDetails ) {
-        console.log(getServiceDetails  )
+    if (getServiceDetails && getServiceDetails.assets ) {
+        console.log(getServiceDetails)
         return getServiceDetails.assets.sort((item1, item2) => {
 
             let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
