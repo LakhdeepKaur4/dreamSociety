@@ -278,6 +278,7 @@ class PurchaseOrder extends Component {
     }
     onSubmit=(e)=>{
         e.preventDefault();
+        this.setState({purchaseOrderAssetsArray:[], purchaseOrderServiceArray:[]})
         const {vendorId,vendorAddress,vendorContact,expDate,startDate,endDate,purchaseOrderAssetsArray,purchaseOrderServiceArray}=this.state
          
         let errors = {};
@@ -289,9 +290,7 @@ class PurchaseOrder extends Component {
         else if(this.state.numberOfAssets===''){
             errors.numberOfAssets="Number of Assets can't be empty"
         }
-        else if(this.state.numberOfServices===''){
-            errors.numberOfServices="Number of Services can't be empty"
-        }
+       
         else if(this.state.expDate===''){
             errors.expDate="Expected Date can't be empty"
         }
@@ -374,7 +373,7 @@ class PurchaseOrder extends Component {
          </Col> 
          <Col md={4}>
          <Label>Rate</Label>  
-        <Input type='number' name={`serviceRate${i}`} onChange={this.onServiceRateChangeHandler.bind(this,i)} maxLength={10} />
+        <Input type='text' name={`serviceRate${i}`} onChange={this.onServiceRateChangeHandler.bind(this,i)} onKeyPress={numberValidation} maxLength={10} />
          </Col> 
          <Col md={4}>
              <Label>Start Date</Label>
@@ -384,7 +383,7 @@ class PurchaseOrder extends Component {
          <Row>
              <Col md={4}>
              <Label>Person</Label>
-             <Input type='text' name={`person${i}`} onChange={this.onPersonChangeHandler.bind(this,i)} disabled={this.state.disable}/>
+             <Input type='text' name={`person${i}`} onChange={this.onPersonChangeHandler.bind(this,i)}  onKeyPress={numberValidation} disabled={this.state.disable}/>
              </Col>
              <Col md={4}>
              <Label>Amount</Label>
@@ -420,13 +419,13 @@ class PurchaseOrder extends Component {
              </Col> 
              <Col md={4}>
              <Label>Rate</Label>  
-            <Input type='number' name={`assetRate${i}`} onChange={this.onRateChangeHandler.bind(this,i)} maxLength={10}/>
+            <Input type='text' name={`assetRate${i}`} onChange={this.onRateChangeHandler.bind(this,i)}  onKeyPress={numberValidation} maxLength={10}/>
              </Col> 
              </Row>
              <Row>
                  <Col md={4}>
                  <Label >Quantity</Label>
-                 <Input type='text' name={`assetQuantity${i}`} onChange={this.onQuantityChangeHandler.bind(this,i)} disabled={this.state.disable} maxLength={10}/>
+                 <Input type='text' name={`assetQuantity${i}`} onChange={this.onQuantityChangeHandler.bind(this,i)} onKeyPress={numberValidation} disabled={this.state.disable} maxLength={10}/>
                  </Col>
                  <Col md={4}>
                  <Label>Amount</Label>
@@ -469,13 +468,13 @@ class PurchaseOrder extends Component {
                                <Row> 
                                    <Col md={4}>
                                 <Label>Number of Assets</Label>
-                                <Input placeholder="numberOfAssets" type='number'  name="numberOfAssets" onChange={this.userMemberHandler} maxLength={10}/>
+                                <Input placeholder="numberOfAssets" type='text'  name="numberOfAssets" onKeyPress={numberValidation} onChange={this.userMemberHandler} maxLength={10}/>
                                 <span className='error'>{this.state.errors.numberOfAssets}</span>
                                  </Col>
                                 <Col md={4}>
                                 <Label>Number of service</Label>
-                                <Input placeholder="numberOfServices" type='number' name="numberOfServices" onChange={this.numberOfServices} maxLength={10}/>
-                                <span className='error'>{this.state.errors.numberOfServices}</span>
+                                <Input placeholder="numberOfServices" type='text' name="numberOfServices" onKeyPress={numberValidation} onChange={this.numberOfServices} maxLength={10}/>
+                                {/* <span className='error'>{this.state.errors.numberOfServices}</span> */}
                                 </Col>
                                 <Col md={4}>
                                 <Label>Expected Delivery Date</Label>
@@ -497,7 +496,7 @@ class PurchaseOrder extends Component {
         return (
             <div>
                <UI  onClick={this.logout} change={this.changePassword}>
-               <Form onSubmit={this.onSubmit} style={{width: '1100px'}}>
+               <Form onSubmit={this.onSubmit}>
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
                         </div>

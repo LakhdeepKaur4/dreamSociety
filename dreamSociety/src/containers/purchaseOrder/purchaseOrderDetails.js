@@ -77,8 +77,7 @@ class PurchaseOrderDetails extends Component {
         this.props.fetchAssets();
         this.props.getServiceType();
         this.props.getPurchaseOrder().then(() => this.setState({ loading: false, modalLoading: false, modal:false }))
-            .then(() => this.setState({ loading: false }))
-        this.props.assetTypeId().then(() => this.setState({ loading: false, modalLoading: false }))
+        this.props.assetTypeId()
     }
 
     onChangeHandler = (event) => {
@@ -260,7 +259,7 @@ class PurchaseOrderDetails extends Component {
             this.props.updatePurchaseOrderData(purchaseOrderId, issuedBy, vendorId,expDateOfDelievery)
                 .then(() => this.refreshData())
                 .catch(err=>{ console.log(err.response.data.message)
-                    this.setState({modalLoading: false, message: err.response.data.message, loading: false})
+                    this.setState({modalLoading: false, message: err.response.data.message, loading: false, modal:false})
                     })
                     if (this.state.message === '') {
                         this.setState({ modal: true })
@@ -412,12 +411,12 @@ class PurchaseOrderDetails extends Component {
                             <td>{item.expDateOfDelievery}</td>
                             <td>{item.vendor_master.firstName + ' ' + item.vendor_master.lastName}</td>
                             <td>{item.vendor_master.contact}</td>
-                            <td><button className="btn btn-success mr-2" onClick={this.downloadPdf.bind(this, item.purchaseOrderId)}>Download</button></td>     
+                            <td><button className="btn btn-success mr-2" onClick={this.downloadPdf.bind(this, item.purchaseOrderId)}>View</button></td>     
                             <td style={{ textAlign: "center" }}>
-                                <button className="btn btn-success" onClick={this.viewAssets.bind(this,item.purchaseOrderId)} >View Assets</button>
+                                <button className="btn btn-success" onClick={this.viewAssets.bind(this,item.purchaseOrderId)} >View</button>
                             </td>
                             <td style={{ textAlign: "center" }}>
-                                <button className="btn btn-success" onClick={this.viewServices.bind(this, item.purchaseOrderId)}>View Services</button>
+                                <button className="btn btn-success" onClick={this.viewServices.bind(this, item.purchaseOrderId)}>View</button>
                             </td>
                             <td style={{ textAlign: "center" }}>
                                 <button className="btn btn-success mr-2" onClick={this.editPurchaseOrder.bind(this,item.purchaseOrderId, item.issuedBy, item.vendor_master.firstName + ' ' + item.vendor_master.lastName, item.assets.length, item.services.length, item.assets, item.services, item.vendorId, item.expDateOfDelievery)}>Edit</button>

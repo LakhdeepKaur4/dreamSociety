@@ -90,7 +90,7 @@ class ViewAssets extends Component {
     refreshData(purchaseOrderId) {
         this.props.getPurchaseOrder();
         this.props.fetchAssets();
-        this.props.assetTypeId().then(() => this.setState({ loading: false, modalLoading: false }))
+        this.props.assetTypeId()
         this.props.getAssetsId(purchaseOrderId).then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false}));
      
         
@@ -341,7 +341,7 @@ renderList = ({ updateAssets }) => {
                         this.props.updateAssetsDetails(purchaseOrderId,purchaseOrderType,purchaseOrderSubType,purchaseOrderName,rate,quantity,amount,purchaseOrderDetailId)
                             .then(() => this.refreshData(purchaseOrderId))
                             .catch(err=>{
-                                this.setState({modalLoading:false,message: err.response.data.message, loading: false})
+                                this.setState({modalLoading:false,message: err.response.data.message, loading: false, editVendorModal:false})
                                 })
                                 if(this.state.message === ''){
                                     this.setState({editVendorModal: true})
