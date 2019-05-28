@@ -157,6 +157,7 @@ import PurchaseOrder from './containers/purchaseOrder/purchaseOrder';
 import PurchaseOrderDetails from './containers/purchaseOrder/purchaseOrderDetails';
 import ViewAssets from './containers/purchaseOrder/viewAssets';
 import ViewServices from './containers/purchaseOrder/viewServices';
+import GuestInvitation from './containers/guestInvitation/guestInvitation';
 
 class App extends Component {
   render() {
@@ -319,6 +320,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/purchaseOrderDetails' component={PurchaseOrderDetails} />
             <PrivateRoute path='/superDashboard/viewAssets' component={ViewAssets} />
             <PrivateRoute path='/superDashboard/viewServices' component={ViewServices} />
+            <PrivateRoute path='/superDashboard/guestInvitation' component={GuestInvitation} />
 
 
 
