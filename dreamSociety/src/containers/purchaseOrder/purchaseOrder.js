@@ -468,12 +468,12 @@ class PurchaseOrder extends Component {
                                <Row> 
                                    <Col md={4}>
                                 <Label>Number of Assets</Label>
-                                <Input placeholder="numberOfAssets" type='text'  name="numberOfAssets" onKeyPress={numberValidation} onChange={this.userMemberHandler} maxLength={10}/>
+                                <Input placeholder="number of assets" type='text'  name="numberOfAssets" onKeyPress={numberValidation} onChange={this.userMemberHandler} maxLength={10}/>
                                 <span className='error'>{this.state.errors.numberOfAssets}</span>
                                  </Col>
                                 <Col md={4}>
-                                <Label>Number of service</Label>
-                                <Input placeholder="numberOfServices" type='text' name="numberOfServices" onKeyPress={numberValidation} onChange={this.numberOfServices} maxLength={10}/>
+                                <Label>Number of Service</Label>
+                                <Input placeholder="number of services" type='text' name="numberOfServices" onKeyPress={numberValidation} onChange={this.numberOfServices} maxLength={10}/>
                                 {/* <span className='error'>{this.state.errors.numberOfServices}</span> */}
                                 </Col>
                                 <Col md={4}>

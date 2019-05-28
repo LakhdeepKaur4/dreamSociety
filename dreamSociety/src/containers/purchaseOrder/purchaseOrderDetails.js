@@ -785,7 +785,7 @@ class PurchaseOrderDetails extends Component {
                             } /></Label>
                         {!this.state.loading ? tableData : <Spinner />}
                         <Modal isOpen={this.state.pdfOpen} toggle={this.toggleEmployeeModal.bind(this)}>
-                            <ModalHeader toggle={this.toggleEmployeeModal.bind(this)}>Employee Details</ModalHeader>
+                            <ModalHeader toggle={this.toggleEmployeeModal.bind(this)}>Purchase Details</ModalHeader>
                             <ModalBody>
                                 {pdfDisplay}
                                 <Button color="primary" onClick={this.toggleEmployeeModal.bind(this)}>Cancel</Button>
