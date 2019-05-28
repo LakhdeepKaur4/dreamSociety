@@ -6,13 +6,14 @@ import {Link} from 'react-router-dom';
 import { PlaceHolder } from '../../actionCreators/index';
 import UI from '../../components/newUI/superAdminDashboard';
 import { getVendorMaster} from '../../actions/vendorMasterAction';
-import { Form,FormGroup, Input, Label, Button, Row, Col } from 'reactstrap';
+import { Form,FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader, Row, Col } from 'reactstrap';
 import { fetchAssets} from '../../actions/assetsSubAction';
 import { getServiceType } from '../../actions/serviceMasterAction';
-import {addPurchaseOrder} from '../../actions/purchaseOrderAction';
+import {addPurchaseOrder,assetTypeId} from '../../actions/purchaseOrderAction';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from './../../constants/defaultSelect';
 import {numberValidation} from '../../validation/validation';
+import _ from 'underscore';
 
 
 class PurchaseOrder extends Component {
@@ -111,32 +112,89 @@ class PurchaseOrder extends Component {
         }
         this.setState({errors:{}})
     }
-    getAsset=({getAssetsType})=>{
-        if(getAssetsType && getAssetsType.assetsType){
-            return (
-              getAssetsType.assetsType.map((item)=>{
-                    return ({...item, label:item.asset_master.assetName ,value:item.asset_master.assetId})
+    // getAsset=({getAssetsType})=>{
+    //     if(getAssetsType && getAssetsType.assetsType){
+    //         return (
+    //           getAssetsType.assetsType.map((item)=>{
+    //                 return ({...item, label:item.asset_master.assetName ,value:item.asset_master.assetId})
+    //             })
+    //         )
+    //     }
+    // }
+
+    getAsset = ({ getAssetsType }) => {
+        
+        if (getAssetsType && getAssetsType.assetsType) {
+            console.log(getAssetsType)
+            return getAssetsType.assetsType.map((item) => {
+                    return (
+                        <option value={item.asset_master.assetName} key={item.asset_master.assetId} >
+                            {item.asset_master.assetName}
+                        </option>
+                    )
                 })
-            )
+            
+
         }
     }
-    getAssetType=({getAssetsType})=>{
-        if(getAssetsType && getAssetsType.assetsType){
+    // getAssetType=({getAssetsType})=>{
+    //     if(getAssetsType && getAssetsType.assetsType){
+    //         return (
+    //           getAssetsType.assetsType.map((item)=>{
+    //                 return ({...item, label:item.assetType ,value:item.assetId})
+    //             })
+    //         )
+    //     }
+    // }
+
+    getAssetType = ({ assetTypeData }) => { 
+        if (assetTypeData && assetTypeData.assetsType ) {
+            console.log(assetTypeData)
             return (
-              getAssetsType.assetsType.map((item)=>{
-                    return ({...item, label:item.assetType ,value:item.assetId})
+                assetTypeData.assetsType.map((item) => {
+                    return (
+                        <option value={item.assetType} key={item.assetTypeId} >
+                            {item.assetType}
+                        </option>
+                    )
                 })
             )
+
         }
     }
 
     onAssetDataChangeHandler=(i,selectOption)=>{
+
         this.setState({
             ['assetData'+i]:selectOption.label
         },function(){
             
         })
-        console.log(this.state)
+
+        let selected=selectOption.target.value
+        console.log(selected)
+
+        if (!!this.state.errors[selectOption.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[selectOption.target.name];
+            this.setState({ [selectOption.target.name]: selectOption.target.value, errors });
+        }
+        else {
+            this.setState({ [selectOption.target.name]: selectOption.target.value });
+        }
+       
+       
+
+        var data = _.find(this.props.ListOfAssets.getAssetsType.assetsType,function(obj){ console.log(obj)
+            return obj.asset_master.assetName === selected
+            })
+        
+            if(data && data.asset_master){
+                console.log(data.asset_master)
+                this.props.assetTypeId(data.asset_master.assetId)
+            }
+
+
     }
     onAssetsChangeHandler=(i,selectOption)=>{
         this.setState({
@@ -144,6 +202,16 @@ class PurchaseOrder extends Component {
         },function(){
             
         })
+
+        if (!!this.state.errors[selectOption.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[selectOption.target.name];
+            this.setState({ [selectOption.target.name]: selectOption.target.value, errors });
+        }
+        else {
+            this.setState({ [selectOption.target.name]: selectOption.target.value });
+        }
+       
     }
     onServicesChangeHandler=(i,selectOption)=>{
         this.setState({
@@ -296,11 +364,6 @@ class PurchaseOrder extends Component {
         }
 
         
-
-
-
-      
-
         this.setState({ errors })
 
         const isValid = Object.keys(errors).length === 0
@@ -333,6 +396,7 @@ class PurchaseOrder extends Component {
              this.state.purchaseOrderServiceArray.push(service)
          }
             console.log(this.state.purchaseOrderAssetsArray)
+            console.log(vendorId,expDate,purchaseOrderAssetsArray,purchaseOrderServiceArray)
             if(isValid && this.state.message === '') {
                    this.props.addPurchaseOrder(vendorId,expDate,purchaseOrderAssetsArray,purchaseOrderServiceArray)
                    .then(()=>this.props.history.push('/superDashboard/purchaseOrderDetails'))
@@ -403,19 +467,28 @@ class PurchaseOrder extends Component {
                 <Row>
                     <Col md={4}>
              <Label>Asset</Label>  
-             <Select options={this.getAsset(this.props.ListOfAssets)}
+             {/* <Select options={this.getAsset(this.props.ListOfAssets)}
              onChange={this.onAssetDataChangeHandler.bind(this,i)}
              name={`assetData${i}`}
              
-             />
+             /> */}
+             <Input type="select" name={`assetData${i}`} defaultValue='no-value' onChange={this.onAssetDataChangeHandler.bind(this,i)}>                      
+                        {/* <option>{this.state.purchaseOrderSubType}</option> */}
+                        <DefaultSelect/>
+                        {this.getAsset(this.props.ListOfAssets)}
+                        </Input>
              </Col> 
              <Col md={4}>
              <Label>Asset Type</Label>
               
-             <Select options={this.getAssetType(this.props.ListOfAssets)}
+             {/* <Select options={this.getAssetType(this.props.ListOfAssets)}
              onChange={this.onAssetsChangeHandler.bind(this,i)}
              name={`assetName${i}`}
-             />
+             /> */}
+              <Input type="select" name={`assetName${i}`} defaultValue='no-value'  onChange={this.onAssetsChangeHandler.bind(this,i)}>
+                        <DefaultSelect/>
+                        {this.getAssetType(this.props.purchase)}
+                        </Input>
              </Col> 
              <Col md={4}>
              <Label>Rate</Label>  
@@ -472,7 +545,7 @@ class PurchaseOrder extends Component {
                                 <span className='error'>{this.state.errors.numberOfAssets}</span>
                                  </Col>
                                 <Col md={4}>
-                                <Label>Number of Service</Label>
+                                <Label>Number of service</Label>
                                 <Input placeholder="number of services" type='text' name="numberOfServices" onKeyPress={numberValidation} onChange={this.numberOfServices} maxLength={10}/>
                                 {/* <span className='error'>{this.state.errors.numberOfServices}</span> */}
                                 </Col>
@@ -511,13 +584,14 @@ class PurchaseOrder extends Component {
 function mapStateToProps(state){
     console.log(state.AssetsTypeReducer)
     return{
+        purchase: state.PurchaseOrder,
         ListOfAssets: state.AssetsTypeReducer,
         vendorMasterReducer: state.vendorMasterReducer,
         displayServiceMasterReducer: state.displayServiceMasterReducer,
     }
 }
 function mapDispatchToProps(dispatch){
-  return  bindActionCreators({getVendorMaster,fetchAssets,getServiceType,addPurchaseOrder},dispatch)
+  return  bindActionCreators({getVendorMaster,fetchAssets,getServiceType,addPurchaseOrder,assetTypeId},dispatch)
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(PurchaseOrder);

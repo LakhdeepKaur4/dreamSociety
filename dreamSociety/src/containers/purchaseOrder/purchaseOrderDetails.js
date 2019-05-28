@@ -727,13 +727,11 @@ class PurchaseOrderDetails extends Component {
         </Table>
 
         let purchaseData=<div>
+            <FormGroup> <Label>Issued By</Label>
+                <Input name="issuedBy" value={this.state.issuedBy} readOnly></Input></FormGroup>
             <FormGroup>
                                     <Row>
-                                        <Col md={4}>
-                                            <Label>Issued By</Label>
-                                            <Input name="issuedBy" value={this.state.issuedBy} readOnly></Input>
-                                        </Col>
-                                        <Col md={4}>
+                                        <Col md={6}>
                                             <Label>Vendor Name</Label>
                                             <Input type="select" name="vendorId" onChange={this.onChangeHandler.bind(this)} value={this.state.vendorId}>
                                                 {/* <option>{this.state.vendorName}</option> */}
@@ -742,7 +740,7 @@ class PurchaseOrderDetails extends Component {
                                             </Input>
 
                                         </Col>
-                                        <Col md={4}>
+                                        <Col md={6}>
                                             <Label>Expected Date Of Delievery</Label>
                                             <Input type="date"  name="expDateOfDelievery"  min={this.minDate()} onChange={this.onChangeHandler} value={this.state.expDateOfDelievery}></Input>
                             
