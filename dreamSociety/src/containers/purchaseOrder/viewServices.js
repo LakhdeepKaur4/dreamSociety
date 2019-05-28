@@ -88,8 +88,9 @@ class ViewServices extends Component {
     }
 
     refreshData(purchaseOrderId) {
-        this.props.getPurchaseOrder();
-        this.props.getServiceType().then(() => this.setState({ loading: false, modalLoading: false }))
+        console.log(purchaseOrderId)
+        this.props.getPurchaseOrder(purchaseOrderId).then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false}));
+        this.props.getServiceType(purchaseOrderId)
         this.props.getServicesId(purchaseOrderId).then(()=> this.setState({loading:false, modalLoading: false, editVendorModal:false}));
      
         
@@ -356,7 +357,7 @@ renderList = ({ getServiceDetails }) => {
                         this.props.updateServiceDetails(purchaseOrderDetailId, purchaseOrderId,purchaseOrderType,purchaseOrderName,rate,quantity,amount,serviceStartDate, serviceEndDate)
                             .then(() => this.refreshData(purchaseOrderId))
                             .catch(err=>{
-                                this.setState({modalLoading:false, message: err.response.data.message, loading: false})
+                                this.setState({modalLoading:false, message: err.response.data.message, loading: false, editVendorModal:false})
                                 })
                                 if(this.state.message === ''){
                                     this.setState({editVendorModal: true})
@@ -469,7 +470,7 @@ renderList = ({ getServiceDetails }) => {
             <Modal isOpen={this.state.editVendorModal} toggle={this.toggleEditVendorModal.bind(this)}>
                 <ModalHeader toggle={this.toggleEditVendorModal.bind(this)}> Edit Services</ModalHeader>
                 <ModalBody>                    
-                    {!this.state.modalLoading?modalData:<Spinner/>}
+                    {!this.state.modalLoading ? modalData: <Spinner/>}
                 </ModalBody>
             </Modal>
             <div className="top-details" style={{ fontWeight: 'bold'}}><h3>Service Details</h3>
