@@ -47,6 +47,7 @@ class PurchaseOrder extends Component {
             numberOfAssets:'',
             numberOfServices:'',
             assetData:'',
+            errors: {},
             
         }
     }
@@ -64,6 +65,11 @@ class PurchaseOrder extends Component {
             return (
                 vendors && vendors.vendor.map((item)=>{
                    return ({ ...item, label:item.firstName+" "+item.lastName, value:item.vendorId})
+                // return (
+                // <option value={item.vendorId} key={item.vendorId} >
+                //     {item.firstName+" "+item.lastName}
+                // </option>
+                // )
                })
             )
         }
@@ -83,7 +89,8 @@ class PurchaseOrder extends Component {
         this.setState({
             vendorId:selectOption.vendorId,
             vendorAddress:selectOption.permanentAddress,
-            vendorContact:selectOption.contact
+            vendorContact:selectOption.contact,
+            errors:{}
         })   
     }
     userMemberHandler = (e) => {
@@ -92,13 +99,17 @@ class PurchaseOrder extends Component {
                 numberOfAssets: e.target.value
             });
         }
+        this.setState({errors:{}})
     }
+    
     numberOfServices=(e)=>{
+        
         if(e.target.value!=''){
             this.setState({
                 numberOfServices:e.target.value
             });
         }
+        this.setState({errors:{}})
     }
     getAsset=({getAssetsType})=>{
         if(getAssetsType && getAssetsType.assetsType){
@@ -175,8 +186,22 @@ class PurchaseOrder extends Component {
             )
         }
     }
+
+    onChangeHandlerData = (event) => {
+        this.setState({ [event.target.name]: event.target.value, errors:{} });
+        this.setState({message:''})
+        if (!!this.state.errors[event.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[event.target.name];
+            this.setState({ [event.target.name]: event.target.value, errors });
+        }
+        else {
+            this.setState({ [event.target.name]: event.target.value });
+        }
+
+    }
     onChangeHandler = (event) => {
-        this.setState({ [event.target.name]: event.target.value });
+        this.setState({ [event.target.name]: event.target.value, errors:{} });
         // this.setState({message:''})
         // if (!!this.state.errors[event.target.name]) {
         //     let errors = Object.assign({}, this.state.errors);
@@ -189,21 +214,53 @@ class PurchaseOrder extends Component {
 
     }
 
+    // OnKeyPresshandlerPhone(event) {
+    //     const pattern = /^[0-9]$/;
+    //     let inputChar = String.fromCharCode(event.charCode);
+    //     if (!pattern.test(inputChar)) {
+    //         event.preventDefault();
+    //     }
+    // }
+
     
-    onRateChangeHandler=(e)=>{
+    onRateChangeHandler=(i,e)=>{
+        var amount=e.target.value*this.state['assetQuantity'+i];
         if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
-            this.setState({[e.target.name]:e.target.value}); 
+            this.setState({[e.target.name]:e.target.value});  
         this.setState({
             [e.target.name]:e.target.value,
+            ['assetAmount'+i]:amount,
             disable:false
         })
-    }}
-    onServiceRateChangeHandler=(e)=>{
+    }
+}
+
+
+
+
+   
+// onRateChangeHandler=(e)=>{
+//     var amount=e.target.value*this.state['assetAmount'+i];
+//     if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+//         this.setState({[e.target.name]:e.target.value});  
         
+//         this.setState({
+//             ['assetAmount'+i]:amount,
+//             [e.target.name]:e.target.value,
+//             disable:false
+//         })
+//     }}
+
+    onServiceRateChangeHandler=(i,e)=>{
+        var amount=e.target.value*this.state['person'+i];
+        if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
+            this.setState({[e.target.name]:e.target.value});  
         this.setState({
             [e.target.name]:e.target.value,
+            ['serviceAmount'+i]:amount,
             disable:false
         })
+    }
     }
     onQuantityChangeHandler=(i,e)=>{  
     var amount=e.target.value*this.state['assetRate'+i];
@@ -225,13 +282,21 @@ class PurchaseOrder extends Component {
          
         let errors = {};
 
-        // if(this.state.vendorId===''){
-        //     errors.vendorId="vendorName can't be empty"
-        // }
+        if(this.state.vendorId===''){
+            errors.vendorId="vendorName can't be empty"
+        }
 
-        // else if(this.state.expDate===''){
-        //     errors.expDate="Expected Date can't be empty"
-        // }
+        else if(this.state.numberOfAssets===''){
+            errors.numberOfAssets="Number of Assets can't be empty"
+        }
+        else if(this.state.numberOfServices===''){
+            errors.numberOfServices="Number of Services can't be empty"
+        }
+        else if(this.state.expDate===''){
+            errors.expDate="Expected Date can't be empty"
+        }
+
+        
 
 
 
@@ -269,9 +334,14 @@ class PurchaseOrder extends Component {
              this.state.purchaseOrderServiceArray.push(service)
          }
             console.log(this.state.purchaseOrderAssetsArray)
-            if (isValid && this.state.message === '') {
-                   this.props.addPurchaseOrder(vendorId,expDate,purchaseOrderAssetsArray,purchaseOrderServiceArray);
-            }
+            if(isValid && this.state.message === '') {
+                   this.props.addPurchaseOrder(vendorId,expDate,purchaseOrderAssetsArray,purchaseOrderServiceArray)
+                   .then(()=>this.props.history.push('/superDashboard/purchaseOrderDetails'))
+                   .catch(err=>{
+                       this.setState({message: err.response.data.message, loading: false})
+                   })
+                }
+            
     }
 
     
@@ -284,6 +354,10 @@ class PurchaseOrder extends Component {
          return d.toISOString().split('T')[0];
 
     }
+
+    
+    
+
     render() {
         let serviceData=[];
         let userData=[];
@@ -300,7 +374,7 @@ class PurchaseOrder extends Component {
          </Col> 
          <Col md={4}>
          <Label>Rate</Label>  
-        <Input type='text' name={`serviceRate${i}`} onChange={this.onServiceRateChangeHandler} />
+        <Input type='number' name={`serviceRate${i}`} onChange={this.onServiceRateChangeHandler.bind(this,i)} maxLength={10} />
          </Col> 
          <Col md={4}>
              <Label>Start Date</Label>
@@ -346,17 +420,17 @@ class PurchaseOrder extends Component {
              </Col> 
              <Col md={4}>
              <Label>Rate</Label>  
-            <Input type='text' name={`assetRate${i}`} onKeyPress={this.onRateChangeHandler} />
+            <Input type='number' name={`assetRate${i}`} onChange={this.onRateChangeHandler.bind(this,i)} maxLength={10}/>
              </Col> 
              </Row>
              <Row>
                  <Col md={4}>
                  <Label >Quantity</Label>
-                 <Input type='text' name={`assetQuantity${i}`} onChange={this.onQuantityChangeHandler.bind(this,i)} disabled={this.state.disable}/>
+                 <Input type='text' name={`assetQuantity${i}`} onChange={this.onQuantityChangeHandler.bind(this,i)} disabled={this.state.disable} maxLength={10}/>
                  </Col>
                  <Col md={4}>
                  <Label>Amount</Label>
-                 <Input type='text' name={`assetAmount${i}`} readOnly onChange={this.onChangeHandler} value={this.state[`assetAmount${i}`]}/>
+                 <Input type='text' name={`assetAmount${i}`} readOnly onChange={this.onChangeHandlerData} value={this.state[`assetAmount${i}`]}/>
                  </Col>
              </Row>
             </FormGroup>)
@@ -371,6 +445,11 @@ class PurchaseOrder extends Component {
                               name="vendorId"
                                onChange={this.onVendorChangeHandler.bind(this)}
                               placeholder={PlaceHolder} />
+                              {/* <Input type="select" name="vendorId" defaultValue='no-value'  onChange={this.onVendorChangeHandler.bind(this)}>
+                              <DefaultSelect/>
+                              {this.vendorList(this.props.vendorMasterReducer)}
+                               </Input> */}
+                              <span className='error'>{this.state.errors.vendorId}</span>
                             </FormGroup>
                             <Row>
                                 <Col md={6}>
@@ -390,15 +469,18 @@ class PurchaseOrder extends Component {
                                <Row> 
                                    <Col md={4}>
                                 <Label>Number of Assets</Label>
-                                <Input placeholder="numberOfAssets" type='text' onKeyPress={this.OnKeyPresshandlerPhone} name="numberOfAssets" onChange={this.userMemberHandler} />
+                                <Input placeholder="numberOfAssets" type='number'  name="numberOfAssets" onChange={this.userMemberHandler} maxLength={10}/>
+                                <span className='error'>{this.state.errors.numberOfAssets}</span>
                                  </Col>
                                 <Col md={4}>
                                 <Label>Number of service</Label>
-                                <Input placeholder="numberOfServices" type='text' onKeyPress={this.OnKeyPresshandlerPhone} name="numberOfServices" onChange={this.numberOfServices} />
+                                <Input placeholder="numberOfServices" type='number' name="numberOfServices" onChange={this.numberOfServices} maxLength={10}/>
+                                <span className='error'>{this.state.errors.numberOfServices}</span>
                                 </Col>
                                 <Col md={4}>
                                 <Label>Expected Delivery Date</Label>
-                                 <Input type='date' min={this.maxDate()} name='expDate' onChange={this.onChangeHandler}/>
+                                 <Input type='date' min={this.maxDate()} name='expDate' onChange={this.onChangeHandlerData}/>
+                                 <span className='error'>{this.state.errors.expDate}</span>
                                
                                  </Col>
                                  </Row> 

@@ -73,10 +73,10 @@ class PurchaseOrderDetails extends Component {
     }
 
     refreshData(){
-        this.props.getVendorMaster();
+        this.props.getVendorMaster()
         this.props.fetchAssets();
         this.props.getServiceType();
-        this.props.getPurchaseOrder()
+        this.props.getPurchaseOrder().then(() => this.setState({ loading: false, modalLoading: false, modal:false }))
             .then(() => this.setState({ loading: false }))
         this.props.assetTypeId().then(() => this.setState({ loading: false, modalLoading: false }))
     }
@@ -187,12 +187,12 @@ class PurchaseOrderDetails extends Component {
             })
     }
     delete = (purchaseOrderId) => {
-       
+        this.setState({ loading: true })
         if (window.confirm('Are You Sure ?')) {
             this.props.removePurchaseOrder(purchaseOrderId)
                 .then(() => {
                     this.props.getPurchaseOrder()
-
+                    .then(() => this.setState({ loading: false }))
                 })
         }
         else {
@@ -439,6 +439,11 @@ class PurchaseOrderDetails extends Component {
     editModal = () => {
         this.setState({ modal: !this.state.modal, message:'' })
     }
+
+    toggle() {
+        this.setState({ modal: false });
+    }
+
     searchOnChange = (e) => {
         this.setState({ search: e.target.value })
     }
@@ -745,9 +750,12 @@ class PurchaseOrderDetails extends Component {
                                         </Col>
                                     </Row>
                                 </FormGroup>
-                                <Button type="button" color="success" onClick={this.updatePurchaseOrder} >
+                                <FormGroup>
+                                <Button  color="primary" onClick={this.updatePurchaseOrder} >
                                     Save
                                 </Button>
+                            </FormGroup>
+                               
         </div>
 
         let deleteSelectedButton = <Button color="danger" className="mb-2" disabled={this.state.isDisabled}
