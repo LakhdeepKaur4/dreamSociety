@@ -6,7 +6,7 @@ import {Link} from 'react-router-dom';
 import { PlaceHolder } from '../../actionCreators/index';
 import UI from '../../components/newUI/superAdminDashboard';
 import { getVendorMaster} from '../../actions/vendorMasterAction';
-import { Form,FormGroup, Input, Table, Label, Button, Modal, ModalBody, ModalHeader, Row, Col } from 'reactstrap';
+import { Form,FormGroup, Input, Label, Button, Row, Col } from 'reactstrap';
 import { fetchAssets} from '../../actions/assetsSubAction';
 import { getServiceType } from '../../actions/serviceMasterAction';
 import {addPurchaseOrder} from '../../actions/purchaseOrderAction';
