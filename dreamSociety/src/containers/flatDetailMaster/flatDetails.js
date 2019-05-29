@@ -176,9 +176,9 @@ constructor(props){
     }
 
     getFloorData = ({ floorDetails }) => {
-     
+          
         if (floorDetails) {
-
+            console.log(floorDetails)
             return floorDetails.tower.Floors.map((items) => {
               
                 return (
