@@ -2,7 +2,7 @@ module.exports = (sequelize, Sequelize) => {
       const Owner = sequelize.define('owner_master', {
             ownerId: {
                   type: Sequelize.INTEGER,
-                  autoIncrement: true,
+                  // autoIncrement: true,
                   primaryKey: true
             },
             firstName: {
@@ -45,11 +45,11 @@ module.exports = (sequelize, Sequelize) => {
                   allowNull: false
             },
             permanentAddress: {
-                  type: Sequelize.STRING,
+                  type: Sequelize.STRING(2000),
                   allowNull: false
             },
             correspondenceAddress: {
-                  type: Sequelize.STRING,
+                  type: Sequelize.STRING(2000),
                   allowNull: false
             },
             bankName: {
@@ -67,7 +67,7 @@ module.exports = (sequelize, Sequelize) => {
             IFSCCode: {
                   type: Sequelize.STRING
             },
-            adhaarCardNo:{
+            adhaarCardNo: {
                   type: Sequelize.STRING,
                   allowNull: false
             },
@@ -87,6 +87,7 @@ module.exports = (sequelize, Sequelize) => {
                   defaultValue: null,
                   type: Sequelize.DATE
             }
+
       }, {
                   freezeTableName: true
             });
