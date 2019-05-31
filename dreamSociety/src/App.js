@@ -233,7 +233,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/societyComponent' component={SocietyComponent} />
             <PrivateRoute path='/superDashboard/relationshipMaster' component={RelationshipMaster} />
             <PrivateRoute path='/superDashboard/relationshipMasterDetail' component={RelationshipMasterDetail} />
-
+            <PrivateRoute path="/superDashBoard/displayCommonAreaMachineMaster" component={DisplayCommonAreaMachine} />
 
             <PrivateRoute path='/superDashboard/societyMemberEvents' component={SocietyMemberEvents} />
             <PrivateRoute path='/superDashboard/memberEventsDetail' component={MemberEventsDetail} />
