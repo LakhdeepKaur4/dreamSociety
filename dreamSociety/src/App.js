@@ -320,7 +320,7 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/purchaseOrderDetails' component={PurchaseOrderDetails} />
             <PrivateRoute path='/superDashboard/viewAssets' component={ViewAssets} />
             <PrivateRoute path='/superDashboard/viewServices' component={ViewServices} />
-            <PrivateRoute path='/superDashboard/guestInvitation' component={GuestInvitation} />
+            <TenantPrivateRoute path='/superDashboard/guestInvitation' component={GuestInvitation} />
 
 
 
