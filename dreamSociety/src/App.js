@@ -14,7 +14,7 @@ import AdminDashboard from './containers/adminDashboard/adminDashboard';
 import OwnerDashboard from './containers/ownerDashboard/ownerDashboard';
 import SuperDashboard from './containers/superDashboard/superDashboard';
 import TenantDashboard from './containers/tenantDashboard/tenantDashboard';
-import EmployeeDashboard from './components/newUI/employeeDashboard';
+import EmployeeDashboard from './containers/employeeDashboard/employeeDashboard';
 import VendorDashboard from './containers/vendorDashboard/vendorDashboard';
 import ParkingMaster from './containers/parkingMaster/parkingMaster';
 import EmployeeMaster from './containers/employeeMaster/employeeMaster';
@@ -143,6 +143,7 @@ import {OwnerPrivateRoute} from './components/ownerPrivateRoute/ownerPrivateRout
 import {TenantPrivateRoute} from './components/tenantPrivateRoute/tenantPrivateRoute';
 import {VendorPrivateRoute} from './components/vendorPrivateRoute/vendorPrivateRoute';
 import {AdminPrivateRoute} from './components/adminPrivateRoute/adminPrivateRoute';
+import {EmployeePrivateRoute} from './components/employeePrivateRoute/employeePrivateRoute';
 import  FlatPieChart from './containers/chart/flatpiechart';
 import FlatLineChart from './containers/chart/flatlinechart';
 import InventoryLineChart from './containers/chart/inventoryLineChart';
@@ -153,6 +154,7 @@ import ViewComplaints from './containers/vendorMangement/viewComplaints/viewComp
 import ViewVendorFeedback from './containers/vendorMangement/viewComplaints/viewVendorFeedback';
 
 import ChangePasswordAdmin from './components/changePassword/changePasswordAdmin';
+import ChangePasswordEmployee from './components/changePassword/changePasswordEmployee';
 import PurchaseOrder from './containers/purchaseOrder/purchaseOrder';
 import PurchaseOrderDetails from './containers/purchaseOrder/purchaseOrderDetails';
 import ViewAssets from './containers/purchaseOrder/viewAssets';
@@ -176,7 +178,7 @@ class App extends Component {
             <OwnerPrivateRoute path='/ownerDashboard' exact component={OwnerDashboard} />
             <TenantPrivateRoute path='/tenantDashboard' exact component={TenantDashboard} />
             <VendorPrivateRoute path='/vendorDashboard' exact component={VendorDashboard} />
-            <PrivateRoute path='/employeeDashboard' component={EmployeeDashboard} />
+            <EmployeePrivateRoute path='/employeeDashboard' exact component={EmployeeDashboard}/>
             <PrivateRoute path='/superDashboard/registration' component={Registration} />
             <PrivateRoute path='/superDashboard/user_details' component={UserDetails} />
             <PrivateRoute path='/superDashboard/parking_master' component={ParkingMaster} />
@@ -259,6 +261,7 @@ class App extends Component {
             <TenantPrivateRoute path='/tenantDashboard/changePasswordTenant' component={ChangePasswordTenant} />
             <OwnerPrivateRoute path='/ownerDashboard/changePasswordOwner' component={ChangePasswordOwner} />
             <VendorPrivateRoute path='/vendorDashboard/changePasswordVendor' component={ChangePasswordVendor} />
+            <EmployeePrivateRoute path='/employeeDashboard/changePasswordEmployee' component={ChangePasswordEmployee} />
             <PrivateRoute path='/superDashboard/displayEmployee' component={DisplayEmployeeMaster} />
             <PrivateRoute path='/superDashboard/displayEmployee2' component={DisplayEmployeeMaster2} />
             <PrivateRoute path='/superDashboard/inventoryList' component={InventoryList} />
@@ -320,7 +323,8 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/purchaseOrderDetails' component={PurchaseOrderDetails} />
             <PrivateRoute path='/superDashboard/viewAssets' component={ViewAssets} />
             <PrivateRoute path='/superDashboard/viewServices' component={ViewServices} />
-            <TenantPrivateRoute path='/superDashboard/guestInvitation' component={GuestInvitation} />
+            <TenantPrivateRoute path='/tenantDashboard/guestInvitation' component={GuestInvitation} />
+           
 
 
 

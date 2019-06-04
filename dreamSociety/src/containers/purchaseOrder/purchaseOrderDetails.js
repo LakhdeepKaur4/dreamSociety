@@ -18,7 +18,7 @@ class PurchaseOrderDetails extends Component {
         super()
         this.state = {
             errors: {},
-            filterName: "PurchaseOrderId",
+            filterName: "firstName",
             pdfOpen: false,
             pdfPath: '',
             ids: [],
@@ -78,7 +78,7 @@ class PurchaseOrderDetails extends Component {
     }
 
     onChangeHandler = (event) => {
-       console.log(event.target.value)
+       
         this.setState({message: ''})
         if (!!this.state.errors[event.target.name]) {
             let errors = Object.assign({}, this.state.errors);
@@ -106,7 +106,7 @@ class PurchaseOrderDetails extends Component {
         //     this.setState({assetData:[...this.state.assetData, assetData:[]]})
         //     purchaseOrderSubType = e.target.value
         // })
-        console.log(this.state.assetData)
+        
         document.getElementById(`assetType${i}`).disabled=false;
         var removeElement = document.getElementById(`assetType${i}`);
         removeElement.removeChild(removeElement.childNodes[0]);
@@ -134,7 +134,7 @@ class PurchaseOrderDetails extends Component {
         //         this.state.data
         //     ]
         // }))
-        console.log(this.state.assetData)
+       
 
         this.props.assetTypeId(e.target.value)
        
@@ -167,7 +167,9 @@ class PurchaseOrderDetails extends Component {
     }
     searchFilter(search) {
         return function (x) {
-            return x.vendor_master.firstName.toLowerCase().includes(search.toLowerCase()) || !search;
+            return x.vendor_master.firstName.toLowerCase().includes(search.toLowerCase()) ||
+                   x.issuedBy.toLowerCase().includes(search.toLowerCase()) || 
+                   x.purchaseOrderId.toString().includes(search.toLowerCase()) || !search;
         }
     }
 
@@ -182,6 +184,7 @@ class PurchaseOrderDetails extends Component {
                 })
             })
     }
+
     delete = (purchaseOrderId) => {
         this.setState({ loading: true })
         if (window.confirm('Are You Sure ?')) {
@@ -289,14 +292,7 @@ class PurchaseOrderDetails extends Component {
                 ['assetAmount' + i]: assets[i].amount,
             })
 
-            //  data = {
-            //     asset: assets[i].purchaseOrderType,
-            //     assetName: assets[i].purchaseOrderSubType,
-            //     assetType: assets[i].purchaseOrderName,
-            //     assetRate: assets[i].rate,
-            //     assetQuantity: assets[i].quantity,
-            //     assetAmount: assets[i].amount,
-            // }
+          
             data = {
                 purchaseOrderType: assets[i].purchaseOrderType,
                 purchaseOrderSubType: assets[i].purchaseOrderSubType,
@@ -323,14 +319,7 @@ class PurchaseOrderDetails extends Component {
                 ['endDate' + i]: services[i].serviceEndDate
             })
 
-            // data1 = {
-            //     serviceName: services[i].purchaseOrderName,
-            //     serviceAmount: services[i].amount,
-            //     serviceRate: services[i].rate,
-            //     person: services[i].quantity,
-            //     startDate: services[i].serviceStartDate,
-            //     endDate: services[i].serviceEndDate
-            // }
+            
             data1 = {
                 purchaseOrderType: services[i].purchaseOrderType,
                 purchaseOrderName: services[i].purchaseOrderName,
@@ -371,13 +360,11 @@ class PurchaseOrderDetails extends Component {
     renderList = ({ getpurchaseOrder }) => {
        
         if (getpurchaseOrder && getpurchaseOrder.purchaseOrder) {
-            return getpurchaseOrder.purchaseOrder.sort((item1, item2) => {
-
-                // let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
-                //  return this.state.sortVal?cmpValue: -cmpValue;
-            })
-                .filter(this.searchFilter(this.state.search)).map((item, index) => {
-                    console.log(item)
+            return getpurchaseOrder.purchaseOrder.sort((item1, item2) => { 
+                 let cmpValue=(item1.vendor_master[this.state.filterName].localeCompare(item2.vendor_master[this.state.filterName]))
+                 return this.state.sortVal?cmpValue: -cmpValue;
+            }).filter(this.searchFilter(this.state.search)).map((item, index) => {
+                    
                     return (
                         <tr key={index}>
                             <td><input type="checkbox" name="ids" value={item.purchaseOrderId} className="SelectAll"
@@ -467,7 +454,7 @@ class PurchaseOrderDetails extends Component {
         })
     }
     getServices = ({ item }) => {
-        console.log(item)
+        
         if (item) {
             return (
                 item.map((items, index) => {
@@ -566,7 +553,7 @@ class PurchaseOrderDetails extends Component {
 
     vendorList = ({ vendors }) => {
         if (vendors && vendors.vendor) {
-            console.log(vendors)
+           
             return vendors.vendor.map((item) => {
                 return (
                     <option value={item.vendorId} key={item.vendorId} >
@@ -581,7 +568,7 @@ class PurchaseOrderDetails extends Component {
     
 
     render() {
-        console.log(this.state.expDateOfDelievery);
+      
 
 
         let pdfDisplay;
@@ -599,9 +586,7 @@ class PurchaseOrderDetails extends Component {
         let serviceData = [];
         let userData = [];
         for (let i = 0; i < this.state.numberOfServices; i++) {
-            console.log(this.state['serviceName' + i], "hjbbbbjbj")
-            console.log(this.state['assetName' + i])
-            console.log(this.state.serviceData[i].serviceName, "hjbbbbjbjefhdekjfrg")
+           
             serviceData.push(
                 <FormGroup key={i}>
                     <h3>Services</h3>
@@ -710,7 +695,11 @@ class PurchaseOrderDetails extends Component {
                     <th style={{ textAlign: "center", width: "12%" }}>Order Id</th>
                     <th style={{ textAlign: "center", width: "12%" }}>IssuedBy</th>
                     <th style={{ textAlign: "center" }}>Expected Date</th>
-                    <th style={{ textAlign: "center", width: "16%" }}>Vendor Name</th>
+                    {/* <th style={{ textAlign: "center", width: "16%" }}>Vendor Name</th> */}
+                     <th style={{ textAlign: "center", width: "19%" }} onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:"firstName"}});
+                        }}>Vendor Name <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
                     <th style={{ textAlign: "center", width: "8%" }}>Contact</th>
                     <th style={{ textAlign: "center", width: "8%" }}>View Order</th>
                     <th style={{ textAlign: "center" }}>Asset Details</th>

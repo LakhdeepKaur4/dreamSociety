@@ -78,8 +78,9 @@ class ViewAssets extends Component {
     }
 
     searchFilter(search) {
-        return function (x) { 
-            return x.purchaseOrderName.toLowerCase().includes(search.toLowerCase()) || !search;
+        return function (x) {
+            return x.purchaseOrderName.toLowerCase().includes(search.toLowerCase()) ||
+                   x.purchaseOrderSubType.toLowerCase().includes(search.toLowerCase()) || !search;
         }
     }
 
@@ -100,7 +101,7 @@ class ViewAssets extends Component {
     getDropDown = ({ getAssetsType }) => {
         
         if (getAssetsType && getAssetsType.assetsType) {
-            console.log(getAssetsType)
+            
             return getAssetsType.assetsType.map((item) => {
                     return (
                         <option value={item.asset_master.assetName} key={item.asset_master.assetId} >
@@ -128,7 +129,7 @@ class ViewAssets extends Component {
 
 
     delete(purchaseOrderDetailId){ 
-        console.log(this.state.purchaseOrderId)
+    
         this.setState({loading:true})
         let{isActive}=this.state;
         this.props.deletePurchaseDetails(purchaseOrderDetailId,isActive)
@@ -138,7 +139,7 @@ class ViewAssets extends Component {
     }
 
     deleteSelected(ids){
-        console.log(this.state.purchaseOrderId)
+        
         this.setState({loading:true,
         isDisabled:true});
         this.props.deleteAllDetails(ids)
@@ -149,7 +150,7 @@ class ViewAssets extends Component {
 
     getAssetType = ({ assetTypeData }) => { 
         if (assetTypeData && assetTypeData.assetsType ) {
-            console.log(assetTypeData)
+            
             return (
                 assetTypeData.assetsType.map((item) => {
                     return (
@@ -195,7 +196,7 @@ renderList = ({ updateAssets }) => {
             let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
              return this.state.sortVal?cmpValue: -cmpValue;
         }).filter(this.searchFilter(this.state.search)).map((item, index) => {
-                console.log(item)
+              
                 return (
                     <tr key={index}>
                         {/* <td><input type="checkbox" name="ids" value={item.purchaseOrderId} className="SelectAll"
@@ -480,7 +481,7 @@ renderList = ({ updateAssets }) => {
 
 
 function mapStateToProps(state) {
-     console.log(state)
+  
     return {
         purchase: state.PurchaseOrder,
         ListOfAssets: state.AssetsTypeReducer,

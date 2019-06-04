@@ -98,7 +98,7 @@ class ViewServices extends Component {
 
     
     getServices = ({ item }) => {
-        console.log(item)
+        
         if (item) {
             return (
                 item.map((items, index) => {
@@ -115,7 +115,7 @@ class ViewServices extends Component {
   
 
     delete(purchaseOrderDetailId){ 
-        console.log(this.state.purchaseOrderId)
+       
         this.setState({loading:true})
         let{isActive}=this.state;
         this.props.deletePurchaseDetails(purchaseOrderDetailId,isActive)
@@ -125,7 +125,7 @@ class ViewServices extends Component {
     }
 
     deleteSelected(ids){
-        console.log(this.state.purchaseOrderId)
+     
         this.setState({loading:true,
         isDisabled:true});
         this.props.deleteAllDetails(ids)
@@ -194,13 +194,13 @@ toggle() {
 renderList = ({ getServiceDetails }) => {
        
     if (getServiceDetails && getServiceDetails.assets ) {
-        console.log(getServiceDetails)
+        
         return getServiceDetails.assets.sort((item1, item2) => {
 
             let cmpValue=(item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
              return this.state.sortVal?cmpValue: -cmpValue;
         }).filter(this.searchFilter(this.state.search)).map((item, index) => {
-                console.log(item)
+               
                 return (
                     <tr key={index}>
                         {/* <td><input type="checkbox" name="ids" value={item.purchaseOrderId} className="SelectAll"
@@ -504,7 +504,7 @@ renderList = ({ getServiceDetails }) => {
 
 
 function mapStateToProps(state) {
-    console.log(state)
+   
     return {
         purchase: state.PurchaseOrder,
         ListOfAssets: state.AssetsTypeReducer,
