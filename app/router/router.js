@@ -535,7 +535,7 @@ module.exports = function (app) {
 
 	app.get('/api/societyMemberEventBooking', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.get);
 
-	app.get('/api/societyMemberEventBooking/user', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.getByUserId);
+	app.get('/api/societyMemberEventBooking/user', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEventBooking.getByUserId);
 
 	app.put('/api/societyMemberEventBooking/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.deleteSelected);
 
