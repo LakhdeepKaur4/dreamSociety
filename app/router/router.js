@@ -541,6 +541,8 @@ module.exports = function (app) {
 
 	app.get('/api/eventSpaceMaster', [authJwt.verifyToken, authJwt.isAdminRole], eventSpaceController.get);
 
+	app.get('/api/eventSpaceMaster/tenantOrOwner', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], eventSpaceController.get);
+
 	app.put('/api/eventSpaceMaster/:id', [authJwt.verifyToken, authJwt.isAdminRole], eventSpaceController.update);
 
 	app.put('/api/eventSpaceMaster/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], eventSpaceController.deleteSelected);
