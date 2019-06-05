@@ -527,6 +527,8 @@ module.exports = function (app) {
 
 	app.post('/api/societyMemberEventBooking', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.create);
 
+	app.post('/api/societyMemberEventBooking/tenantOrOwner', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEventBooking.create);
+
 	app.get('/api/societyMemberEventBooking', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.get);
 
 	app.put('/api/societyMemberEventBooking/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.deleteSelected);
