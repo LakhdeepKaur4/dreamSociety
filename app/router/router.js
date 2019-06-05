@@ -543,11 +543,11 @@ module.exports = function (app) {
 
 	app.put('/api/societyMemberEventBooking/:id', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.update);
 
-	app.put('/api/societyMemberEventBooking/tenantOrOwner/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.deleteSelected);
+	app.put('/api/societyMemberEventBooking/tenantOrOwner/delete/deleteSelected', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEventBooking.deleteSelected);
 
-	app.put('/api/societyMemberEventBooking/tenantOrOwner/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.delete);
+	app.put('/api/societyMemberEventBooking/tenantOrOwner/delete/:id', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEventBooking.delete);
 
-	app.put('/api/societyMemberEventBooking/tenantOrOwner/:id', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.update);
+	app.put('/api/societyMemberEventBooking/tenantOrOwner/:id', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEventBooking.update);
 
 	app.post('/api/eventSpaceMaster', [authJwt.verifyToken, authJwt.isAdminRole], eventSpaceController.create);
 
