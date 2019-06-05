@@ -457,6 +457,8 @@ module.exports = function (app) {
 
 	app.get('/api/societyMemberEvent', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEvent.get);
 
+	app.get('/api/societyMemberEvent/tenantOrOwner', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEvent.get);
+
 	app.put('/api/societyMemberEvent/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEvent.deleteSelected);
 
 	app.put('/api/societyMemberEvent/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEvent.delete);
