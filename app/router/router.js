@@ -259,6 +259,8 @@ module.exports = function (app) {
 
 	app.get('/api/event', [authJwt.verifyToken, authJwt.isAdminRole], eventController.get);
 
+	app.get('/api/event/tenantOrOwner', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], eventController.get);
+
 	app.put('/api/event/:id', [authJwt.verifyToken, authJwt.isAdminRole], eventController.update);
 
 	app.put('/api/event/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], eventController.deleteSelected);
