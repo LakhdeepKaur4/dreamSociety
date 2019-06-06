@@ -259,6 +259,8 @@ module.exports = function (app) {
 
 	app.get('/api/event', [authJwt.verifyToken, authJwt.isAdminRole], eventController.get);
 
+	app.get('/api/event/tenantOrOwner', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], eventController.get);
+
 	app.put('/api/event/:id', [authJwt.verifyToken, authJwt.isAdminRole], eventController.update);
 
 	app.put('/api/event/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], eventController.deleteSelected);
@@ -323,7 +325,7 @@ module.exports = function (app) {
 
 	app.get('/api/assetsType/', [authJwt.verifyToken, authJwt.isAdminRole], assetsTypeController.get);
 
-	app.get('/api/assetsTypeByAssetId/:id',   assetsTypeController.getAssetsTypeById);
+	app.get('/api/assetsTypeByAssetId/:id', assetsTypeController.getAssetsTypeById);
 
 	app.get('/api/assetsType/:page', [authJwt.verifyToken, authJwt.isAdminRole], assetsTypeController.getAssetsTypeByPageNumber);
 
@@ -455,6 +457,8 @@ module.exports = function (app) {
 
 	app.get('/api/societyMemberEvent', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEvent.get);
 
+	app.get('/api/societyMemberEvent/tenantOrOwner', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEvent.get);
+
 	app.put('/api/societyMemberEvent/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEvent.deleteSelected);
 
 	app.put('/api/societyMemberEvent/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEvent.delete);
@@ -471,13 +475,13 @@ module.exports = function (app) {
 
 	app.get('/api/owner/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.getFlatNo);
 
-	app.get('/api/owner/ownerMember/:id',[authJwt.verifyToken, authJwt.isAdminRole], owner.getMembers);
+	app.get('/api/owner/ownerMember/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.getMembers);
 
 	app.get('/api/owner/getFlatDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.getFlatDetail);
 
 	app.put('/api/owner/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], owner.deleteSelected);
 
-	app.put('/api/ownerMember/delete/deleteSelected',[authJwt.verifyToken, authJwt.isAdminRole], owner.deleteSelectedMembers);
+	app.put('/api/ownerMember/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], owner.deleteSelectedMembers);
 
 	app.put('/api/owner/ownerMember/update/:id', [authJwt.verifyToken, authJwt.isAdminRole], owner.updateMember);
 
@@ -527,7 +531,11 @@ module.exports = function (app) {
 
 	app.post('/api/societyMemberEventBooking', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.create);
 
+	app.post('/api/societyMemberEventBooking/tenantOrOwner', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEventBooking.create);
+
 	app.get('/api/societyMemberEventBooking', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.get);
+
+	app.get('/api/societyMemberEventBooking/user', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEventBooking.getByUserId);
 
 	app.put('/api/societyMemberEventBooking/delete/deleteSelected', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.deleteSelected);
 
@@ -535,9 +543,17 @@ module.exports = function (app) {
 
 	app.put('/api/societyMemberEventBooking/:id', [authJwt.verifyToken, authJwt.isAdminRole], societyMemberEventBooking.update);
 
+	app.put('/api/societyMemberEventBooking/tenantOrOwner/delete/deleteSelected', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEventBooking.deleteSelected);
+
+	app.put('/api/societyMemberEventBooking/tenantOrOwner/delete/:id', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEventBooking.delete);
+
+	app.put('/api/societyMemberEventBooking/tenantOrOwner/:id', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], societyMemberEventBooking.update);
+
 	app.post('/api/eventSpaceMaster', [authJwt.verifyToken, authJwt.isAdminRole], eventSpaceController.create);
 
 	app.get('/api/eventSpaceMaster', [authJwt.verifyToken, authJwt.isAdminRole], eventSpaceController.get);
+
+	app.get('/api/eventSpaceMaster/tenantOrOwner', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], eventSpaceController.get);
 
 	app.put('/api/eventSpaceMaster/:id', [authJwt.verifyToken, authJwt.isAdminRole], eventSpaceController.update);
 
@@ -711,21 +727,21 @@ module.exports = function (app) {
 
 	app.put('/api/vendorComplaints/complete', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.completedComplaint);
 
-	app.post('/api/purchaseOrder',  purchaseOrderController.create1);
+	app.post('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.create);
 
-	app.get('/api/purchaseOrder', purchaseOrderController.get);
+	app.get('/api/purchaseOrder', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.get);
 
-	app.get('/api/downloadPdfClient/:id', purchaseOrderController.downloadPdfClient);
+	app.get('/api/downloadPdfClient/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.downloadPdfClient);
 
-	app.put('/api/updatePurchaseOrder/:id',  purchaseOrderController.updatePurchaseOrder);
+	app.put('/api/updatePurchaseOrder/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.updatePurchaseOrder);
 
-	app.put('/api/updatePurchaseOrderDetails/:id', purchaseOrderController.updatePurchaseOrderDetails);
-	
-	app.get('/api/getAssets/:id',purchaseOrderController.getAssets);
+	app.put('/api/updatePurchaseOrderDetails/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.updatePurchaseOrderDetails);
 
-	app.get('/api/getServices/:id',purchaseOrderController.getServices);
-	
-	app.put('/api/deletePurchaseOrder/:id',  purchaseOrderController.delete);
+	app.get('/api/getAssets/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.getAssets);
+
+	app.get('/api/getServices/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.getServices);
+
+	app.put('/api/deletePurchaseOrder/:id', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.delete);
 
 	app.put('/api/deletePurchaseOrders', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.deleteSelected);
 
