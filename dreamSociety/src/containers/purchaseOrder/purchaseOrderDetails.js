@@ -269,7 +269,8 @@ class PurchaseOrderDetails extends Component {
                     }
         
                     this.setState({
-                        modalLoading: true,
+                        modalLoading: true
+                        
                         
                     })
 
@@ -360,6 +361,7 @@ class PurchaseOrderDetails extends Component {
     renderList = ({ getpurchaseOrder }) => {
        
         if (getpurchaseOrder && getpurchaseOrder.purchaseOrder) {
+            console.log(getPurchaseOrder)
             return getpurchaseOrder.purchaseOrder.sort((item1, item2) => { 
                  let cmpValue=(item1.vendor_master[this.state.filterName].localeCompare(item2.vendor_master[this.state.filterName]))
                  return this.state.sortVal?cmpValue: -cmpValue;

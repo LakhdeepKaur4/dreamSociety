@@ -171,9 +171,10 @@ class MemberEventsDetail extends Component {
    
 
 
-    renderMemberEvent = ({ memberEventsResult }) => {
+    renderMemberEvent = ({ memberEventsResult }) => {   
       
-        if (memberEventsResult) {
+        if (memberEventsResult && memberEventsResult.event) {
+           
             return memberEventsResult.event.sort((item1,item2)=>{
                 var cmprVal = (item1.societyMemberEventName && item2.societyMemberEventName) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
                 return this.state.sortVal ? cmprVal : -cmprVal;

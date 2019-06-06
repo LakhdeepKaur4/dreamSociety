@@ -70,8 +70,12 @@ import RelationshipMasterDetail from './containers/relationshipMaster/relationsh
 
 import SocietyMemberEvents from './containers/societyMemberEvent/societyMemberEvents';
 import MemberEventsDetail from './containers/societyMemberEvent/memberEventsDetail';
-import MemberEventsBooking from './containers/societyMemberEventsBooking/memberEventsBooking';
-import MemberEventsBookingDetail from './containers/societyMemberEventsBooking/memberEventsBookingDetail';
+
+import MemberEventsBooking from './containers/ownerEventsBooking/ownerEventsBooking';
+import MemberEventsBookingDetail from './containers/ownerEventsBooking/ownerEventsBookingDetail';
+
+import MemberEventsBookingTenant from './containers/tenantEventsBooking/tenantEventsBooking';
+import TenantMemberEventsBookingDetail from './containers/tenantEventsBooking/tenantEventsBookingDetails';
 
 import EventSpaceMaster from './containers/eventSpaceMaster/eventSpaceMaster';
 import EventSpaceMasterDetails from './containers/eventSpaceMaster/eventSpaceMasterDetails';
@@ -239,8 +243,12 @@ class App extends Component {
 
             <PrivateRoute path='/superDashboard/societyMemberEvents' component={SocietyMemberEvents} />
             <PrivateRoute path='/superDashboard/memberEventsDetail' component={MemberEventsDetail} />
-            <PrivateRoute path='/superDashboard/memberEventsBooking' component={MemberEventsBooking} />
-            <PrivateRoute path='/superDashboard/memberEventsBookingDetail' component={MemberEventsBookingDetail} />
+
+            <OwnerPrivateRoute path='/ownerDashboard/ownerEventsBooking' component={MemberEventsBooking} />
+            <OwnerPrivateRoute path='/ownerDashboard/ownerEventsBookingDetail' component={MemberEventsBookingDetail} />
+
+            <TenantPrivateRoute path='/tenantDashboard/tenantEventsBooking' component={MemberEventsBookingTenant} />
+            <TenantPrivateRoute path='/tenantDashboard/tenantEventsBookingDetails' component={TenantMemberEventsBookingDetail} />
 
             <PrivateRoute path='/superDashboard/eventSpaceMaster' exact component={EventSpaceMaster} />
             <PrivateRoute path='/superDashboard/eventSpaceMaster/eventSpaceMasterDetails' component={EventSpaceMasterDetails} />
