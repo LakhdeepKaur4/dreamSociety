@@ -679,7 +679,7 @@ module.exports = function (app) {
 
 	app.put('/api/commonAreaDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], commonAreaDetailController.delete);
 
-	app.get('/api/fingerPrint/test', [authJwt.verifyToken], fingerPrintController.test);
+	app.get('/api/fingerPrint/flat', [authJwt.verifyToken], fingerPrintController.getFingerPrintData);
 
 	app.get('/api/fingerPrint/roles', [authJwt.verifyToken], fingerPrintController.getRoles);
 

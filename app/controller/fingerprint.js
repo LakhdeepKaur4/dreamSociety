@@ -178,7 +178,7 @@ exports.nullFilterOnflats = async (req, res, next) => {
                 where: { isActive: true, fingerprintData: null }
             });
             fingerprintData.map(user => {
-                vendorIds.push(user.userId);
+                ownerMemberIds.push(user.userId);
             })
             const ownerMember = await OwnerMembersDetail.findAll({
                 where: { isActive: true, memberId: { [Op.in]: ownerMemberIds } },
@@ -264,7 +264,7 @@ exports.notNullFilterOnflats = async (req, res, next) => {
         let ownerMemberIds = [];
         let tenantIds = [];
         let tenantMemberIds = [];
-        let vendorIds = [];
+        // let vendorIds = [];
 
         if (id == 3) {
             console.log("inside")
@@ -279,6 +279,7 @@ exports.notNullFilterOnflats = async (req, res, next) => {
                 attributes: ['ownerId', 'firstName', 'lastName', 'userName', 'contact', 'email'],
                 include: [{ model: FlatDetail, include: [Tower, Floor] }]
             });
+            console.log(owner)
             // if (fingerprintData.userId = ! null) {
             owner.map(owner => {
                 owner.firstName = decrypt(owner.firstName);
@@ -428,11 +429,10 @@ exports.test = async (req, res, next) => {
 exports.updateFingerPrintData = async (req, res, next) => {
     try {
         const update = req.body;
-        console.log("update----->",update);
+        console.log("update----->", update);
         update.fingerprintData = req.body.fingerPrintData;
         const userId = req.params.userId;
         const fingerprintData = await FingerprintData.update(update, { where: { userId: userId } });
-        console.log("if updated*****",fingerprintData[0]);
         if (fingerprintData[0] != 0) {
             return res.status(httpStatus.OK).json({
                 message: "Finger Print successfully added"
@@ -462,6 +462,48 @@ exports.getRoles = async (req, res, next) => {
         if (role) {
             res.status(200).json(role);
         }
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+}
+
+// exports.addFingerPrintDataInMachine = async (req, res, next) => {
+//     try {
+        
+//     } catch (error) {
+//         res.status(500).json({
+//             message: error.message
+//         })
+//     }
+// }
+
+// var array = [{ 'a': '12', 'b': '10' }, { 'a': '20', 'b': '22' }];
+
+// array.forEach(function(e) { e.c = +e.b - +e.a });
+
+// document.write(JSON.stringify(array));
+
+exports.getFingerPrintData = async (req, res, next) => {
+    try {
+        const fingerprint = await FingerprintData.findAll({ where: { isActive: true }, include: [{ model: User, as: 'user', attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'], include: [Role] }] });
+        // fingerprint.forEach(function(e){
+        // e.flat = "Hi"
+        // })
+
+        // fingerprint.map(data => {
+        //     data.user.roles.map(async role => {
+        //         if (role.id == 3) {
+        //             let owner = await Owner.find({
+        //                 where: { isActive: true, ownerId: data.userId },
+        //                 include: [{ model: FlatDetail, include: [Tower, Floor] }]
+        //             });
+        //             console.log(owner)
+        //         }
+        //     });
+        // })
+        res.status(httpStatus.OK).json(fingerprint)
     } catch (error) {
         res.status(500).json({
             message: error.message
