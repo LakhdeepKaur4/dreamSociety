@@ -7,23 +7,36 @@ const FingerprintData = db.fingerprintData;
 const Owner = db.owner;
 const Tenant = db.tenant;
 const OwnerMembersDetail = db.ownerMembersDetail;
-const TenantMembersDetail = db.tenantMembersDetail;;
+const TenantMembersDetail = db.tenantMembersDetail;
+const OwnerFlatDetail = db.ownerFlatDetail;
+const TenantFlatDetail = db.tenantFlatDetail;
 const User = db.user;
 const FlatDetail = db.flatDetail;
 const Tower = db.tower;
 const Floor = db.floor;
-
+const Machine = db.machine;
+const MachineDetail = db.machineDetail;
 
 const Role = db.role;
 const Op = db.Sequelize.Op;
 
-decrypt = (text) => {
+let decrypt = (text) => {
     let key = config.secret;
     let algorithm = 'aes-128-cbc';
     let decipher = crypto.createDecipher(algorithm, key);
     let decryptedText = decipher.update(text, 'hex', 'utf8');
     decryptedText += decipher.final('utf8');
     return decryptedText;
+}
+
+let filterItem = (arrToBeFiltered) => {
+    // console.log(arr);
+    const arr = [3,4];
+    const resArr = arrToBeFiltered.filter(item => {
+        return arr.includes(item.rfidId) === false;
+    });
+    // console.log(resArr);
+    return resArr;
 }
 
 exports.addFingerPrintData = async (req, res, next) => {
@@ -469,44 +482,193 @@ exports.getRoles = async (req, res, next) => {
     }
 }
 
-// exports.addFingerPrintDataInMachine = async (req, res, next) => {
-//     try {
-        
-//     } catch (error) {
-//         res.status(500).json({
-//             message: error.message
-//         })
-//     }
-// }
-
-// var array = [{ 'a': '12', 'b': '10' }, { 'a': '20', 'b': '22' }];
-
-// array.forEach(function(e) { e.c = +e.b - +e.a });
-
-// document.write(JSON.stringify(array));
-
-exports.getFingerPrintData = async (req, res, next) => {
-    try {
-        const fingerprint = await FingerprintData.findAll({ where: { isActive: true }, include: [{ model: User, as: 'user', attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'], include: [Role] }] });
-        // fingerprint.forEach(function(e){
-        // e.flat = "Hi"
-        // })
-
-        // fingerprint.map(data => {
-        //     data.user.roles.map(async role => {
-        //         if (role.id == 3) {
-        //             let owner = await Owner.find({
-        //                 where: { isActive: true, ownerId: data.userId },
-        //                 include: [{ model: FlatDetail, include: [Tower, Floor] }]
-        //             });
-        //             console.log(owner)
-        //         }
-        //     });
-        // })
-        res.status(httpStatus.OK).json(fingerprint)
-    } catch (error) {
-        res.status(500).json({
-            message: error.message
+exports.getFingerprintAndManchineData = (req,res,next) => {
+    console.log(1)
+    const userData = [];
+    FingerprintData.findAll({
+        where: {
+            isActive: true
+        },
+        attributes: ['userId']
+    })
+    .then(fingerprint => {
+        // console.log(fingerprint);
+        const userIds = [];
+        fingerprint.map(item => {
+            userIds.push(item.userId);
         })
-    }
+
+        // console.log(userIds);
+
+        const promise = userIds.map(async id => {
+            await User.findOne({
+                where: {
+                    userId: id,
+                    // isActive: true
+                },
+                include: [
+                    {model: Role}
+                ]
+            })
+            .then(async user => {
+                // console.log(user);
+                if (user !== null) {
+                    user = user.toJSON();
+                    const flatIds = [];
+                    if (user.roles.length === 1) {
+                        if (user.roles[0].id === 3) {
+                            const OwnerFlats = await OwnerFlatDetail.findAll({
+                                where: {
+                                    ownerId: user.userId
+                                },
+                                attributes: ['flatDetailId']
+                            })
+
+                            if (OwnerFlats.length !== 0) {
+                                OwnerFlats.map(item => {
+                                    flatIds.push(item.flatDetailId);
+                                })
+                            }
+                            else {
+                                const OwnerMemberFlat = await OwnerMembersDetail.findOne({
+                                    where: {
+                                        memberId: user.userId
+                                    },
+                                    attributes: ['flatDetailId']
+                                })
+
+                                if (OwnerMemberFlat !== null) {
+                                    flatIds.push(OwnerMemberFlat.flatDetailId);
+                                }
+                            }
+                            const Flats = await FlatDetail.findAll({
+                                where: {
+                                    flatDetailId: {
+                                        [Op.in]: flatIds
+                                    }
+                                }
+                            })
+                            user.flats = Flats;
+                        }
+
+                        if (user.roles[0].id === 4) {
+                            const TenantFlats = await TenantFlatDetail.findAll({
+                                where: {
+                                    tenantId: user.userId
+                                },
+                                attributes: ['flatDetailId']
+                            })
+
+                            if (TenantFlats.length !== 0) {
+                                TenantFlats.map(item => {
+                                    flatIds.push(item.flatDetailId);
+                                })
+                            }
+                            else {
+                                const TenantMemberFlat = await TenantMembersDetail.findOne({
+                                    where: {
+                                        memberId: user.userId
+                                    },
+                                    attributes: ['flatDetailId']
+                                })
+
+                                if (TenantMemberFlat !== null) {
+                                    flatIds.push(TenantMemberFlat.flatDetailId);
+                                }
+                            }
+                            const Flats = await FlatDetail.findAll({
+                                where: {
+                                    flatDetailId: {
+                                        [Op.in]: flatIds
+                                    }
+                                }
+                            })
+                            user.flats = Flats;
+                        }
+                    }
+
+                    if (user.roles.length === 2) {
+                        if (user.roles[1].id === 3) {
+                            const OwnerFlats = await OwnerFlatDetail.findAll({
+                                where: {
+                                    ownerId: user.userId
+                                },
+                                attributes: ['flatDetailId']
+                            })
+
+                            if (OwnerFlats.length !== 0) {
+                                OwnerFlats.map(item => {
+                                    flatIds.push(item.flatDetailId);
+                                })
+                            }
+                            else {
+                                const OwnerMemberFlat = await OwnerMembersDetail.findOne({
+                                    where: {
+                                        memberId: user.userId
+                                    },
+                                    attributes: ['flatDetailId']
+                                })
+
+                                if (OwnerMemberFlat !== null) {
+                                    flatIds.push(OwnerMemberFlat.flatDetailId);
+                                }
+                            }
+                            const Flats = await FlatDetail.findAll({
+                                where: {
+                                    flatDetailId: {
+                                        [Op.in]: flatIds
+                                    }
+                                }
+                            })
+                            user.flats = Flats;
+                        }
+
+                        if (user.roles[1].id === 4) {
+                            const TenantFlats = await TenantFlatDetail.findAll({
+                                where: {
+                                    tenantId: user.userId
+                                },
+                                attributes: ['flatDetailId']
+                            })
+
+                            if (TenantFlats.length !== 0) {
+                                TenantFlats.map(item => {
+                                    flatIds.push(item.flatDetailId);
+                                })
+                            }
+                            else {
+                                const TenantMemberFlat = await TenantMembersDetail.findOne({
+                                    where: {
+                                        memberId: user.userId
+                                    },
+                                    attributes: ['flatDetailId']
+                                })
+
+                                if (TenantMemberFlat !== null) {
+                                    flatIds.push(TenantMemberFlat.flatDetailId);
+                                }
+                            }
+                            const Flats = await FlatDetail.findAll({
+                                where: {
+                                    flatDetailId: {
+                                        [Op.in]: flatIds
+                                    }
+                                }
+                            })
+                            user.flats = Flats;
+                        }
+                    }
+                    userData.push(user);
+                }
+            })
+        })
+
+        Promise.all(promise)
+        .then(result => {
+            res.status(httpStatus.OK).json({
+                userData
+            })
+        })
+    })
+    
 }
