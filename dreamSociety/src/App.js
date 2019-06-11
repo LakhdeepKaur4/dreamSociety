@@ -164,6 +164,8 @@ import PurchaseOrderDetails from './containers/purchaseOrder/purchaseOrderDetail
 import ViewAssets from './containers/purchaseOrder/viewAssets';
 import ViewServices from './containers/purchaseOrder/viewServices';
 import GuestInvitation from './containers/guestInvitation/guestInvitation';
+import FingerPrint from './containers/fingerprintMaster/getFingerprintData';
+import Machine from './containers/fingerprintMaster/getMachineData';
 
 import OwnerChart from './containers/ownerDashboardChart/ownerChart';
 import OwnerComplaintLineChart from './containers/ownerDashboardChart/ownerComplaintLineChart';
@@ -315,6 +317,8 @@ class App extends Component {
             <Route path='/superDashboard/electricityExpenseDetail' component={GetElectricityExpense} />
             <Route path='/superDashboard/addMonthlyElectricityExpenseDetail' component={MonthlyElectricityExpense} />
             <Route path='/superDashboard/monthlyElectricityExpenseDetail' component={MonthlyElectricityExpenseDetail} />
+            <Route path='/superDashboard/getFingerprintData' component={FingerPrint} />
+            <Route path='/superDashboard/getMachineData' component={Machine} />
             
             <OwnerPrivateRoute path='/ownerDashboard/complaintOwnerDetails' component={ComplaintOwnerDetails}/>
             <TenantPrivateRoute path='/tenantDashboard/complaintTenantDetails' component={ComplaintTenantDetails}/>

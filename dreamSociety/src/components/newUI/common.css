@@ -344,6 +344,10 @@ ul ul a {
     margin-left: 40px;
 }
 
+.customLabel{
+    display:none !important;
+}
+
 @media screen and (min-width: 248px) {
     .container {
         width: 80%;
