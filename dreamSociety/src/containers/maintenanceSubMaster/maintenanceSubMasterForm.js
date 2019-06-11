@@ -203,7 +203,7 @@ class MaintenanceSubMasterForm extends Component{
                 <Row md={12}>
                     <Col md={6}>
                         <label>Start Date</label>
-                        <input min={memberMaxDate()} className="form-control" type="date" name="startDate" id="start" onChange={this.startDateChange} />
+                        <input min={memberMaxDate()} value={this.state.startDate} className="form-control" type="date" name="startDate" id="start" onChange={this.startDateChange} />
                         <span className="error">{this.state.errors.startDate}</span>
                     </Col>
                     <Col md={6}>

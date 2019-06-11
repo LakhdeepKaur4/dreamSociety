@@ -3,19 +3,23 @@
 // export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 // export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
-// export  const URN = 'http://mydreamsociety.herokuapp.com/api';
-// export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const UR = 'https://mydreamsociety.herokuapp.com/';
 
-export  const PicURN = 'https://dreamsociety.herokuapp.com/';
-export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-export  const UR = 'https://dreamsociety.herokuapp.com/'
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
+
+export  const URN = 'https://mydreamsociety.herokuapp.com/api';
+export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
+export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
+export  const UR = 'https://mydreamsociety.herokuapp.com/';
+
+
+// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com/';
+// export  const URN = 'https://dreamsociety.herokuapp.com/api';
 
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
 export const GET_USERS='get_users';
+
 export const DELETE_USER='delete_user';
 export const DELETE_SELECTED_USERS = 'DELETE_SELECTED_USERS';
 export const ADD_USER='add_user';
@@ -352,5 +356,26 @@ export const GET_ELECT_EXPENSE_DETAIL='GET_ELECT_EXPENSE_DETAIL';
 export const UPDATE_MONTHLY_ELECTRICITY_EXPENSE='UPDATE_MONTHLY_ELECTRICITY_EXPENSE';
 export const FILTER_VIA_DATE='FILTER_VIA_DATE';
 
+export const ADD_PURCHASE_ORDER='ADD_PURCHASE_ORDER';
+export const GET_PURCHASE_ORDER='GET_PURCHASE_ORDER';
+export const GET_PDF='GET_PDF';
+export const DELETE_PURCHASE_ORDER='DELETE_PURCHASE_ORDER';
+export const MULTIPLE_DELETE_PURCHASE_ORDER='MULTIPLE_DELETE_PURCHASE_ORDER';
+export const ASSET_TYPE_ID='ASSET_TYPE_ID';
+export const UPDATE_PURCHASE='UPDATE_PURCHASE';
 
+export const GET_ASSETS_ID='GET_ASSETS_ID';
+export const UPDATE_ASSETS_PURCHASE='UPDATE_ASSETS_PURCHASE';
+export const GET_SERVICES_ID='GET_SERVICES_ID';
+export const UPDATE_SERVICE_PURCHASE='UPDATE_SERVICE_PURCHASE';
+export const DELETE_PURCHASE_DETAILS='DELETE_PURCHASE_DETAILS';
+export const DELETE_ALL_DETAILS='DELETE_ALL_DETAILS';
+
+export const ADD_PERSONAL_EVENT='ADD_PERSONAL_EVENT';
+export const GET_PERSONALEVENTS='GET_PERSONALEVENTS';
+export const PERSONAL_EVENT_SPACE_DETAILS='PERSONAL_EVENT_SPACE_DETAILS';
+export const GET_PERSONAL_BOOKING='GET_PERSONAL_BOOKING';
+export const DELETE_PERSONAL_BOOKING='DELETE_PERSONAL_BOOKING';
+export const DELETE_SELECTED_PERSONAL_BOOKING='DELETE_SELECTED_PERSONAL_BOOKING'
+export const UPDATE_PERSONAL_BOOKING='UPDATE_PERSONAL_BOOKING';
 

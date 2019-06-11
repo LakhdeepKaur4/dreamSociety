@@ -92,7 +92,6 @@ class TenantDetail extends Component {
         this.props.getState();
         this.props.getCity();
         this.props.getLocation();
-        this.props.rfid();
         console.log(this.state.societyName)
     }
 
@@ -458,11 +457,13 @@ class TenantDetail extends Component {
 
     refreshData = () => {
         this.setState({societyName: localStorage.getItem('societyName')});
+        this.props.rfid();
         this.props.getTenantDetail().then(() => this.setState({editTenant:false, loading: false}))
         .catch(() => this.setState({loading:false,editTenant:false}));
     }
 
     refreshDataAfterUpdate = () => {
+        this.props.rfid();
         this.props.getTenantDetail().then(() => this.setState({editTenant:false, modalLoading: false,permanentAddressVisible:true, editPermanent:false, permanentAddress:this.state.readOnly, countryId:'',
         stateId:'', cityId:'', locationId:'', editRFID:false, defaultRFID:true, rfidId:''}))
         .catch(() => this.setState({modalLoading:false}));

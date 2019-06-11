@@ -20,7 +20,6 @@ export function AddEventDetails(values){
 
 export  function getEventDetails(){
  
-
     const request = axios.get(`${URN}/eventSpaceMaster`,{headers:authHeader()})
     .then(response => response.data)
     .then(console.log(request));

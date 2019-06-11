@@ -54,6 +54,8 @@ import commonAreaMachineReducer from './commonAreaMachineReducer/commonAreaMachi
 import viewComplaintsReducer from './viewComplaintsReducer/viewComplaintsReducer';
 import electricityExpenseReducer from './electricityExpenseMaster/electricityExpenseMasterReducer';
 import monthlyElectricityExpenseReducer from './monthlyElectricityExpenseReducer/monthlyElectricityExpenseReducer';
+import PurchaseOrder from './purchaseOrderReducer/purchaseOrderReducer';
+import PersonalEventBookingReducer  from './personalEventBookingReducer/personalEventBookingReducer';
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -106,6 +108,8 @@ const rootReducer = combineReducers({
     MachineIdDetails,
     viewComplaintsReducer,
     electricityExpenseReducer,
-    monthlyElectricityExpenseReducer 
+    monthlyElectricityExpenseReducer,
+    PurchaseOrder,
+    PersonalEventBookingReducer 
 })
 export default rootReducer;

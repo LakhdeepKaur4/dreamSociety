@@ -2,7 +2,7 @@
 .wrapper {
     display: flex;
     align-items: stretch;
-    /* background-image: url('/assets/society.jpg'); */
+    background-image: url('/assets/society.jpg');
     background-size: cover;
     max-height: inherit;
     min-height: 100vh;
@@ -249,7 +249,7 @@ form {
     }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
     #body {
         display: block;
         height: inherit;
@@ -345,9 +345,25 @@ ul ul a {
     margin-left: 40px;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (min-width: 248px) {
     .container {
         width: 80%;
+    }
+    form {
+        width:auto;
+    }
+    .modal-content {
+        width: 100%;
+        right: 0;
+    }
+}
+
+@media screen and (max-width: 791px) {
+    .container {
+        width: 80%;
+    }
+    form {
+        width:auto;
     }
     .modal-content {
         width: 100%;

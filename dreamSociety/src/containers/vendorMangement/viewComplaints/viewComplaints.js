@@ -165,14 +165,7 @@ class ViewComplaints extends Component {
     viewFeedback(complaintId) {
         localStorage.setItem('complaintId', complaintId);
         this.push();
-        // this.setState({
-        //     complaintId,
-        //     //   editModal1: !this.state.editModal1
-        // }
-        // ,function(){
-
-        // }
-        // );
+    
     }
 
     searchOnChange = (e) => {
@@ -264,7 +257,7 @@ class ViewComplaints extends Component {
 
 
     close = () => {
-        return this.props.history.replace('/superDashBoard')
+        return this.props.history.replace('/vendorDashboard')
     }
 
     changePassword = () => {

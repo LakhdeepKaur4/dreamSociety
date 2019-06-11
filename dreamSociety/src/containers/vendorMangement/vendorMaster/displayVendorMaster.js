@@ -119,7 +119,7 @@ class DisplayVendorMaster extends Component {
     editUser(vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,rfid,rfidId,documentOne,documentTwo,picture){
         
     this.setState({
-            vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,rfid,documentOne,documentTwo,picture
+            vendorId,firstName,lastName,currentAddress,permanentAddress,contact,email,rfid,rfidId,documentOne,documentTwo,picture
             ,editVendorModal: !this.state.editVendorModal,
             readOnlyPermanent: permanentAddress, readOnlyCurrent: currentAddress})
             
@@ -304,6 +304,8 @@ class DisplayVendorMaster extends Component {
         this.setState({ modalLoading: true
         })
         }
+        console.log(this.state.rfid);
+        console.log(this.state.rfidId);
    }
 
 
@@ -361,7 +363,7 @@ class DisplayVendorMaster extends Component {
                 )
             })
         }
-    }
+    } 
 
     logout=()=>{
         localStorage.removeItem('token');

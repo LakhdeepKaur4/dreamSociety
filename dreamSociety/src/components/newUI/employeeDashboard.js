@@ -54,7 +54,7 @@ class EmployeeDashboard extends Component {
 
                         </div>
                     </div>
-                    <Link className="navbar-brand" to="/superDashboard"><i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa mr-1">&#xf1ad;</i>DRE@M SOCIETY</Link>
+                    <Link className="navbar-brand" to="/employeeDashboard"><i style={{ fontSize: '24px', color: 'skyblue', cursor: 'pointer' }} className="fa mr-1">&#xf1ad;</i>DRE@M SOCIETY</Link>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample05" aria-controls="navbarsExample05" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
@@ -62,7 +62,7 @@ class EmployeeDashboard extends Component {
                     <div className="collapse navbar-collapse" id="navbarsExample05">
                         <ul className="navbar-nav mr-auto mx-auto">
                             <li className="nav-item mx-3 active">
-                                <Link className="nav-link" to="/superDashboard">Home<span className="sr-only">(current)</span></Link>
+                                <Link className="nav-link" to="/employeeDashboard">Home<span className="sr-only">(current)</span></Link>
                             </li>
                             <li className="nav-item mx-3">
                                 <Link className="nav-link" to="#">Gallery</Link>
@@ -84,8 +84,10 @@ class EmployeeDashboard extends Component {
                             </button>
                             <div className="dropdown-menu dropdown-menu-lg-right bg-dark" aria-labelledby="dropdownMenuButton">
                                 <div className="form-inline ml-lg-3 ml-md-2 ml-sm-2 mt-2 mt-md-0">
+                                <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
+                                        onClick={this.props.change} >Change Password</button> 
                                     <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
-                                        onClick={this.logout} >Logout</button>
+                                        onClick={this.props.onClick} >Logout</button>
                                 </div>
                             </div>
                         </div>

@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {userLogout} from '../../actions/loginAction';
 import UI from '../../components/newUI/vendorDashboard';
+import VendorCharts from '../vendorMangement/vendorCharts/vendorCharts';
 
  class VendorDashboard extends Component {
   constructor(props) {
@@ -65,7 +66,9 @@ import UI from '../../components/newUI/vendorDashboard';
         </div>
       </nav> */}
       <UI onClick={this.logout} change={this.changePassword}>
-        
+      <div>
+      <VendorCharts/>
+      </div>
       </UI>
       {/* <div style={{ margin: '48px auto' }}>
         <Sidebar.Pushable as={Segment} attached="bottom">
