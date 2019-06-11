@@ -1,4 +1,5 @@
 module.exports = {
+  machinePort:7788,
   randomNumberMin:1,
   randomNumberMax:100000,
   algorithm : 'aes256',

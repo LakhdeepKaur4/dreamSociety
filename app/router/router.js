@@ -613,6 +613,8 @@ module.exports = function (app) {
 
 	app.get('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.get);
 
+	app.get('/api/machine/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.getByFlatId);
+
 	app.post('/api/machine', [authJwt.verifyToken, authJwt.isAdminRole], machine.create);
 
 	app.put('/api/machine/:id', [authJwt.verifyToken, authJwt.isAdminRole], machine.update);
