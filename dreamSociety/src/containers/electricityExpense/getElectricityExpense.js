@@ -509,7 +509,7 @@ class GetElectricityExpense extends Component {
 }
 
 const mapStateToProps = (state) => {
-
+         
     return {
         flatDetailMasterReducer: state.flatDetailMasterReducer,
         electricityExpenseReducer: state.electricityExpenseReducer

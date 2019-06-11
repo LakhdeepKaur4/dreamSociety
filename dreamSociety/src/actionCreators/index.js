@@ -1,7 +1,7 @@
-export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
-export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+// export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
+// export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+// export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+// export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
 // export  const URN = 'http://localhost:8081/api';
 // export  const PicURN = 'http://localhost:8081/';
@@ -23,10 +23,10 @@ export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:808
 // export  const DocURN = 'http://192.168.1.103:8081/';
 // export  const UR = 'http://192.168.1.103:8081/';
 
-// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
-// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-// export  const UR = 'https://dreamsociety.herokuapp.com/';
-// export  const URN = 'https://dreamsociety.herokuapp.com/api';
+export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+export  const UR = 'https://dreamsociety.herokuapp.com/';
+export  const URN = 'https://dreamsociety.herokuapp.com/api';
 
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
@@ -388,6 +388,6 @@ export const GET_PERSONALEVENTS='GET_PERSONALEVENTS';
 export const PERSONAL_EVENT_SPACE_DETAILS='PERSONAL_EVENT_SPACE_DETAILS';
 export const GET_PERSONAL_BOOKING='GET_PERSONAL_BOOKING';
 export const DELETE_PERSONAL_BOOKING='DELETE_PERSONAL_BOOKING';
-export const DELETE_SELECTED_PERSONAL_BOOKING='DELETE_SELECTED_PERSONAL_BOOKING'
+export const DELETE_SELECTED_PERSONAL_BOOKING='DELETE_SELECTED_PERSONAL_BOOKING';
 export const UPDATE_PERSONAL_BOOKING='UPDATE_PERSONAL_BOOKING';
 

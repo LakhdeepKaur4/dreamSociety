@@ -1,51 +1,56 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { authHeader } from "../../helper/authHeader";
-import {URN,} from '../../actionCreators/index';
+import {URN} from '../../actionCreators/index';
 
 import CanvasJSReact from '../../components/canvasjs.react';
+
+
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-class FlatLineChart extends Component {
-	state={   
-		flat:'',
-		emptyFlats:''
+class TenantComplaintPieChart extends Component {
+	state={
+		todo:65,
+		inProgress:15,
+		completed:20,
+		
 	}
 
-	componentDidMount() {
-        axios.get(`${URN}/flats/count`,{headers:authHeader()})
-          .then(res => {
-			console.log(res.data);
-			this.getData(res.data)
-		  })
-		}
-		getData=(data)=>{
-this.setState({
-	flat:data.activeFlats,
-	emptyFlats:data.emptyFlats
-})
-		}
+// 	componentDidMount() {
+//         axios.get(`${URN}/flats/count`,{headers:authHeader()})
+//           .then(res => {
+// 			console.log(res.data);
+// 			this.getData(res.data)
+// 		  })
+// 		}
+// 		getData=(data)=>{
+// this.setState({
+// 	flat:data.activeFlats,
+// 	emptyFlats:data.emptyFlats
+// })
+// 		}
 	render() {
 		const options = {
-			// theme: "dark2",
-
 			// exportEnabled: true,
-			animationEnabled: true,
+			// theme: "dark2",
+			animationEnabled: false,
 			title: {
-				text: "Flat Details Bar Graph "
+				text: "Complaint Details"
 			},
 			data: [{
-			
-				type: "column",  
+				type: "pie",
 				startAngle: 75,
-				toolTipContent: "<b>{label}</b>: {y}",
+				toolTipContent: "<b>{label}</b>: {y}%",
 				showInLegend: "true",
 				legendText: "{label}",
-				indexLabelFontSize: 16,     
-				indexLabel: "{label} - {y}",
+				indexLabelFontSize: 12,     
+				indexLabel: "{label} - {y}%",
 				dataPoints: [
-					{ y: this.state.flat, label: "Active Flats" },
-					{ y: this.state.emptyFlats, label: "Empty Flats" },
+					{ y: this.state.todo, label: "TODO" },
+					{ y: this.state.inProgress, label: "INPROGRESS" },
+					{ y: this.state.completed, label: "COMPLETED" },
+					
+
 					
 				]
 			}],
@@ -66,15 +71,19 @@ this.setState({
 		}
 		
 		return (
-		<div style={{marginTop:'20px'}}>
+		<div>
 			
 			<CanvasJSChart options = {options}
-				/* onRef={ref => this.chart = ref} */
+ 
+				onRef={ref => this.chart = ref} 
 			/>
+			{/* <FlatLineChart/> */}
+			
+			
 			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
 		</div>
 		);
 	}
 }
 
-export default FlatLineChart;
+export default TenantComplaintPieChart;

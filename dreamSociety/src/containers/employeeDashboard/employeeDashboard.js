@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {userLogout} from '../../actions/loginAction';
 import UI from '../../components/newUI/employeeDashboard';
+import EmployeeChart from '../employeeDashboardChart/employeeChart';
 
  class EmployeeDashboard extends Component {
   constructor(props) {
@@ -65,7 +66,9 @@ import UI from '../../components/newUI/employeeDashboard';
         </div>
       </nav> */}
       <UI onClick={this.logout} change={this.changePassword}>
-        
+          <div>
+            <EmployeeChart/>
+          </div>
       </UI>
       {/* <div style={{ margin: '48px auto' }}>
         <Sidebar.Pushable as={Segment} attached="bottom">
