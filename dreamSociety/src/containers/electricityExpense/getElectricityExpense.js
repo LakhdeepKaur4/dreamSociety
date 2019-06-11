@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Table, Row, Col, FormGroup, Input, Button, Label } from 'reactstrap'
+import { Table, Row, Col, FormGroup, Input, Button, Label } from 'reactstrap';
 import { getElectricityExpense, getRateForElectricityExpense, deleteElectricityExpense, deleteSelectedElectricityExpense, updateElectricityExpense } from '../../actions/electricityExpense';
 import UI from '../../components/newUI/superAdminDashboard';
 import ModalBox from '../../components/modal/modal';
@@ -56,7 +56,6 @@ class GetElectricityExpense extends Component {
             this.setState({ [e.target.name]: e.target.value });
         }
     }
-
 
     componentDidMount() {
         this.refreshData();

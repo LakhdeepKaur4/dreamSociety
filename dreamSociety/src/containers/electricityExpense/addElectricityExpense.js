@@ -265,7 +265,7 @@ class AddElectricityExpense extends Component {
                             type="text" name="lastReading"
                             maxLength="16"
                             onChange={this.rateChange}
-                            value={this.state.lastReading} ></input>
+                            value={this.state.lastReading}></input>
                         <span className="error">{this.state.errors.lastReading}</span>
                     </Col>
                     <Col md={3}>
