@@ -522,6 +522,7 @@ exports.getFingerprintAndManchineData = (req, res, next) => {
                             user.userName = decrypt(user.userName);
                             user.contact = decrypt(user.contact);
                             user.email = decrypt(user.email);
+                            user.flatDisable = true;
                             const flatIds = [];
                             if (user.roles.length === 1) {
                                 if (user.roles[0].id === 3) {
