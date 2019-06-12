@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {getMachineData,getMachineDetails} from '../../actions/fingerprint';
+import {getMachineData,getMachineDetails,disableMachine} from '../../actions/fingerprint';
 import UI from '../../components/newUI/superAdminDashboard';
 import { connect } from 'react-redux';
 import { Table, Col, Row, Form, Button, FormGroup } from 'reactstrap';
@@ -40,6 +40,10 @@ class Machine extends Component {
         this.props.getMachineDetails(this.state.userId)
     }
 
+    disableResult=()=>{
+        this.props.disableMachine(this.state.userId)
+    }
+
     fingerPrintData=()=>{
          this.props.history.push('/superDashboard/getFingerPrintData');
     }
@@ -61,7 +65,9 @@ class Machine extends Component {
                 <tr >
                    <td>{machineDetails.machinesDetail[0].machine_detail_master.machineActualId}</td>  
                    <td>{machineDetails.machinesDetail[0].flat_detail_master.flatNo}</td> 
-                    <td><Button color="success" onClick={this.machineResult}>Enable</Button></td> 
+                    <td><Button color="success mr-2" onClick={this.machineResult}>Enable</Button> 
+                       <Button color="danger" onClick={this.disableResult}>Disable</Button>
+                    </td>
                 </tr>
            
            )
@@ -109,4 +115,4 @@ const mapStateToProps = (state) => {
         fingerprintReducer: state.fingerprintReducer,
     }
 }
-export default connect(mapStateToProps, {getMachineData,getMachineDetails})(Machine);
+export default connect(mapStateToProps, {getMachineData,getMachineDetails,disableMachine})(Machine);

@@ -1,6 +1,6 @@
 import { authHeader } from '../helper/authHeader';
 import axios from 'axios';
-import { URN,GET_FINGERPRINT_DATA,GET_MACHINE_DATA,GET_MACHINE_DETAILS} from '../actionCreators/index';
+import { URN,GET_FINGERPRINT_DATA,GET_MACHINE_DATA,GET_MACHINE_DETAILS,DISABLE_MACHINE_DETAILS} from '../actionCreators/index';
 
 export function getFingerprintData() {
     const request = axios.get(`${URN}/fingerPrint/userFlats`, { headers: authHeader() })
@@ -49,3 +49,21 @@ export const getMachineDetails=(userId)=>{
      }
  
  }
+
+ export const disableMachine=(userId)=>{
+    const data={
+        userId,
+       
+    }
+    const request = axios.put(`${URN}/fingerPrint/disable/${userId}`,data, {headers:authHeader()})
+     .then(response => response.data)
+ 
+   
+     return{
+ 
+         type:DISABLE_MACHINE_DETAILS,
+         payload: request 
+     }
+ 
+ }
+
