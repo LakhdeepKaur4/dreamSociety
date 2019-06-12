@@ -55,7 +55,7 @@ module.exports = function (app) {
 	const fingerPrintController = require('../controller/fingerprint');
 	const vendorComplaintsController = require('../controller/vendorComplaints');
 	const purchaseOrderController = require('../controller/purchaseOrder');
-
+    const chatController = require('../controller/chat')
 
 	app.get('/', userController.start);
 
@@ -757,7 +757,7 @@ module.exports = function (app) {
 
 	app.put('/api/deleteSelectedPurchaseOrderDetails', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.deleteSelectedPurchaseOrderDetails);
 
-
+	app.post('/api/chat', [authJwt.verifyToken, authJwt.isAdminRole],chatController.createUserOnChatKit);
 
 
 
