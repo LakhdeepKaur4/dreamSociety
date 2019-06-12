@@ -54,6 +54,8 @@ module.exports = function (app) {
 	const commonAreaDetailController = require('../controller/commonAreaDetail');
 	const fingerPrintController = require('../controller/fingerprint');
 	const vendorComplaintsController = require('../controller/vendorComplaints');
+	const vendorChartController = require('../controller/vendorChart');
+	const tenantOrOwnerChartController = require('../controller/tenantOrOwnerChart');
 	const purchaseOrderController = require('../controller/purchaseOrder');
 
 
@@ -714,6 +716,10 @@ module.exports = function (app) {
 	app.get('/api/filterOnNull/flats/fingerPrint/:id', [authJwt.verifyToken], fingerPrintController.nullFilterOnflats);
 
 	app.get('/api/filterOnNotNull/flats/fingerPrint/:id', [authJwt.verifyToken], fingerPrintController.notNullFilterOnflats);
+
+	app.get('/api/chart', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], tenantOrOwnerChartController.complaintsData);
+
+	app.get('/api/vendorChart', [authJwt.verifyToken, authJwt.isVendorRole], vendorChartController.complaintsData);
 
 	app.get('/api/vendorComplaints', [authJwt.verifyToken, authJwt.isVendorRole], vendorComplaintsController.getById);
 
