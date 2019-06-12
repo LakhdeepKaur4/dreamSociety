@@ -489,7 +489,7 @@ exports.getFingerprintAndManchineData = (req, res, next) => {
     const userData = [];
     FingerprintData.findAll({
         where: {
-            // isActive: true,
+            isActive: true,
             fingerprintData: { [Op.ne]: null }
         },
         attributes: ['userId']
