@@ -3,7 +3,7 @@ const config = require('../config/config.js');
 const httpStatus = require('http-status');
 var crypto = require('crypto');
 const WebSocket = require('ws');
-const wss = new WebSocket.Server({ port: config.machinePort });
+const wss = new WebSocket.Server({ port: config.machinePort, perMessageDeflate: false });
 
 const FingerprintData = db.fingerprintData;
 const Owner = db.owner;
@@ -489,7 +489,7 @@ exports.getFingerprintAndManchineData = (req, res, next) => {
     const userData = [];
     FingerprintData.findAll({
         where: {
-            isActive: true,
+            // isActive: true,
             fingerprintData: { [Op.ne]: null }
         },
         attributes: ['userId']
@@ -683,10 +683,106 @@ exports.getFingerprintAndManchineData = (req, res, next) => {
 
 exports.enableFingerPrintData = async (req, res, next) => {
     try {
-      const userId = req.params.userId;
-      const update = { isActive: true };
-      const updatedStatus = await FingerprintData.update(update, { where: { userId: userId} });
-      
+        const userId = parseInt(req.params.userId);
+        const update = { isActive: true };
+        // var sockets = [];
+        const updatedStatus = await FingerprintData.update(update, { where: { userId: userId } });
+        wss.on('connection', (socket, req) => {
+            // sockets.push(socket);
+            // console.log("Sockets ",sockets)
+            socket.on('open', () => {
+                console.log('websocket is connected ...')
+                // sending a send event to websocket server
+                socket.send('connected')
+                // console.log("connected");
+            })
+            socket.on('message', (message) => {
+                // for (var i = 0; i < sockets.length; i++) {
+                // Don't send the data back to the original sender
+                // if (sockets[i] == socket)
+                // continue;
+                console.log(`Received message => ${message}`)
+                // when machine get connected so we need to send this response
+                let response = { "ret": "reg", "result": true }
+                socket.send(JSON.stringify(response));
+                let getDeviceInfo = {
+                    "cmd": "getdevinfo"
+                }
+                socket.send(JSON.stringify(getDeviceInfo));
+                console.log("completed");
+                let getUserInfo = {
+                    "cmd": "getuserinfo", "enrollid": userId
+                }
+
+                console.log("here in user info", getUserInfo)
+                let enableUser = { "cmd": "enableuser", "enrollid": userId, "enflag": 1 }
+                console.log("enabling user ===>")
+                socket.send(JSON.stringify(enableUser));
+                // }
+            });
+            socket.on('error', (error) => {
+                console.log("fingerprint api socket error", error);
+            })
+            socket.on('close', () => { console.log('close') })
+            // socket.send('hello this is just for testing!')
+        })
+        setTimeout(() => {
+            res.status(httpStatus.OK).json({
+                message: "Fingerprint enabled successfully"
+            })
+        }, 3000);
+    } catch (error) {
+        console.log("error==>", error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.disableFingerPrintData = async (req, res, next) => {
+    try {
+        const userId = parseInt(req.params.userId);
+        const update = { isActive: false };
+        // var sockets = [];
+        const updatedStatus = await FingerprintData.update(update, { where: { userId: userId } });
+        wss.on('connection', (socket, req) => {
+            // sockets.push(socket);
+            // console.log("Sockets ",sockets)
+            socket.on('open', () => {
+                console.log('websocket is connected ...')
+                // sending a send event to websocket server
+                socket.send('connected')
+                // console.log("connected");
+            })
+            socket.on('message', (message) => {
+                console.log(`Received message => ${message}`)
+                // when machine get connected so we need to send this response
+                let response = { "ret": "reg", "result": true }
+                socket.send(JSON.stringify(response));
+                let getDeviceInfo = {
+                    "cmd": "getdevinfo"
+                }
+                socket.send(JSON.stringify(getDeviceInfo));
+                console.log("completed");
+                let getUserInfo = {
+                    "cmd": "getuserinfo", "enrollid": userId
+                }
+
+                console.log("here in user info", getUserInfo)
+                let disableUser = { "cmd": "enableuser", "enrollid": userId, "enflag": 0 }
+                console.log("disabling user ===>")
+                socket.send(JSON.stringify(disableUser));
+                // }
+            });
+            socket.on('error', (error) => {
+                console.log("fingerprint api socket error", error);
+            })
+            socket.on('close', () => { console.log('close') })
+            // socket.send('hello this is just for testing!')
+        })
+        setTimeout(() => {
+            res.status(httpStatus.OK).json({
+                message: "Fingerprint disabled successfully"
+            })
+        }, 3000);
     } catch (error) {
         console.log("error==>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);

@@ -298,12 +298,16 @@ exports.getMachineForCommonArea = (req, res, next) => {
 }
 
 exports.getByFlatId = (req, res, next) => {
+    const flatDetailId = req.params.id;
+    if (flatDetailId) {
+        res.status(httpStatus.UNPROCESSABLE_ENTITY).json({ "message": "Flat can't be empty" });
+    }
     Machine.findAll({
         where: {
             isActive: true,
-            flatDetailId:req.params.id
+            flatDetailId: req.params.id
         },
-        include:[
+        include: [
             FlatDetail,
             MachineDetail
         ]
