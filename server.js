@@ -8,6 +8,21 @@ var bodyParser = require('body-parser');
 const path = require('path');
 // var upload = require('express-fileupload');
 console.log('server started');
+// const WebSocket = require('ws');
+ 
+// const ws = new WebSocket.Server({ port: 7788 });
+ 
+// ws.on('open', function open() {
+//   ws.send('something');
+// });
+ 
+// ws.on('message', function incoming(data) {
+//   console.log(data);
+// });
+
+// ws.on('error', (error) => {
+// 	console.log("socket error",error);
+// })
 
 app.use(bodyParser.urlencoded({
 	extended: true
@@ -28,7 +43,7 @@ require('./app/router/router.js')(app);
 const db = require('./app/config/db.config.js');
 
 const Role = db.role;
-var PORT = process.env.PORT || 8082;
+var PORT = process.env.PORT || 8081;
 
 // force: true will drop the table if it already exists
 db.sequelize.sync({
