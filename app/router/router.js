@@ -759,7 +759,9 @@ module.exports = function (app) {
 
 	app.post('/api/chat', [authJwt.verifyToken, authJwt.isAdminRole],chatController.createUserOnChatKit);
 
+	app.get('/api/chat/:id', [authJwt.verifyToken, authJwt.isAdminRole],chatController.getUserFromChatKit);
 
+    
 
 
 }
