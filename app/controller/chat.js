@@ -2,9 +2,9 @@ const httpStatus = require('http-status');
 const Chatkit = require('@pusher/chatkit-server');
 const config = require('../config/config.js');
 
-const chatkit = Chatkit.default({
+const chatkit = new Chatkit.default({
     instanceLocator: config.instanceLocator,
-    key: config.chatkitKey
+    key: config.key
 })
 
 exports.createUserOnChatKit = async (req, res, next) => {

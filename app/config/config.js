@@ -12,6 +12,6 @@ module.exports = {
   uploadDocumentPath: (__dirname, 'public/documents/'),
   // activationLink:'https://dreamsocietydev.firebaseapp.com/'
   activationLink: 'http://mydreamsociety.com',
-  chatkitInstanceLocator:"v1:us1:288b3dbe-c84d-4124-99a2-9b9ac1dfeba5",
-  chatkitKey:"64ea67c2-6c5f-447a-ad99-424f54649986:LZFgtDPaVAjditpc6+QDrX3PWu64RXxaEhc2MvyPPhw=",
+  instanceLocator:"v1:us1:288b3dbe-c84d-4124-99a2-9b9ac1dfeba5",
+  key:"64ea67c2-6c5f-447a-ad99-424f54649986:LZFgtDPaVAjditpc6+QDrX3PWu64RXxaEhc2MvyPPhw=",
 };
