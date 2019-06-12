@@ -26,7 +26,18 @@ exports.createUserOnChatKit = async (req, res, next) => {
     }
 }
 
-exports.getUserFromChatKit = async (req, res, next) => {
+exports.getAllUserFromChatKit = async (req, res, next) => {
+    try {
+        chatkit.getUser()
+            .then(user => res.status(httpStatus.OK).json({ message: "User content page", user }))
+            .catch(err => res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err))
+    } catch (error) {
+        console.log("error==>", error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
+exports.getByUserIdFromChatKit = async (req, res, next) => {
     try {
         chatkit.getUser({
             id: req.params.id,

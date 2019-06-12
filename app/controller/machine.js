@@ -315,7 +315,8 @@ exports.getByFlatId = (req, res, next) => {
         .then(machines => {
             if (machines.length !== 0) {
                 res.status(httpStatus.OK).json({
-                    machinesDetail: machines
+                    machinesDetail: machines,
+                    disableFlat:true
                 })
             } else {
                 res.status(httpStatus.NO_CONTENT).json({
