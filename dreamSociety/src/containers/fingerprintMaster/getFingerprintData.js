@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import UI from '../../components/newUI/superAdminDashboard';
 import { getFingerprintData,getMachineData } from '../../actions/fingerprint';
 import { connect } from 'react-redux';
-import { Table, Row, Col, FormGroup, Input, Button, Label } from 'reactstrap'
+import { Table, Row, Col, FormGroup, Input, Button, Label } from 'reactstrap';
+import SearchFilter from '../../components/searchFilter/searchFilter';
 import DropdownComponent from '../../components/reusableComponents/dropdown';
 import DefaultSelect from '../../constants/defaultSelect';
-import styles from '../../components/newUI/common.css'
+import styles from '../../components/newUI/common.css';
+import Spinner from '../../components/spinner/spinner';
 
 
 class FingerPrint extends Component {
@@ -19,8 +21,9 @@ class FingerPrint extends Component {
             editData: {
                 isActive: false
             },
-            filterName: 'flatNo',
+            filterName: 'firstName',
             flatDetailId:'',
+            loading: true,
             modalLoading: false,
             modal: false,
             isDisabled: true,
@@ -28,6 +31,7 @@ class FingerPrint extends Component {
             search: '',
             message: '',
             errors: {},
+            
         }
 
     }
@@ -37,10 +41,25 @@ class FingerPrint extends Component {
     }
 
     refreshData() {
-        this.props.getFingerprintData();
-        // .then(() => this.setState({ loading: false, modalLoading: false, modal: false }))
+        this.props.getFingerprintData().then(() => this.setState({ loading: false })).catch(err=>{  console.log(err.response.data.message)
+            this.setState({message: err.response.data.message, loading: false})
+            })
         // this.props.getRateForElectricityExpense();
     }
+
+    searchOnChange = (e) => {
+        this.setState({ search: e.target.value })
+    }
+
+    searchFilter = (search) => {
+        return function (x) { console.log(x)
+            return x.firstName.toLowerCase().includes(search.toLowerCase())  ||
+             x.email.toLowerCase().includes(search.toLowerCase())  ||
+             x.contact.toLowerCase().includes(search.toLowerCase()) ||
+            !search;
+        }
+    }
+
 
 
     logout = () => {
@@ -54,23 +73,55 @@ class FingerPrint extends Component {
     }
 
     changePassword = () => {
-        return this.props.history.replace('/superDashboard/changePassword');
+        return this.props.history.replace('/superDashboard/changePassword')
     }
 
     onChangeInput = (e) => {
+        let selected=e.target.value
         console.log("^^edit ", this.state, e.target.value)
+
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value, errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value });
+        }
         this.setState({
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
+            flatDetailId:selected,
+            message:''
         })
         this.props.getMachineData(e.target.value);
     }
 
-    getMachineComponent(){
-        console.log("userId",this.state.flatDetailId);
-         this.props.history.push('/superDashboard/getMachineData');
+    getMachineComponent=(userId,flatDetailId)=>{
+        console.log("userId=============",userId,flatDetailId);
+        localStorage.setItem('flatDetailId', flatDetailId)
+       
+        localStorage.setItem('userId', userId)
+         
+        let errors = {};
+
+        
+        if (this.state.flatDetailId === '') 
+        { errors.flatDetailId = " Flat No can't be empty" }
+
+        this.setState({ errors })
+        const isValid = Object.keys(errors).length === 0
+
+        if (isValid) {
+            this.props.history.push('/superDashboard/getMachineData');
+                
+              
+        }
+
+        
     }
 
     getDropdownForFlats = ({ fingerprintDetails},userId) => {
+        let data;
         if (fingerprintDetails && fingerprintDetails.userData) {
             return fingerprintDetails.userData.filter((flatRecord) => {        
                 return flatRecord.userId == userId
@@ -83,12 +134,17 @@ class FingerPrint extends Component {
                     )
                 })
             })
+          
         }
     }
 
     getFingerprintDetail({ fingerprintDetails }) {
         if (fingerprintDetails && fingerprintDetails.userData) {
-            return fingerprintDetails.userData.map((item, index) => {
+
+            return fingerprintDetails.userData.sort((item1,item2)=>{ 
+                var cmprVal = (item1.firstName && item2.firstName ) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
+             return this.state.sortVal ? cmprVal : -cmprVal;
+            }).filter(this.searchFilter(this.state.search)).map((item, index) => { console.log("finger===============", item)
                 return (
                     <tr key={item.userId}>
                         <td> {index + 1}</td>
@@ -96,7 +152,7 @@ class FingerPrint extends Component {
                         <td> {item.email}</td>
                         <td> {item.contact}</td>
                         <td>
-                            <DropdownComponent
+                            {/* <DropdownComponent
                                 name="flatDetailId"
                                 type="select"
                                 inputChange={this.onChangeInput}
@@ -105,15 +161,16 @@ class FingerPrint extends Component {
                             // error={this.state.errors.rate}
                             ><DefaultSelect />
                                 {this.getDropdownForFlats(this.props.fingerprintReducer,item.userId)}
-                            </DropdownComponent>
-                            {/* <Input type="select" value={this.state.flatDetailId}  name="flatDetailId" onChange={this.onChangeInput} selected={this.state.flatDetailId}>
+                            </DropdownComponent> */}
+                            <Input type="select" defaultValue='no-value'   name="flatDetailId" onChange={this.onChangeInput} selected={this.state.flatDetailId}>
                                 <DefaultSelect/>
-
-                                {this.getDropdownForFlats(this.props.fingerprintReducer)}
-                            </Input> */}
+                                {this.getDropdownForFlats(this.props.fingerprintReducer,item.userId)}
+                            </Input>
+                             <span className="error">{this.state.errors.flatDetailId}</span>
+                            
                         </td>
                         <td>
-                            <Button color="success" className="mr-2" onClick={this.getMachineComponent.bind(this,item.userId)}>Get Machine</Button>
+                            <Button color="success" className="mr-2"   onClick={this.getMachineComponent.bind(this,item.userId, this.state.flatDetailId)}>Get Machine</Button>
                         </td>
                     </tr>
                 )
@@ -129,7 +186,11 @@ class FingerPrint extends Component {
                 <tr>
                     {/* <th style={{ width: '4%' }}></th> */}
                     <th style={{ width: '4%' }}>#</th>
-                    <th>Name</th>
+                    <th  onClick={()=>{
+                             this.setState((state)=>{return {sortVal:!state.sortVal,
+                                filterName:'firstName'}});
+                        }} >Name <i className="fa fa-arrows-v" id="sortArrow" aria-hidden="true"></i></th>
+                    {/* <th>Name</th> */}
                     <th>Email</th>
                     <th>Contact</th>
                     <th>Flats</th>
@@ -148,9 +209,12 @@ class FingerPrint extends Component {
                     </div>
                     <div className="top-details">
                         <h3 align="center">Finger Print Data Master</h3>
-                        <Button color="primary" onClick={this.addExpense}>Finger Print Data Master</Button>
+                        {/* <Button color="primary" onClick={this.addExpense}>Finger Print Data Master</Button> */}
                     </div>
-                    {tableData}
+                    <SearchFilter type="text" value={this.state.search}
+                            onChange={this.searchOnChange} />
+                 
+                    {(this.state.loading) ? <Spinner /> : tableData}
                 </div>
             </UI>
         )

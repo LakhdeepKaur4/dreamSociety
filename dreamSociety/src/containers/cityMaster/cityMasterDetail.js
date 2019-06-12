@@ -11,6 +11,7 @@ import _ from 'underscore';
 import DefaultSelect from './../../constants/defaultSelect';
 
 
+
 class CityMasterDetail extends Component {
     constructor(props) {
         super(props);
