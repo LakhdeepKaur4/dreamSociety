@@ -164,8 +164,19 @@ import PurchaseOrderDetails from './containers/purchaseOrder/purchaseOrderDetail
 import ViewAssets from './containers/purchaseOrder/viewAssets';
 import ViewServices from './containers/purchaseOrder/viewServices';
 import GuestInvitation from './containers/guestInvitation/guestInvitation';
-import VendorCharts from './containers/vendorMangement/vendorCharts/vendorCharts';
-import VendorComplaintData from './containers/vendorMangement/vendorCharts/vendorComplaintData';
+import FingerPrint from './containers/fingerprintMaster/getFingerprintData';
+import Machine from './containers/fingerprintMaster/getMachineData';
+
+import OwnerChart from './containers/ownerDashboardChart/ownerChart';
+import OwnerComplaintLineChart from './containers/ownerDashboardChart/ownerComplaintLineChart';
+import OwnerComplaintPieChart from './containers/ownerDashboardChart/ownerComplaintPieChart';
+import PaymentDetailsChart from './containers/ownerDashboardChart/paymentDetailsChart';
+import ServiceDetailsChart from './containers/ownerDashboardChart/serviceDetailsChart';
+import TenantChart from './containers/tenantDashboardChart/tenantChart';
+import TenantComplaintPieChart from './containers/tenantDashboardChart/tenantComplaintChart';
+import TenantServicesChart from './containers/tenantDashboardChart/tenantServicesChart';
+import TenantPaymentChart from './containers/tenantDashboardChart/tenantPaymentChart';
+import EmployeeChart from './containers/employeeDashboardChart/employeeChart';
 
 class App extends Component {
   render() {
@@ -306,6 +317,8 @@ class App extends Component {
             <Route path='/superDashboard/electricityExpenseDetail' component={GetElectricityExpense} />
             <Route path='/superDashboard/addMonthlyElectricityExpenseDetail' component={MonthlyElectricityExpense} />
             <Route path='/superDashboard/monthlyElectricityExpenseDetail' component={MonthlyElectricityExpenseDetail} />
+            <Route path='/superDashboard/getFingerprintData' component={FingerPrint} />
+            <Route path='/superDashboard/getMachineData' component={Machine} />
             
             <OwnerPrivateRoute path='/ownerDashboard/complaintOwnerDetails' component={ComplaintOwnerDetails}/>
             <TenantPrivateRoute path='/tenantDashboard/complaintTenantDetails' component={ComplaintTenantDetails}/>
@@ -334,10 +347,18 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/viewAssets' component={ViewAssets} />
             <PrivateRoute path='/superDashboard/viewServices' component={ViewServices} />
             <TenantPrivateRoute path='/tenantDashboard/guestInvitation' component={GuestInvitation} />
+            <OwnerPrivateRoute path='/ownerDashboardChart/ownerChart' component={OwnerChart} />
+            <OwnerPrivateRoute path='/ownerDashboardChart/ownerComplaintLineChart' component={OwnerComplaintLineChart} />
+            <OwnerPrivateRoute path='/ownerDashboardChart/ownerComplaintLineChart' component={OwnerComplaintPieChart} />
+            <OwnerPrivateRoute path='/ownerDashboardChart/paymentDetailsChart' component={PaymentDetailsChart} />
+            <OwnerPrivateRoute path='/ownerDashboardChart/serviceDetailsChart' component={ServiceDetailsChart} />
 
-            <VendorCharts path='/vendorDashboard/vendorCharts' component={VendorCharts}/>
-            <VendorComplaintData path='/vendorDashboard/VendorComplaintData' component={VendorComplaintData}/>
-           
+            <TenantPrivateRoute path='/tenantDashboardChart/tenantChart' component={TenantChart} />
+            <TenantPrivateRoute path='/tenantDashboardChart/tenantComplaintChart' component={TenantComplaintPieChart} />
+            <TenantPrivateRoute path='/tenantDashboardChart/tenantPaymentChart' component={TenantPaymentChart} />
+            <TenantPrivateRoute path='/tenantDashboardChart/tenantServicesChart' component={TenantServicesChart} />
+
+            <EmployeePrivateRoute path='/employeeDashboardChart/employeeChart' component={EmployeeChart} />
 
 
 

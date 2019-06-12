@@ -56,6 +56,7 @@ import electricityExpenseReducer from './electricityExpenseMaster/electricityExp
 import monthlyElectricityExpenseReducer from './monthlyElectricityExpenseReducer/monthlyElectricityExpenseReducer';
 import PurchaseOrder from './purchaseOrderReducer/purchaseOrderReducer';
 import PersonalEventBookingReducer  from './personalEventBookingReducer/personalEventBookingReducer';
+import fingerprintReducer  from './fingerprint/fingerprintMaster';
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -110,6 +111,7 @@ const rootReducer = combineReducers({
     electricityExpenseReducer,
     monthlyElectricityExpenseReducer,
     PurchaseOrder,
-    PersonalEventBookingReducer 
+    PersonalEventBookingReducer,
+    fingerprintReducer
 })
 export default rootReducer;

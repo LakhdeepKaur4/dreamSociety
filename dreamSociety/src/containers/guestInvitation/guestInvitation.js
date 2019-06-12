@@ -7,7 +7,7 @@ import Spinner from '../../components/spinner/spinner'
 import {Form, Button,  FormGroup,  Input, Label, Col, Row } from 'reactstrap';
 import DefaultSelect from './../../constants/defaultSelect';
 import {OnKeyPressUserhandler,numberValidation} from '../../validation/validation';
-import { node } from 'prop-types';
+
 
 
 
@@ -65,6 +65,13 @@ class GuestInvitation extends Component{
                                 <option>Private Event</option>
                                 <option>Public Event</option>
                            </Input>
+                       </FormGroup>
+
+                       <FormGroup>
+                           <Label>Event Name</Label>
+                           <Input type="select" defaultValue='no-value' onKeyPress={OnKeyPressUserhandler} placeholder="eventName">
+                           <DefaultSelect />
+                            </Input>
                        </FormGroup>
 
                        <FormGroup>
