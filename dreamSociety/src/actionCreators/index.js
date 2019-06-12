@@ -1,7 +1,7 @@
-// export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
-// export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-// export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
-// export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+export  const URN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/api';
+export  const PicURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+export  const DocURN = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
+export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:8081/';
 
 // export  const URN = 'http://localhost:8082/api';
 // export  const PicURN = 'http://localhost:8082/';
@@ -14,11 +14,15 @@
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const UR = 'https://mydreamsociety.herokuapp.com/'; 
 
+// export  const URN = 'http://192.168.1.107:8081/api';
+// export  const PicURN = 'http://192.168.1.107:8081/';
+// export  const DocURN = 'http://192.168.1.107:8081/';
+// export  const UR = 'http://192.168.1.107:8081/';
 
-export  const PicURN = 'https://dreamsociety.herokuapp.com/';
-export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-export  const UR = 'https://dreamsociety.herokuapp.com/';
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
+// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com/';
+// export  const URN = 'https://dreamsociety.herokuapp.com/api';
 
 export const USER_LOGIN='user_login';
 export const GET_ROLES='get_roles';
@@ -385,3 +389,6 @@ export const UPDATE_PERSONAL_BOOKING='UPDATE_PERSONAL_BOOKING';
 
 export const GET_FINGERPRINT_DATA='GET_FINGERPRINT_DATA';
 export const GET_MACHINE_DATA='GET_MACHINE_DATA'
+
+export const GET_MACHINE_DETAILS='GET_MACHINE_DETAILS';
+export const DISABLE_MACHINE_DETAILS='DISABLE_MACHINE_DETAILS';
