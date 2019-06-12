@@ -487,6 +487,7 @@ exports.getRoles = async (req, res, next) => {
 exports.getFingerprintAndManchineData = (req, res, next) => {
     // console.log(1)
     const userData = [];
+    // userData.unshift({disabled:true});
     FingerprintData.findAll({
         where: {
             isActive: true,
@@ -674,7 +675,8 @@ exports.getFingerprintAndManchineData = (req, res, next) => {
                 .then(result => {
                     console.log("&&&&=>", userData);
                     res.status(httpStatus.OK).json({
-                        userData
+                        userData,
+                        // disableFlat:true
                     })
                 })
         })

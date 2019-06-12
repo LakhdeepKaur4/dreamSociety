@@ -757,13 +757,10 @@ module.exports = function (app) {
 
 	app.put('/api/deleteSelectedPurchaseOrderDetails', [authJwt.verifyToken, authJwt.isAdminRole], purchaseOrderController.deleteSelectedPurchaseOrderDetails);
 
-	app.post('/api/chat', [authJwt.verifyToken, authJwt.isAdminRole],chatController.createUserOnChatKit);
+	app.post('/api/chat',chatController.createUserOnChatKit);
 
-	app.get('/api/chat/:id', [authJwt.verifyToken, authJwt.isAdminRole],chatController.getByUserIdFromChatKit);
+	app.get('/api/chat',chatController.getAllUserFromChatKit);
 
-	app.get('/api/chat', [authJwt.verifyToken, authJwt.isAdminRole],chatController.getAllUserFromChatKit);
-
-    
-
+	app.get('/api/chat/:id',chatController.getByUserIdFromChatKit);
 
 }
