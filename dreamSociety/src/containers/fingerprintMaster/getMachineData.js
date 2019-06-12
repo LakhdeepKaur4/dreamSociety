@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Table, Col, Row, Form, Button, FormGroup } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 
-let flatDetailId;
+let selected
 let userId;
 class Machine extends Component {
           constructor(props){
@@ -21,7 +21,7 @@ class Machine extends Component {
     
 
     refreshData=()=>{
-        flatDetailId=localStorage.getItem("flatDetailId")
+         let flatDetailId=localStorage.getItem("selected")
         userId=localStorage.getItem("userId")
         this.setState({userId})
         console.log(userId)
@@ -30,7 +30,7 @@ class Machine extends Component {
     }
 
     componentDidMount=()=>{
-        this.refreshData(flatDetailId);
+        this.refreshData(selected);
     }
 
     machineResult=()=>{
