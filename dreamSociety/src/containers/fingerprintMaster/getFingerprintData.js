@@ -31,7 +31,7 @@ class FingerPrint extends Component {
             search: '',
             message: '',
             errors: {},
-            selected:[]
+            selectedUser:''
             
         }
 
@@ -77,7 +77,8 @@ class FingerPrint extends Component {
         return this.props.history.replace('/superDashboard/changePassword')
     }
 
-    onChangeInput = (e) => {
+    onChangeInput = (userId,e) => {
+        console.log(userId,"userID============")
         let selected=e.target.value
         console.log("^^edit ", this.state, e.target.value)
 
@@ -91,15 +92,16 @@ class FingerPrint extends Component {
         }
         this.setState({
             [e.target.name]: e.target.value,
-            selected:selected,
+            flatDetailId:selected,
+            selectedUser:userId,
             message:''
         })
         this.props.getMachineData(e.target.value);
     }
 
-    getMachineComponent=(userId,selected)=>{
-        console.log("userId=============",userId);
-        localStorage.setItem('selected', selected)
+    getMachineComponent=(userId,flatDetailId)=>{
+        console.log("userId=============",userId,flatDetailId);
+        localStorage.setItem('flatDetailId', flatDetailId)
        
         localStorage.setItem('userId', userId)
          
@@ -163,7 +165,7 @@ class FingerPrint extends Component {
                             ><DefaultSelect />
                                 {this.getDropdownForFlats(this.props.fingerprintReducer,item.userId)}
                             </DropdownComponent> */}
-                            <Input type="select" defaultValue='no-value'   name="flatDetailId" onChange={this.onChangeInput} selected={this.state.selected}>
+                            <Input type="select" defaultValue='no-value' value={item.userId !== this.state.selectedUser ? 'no-value' : '' }  name="flatDetailId" onChange={this.onChangeInput.bind(this,item.userId)} >
                                 <DefaultSelect/>
                                 {this.getDropdownForFlats(this.props.fingerprintReducer,item.userId)}
                             </Input>
@@ -171,7 +173,7 @@ class FingerPrint extends Component {
                             
                         </td>
                         <td>
-                            <Button color="success" className="mr-2"   onClick={this.getMachineComponent.bind(this,item.userId, this.state.selected)}>Get Machine</Button>
+                            <Button color="success" className="mr-2" disabled={item.userId !== this.state.selectedUser}   onClick={this.getMachineComponent.bind(this,item.userId, this.state.flatDetailId)}>Get Machine</Button>
                         </td>
                     </tr>
                 )
