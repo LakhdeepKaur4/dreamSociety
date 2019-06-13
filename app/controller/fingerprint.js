@@ -490,8 +490,10 @@ exports.getFingerprintAndManchineData = (req, res, next) => {
     // userData.unshift({disabled:true});
     FingerprintData.findAll({
         where: {
-            isActive: true,
-            fingerprintData: { [Op.ne]: null }
+            [Op.and]: [
+                { isActive: true },
+                { fingerprintData: { [Op.ne]: null } }
+            ]
         },
         attributes: ['userId']
     })
@@ -742,8 +744,9 @@ exports.enableFingerPrintData = async (req, res, next) => {
 
 exports.disableFingerPrintData = async (req, res, next) => {
     try {
+        console.log("**disabling ")
         const userId = parseInt(req.params.userId);
-        const update = { isActive: false };
+        const update = { isActive: true };
         // var sockets = [];
         const updatedStatus = await FingerprintData.update(update, { where: { userId: userId } });
         wss.on('connection', (socket, req) => {
