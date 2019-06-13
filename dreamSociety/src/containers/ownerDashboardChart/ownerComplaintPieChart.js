@@ -10,25 +10,33 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class OwnerComplaintPieChart extends Component {
 	state={
-		todo:55,
-		inProgress:25,
-		completed:20,
+		accepted:'',
+		assigned:'',
+		cancelled:'',
+		completed:'',
+		inprogress:'',
+		todo:''
 		
 	}
 
-// 	componentDidMount() {
-//         axios.get(`${URN}/flats/count`,{headers:authHeader()})
-//           .then(res => {
-// 			console.log(res.data);
-// 			this.getData(res.data)
-// 		  })
-// 		}
-// 		getData=(data)=>{
-// this.setState({
-// 	flat:data.activeFlats,
-// 	emptyFlats:data.emptyFlats
-// })
-// 		}
+	componentDidMount() {
+        axios.get(`${URN}/chart`,{headers:authHeader()})
+          .then(res => {
+			console.log(res.data);
+			this.getData(res.data)
+		  })
+		}
+		getData=(data)=>{
+this.setState({
+	accepted:data.complaintsData.accepted,
+	assigned:data.complaintsData.assigned,
+	cancelled:data.complaintsData.cancelled,
+	completed:data.complaintsData.completed,
+	inprogress:data.complaintsData.inprogress,
+	todo:data.complaintsData.todo
+
+})
+		}
 	render() {
 		const options = {
 			// exportEnabled: true,
@@ -46,12 +54,12 @@ class OwnerComplaintPieChart extends Component {
 				indexLabelFontSize: 12,     
 				indexLabel: "{label} - {y}%",
 				dataPoints: [
+					{ y: this.state.assigned, label: "ASSIGNED" },
 					{ y: this.state.todo, label: "TODO" },
-					{ y: this.state.inProgress, label: "INPROGRESS" },
+					{ y: this.state.cancelled, label: "REJECTED" },
+					{ y: this.state.accepted, label: "ACCEPTED" },
+					{ y: this.state.inprogress, label: "INPROGRESS" },
 					{ y: this.state.completed, label: "COMPLETED" },
-					
-
-					
 				]
 			}],
 			// data: [

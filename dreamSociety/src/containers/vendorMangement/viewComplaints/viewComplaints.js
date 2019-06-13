@@ -208,7 +208,7 @@ class ViewComplaints extends Component {
                         <td>{index + 1}</td>
                         <td>{"Flat No- " + item.flat_detail_master.flatNo + " , " + item.flat_detail_master.floor_master.floorName + " floor, " + " " + item.flat_detail_master.tower_master.towerName}</td>
                         <td>{item.description}</td>
-                        <td>{item.flat_detail_master.user_master.firstName + " " + item.flat_detail_master.user_master.lastName + " , " + item.flat_detail_master.user_master.contact}</td>
+                        <td>{item.user_master.firstName + " " + item.user_master.lastName + " , " + item.user_master.contact}</td>
                         <td style={{ width: '27%' }}>
 
                             <Button color="primary" className="mr-2" name="accept" onClick={this.acceptComplaint.bind(this, item.complaintId)} disabled={!!(item.complaint_status_master.statusType === 'ACCEPTED') || !!(item.complaint_status_master.statusType === 'COMPLETED') || !!(item.complaint_status_master.statusType === 'CANCELED') || !!(item.complaint_status_master.statusType === 'IN PROGRESS')}>Accept</Button>

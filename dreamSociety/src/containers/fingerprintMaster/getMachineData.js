@@ -59,7 +59,7 @@ class Machine extends Component {
     }
 
     getFingerprintData=({machineDetails})=>{
-          if(machineDetails){
+          if(machineDetails && machineDetails.machinesDetail){
               console.log(machineDetails);
            return (
                 <tr >

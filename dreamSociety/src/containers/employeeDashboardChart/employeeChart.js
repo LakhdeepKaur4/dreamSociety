@@ -13,7 +13,7 @@ class EmployeeChart extends Component {
     return (
 
       <div>
-      
+      <div className="largeShow smallHide">
       <div className='row'>    
      <div className="col-4 mt-5">
      <EmployeeComplaintPieChart />
@@ -24,7 +24,21 @@ class EmployeeChart extends Component {
            <div className="col-4 mt-5">
            <EmployeeTaxDetailChart/>
            </div>
-</div>    
+       </div>  
+       </div>
+
+         <div className="smallShow largeHide">
+          
+            <div className="col mt-5">
+            <EmployeeComplaintPieChart />
+            </div>
+            <div className="col mt-5">
+            <EmployeeLeaveBalanceChart/>
+            </div>
+            <div className="col mt-5">
+            <EmployeeTaxDetailChart/>
+            </div>
+        </div>  
   
      </div>
     )

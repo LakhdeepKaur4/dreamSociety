@@ -25,6 +25,19 @@ class TenantChart extends Component {
             </div>
           </div>
         </div>
+
+        <div className="smallShow largeHide">
+          
+            <div className="col mt-5">
+            <TenantComplaintPieChart />
+            </div>
+            <div className="col mt-5">
+            <TenantPaymentChart />
+            </div>
+            <div className="col mt-5">
+            <TenantServicesChart />
+            </div>
+        </div> 
       </div>
     )
   }

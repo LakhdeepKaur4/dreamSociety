@@ -129,13 +129,13 @@ class FingerPrint extends Component {
             return fingerprintDetails.userData.filter((flatRecord) => {        
                 return flatRecord.userId == userId
             }).map((item) => {
-                return item.flats.map((item) => {
+                return item.flats ? item.flats.map((item) => {
                     return (
                         <option key={item.flatDetailId} value={item.flatDetailId} >
                             {item.flatNo}
                         </option>
                     )
-                })
+                }) : ''
             })
           
         }
