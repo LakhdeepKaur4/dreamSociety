@@ -20,7 +20,7 @@ exports.create = (req, res, next) => {
             facilities.map(item => {
                 if (item.facilityName.toLowerCase().replace(/ /g, '') === facility.facilityName.toLowerCase().replace(/ /g, '')) {
                     found = true;
-                    break;
+                    // break;
                 }
             })
 
