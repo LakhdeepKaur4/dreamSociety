@@ -59,6 +59,7 @@ module.exports = function (app) {
 	const purchaseOrderController = require('../controller/purchaseOrder');
 	const chatController = require('../controller/chat');
 	const facilitiesController = require('../controller/facilities');
+	const facilitiesDetailsController = require('../controller/facilitiesDetails');
 
 	app.get('/', userController.start);
 
@@ -779,6 +780,16 @@ module.exports = function (app) {
 	app.put('/api/facility/delete/deleteSelected', [authJwt.verifyToken], authJwt.isAdminRole, facilitiesController.deleteSelected);
 
 	app.put('/api/facility/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesController.delete);
+
+	app.post('/api/facilityDetail', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesDetailsController.create);
+
+	app.get('/api/facilityDetail', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesDetailsController.get);
+
+	app.put('/api/facilityDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesDetailsController.update);
+
+	app.put('/api/facilityDetail/delete/deleteSelected', [authJwt.verifyToken], authJwt.isAdminRole, facilitiesDetailsController.deleteSelected);
+
+	app.put('/api/facilityDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesDetailsController.delete);
 
 	app.post('/api/auth/chat',chatController.authByChatKit);
 

@@ -4,31 +4,26 @@ const httpStatus = require('http-status');
 const Op = db.Sequelize.Op;
 
 const Facilities = db.facilities;
+const FacilitiesDetails = db.facilitiesDetails;
 
 exports.create = (req, res, next) => {
     const facility = req.body;
     console.log('Facility ===>', facility);
 
-    Facilities.findAll({
+    FacilitiesDetails.findOne({
         where: {
-            isActive: true
+            isActive: true,
+            facilityId: facility.facilityId
         }
     })
-        .then(facilities => {
-            let found;
-            facilities.map(item => {
-                if (item.facilityName.toLowerCase().replace(/ /g, '') === facility.facilityName.toLowerCase().replace(/ /g, '')) {
-                    found = true;
-                    // break;
-                }
-            })
-
-            if (found === true) {
+        .then(facilityFound => {
+            if (facilityFound !== null) {
                 res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
                     message: 'Already exist!'
                 });
-            } else {
-                Facilities.create(facility)
+            }
+            else {
+                FacilitiesDetails.create(facility)
                     .then(facilityCreated => {
                         if (facilityCreated !== null) {
                             res.status(httpStatus.CREATED).json({
@@ -39,7 +34,7 @@ exports.create = (req, res, next) => {
                     .catch(err => {
                         console.log('Error ===>', err);
                         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-                    })
+                    }) 
             }
         })
         .catch(err => {
@@ -55,32 +50,26 @@ exports.update = (req, res, next) => {
     const facility = req.body;
     console.log('Facility ===>', facility);
 
-    Facilities.findAll({
+    Facilities.findOne({
         where: {
             isActive: true,
-            facilityId: {
+            facilityId: facility.facilityId,
+            facilityDetailId: {
                 [Op.ne]: id
             }
         }
     })
-        .then(facilities => {
-            let found;
-            facilities.map(item => {
-                if (item.facilityName.toLowerCase().replace(/ /g, '') === facility.facilityName.toLowerCase().replace(/ /g, '')) {
-                    found = true;
-                    // break;
-                }
-            })
-
-            if (found === true) {
+        .then(facilityFound => {
+            if (facilityFound !== null) {
                 res.status(httpStatus.UNPROCESSABLE_ENTITY).json({
                     message: 'Already exist!'
                 });
-            } else {
-                Facilities.findOne({
+            }
+            else {
+                FacilitiesDetails.findOne({
                     where: {
-                        isActive: true,
-                        facilityId: id
+                        facilityDetailId: id,
+                        isActive: true
                     }
                 })
                     .then(facilityToBeUpdated => {
@@ -104,7 +93,7 @@ exports.update = (req, res, next) => {
 }
 
 exports.get = (req, res, next) => {
-    Facilities.findAll({
+    FacilitiesDetails.findAll({
         where: {
             isActive: true
         }
@@ -124,10 +113,10 @@ exports.delete = (req, res, next) => {
     const id = req.params.id;
     console.log('ID ===>', id);
 
-    Facilities.findOne({
+    FacilitiesDetails.findOne({
         where: {
             isActive: true,
-            facilityId: id
+            facilityDetailId: id
         }
     })
         .then(facility => {
@@ -146,10 +135,10 @@ exports.deleteSelected = (req, res, next) => {
     const ids = req.body.ids;
     console.log('IDs ===>', ids);
 
-    Facilities.findAll({
+    FacilitiesDetails.findAll({
         where: {
             isActive: true,
-            facilityId: {
+            facilityDetailId: {
                 [Op.in]: ids
             }
         }
