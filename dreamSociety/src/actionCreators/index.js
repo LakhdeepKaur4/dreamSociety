@@ -10,10 +10,10 @@ export  const UR = 'http://ec2-18-222-154-60.us-east-2.compute.amazonaws.com:808
 
 
 
-// export  const URN = 'http://192.168.1.107:8081/api';
-// export  const PicURN = 'http://192.168.1.107:8081/';
-// export  const DocURN = 'http://192.168.1.107:8081/';
-// export  const UR = 'http://192.168.1.107:8081/';
+// export  const URN = 'http://192.168.1.107:8082/api';
+// export  const PicURN = 'http://192.168.1.107:8082/';
+// export  const DocURN = 'http://192.168.1.107:8082/';
+// export  const UR = 'http://192.168.1.107:8082/';
 
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';

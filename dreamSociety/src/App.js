@@ -177,6 +177,8 @@ import TenantComplaintPieChart from './containers/tenantDashboardChart/tenantCom
 import TenantServicesChart from './containers/tenantDashboardChart/tenantServicesChart';
 import TenantPaymentChart from './containers/tenantDashboardChart/tenantPaymentChart';
 import EmployeeChart from './containers/employeeDashboardChart/employeeChart';
+import FacilitySubMaster from './containers/facilitySubMaster/facilitySubMaster';
+import FacilitySubMasterDetails from './containers/facilitySubMaster/facilitySubMasterDetails';
 
 class App extends Component {
   render() {
@@ -359,6 +361,8 @@ class App extends Component {
             <TenantPrivateRoute path='/tenantDashboardChart/tenantServicesChart' component={TenantServicesChart} />
 
             <EmployeePrivateRoute path='/employeeDashboardChart/employeeChart' component={EmployeeChart} />
+            <PrivateRoute path='/superDashboard/facilitySubMaster' component={FacilitySubMaster} />
+            <PrivateRoute path='/superDashboard/facilitySubMasterDetails' component={FacilitySubMasterDetails} />
 
 
 
