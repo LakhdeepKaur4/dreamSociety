@@ -57,7 +57,8 @@ module.exports = function (app) {
 	const vendorChartController = require('../controller/vendorChart');
 	const tenantOrOwnerChartController = require('../controller/tenantOrOwnerChart');
 	const purchaseOrderController = require('../controller/purchaseOrder');
-	const chatController = require('../controller/chat')
+	const chatController = require('../controller/chat');
+	const facilitiesController = require('../controller/facilities');
 
 	app.get('/', userController.start);
 
@@ -768,5 +769,15 @@ module.exports = function (app) {
 	app.get('/api/chat', chatController.getAllUserFromChatKit);
 
 	app.get('/api/chat/:id', chatController.getByUserIdFromChatKit);
+
+	app.post('/api/facility', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesController.create);
+
+	app.get('/api/facility', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesController.get);
+
+	app.put('/api/facility/:id', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesController.update);
+
+	app.put('/api/facility/delete/deleteSelected', [authJwt.verifyToken], authJwt.isAdminRole, facilitiesController.deleteSelected);
+
+	app.put('/api/facility/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesController.delete);
 
 }
