@@ -86,6 +86,7 @@ db.vendorComplaints = require('../model/vendorComplaints.model')(sequelize, Sequ
 db.purchaseOrder = require('../model/purchaseOrder.model')(sequelize, Sequelize);
 db.purchaseOrderDetails = require('../model/purchaseOrderDetails.model')(sequelize, Sequelize);
 db.feedback = require('../model/feedback.model')(sequelize, Sequelize);
+db.facilities = require('../model/facilities.model')(sequelize, Sequelize);
 
 
 
