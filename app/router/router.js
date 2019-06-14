@@ -712,7 +712,7 @@ module.exports = function (app) {
 
 	app.put('/api/fingerPrint/disable/:userId', [authJwt.verifyToken], fingerPrintController.disableFingerPrintData);
 
-	app.get('/api/fingerPrint/userFlats', [authJwt.verifyToken], fingerPrintController.getFingerprintAndManchineData);
+	app.get('/api/fingerPrint/userFlats/:type', [authJwt.verifyToken], fingerPrintController.getFingerprintAndManchineData);
 
 	app.put('/api/fingerPrint/:userId', [authJwt.verifyToken], fingerPrintController.updateFingerPrintData);
 
@@ -779,5 +779,7 @@ module.exports = function (app) {
 	app.put('/api/facility/delete/deleteSelected', [authJwt.verifyToken], authJwt.isAdminRole, facilitiesController.deleteSelected);
 
 	app.put('/api/facility/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesController.delete);
+
+	app.post('/api/auth/chat',chatController.authByChatKit);
 
 }
