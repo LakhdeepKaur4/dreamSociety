@@ -143,9 +143,9 @@ exports.delete = (req, res, next) => {
         })
 }
 
-exports.deleteSelected = (req,res,next) => {
+exports.deleteSelected = (req, res, next) => {
     const ids = req.body.ids;
-    console.log('ID ===>', id);
+    console.log('IDs ===>', ids);
 
     Facilities.findAll({
         where: {
@@ -159,7 +159,7 @@ exports.deleteSelected = (req,res,next) => {
             facilities.map(facility => {
                 facility.updateAttributes({ isActive: false });
             })
-            
+
             res.status(httpStatus.OK).json({
                 message: 'Deleted Successfully'
             });
