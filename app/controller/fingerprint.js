@@ -488,6 +488,7 @@ exports.getFingerprintAndManchineData = (req, res, next) => {
     // console.log(1)
     const type = req.params.type;
     const userData = [];
+    console.log("***",type)
     switch (type) {
         case 'all':
             FingerprintData.findAll({
