@@ -31,20 +31,32 @@ class FingerPrint extends Component {
             search: '',
             message: '',
             errors: {},
-            selected:[]
+            selectedUser:'',
+            type:'activated',
+            
+
+           
             
         }
 
     }
 
-    componentDidMount() {
+  
+
+    componentDidMount=()=> {
         this.refreshData();
     }
 
-    refreshData() {
-        this.props.getFingerprintData().then(() => this.setState({ loading: false })).catch(err=>{  console.log(err.response.data.message)
+    refreshData=()=> {
+        console.log("123")
+        const type= this.state.type
+        console.log(type)
+        this.setState({loading: true})
+        this.props.getFingerprintData(type).then(() => this.setState({ loading: false, modalLoading:false })).catch(err=>{  console.log(err.response.data.message)
             this.setState({message: err.response.data.message, loading: false})
             })
+
+
         // this.props.getRateForElectricityExpense();
     }
 
@@ -77,7 +89,8 @@ class FingerPrint extends Component {
         return this.props.history.replace('/superDashboard/changePassword')
     }
 
-    onChangeInput = (e) => {
+    onChangeInput = (userId,e) => {
+        console.log(userId,"userID============")
         let selected=e.target.value
         console.log("^^edit ", this.state, e.target.value)
 
@@ -91,15 +104,16 @@ class FingerPrint extends Component {
         }
         this.setState({
             [e.target.name]: e.target.value,
-            selected:selected,
+            flatDetailId:selected,
+            selectedUser:userId,
             message:''
         })
         this.props.getMachineData(e.target.value);
     }
 
-    getMachineComponent=(userId,selected)=>{
-        console.log("userId=============",userId);
-        localStorage.setItem('selected', selected)
+    getMachineComponent=(userId,flatDetailId)=>{
+        console.log("userId=============",userId,flatDetailId);
+        localStorage.setItem('flatDetailId', flatDetailId)
        
         localStorage.setItem('userId', userId)
          
@@ -127,13 +141,13 @@ class FingerPrint extends Component {
             return fingerprintDetails.userData.filter((flatRecord) => {        
                 return flatRecord.userId == userId
             }).map((item) => {
-                return item.flats.map((item) => {
+                return item.flats ? item.flats.map((item) => {
                     return (
                         <option key={item.flatDetailId} value={item.flatDetailId} >
                             {item.flatNo}
                         </option>
                     )
-                })
+                }) : ''
             })
           
         }
@@ -163,7 +177,7 @@ class FingerPrint extends Component {
                             ><DefaultSelect />
                                 {this.getDropdownForFlats(this.props.fingerprintReducer,item.userId)}
                             </DropdownComponent> */}
-                            <Input type="select" defaultValue='no-value'   name="flatDetailId" onChange={this.onChangeInput} selected={this.state.selected}>
+                            <Input type="select" defaultValue='no-value' value={item.userId !== this.state.selectedUser ? 'no-value' : '' }  name="flatDetailId" onChange={this.onChangeInput.bind(this,item.userId)} >
                                 <DefaultSelect/>
                                 {this.getDropdownForFlats(this.props.fingerprintReducer,item.userId)}
                             </Input>
@@ -171,7 +185,7 @@ class FingerPrint extends Component {
                             
                         </td>
                         <td>
-                            <Button color="success" className="mr-2"   onClick={this.getMachineComponent.bind(this,item.userId, this.state.selected)}>Get Machine</Button>
+                            <Button color="success" className="mr-2" disabled={item.userId !== this.state.selectedUser}   onClick={this.getMachineComponent.bind(this,item.userId, this.state.flatDetailId)}>Get Machine</Button>
                         </td>
                     </tr>
                 )
@@ -180,8 +194,33 @@ class FingerPrint extends Component {
 
     }
 
-    render() {
+    activatedChange = async (e)=>{
+       let selected=e.target.value;
+       console.log(selected)
+      await this.setState({
+           type:selected
+        })
+      console.log(this.state.type,"a================")
+      this.refreshData()
+      this.setState({modalLoading: true})
+    }
+    
+  
 
+    onChange = (e) => {
+        this.setState({ message: '' })
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value.trim('') });
+        }
+    }
+
+    render() {
+         console.log(this.state.type)
         let tableData = <Table bordered>
             <thead>
                 <tr>
@@ -202,6 +241,36 @@ class FingerPrint extends Component {
                 {this.getFingerprintDetail(this.props.fingerprintReducer)}
             </tbody>
         </Table>
+        let radioData=<div>
+            <Label  style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}><input className="ml-2"
+                    id="activated"
+                    type="radio"
+                    name="activated"
+                    onChange={this.activatedChange}
+                    value='activated'
+                    checked={ this.state.type === 'activated' ? true : false}
+                    />{' '}Activated</Label>
+
+                    <Label  style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}><input className="ml-2"
+                    id="deActivated"
+                    type="radio"
+                    name="deactivated"
+                    onChange={this.activatedChange}
+                    checked={this.state.type === 'deactivated' ? true : false}
+                    value='deactivated'
+                    />{' '}DeActivated</Label>
+
+                    <Label  style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}><input className="ml-2"
+                    id="all"
+                    type="radio"
+                    name="all"
+                    onChange={this.activatedChange}
+                    value='all'
+                    checked={this.state.type === 'all' ? true : false}
+                    />{' '}All</Label>
+        </div>
+
+
         return (
             <UI onClick={this.logout} change={this.changePassword}>
                 <div className="w3-container w3-margin-top w3-responsive">
@@ -214,8 +283,9 @@ class FingerPrint extends Component {
                     </div>
                     <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
-                 
+                    { radioData }
                     {(this.state.loading) ? <Spinner /> : tableData}
+                   
                 </div>
             </UI>
         )
