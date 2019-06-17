@@ -47,7 +47,10 @@ class FacilityDetails extends Component {
 
 
     refreshData() {
-     this.props.getFacility().then(()=> this.setState({loading:false, modalLoading: false, editModal:false}));;
+     this.props.getFacility().then(()=> this.setState({loading:false, modalLoading: false, editModal:false})).catch((err)=>{
+        err;
+        this.setState({loading:false, modalLoading: false, editModal:false})
+    });
     }   
 
     deleteFacility(facilityId){
@@ -269,7 +272,7 @@ class FacilityDetails extends Component {
 
             <div>
                 <UI onClick={this.logout} change={this.changePassword}>
-                  
+                                                                                    
                     <div className="w3-container w3-margin-top w3-responsive">
                     <div style={{cursor:'pointer'}} className="close" aria-label="Close" onClick={this.close}>
                     <span aria-hidden="true">&times;</span>

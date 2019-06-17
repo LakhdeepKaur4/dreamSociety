@@ -31,7 +31,7 @@ class FacilityMaster extends Component{
 
       submit=(e)=>{
         e.preventDefault();
-        const { facilityName} = this.state;
+        const {facilityName} = this.state;
         let errors = {};
         if(this.state.facilityName===''){
             errors.facilityName="Facility Name can't be empty"
