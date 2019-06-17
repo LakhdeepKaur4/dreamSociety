@@ -10,6 +10,9 @@ exports.create = (req, res, next) => {
     const facility = req.body;
     console.log('Facility ===>', facility);
 
+    facility.monthlyRate = parseFloat(facility.monthlyRate);
+    facility.facilityId = parseInt(facility.facilityId); 
+
     FacilitiesDetails.findOne({
         where: {
             isActive: true,
@@ -34,7 +37,7 @@ exports.create = (req, res, next) => {
                     .catch(err => {
                         console.log('Error ===>', err);
                         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-                    }) 
+                    })
             }
         })
         .catch(err => {
@@ -49,6 +52,9 @@ exports.update = (req, res, next) => {
 
     const facility = req.body;
     console.log('Facility ===>', facility);
+
+    facility.monthlyRate = parseFloat(facility.monthlyRate);
+    facility.facilityId = parseInt(facility.facilityId);    
 
     Facilities.findOne({
         where: {
@@ -96,7 +102,10 @@ exports.get = (req, res, next) => {
     FacilitiesDetails.findAll({
         where: {
             isActive: true
-        }
+        },
+        include: [
+            { model: Facilities }
+        ]
     })
         .then(facilities => {
             res.status(httpStatus.OK).json({

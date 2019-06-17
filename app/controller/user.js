@@ -1881,7 +1881,7 @@ diff_minutes = (dt2, dt1) => {
 var rule = new schedule.RecurrenceRule();
 rule.minute = new schedule.Range(0, 59, 1);
 schedule.scheduleJob(rule, () => {
-	date = new Date();
+	date = new Date(Date.now());
 	console.log(date);
 	OTPTable.findAll()
 		.then(user => {
