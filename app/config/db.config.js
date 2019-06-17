@@ -88,9 +88,7 @@ db.purchaseOrderDetails = require('../model/purchaseOrderDetails.model')(sequeli
 db.feedback = require('../model/feedback.model')(sequelize, Sequelize);
 db.facilities = require('../model/facilities.model')(sequelize, Sequelize);
 db.facilitiesDetails = require('../model/facilitiesDetails.model')(sequelize, Sequelize);
-
-
-
+db.fingerprintMachineData = require('../model/fingerprintMachineData.model')(sequelize, Sequelize);
 
 
 db.otp.belongsTo(db.owner, { foreignKey: 'ownerId' });
