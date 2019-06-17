@@ -50,6 +50,8 @@ exports.update = (req, res, next) => {
     const facility = req.body;
     console.log('Facility ===>', facility);
 
+    facility.monthlyRate = parseFloat(facility.monthlyRate);
+
     Facilities.findOne({
         where: {
             isActive: true,
