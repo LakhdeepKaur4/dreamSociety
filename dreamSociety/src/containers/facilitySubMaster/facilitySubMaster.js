@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-// import { addDesignation } from './../../actions/designationMasterAction';
+import { postFacilitySubMaster } from './../../actions/facilitySubMasterAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Form, Button, FormGroup, Input, Label, Row , Col } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
@@ -92,6 +92,25 @@ class FacilitySubMaster extends Component {
                 
             }}
 
+            handleSubmit = (e) => {
+                e.preventDefault();
+                let errors = {};
+                // if (this.state.designationName === '') {
+                //     errors.designationName = "cant be empty"
+                // }
+                this.setState({ errors })
+                const isValid = Object.keys(errors).length === 0
+                if (isValid) {
+                    this.setState({ loading: true })
+                     console.log(this.state)
+                    // this.props.postFacilitySubMaster(this.state)
+                        // .then(() => this.props.history.push('/superDashboard/designationMasterDetail'))
+                        // .catch(err => {
+                        //     this.setState({ message: err.response.data.message, loading: false })
+                        // })
+                }
+            }
+
     render() {
 
 
@@ -125,13 +144,13 @@ class FacilitySubMaster extends Component {
             <FormGroup check>
               <Label>
                 <Input type="radio" name="isChecked2" id="isCheckedRate" onChange={this.rateChange} checked={this.state.rateType===true ? true: false}/>{' '}
-                Unit Rate
+                Unit Per Rate
               </Label>
             </FormGroup>
             
             { this.state.rateType ?
             <FormGroup>
-                <Label>Unit Rate</Label>
+                <Label>Unit Per Rate</Label>
                 <Input type="text" placeholder="unit rate" name="rate" value={this.state.rate} onChange={this.onRateChange} maxLength={10}>
                     <DefaultSelect />
                 </Input>
@@ -161,11 +180,11 @@ class FacilitySubMaster extends Component {
 
 function mapStateToProps(state) {
     return {
-
+        
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({}, dispatch);
+    return bindActionCreators({postFacilitySubMaster}, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(FacilitySubMaster));

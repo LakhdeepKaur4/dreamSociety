@@ -92,7 +92,7 @@ class FingerPrint extends Component {
     onChangeInput = (userId,e) => {
         console.log(userId,"userID============")
         let selected=e.target.value
-        console.log("^^edit ", this.state, e.target.value)
+        console.log("^^edit ",  e.target.value)
 
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
@@ -104,6 +104,7 @@ class FingerPrint extends Component {
         }
         this.setState({
             [e.target.name]: e.target.value,
+        
             flatDetailId:selected,
             selectedUser:userId,
             message:''
@@ -177,7 +178,7 @@ class FingerPrint extends Component {
                             ><DefaultSelect />
                                 {this.getDropdownForFlats(this.props.fingerprintReducer,item.userId)}
                             </DropdownComponent> */}
-                            <Input type="select" defaultValue='no-value' value={item.userId !== this.state.selectedUser ? 'no-value' : '' }  name="flatDetailId" onChange={this.onChangeInput.bind(this,item.userId)} >
+                            <Input type="select" defaultValue='no-value' value={item.userId !== this.state.selectedUser ? 'no-value' : this.state.flatDetailId }  name="flatDetailId" onChange={this.onChangeInput.bind(this,item.userId)} >
                                 <DefaultSelect/>
                                 {this.getDropdownForFlats(this.props.fingerprintReducer,item.userId)}
                             </Input>

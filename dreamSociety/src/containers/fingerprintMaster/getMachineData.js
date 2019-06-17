@@ -13,6 +13,7 @@ class Machine extends Component {
 
               this.state={
                   userId:'',
+                  message:''
                 
 
               }
@@ -38,10 +39,13 @@ class Machine extends Component {
         console.log(tokendata);
         console.log(this.state.userId)
         this.props.getMachineDetails(this.state.userId)
+      
+        
     }
 
     disableResult=()=>{
         this.props.disableMachine(this.state.userId)
+        
     }
 
     fingerPrintData=()=>{
@@ -65,8 +69,8 @@ class Machine extends Component {
                 <tr >
                    <td>{machineDetails.machinesDetail[0].machine_detail_master.machineActualId}</td>  
                    <td>{machineDetails.machinesDetail[0].flat_detail_master.flatNo}</td> 
-                    <td><Button color="success mr-2" onClick={this.machineResult}>Enable</Button> 
-                       <Button color="danger" onClick={this.disableResult}>Disable</Button>
+                    <td><Button color="success mr-2"  onClick={this.machineResult}>Enable</Button> 
+                       <Button color="danger"  onClick={this.disableResult}>Disable</Button>
                     </td>
                 </tr>
            
