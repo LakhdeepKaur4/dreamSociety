@@ -58,6 +58,7 @@ import PurchaseOrder from './purchaseOrderReducer/purchaseOrderReducer';
 import PersonalEventBookingReducer  from './personalEventBookingReducer/personalEventBookingReducer';
 import fingerprintReducer  from './fingerprint/fingerprintMaster';
 import FacilitySubMasterReducer from './facilitySubMasterReducer/facilitySubMasterReducer';
+import  facilityReducer from  './facilityReducer/facilityReducer';
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -114,6 +115,7 @@ const rootReducer = combineReducers({
     PurchaseOrder,
     PersonalEventBookingReducer,
     fingerprintReducer,
-    FacilitySubMasterReducer
+    FacilitySubMasterReducer,
+    facilityReducer
 })
 export default rootReducer;
