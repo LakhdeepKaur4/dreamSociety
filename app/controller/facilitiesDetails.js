@@ -51,6 +51,7 @@ exports.update = (req, res, next) => {
     console.log('Facility ===>', facility);
 
     facility.monthlyRate = parseFloat(facility.monthlyRate);
+    facility.facilityId = parseInt(facility.facilityId);    
 
     Facilities.findOne({
         where: {
