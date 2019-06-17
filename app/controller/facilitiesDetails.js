@@ -34,7 +34,7 @@ exports.create = (req, res, next) => {
                     .catch(err => {
                         console.log('Error ===>', err);
                         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
-                    }) 
+                    })
             }
         })
         .catch(err => {
@@ -98,7 +98,10 @@ exports.get = (req, res, next) => {
     FacilitiesDetails.findAll({
         where: {
             isActive: true
-        }
+        },
+        include: [
+            { model: Facilities }
+        ]
     })
         .then(facilities => {
             res.status(httpStatus.OK).json({
