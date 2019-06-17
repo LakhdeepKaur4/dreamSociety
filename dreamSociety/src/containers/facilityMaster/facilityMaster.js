@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import UI from '../../components/newUI/superAdminDashboard';
-import {Form,Label,FormGroup,Input,Button} from 'reactstrap';
+ import {Form,Label,FormGroup,Input,Button} from 'reactstrap';
 import {addFacility} from '../../actions/facilityAction';
 import {OnKeyPressUserhandler} from '../../validation/validation';
 import Spinner from '../../components/spinner/spinner';
@@ -16,7 +16,7 @@ class FacilityMaster extends Component{
             loading:false,
             errors:{}
         }
-    }
+    } 
 
     
     logout=()=>{
