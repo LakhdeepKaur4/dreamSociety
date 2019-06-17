@@ -115,9 +115,7 @@ class FingerPrint extends Component {
         const isValid = Object.keys(errors).length === 0
 
         if (isValid) {
-            this.props.history.push('/superDashboard/getMachineData');
-                
-              
+            this.props.history.push('/superDashboard/getMachineData');   
         }
 
         
