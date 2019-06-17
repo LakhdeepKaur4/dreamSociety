@@ -8,10 +8,10 @@ export  const PicURN = 'http://localhost:8081/';
 export  const DocURN = 'http://localhost:8081/';
 export  const UR = 'http://localhost:8081/';
 
-// export  const URN = 'http://192.168.1.107:8081/api';
-// export  const PicURN = 'http://192.168.1.107:8081/';
-// export  const DocURN = 'http://192.168.1.107:8081/';
-// export  const UR = 'http://192.168.1.107:8081/';
+// export  const URN = 'http://192.168.1.108:8081/api';
+// export  const PicURN = 'http://192.168.1.108:8081/';
+// export  const DocURN = 'http://192.168.1.108:8081/';
+// export  const UR = 'http://192.168.1.108:8081/';
 
 // export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
 // export  const DocURN = 'https://mydreamsociety.herokuapp.com/';

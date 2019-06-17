@@ -31,20 +31,32 @@ class FingerPrint extends Component {
             search: '',
             message: '',
             errors: {},
-            selectedUser:''
+            selectedUser:'',
+            type:'activated',
+            
+
+           
             
         }
 
     }
 
-    componentDidMount() {
+  
+
+    componentDidMount=()=> {
         this.refreshData();
     }
 
-    refreshData() {
-        this.props.getFingerprintData().then(() => this.setState({ loading: false })).catch(err=>{  console.log(err.response.data.message)
+    refreshData=()=> {
+        console.log("123")
+        const type= this.state.type
+        console.log(type)
+        this.setState({loading: true})
+        this.props.getFingerprintData(type).then(() => this.setState({ loading: false, modalLoading:false })).catch(err=>{  console.log(err.response.data.message)
             this.setState({message: err.response.data.message, loading: false})
             })
+
+
         // this.props.getRateForElectricityExpense();
     }
 
@@ -180,8 +192,33 @@ class FingerPrint extends Component {
 
     }
 
-    render() {
+    activatedChange = async (e)=>{
+       let selected=e.target.value;
+       console.log(selected)
+      await this.setState({
+           type:selected
+        })
+      console.log(this.state.type,"a================")
+      this.refreshData()
+      this.setState({modalLoading: true})
+    }
+    
+  
 
+    onChange = (e) => {
+        this.setState({ message: '' })
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value.trim('') });
+        }
+    }
+
+    render() {
+         console.log(this.state.type)
         let tableData = <Table bordered>
             <thead>
                 <tr>
@@ -202,6 +239,36 @@ class FingerPrint extends Component {
                 {this.getFingerprintDetail(this.props.fingerprintReducer)}
             </tbody>
         </Table>
+        let radioData=<div>
+            <Label  style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}><input className="ml-2"
+                    id="activated"
+                    type="radio"
+                    name="activated"
+                    onChange={this.activatedChange}
+                    value='activated'
+                    checked={ this.state.type === 'activated' ? true : false}
+                    />{' '}Activated</Label>
+
+                    <Label  style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}><input className="ml-2"
+                    id="deActivated"
+                    type="radio"
+                    name="deactivated"
+                    onChange={this.activatedChange}
+                    checked={this.state.type === 'deactivated' ? true : false}
+                    value='deactivated'
+                    />{' '}DeActivated</Label>
+
+                    <Label  style={{alignContent:'baseline',marginLeft:"10px",fontWeight:"700"}}><input className="ml-2"
+                    id="all"
+                    type="radio"
+                    name="all"
+                    onChange={this.activatedChange}
+                    value='all'
+                    checked={this.state.type === 'all' ? true : false}
+                    />{' '}All</Label>
+        </div>
+
+
         return (
             <UI onClick={this.logout} change={this.changePassword}>
                 <div className="w3-container w3-margin-top w3-responsive">
@@ -214,8 +281,9 @@ class FingerPrint extends Component {
                     </div>
                     <SearchFilter type="text" value={this.state.search}
                             onChange={this.searchOnChange} />
-                 
+                    { radioData }
                     {(this.state.loading) ? <Spinner /> : tableData}
+                   
                 </div>
             </UI>
         )
