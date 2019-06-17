@@ -9,9 +9,15 @@ const FacilitiesDetails = db.facilitiesDetails;
 exports.create = (req, res, next) => {
     const facility = req.body;
     console.log('Facility ===>', facility);
-
-    facility.monthlyRate = parseFloat(facility.monthlyRate);
     facility.facilityId = parseInt(facility.facilityId); 
+    if(facility.monthlyRateType){
+        facility.unitRate = null
+        facility.monthlyRate = parseFloat(facility.monthlyRate);
+    }
+    if(facility.rateType){
+        facility.monthlyRate = null
+        facility.unitRate = parseFloat(facility.unitRate);
+    }
 
     FacilitiesDetails.findOne({
         where: {
@@ -51,10 +57,17 @@ exports.update = (req, res, next) => {
     console.log('ID ===>', id);
 
     const facility = req.body;
-    console.log('Facility ===>', facility);
+    console.log('Facility ===>', facility);   
 
-    facility.monthlyRate = parseFloat(facility.monthlyRate);
-    facility.facilityId = parseInt(facility.facilityId);    
+    if(facility.monthlyRateType){
+        facility.unitRate = null
+        facility.monthlyRate = parseFloat(facility.monthlyRate);
+    }
+    if(facility.rateType){
+        facility.monthlyRate = null
+        facility.unitRate = parseFloat(facility.unitRate);
+    }
+
 
     Facilities.findOne({
         where: {
