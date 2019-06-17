@@ -10,6 +10,9 @@ exports.create = (req, res, next) => {
     const facility = req.body;
     console.log('Facility ===>', facility);
 
+    facility.monthlyRate = parseFloat(facility.monthlyRate);
+    facility.facilityId = parseInt(facility.facilityId); 
+
     FacilitiesDetails.findOne({
         where: {
             isActive: true,
