@@ -1258,6 +1258,8 @@ exports.fingerprintDataScheduler = async (req, res, next) => {
         let from;
         let to;
         let length;
+        let count;
+        let loopCount = 0;
         wss.on('connection', (socket, req) => {
             // sockets.push(socket);
             // console.log("Sockets ",sockets)
@@ -1267,59 +1269,52 @@ exports.fingerprintDataScheduler = async (req, res, next) => {
                 socket.send('connected')
                 // console.log("connected");
             })
+            let response = { "ret": "reg", "result": true }
+            let getLogs = { "cmd": "getalllog", "stn": true }
             socket.on('message', (message) => {
-                console.log("received message")
-                // for (var i = 0; i < sockets.length; i++) {
-                // Don't send the data back to the original sender
-                // if (sockets[i] == socket)
-                // continue;
-                console.log(`Received message => ${message}`)
+                
                 socketResponse = JSON.parse(message);
-                // when machine get connected so we need to send this response
-                let response = { "ret": "reg", "result": true }
+                
                 socket.send(JSON.stringify(response));
-                socket.on('close', () => { console.log('close') });
-                // let getDeviceInfo = { "cmd": "getdevinfo" }
-                let getLogs = { "cmd": "getalllog", "stn": true }
+                
+                
                 socket.send(JSON.stringify(getLogs));
+                getLogs.stn = false;
+                // getLogs.delete('cmd');
+
                 if (socketResponse.ret == 'getalllog') {
                     records = socketResponse.record;
                     from = socketResponse.from;
-                    console.log("from", from)
+                    // console.log("from", from)
                     to = socketResponse.to;
-                    console.log("to", to)
-                }
-                length = records.length;
-                // for (let i = from; i <= to; i++) {
-                    records.map(async item=>{
-                    // console.log(records[i]);
+                    // console.log("to", to)
+                    count = socketResponse.count;
+                    console.log('Count ====>',count);
 
-                    let body = {
-                        userId:item.enrollid,
-                        time: item.time
+                    // length = (length === 1000) ? 1000 : records.length;
+                    // console.log('Length --->', length);
+                    
+
+                   
+                    if (loopCount !== count) {
+                       
+                        records.map(item => {
+                    
+                            loopCount += 1;
+                            let body = {
+                                userId: item.enrollid,
+                                time: item.time
+                            }
+                            let createdData = FingerprintMachineData.create(body);
+                            // if (i == 9) {
+                            //     break; 
+                            // }
+                        })
                     }
-                    await FingerprintMachineData.create(body);
-                    // if (i == 9) {
-                    //     break; 
-                    // }
-                    }) 
-                // }
-                // console.log("&&&&length ", length)
-                // if (length == 10) {
-                //     setTimeout(function () {
-                //         socket.on('close', () => { console.log('close') });
-                //         console.log('2 seconds passed, closing the socket');
-                //     }, 1);
-                //     // socket.on('close', () => { console.log('close') });
-                //     // socket.removeListener('message', message);
-                //     // return "success";
-                // }
-                // setTimeout(function (socket) {
-                //     console.log('2 seconds passed, closing the socket');
-
-                // }, 2000);
+                }
             });
             // socket.removeListener('message', message);
+            socket.on('close', () => { console.log('close') });
             socket.on('error', (error) => {
                 console.log("fingerprint api socket error", error);
             })
