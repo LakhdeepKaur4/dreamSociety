@@ -319,6 +319,7 @@ class FacilityDetails extends Component {
 function mapStateToProps(state) {
     return {
         facilityReducer: state.facilityReducer,
+        
      
 
     }
