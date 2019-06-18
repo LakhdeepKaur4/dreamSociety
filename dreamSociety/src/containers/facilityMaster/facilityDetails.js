@@ -127,7 +127,7 @@ class FacilityDetails extends Component {
     }
 
     renderList = ({ getFacility }) => {
-        if (getFacility ) {console.log(getFacility)
+        if (getFacility && getFacility.facilities ) {console.log(getFacility)
             
             return getFacility.facilities.sort((item1,item2)=>{
                 var cmprVal = (item1[this.state.filterName].localeCompare(item2[this.state.filterName]))
@@ -316,6 +316,7 @@ class FacilityDetails extends Component {
 function mapStateToProps(state) {
     return {
         facilityReducer: state.facilityReducer,
+        
      
 
     }

@@ -1,13 +1,13 @@
 import axios from 'axios';
-import { URN, POST_FACILITY_SUBMASTER } from '../actionCreators/index'
+import { URN, POST_FACILITY_SUBMASTER,GET_FACILITY_SUBMASTER,DELETE_SUB_FACILITY,DELETE_SUB_SELECTEDCITY,UPDATE_SUB_FACILITY } from '../actionCreators/index'
 import { authHeader } from './../helper/authHeader';
 
 
 
-export const postFacilitySubMaster = () => {
+export const postFacilitySubMaster = (facilityId,monthlyRate, unitRate,monthlyRateType,rateType) => {
    
-
-    const request = axios.post(`${URN}/facilityDetail`, { headers: authHeader() })
+   console.log(facilityId,monthlyRate, unitRate,monthlyRateType,rateType)
+    const request = axios.post(`${URN}/facilityDetail`,{facilityId,monthlyRate, unitRate,monthlyRateType,rateType}, { headers: authHeader() })
         .then(response => response.data)
         .catch(error =>  error)
 
@@ -17,109 +17,70 @@ export const postFacilitySubMaster = () => {
     }
 }
 
-
-// export const getState = countryId => {
+export const getFacilitySubMaster = () => {
    
 
-//     const request = axios.get(`${URN}/getState/${countryId}`, { headers: authHeader() })
-//         .then(response => response.data)
-//         .catch(error =>  error)
+    const request = axios.get(`${URN}/facilityDetail`, { headers: authHeader() })
+        .then(response => response.data)
+        .catch(error =>  error)
 
-//     return {
-//         type: STATE_DETAIL,
-//         payload: request
-//     }
-// }
+    return {
+        type: GET_FACILITY_SUBMASTER,
+        payload: request
+    }
+}
 
-// export const getCity = stateId => {
 
+
+
+export const deleteFacilityRate=(facilityDetailId)=>{
+    const data={
+        facilityDetailId,
+        isActive:false
+    }
+    console.log(data)
+    const request = axios.put(`${URN}/facilityDetail/delete/${facilityDetailId}`,data, {headers:authHeader()})
+     .then(response => response.data)
+ 
    
-//     const request = axios.get(`${URN}/city/${stateId}`, { headers: authHeader() })
-//         .then(response => response.data)
-//         .catch(error =>  error)
+     return{
+ 
+         type:DELETE_SUB_FACILITY,
+         payload: request 
+     }
+ 
+ }
 
-//     return {
-//         type: CITY_DETAIL,
-//         payload: request
-//     }
-// }
-
-
-// export const addCity=(values)=>{
-
-//    const request = axios.post(`${URN}/city` , values , {headers:authHeader()})
-//     .then(response => response.data)
-   
-
+ export const deleteSelectSubFacility=(ids)=>{
     
-//     return{
-
-//         type:ADD_CITY,
-//         payload: request 
-//     }
-
-// }
-
-// export const detailCity=()=>{
-  
-//    const request = axios.get(`${URN}/city`  , {headers:authHeader()})
-//     .then(response => response.data)
-
-    
-//     return{
-
-//         type:DETAIL_CITY,
-//         payload: request 
-//     }
-
-// }
-
-// export const deleteCity=(cityId)=>{
-//     const data={
-//         cityId,
-//         isActive:false
-//     }
-//     const request = axios.put(`${URN}/city/delete/${cityId}`,data, {headers:authHeader()})
-//      .then(response => response.data)
+    const request = axios.put(`${URN}/facilityDetail/delete/deleteSelected`,{ids}, {headers:authHeader()})
+     .then(response => response.data)
  
    
-//      return{
+     return{
  
-//          type:DELETE_CITY,
-//          payload: request 
-//      }
+         type:DELETE_SUB_SELECTEDCITY,
+         payload: request 
+     }
  
-//  }
-
-//  export const deleteSelectCity=(ids)=>{
-    
-//     const request = axios.put(`${URN}/city/delete/deleteSelected`,{ids}, {headers:authHeader()})
-//      .then(response => response.data)
- 
-   
-//      return{
- 
-//          type:DELETE_SELECTEDCITY,
-//          payload: request 
-//      }
- 
-//  }
+ }
 
 
-//  export const updateCity=(cityId, countryId, stateId, cityName)=>{
+ export const updateSubFacilty=(facilityDetailId, faciltyId,monthlyRate, unitRate)=>{
+     console.log(facilityDetailId, faciltyId,monthlyRate, unitRate,"update Facility===============")
   
     
-//     const request = axios.put(`${URN}/city/`+ cityId ,{countryId, stateId, cityName}, {headers:authHeader()})
-//      .then(response => response.data)
+    const request = axios.put(`${URN}/facilityDetail/`+ facilityDetailId ,{ faciltyId,monthlyRate, unitRate}, {headers:authHeader()})
+     .then(response => response.data)
     
            
  
      
-//      return{
+     return{
  
-//          type:UPDATE_CITY,
-//          payload: request
-//      }
+         type:UPDATE_SUB_FACILITY,
+         payload: request
+     }
  
-//  }
+  }
 

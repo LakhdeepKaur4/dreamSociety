@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { postFacilitySubMaster } from './../../actions/facilitySubMasterAction';
+import {getFacility} from '../../actions/facilityAction';
 import UI from '../../components/newUI/superAdminDashboard';
 import { Form, Button, FormGroup, Input, Label, Row , Col } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
@@ -15,20 +16,30 @@ class FacilitySubMaster extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            facilitySubId: '',
-            facilitySubId: '',
+            facilityId:'',
             monthlyRateType:false,
             rateType:false,
             monthlyRate:'',
-            rate:'',
+            unitRate:'',
             errors: {},
             message: '',
+            loading:true,
 
 
             menuVisible: false,
         }
     }
+    
 
+    componentDidMount() {
+        this.refreshData();
+   
+    }
+
+    
+    refreshData() {
+        this.props.getFacility().then(()=> this.setState({loading:false, modalLoading: false, editModal:false}));;
+       }  
 
 
     logout = () => {
@@ -50,30 +61,36 @@ class FacilitySubMaster extends Component {
         return this.props.history.replace('/superDashBoard')
     }
 
-    monthlyRateChange = () => {
+    monthlyRateChange = (e) => {
+        let selected =e.target.value
+        console.log(selected,"monthlyrate===========")
       
         if(!!document.getElementById('isCheckedMonthly').checked){
             console.log('is checked')
            this.setState({monthlyRate: this.state.monthlyRate, monthlyRateType:true,rateType:false})
         }
        else{
-            this.setState({monthlyRate: '',rate: '' , monthlyRateType:false})
+            this.setState({monthlyRate: '',unitRate: '' , monthlyRateType:false})
         }
     }
 
-    rateChange = () => {
-      
+    rateChange = (e) => {
+        let selected =e.target.value
+        console.log(selected,"rate===========")
         if(!!document.getElementById('isCheckedRate').checked){
             console.log('is checked')
-           this.setState({rate: this.state.rate, rateType:true, monthlyRateType:false})
+           this.setState({unitRate: this.state.unitRate, rateType:true, monthlyRateType:false})
         }
        else{
-            this.setState({rate: '',monthlyRate: '' , rateType:false})
+            this.setState({unitRate: '',monthlyRate: '' , rateType:false})
         }
     }
 
     onChange = (e) => {
-        this.setState({ message: '' })
+        let selected =e.target.value
+        console.log(selected,"facilityId===========")
+        
+        this.setState({facilityId: selected, message: '' })
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
             delete errors[e.target.name];
@@ -85,6 +102,7 @@ class FacilitySubMaster extends Component {
     }
 
     onRateChange=(e)=>{
+    
         //    console.log("=====================", e.target.value)
             if (e.target.value.match(/^\d*(\.\d{0,2})?$/)){
                 console.log("=====================", e.target.value)
@@ -93,23 +111,42 @@ class FacilitySubMaster extends Component {
             }}
 
             handleSubmit = (e) => {
+
                 e.preventDefault();
+                const {facilityId,monthlyRate, unitRate, monthlyRateType,rateType}= this.state
+                
                 let errors = {};
-                // if (this.state.designationName === '') {
-                //     errors.designationName = "cant be empty"
-                // }
+                if (this.state.facilityId === '') {
+                    errors.facilityId = "cant be empty";
+                }
                 this.setState({ errors })
                 const isValid = Object.keys(errors).length === 0
                 if (isValid) {
                     this.setState({ loading: true })
                      console.log(this.state)
-                    // this.props.postFacilitySubMaster(this.state)
-                        // .then(() => this.props.history.push('/superDashboard/designationMasterDetail'))
-                        // .catch(err => {
-                        //     this.setState({ message: err.response.data.message, loading: false })
-                        // })
+                    this.props.postFacilitySubMaster(facilityId, monthlyRate, unitRate,monthlyRateType,rateType)
+                        .then(() => this.props.history.push('/superDashboard/facilitySubMasterDetails'))
+                        .catch(err => {
+                            this.setState({ message: err.response.data.message, loading: false })
+                        })
                 }
             }
+
+            getFacilityData=({getFacility})=>{
+                if(getFacility && getFacility.facilities){
+                     console.log("facility==========",getFacility )  
+                     return getFacility.facilities.map((item)=>{
+                         return (
+                            <option key={item.facilityId} value={item.facilityId}>
+                            {item.facilityName}
+                            </option>
+                         )
+                         
+                     })
+                 
+                 
+                }
+          }
 
     render() {
 
@@ -121,7 +158,9 @@ class FacilitySubMaster extends Component {
                 <Label>Facility Sub Master</Label>
                 <Input type="select" defaultValue='no-value' name="facilityId" onChange={this.onChange} >
                     <DefaultSelect />
+                    {this.getFacilityData(this.props.facilityReducer)}
                 </Input>
+                <span className="error">{this.state.errors.facilityId}</span>
             </FormGroup>
 
             <FormGroup check>
@@ -137,7 +176,7 @@ class FacilitySubMaster extends Component {
             <FormGroup>
                 <Label>Monthly Rate</Label>
                 <Input type="text" placeholder="Monthly Rate" value={this.state.monthlyRate} name="monthlyRate"   onChange={this.onRateChange} maxLength={10}>
-                    <DefaultSelect />
+                    
                 </Input>
             </FormGroup>: '' }
 
@@ -151,8 +190,8 @@ class FacilitySubMaster extends Component {
             { this.state.rateType ?
             <FormGroup>
                 <Label>Unit Per Rate</Label>
-                <Input type="text" placeholder="unit rate" name="rate" value={this.state.rate} onChange={this.onRateChange} maxLength={10}>
-                    <DefaultSelect />
+                <Input type="text" placeholder="unit rate" name="unitRate" value={this.state.unitRate} onChange={this.onRateChange} maxLength={10}>
+                   
                 </Input>
             </FormGroup>: '' }
 
@@ -179,12 +218,14 @@ class FacilitySubMaster extends Component {
 }
 
 function mapStateToProps(state) {
+    console.log(state,"facilityReducer===========")
     return {
-        
+        facilityReducer: state.facilityReducer,
+        FacilitySubMasterReducer:state.FacilitySubMasterReducer
     }
 }
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({postFacilitySubMaster}, dispatch);
+    return bindActionCreators({postFacilitySubMaster,getFacility}, dispatch);
 }
 
 export default (connect(mapStateToProps, mapDispatchToProps)(FacilitySubMaster));
