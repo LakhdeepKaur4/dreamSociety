@@ -68,7 +68,6 @@ exports.update = (req, res, next) => {
         facility.unitRate = parseFloat(facility.unitRate);
     }
 
-
     FacilitiesDetails.findOne({
         where: {
             isActive: true,
