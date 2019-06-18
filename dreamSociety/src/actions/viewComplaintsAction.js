@@ -48,7 +48,7 @@ export const rejectComplaint=(complaintId)=>{
         const request = axios.put(`${URN}/vendorComplaints/accept`,{complaintId}, {headers:authHeader()})
          .then(response => response.data)
      
-         // .then(getDetails())
+         // .then(getDetnails())
          return{
      
              type:ACCEPT_COMPLAINT,
@@ -65,7 +65,7 @@ export const rejectComplaint=(complaintId)=>{
      
          // .then(getDetails())
          return{
-     
+      
              type:SEND_COMPLAINT,
              payload: request 
          }
