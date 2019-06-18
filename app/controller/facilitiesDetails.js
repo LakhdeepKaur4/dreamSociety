@@ -11,11 +11,11 @@ exports.create = (req, res, next) => {
     console.log('Facility ===>', facility);
     facility.facilityId = parseInt(facility.facilityId); 
     if(facility.monthlyRateType){
-        facility.unitRate = null
+        facility.unitRate = null;
         facility.monthlyRate = parseFloat(facility.monthlyRate);
     }
     if(facility.rateType){
-        facility.monthlyRate = null
+        facility.monthlyRate = null;
         facility.unitRate = parseFloat(facility.unitRate);
     }
 
@@ -59,17 +59,16 @@ exports.update = (req, res, next) => {
     const facility = req.body;
     console.log('Facility ===>', facility);   
 
-    if(facility.monthlyRateType){
-        facility.unitRate = null
+    if(facility.monthlyRate !== null){
+        facility.unitRate = null;
         facility.monthlyRate = parseFloat(facility.monthlyRate);
     }
-    if(facility.rateType){
-        facility.monthlyRate = null
+    if(facility.unitRate !== null){
+        facility.monthlyRate = null;
         facility.unitRate = parseFloat(facility.unitRate);
     }
 
-
-    Facilities.findOne({
+    FacilitiesDetails.findOne({
         where: {
             isActive: true,
             facilityId: facility.facilityId,
