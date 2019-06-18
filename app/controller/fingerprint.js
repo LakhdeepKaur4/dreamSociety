@@ -1253,7 +1253,11 @@ exports.disableFingerPrintData = async (req, res, next) => {
 
 exports.fingerprintDataScheduler = async (req, res, next) => {
     try {
+        console.log("**********************************")
         let records = [];
+        let from;
+        let to;
+        let length;
         wss.on('connection', (socket, req) => {
             // sockets.push(socket);
             // console.log("Sockets ",sockets)
@@ -1264,43 +1268,74 @@ exports.fingerprintDataScheduler = async (req, res, next) => {
                 // console.log("connected");
             })
             socket.on('message', (message) => {
+                console.log("received message")
                 // for (var i = 0; i < sockets.length; i++) {
                 // Don't send the data back to the original sender
                 // if (sockets[i] == socket)
                 // continue;
-                // console.log(`Received message => ${message}`)
+                console.log(`Received message => ${message}`)
                 socketResponse = JSON.parse(message);
                 // when machine get connected so we need to send this response
                 let response = { "ret": "reg", "result": true }
                 socket.send(JSON.stringify(response));
+                socket.on('close', () => { console.log('close') });
                 // let getDeviceInfo = { "cmd": "getdevinfo" }
                 let getLogs = { "cmd": "getalllog", "stn": true }
-                ws.send(JSON.stringify(getLogs));
+                socket.send(JSON.stringify(getLogs));
                 if (socketResponse.ret == 'getalllog') {
                     records = socketResponse.record;
+                    from = socketResponse.from;
+                    console.log("from", from)
+                    to = socketResponse.to;
+                    console.log("to", to)
                 }
-                records.map(async item=>{
-                    console.log(item)
+                length = records.length;
+                // for (let i = from; i <= to; i++) {
+                    records.map(async item=>{
+                    // console.log(records[i]);
+
                     let body = {
                         userId:item.enrollid,
-                        time:item.time
+                        time: item.time
                     }
-                await FingerprintMachineData.create(body);
-                })   
+                    await FingerprintMachineData.create(body);
+                    // if (i == 9) {
+                    //     break; 
+                    // }
+                    }) 
+                // }
+                // console.log("&&&&length ", length)
+                // if (length == 10) {
+                //     setTimeout(function () {
+                //         socket.on('close', () => { console.log('close') });
+                //         console.log('2 seconds passed, closing the socket');
+                //     }, 1);
+                //     // socket.on('close', () => { console.log('close') });
+                //     // socket.removeListener('message', message);
+                //     // return "success";
+                // }
+                // setTimeout(function (socket) {
+                //     console.log('2 seconds passed, closing the socket');
+
+                // }, 2000);
             });
+            // socket.removeListener('message', message);
             socket.on('error', (error) => {
                 console.log("fingerprint api socket error", error);
             })
+
+            // });
 
             // if (socketResponse.ret == "setuserinfo" && socketResponse.result == true) {
             // res.status(httpStatus.OK).json({
             //     message: "Fingerprint enabled successfully"
             // })
-            socket.on('close', () => { console.log('close') });
+            // socket.on('close', () => { console.log('close') });
 
             // }
             // socket.send('hello this is just for testing!')
         })
+
     } catch (error) {
         console.log("error==>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
