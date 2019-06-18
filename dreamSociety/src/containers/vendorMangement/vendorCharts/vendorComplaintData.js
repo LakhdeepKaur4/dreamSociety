@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import CanvasJSReact from '../../../components/canvasjs.react';
-import {URN} from '../../../actionCreators/index';
 import axios from 'axios';
 import { authHeader } from "../../../helper/authHeader";
+import {URN} from '../../../actionCreators/index';
+
+import CanvasJSReact from '../../../components/canvasjs.react';
+
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -10,10 +12,12 @@ class VendorComplaintData extends Component {
 	state={
 		accepted:'',
 		assigned:'',
-		todo:'',
+		cancelled:'',
+		completed:'',
 		inprogress:'',
-		completed:''
-		}
+		todo:''
+		
+	}
 
 	componentDidMount() {
         axios.get(`${URN}/vendorChart`,{headers:authHeader()})
@@ -24,23 +28,22 @@ class VendorComplaintData extends Component {
 		}
 		getData=(data)=>{
 this.setState({
-	accepted:data.accepted,
-	assigned:data.assigned,
-	todo:data.todo,
-	inprogress:data.inprogress,
-	completed:data.completed
-	
+	accepted:data.complaintsData.accepted,
+	assigned:data.complaintsData.assigned,
+	cancelled:data.complaintsData.cancelled,
+	completed:data.complaintsData.completed,
+	inprogress:data.complaintsData.inprogress,
+	todo:data.complaintsData.todo
 
 })
-}
-
-
-
+		}
 	render() {
 		const options = {
+			// exportEnabled: true,
+			// theme: "dark2",
 			animationEnabled: false,
 			title: {
-				text: "Complaints"
+				text: "Complaint Details"
 			},
 			data: [{
 				type: "pie",
@@ -51,15 +54,27 @@ this.setState({
 				indexLabelFontSize: 12,     
 				indexLabel: "{label} - {y}%",
 				dataPoints: [
-					{ y: this.state.accepted, label: " Registered" },
-					{y: this.state.assigned, label: "assigned"},
-					{ y: this.state.todo, label: "ToDO" },
-					{ y: this.state.inprogress, label: "InProgress" },
-					{ y: this.state.completed, label: "Completed" },
-					
+					{ y: this.state.assigned, label: "ASSIGNED" },
+					{ y: this.state.todo, label: "TODO" },
+					{ y: this.state.cancelled, label: "REJECTED" },
+					{ y: this.state.accepted, label: "ACCEPTED" },
+					{ y: this.state.inprogress, label: "INPROGRESS" },
+					{ y: this.state.completed, label: "COMPLETED" },
 				]
 			}],
-		
+			// data: [
+			// 	{
+			// 		// Change type to "doughnut", "line", "splineArea", etc.
+			// 		type: "column",
+			// 		dataPoints: [
+			// 			{ label: "Apple",  y: 10  },
+			// 			{ label: "Orange", y: 15  },
+			// 			{ label: "Banana", y: 25  },
+			// 			{ label: "Mango",  y: 30  },
+			// 			{ label: "Grape",  y: 28  }
+			// 		]
+			// 	}
+			// 	]
 	
 		}
 		
@@ -68,8 +83,12 @@ this.setState({
 			
 			<CanvasJSChart options = {options}
  
-				onRef={ref => this.chart = ref} />
+				onRef={ref => this.chart = ref} 
+			/>
+			{/* <FlatLineChart/> */}
 			
+			
+			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
 		</div>
 		);
 	}

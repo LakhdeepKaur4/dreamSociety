@@ -19,7 +19,6 @@ export  const PicURN = 'https://dreamsociety.herokuapp.com/';
 export  const DocURN = 'https://dreamsociety.herokuapp.com/';
 export  const UR = 'https://dreamsociety.herokuapp.com/';
 export  const URN = 'https://dreamsociety.herokuapp.com/api';
-
                                                                                     
 
 
