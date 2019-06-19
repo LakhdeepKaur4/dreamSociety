@@ -128,9 +128,7 @@ class FingerPrint extends Component {
 
         if (isValid) {
             this.props.history.push('/superDashboard/getMachineData');   
-        }
-
-        
+        }  
     }
 
     getDropdownForFlats = ({ fingerprintDetails},userId) => {
@@ -175,7 +173,7 @@ class FingerPrint extends Component {
                             ><DefaultSelect />
                                 {this.getDropdownForFlats(this.props.fingerprintReducer,item.userId)}
                             </DropdownComponent> */}
-                            <Input type="select" defaultValue='no-value' value={item.userId !== this.state.selectedUser ? 'no-value' : '' }  name="flatDetailId" onChange={this.onChangeInput.bind(this,item.userId)} >
+                            <Input type="select" defaultValue='no-value' value={item.userId !== this.state.selectedUser ? 'no-value' : this.state.flatDetailId }  name="flatDetailId" onChange={this.onChangeInput.bind(this,item.userId)} >
                                 <DefaultSelect/>
                                 {this.getDropdownForFlats(this.props.fingerprintReducer,item.userId)}
                             </Input>
