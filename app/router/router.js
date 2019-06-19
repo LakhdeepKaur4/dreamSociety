@@ -787,6 +787,8 @@ module.exports = function (app) {
 
 	app.get('/api/facilityDetail', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesDetailsController.get);
 
+	app.get('/api/facilityDetail', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], facilitiesDetailsController.get);
+
 	app.put('/api/facilityDetail/:id', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesDetailsController.update);
 
 	app.put('/api/facilityDetail/delete/deleteSelected', [authJwt.verifyToken], authJwt.isAdminRole, facilitiesDetailsController.deleteSelected);
