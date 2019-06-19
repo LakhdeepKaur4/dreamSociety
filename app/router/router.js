@@ -717,7 +717,7 @@ module.exports = function (app) {
 
 	app.put('/api/fingerPrint/:userId', [authJwt.verifyToken], fingerPrintController.updateFingerPrintData);
 
-	app.post('/api/fingerPrint/scheduler', [authJwt.verifyToken], fingerPrintController.fingerprintDataScheduler);
+	app.get('/api/fingerPrint/machine/data/:userId', [authJwt.verifyToken], fingerPrintController.fingerPrintDataByUserId);
 
 	app.get('/api/filterOnNull/fingerPrint', [authJwt.verifyToken], fingerPrintController.nullFingerPrintData);
 
