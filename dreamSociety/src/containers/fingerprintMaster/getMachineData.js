@@ -2,17 +2,22 @@ import React, { Component } from 'react';
 import {getMachineData,getMachineDetails,disableMachine} from '../../actions/fingerprint';
 import UI from '../../components/newUI/superAdminDashboard';
 import { connect } from 'react-redux';
-import { Table, Col, Row, Form, Button, FormGroup } from 'reactstrap';
+import { Table, Col, Row, Form, Button, FormGroup,Modal,ModalHeader,ModalBody } from 'reactstrap';
 import Spinner from '../../components/spinner/spinner';
 
 let flatDetailId;
 let userId;
+let type;
 class Machine extends Component {
           constructor(props){
               super(props);
 
               this.state={
                   userId:'',
+                  message:'',
+                  type:'',
+                  loading:true,
+                  modal: false
                 
 
               }
@@ -21,27 +26,51 @@ class Machine extends Component {
     
 
     refreshData=()=>{
+        this.setState({loading:true})
         flatDetailId=localStorage.getItem("flatDetailId")
         userId=localStorage.getItem("userId")
-        this.setState({userId})
-        console.log(userId)
-        console.log(flatDetailId)
-        this.props.getMachineData(flatDetailId);
+        type=localStorage.getItem("type")
+            
+        this.props.getMachineData(flatDetailId).then(()=>this.setState({loading:false}))
+        
+        this.setState({userId,type})
+       
+        
     }
 
     componentDidMount=()=>{
         this.refreshData(flatDetailId);
     }
 
-    machineResult=()=>{
+    machineResult=(userId)=>{
+        console.log(userId)
+        this.setState({ loading:true,message:''})
         var tokendata=localStorage.getItem('token')
-        console.log(tokendata);
-        console.log(this.state.userId)
+        console.log(tokendata)
         this.props.getMachineDetails(this.state.userId)
+        .then((res)=>{this.setState({message:res.payload.message,userId,loading: false})
+        this.toggle()
+       })   
     }
 
-    disableResult=()=>{
+    toggles = () => {
+        this.setState({ modal: !this.state.modal })
+        }
+
+        toggle = () => { 
+            this.setState({
+                modal: !this.state.modal
+            })
+        }
+
+    disableResult=(userId)=>{
+        console.log(userId)
+        this.setState({loading:true,message:'',})
         this.props.disableMachine(this.state.userId)
+        .then((res)=>{this.setState({message:res.payload.message,userId,loading: false})
+        this.toggle()
+    })
+        
     }
 
     fingerPrintData=()=>{
@@ -59,14 +88,14 @@ class Machine extends Component {
     }
 
     getFingerprintData=({machineDetails})=>{
-          if(machineDetails && machineDetails.machinesDetail){
-              console.log(machineDetails);
+          if(machineDetails && machineDetails.machinesDetail){ console.log(machineDetails)
+
            return (
                 <tr >
                    <td>{machineDetails.machinesDetail[0].machine_detail_master.machineActualId}</td>  
                    <td>{machineDetails.machinesDetail[0].flat_detail_master.flatNo}</td> 
-                    <td><Button color="success mr-2" onClick={this.machineResult}>Enable</Button> 
-                       <Button color="danger" onClick={this.disableResult}>Disable</Button>
+                    <td><Button color="success mr-2"  onClick={this.machineResult.bind(this, this.state.userId)} >Enable</Button> 
+                        <Button color="danger"  onClick={this.disableResult.bind(this, this.state.userId)} >Disable</Button>
                     </td>
                 </tr>
            
@@ -76,6 +105,7 @@ class Machine extends Component {
 
     render() {
         console.log(this.state.userId)
+        console.log(this.state.message)
 
         let tableData = <Table bordered>
             <thead>
@@ -101,8 +131,14 @@ class Machine extends Component {
                         <h3 align="center">Finger Print Data Master</h3>
                         <Button color="primary" onClick={this.fingerPrintData}>Finger Print Data Master</Button>
                     </div>
-                    {/* {(this.state.loading) ? <Spinner /> : tableData} */}
-                    {tableData}
+                    {(this.state.loading) ? <Spinner /> : tableData}
+                    <Modal isOpen={this.state.modal} toggle={this.toggles} >
+                    <ModalHeader toggle={this.toggle}>Message</ModalHeader>
+                    <ModalBody>
+                        <h1 style={{display:"block",background: 'black'}}>{this.state.message}</h1> 
+                    </ModalBody>
+                    </Modal>
+                    
                 </div>
             </UI>
         )
@@ -110,7 +146,7 @@ class Machine extends Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log(state,"state=============")
+    
     return {
         fingerprintReducer: state.fingerprintReducer,
     }

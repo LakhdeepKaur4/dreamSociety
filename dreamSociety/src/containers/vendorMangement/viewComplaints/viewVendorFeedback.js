@@ -56,7 +56,7 @@ componentWillMount(){
 
 
     refreshData() {
-        this.props.getComplaints().then(()=> this.setState({loading:false, modalLoading: false, editModal:false}));
+        this.props.getComplaints().then(()=> this.setState({loading:false, modalLoading: false, editModal:false}))
         this.props.getFeedback(Id);
     }   
 

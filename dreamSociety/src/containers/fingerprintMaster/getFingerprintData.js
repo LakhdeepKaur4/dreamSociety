@@ -48,9 +48,9 @@ class FingerPrint extends Component {
     }
 
     refreshData=()=> {
-        console.log("123")
+       
         const type= this.state.type
-        console.log(type)
+        
         this.setState({loading: true})
         this.props.getFingerprintData(type).then(() => this.setState({ loading: false, modalLoading:false })).catch(err=>{  console.log(err.response.data.message)
             this.setState({message: err.response.data.message, loading: false})
@@ -65,7 +65,7 @@ class FingerPrint extends Component {
     }
 
     searchFilter = (search) => {
-        return function (x) { console.log(x)
+        return function (x) { 
             return x.firstName.toLowerCase().includes(search.toLowerCase())  ||
              x.email.toLowerCase().includes(search.toLowerCase())  ||
              x.contact.toLowerCase().includes(search.toLowerCase()) ||
@@ -90,9 +90,9 @@ class FingerPrint extends Component {
     }
 
     onChangeInput = (userId,e) => {
-        console.log(userId,"userID============")
+        
         let selected=e.target.value
-        console.log("^^edit ", this.state, e.target.value)
+        console.log("^^edit ",  e.target.value)
 
         if (!!this.state.errors[e.target.name]) {
             let errors = Object.assign({}, this.state.errors);
@@ -104,6 +104,7 @@ class FingerPrint extends Component {
         }
         this.setState({
             [e.target.name]: e.target.value,
+        
             flatDetailId:selected,
             selectedUser:userId,
             message:''
@@ -111,11 +112,12 @@ class FingerPrint extends Component {
         this.props.getMachineData(e.target.value);
     }
 
-    getMachineComponent=(userId,flatDetailId)=>{
-        console.log("userId=============",userId,flatDetailId);
+    getMachineComponent=(userId,flatDetailId,type)=>{
+        
         localStorage.setItem('flatDetailId', flatDetailId)
        
         localStorage.setItem('userId', userId)
+        localStorage.setItem('type', type)
          
         let errors = {};
 
@@ -155,7 +157,7 @@ class FingerPrint extends Component {
             return fingerprintDetails.userData.sort((item1,item2)=>{ 
                 var cmprVal = (item1.firstName && item2.firstName ) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
              return this.state.sortVal ? cmprVal : -cmprVal;
-            }).filter(this.searchFilter(this.state.search)).map((item, index) => { console.log("finger===============", item)
+            }).filter(this.searchFilter(this.state.search)).map((item, index) => { 
                 return (
                     <tr key={item.userId}>
                         <td> {index + 1}</td>
@@ -181,7 +183,7 @@ class FingerPrint extends Component {
                             
                         </td>
                         <td>
-                            <Button color="success" className="mr-2" disabled={item.userId !== this.state.selectedUser}   onClick={this.getMachineComponent.bind(this,item.userId, this.state.flatDetailId)}>Get Machine</Button>
+                            <Button color="success" className="mr-2" disabled={item.userId !== this.state.selectedUser}   onClick={this.getMachineComponent.bind(this,item.userId, this.state.flatDetailId, this.state.type)}>Get Machine</Button>
                         </td>
                     </tr>
                 )
@@ -196,7 +198,7 @@ class FingerPrint extends Component {
       await this.setState({
            type:selected
         })
-      console.log(this.state.type,"a================")
+     
       this.refreshData()
       this.setState({modalLoading: true})
     }
@@ -216,7 +218,7 @@ class FingerPrint extends Component {
     }
 
     render() {
-         console.log(this.state.type)
+         
         let tableData = <Table bordered>
             <thead>
                 <tr>
