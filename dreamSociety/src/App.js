@@ -181,6 +181,7 @@ import FacilityMaster from './containers/facilityMaster/facilityMaster';
 import FacilityDetails from './containers/facilityMaster/facilityDetails';
 import FacilitySubMaster from './containers/facilitySubMaster/facilitySubMaster';
 import FacilitySubMasterDetails from './containers/facilitySubMaster/facilitySubMasterDetails';
+import OwnerFacility from './containers/ownerFacility/ownerfacility';
 
 class App extends Component {
   render() {
@@ -367,6 +368,8 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/facilityDetails' component={FacilityDetails} />
             <PrivateRoute path='/superDashboard/facilitySubMaster' component={FacilitySubMaster} />
             <PrivateRoute path='/superDashboard/facilitySubMasterDetails' component={FacilitySubMasterDetails} />
+
+            <OwnerPrivateRoute path='/ownerDashboard/ownerFacility' component={OwnerFacility} />
 
 
 
