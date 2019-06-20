@@ -119,11 +119,8 @@ componentWillMount(){
         <Table className="table table-bordered">
         <thead>
             <tr>
-       
                 <th>Feedback</th>
-                <th>Rating</th>
-            
-                
+                <th>Rating</th>         
              
             </tr>
         </thead>
@@ -132,10 +129,7 @@ componentWillMount(){
             {this.renderList(this.props.viewComplaintsReducer)}    
         </tbody>
     </Table>
-
-
      
-          
         return (
 
             <div>
@@ -148,18 +142,10 @@ componentWillMount(){
 
                   
                     <div className="top-details" style={{ fontWeight: 'bold'}}><h3>View Feedback</h3>
-                    </div>
-                
-             
-                   
-                         
-                 
-                          
+                    </div>             
                    
                            {!this.state.loading ? tableData : <Spinner />}
-                 
-                     
-                    
+                                   
                     </div>
                 </UI>
                

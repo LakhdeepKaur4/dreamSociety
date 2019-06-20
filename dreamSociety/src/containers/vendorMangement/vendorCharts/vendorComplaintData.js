@@ -39,8 +39,7 @@ this.setState({
 		}
 	render() {
 		const options = {
-			// exportEnabled: true,
-			// theme: "dark2",
+		
 			animationEnabled: false,
 			title: {
 				text: "Complaint Details"
@@ -62,33 +61,16 @@ this.setState({
 					{ y: this.state.completed, label: "COMPLETED" },
 				]
 			}],
-			// data: [
-			// 	{
-			// 		// Change type to "doughnut", "line", "splineArea", etc.
-			// 		type: "column",
-			// 		dataPoints: [
-			// 			{ label: "Apple",  y: 10  },
-			// 			{ label: "Orange", y: 15  },
-			// 			{ label: "Banana", y: 25  },
-			// 			{ label: "Mango",  y: 30  },
-			// 			{ label: "Grape",  y: 28  }
-			// 		]
-			// 	}
-			// 	]
+	
 	
 		}
 		
 		return (
-		<div>
-			
+		<div>		
 			<CanvasJSChart options = {options}
  
 				onRef={ref => this.chart = ref} 
 			/>
-			{/* <FlatLineChart/> */}
-			
-			
-			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
 		</div>
 		);
 	}
