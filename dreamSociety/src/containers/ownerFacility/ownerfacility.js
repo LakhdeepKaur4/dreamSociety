@@ -20,6 +20,8 @@ class OwnerFacility extends Component {
             type: 'activated',
             isDisabled: true,
             ids: [],
+            facilityDetailId:'',
+            duration:''
             
 
         }
@@ -89,8 +91,19 @@ class OwnerFacility extends Component {
 
     }
 
+    onChangeHandler = (event) => {
+        this.setState({ message: '' })
 
+        this.setState({ [event.target.name]: event.target.value, errors:{} });
+    }
 
+    submitFacilityData=(facilityDetailId,monthlyRate,unitRate,duration)=>{
+       
+        
+            console.log(facilityDetailId,monthlyRate,unitRate,duration)
+    }
+
+    
 
 
 
@@ -102,10 +115,10 @@ class OwnerFacility extends Component {
                 return (
                     <tr key={item.facilityDetailId}>
                         <td scope="row" ><Input type="checkbox" name="ids" className="SelectAll" value={this.state.facilityDetailId} style={{ marginLeft: '1px' }}   onChange={(e) => {
-                                const { designationId } = item
+                                const { facilityDetailId } = item
                                 if (!e.target.checked) {
-                                    document.getElementById('allSelect').checked = false;
-                                    let indexOfId = this.state.ids.indexOf(designationId);
+                                    
+                                    let indexOfId = this.state.ids.indexOf(facilityDetailId);
                                     if (indexOfId > -1) {
                                         this.state.ids.splice(indexOfId, 1);
                                     }
@@ -115,7 +128,8 @@ class OwnerFacility extends Component {
                                 }
                                 else {
 
-                                    this.setState({ ids: [...this.state.ids, designationId] });
+                                    this.setState({ ids: [...this.state.ids, facilityDetailId] });
+                                    console.log(this.state.ids,"ids===========")
 
                                     if (this.state.ids.length >= 0) {
                                         this.setState({ isDisabled: false })
@@ -125,8 +139,15 @@ class OwnerFacility extends Component {
                             }}></Input></td>
                         <td>{item.facilities_master.facilityName}</td>
                         <td>{item.monthlyRate ? item.monthlyRate + " Per Monthly Rate" : item.unitRate + " Per Unit Rate"}</td>
-                        <th><Input type="date" ></Input></th>
-                        <th><Button color="success">Submit</Button></th>
+                        <th><Input type="select" defaultValue='no-value' name="duration"  onChange={this.onChangeHandler}>
+                         <DefaultSelect />
+                            <option>1 Month</option>
+                            <option>2 Months</option>
+                            <option>Quarterly</option>
+                            <option>Half Yearly</option>
+                            <option>Yearly</option>
+                      </Input ></th>
+                        <th><Button color="success" onClick={this.submitFacilityData.bind(this,item.facilityDetailId,item.monthlyRate,item.unitRate, this.state.duration)}>Submit</Button></th>
                     </tr>
                 )
             })
@@ -169,7 +190,7 @@ class OwnerFacility extends Component {
                         <th>#</th>
                         <th>Facility Name</th>
                         <th>Rate/Type</th>
-                        <th>Date</th>
+                        <th>Duration</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
