@@ -140,7 +140,7 @@ class DesignationMasterDetail extends Component {
             .then(() => this.refreshData())
             .catch(err => err.response.data.message);
     }
-
+   
 
 
     selectAll = () => {
@@ -151,6 +151,7 @@ class DesignationMasterDetail extends Component {
             selectMultiple[i].checked = true;
         }
         this.setState({ ids: ar });
+        console.log(this.state.ids,"selectAll==========")
         if (ar.length > 0) {
             this.setState({ isDisabled: false });
         }
@@ -165,6 +166,7 @@ class DesignationMasterDetail extends Component {
         }
 
         this.setState({ ids: [...allIds] });
+        console.log(this.state.ids,"unSelectAll==========")
         if (allIds.length === 0) {
             this.setState({ isDisabled: true });
         }

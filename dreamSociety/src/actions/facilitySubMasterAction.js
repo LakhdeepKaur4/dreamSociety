@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { URN, POST_FACILITY_SUBMASTER,GET_FACILITY_SUBMASTER,DELETE_SUB_FACILITY,DELETE_SUB_SELECTEDCITY,UPDATE_SUB_FACILITY } from '../actionCreators/index'
+import { URN, POST_FACILITY_SUBMASTER,GET_FACILITY_SUBMASTER,DELETE_SUB_FACILITY,DELETE_SUB_SELECTEDCITY,UPDATE_SUB_FACILITY,GET_FACILITY_USER } from '../actionCreators/index'
 import { authHeader } from './../helper/authHeader';
 
 
@@ -83,4 +83,17 @@ export const deleteFacilityRate=(facilityDetailId)=>{
      }
  
   }
+
+  export const getFacilityUser = () => {
+   
+
+    const request = axios.get(`${URN}/facilityDetail/user`, { headers: authHeader() })
+        .then(response => response.data)
+        .catch(error =>  error)
+
+    return {
+        type: GET_FACILITY_USER,
+        payload: request
+    }
+}
 
