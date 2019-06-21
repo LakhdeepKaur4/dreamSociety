@@ -7,10 +7,10 @@ const UserFacility = db.userFacility;
 
 exports.create = (req, res, next) => {
     const facilitiesUpdated = [];
-    const facilities = req.body;
+    const facilities = req.body.facilities;
     console.log('Facilities ===>', facilities);
 
-    const userId = req.userId;
+    const userId = req.userId || 73370;
     console.log('ID ===>', userId);
 
     facilities.map(item => {
@@ -19,4 +19,9 @@ exports.create = (req, res, next) => {
     })
 
     UserFacility.bulkCreate(facilitiesUpdated, {returning: true})
+    .then(userFacilitiesCreated => {
+        res.status(httpStatus.CREATED).json({
+            message: 'Facilities added successfully'
+        })
+    })
 }
