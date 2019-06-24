@@ -8,6 +8,7 @@ var schedule = require('node-schedule');
 
 const FingerprintData = db.fingerprintData;
 const FingerprintMachineData = db.fingerprintMachineData;
+const PunchedData = db.punchedfingerprintMachineData;
 const Owner = db.owner;
 const Tenant = db.tenant;
 const OwnerMembersDetail = db.ownerMembersDetail;
@@ -1252,18 +1253,103 @@ exports.disableFingerPrintData = async (req, res, next) => {
     }
 }
 
+exports.getCurrentFingerprintData = async (req, res, next) => {
+    try {
+        console.log("***getting current");
+        let records = [];
+        let count;
+        let socketResponse;
+        let loopCount = 0;
+        wss.on('connection', (socket, req) => {
+            socket.on('open', () => {
+                console.log('websocket is connected ...')
+                // sending a send event to websocket server
+                // socket.send('connected')
+                // console.log("connected");
+            })
+            let response = { "ret": "reg", "result": true }
+            let getLogs = { "cmd": "getnewlog", "stn": true }
+            socket.on('message', (message) => {
+                // console.log("%%%%", message)
+                // message1 = message.slice(0,message.lastIndexOf(",")) + message.slice(message.lastIndexOf(",") + 1);
+                if (message.indexOf(",]") > -1 ) {
+                    message = message.slice(0, message.lastIndexOf(",")) + message.slice(message.lastIndexOf(",") + 1);
+                }
+                socketResponse = JSON.parse(message);
+                socket.send(JSON.stringify(response));
+                socket.send(JSON.stringify(getLogs));
+                getLogs.stn = false;
+                if (socketResponse.cmd == 'sendlog') {
+                    // message = message.slice(0, message.lastIndexOf(",")) + message.slice(message.lastIndexOf(",") + 1);
+                    records = socketResponse.record;
+                    console.log("records", records)
+                    console.log("length0---->", records.length);
+                    // if (socketResponse.record.length == 10) {
+                    //     socketResponse.record.splice(0, 10);
+                    //     console.log("current record ", records)
+                    // }
+                    console.log(" Records", records);
+                    from = socketResponse.from;
+                    // console.log("from", from)
+                    to = socketResponse.to;
+                    // console.log("to", to)
+                    count = socketResponse.count;
+                  
+                    console.log('Count ====>', count);
+                    // console.log(loopCount !== count)
+                    if (loopCount !== count) {
+                        // console.log("inside if")
+                        records.map(item => {
+                            // console.log("***item",item)
+                            loopCount += 1;
+                            let body = {
+                                userId: item.enrollid,
+                                time: item.time,
+                                mode:item.mode
+                            }
+                            // console.log("&&&&body",body)
+                            let createdData = PunchedData.findOrCreate({
+                                where: {
+                                    userId: body.userId,
+                                    time: body.time,
+                                    mode:item.mode
+                                },
+                                // defaults: {
+                                //     endDate: body.endDate,
+                                //     numberOfGuestExpected: body.numberOfGuestExpected,
+                                //     userId: body.userId
+                                // }
+                                defaults: body
+                            })
+                            // create(body);
+                        })
+                    }
+                }
+            })
+            // socket.on('close', () => { console.log('close') });
+            socket.on('error', (error) => {
+                console.log("fingerprint api socket error", error);
+            })
+        })
+
+    } catch (error) {
+        console.log("error==>", error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
+
 // exports.fingerprintDataScheduler = async (req, res, next) => {
 let date = new Date(Date.now());
-let startTime = date.setHours(14);
-let endTime = date.setHours(16);
+let startTime = date.setHours(1);
+let endTime = date.setHours(13);
 var rule = new schedule.RecurrenceRule();
-// rule.hour = new schedule.Range(0, 59, 1);; 
+// rule.hour = new schedule.Range(0, 59, 1);
 
-var j = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/20 * * * * *' }, function () {
-    console.log('Time for tea!');
+var j = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/10000 * * * *' }, function () {
+    // console.log('Time for tea!');
     try {
-        console.log("**********************************");
-        let records = [];  
+
+        let records = [];
         let from;
         let to;
         let length;
@@ -1295,7 +1381,6 @@ var j = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/20 * * *
                     // console.log("to", to)
                     count = socketResponse.count;
                     console.log('Count ====>', count);
-
                     // length = (length === 1000) ? 1000 : records.length;
                     // console.log('Length --->', length);
 
@@ -1338,6 +1423,7 @@ var j = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/20 * * *
 
 // }
 
+
 exports.fingerPrintDataByUserId = async (req, res, next) => {
     try {
         const fingerprint = await FingerprintMachineData.findAll({ where: { isActive: true, userId: req.params.userId }, include: [{ model: User, as: 'user', attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'], include: [Role] }] });
@@ -1361,3 +1447,4 @@ exports.fingerPrintDataByUserId = async (req, res, next) => {
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
     }
 }
+

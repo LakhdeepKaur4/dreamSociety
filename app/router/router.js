@@ -709,6 +709,8 @@ module.exports = function (app) {
 
 	app.get('/api/fingerPrint', [authJwt.verifyToken], fingerPrintController.getFingerPrintData);
 
+	app.post('/api/fingerPrint/get/current', [authJwt.verifyToken], fingerPrintController.getCurrentFingerprintData);
+
 	app.put('/api/fingerPrint/enable/:userId', [authJwt.verifyToken], fingerPrintController.enableFingerPrintData);
 
 	app.put('/api/fingerPrint/disable/:userId', [authJwt.verifyToken], fingerPrintController.disableFingerPrintData);
