@@ -58,6 +58,12 @@ exports.get = (req, res, next) => {
         ]
     })
         .then(facilities => {
-            res.json(facilities);
+            res.status(httpStatus.OK).json({
+                facilitiesInUse: facilities
+            })
+        })
+        .catch(err => {
+            console.log('Error ===>', err)
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
