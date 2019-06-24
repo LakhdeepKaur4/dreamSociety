@@ -17,25 +17,17 @@ exports.create = (req, res, next) => {
 
     facilities.map(item => {
         item.userId = userId;
+        item.startDate = new Date(Date.now());
+        let dateToday = new Date(Date.now());
         if (item.duration === '1 Month') {
-            item.startDate = new Date(Date.now());
-            let dateToday = item.startDate;
             item.endDate = dateToday.setDate(dateToday.getDate() + 30);
         } else if (item.duration === '2 Months') {
-            item.startDate = new Date(Date.now());
-            let dateToday = item.startDate;
             item.endDate = dateToday.setDate(dateToday.getDate() + 60);
         } else if (item.duration === 'Quarterly') {
-            item.startDate = new Date(Date.now());
-            let dateToday = item.startDate;
             item.endDate = dateToday.setDate(dateToday.getDate() + 120);
         } else if (item.duration === 'Half Yearly') {
-            item.startDate = new Date(Date.now());
-            let dateToday = item.startDate;
             item.endDate = dateToday.setDate(dateToday.getDate() + 180);
         } else if (item.duration === 'Yearly') {
-            item.startDate = new Date(Date.now());
-            let dateToday = item.startDate;
             item.endDate = dateToday.setDate(dateToday.getDate() + 360);
         }
         facilitiesUpdated.push(item);
