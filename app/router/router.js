@@ -110,7 +110,7 @@ module.exports = function (app) {
 
 	app.put('/api/user/:id', [authJwt.verifyToken, authJwt.isAdminRole], userController.updateEncrypted);
 
-	app.get('/api/user/:id', userController.getById);
+	// app.get('/api/user/:id', userController.getById);
 
 	app.post('/api/user/changePassword', [authJwt.verifyToken], userController.changePassword);
 
@@ -799,5 +799,7 @@ module.exports = function (app) {
 	app.post('/api/auth/chat', chatController.authByChatKit);
 
 	app.post('/api/user/facility', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], userFacilityController.create);
+
+	app.get('/api/user/facility', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], userFacilityController.get);
 
 }

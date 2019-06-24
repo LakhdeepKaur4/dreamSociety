@@ -255,5 +255,6 @@ db.feedback.belongsTo(db.complaint, { foreignKey: 'complaintId' });
 db.feedback.belongsTo(db.vendor, { foreignKey: 'vendorId' });
 db.facilitiesDetails.belongsTo(db.facilities, { foreignKey: 'facilityId' });
 db.userFacility.belongsTo(db.facilitiesDetails, { foreignKey: 'facilityDetailId' });
+db.userFacility.belongsTo(db.user, { foreignKey: 'userId' });
 
 module.exports = db;

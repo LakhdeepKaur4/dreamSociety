@@ -12,6 +12,12 @@ module.exports = (sequelize, Sequelize) => {
         duration: {
             type: Sequelize.STRING,
         },
+        startDate: {
+            type: Sequelize.DATE,
+        },
+        endDate: {
+            type: Sequelize.DATE,
+        }
     }, {
             freezeTableName: true
         });
