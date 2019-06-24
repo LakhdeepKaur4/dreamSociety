@@ -7,6 +7,14 @@ const UserFacility = db.userFacility;
 const Facilities = db.facilities;
 const FacilitiesDetails = db.facilitiesDetails;
 
+let filterFacilities = (arr1, arr2) => {
+    const resArr = arr1.filter(item => {
+        return arr2.includes(item.facilityDetailId) === false;
+    })
+
+    return resArr;
+}
+
 exports.create = (req, res, next) => {
     const facilitiesUpdated = [];
     const facilities = req.body.facilities;
@@ -64,6 +72,43 @@ exports.get = (req, res, next) => {
         })
         .catch(err => {
             console.log('Error ===>', err)
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+exports.getNotInUse = (req, res, next) => {
+    const userId = req.userId;
+    console.log('ID ===>', userId);
+
+    FacilitiesDetails.findAll({
+        where: {
+            isActive: true
+        },
+        include: [
+            { model: Facilities }
+        ]
+    })
+        .then(async facilities => {
+            const usedFacilities = await UserFacility.findAll({
+                where: {
+                    isActive: true,
+                    userId: userId
+                }
+            });
+            
+            const usedFacilitiesIds = [];
+
+            usedFacilities.map(item => {
+                usedFacilitiesIds.push(item.facilityDetailId);
+            })
+            
+            const facilitiesSend = filterFacilities(facilities, usedFacilitiesIds);
+            res.status(httpStatus.OK).json({
+                facilitiesNotInUse: facilitiesSend
+            });
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
             res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
         })
 }
