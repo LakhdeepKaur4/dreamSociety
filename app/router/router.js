@@ -60,6 +60,7 @@ module.exports = function (app) {
 	const chatController = require('../controller/chat');
 	const facilitiesController = require('../controller/facilities');
 	const facilitiesDetailsController = require('../controller/facilitiesDetails');
+	const userFacilityController = require('../controller/userFacility');
 
 	app.get('/', userController.start);
 
@@ -797,6 +798,8 @@ module.exports = function (app) {
 
 	app.put('/api/facilityDetail/delete/:id', [authJwt.verifyToken, authJwt.isAdminRole], facilitiesDetailsController.delete);
 
-	app.post('/api/auth/chat',chatController.authByChatKit);
+	app.post('/api/auth/chat', chatController.authByChatKit);
+
+	app.post('/api/user/facility', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], userFacilityController.create);
 
 }
