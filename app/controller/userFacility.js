@@ -62,10 +62,12 @@ exports.get = (req, res, next) => {
             userId: userId
         },
         include: [
-            { model: FacilitiesDetails, where: { isActive: true },
-            include: [
-                { model: Facilities }
-            ] }
+            {
+                model: FacilitiesDetails, where: { isActive: true },
+                include: [
+                    { model: Facilities }
+                ]
+            }
         ]
     })
         .then(facilities => {
@@ -98,16 +100,47 @@ exports.getNotInUse = (req, res, next) => {
                     userId: userId
                 }
             });
-            
+
             const usedFacilitiesIds = [];
 
             usedFacilities.map(item => {
                 usedFacilitiesIds.push(item.facilityDetailId);
             })
-            
+
             const facilitiesSend = filterFacilities(facilities, usedFacilitiesIds);
             res.status(httpStatus.OK).json({
                 facilitiesNotInUse: facilitiesSend
+            });
+        })
+        .catch(err => {
+            console.log('Error ===>', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json(err);
+        })
+}
+
+exports.update = (req, res, next) => {
+    const userId = req.userId;
+    console.log('ID ===>', userId);
+
+    const facilities = req.body.facilities;
+    console.log('Facilities ===>', facilities);
+
+    const promise = facilities.map(item => {
+        UserFacility.findOne({
+            where: {
+                userId: userId,
+                facilityDetailId: item.facilityDetailId
+            }
+        })
+            .then(userFacility => {
+                userFacility.updateAttributes(item);
+            })
+    })
+
+    Promise.all(promise)
+        .then(result => {
+            res.status(httpStatus.CREATED).json({
+                message: 'Facilities updated successfully'
             });
         })
         .catch(err => {

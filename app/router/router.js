@@ -804,6 +804,8 @@ module.exports = function (app) {
 
 	app.get('/api/user/facility', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], userFacilityController.get);
 
+	app.put('/api/user/facility/update', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], userFacilityController.update);
+
 	app.get('/api/user/facility/deactivated', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], userFacilityController.getNotInUse);
 
 }
