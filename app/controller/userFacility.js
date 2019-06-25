@@ -54,7 +54,7 @@ exports.create = (req, res, next) => {
 }
 
 exports.get = (req, res, next) => {
-    const userId = req.userId||73370;
+    const userId = req.userId;
     console.log('ID ===>', userId);
     UserFacility.findAll({
         where: {
