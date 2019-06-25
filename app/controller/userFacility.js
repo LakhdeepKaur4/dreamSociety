@@ -54,7 +54,7 @@ exports.create = (req, res, next) => {
 }
 
 exports.get = (req, res, next) => {
-    const userId = req.userId;
+    const userId = req.userId||73370;
     console.log('ID ===>', userId);
     UserFacility.findAll({
         where: {
@@ -62,7 +62,10 @@ exports.get = (req, res, next) => {
             userId: userId
         },
         include: [
-            { model: FacilitiesDetails, where: { isActive: true } }
+            { model: FacilitiesDetails, where: { isActive: true },
+            include: [
+                { model: Facilities }
+            ] }
         ]
     })
         .then(facilities => {

@@ -13,10 +13,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
         },
         startDate: {
-            type: Sequelize.DATE,
+            type: Sequelize.DATEONLY,
         },
         endDate: {
-            type: Sequelize.DATE,
+            type: Sequelize.DATEONLY,
         }
     }, {
             freezeTableName: true
