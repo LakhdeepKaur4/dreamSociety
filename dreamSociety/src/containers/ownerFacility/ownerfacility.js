@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getFacilityUser } from './../../actions/facilitySubMasterAction';
+
+import { addUserFacility, getUserFacility, notInFacility, updateUserFacility, updateFacility } from './../../actions/userFacilityAction';
 import { bindActionCreators } from 'redux';
-import SearchFilter from '../../components/searchFilter/searchFilter';
+
 import UI from '../../components/newUI/ownerDashboard';
 import { Table, Button, Modal, FormGroup, Form, ModalBody, ModalHeader, Input, Label, Row, Col } from 'reactstrap';
 import _ from 'underscore';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
+import { stat } from 'fs';
+import $ from 'jquery';
+import moment from 'moment'
+
+
 
 
 class OwnerFacility extends Component {
@@ -18,22 +24,31 @@ class OwnerFacility extends Component {
             loading: true,
             selected: '',
             type: 'activated',
-            isDisabled: true,
+            isActive: false,
             ids: [],
-            facilityDetailId:'',
-            duration:''
-            
+            facilityDetailId: '',
+            duration: '',
+            facilities: [],
+            facilitiesUser: [],
+            errors: {},
+            message: '',
+            endDate: '',
+            arrData: false
+
+
 
         }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.refreshData()
-
     }
 
     refreshData() {
-        this.props.getFacilityUser().then(() => this.setState({ loading: false }));
+
+        this.props.getUserFacility().then(() => this.setState({ loading: false }));
+        this.props.notInFacility().then(() => this.setState({ loading: false }));
+
 
     }
 
@@ -50,7 +65,7 @@ class OwnerFacility extends Component {
 
     activatedChange = async (e) => {
         let selected = e.target.value;
-        console.log(selected)
+
         await this.setState({
             type: selected
         })
@@ -60,101 +75,205 @@ class OwnerFacility extends Component {
     }
 
 
+    onChangeHandler = (facilityDetailId, e) => {
+
+        let duration = e.target.value
+        this.setState({ duration })
+
+        this.state.facilities.forEach(item => {
+
+            if (item.facilityDetailId === facilityDetailId) {
+                item.duration = e.target.value;
+
+            }
+        })
+
+
+        this.setState({ [e.target.name]: e.target.value, errors: {} });
+        if (!!this.state.errors[e.target.name]) {
+            let errors = Object.assign({}, this.state.errors);
+            delete errors[e.target.name];
+            this.setState({ [e.target.name]: e.target.value.trim(''), errors });
+        }
+        else {
+            this.setState({ [e.target.name]: e.target.value.trim('') });
+        }
+
+
+    }
+
+    submitFacilityData = (facilities) => {
+        this.setState({ loading: true })
+
+        this.props.addUserFacility(facilities);
+        this.refreshData()
+    }
+
+
+
+
+
+    facilityDisabled = (facilityDetailId) => {
+
+        $(function () {
+            $("input[type='checkbox']").on('change', function () {
+                $(this).closest("tr").find("select[name=duration]").prop("disabled", !this.checked)
+            });
+        });
+    }
+
+    onChange = (facilityDetailId, e) => {
+
+        this.state.facilitiesUser.forEach(item => {
+            if (item.facilityDetailId === facilityDetailId) {
+                item.endDate = e.target.value
+            }
+        })
+
+    }
+
+
+    inUseSubmit = (facilitiesUser) => {
+        this.setState({ loading: true })
+
+        this.props.updateUserFacility(facilitiesUser).then(() => {
+            this.refreshData();
+        })
+
+    }
+
+    getDataUser = (userFacilty) => {
+
+        this.setState({ arrData: true })
+        userFacilty.data.facilitiesInUse.map((item) => {
+
+
+            let facilityDetailId = item.facilityDetailId;
+
+            let endDate = item.endDate
+            this.state.facilitiesUser.push({ facilityDetailId, endDate, isActive: true })
+        })
+    }
+
     
-    selectAll = () => {
-        let selectMultiple = document.getElementsByClassName('SelectAll');
-        let ar = [];
-        for (var i = 0; i < selectMultiple.length; i++) {
-            ar.push(parseInt(selectMultiple[i].value));
-            selectMultiple[i].checked = true;
-        }
-        this.setState({ ids: ar });
-        console.log(this.state.ids,"selectAll==========")
-        if (ar.length > 0) {
-            this.setState({ isDisabled: false });
-        }
+    close = () => {
+        return this.props.history.replace('/ownerDashboard')
     }
 
-    unSelectAll = () => {
 
-        let unSelectMultiple = document.getElementsByClassName('SelectAll');
-        let allIds = [];
-        for (var i = 0; i < unSelectMultiple.length; i++) {
-            unSelectMultiple[i].checked = false
+
+    getActivatedData = ({ userFacilty }) => {
+
+
+        if (userFacilty && userFacilty.data) {
+            if (this.state.arrData === false) {
+                this.getDataUser(userFacilty);
+            }
+
+
+            return userFacilty.data.facilitiesInUse.map((item) => {
+
+                return (
+
+                    <tr key={item.facilityDetailId} >
+                        <td scope="row" ><Input type="checkbox" name="facilitiesUser" defaultChecked className="SelectAll" value={this.state.facilityDetailId} style={{ marginLeft: '1px' }}
+                            onChange={(e) => {
+
+                                const { facilityDetailId, endDate } = item
+
+
+                                if (!e.target.checked) {
+                                    let indexToBeFound;
+                                    this.state.facilitiesUser.map((item, index) => {
+                                        if (item.facilityDetailId === facilityDetailId) {
+                                            item.isActive = false;
+                                        }
+                                    })
+                                }
+                                else {
+
+                                    this.state.facilitiesUser.map((item, index) => {
+                                        if (item.facilityDetailId === facilityDetailId) {
+                                            item.isActive = true;
+                                        }
+                                    })
+                                }
+
+                            }
+                            }
+                        ></Input></td>
+                       
+                        <td>{item.facilities_details_master.facilities_master.facilityName}</td>
+                        <td>{item.facilities_details_master.monthlyRate ? item.facilities_details_master.monthlyRate + " Per Monthly Rate" : item.facilities_details_master.unitRate + " Per Unit Rate"}</td>
+                        <td>{(moment(item.startDate).format('MM/DD/YYYY'))}</td>
+                        <td><Input type="date" name="endDate" defaultValue={item.endDate} onChange={this.onChange.bind(this, item.facilityDetailId)} />
+                        </td>
+                    </tr>
+
+
+                )
+            })
         }
 
-        this.setState({ ids: [...allIds] });
-        console.log(this.state.ids,"unSelectAll==========")
-        if (allIds.length === 0) {
-            this.setState({ isDisabled: true });
-        }
-
     }
-
-    onChangeHandler = (event) => {
-        this.setState({ message: '' })
-
-        this.setState({ [event.target.name]: event.target.value, errors:{} });
-    }
-
-    submitFacilityData=(facilityDetailId,monthlyRate,unitRate,duration)=>{
-       
-        
-            console.log(facilityDetailId,monthlyRate,unitRate,duration)
-    }
-
-    
 
 
 
     getUserData = ({ getFacilityUser }) => {
-        if (getFacilityUser) {
-            console.log(getFacilityUser)
-            return getFacilityUser.facilities.map((item) => { 
-                console.log(item, "==========")
+        if (getFacilityUser && getFacilityUser.data) {
+
+            return getFacilityUser.data.facilitiesNotInUse.map((item) => {
+
                 return (
                     <tr key={item.facilityDetailId}>
-                        <td scope="row" ><Input type="checkbox" name="ids" className="SelectAll" value={this.state.facilityDetailId} style={{ marginLeft: '1px' }}   onChange={(e) => {
+                        <td scope="row" ><Input type="checkbox" name="facilities" disabled={this.facilityDisabled(item.facilityDetailId)} className="SelectAll" value={this.state.facilityDetailId} style={{ marginLeft: '1px' }}
+                            onChange={(e) => {
+
                                 const { facilityDetailId } = item
+
+
+
                                 if (!e.target.checked) {
-                                    
-                                    let indexOfId = this.state.ids.indexOf(facilityDetailId);
-                                    if (indexOfId > -1) {
-                                        this.state.ids.splice(indexOfId, 1);
-                                    }
-                                    if (this.state.ids.length === 0) {
-                                        this.setState({ isDisabled: true });
-                                    }
+                                    let indexToBeFound;
+                                    this.state.facilities.map((item, index) => {
+                                        if (item.facilityDetailId === facilityDetailId) {
+                                            indexToBeFound = index;
+                                        }
+                                    })
+
+                                    this.state.facilities.splice(indexToBeFound, 1)
+
+
                                 }
                                 else {
 
-                                    this.setState({ ids: [...this.state.ids, facilityDetailId] });
-                                    console.log(this.state.ids,"ids===========")
 
-                                    if (this.state.ids.length >= 0) {
-                                        this.setState({ isDisabled: false })
-                                    }
+                                    this.state.facilities.push({ facilityDetailId, duration: '' })
                                 }
-
-                            }}></Input></td>
+                                this.facilityDisabled(facilityDetailId)
+                            }
+                            }
+                        ></Input></td>
                         <td>{item.facilities_master.facilityName}</td>
                         <td>{item.monthlyRate ? item.monthlyRate + " Per Monthly Rate" : item.unitRate + " Per Unit Rate"}</td>
-                        <th><Input type="select" defaultValue='no-value' name="duration"  onChange={this.onChangeHandler}>
-                         <DefaultSelect />
+                        <td> <Input type="select" defaultValue='no-value' name="duration" onChange={this.onChangeHandler.bind(this, item.facilityDetailId)} disabled>
+                            <DefaultSelect selected disabled />
                             <option>1 Month</option>
                             <option>2 Months</option>
                             <option>Quarterly</option>
                             <option>Half Yearly</option>
                             <option>Yearly</option>
-                      </Input ></th>
-                        <th><Button color="success" onClick={this.submitFacilityData.bind(this,item.facilityDetailId,item.monthlyRate,item.unitRate, this.state.duration)}>Submit</Button></th>
+                        </Input >
+                        </td>
                     </tr>
+                   
                 )
             })
         }
     }
 
     render() {
+
         let radioData = <div>
             <Label style={{ alignContent: 'baseline', marginLeft: "10px", fontWeight: "700" }}><input className="ml-2"
                 id="activated"
@@ -174,51 +293,57 @@ class OwnerFacility extends Component {
                 value='deactivated'
             />{' '}Not In Use</Label>
 
-            <Label style={{ alignContent: 'baseline', marginLeft: "10px", fontWeight: "700" }}><input className="ml-2"
+            {/* <Label style={{ alignContent: 'baseline', marginLeft: "10px", fontWeight: "700" }}><input className="ml-2"
                 id="all"
                 type="radio"
                 name="all"
                 onChange={this.activatedChange}
                 value='all'
                 checked={this.state.type === 'all' ? true : false}
-            />{' '}All</Label>
+            />{' '}All</Label> */}
         </div>
-        let table = <div>
-            <Table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Facility Name</th>
-                        <th>Rate/Type</th>
-                        <th>Duration</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+          let table= <div>
+            {this.state.type === 'deactivated' ?<div> <Table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Facility Name</th>
+                            <th>Rate/Type</th>
+                            <th>Duration</th>
+                        </tr>
 
-                <tbody>
-                    {this.getUserData(this.props.FacilitySubMasterReducer)}
-                </tbody>
+                    </thead>
 
-            </Table>
+                    <tbody>
+                        {this.getUserData(this.props.userFacilityReducer)}
+                    </tbody>
+                    <FormGroup>
+                    <td><Button color="success" onClick={this.submitFacilityData.bind(this, this.state.facilities)}>Submit</Button></td>
+                    </FormGroup>
 
-            {/* <FormGroup>
-                <Label >Date</Label>
-                <Input type="date" >
-                </Input>
-            </FormGroup>
+                </Table> </div> : <div> <Table className="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Facility Name</th>
+                                <th>Rate/Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                            </tr>
 
-            <FormGroup>
-                <Button color="success">Submit</Button>
-            </FormGroup> */}
-        </div>
+                        </thead>
 
+                        <tbody>
+                            {this.getActivatedData(this.props.userFacilityReducer)}
+                        </tbody>
 
-        //     let facilityForm = <div>
-        //         {radioData}
+                        <FormGroup>
+                        <td><Button color="success" onClick={this.inUseSubmit.bind(this, this.state.facilitiesUser)}>Submit</Button></td>
+                        </FormGroup>
+                    </Table></div>}
+                    </div>
+        
 
-
-
-        //     </div>
         return (
             <div>
                 <UI onClick={this.logout} change={this.changePassword}>
@@ -240,12 +365,13 @@ class OwnerFacility extends Component {
 function mapStatToProps(state) {
 
     return {
-        FacilitySubMasterReducer: state.FacilitySubMasterReducer,
+
+        userFacilityReducer: state.userFacilityReducer
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ getFacilityUser }, dispatch)
+    return bindActionCreators({ notInFacility, addUserFacility, getUserFacility, updateUserFacility }, dispatch)
 }
 
 export default connect(mapStatToProps, mapDispatchToProps)(OwnerFacility);

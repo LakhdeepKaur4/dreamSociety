@@ -69,6 +69,9 @@ class FingerPrint extends Component {
             return x.firstName.toLowerCase().includes(search.toLowerCase())  ||
              x.email.toLowerCase().includes(search.toLowerCase())  ||
              x.contact.toLowerCase().includes(search.toLowerCase()) ||
+             x.flats[0].tower_master.towerName.toLowerCase().includes(search.toLowerCase()) ||
+             x.flats[0].floor_master.floorName.toLowerCase().includes(search.toLowerCase())||
+            
             !search;
         }
     }
@@ -139,7 +142,7 @@ class FingerPrint extends Component {
             return fingerprintDetails.userData.filter((flatRecord) => {        
                 return flatRecord.userId == userId
             }).map((item) => {
-                return item.flats ? item.flats.map((item) => {
+                return item.flats ? item.flats.map((item) => {  console.log("flats===============", item)
                     return (
                         <option key={item.flatDetailId} value={item.flatDetailId} >
                             {item.flatNo}
@@ -157,13 +160,16 @@ class FingerPrint extends Component {
             return fingerprintDetails.userData.sort((item1,item2)=>{ 
                 var cmprVal = (item1.firstName && item2.firstName ) ? (item1[this.state.filterName].localeCompare(item2[this.state.filterName])) : ''
              return this.state.sortVal ? cmprVal : -cmprVal;
-            }).filter(this.searchFilter(this.state.search)).map((item, index) => { 
+            }).filter(this.searchFilter(this.state.search)).map((item, index) => { console.log("================",item)
                 return (
                     <tr key={item.userId}>
                         <td> {index + 1}</td>
                         <td> {item.firstName + " " + item.lastName}</td>
                         <td> {item.email}</td>
                         <td> {item.contact}</td>
+                        <td> {item.flats[0]  ? item.flats[0].tower_master.towerName : ''}</td>
+                        <td> {item.flats[0]   ? item.flats[0].floor_master.floorName :''}</td>
+                     
                         <td>
                             {/* <DropdownComponent
                                 name="flatDetailId"
@@ -231,6 +237,8 @@ class FingerPrint extends Component {
                     {/* <th>Name</th> */}
                     <th>Email</th>
                     <th>Contact</th>
+                    <th>Tower Name</th>
+                    <th>Floor No</th>
                     <th>Flats</th>
                     <th>Actions</th>
                 </tr>
