@@ -125,8 +125,8 @@ exports.update = (req, res, next) => {
     const facilities = req.body.facilities;
     console.log('Facilities ===>', facilities);
 
-    const promise = facilities.map(async item => {
-        await UserFacility.findOne({
+    const promise = facilities.map(item => {
+        UserFacility.findOne({
             where: {
                 userId: userId,
                 facilityDetailId: item.facilityDetailId
