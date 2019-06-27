@@ -261,7 +261,7 @@ class DisplayServices extends Component {
                 
              
             </tr>
-        </thead>
+        </thead> 
 
         <tbody>
             {this.renderList(this.props.displayServiceMasterReducer)}

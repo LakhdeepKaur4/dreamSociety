@@ -9,6 +9,7 @@ import Spinner from '../../../components/spinner/spinner';
 import DefaultSelect from '../../../constants/defaultSelect';
 
 var Id;
+
 class ViewComplaints extends Component {
     constructor() {
         super()
@@ -122,7 +123,6 @@ class ViewComplaints extends Component {
     }
 
     complaintCompleted(complaintId) {
-        console.log(complaintId)
         this.setState({ loading: true })
         let { isActive } = this.state;
         this.props.complaintCompleted(complaintId, isActive)
@@ -173,7 +173,7 @@ class ViewComplaints extends Component {
     }
 
     renderList = ({ complaints }) => {
-        console.log(complaints);
+      
 
         if (complaints) {
 
@@ -233,8 +233,6 @@ class ViewComplaints extends Component {
 
     renderFeedback = ({ feedbackResult }) => {
         if (feedbackResult) {
-            console.log(feedbackResult)
-
         }
     }
 

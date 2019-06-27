@@ -183,6 +183,7 @@ import FacilitySubMaster from './containers/facilitySubMaster/facilitySubMaster'
 import FacilitySubMasterDetails from './containers/facilitySubMaster/facilitySubMasterDetails';
 import OwnerFacility from './containers/ownerFacility/ownerfacility';
 
+
 class App extends Component {
   render() {
     return (
@@ -371,7 +372,7 @@ class App extends Component {
 
             <OwnerPrivateRoute path='/ownerDashboard/ownerFacility' component={OwnerFacility} />
 
-
+         
 
           </Switch>
         </div>

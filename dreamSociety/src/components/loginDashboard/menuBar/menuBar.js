@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+
 class MenuBar extends Component {
     render(){
         return (
@@ -12,7 +13,8 @@ class MenuBar extends Component {
                                 <Link className="nav-link" to="/superDashboard">Home<span className="sr-only">(current)</span></Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="#">Gallery</Link>
+                                <Link className="nav-link" to="#">Galler
+                                y</Link>
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" to="#">About Us</Link>
@@ -25,8 +27,12 @@ class MenuBar extends Component {
                             <button className="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#myModal" id="login" type="button"
                                 >Login</button>
                         </form>
+
                     </div>
                 </nav>
+              
+             
+              
         );
     }
 }
