@@ -182,6 +182,8 @@ import FacilityDetails from './containers/facilityMaster/facilityDetails';
 import FacilitySubMaster from './containers/facilitySubMaster/facilitySubMaster';
 import FacilitySubMasterDetails from './containers/facilitySubMaster/facilitySubMasterDetails';
 import OwnerFacility from './containers/ownerFacility/ownerfacility';
+import TenantFacility from './containers/tenantFacility/tenantFacility';
+
 
 
 class App extends Component {
@@ -373,6 +375,7 @@ class App extends Component {
             <OwnerPrivateRoute path='/ownerDashboard/ownerFacility' component={OwnerFacility} />
 
          
+            <TenantPrivateRoute path='/tenantDashboard/tenantFacility' component={TenantFacility} />
 
           </Switch>
         </div>

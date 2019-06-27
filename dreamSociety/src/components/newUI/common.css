@@ -350,10 +350,10 @@ ul ul a {
 }
 
 #gallery{
-margin-top: -23px;
-margin-right: -85px;
-margin-left: -215px;
-}
+    margin-top: -23px;
+    margin-right: -85px;
+    margin-left: -215px;
+    }
 
 @media screen and (min-width: 248px) {
     .container {

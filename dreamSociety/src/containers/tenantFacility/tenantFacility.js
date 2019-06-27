@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { addUserFacility, getUserFacility, notInFacility, updateUserFacility, updateFacility } from './../../actions/userFacilityAction';
+import { addUserFacility, getUserFacility, notInFacility, updateUserFacility, updateFacility } from '../../actions/userFacilityAction';
 import { bindActionCreators } from 'redux';
 
-import UI from '../../components/newUI/ownerDashboard';
+import UI from '../../components/newUI/tenantDashboard';
 import { Table, Button, Modal, FormGroup, Form, ModalBody, ModalHeader, Input, Label, Row, Col } from 'reactstrap';
 import _ from 'underscore';
 import Spinner from '../../components/spinner/spinner';
 import DefaultSelect from '../../constants/defaultSelect';
 import { stat } from 'fs';
 import $ from 'jquery';
-import moment from 'moment'
+import moment from 'moment';
 
 
 
 
-class OwnerFacility extends Component {
+class TenantFacility extends Component {
     constructor(props) {
         super(props);
 
@@ -60,7 +60,7 @@ class OwnerFacility extends Component {
     }
 
     changePassword = () => {
-        return this.props.history.replace('/ownerDashboard/changePasswordOwner')
+        return this.props.history.replace('/tenantDashboard/changePasswordTenant')
     }
 
     activatedChange = async (e) => {
@@ -157,7 +157,7 @@ class OwnerFacility extends Component {
 
     
     close = () => {
-        return this.props.history.replace('/ownerDashboard')
+        return this.props.history.replace('/tenantDashboard')
     }
 
 
@@ -347,15 +347,15 @@ class OwnerFacility extends Component {
         return (
             <div>
                 <UI onClick={this.logout} change={this.changePassword}>
-                    <div className="w3-container w3-margin-top w3-responsive">
+                <div className="w3-container w3-margin-top w3-responsive">
                         <div style={{ cursor: 'pointer' }} className="close" aria-label="Close" onClick={this.close}>
                             <span aria-hidden="true">&times;</span>
                         </div>
-                        <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Owner Facility</h3>
+                        <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Tenant Facility</h3>
                         {radioData}
                         {!this.state.loading ? table : <Spinner />}
-
-                   </div>
+                 </div>
+                   
                 </UI>
             </div>
         )
@@ -374,4 +374,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ notInFacility, addUserFacility, getUserFacility, updateUserFacility }, dispatch)
 }
 
-export default connect(mapStatToProps, mapDispatchToProps)(OwnerFacility);
+export default connect(mapStatToProps, mapDispatchToProps)(TenantFacility);
