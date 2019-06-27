@@ -349,6 +349,12 @@ ul ul a {
     display:none !important;
 }
 
+#gallery{
+    margin-top: -23px;
+    margin-right: -85px;
+    margin-left: -215px;
+    }
+
 @media screen and (min-width: 248px) {
     .container {
         width: 80%;
