@@ -9,9 +9,12 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.BOOLEAN,
             defaultValue: true
         },
-        duration: {
-            type: Sequelize.STRING,
+        startDate: {
+            type: Sequelize.DATEONLY,
         },
+        endDate: {
+            type: Sequelize.DATEONLY,
+        }
     }, {
             freezeTableName: true
         });
