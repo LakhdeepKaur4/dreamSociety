@@ -248,8 +248,7 @@ class Demo extends Component {
                         </div>
                     </nav>
                     <div id="body" className="container">
-                        <div className="mt-4 mb-4">
-
+                        <div id="content" className="mt-4 mb-4">
                             {this.props.children}
                         </div>
                     </div>

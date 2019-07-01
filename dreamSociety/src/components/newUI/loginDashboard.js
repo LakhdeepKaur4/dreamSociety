@@ -49,16 +49,16 @@ class Demo extends Component {
                     <div className="collapse navbar-collapse" id="navbarsExample05">
                         <ul className="navbar-nav mr-auto mx-auto">
                             <li className="nav-item mx-3 active">
-                                <a className="nav-link" href="#home">Home<span className="sr-only">(current)</span></a>
+                                <Link className="nav-link" to="/">Home<span className="sr-only">(current)</span></Link>
                             </li>
                             <li className="nav-item mx-3">
-                                <a className="nav-link" href="#gallery">Gallery</a>
+                                <Link className="nav-link" to="/gallery">Gallery</Link>
                             </li>
                             <li className="nav-item mx-3">
-                                <a className="nav-link" href="#aboutUs">About Us</a>
+                                <Link className="nav-link" to="/aboutUs">About Us</Link>
                             </li>
                             <li className="nav-item mx-3">
-                                <a className="nav-link" href="#">Contact Us</a>
+                                <Link className="nav-link" to="/contactUs">Contact Us</Link>
                             </li>
                         </ul>
                         <div className="form-inline mt-2 ml-3 mt-md-0">
@@ -68,10 +68,10 @@ class Demo extends Component {
 
                     </div>
                 </nav>
-                  <div className="wrapper" style={{backgroundImage: `url('assets/society.jpg')`}}>
-                {/* <div className="wrapper" style={{'backgroundImage':`url('assets/society.jpg')`}}> */}
-                
-              
+                <div className="wrapper" style={{ backgroundImage: `url('assets/society.jpg')` }}>
+                    {/* <div className="wrapper" style={{'backgroundImage':`url('assets/society.jpg')`}}> */}
+
+
 
                     {/* <nav id="sidebar" className="bg-dark inactive">
                         <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/registration">Super Admin Register</Link></div></Menu.Item>
@@ -86,89 +86,9 @@ class Demo extends Component {
                         <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/sizemaster">Size Master</Link></div></Menu.Item>
                     </nav> */}
                     <div id="body" className="container">
-                        <div className="mt-4 mb-4">
+                        <div className="mb-2">
                             {this.props.children}
                         </div>
-
-                        <div id="gallery">
-                        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                        <div class="carousel-item sliderImages active">
-                        <img class="d-block w-100" src="assets/picture1.jpg" alt="First slide"></img>
-                        </div>
-                        <div class="carousel-item sliderImages">
-                        <img class="d-block w-100" src="assets/picture5.jpg" alt="Second slide"></img>
-                        </div>
-                        <div class="carousel-item sliderImages">
-                        <img class="d-block w-100" src="assets/picture3.jpg"alt="Third slide"></img>
-                        </div>
-                        </div>
-                        <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
-                        </div>
-                        </div>
-                      
-                       
-                        <div id="home">
-                        <h2>HOME</h2>
-                        <p>Cras facilisis urna ornare ex volutpat, et
-                        convallis erat elementum. Ut aliquam, ipsum vitae
-                        gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                        metus nec massa. Maecenas hendrerit laoreet augue
-                        nec molestie. Cum sociis natoque penatibus et magnis
-                        dis parturient montes, nascetur ridiculus mus.</p>
-                        <p>Cras facilisis urna ornare ex volutpat, et
-                        convallis erat elementum. Ut aliquam, ipsum vitae
-                        gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                        metus nec massa. Maecenas hendrerit laoreet augue
-                        nec molestie. Cum sociis natoque penatibus et magnis
-                        dis parturient montes, nascetur ridiculus mus.</p>
-                        <p>Cras facilisis urna ornare ex volutpat, et
-                        convallis erat elementum. Ut aliquam, ipsum vitae
-                        gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                        metus nec massa. Maecenas hendrerit laoreet augue
-                        nec molestie. Cum sociis natoque penatibus et magnis
-                        dis parturient montes, nascetur ridiculus mus.</p>
-                        
-                
-                        <p>Duis a turpis sed lacus dapibus elementum sed eu lectus.</p>
-                        </div>
-                        <div id="aboutUs">
-                        <h2>ABOUT US</h2>
-                        <p>Cras facilisis urna ornare ex volutpat, et
-                        convallis erat elementum. Ut aliquam, ipsum vitae
-                        gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                        metus nec massa. Maecenas hendrerit laoreet augue
-                        nec molestie. Cum sociis natoque penatibus et magnis
-                        dis parturient montes, nascetur ridiculus mus.</p>
-                        <p>Cras facilisis urna ornare ex volutpat, et
-                        convallis erat elementum. Ut aliquam, ipsum vitae
-                        gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                        metus nec massa. Maecenas hendrerit laoreet augue
-                        nec molestie. Cum sociis natoque penatibus et magnis
-                        dis parturient montes, nascetur ridiculus mus.</p>
-                        <p>Cras facilisis urna ornare ex volutpat, et
-                        convallis erat elementum. Ut aliquam, ipsum vitae
-                        gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                        metus nec massa. Maecenas hendrerit laoreet augue
-                        nec molestie. Cum sociis natoque penatibus et magnis
-                        dis parturient montes, nascetur ridiculus mus.</p>
-                        <p>Cras facilisis urna ornare ex volutpat, et
-                        convallis erat elementum. Ut aliquam, ipsum vitae
-                        gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                        metus nec massa. Maecenas hendrerit laoreet augue
-                        nec molestie. Cum sociis natoque penatibus et magnis
-                        dis parturient montes, nascetur ridiculus mus.</p>
-                
-                        <p>Duis a turpis sed lacus dapibus elementum sed eu lectus.</p>
-                        </div>
-
                     </div>
                 </div>
 

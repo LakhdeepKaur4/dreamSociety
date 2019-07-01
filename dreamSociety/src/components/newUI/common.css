@@ -12,7 +12,6 @@
     color: red;
 }
 
-
 /* .w3-container{
     width: 109%;
     margin-left: 35px;
@@ -70,7 +69,7 @@ form {
 }
 
 #sidebar.inactive {
-    margin-left: -250px;
+    margin-left: -150px;
     transition: all 0.3s;
 }
 
@@ -118,11 +117,13 @@ form {
 #sidebarDetails.inactive {
     margin-left: -150px;
     transition: all 1.2s;
+    margin-right: 100px;
 }
 
 #sidebarDetails.active {
     margin-left: 0px;
     transition: all 1.2s;
+    margin-right: 0px;
 }
 
 #sidebarAdmin {
@@ -202,61 +203,17 @@ form {
     display: block;
 }
 
-#detailsdrop, #masterdrop {
+#sidebarMasterCollapse, #sidebarDetailsCollapse {
     cursor: pointer;
 }
 
-@media (max-width: 768px) {
-    #sidebar.inactive {
-        margin-left: 0px;
-    }
-    #sidebar.active {
-        margin-left: 0;
-    }
-    #sidebarMaster.inactive {
-        margin-left: -150px;
-    }
-    #sidebarMaster.active {
-        margin-left: 0;
-    }
-    #sidebarDetails.inactive {
-        margin-left: -150px;
-    }
-    #sidebarDetails.active {
-        margin-left: 0;
-    }
-    #sidebarAdmin.inactive {
-        margin-left: -150px;
-    }
-    #sidebarAdmin.active {
-        margin-left: 0;
-    }
-    #sidebarOwner.inactive {
-        margin-left: -150px;
-    }
-    #sidebarOwner.active {
-        margin-left: 0;
-    }
-    #sidebarTenant.inactive {
-        margin-left: -150px;
-    }
-    #sidebarTenant.active {
-        margin-left: 0;
-    }
-    #body {
-        margin-left: 150px;
-        /* margin-right: 100px; */
-    }
-}
-
-@media (min-width: 768px) {
-    #body {
-        display: block;
-        height: inherit;
-        align-content: center;
-        margin-left: 200px;
-        /* margin-right: 150px; */
-    }
+#body {
+    display: block;
+    height: inherit;
+    align-content: center;
+    /* width: 100%; */
+    /* margin: auto; */
+    /* margin-right: 150px; */
 }
 
 body {
@@ -345,38 +302,38 @@ ul ul a {
     margin-left: 40px;
 }
 
-.customLabel{
-    display:none !important;
+.customLabel {
+    display: none !important;
 }
 
-#gallery{
-    margin-top: -23px;
-    margin-right: -85px;
-    margin-left: -215px;
-    }
-
-@media screen and (min-width: 248px) {
-    .container {
-        width: 80%;
-    }
-    form {
-        width:auto;
-    }
-    .modal-content {
-        width: 100%;
-        right: 0;
-    }
+#gallery {
+    display: block;
 }
 
-@media screen and (max-width: 791px) {
-    .container {
-        width: 80%;
-    }
-    form {
-        width:auto;
-    }
-    .modal-content {
-        width: 100%;
-        right: 0;
-    }
+.container {
+    width: 100%;
+    margin: auto;
+    /* box-sizing: border-box; */
+}
+
+form {
+    width: auto;
+}
+
+.modal-content {
+    width: 100%;
+    right: 0;
+}
+
+.contentHead {
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px auto;
+}
+
+.contentBox {
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
 }
