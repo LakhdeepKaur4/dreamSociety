@@ -1272,7 +1272,7 @@ exports.getCurrentFingerprintData = async (req, res, next) => {
             socket.on('message', (message) => {
                 // console.log("%%%%", message)
                 // message1 = message.slice(0,message.lastIndexOf(",")) + message.slice(message.lastIndexOf(",") + 1);
-                if (message.indexOf(",]") > -1 ) {
+                if (message.indexOf(",]") > -1) {
                     message = message.slice(0, message.lastIndexOf(",")) + message.slice(message.lastIndexOf(",") + 1);
                 }
                 socketResponse = JSON.parse(message);
@@ -1294,7 +1294,7 @@ exports.getCurrentFingerprintData = async (req, res, next) => {
                     to = socketResponse.to;
                     // console.log("to", to)
                     count = socketResponse.count;
-                  
+
                     console.log('Count ====>', count);
                     // console.log(loopCount !== count)
                     if (loopCount !== count) {
@@ -1305,14 +1305,14 @@ exports.getCurrentFingerprintData = async (req, res, next) => {
                             let body = {
                                 userId: item.enrollid,
                                 time: item.time,
-                                mode:item.mode
+                                mode: item.mode
                             }
                             // console.log("&&&&body",body)
                             let createdData = PunchedData.findOrCreate({
                                 where: {
                                     userId: body.userId,
                                     time: body.time,
-                                    mode:item.mode
+                                    mode: item.mode
                                 },
                                 // defaults: {
                                 //     endDate: body.endDate,
@@ -1414,7 +1414,7 @@ var j = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/10000 * 
                 console.log("fingerprint api socket error", error);
             })
         })
-
+      
     } catch (error) {
         console.log("error==>", error);
         res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
@@ -1422,6 +1422,28 @@ var j = schedule.scheduleJob({ start: startTime, end: endTime, rule: '*/10000 * 
 })
 
 // }
+
+exports.punchedData = async (req, res,next) => {
+    try {  
+        const punchedfingerprint = await PunchedData.findAll({ where: { isActive: true }, include: [{ model: User, as: 'user', attributes: ['firstName', 'lastName', 'userName', 'email', 'contact'], include: [Role] }] });
+        punchedfingerprint.map(user => {
+                user.user.firstName = decrypt(user.user.firstName);
+                user.user.lastName = decrypt(user.user.lastName);
+                user.user.userName = decrypt(user.user.userName);
+                user.user.contact = decrypt(user.user.contact);
+                user.user.email = decrypt(user.user.email);
+            })
+        if (punchedfingerprint) {
+            return res.status(httpStatus.CREATED).json({
+                message: "Finger Print punched Content Page",
+                punchedfingerprint
+            });
+        }
+    } catch (error) {
+        console.log("error==>", error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error);
+    }
+}
 
 
 exports.fingerPrintDataByUserId = async (req, res, next) => {
