@@ -62,6 +62,7 @@ module.exports = function (app) {
 	const facilitiesDetailsController = require('../controller/facilitiesDetails');
 	const userFacilityController = require('../controller/userFacility');
 	const videoController = require('../controller/video');
+	const contactUsController = require('../controller/contactUs');
 
 	app.get('/', userController.start);
 
@@ -70,6 +71,8 @@ module.exports = function (app) {
 	app.post('/api/auth/signup', [verifySignUp.checkRolesExisted], userController.signupEncrypted);
 
 	app.post('/api/auth/signin', userController.signinDecrypted);
+
+	app.post('/api/contactUS', contactUsController.email);
 
 	app.get('/api/user', [authJwt.verifyToken, authJwt.isAdminRole], userController.getUserDecrypted);
 
