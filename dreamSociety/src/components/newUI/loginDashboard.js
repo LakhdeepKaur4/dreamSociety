@@ -1,33 +1,28 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+import $ from 'jquery';
+
 import './common.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class Demo extends Component {
-    // componentDidMount() {
-    //     $(document).ready(function () {
+    state = {
+        currentElement: ''
+    }
 
-    //         $('#sidebarCollapse').on('click', function () {
-    //             // $("#sidebar").toggle().animate();
-    //             // $('#sidebar').toggleClass('inactive active');
-    //             if ($('#sidebar').hasClass('active')) {
-    //                 $('#sidebar').removeClass('active').addClass('inactive');
-    //             } else {
-    //                 $('#sidebar').removeClass('inactive').addClass('active');
-    //             }
-    //         });
+    componentDidMount() {
+        const url = window.location.href;
 
-    //         $('#body').on('click', function () {
-    //             if ($('#sidebar').hasClass('active')) {
-    //                 $('#sidebar').removeClass('active').addClass('inactive');
-    //             }
+        this.setState({
+            currentElement: url.slice(url.lastIndexOf('/') + 1)
+        })
+    }
 
-    //         });
-
-
-    //     });
-    // }
+    clickHandle = (ele) => {
+        $('.active').toggleClass('active');
+        $(ele.currentTarget).toggleClass('active');
+    }
 
     render() {
         return (
@@ -48,16 +43,16 @@ class Demo extends Component {
 
                     <div className="collapse navbar-collapse" id="navbarsExample05">
                         <ul className="navbar-nav mr-auto mx-auto">
-                            <li className="nav-item mx-3 active">
-                                <Link className="nav-link" to="/">Home<span className="sr-only">(current)</span></Link>
+                            <li className={(this.state.currentElement === '') ? "nav-item mx-3 active" : "nav-item mx-3"} onClick={this.clickHandle}>
+                                <Link className="nav-link" to="/">Home</Link>
                             </li>
-                            <li className="nav-item mx-3">
+                            <li className={(this.state.currentElement === 'gallery') ? "nav-item mx-3 active" : "nav-item mx-3"} onClick={this.clickHandle}>
                                 <Link className="nav-link" to="/gallery">Gallery</Link>
                             </li>
-                            <li className="nav-item mx-3">
+                            <li className={(this.state.currentElement === 'aboutUs') ? "nav-item mx-3 active" : "nav-item mx-3"} onClick={this.clickHandle}>
                                 <Link className="nav-link" to="/aboutUs">About Us</Link>
                             </li>
-                            <li className="nav-item mx-3">
+                            <li className={(this.state.currentElement === 'contactUs') ? "nav-item mx-3 active" : "nav-item mx-3"} onClick={this.clickHandle}>
                                 <Link className="nav-link" to="/contactUs">Contact Us</Link>
                             </li>
                         </ul>
