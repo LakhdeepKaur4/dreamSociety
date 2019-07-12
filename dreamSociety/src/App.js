@@ -186,6 +186,7 @@ import TenantFacility from './containers/tenantFacility/tenantFacility';
 import AboutUs from './containers/login/aboutUs';
 import Gallery from './containers/login/gallery';
 import ContactUs from './containers/login/contactUs';
+import TenantAccess from './tenantAccess/tenantAccess';
 
 
 
@@ -379,9 +380,9 @@ class App extends Component {
             <PrivateRoute path='/superDashboard/facilitySubMasterDetails' component={FacilitySubMasterDetails} />
 
             <OwnerPrivateRoute path='/ownerDashboard/ownerFacility' component={OwnerFacility} />
-
-         
             <TenantPrivateRoute path='/tenantDashboard/tenantFacility' component={TenantFacility} />
+
+            <TenantPrivateRoute path='/tenantDashboard/tenantAccess' component={TenantAccess}/>
 
           </Switch>
         </div>
