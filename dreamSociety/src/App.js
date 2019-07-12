@@ -187,6 +187,7 @@ import AboutUs from './containers/login/aboutUs';
 import Gallery from './containers/login/gallery';
 import ContactUs from './containers/login/contactUs';
 import TenantAccess from './tenantAccess/tenantAccess';
+import VideoStreaming from './containers/videoStream/videoStreaming';
 
 
 
@@ -211,6 +212,7 @@ class App extends Component {
             <TenantPrivateRoute path='/tenantDashboard' exact component={TenantDashboard} />
             <VendorPrivateRoute path='/vendorDashboard' exact component={VendorDashboard} />
             <EmployeePrivateRoute path='/employeeDashboard' exact component={EmployeeDashboard}/>
+            <PrivateRoute path='/superDashboard/videoStreaming' component={VideoStreaming} />
             <PrivateRoute path='/superDashboard/registration' component={Registration} />
             <PrivateRoute path='/superDashboard/user_details' component={UserDetails} />
             <PrivateRoute path='/superDashboard/parking_master' component={ParkingMaster} />
