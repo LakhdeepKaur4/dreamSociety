@@ -61,6 +61,7 @@ module.exports = function (app) {
 	const facilitiesController = require('../controller/facilities');
 	const facilitiesDetailsController = require('../controller/facilitiesDetails');
 	const userFacilityController = require('../controller/userFacility');
+	const videoController = require('../controller/video');
 
 	app.get('/', userController.start);
 
@@ -809,5 +810,11 @@ module.exports = function (app) {
 	app.put('/api/user/facility/update', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], userFacilityController.update);
 
 	app.get('/api/user/facility/deactivated', [authJwt.verifyToken, authJwt.isOwnerOrTenantRole], userFacilityController.getNotInUse);
+
+	app.get('/api/live/video/:videoId', videoController.getlivevideo);
+
+	app.post('/api/video', videoController.addVideo);
+
+	app.get('/api/video', [authJwt.verifyToken], videoController.getAllVideoOfUser);
 
 }

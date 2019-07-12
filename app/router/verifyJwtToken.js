@@ -35,7 +35,7 @@ isAdmin = (req, res, next) => {
 		.then(user => {
 			user.getRoles().then(roles => {
 				for (let i = 0; i < roles.length; i++) {
-					console.log(roles[i].name);
+					// console.log(roles[i].name);
 					if (roles[i].name.toUpperCase() === "ADMIN") {
 						next();
 						return;
