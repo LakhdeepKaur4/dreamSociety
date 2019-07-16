@@ -108,7 +108,7 @@ isOwnerOrTenantRole = async (req, res, next) => {
 
 isOwnerOrTenant = (req, res, next) => {
 	let token = req.headers['x-access-token'];
-
+    console.log(req.userId)
 	User.findById(req.userId)
 		.then(user => {
 			user.getRoles().then(roles => {
