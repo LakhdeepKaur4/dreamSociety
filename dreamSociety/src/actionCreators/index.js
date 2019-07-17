@@ -15,15 +15,15 @@
 // export  const DocURN = 'http://192.168.1.114:8082/';
 // export  const UR = 'http://192.168.1.114:8082/';
 
-// export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
-// export  const UR = 'https://mydreamsociety.herokuapp.com/';
-// export  const URN = 'https://mydreamsociety.herokuapp.com/api'; 
+export  const PicURN = 'https://mydreamsociety.herokuapp.com/';
+export  const DocURN = 'https://mydreamsociety.herokuapp.com/';
+export  const UR = 'https://mydreamsociety.herokuapp.com/';
+export  const URN = 'https://mydreamsociety.herokuapp.com/api'; 
 
-export  const PicURN = 'https://dreamsociety.herokuapp.com/';
-export  const DocURN = 'https://dreamsociety.herokuapp.com/';
-export  const UR = 'https://dreamsociety.herokuapp.com/';
-export  const URN = 'https://dreamsociety.herokuapp.com/api';
+// export  const PicURN = 'https://dreamsociety.herokuapp.com/';
+// export  const DocURN = 'https://dreamsociety.herokuapp.com/';
+// export  const UR = 'https://dreamsociety.herokuapp.com/';
+// export  const URN = 'https://dreamsociety.herokuapp.com/api';
                                                                                       
 
 
@@ -418,3 +418,5 @@ export const UPDATE_USER_FACILITY='UPDATE_USER_FACILITY';
 export const CONTACT_US = 'CONTACT_US';
 
 export const VIDEO_STREAM = 'VIDEO_STREAM';
+
+export const GET_OWNER_ACCESS_DATA='GET_ACCESS_DATA';

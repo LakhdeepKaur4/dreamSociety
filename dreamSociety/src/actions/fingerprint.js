@@ -2,16 +2,7 @@ import { authHeader } from '../helper/authHeader';
 import axios from 'axios';
 import { URN,GET_FINGERPRINT_DATA,GET_MACHINE_DATA,GET_MACHINE_DETAILS,DISABLE_MACHINE_DETAILS} from '../actionCreators/index';
 
-// export function getFingerprintData(type) {
-//     console.log(type,"type==========")
-//     const request = axios.get(`${URN}/fingerPrint/userFlats/${type}` ,{ headers: authHeader() })
-//         .then(response => response.data)
-//         .catch(error => error)
-//     return {
-//         type:GET_FINGERPRINT_DATA,
-//         payload: request
-//     }
-// }
+
 
 export const getFingerprintData=(type)=>{
     console.log(type,"===========")
@@ -40,15 +31,7 @@ export function getMachineData(flatDetailId) {
 }
 
 
-// export function getMachineDetails(userId) {
-//     const request = axios.put(`${URN}/fingerPrint/enable/${userId}`, { headers: authHeader()})
-//         .then(response => response.data)
-//         .catch(error => error)
-//     return {
-//         type:GET_MACHINE_DETAILS,
-//         payload: request
-//     }
-// }
+
 
 export const getMachineDetails=(userId)=>{
     const data={

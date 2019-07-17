@@ -60,6 +60,8 @@ import fingerprintReducer  from './fingerprint/fingerprintMaster';
 import FacilitySubMasterReducer from './facilitySubMasterReducer/facilitySubMasterReducer';
 import  facilityReducer from  './facilityReducer/facilityReducer';
 import  userFacilityReducer from  './userFacilityReducer/userFacilityReducer';
+import  ownerAccessReducer from  './ownerAccessReducer/ownerAccessReducer';
+
 
 const rootReducer = combineReducers({
     loginReducer,
@@ -118,6 +120,7 @@ const rootReducer = combineReducers({
     fingerprintReducer,
     FacilitySubMasterReducer,
     facilityReducer,
-    userFacilityReducer
+    userFacilityReducer,
+    ownerAccessReducer
 })
 export default rootReducer;

@@ -186,8 +186,10 @@ import TenantFacility from './containers/tenantFacility/tenantFacility';
 import AboutUs from './containers/login/aboutUs';
 import Gallery from './containers/login/gallery';
 import ContactUs from './containers/login/contactUs';
-import TenantAccess from './tenantAccess/tenantAccess';
+
 import VideoStreaming from './containers/videoStream/videoStreaming';
+import TenantAccess from './containers/tenantAccess/tenantAccess';
+import OwnerAccess from './containers/ownerAccess/ownerAccess';
 
 
 
@@ -385,6 +387,7 @@ class App extends Component {
             <TenantPrivateRoute path='/tenantDashboard/tenantFacility' component={TenantFacility} />
 
             <TenantPrivateRoute path='/tenantDashboard/tenantAccess' component={TenantAccess}/>
+            <OwnerPrivateRoute path='/ownerDashboard/ownerAccess' component={OwnerAccess}/>
 
           </Switch>
         </div>
