@@ -183,7 +183,8 @@ import FacilitySubMaster from './containers/facilitySubMaster/facilitySubMaster'
 import FacilitySubMasterDetails from './containers/facilitySubMaster/facilitySubMasterDetails';
 import OwnerFacility from './containers/ownerFacility/ownerfacility';
 import TenantFacility from './containers/tenantFacility/tenantFacility';
-import AboutUs from './containers/login/aboutUs';
+import Features from './containers/login/features';
+import Technologies from './containers/login/technologies';
 import Gallery from './containers/login/gallery';
 import ContactUs from './containers/login/contactUs';
 
@@ -205,9 +206,10 @@ class App extends Component {
             <Route path='/forgetPassword' component={forgetPassword} />
             <Route path='/resetPassword' component={resetPassword} />
             <Route path='/login' exact component={Login} />
-            <Route path='/aboutUs' exact component={AboutUs} />
+            <Route path='/features' exact component={Features} />
             <Route path='/gallery' exact component={Gallery} />
             <Route path='/contactUs' exact component={ContactUs} />
+            <Route path='/technologies' exact component={Technologies} />
             <PrivateRoute path='/superDashboard' exact component={SuperDashboard} />
             <AdminPrivateRoute path='/adminDashboard' exact component={AdminDashboard} />
             <OwnerPrivateRoute path='/ownerDashboard' exact component={OwnerDashboard} />

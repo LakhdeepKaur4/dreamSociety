@@ -44,16 +44,19 @@ class Demo extends Component {
                     <div className="collapse navbar-collapse" id="navbarsExample05">
                         <ul className="navbar-nav mr-auto mx-auto">
                             <li className={(this.state.currentElement === '') ? "nav-item mx-3 active" : "nav-item mx-3"} onClick={this.clickHandle}>
-                                <Link className="nav-link" to="/">Home</Link>
+                                <Link className="nav-link" to="/"><i class="fa fa-home"></i> Home</Link>
                             </li>
-                            <li className={(this.state.currentElement === 'gallery') ? "nav-item mx-3 active" : "nav-item mx-3"} onClick={this.clickHandle}>
-                                <Link className="nav-link" to="/gallery">Gallery</Link>
+                            {/* <li className={(this.state.currentElement === 'gallery') ? "nav-item mx-3 active" : "nav-item mx-3"} onClick={this.clickHandle}>
+                                <Link className="nav-link" to="/gallery"><i class="fa fa-image"></i> Gallery</Link>
+                            </li> */}
+                            <li className={(this.state.currentElement === 'features') ? "nav-item mx-3 active" : "nav-item mx-3"} onClick={this.clickHandle}>
+                                <Link className="nav-link" to="/features"><i class="fa fa-list-alt"></i> Features</Link>
                             </li>
-                            <li className={(this.state.currentElement === 'aboutUs') ? "nav-item mx-3 active" : "nav-item mx-3"} onClick={this.clickHandle}>
-                                <Link className="nav-link" to="/aboutUs">About Us</Link>
+                            <li className={(this.state.currentElement === 'technologies') ? "nav-item mx-3 active" : "nav-item mx-3"} onClick={this.clickHandle}>
+                                <Link className="nav-link" to="/technologies"><i class="fa fa-microchip"></i> Technologies</Link>
                             </li>
                             <li className={(this.state.currentElement === 'contactUs') ? "nav-item mx-3 active" : "nav-item mx-3"} onClick={this.clickHandle}>
-                                <Link className="nav-link" to="/contactUs">Contact Us</Link>
+                                <Link className="nav-link" to="/contactUs"><i class="fa fa-address-book"></i> Contact Us</Link>
                             </li>
                         </ul>
                         <div className="form-inline mt-2 ml-3 mt-md-0">
@@ -80,8 +83,8 @@ class Demo extends Component {
                         <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/flatmaster">Flat Master</Link></div></Menu.Item>
                         <Menu.Item className="text-center h1 mr-4 mt-4 mb-4"><Icon className='col' name="user" /><div className='col ml-2' style={{ fontSize: "0.8rem" }}><Link to="/superDashboard/sizemaster">Size Master</Link></div></Menu.Item>
                     </nav> */}
-                    <div id="body" className="container">
-                        <div className="mb-2">
+                    <div id="body" className="">
+                        <div className="">
                             {this.props.children}
                         </div>
                     </div>

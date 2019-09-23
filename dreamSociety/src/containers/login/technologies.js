@@ -11,69 +11,29 @@ import { Redirect } from 'react-router-dom';
 import UI from '../../components/newUI/loginDashboard';
 import Spinner from '../../components/spinner/spinner';
 
-class Login extends Component {
+class Technologies extends Component {
     constructor(props) {
         super(props);
-        this.state = { username: '', password: '', message: '', menuVisible: false, editUserModal: false, loading: false, sliderIndex: 0 };
+        this.state = { username: '', password: '', message: '', menuVisible: false, editUserModal: false, loading: false, backside: '' };
         this.toggleEditUserModal = this.toggleEditUserModal.bind(this);
         this.editUser = this.editUser.bind(this);
 
     }
 
-    componentDidMount(){
-        this.slider();
-    }
-
-    slider = () => {
-        let sliderIndex;
-        setInterval(() => {
-            sliderIndex = this.sliderFunction(1, false);
-            this.setState({ sliderIndex });
-        }, 10000);
-    }
-
-    slide = (inc) => {
-        let sliderIndex;
-        if (inc === 1) {
-            sliderIndex = this.sliderFunction(inc, false);
-        } else {
-            sliderIndex = this.sliderFunction(inc, true);
-        }
-        this.setState({ sliderIndex });
-    }
-
-    sliderFunction = (inc, dec) => {
-        let sliderIndex = this.state.sliderIndex;
-        if (!dec) {
-            sliderIndex = (sliderIndex === $('.slides').length - 1) ? 0 : sliderIndex + inc;
-        }
-        else {
-            sliderIndex = (sliderIndex <= 0) ? $('.slides').length - 1 : sliderIndex + inc;
-        }
-
-        $('.slides.active').animate({ left: '-100vw' }, 500);
-        $('.slides').map((index, item) => {
-            if (sliderIndex === index) {
-                $('.slides').removeClass('active');
-                $(item).addClass('active');
-                $(item).css('left', '100vw');
-                $(item).animate({ left: '+0vw' }, 500);
-            }
+    componentDidMount() {
+        $('.iconBgSquare').map((index,item)=>{
+            $(item).hover(() => {
+                $(item).addClass("transform");
+                setTimeout(() => {
+                    this.setState({ backside: index });
+                }, 1000);
+            }, () => {
+                $(item).removeClass("transform");
+                setTimeout(() => {
+                    this.setState({ backside: '' });
+                }, 1000);
+            }) 
         })
-        $('.sliderCircles').map((index, item) => {
-            if (sliderIndex === index) {
-                $('.sliderCircles').removeClass('active');
-                $(item).addClass('active');
-            }
-        })
-        $('.sliderTexts').map((index, item) => {
-            if (sliderIndex === index) {
-                $('.sliderTexts').removeClass('active');
-                $(item).addClass('active');
-            }
-        })
-
-        return sliderIndex;
     }
 
     toggleEditUserModal() {
@@ -186,6 +146,22 @@ class Login extends Component {
         }
     }
 
+    onIconHover = id => {
+        if (id === 0) {
+            setTimeout(() => {
+                if (this.state.backside === 'react') {
+                    this.setState({ backside: '' });
+                } else {
+                    this.setState({ backside: 'react' });
+                }
+            }, 500);
+        }
+    }
+
+    onIconHoverEnd = () => {
+        this.setState({ backside: '' });
+    }
+
     render() {
         let loginForm;
         loginForm =
@@ -218,37 +194,18 @@ class Login extends Component {
                     <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                         {!this.state.loading ? loginForm : <Spinner />}
                     </Modal>
-                    <div id="homeFirstSlider">
-                        <div id="slider">
-                            <img className="slides active" src="./assets/housing01.jpg" alt="First slide"></img>
-                            <img className="slides" src="./assets/housing01.jpg" alt="First slide"></img>
-                            <img className="slides" src="./assets/housing01.jpg" alt="First slide"></img>
-                            <div id="sliderOverlay"></div>
-                            <div id="sliderButtonsContainer">
-                                <div id="prevButton" className="sliderButtons" onClick={() => this.slide(-1)}>
-                                    <div className="arrows left"></div>
-                                </div>
-                                <div id="nextButton" className="sliderButtons" onClick={() => this.slide(1)}>
-                                    <div className="arrows right"></div>
-                                </div>
-                            </div>
-                            <div id="sliderTextsContainer">
-                                <div className="sliderTexts active"><span>Welcome To <span
-                                    className="skyBlue">DreamSociety</span></span><br /><br /><span className="skyBlue"><i>Guarding Your
-						Dreams...</i></span></div>
-                                <div className="sliderTexts"><span>Your <span className="skyBlue">Security</span></span><br /><br /><span>Our <span
-                                    className="skyBlue">Commitment</span></span></div>
-                                <div className="sliderTexts"><span>Manage Your <span className="skyBlue">Society</span></span><br /><br /><span
-                                    className="skyBlue"><i>At ease of web</i></span></div>
-                            </div>
-                            <div id="sliderCirclesContainer">
-                                <div className="sliderCircles active"></div>
-                                <div className="sliderCircles"></div>
-                                <div className="sliderCircles"></div>
-                            </div>
-                        </div>
+                    <div id="technologies" className="d-flex flex-wrap justify-content-around p-5">
+                        <div className="iconBgSquare d-flex justify-content-center align-items-center text-center">{(this.state.backside === 0) ? <span class="react iconLabel">React</span> : <span class="fi fi-react react"></span>}</div>
+                        <div className="iconBgSquare d-flex justify-content-center align-items-center text-center">{(this.state.backside === 1) ? <span class="html5 iconLabel">HTML5</span> : <span class="fi fi-html5 html5"></span>}</div>
+                        <div className="iconBgSquare d-flex justify-content-center align-items-center text-center" onMouseOverCapture={this.onIconHover}>{(this.state.backside === 2) ? <span class="css3 iconLabel">CSS3</span> : <span class="fi fi-css3 css3"></span>}</div>
+                        <div className="iconBgSquare d-flex justify-content-center align-items-center text-center" onMouseOverCapture={this.onIconHover}>{(this.state.backside === 3) ? <span class="node iconLabel">Nodejs</span> : <span class="fi fi-nodejs node"></span>}</div>
+                        <div className="iconBgSquare d-flex justify-content-center align-items-center text-center" onMouseOverCapture={this.onIconHover}>{(this.state.backside === 4) ? <span class="redux iconLabel">Redux</span> : <span class="fi fi-redux redux"></span>}</div>
+                        <div className="iconBgSquare d-flex justify-content-center align-items-center text-center" onMouseOverCapture={this.onIconHover}>{(this.state.backside === 5) ? <span class="mysql iconLabel">Mysql</span> : <span class="fi fi-mysql mysql"></span>}</div>
+                        <div className="iconBgSquare d-flex justify-content-center align-items-center text-center" onMouseOverCapture={this.onIconHover}>{(this.state.backside === 6) ? <span class="aws iconLabelAWS">Amazon Web Services</span> : <span class="fi fi-aws aws"></span>}</div>
+                        <div className="iconBgSquare d-flex justify-content-center align-items-center text-center" onMouseOverCapture={this.onIconHover}>{(this.state.backside === 7) ? <span class="git iconLabel">Git</span> : <span class="fi fi-git git"></span>}</div>
                     </div>
                 </UI>
+
             </div>
         );
     }
@@ -264,4 +221,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ login }, dispatch);
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(Login));
+export default (connect(mapStateToProps, mapDispatchToProps)(Technologies));

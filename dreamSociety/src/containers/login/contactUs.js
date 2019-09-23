@@ -197,25 +197,27 @@ class ContactUs extends Component {
                     <Modal isOpen={this.state.editUserModal} toggle={this.toggleEditUserModal.bind(this)}>
                         {!this.state.loading ? loginForm : <Spinner />}
                     </Modal>
-                    <Form>
-                        <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Contact Us</h3>
-                        <FormGroup>
-                            <Label>Email</Label>
-                            <Input type="email" name="email" placeholder="Email" onChange={this.onChangeContactUs} value={this.state.email} required></Input>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label>Name</Label>
-                            <Input type="text" name="name" placeholder="Name" onChange={this.onChangeContactUs} value={this.state.name} required></Input>
-                        </FormGroup>
-                        <FormGroup>
-                            <Label>Message</Label>
-                            <Input type="textarea" name="messageEmail" placeholder="Message" onChange={this.onChangeContactUs} value={this.state.messageEmail} required></Input>
-                        </FormGroup>
-                        <span className={this.state.messageColor}>{this.state.messageErr}</span>
-                        <br /><br />
-                        <Button color="success" className="mr-2" onClick={this.submitForm}>Submit</Button>
-                        <Button color="danger" onClick={this.resetForm}>Reset</Button>
-                    </Form>
+                    <div id="contactUs">
+                        <Form className="contactUsForm">
+                            <h3 style={{ textAlign: 'center', marginBottom: '10px' }}>Contact Us</h3>
+                            <FormGroup>
+                                <Label>Email</Label>
+                                <Input type="email" name="email" placeholder="Email" onChange={this.onChangeContactUs} value={this.state.email} required></Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Name</Label>
+                                <Input type="text" name="name" placeholder="Name" onChange={this.onChangeContactUs} value={this.state.name} required></Input>
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>Message</Label>
+                                <Input type="textarea" name="messageEmail" placeholder="Message" onChange={this.onChangeContactUs} value={this.state.messageEmail} required></Input>
+                            </FormGroup>
+                            <span className={this.state.messageColor}>{this.state.messageErr}</span>
+                            <br /><br />
+                            <Button color="success" className="mr-2" onClick={this.submitForm}>Submit</Button>
+                            <Button color="danger" onClick={this.resetForm}>Reset</Button>
+                        </Form>
+                    </div>
                 </UI>
 
             </div>

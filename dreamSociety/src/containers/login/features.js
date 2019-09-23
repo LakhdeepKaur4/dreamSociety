@@ -10,7 +10,7 @@ import { Redirect } from 'react-router-dom';
 import UI from '../../components/newUI/loginDashboard';
 import Spinner from '../../components/spinner/spinner';
 
-class AboutUs extends Component {
+class Features extends Component {
     constructor(props) {
         super(props);
         this.state = { username: '', password: '', message: '', menuVisible: false, editUserModal: false, loading: false, };
@@ -161,7 +161,7 @@ class AboutUs extends Component {
                         {!this.state.loading ? loginForm : <Spinner />}
                     </Modal>
                     <div id="aboutUs">
-                        <div className="contentHead"><h2>ABOUT US</h2></div>
+                        <div className="contentHead skyBlue"><h2>FEATURES</h2></div>
                         <div className="contentBox">
                             <p>Application is designed and developed to handle the various features of society. Software
                                 for Apartment Management, Communication, Event Management(both personal and society events),
@@ -199,4 +199,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ login }, dispatch);
 }
 
-export default (connect(mapStateToProps, mapDispatchToProps)(AboutUs));
+export default (connect(mapStateToProps, mapDispatchToProps)(Features));
