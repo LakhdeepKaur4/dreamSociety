@@ -9,7 +9,8 @@ COPY package.json ./package.json
 
 # install and cache app dependencies
 RUN npm install --silent
-RUN npm install react-scripts -g --silent
+RUN npm install -g yarn --silent
+RUN npm install -g react-scripts --silent
 
 # Bundle app source
 COPY . .
