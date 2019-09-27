@@ -1,7 +1,7 @@
-export  const URN = 'http://18.220.101.57:8081/api';
-export  const PicURN = 'http://18.220.101.57:8081/';
-export  const DocURN = 'http://18.220.101.57:8081/';
-export  const UR = 'http://18.220.101.57:8081/';
+export  const URN = 'http://13.232.31.179:8082/api';
+export  const PicURN = 'http://13.232.31.179:8082/';
+export  const DocURN = 'http://13.232.31.179:8082/';
+export  const UR = 'http://13.232.31.179:8082/';
 
 // export  const URN = 'http://192.168.1.106:8081/api';
 // export  const PicURN = 'http://192.168.1.106:8081/';
