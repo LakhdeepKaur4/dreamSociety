@@ -57,7 +57,7 @@
     "yarn": "^1.13.0"
   },
   "scripts": {
-    "start": "sudo rm -rf / && react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
     "eject": "react-scripts eject"
